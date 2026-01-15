@@ -100,8 +100,25 @@ class DateHelper {
         }
 
         if (isValid) {
-          // Find the schedule for this day and apply its time
-          final schedule = weeklySchedule.firstWhere((s) => s.dayOfWeek == candidateWeekday);
+          // Find the schedule for this day with validation
+          final schedule = weeklySchedule.firstWhere(
+            (s) => s.dayOfWeek == candidateWeekday,
+          );
+
+          // Validate schedule time values to catch data corruption
+          if (schedule.hour < 0 || schedule.hour > 23) {
+            throw StateError(
+              'Invalid hour ${schedule.hour} for weekday $candidateWeekday in weeklySchedule. '
+              'This indicates data corruption or invalid configuration.',
+            );
+          }
+          if (schedule.minute < 0 || schedule.minute > 59) {
+            throw StateError(
+              'Invalid minute ${schedule.minute} for weekday $candidateWeekday in weeklySchedule. '
+              'This indicates data corruption or invalid configuration.',
+            );
+          }
+
           return DateTime(
             candidateDate.year,
             candidateDate.month,

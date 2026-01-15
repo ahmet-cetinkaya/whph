@@ -66,11 +66,11 @@ class RecurrenceWeeklyTimeSelector extends StatelessWidget {
             hour: 9, 
             minute: 0
           ),
-        );
+        ) ?? WeeklySchedule(dayOfWeek: dayNumber, hour: 9, minute: 0);
         
         final time = TimeOfDay(
-          hour: currentSchedule?.hour ?? 9, 
-          minute: currentSchedule?.minute ?? 0
+          hour: currentSchedule.hour, 
+          minute: currentSchedule.minute
         );
 
         return Padding(

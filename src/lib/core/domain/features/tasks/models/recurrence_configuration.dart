@@ -43,20 +43,67 @@ class WeeklySchedule {
     required this.minute,
   });
 
+  /// Validates a WeeklySchedule and throws ArgumentError if invalid
+  static void _validate(int dayOfWeek, int hour, int minute) {
+    if (dayOfWeek < 1 || dayOfWeek > 7) {
+      throw ArgumentError.value(
+        dayOfWeek,
+        'dayOfWeek',
+        'Must be between 1 (Monday) and 7 (Sunday)',
+      );
+    }
+    if (hour < 0 || hour > 23) {
+      throw ArgumentError.value(
+        hour,
+        'hour',
+        'Must be between 0 and 23',
+      );
+    }
+    if (minute < 0 || minute > 59) {
+      throw ArgumentError.value(
+        minute,
+        'minute',
+        'Must be between 0 and 59',
+      );
+    }
+  }
+
+  /// Creates a validated WeeklySchedule from JSON
+  factory WeeklySchedule.fromJson(Map<String, dynamic> json) {
+    final dayOfWeek = json['dayOfWeek'] as int;
+    final hour = json['hour'] as int;
+    final minute = json['minute'] as int;
+
+    // Validate before constructing
+    _validate(dayOfWeek, hour, minute);
+
+    return WeeklySchedule(
+      dayOfWeek: dayOfWeek,
+      hour: hour,
+      minute: minute,
+    );
+  }
+
+  /// Creates a validated WeeklySchedule with runtime validation
+  factory WeeklySchedule.validated({
+    required int dayOfWeek,
+    required int hour,
+    required int minute,
+  }) {
+    _validate(dayOfWeek, hour, minute);
+    return WeeklySchedule(
+      dayOfWeek: dayOfWeek,
+      hour: hour,
+      minute: minute,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'dayOfWeek': dayOfWeek,
       'hour': hour,
       'minute': minute,
     };
-  }
-
-  factory WeeklySchedule.fromJson(Map<String, dynamic> json) {
-    return WeeklySchedule(
-      dayOfWeek: json['dayOfWeek'] as int,
-      hour: json['hour'] as int,
-      minute: json['minute'] as int,
-    );
   }
 
   @override

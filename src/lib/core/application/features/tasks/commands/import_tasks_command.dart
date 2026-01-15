@@ -274,16 +274,22 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
           error: e,
           stackTrace: stackTrace,
         );
-      } on Exception catch (e, stackTrace) {
-        // Other unexpected errors
+      } catch (e, stackTrace) {
+        // Don't catch Exception - let truly unexpected errors propagate
+        // Only catch specific exceptions we know how to handle
         failureCount++;
-        final errorMsg = 'Row ${i + 2}: ${_ImportErrorMessages.rowImportError} - $e';
+        final errorMsg = 'Row ${i + 2}: Unexpected error - ${e.runtimeType}: $e';
         _addError(errors, errorMsg);
         Logger.error(
           '[${_ImportErrorIds.mediatorError}] $errorMsg',
           error: e,
           stackTrace: stackTrace,
         );
+
+        // Rethrow programming errors that should fail fast
+        if (e is NoSuchMethodError || e is TypeError) {
+          rethrow;
+        }
       }
       i++;
     }
