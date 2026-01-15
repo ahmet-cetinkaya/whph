@@ -533,5 +533,71 @@ void main() {
         });
       });
     });
+
+    group('getNthWeekdayOfMonth', () {
+      test('should find first Monday of January 2024', () {
+        final result = DateHelper.getNthWeekdayOfMonth(2024, 1, DateTime.monday, 1);
+        expect(result, DateTime(2024, 1, 1));
+      });
+
+      test('should find second Tuesday of February 2024', () {
+        final result = DateHelper.getNthWeekdayOfMonth(2024, 2, DateTime.tuesday, 2);
+        expect(result, DateTime(2024, 2, 13));
+      });
+
+      test('should find third Wednesday of March 2024', () {
+        final result = DateHelper.getNthWeekdayOfMonth(2024, 3, DateTime.wednesday, 3);
+        expect(result, DateTime(2024, 3, 20));
+      });
+
+      test('should handle 5th Friday by falling back to last Friday', () {
+        // February 2024 has only 4 Fridays, so 5th should fall back to last (4th)
+        final result = DateHelper.getNthWeekdayOfMonth(2024, 2, DateTime.friday, 5);
+        expect(result, DateTime(2024, 2, 23)); // 4th Friday (last Friday)
+      });
+
+      test('should handle 5th Friday in month with 5 Fridays', () {
+        // March 2024 has 5 Fridays
+        final result = DateHelper.getNthWeekdayOfMonth(2024, 3, DateTime.friday, 5);
+        expect(result, DateTime(2024, 3, 29)); // 5th Friday
+      });
+
+      test('should handle leap year February', () {
+        final result = DateHelper.getNthWeekdayOfMonth(2024, 2, DateTime.thursday, 4);
+        expect(result, DateTime(2024, 2, 29)); // Leap day Thursday
+      });
+
+      test('should handle year boundary (December to January)', () {
+        final result = DateHelper.getNthWeekdayOfMonth(2024, 12, DateTime.wednesday, 2);
+        expect(result, DateTime(2024, 12, 11));
+      });
+    });
+
+    group('getLastWeekdayOfMonth', () {
+      test('should find last Monday of January 2024', () {
+        final result = DateHelper.getLastWeekdayOfMonth(2024, 1, DateTime.monday);
+        expect(result, DateTime(2024, 1, 29));
+      });
+
+      test('should find last Friday of February 2024', () {
+        final result = DateHelper.getLastWeekdayOfMonth(2024, 2, DateTime.friday);
+        expect(result, DateTime(2024, 2, 23));
+      });
+
+      test('should find last Sunday of March 2024', () {
+        final result = DateHelper.getLastWeekdayOfMonth(2024, 3, DateTime.sunday);
+        expect(result, DateTime(2024, 3, 31));
+      });
+
+      test('should handle leap year February', () {
+        final result = DateHelper.getLastWeekdayOfMonth(2024, 2, DateTime.thursday);
+        expect(result, DateTime(2024, 2, 29)); // Leap day is last Thursday
+      });
+
+      test('should find last Wednesday of month with 31 days', () {
+        final result = DateHelper.getLastWeekdayOfMonth(2024, 5, DateTime.wednesday);
+        expect(result, DateTime(2024, 5, 29));
+      });
+    });
   });
 }

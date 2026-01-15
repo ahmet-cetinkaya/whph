@@ -1546,5 +1546,84 @@ void main() {
         });
       });
     });
+
+    group('Data Corruption Error Handling', () {
+      test('should throw StateError when endCondition is date but endDate is null', () {
+        final task = Task(
+          id: 'task-corrupted-1',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Corrupted Task - Missing End Date',
+          plannedDate: DateTime(2024, 1, 8, 9, 0),
+          // Use .test() factory to create invalid configuration without validation
+          recurrenceConfiguration: RecurrenceConfiguration.test(
+            frequency: RecurrenceFrequency.daily,
+            endCondition: RecurrenceEndCondition.date,
+            endDate: null, // Invalid: endCondition is date but endDate is null
+          ),
+        );
+
+        expect(
+          () => service.canCreateNextInstance(task),
+          throwsA(isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('endCondition set to "date" but endDate is null'),
+          )),
+        );
+      });
+
+      test('should throw StateError when endCondition is count but both counts are null', () {
+        final task = Task(
+          id: 'task-corrupted-2',
+          createdDate: DateTime.now().toUtc(),
+          title: 'Corrupted Task - Missing Count Limit',
+          plannedDate: DateTime(2024, 1, 8, 9, 0),
+          // Use .test() factory to create invalid configuration without validation
+          recurrenceConfiguration: RecurrenceConfiguration.test(
+            frequency: RecurrenceFrequency.daily,
+            endCondition: RecurrenceEndCondition.count,
+            occurrenceCount: null, // Invalid: endCondition is count but no limit set
+          ),
+          // Also ensure task-level count is null
+          recurrenceCount: null,
+        );
+
+        expect(
+          () => service.canCreateNextInstance(task),
+          throwsA(isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('endCondition set to "count" but both'),
+          )),
+        );
+      });
+
+      test('should throw StateError with task ID in error message', () {
+        const taskId = 'corrupted-task-123';
+        final task = Task(
+          id: taskId,
+          createdDate: DateTime.now().toUtc(),
+          title: 'Corrupted Task',
+          plannedDate: DateTime(2024, 1, 8, 9, 0),
+          recurrenceConfiguration: RecurrenceConfiguration.test(
+            frequency: RecurrenceFrequency.weekly,
+            endCondition: RecurrenceEndCondition.date,
+            endDate: null,
+          ),
+        );
+
+        expect(
+          () => service.canCreateNextInstance(task),
+          throwsA(isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            allOf([
+              contains('Task ID:'),
+              contains(taskId),
+            ]),
+          )),
+        );
+      });
+    });
   });
 }

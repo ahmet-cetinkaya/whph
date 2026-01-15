@@ -1,5 +1,6 @@
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 
 class DateHelper {
   static int weekDayToNumber(WeekDays day) {
@@ -57,6 +58,7 @@ class DateHelper {
     }
 
     throw StateError(
+      '[${TaskErrorIds.dateHelperMaxSearchDaysExceeded}] '
       'Could not find next weekday occurrence after $maxSearchDays days. '
       'targetWeekdays: $targetWeekdays, intervalInWeeks: $intervalInWeeks, '
       'referenceDate: $referenceDate',
@@ -108,12 +110,14 @@ class DateHelper {
           // Validate schedule time values to catch data corruption
           if (schedule.hour < 0 || schedule.hour > 23) {
             throw StateError(
+              '[${TaskErrorIds.dateHelperInvalidScheduleHour}] '
               'Invalid hour ${schedule.hour} for weekday $candidateWeekday in weeklySchedule. '
               'This indicates data corruption or invalid configuration.',
             );
           }
           if (schedule.minute < 0 || schedule.minute > 59) {
             throw StateError(
+              '[${TaskErrorIds.dateHelperInvalidScheduleMinute}] '
               'Invalid minute ${schedule.minute} for weekday $candidateWeekday in weeklySchedule. '
               'This indicates data corruption or invalid configuration.',
             );
@@ -131,6 +135,7 @@ class DateHelper {
     }
 
     throw StateError(
+      '[${TaskErrorIds.dateHelperMaxSearchDaysWithTimesExceeded}] '
       'Could not find next weekday occurrence after $maxSearchDays days. '
       'weeklySchedule: $weeklySchedule, intervalInWeeks: $intervalInWeeks, '
       'referenceDate: $referenceDate',
