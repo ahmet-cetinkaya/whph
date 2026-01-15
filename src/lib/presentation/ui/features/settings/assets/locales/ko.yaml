@@ -331,3 +331,9 @@ settings:
     reverse_day_order:
       title: 목록의 날짜 순서 반전
       description: 습관 목록에서 최근 날짜를 먼저 (왼쪽에서 오른쪽으로) 표시합니다.
+  import_source:
+    title: 가져오기 소스 선택
+    backup_title: 백업 가져오기
+    backup_description: .whph 백업 파일에서 애플리케이션 데이터 복원
+    external_apps_title: 가져오기 작업(CSV)
+    external_apps_description: CSV 파일을 통해 다른 애플리케이션에서 작업 가져오기

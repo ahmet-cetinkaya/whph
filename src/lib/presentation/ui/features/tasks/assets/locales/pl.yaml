@@ -27,9 +27,7 @@ tasks:
     deadline_date:
       label: Data terminu
     description:
-      context:
-        Dodaj szczegółowe informacje o swoim zadaniu, aby pomóc sobie pamiętać
-        kluczowe szczegóły i śledzić postępy.
+      context: Dodaj szczegółowe informacje o swoim zadaniu, aby pomóc sobie pamiętać kluczowe szczegóły i śledzić postępy.
       hint: Dodaj opis...
       label: Opis
     elapsed_time:
@@ -70,9 +68,7 @@ tasks:
     task_tag_already_exists: Ten tag zadania już istnieje
     task_tag_not_found: Nie znaleziono tagu zadania
   estimated_time:
-    description:
-      Ustaw realistyczny szacowany czas, aby efektywnie zaplanować zadanie
-      i śledzić produktywność.
+    description: Ustaw realistyczny szacowany czas, aby efektywnie zaplanować zadanie i śledzić produktywność.
     label: Szacowany czas
   filters:
     completion: Według statusu ukończenia
@@ -86,24 +82,19 @@ tasks:
   help:
     details:
       content:
-        "Opanuj zarządzanie zadaniami i zmaksymalizuj produktywność poprzez
-        organizowanie, ustalanie priorytetów i śledzenie swojej pracy w sposób efektywny.
+        "Opanuj zarządzanie zadaniami i zmaksymalizuj produktywność poprzez organizowanie, ustalanie priorytetów i śledzenie swojej pracy w sposób efektywny.
 
 
         ## ⚡ Dlaczego to ważne?
 
 
-        Efektywne zarządzanie zadaniami to podstawa produktywności. Właściwie ustrukturyzowane
-        zadania z jasnymi priorytetami i terminami pomagają skupić się na tym, co
-        najważniejsze i zapobiegają przeoczeniu ważnej pracy.
+        Efektywne zarządzanie zadaniami to podstawa produktywności. Właściwie ustrukturyzowane zadania z jasnymi priorytetami i terminami pomagają skupić się na tym, co najważniejsze i zapobiegają przeoczeniu ważnej pracy.
 
 
         ## 📝 Organizacja zadań
 
 
-        Strukturyzuj swoje zadania ze szczegółowymi informacjami, aby zachować jasność
-        i skupienie. Używaj tagów, priorytetów i szacowania czasu, aby stworzyć systematyczne
-        podejście do obciążenia pracą.
+        Strukturyzuj swoje zadania ze szczegółowymi informacjami, aby zachować jasność i skupienie. Używaj tagów, priorytetów i szacowania czasu, aby stworzyć systematyczne podejście do obciążenia pracą.
 
 
         - 🏷️ Kategoryzuj zadania za pomocą znaczących tagów
@@ -118,8 +109,7 @@ tasks:
         ## ⏰ Zarządzanie czasem
 
 
-        Śledź swoje inwestycje czasowe, aby zrozumieć wzorce pracy i poprawić efektywność.
-        Właściwe zarządzanie czasem przekształca rozproszone wysiłki w skupioną produktywność.
+        Śledź swoje inwestycje czasowe, aby zrozumieć wzorce pracy i poprawić efektywność. Właściwe zarządzanie czasem przekształca rozproszone wysiłki w skupioną produktywność.
 
 
         - 📊 Monitoruj rzeczywisty vs szacowany czas
@@ -134,8 +124,7 @@ tasks:
         ## 📊 Framework priorytetów (Macierz Eisenhowera)
 
 
-        Organizuj swoje zadania używając tej sprawdzonej metody priorytetyzacji, aby
-        zapewnić, że zawsze pracujesz nad właściwymi rzeczami we właściwym czasie.
+        Organizuj swoje zadania używając tej sprawdzonej metody priorytetyzacji, aby zapewnić, że zawsze pracujesz nad właściwymi rzeczami we właściwym czasie.
 
 
         - 🔥 **Pilne i ważne:** Obsługuj natychmiast - zarządzanie kryzysowe i terminy
@@ -144,33 +133,25 @@ tasks:
 
         - ⚡ **Pilne, nieważne:** Deleguj gdy to możliwe - przerwania i niektóre spotkania
 
-        - 🗑️ **Ani pilne, ani ważne:** Eliminuj - marnowanie czasu i działania o niskiej
-        wartości
+        - 🗑️ **Ani pilne, ani ważne:** Eliminuj - marnowanie czasu i działania o niskiej wartości
 
         "
       title: Przewodnik zarządzania zadaniami i produktywności
     overview:
       content:
-        "Przekształć swoją produktywność dzięki systematycznemu zarządzaniu
-        zadaniami, które pomaga pozostać zorganizowanym, skupionym i kontrolować obciążenie
-        pracą.
+        "Przekształć swoją produktywność dzięki systematycznemu zarządzaniu zadaniami, które pomaga pozostać zorganizowanym, skupionym i kontrolować obciążenie pracą.
 
 
         ## ⚡ Dlaczego to ważne?
 
 
-        Efektywne zarządzanie zadaniami to kamień węgielny osobistego i zawodowego
-        sukcesu. Poprzez systematyczne organizowanie pracy redukujesz stres, konsekwentnie
-        dotrzymujesz terminów i tworzysz przestrzeń dla znaczącego postępu w ważnych
-        celach.
+        Efektywne zarządzanie zadaniami to kamień węgielny osobistego i zawodowego sukcesu. Poprzez systematyczne organizowanie pracy redukujesz stres, konsekwentnie dotrzymujesz terminów i tworzysz przestrzeń dla znaczącego postępu w ważnych celach.
 
 
         ## 📋 Organizacja zadań
 
 
-        Stwórz ustrukturyzowane podejście do zarządzania swoimi obowiązkami. Dobrze
-        zorganizowane zadania prowadzą do jasnych priorytetów i efektywnej realizacji
-        codziennej pracy.
+        Stwórz ustrukturyzowane podejście do zarządzania swoimi obowiązkami. Dobrze zorganizowane zadania prowadzą do jasnych priorytetów i efektywnej realizacji codziennej pracy.
 
 
         - ✅ Twórz i kategoryzuj zadania systematycznie
@@ -185,9 +166,7 @@ tasks:
         ## ⏱️ Śledzenie czasu i skupienie
 
 
-        Monitoruj swoje inwestycje czasowe, aby zrozumieć wzorce produktywności i
-        zoptymalizować przepływ pracy. Świadomość czasu prowadzi do lepszego planowania
-        i poprawy wydajności.
+        Monitoruj swoje inwestycje czasowe, aby zrozumieć wzorce produktywności i zoptymalizować przepływ pracy. Świadomość czasu prowadzi do lepszego planowania i poprawy wydajności.
 
 
         - ⏰ Śledź rzeczywisty czas spędzony na zadaniu
@@ -202,8 +181,7 @@ tasks:
         ## 📈 Monitorowanie postępu
 
 
-        Śledź swoje osiągnięcia i ucz się ze swoich wzorców pracy. Regularne przeglądy
-        i refleksje napędzają ciągłe doskonalenie systemu produktywności.
+        Śledź swoje osiągnięcia i ucz się ze swoich wzorców pracy. Regularne przeglądy i refleksje napędzają ciągłe doskonalenie systemu produktywności.
 
 
         - 📈 Monitoruj wskaźniki ukończenia zadań
@@ -221,26 +199,19 @@ tasks:
       title: Szczegóły zadania
     help:
       content:
-        "Zmaksymalizuj swoje skupienie i produktywność dzięki ustrukturyzowanym
-        sesjom pracy, które pomagają utrzymać głęboką koncentrację jednocześnie zapobiegając
-        wypaleniu.
+        "Zmaksymalizuj swoje skupienie i produktywność dzięki ustrukturyzowanym sesjom pracy, które pomagają utrzymać głęboką koncentrację jednocześnie zapobiegając wypaleniu.
 
 
         ## ⚡ Dlaczego to ważne?
 
 
-        Skupione sesje pracy są niezbędne dla głębokiej pracy i wysokiej jakości rezultatów.
-        Pracując w ustrukturyzowanych interwałach z regularnymi przerwami, utrzymujesz
-        szczytową wydajność umysłową jednocześnie unikając zmęczenia, które wynika
-        z przedłużonych, nieskupionych okresów pracy.
+        Skupione sesje pracy są niezbędne dla głębokiej pracy i wysokiej jakości rezultatów. Pracując w ustrukturyzowanych interwałach z regularnymi przerwami, utrzymujesz szczytową wydajność umysłową jednocześnie unikając zmęczenia, które wynika z przedłużonych, nieskupionych okresów pracy.
 
 
         ## ⏰ Sesje skupienia z ograniczonym czasem
 
 
-        Używaj sprawdzonych technik zarządzania czasem do strukturyzowania pracy dla
-        maksymalnej efektywności. Ustrukturyzowane sesje pomagają utrzymać koncentrację
-        i skuteczniej ukończyć zadania.
+        Używaj sprawdzonych technik zarządzania czasem do strukturyzowania pracy dla maksymalnej efektywności. Ustrukturyzowane sesje pomagają utrzymać koncentrację i skuteczniej ukończyć zadania.
 
 
         - 🎯 **Klasyczne skupienie:** 25 minut pracy / 5 minut przerwy
@@ -255,9 +226,7 @@ tasks:
         ## 🧠 Korzyści poznawcze
 
 
-        Ustrukturyzowane sesje pracy wykorzystują naturalne cykle uwagi mózgu, aby
-        zoptymalizować wydajność i zapobiec zmęczeniu umysłowemu, które obniża jakość
-        i kreatywność.
+        Ustrukturyzowane sesje pracy wykorzystują naturalne cykle uwagi mózgu, aby zoptymalizować wydajność i zapobiec zmęczeniu umysłowemu, które obniża jakość i kreatywność.
 
 
         - 🎯 Wzmocnione skupienie i głęboka koncentracja
@@ -272,8 +241,7 @@ tasks:
         ## 📊 Optymalizacja wydajności
 
 
-        Śledź swoje wzorce skupionej pracy, aby zrozumieć swoje szczytowe czasy produktywności
-        i zoptymalizować harmonogram dla maksymalnej efektywności.
+        Śledź swoje wzorce skupionej pracy, aby zrozumieć swoje szczytowe czasy produktywności i zoptymalizować harmonogram dla maksymalnej efektywności.
 
 
         - 🏷️ Kategoryzuj sesje skupienia tagami do analizy
@@ -296,6 +264,35 @@ tasks:
     deadline_title: "Termin zadania: {title}"
     planned_message: Twoje zadanie jest zaplanowane na {time}
     reminder_title: "Przypomnienie o zadaniu: {title}"
+  import:
+    title: Importuj zadania
+    format_label: Format importu
+    formats:
+      generic: Ogólny CSV
+      todoist: Todoist CSV
+    select_file: Wybierz plik CSV
+    button: Importuj
+    success: Pomyślnie zaimportowano {count} zadań.
+    partial_success: Zaimportowano {success} zadań. {failure} zadań nie powiodło się.
+    error: "Nie udało się zaimportować zadań: {error}"
+    no_tasks: Nie znaleziono zadań w pliku.
+    generic_info_title: Ogólny format CSV
+    generic_info_description:
+      "Aby poprawnie importować zadania, plik CSV musi zgodnie z tym formatem:
+
+
+      - **Kolumna 1**: Tytuł (Wymagane)
+
+      - **Kolumna 2**: Opis (Opcjonalne)
+
+      - **Kolumna 3**: Priorytet (0-3, Opcjonalne)
+
+      - **Kolumna 4**: Planowana data (YYYY-MM-DD, Opcjonalne)
+
+      - **Kolumna 5**: Termin końcowy (YYYY-MM-DD, Opcjonalne)
+
+
+      Uwaga: Pierwszy wiersz jest traktowany jako nagłówek i zostanie pominięty."
   page:
     completed_tasks_title: Ukończone zadania
     title: Zadania
@@ -336,9 +333,7 @@ tasks:
     urgent_important: Pilne i ważne
     urgent_not_important: Pilne ale nieważne
   priority:
-    description:
-      Ustaw priorytet zadania używając macierzy Eisenhowera - klasyfikacja
-      Pilne/Ważne dla efektywnego zarządzania zadaniami
+    description: Ustaw priorytet zadania używając macierzy Eisenhowera - klasyfikacja Pilne/Ważne dla efektywnego zarządzania zadaniami
     selection:
       title: Wybierz priorytet
     tooltips:
@@ -355,16 +350,11 @@ tasks:
       urgent_not_important: Pilne ale nieważne
   quick_task:
     create_error: Błąd tworzenia zadania
-    lock_description:
-      Zablokuj właściwości, aby zachować ich wartości podczas tworzenia
-      wielu podobnych zadań. Zablokowane właściwości nie zostaną wyczyszczone po zresetowaniu
-      formularza.
+    lock_description: Zablokuj właściwości, aby zachować ich wartości podczas tworzenia wielu podobnych zadań. Zablokowane właściwości nie zostaną wyczyszczone po zresetowaniu formularza.
     lock_settings: Ustawienia blokady
     reset_all: Resetuj wszystkie pola
     reset_confirm:
-      message:
-        Czy na pewno chcesz zresetować wszystkie pola? Ta akcja nie może być
-        cofnięta.
+      message: Czy na pewno chcesz zresetować wszystkie pola? Ta akcja nie może być cofnięta.
       title: Resetuj wszystkie pola
     task_added_successfully: Zadanie dodane pomyślnie
     title: Szybkie zadanie
@@ -429,9 +419,7 @@ tasks:
     monthly_pattern_label: Wzór miesięczny
     advanced_label: Ustawienia zaawansowane
     regenerate_label: Regeneruj po ukończeniu
-    regenerate_description:
-      Po włączeniu następne wystąpienie zostanie zaplanowane
-      od daty ukończenia zamiast planowanej daty.
+    regenerate_description: Po włączeniu następne wystąpienie zostanie zaplanowane od daty ukończenia zamiast planowanej daty.
     on_specific_day: Konkretny dzień
     on_relative_day: Dzień względny
     on_the: ""
@@ -485,9 +473,7 @@ tasks:
     edit_title: Edytuj tytuł
     increase_estimated_time: Zwiększ szacowany czas
     reminder_date_required: Najpierw ustaw datę, aby skonfigurować przypomnienia
-    reminder_help_text:
-      Ustaw przypomnienie, aby otrzymać powiadomienie przed datą
-      zadania
+    reminder_help_text: Ustaw przypomnienie, aby otrzymać powiadomienie przed datą zadania
     set_reminder: Ustaw przypomnienie
     set_reminder_with_status: Ustaw przypomnienie - Brak przypomnienia
     show_completed_tasks: Filtruj ukończone zadania
@@ -495,53 +481,29 @@ tasks:
     show_subtasks: Pokaż podzadania
   tour:
     add_tasks:
-      description:
-        Szybko twórz nowe zadania za pomocą tego przycisku. Ustaw tytuły,
-        priorytety, terminy, tagi i więcej. Dodaj podzadania i przypomnienia, aby
-        być na bieżąco z pracą.
+      description: Szybko twórz nowe zadania za pomocą tego przycisku. Ustaw tytuły, priorytety, terminy, tagi i więcej. Dodaj podzadania i przypomnienia, aby być na bieżąco z pracą.
       title: Dodaj nowe zadania
     filter_search:
-      description:
-        Zaawansowane opcje filtrowania, aby znaleźć dokładnie to, czego
-        potrzebujesz. Filtruj według tagów, dat, statusu ukończenia lub użyj wyszukiwania.
-        Sortuj zadania i przełączaj podzadania dla lepszej organizacji.
+      description: Zaawansowane opcje filtrowania, aby znaleźć dokładnie to, czego potrzebujesz. Filtruj według tagów, dat, statusu ukończenia lub użyj wyszukiwania. Sortuj zadania i przełączaj podzadania dla lepszej organizacji.
       title: Filtruj i szukaj
     marathon:
       app_usage:
-        description:
-          Monitoruj wzorce użycia aplikacji i analizuj czas poświęcany
-          różnym aktywnościom. Zdobądź wgląd w swoje cyfrowe nawyki i zoptymalizuj
-          produktywność.
+        description: Monitoruj wzorce użycia aplikacji i analizuj czas poświęcany różnym aktywnościom. Zdobądź wgląd w swoje cyfrowe nawyki i zoptymalizuj produktywność.
         title: Użycie aplikacji i analiza czasu
       filter_sort:
-        description:
-          Filtruj dane użycia aplikacji według zakresu dat, tagów lub konkretnych
-          urządzeń. Sortuj i organizuj swoje statystyki użycia, aby uzyskać lepszy
-          wgląd w zarządzanie czasem.
+        description: Filtruj dane użycia aplikacji według zakresu dat, tagów lub konkretnych urządzeń. Sortuj i organizuj swoje statystyki użycia, aby uzyskać lepszy wgląd w zarządzanie czasem.
         title: Filtruj i sortuj
       tracking_settings:
-        description:
-          Skonfiguruj reguły śledzenia aplikacji, ustaw automatyczne tagowanie
-          i zarządzaj, które aplikacje mają być monitorowane. Dostosuj śledzenie do
-          swoich potrzeb produktywnościowych.
+        description: Skonfiguruj reguły śledzenia aplikacji, ustaw automatyczne tagowanie i zarządzaj, które aplikacje mają być monitorowane. Dostosuj śledzenie do swoich potrzeb produktywnościowych.
         title: Ustawienia śledzenia
       usage_statistics:
-        description:
-          Wyświetl szczegółowe dane użycia aplikacji i rozkład czasu. Analizuj
-          swoje wzorce produktywności, śledź czas spędzony w różnych aplikacjach i
-          identyfikuj obszary do poprawy.
+        description: Wyświetl szczegółowe dane użycia aplikacji i rozkład czasu. Analizuj swoje wzorce produktywności, śledź czas spędzony w różnych aplikacjach i identyfikuj obszary do poprawy.
         title: Statystyki użycia
     task_management:
-      description:
-        Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami.
-        Używaj timera Pomodoro, aby zachować skupienie i śledzić postępy w ważnych
-        zadaniach.
+      description: Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami. Używaj timera Pomodoro, aby zachować skupienie i śledzić postępy w ważnych zadaniach.
       title: Zarządzanie zadaniami
     your_tasks:
-      description:
-        Przeglądaj i zarządzaj wszystkimi swoimi zadaniami w jednym miejscu.
-        Kliknij dowolne zadanie, aby zobaczyć szczegóły, oznaczyć jako ukończone,
-        edytować informacje lub usunąć. Zachowaj organizację i śledź postępy.
+      description: Przeglądaj i zarządzaj wszystkimi swoimi zadaniami w jednym miejscu. Kliknij dowolne zadanie, aby zobaczyć szczegóły, oznaczyć jako ukończone, edytować informacje lub usunąć. Zachowaj organizację i śledź postępy.
       title: Twoje zadania
   validation:
     deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana

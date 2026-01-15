@@ -403,3 +403,11 @@ settings:
     reverse_day_order:
       title: Obrátit pořadí dnů v seznamu
       description: Zobrazit nejnovější dny jako první (zleva doprava) v seznamu návyků.
+  import_source:
+    title: Vyberte Zdroj importu
+    backup_title: Importovat zálohu
+    backup_description: Obnovte data aplikace ze záložního souboru .whph
+    external_apps_title: Importovat úkoly (CSV)
+    external_apps_description:
+      Importujte úkoly z jiných aplikací prostřednictvím
+      souboru CSV

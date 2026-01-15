@@ -287,4 +287,18 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String tourMarathonFilterSortDescription = 'tasks.tour.marathon.filter_sort.description';
   static const String tourMarathonTrackingSettingsTitle = 'tasks.tour.marathon.tracking_settings.title';
   static const String tourMarathonTrackingSettingsDescription = 'tasks.tour.marathon.tracking_settings.description';
+
+  // Import
+  static const String importTasksTitle = 'tasks.import.title';
+  static const String importFormatLabel = 'tasks.import.format_label';
+  static const String importFormatsGeneric = 'tasks.import.formats.generic';
+  static const String importFormatsTodoist = 'tasks.import.formats.todoist';
+  static const String importSelectFile = 'tasks.import.select_file';
+  static const String importButton = 'tasks.import.button';
+  static const String importSuccess = 'tasks.import.success';
+  static const String importPartialSuccess = 'tasks.import.partial_success';
+  static const String importError = 'tasks.import.error';
+  static const String importNoTasks = 'tasks.import.no_tasks';
+  static const String importGenericInfoTitle = 'tasks.import.generic_info_title';
+  static const String importGenericInfoDescription = 'tasks.import.generic_info_description';
 }

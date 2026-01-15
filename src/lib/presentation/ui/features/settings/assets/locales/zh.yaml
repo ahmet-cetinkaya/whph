@@ -319,3 +319,9 @@ settings:
     reverse_day_order:
       title: 列表中日期的倒序
       description: 在习惯列表中最先显示最近的日期（从左到右）。
+  import_source:
+    title: 选择导入源
+    backup_title: 导入备份
+    backup_description: 从 .whph 备份文件恢复您的应用程序数据
+    external_apps_title: 导入任务 (CSV)
+    external_apps_description: 通过 CSV 文件从其他应用程序导入任务

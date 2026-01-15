@@ -97,6 +97,13 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String importInProgress = 'settings.import.in_progress';
   static const String exportInProgress = 'settings.export.in_progress';
 
+  // Import Source
+  static const String importSourceTitle = 'settings.import_source.title';
+  static const String importSourceBackupTitle = 'settings.import_source.backup_title';
+  static const String importSourceBackupDescription = 'settings.import_source.backup_description';
+  static const String importSourceExternalAppsTitle = 'settings.import_source.external_apps_title';
+  static const String importSourceExternalAppsDescription = 'settings.import_source.external_apps_description';
+
   // Permissions
   static const String permissionFixIt = 'settings.permissions.fix_it';
   static const String openSettings = 'settings.permissions.open_settings';

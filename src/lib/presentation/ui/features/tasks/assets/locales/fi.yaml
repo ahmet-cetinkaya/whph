@@ -27,9 +27,7 @@ tasks:
     deadline_date:
       label: Eräpäivä
     description:
-      context:
-        Lisää yksityiskohtaisia tietoja tehtävästäsi auttaaksesi sinua muistamaan
-        tärkeitä yksityiskohtia ja seuraamaan edistymistä.
+      context: Lisää yksityiskohtaisia tietoja tehtävästäsi auttaaksesi sinua muistamaan tärkeitä yksityiskohtia ja seuraamaan edistymistä.
       hint: Lisää kuvaus...
       label: Kuvaus
     elapsed_time:
@@ -70,9 +68,7 @@ tasks:
     task_tag_already_exists: Tämä tehtävän tunniste on jo olemassa
     task_tag_not_found: Tehtävän tunnistetta ei löytynyt
   estimated_time:
-    description:
-      Aseta realistinen aikavaativus tehokkaaseen tehtävän suunnitteluun
-      ja tuottavuuden seurantaan.
+    description: Aseta realistinen aikavaativus tehokkaaseen tehtävän suunnitteluun ja tuottavuuden seurantaan.
     label: Arvioitu Aika
   filters:
     completion: Valmistumistilan Mukaan
@@ -86,50 +82,24 @@ tasks:
   help:
     details:
       content:
-        "Hallitse tehtäviäsi ja maksimoi tuottavuutesi järjestämällä, priorisoimalla\
-        \ ja seuraamalla työtäsi tehokkaasti.\n\n## ⚡ Miksi Se On Tärkeää?\n\nTehokas\
-        \ tehtävänhallinta on tuottavuuden perusta. Oikein strukturoidut tehtävät\
-        \ selkeillä prioriteeteilla ja määräajoilla auttavat keskittymään siihen,\
-        \ mikä on tärkeintä, ja estävät tärkeän työn putoamasta läpi.\n\n## \U0001F4DD\
-        \ Tehtävänhallinta\n\nRakenna tehtäviisi kattavat tiedot selkeyden ja fokuksen\
-        \ ylläpitämiseksi. Käytä tunnisteita, prioriteetteja ja aikahintoja luodaksesi\
-        \ systemaattisen lähestymistavan työkuormaan.\n\n- \U0001F3F7️ Kategorisoi\
-        \ tehtävät merkityksellisillä tunnisteilla\n- ⚖️ Aseta prioriteetteja käyttäen\
-        \ todistettuja kehyksiä\n- ⏱️ Arvioi aikavaatimukset tarkasti\n- \U0001F4C5\
-        \ Suunnittele realistisia määräaikoja ja aikatauluja\n\n## ⏰ Aikanhallinta\n\
-        \nSeuraa aikainvestointeja ymmärtääksesi työmallejasi ja parantaaksesi tehokkuutta.\
-        \ Oikea aikanhallinta muuttaa hajautetut ponnistelut keskittyneeksi tuottavuudeksi.\n\
-        \n- \U0001F4CA Seuraa todellista vs arvioitua aikaa\n- \U0001F3AF Keskity\
-        \ korkean vaikutuksen aktiviteetteihin\n- \U0001F4C8 Analysoi tuottavuusmalleja\
-        \ ajan myötä\n- ⏳ Tasapainota kiireelliset ja tärkeät tehtävät\n\n## \U0001F4CA\
-        \ Prioriteettikehys (Eisenhowerin Matriisi)\n\nJärjestä tehtäväsi käyttäen\
-        \ tätä todistettua priorisointimenetelmää varmistaaksesi että työskentelet\
-        \ aina oikeissa asioissa oikeaan aikaan.\n\n- \U0001F525 **Kiireellinen &\
-        \ Tärkeä:** Käsittele välittömästi - kriisinhallinta ja määräajat\n- \U0001F4C8\
-        \ **Tärkeä, Ei Kiireellinen:** Aikatauluta strategisesti - suunnittelu ja\
-        \ taitojen kehittäminen  \n- ⚡ **Kiireellinen, Ei Tärkeä:** Delegoi kun mahdollista\
-        \ - keskeytykset ja jotkut kokoukset\n- \U0001F5D1️ **Ei Kiireellinen tai\
-        \ Tärkeä:** Poista - aikahukkaajat ja matalan arvon aktiviteetit\n"
+        "Hallitse tehtäviäsi ja maksimoi tuottavuutesi järjestämällä, priorisoimalla ja seuraamalla työtäsi tehokkaasti.\n\n## ⚡ Miksi Se On Tärkeää?\n\nTehokas tehtävänhallinta on tuottavuuden perusta. Oikein strukturoidut tehtävät selkeillä prioriteeteilla ja määräajoilla auttavat keskittymään siihen, mikä on tärkeintä, ja estävät tärkeän työn putoamasta läpi.\n\n## \U0001F4DD Tehtävänhallinta\n\nRakenna tehtäviisi kattavat tiedot selkeyden ja fokuksen ylläpitämiseksi. Käytä tunnisteita, prioriteetteja ja aikahintoja luodaksesi systemaattisen lähestymistavan työkuormaan.\n\n- \U0001F3F7️ Kategorisoi tehtävät merkityksellisillä tunnisteilla\n- ⚖️ Aseta prioriteetteja käyttäen todistettuja kehyksiä\n- ⏱️ Arvioi aikavaatimukset tarkasti\n- \U0001F4C5 Suunnittele realistisia määräaikoja ja aikatauluja\n\n## ⏰ Aikanhallinta\n\nSeuraa aikainvestointeja ymmärtääksesi työmallejasi ja parantaaksesi tehokkuutta. Oikea aikanhallinta muuttaa hajautetut ponnistelut keskittyneeksi tuottavuudeksi.\n\
+        \n- \U0001F4CA Seuraa todellista vs arvioitua aikaa\n- \U0001F3AF Keskity korkean vaikutuksen aktiviteetteihin\n- \U0001F4C8 Analysoi tuottavuusmalleja ajan myötä\n- ⏳ Tasapainota kiireelliset ja tärkeät tehtävät\n\n## \U0001F4CA Prioriteettikehys (Eisenhowerin Matriisi)\n\nJärjestä tehtäväsi käyttäen tätä todistettua priorisointimenetelmää varmistaaksesi että työskentelet aina oikeissa asioissa oikeaan aikaan.\n\n- \U0001F525 **Kiireellinen & Tärkeä:** Käsittele välittömästi - kriisinhallinta ja määräajat\n- \U0001F4C8 **Tärkeä, Ei Kiireellinen:** Aikatauluta strategisesti - suunnittelu ja taitojen kehittäminen  \n- ⚡ **Kiireellinen, Ei Tärkeä:** Delegoi kun mahdollista - keskeytykset ja jotkut kokoukset\n- \U0001F5D1️ **Ei Kiireellinen tai Tärkeä:** Poista - aikahukkaajat ja matalan arvon aktiviteetit\n"
       title: Tehtävänhallinta & Tuottavuusopas
     overview:
       content:
-        "Muuta tuottavuutesi systemaattisella tehtävänhallinnalla joka auttaa
-        pysymään järjestettynä, keskittyneenä ja työkuorman hallinnassa.
+        "Muuta tuottavuutesi systemaattisella tehtävänhallinnalla joka auttaa pysymään järjestettynä, keskittyneenä ja työkuorman hallinnassa.
 
 
         ## ⚡ Miksi Se On Tärkeää?
 
 
-        Tehokas tehtävänhallinta on henkilökohtaisen ja ammatillisen menestyksen kulmakivi.
-        Järjestämällä työsi systemaattisesti vähennät stressiä, pidät määräajat ja
-        luot tilaa merkittävälle edistymiselle tärkeissä tavoitteissa.
+        Tehokas tehtävänhallinta on henkilökohtaisen ja ammatillisen menestyksen kulmakivi. Järjestämällä työsi systemaattisesti vähennät stressiä, pidät määräajat ja luot tilaa merkittävälle edistymiselle tärkeissä tavoitteissa.
 
 
         ## 📋 Tehtävänhallinta
 
 
-        Luo strukturoitu lähestymistapa vastuiden hallintaan. Hyvin järjestetyt tehtävät
-        johtavat selkeisiin prioriteetteihin ja tehokkaaseen päivittäisen työn suorittamiseen.
+        Luo strukturoitu lähestymistapa vastuiden hallintaan. Hyvin järjestetyt tehtävät johtavat selkeisiin prioriteetteihin ja tehokkaaseen päivittäisen työn suorittamiseen.
 
 
         - ✅ Luo ja kategorisoi tehtäviä systemaattisesti
@@ -144,8 +114,7 @@ tasks:
         ## ⏱️ Aikaseuranta & Fokus
 
 
-        Seuraa aikainvestointeja ymmärtääksesi tuottavuusmalleja ja optimoidaksesi
-        työvirtaasi. Aikawareness johtaa parempaan suunnitteluun ja parannettuun suorituskykyyn.
+        Seuraa aikainvestointeja ymmärtääksesi tuottavuusmalleja ja optimoidaksesi työvirtaasi. Aikawareness johtaa parempaan suunnitteluun ja parannettuun suorituskykyyn.
 
 
         - ⏰ Seuraa todellista aikaa per tehtävä
@@ -160,8 +129,7 @@ tasks:
         ## 📈 Edistymisen Seuranta
 
 
-        Pidä kirjaa saavutuksistasi ja opi työmalleistasi. Säännöllinen tarkistus
-        ja heijastus ajavat jatkuvaa parannusta tuottavuusjärjestelmässäsi.
+        Pidä kirjaa saavutuksistasi ja opi työmalleistasi. Säännöllinen tarkistus ja heijastus ajavat jatkuvaa parannusta tuottavuusjärjestelmässäsi.
 
 
         - 📈 Seuraa tehtävävalmistumisprosentteja
@@ -179,30 +147,8 @@ tasks:
       title: Tehtävän Tiedot
     help:
       content:
-        "Maksimoi fokuksesi ja tuottavuutesi strukturoiduilla työistunnoilla\
-        \ jotka auttavat ylläpitämään syvää keskittymistä estäen burnoutin.\n\n##\
-        \ ⚡ Miksi Se On Tärkeää?\n\nKeskittyneet työistunnot ovat olennaisia syvään\
-        \ työhön ja korkealaatuiseen tuotokseen. Työskentelemällä strukturoiduissa\
-        \ intervaleissa säännöllisillä tauoilla ylläpidät huippupsyykkistä suorituskykyä\
-        \ välttäen väsymyksen pitkistä, epäkeskittyneistä työjaksoista.\n\n## ⏰ Aikaraajatut\
-        \ Fokusistunnot\n\nKäytä todistettuja aikanhallintatekniikoita strukturoidaksesi\
-        \ työsi maksimaaliseen tehokkuuteen. Strukturoidut istunnot auttavat ylläpitämään\
-        \ keskittymistä ja suorittamaan tehtäviä tehokkaammin.\n\n- \U0001F3AF **Klassinen\
-        \ Fokus:** 25 minuuttia työtä / 5 minuuttia tauko\n- \U0001F4C8 **Laajennettu\
-        \ Fokus:** 50 minuuttia työtä / 10 minuuttia tauko  \n- \U0001F504 **Pitkä\
-        \ Tauko:** 15-30 minuuttia 4 istunnon jälkeen\n- ⚖️ **Mukautettu Ajoitus:**\
-        \ Säädä intervallit vastaamaan luonnollista rytmiäsi\n\n## \U0001F9E0 Kognitiiviset\
-        \ Edut\n\nStrukturoidut työistunnot hyödyntävät aivojesi luonnollisia huomiokykyjä\
-        \ optimoidakseen suorituskyvyn ja estääkseen psyykkisen väsymyksen joka vähentää\
-        \ laatua ja luovuutta.\n\n- \U0001F3AF Parannettu fokus ja syvä keskittyminen\n\
-        - \U0001F50B Vähentynyt psyykkinen väsymys ja burnout\n- \U0001F4AA Kestävä\
-        \ motivaatio säännöllisten saavutusten kautta\n- ⚡ Parannettu aikawareness\
-        \ ja suunnittelutarkkuus\n\n## \U0001F4CA Suorituskyvyn Optimointi\n\nSeuraa\
-        \ keskittyneitä työmalliasi ymmärtääksesi huipputuottavuusaikasi ja optimoidaksesi\
-        \ aikataulusi maksimaaliseen tehokkuuteen.\n\n- \U0001F3F7️ Kategorisoi fokusistunnot\
-        \ tunnisteilla analyysia varten\n- \U0001F4C8 Seuraa tuottavuusmalleja eri\
-        \ aikoina\n- \U0001F6AB Poista häiriöt ennen istuntojen aloittamista\n- \U0001F6B6\
-        \ Käytä taukoja fyysiseen liikkeeseen ja psyykkiseen resetointiin\n"
+        "Maksimoi fokuksesi ja tuottavuutesi strukturoiduilla työistunnoilla jotka auttavat ylläpitämään syvää keskittymistä estäen burnoutin.\n\n## ⚡ Miksi Se On Tärkeää?\n\nKeskittyneet työistunnot ovat olennaisia syvään työhön ja korkealaatuiseen tuotokseen. Työskentelemällä strukturoiduissa intervaleissa säännöllisillä tauoilla ylläpidät huippupsyykkistä suorituskykyä välttäen väsymyksen pitkistä, epäkeskittyneistä työjaksoista.\n\n## ⏰ Aikaraajatut Fokusistunnot\n\nKäytä todistettuja aikanhallintatekniikoita strukturoidaksesi työsi maksimaaliseen tehokkuuteen. Strukturoidut istunnot auttavat ylläpitämään keskittymistä ja suorittamaan tehtäviä tehokkaammin.\n\n- \U0001F3AF **Klassinen Fokus:** 25 minuuttia työtä / 5 minuuttia tauko\n- \U0001F4C8 **Laajennettu Fokus:** 50 minuuttia työtä / 10 minuuttia tauko  \n- \U0001F504 **Pitkä Tauko:** 15-30 minuuttia 4 istunnon jälkeen\n- ⚖️ **Mukautettu Ajoitus:** Säädä intervallit vastaamaan luonnollista rytmiäsi\n\n## \U0001F9E0 Kognitiiviset\
+        \ Edut\n\nStrukturoidut työistunnot hyödyntävät aivojesi luonnollisia huomiokykyjä optimoidakseen suorituskyvyn ja estääkseen psyykkisen väsymyksen joka vähentää laatua ja luovuutta.\n\n- \U0001F3AF Parannettu fokus ja syvä keskittyminen\n- \U0001F50B Vähentynyt psyykkinen väsymys ja burnout\n- \U0001F4AA Kestävä motivaatio säännöllisten saavutusten kautta\n- ⚡ Parannettu aikawareness ja suunnittelutarkkuus\n\n## \U0001F4CA Suorituskyvyn Optimointi\n\nSeuraa keskittyneitä työmalliasi ymmärtääksesi huipputuottavuusaikasi ja optimoidaksesi aikataulusi maksimaaliseen tehokkuuteen.\n\n- \U0001F3F7️ Kategorisoi fokusistunnot tunnisteilla analyysia varten\n- \U0001F4C8 Seuraa tuottavuusmalleja eri aikoina\n- \U0001F6AB Poista häiriöt ennen istuntojen aloittamista\n- \U0001F6B6 Käytä taukoja fyysiseen liikkeeseen ja psyykkiseen resetointiin\n"
       title: Keskittyneet Työistunnot & Aikanhallintaopas
       tooltip: Marathonin apuväline
     label: Maraton-tila
@@ -214,6 +160,35 @@ tasks:
     deadline_title: "Tehtävän Eräpäivä: {title}"
     planned_message: Tehtäväsi on suunniteltu {time}
     reminder_title: "Tehtävämuistutus: {title}"
+  import:
+    title: Tuo tehtäviä
+    format_label: Tuontiformaatti
+    formats:
+      generic: Yleinen CSV
+      todoist: Todoist CSV
+    select_file: Valitse CSV-tiedosto
+    button: Tuo
+    success: Tuotiin {count} tehtävää onnistuneesti.
+    partial_success: Tuotiin {success} tehtävää. {failure} tehtävää epäonnistui.
+    error: "Tehtävien tuonti epäonnistui: {error}"
+    no_tasks: Tiedostosta ei löytynyt tehtäviä.
+    generic_info_title: Yleinen CSV-muoto
+    generic_info_description:
+      "Tehtävien oikeaa tuontia varten CSV-tiedostosi on noudatettava tätä muotoa:
+
+
+      - **Sarake 1**: Otsikko (Vaadittu)
+
+      - **Sarake 2**: Kuvaus (Valinnainen)
+
+      - **Sarake 3**: Prioriteetti (0-3, Valinnainen)
+
+      - **Sarake 4**: Suunniteltu päivämäärä (VVVV-KK-PP, Valinnainen)
+
+      - **Sarake 5**: Määräpäivä (VVVV-KK-PP, Valinnainen)
+
+
+      Huom: Ensimmäinen rivi käsitellään otsikkona ja ohitetaan."
   page:
     completed_tasks_title: Valmistuneet tehtävät
     title: Tehtävät
@@ -254,9 +229,7 @@ tasks:
     urgent_important: Kiireellinen ja Tärkeä
     urgent_not_important: Kiireellinen mutta Ei Tärkeä
   priority:
-    description:
-      Aseta tehtävän prioriteetti Eisenhowerin matriisilla - Kiireellinen/Tärkeä
-      -luokittelu tehokasta tehtävänhallintaa varten
+    description: Aseta tehtävän prioriteetti Eisenhowerin matriisilla - Kiireellinen/Tärkeä -luokittelu tehokasta tehtävänhallintaa varten
     selection:
       title: Valitse Prioriteetti
     tooltips:
@@ -273,15 +246,11 @@ tasks:
       urgent_not_important: Kiireellinen mutta Ei Tärkeä
   quick_task:
     create_error: Virhe luodessa tehtävää
-    lock_description:
-      Lukitse ominaisuudet säilyttääkseen arvonsa luotaessa useita
-      samanlaisia tehtäviä. Lukitut ominaisuudet eivät tyhjene kun nollaat lomakkeen.
+    lock_description: Lukitse ominaisuudet säilyttääkseen arvonsa luotaessa useita samanlaisia tehtäviä. Lukitut ominaisuudet eivät tyhjene kun nollaat lomakkeen.
     lock_settings: Lukitusasetukset
     reset_all: Nollaa kaikki kentät
     reset_confirm:
-      message:
-        Oletko varma että haluat nollata kaikki kentät? Tätä toimintoa ei voi
-        perua.
+      message: Oletko varma että haluat nollata kaikki kentät? Tätä toimintoa ei voi perua.
       title: Nollaa Kaikki Kentät
     task_added_successfully: Tehtävä lisätty onnistuneesti
     title: Nopea Tehtävä
@@ -346,9 +315,7 @@ tasks:
     monthly_pattern_label: Kuukausittainen malli
     advanced_label: Lisäasetukset
     regenerate_label: Luo uudelleen valmistumisen jälkeen
-    regenerate_description:
-      Kun käytössä, seuraava toistoa aikataulutetaan valmistumispäivästä
-      käsin suunnitellun päivän sijaan.
+    regenerate_description: Kun käytössä, seuraava toistoa aikataulutetaan valmistumispäivästä käsin suunnitellun päivän sijaan.
     on_specific_day: Tietty päivä
     on_relative_day: Suhteellinen päivä
     on_the: ""
@@ -410,52 +377,29 @@ tasks:
     show_subtasks: Näytä alitehtävät
   tour:
     add_tasks:
-      description:
-        Luo uusia tehtäviä nopeasti tällä painikkeella. Aseta otsikot,
-        prioriteetit, määräajat, tunnisteet ja paljon muuta. Lisää alitehtäviä ja
-        muistutuksia pysyäksesi työssä mukana.
+      description: Luo uusia tehtäviä nopeasti tällä painikkeella. Aseta otsikot, prioriteetit, määräajat, tunnisteet ja paljon muuta. Lisää alitehtäviä ja muistutuksia pysyäksesi työssä mukana.
       title: Lisää uusia tehtäviä
     filter_search:
-      description:
-        Tehokkaat suodatusvaihtoehdot löytääksesi juuri sen, mitä tarvitset.
-        Suodata tunnisteiden, päivämäärien, valmiustilan tai hakutoiminnon mukaan.
-        Lajittele tehtäviä ja vaihda alitehtäviä paremman järjestelyn vuoksi.
+      description: Tehokkaat suodatusvaihtoehdot löytääksesi juuri sen, mitä tarvitset. Suodata tunnisteiden, päivämäärien, valmiustilan tai hakutoiminnon mukaan. Lajittele tehtäviä ja vaihda alitehtäviä paremman järjestelyn vuoksi.
       title: Suodatus & Haku
     marathon:
       app_usage:
-        description:
-          Seuraa sovelluksen käyttötapoja ja analysoi aikaa, joka kuluu
-          eri toimintoihin. Hanki tietoa digitaalisista tavoista ja optimoi tuottavuuttasi.
+        description: Seuraa sovelluksen käyttötapoja ja analysoi aikaa, joka kuluu eri toimintoihin. Hanki tietoa digitaalisista tavoista ja optimoi tuottavuuttasi.
         title: Sovelluksen käyttö ja aika-analytiikka
       filter_sort:
-        description:
-          Suodata sovelluksen käyttötietoja aikavälin, tunnisteiden tai
-          tiettyjen laitteiden mukaan. Lajittele ja järjestä käyttötilastoja saadaksesi
-          parempia oivalluksia ajanhallinnasta.
+        description: Suodata sovelluksen käyttötietoja aikavälin, tunnisteiden tai tiettyjen laitteiden mukaan. Lajittele ja järjestä käyttötilastoja saadaksesi parempia oivalluksia ajanhallinnasta.
         title: Suodatus & Lajittelu
       tracking_settings:
-        description:
-          Määritä sovelluksen seurantasäännöt, aseta automaattinen merkintä
-          ja hallitse seurattavia sovelluksia. Mukauta seurantaa tuottavuustarpeidesi
-          mukaan.
+        description: Määritä sovelluksen seurantasäännöt, aseta automaattinen merkintä ja hallitse seurattavia sovelluksia. Mukauta seurantaa tuottavuustarpeidesi mukaan.
         title: Seuranta-asetukset
       usage_statistics:
-        description:
-          Näytä yksityiskohtaiset sovelluksen käyttötiedot ja ajanjakauma.
-          Analysoi tuottavuusmalleja, seuraa aikaa, joka kuluu eri sovelluksiin, ja
-          tunnista parannusmahdollisuuksia.
+        description: Näytä yksityiskohtaiset sovelluksen käyttötiedot ja ajanjakauma. Analysoi tuottavuusmalleja, seuraa aikaa, joka kuluu eri sovelluksiin, ja tunnista parannusmahdollisuuksia.
         title: Käyttötilastot
     task_management:
-      description:
-        Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla.
-        Käytä Pomodoro-ajastinta pysyäksesi keskittyneenä ja seurataksesi edistymistäsi
-        tärkeissä tehtävissä.
+      description: Luo ja järjestä tehtäviä prioriteeteilla, määräajoilla ja muistutuksilla. Käytä Pomodoro-ajastinta pysyäksesi keskittyneenä ja seurataksesi edistymistäsi tärkeissä tehtävissä.
       title: Tehtävien hallinta
     your_tasks:
-      description:
-        Katso ja hallitse kaikkia tehtäviäsi yhdessä paikassa. Klikkaa
-        mitä tahansa tehtävää nähdäksesi tiedot, merkataksesi valmiiksi, muokataksesi
-        tietoja tai poistaaksesi. Pysy järjestettynä ja seuraa edistymistäsi.
+      description: Katso ja hallitse kaikkia tehtäviäsi yhdessä paikassa. Klikkaa mitä tahansa tehtävää nähdäksesi tiedot, merkataksesi valmiiksi, muokataksesi tietoja tai poistaaksesi. Pysy järjestettynä ja seuraa edistymistäsi.
       title: Sinun tehtäväsi
   validation:
     deadline_cannot_be_before_planned: Määräpäivän on oltava suunnitellun päivän jälkeen

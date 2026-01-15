@@ -397,3 +397,9 @@ settings:
     reverse_day_order:
       title: Rekkefølge på dager i listen snu
       description: Vis nyeste dager først (fra venstre mot høyre) i vaner-listen.
+  import_source:
+    title: Velg Importer kilde
+    backup_title: Importer sikkerhetskopi
+    backup_description: Gjenopprett programdataene dine fra en .whph sikkerhetskopifil
+    external_apps_title: Importer oppgaver (CSV)
+    external_apps_description: Importer oppgaver fra andre applikasjoner via CSV-fil

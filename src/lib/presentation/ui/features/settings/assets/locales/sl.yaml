@@ -416,3 +416,9 @@ settings:
       description:
         Prikaži najnovejše dni na začetku (z leve proti desni) na seznamu
         navad.
+  import_source:
+    title: Izberite Vir uvoza
+    backup_title: Uvoz varnostne kopije
+    backup_description: Obnovite podatke aplikacije iz varnostne kopije .whph
+    external_apps_title: Uvoz opravil (CSV)
+    external_apps_description: Uvoz opravil iz drugih aplikacij prek datoteke CSV

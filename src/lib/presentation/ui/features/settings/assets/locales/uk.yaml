@@ -404,3 +404,9 @@ settings:
     reverse_day_order:
       title: Зворотний порядок днів у списку
       description: Показувати найновіші дні першими (зліва направо) у списку звичок.
+  import_source:
+    title: Виберіть Джерело імпорту
+    backup_title: Імпорт резервної копії
+    backup_description: Відновіть дані програми з файлу резервної копії .whph
+    external_apps_title: Імпорт завдань (CSV)
+    external_apps_description: Імпорт завдань з інших програм через файл CSV

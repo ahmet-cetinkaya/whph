@@ -27,9 +27,7 @@ tasks:
     deadline_date:
       label: Data di scadenza
     description:
-      context:
-        Aggiungi informazioni dettagliate sulla tua attività per aiutarti a
-        ricordare i dettagli chiave e monitorare i progressi.
+      context: Aggiungi informazioni dettagliate sulla tua attività per aiutarti a ricordare i dettagli chiave e monitorare i progressi.
       hint: Aggiungi descrizione...
       label: Descrizione
     elapsed_time:
@@ -70,9 +68,7 @@ tasks:
     task_tag_already_exists: Questo tag dell'attività esiste già
     task_tag_not_found: Tag dell'attività non trovato
   estimated_time:
-    description:
-      Imposta stime di tempo realistiche per pianificare efficacemente
-      la tua attività e tracciare la produttività.
+    description: Imposta stime di tempo realistiche per pianificare efficacemente la tua attività e tracciare la produttività.
     label: Tempo stimato
   filters:
     completion: Per stato di completamento
@@ -86,24 +82,19 @@ tasks:
   help:
     details:
       content:
-        "Padroneggia la gestione delle attività e massimizza la produttività
-        organizzando, prioritizzando e tracciando il tuo lavoro efficacemente.
+        "Padroneggia la gestione delle attività e massimizza la produttività organizzando, prioritizzando e tracciando il tuo lavoro efficacemente.
 
 
         ## ⚡ Perché è importante?
 
 
-        La gestione efficace delle attività è la base della produttività. Attività
-        ben strutturate con priorità chiare e scadenze ti aiutano a concentrarti su
-        ciò che conta di più e prevengono che il lavoro importante vada perso.
+        La gestione efficace delle attività è la base della produttività. Attività ben strutturate con priorità chiare e scadenze ti aiutano a concentrarti su ciò che conta di più e prevengono che il lavoro importante vada perso.
 
 
         ## 📝 Organizzazione delle attività
 
 
-        Struttura le tue attività con dettagli completi per mantenere chiarezza e
-        focus. Usa tag, priorità e stime temporali per creare un approccio sistematico
-        al tuo carico di lavoro.
+        Struttura le tue attività con dettagli completi per mantenere chiarezza e focus. Usa tag, priorità e stime temporali per creare un approccio sistematico al tuo carico di lavoro.
 
 
         - 🏷️ Categorizza le attività con tag significativi
@@ -118,9 +109,7 @@ tasks:
         ## ⏰ Gestione del tempo
 
 
-        Traccia i tuoi investimenti temporali per comprendere i tuoi pattern di lavoro
-        e migliorare l'efficienza. Una gestione appropriata del tempo trasforma sforzi
-        dispersi in produttività focalizzata.
+        Traccia i tuoi investimenti temporali per comprendere i tuoi pattern di lavoro e migliorare l'efficienza. Una gestione appropriata del tempo trasforma sforzi dispersi in produttività focalizzata.
 
 
         - 📊 Monitora tempo effettivo vs stimato
@@ -135,45 +124,34 @@ tasks:
         ## 📊 Framework delle priorità (Matrice di Eisenhower)
 
 
-        Organizza le tue attività usando questo metodo di prioritizzazione comprovato
-        per assicurarti di lavorare sempre sulle cose giuste al momento giusto.
+        Organizza le tue attività usando questo metodo di prioritizzazione comprovato per assicurarti di lavorare sempre sulle cose giuste al momento giusto.
 
 
         - 🔥 **Urgente e Importante:** Gestisci immediatamente - gestione crisi e scadenze
 
-        - 📈 **Importante, non urgente:** Pianifica strategicamente - pianificazione
-        e sviluppo competenze
+        - 📈 **Importante, non urgente:** Pianifica strategicamente - pianificazione e sviluppo competenze
 
-        - ⚡ **Urgente, non importante:** Delega quando possibile - interruzioni e
-        alcuni meeting
+        - ⚡ **Urgente, non importante:** Delega quando possibile - interruzioni e alcuni meeting
 
-        - 🗑️ **Né urgente né importante:** Elimina - attività che fanno perdere tempo
-        e di basso valore
+        - 🗑️ **Né urgente né importante:** Elimina - attività che fanno perdere tempo e di basso valore
 
         "
       title: Guida alla gestione delle attività e produttività
     overview:
       content:
-        "Trasforma la tua produttività con una gestione sistematica delle attività
-        che ti aiuta a rimanere organizzato, focalizzato e in controllo del tuo carico
-        di lavoro.
+        "Trasforma la tua produttività con una gestione sistematica delle attività che ti aiuta a rimanere organizzato, focalizzato e in controllo del tuo carico di lavoro.
 
 
         ## ⚡ Perché è importante?
 
 
-        La gestione efficace delle attività è la pietra angolare del successo personale
-        e professionale. Organizzando sistematicamente il tuo lavoro, riduci lo stress,
-        rispetti le scadenze costantemente e crei spazio per progressi significativi
-        su obiettivi importanti.
+        La gestione efficace delle attività è la pietra angolare del successo personale e professionale. Organizzando sistematicamente il tuo lavoro, riduci lo stress, rispetti le scadenze costantemente e crei spazio per progressi significativi su obiettivi importanti.
 
 
         ## 📋 Organizzazione delle attività
 
 
-        Crea un approccio strutturato per gestire le tue responsabilità. Attività
-        ben organizzate portano a priorità chiare ed esecuzione efficiente del tuo
-        lavoro quotidiano.
+        Crea un approccio strutturato per gestire le tue responsabilità. Attività ben organizzate portano a priorità chiare ed esecuzione efficiente del tuo lavoro quotidiano.
 
 
         - ✅ Crea e categorizza attività sistematicamente
@@ -188,9 +166,7 @@ tasks:
         ## ⏱️ Tracciamento del tempo e focus
 
 
-        Monitora i tuoi investimenti temporali per comprendere i pattern di produttività
-        e ottimizzare il tuo flusso di lavoro. La consapevolezza del tempo porta a
-        una migliore pianificazione e prestazioni migliorate.
+        Monitora i tuoi investimenti temporali per comprendere i pattern di produttività e ottimizzare il tuo flusso di lavoro. La consapevolezza del tempo porta a una migliore pianificazione e prestazioni migliorate.
 
 
         - ⏰ Traccia il tempo effettivo speso per attività
@@ -205,9 +181,7 @@ tasks:
         ## 📈 Monitoraggio dei progressi
 
 
-        Traccia i tuoi risultati e impara dai tuoi pattern di lavoro. Revisione e
-        riflessione regolari guidano il miglioramento continuo nel tuo sistema di
-        produttività.
+        Traccia i tuoi risultati e impara dai tuoi pattern di lavoro. Revisione e riflessione regolari guidano il miglioramento continuo nel tuo sistema di produttività.
 
 
         - 📈 Monitora i tassi di completamento delle attività
@@ -225,25 +199,19 @@ tasks:
       title: Dettagli attività
     help:
       content:
-        "Massimizza il tuo focus e produttività con sessioni di lavoro strutturate
-        che ti aiutano a mantenere una concentrazione profonda prevenendo il burnout.
+        "Massimizza il tuo focus e produttività con sessioni di lavoro strutturate che ti aiutano a mantenere una concentrazione profonda prevenendo il burnout.
 
 
         ## ⚡ Perché è importante?
 
 
-        Le sessioni di lavoro focalizzate sono essenziali per il lavoro profondo e
-        output di alta qualità. Lavorando in intervalli strutturati con pause regolari,
-        mantieni prestazioni mentali di picco evitando la fatica che deriva da periodi
-        di lavoro estesi e non focalizzati.
+        Le sessioni di lavoro focalizzate sono essenziali per il lavoro profondo e output di alta qualità. Lavorando in intervalli strutturati con pause regolari, mantieni prestazioni mentali di picco evitando la fatica che deriva da periodi di lavoro estesi e non focalizzati.
 
 
         ## ⏰ Sessioni di focus temporizzate
 
 
-        Usa tecniche di gestione del tempo comprovate per strutturare il tuo lavoro
-        per la massima efficienza. Le sessioni strutturate ti aiutano a mantenere
-        la concentrazione e completare le attività più efficacemente.
+        Usa tecniche di gestione del tempo comprovate per strutturare il tuo lavoro per la massima efficienza. Le sessioni strutturate ti aiutano a mantenere la concentrazione e completare le attività più efficacemente.
 
 
         - 🎯 **Focus classico:** 25 minuti lavoro / 5 minuti pausa
@@ -252,16 +220,13 @@ tasks:
 
         - 🔄 **Pausa lunga:** 15-30 minuti dopo 4 sessioni
 
-        - ⚖️ **Timing personalizzato:** Aggiusta gli intervalli per adattarli al tuo
-        ritmo naturale
+        - ⚖️ **Timing personalizzato:** Aggiusta gli intervalli per adattarli al tuo ritmo naturale
 
 
         ## 🧠 Benefici cognitivi
 
 
-        Le sessioni di lavoro strutturate sfruttano i cicli di attenzione naturali
-        del tuo cervello per ottimizzare le prestazioni e prevenire la fatica mentale
-        che riduce qualità e creatività.
+        Le sessioni di lavoro strutturate sfruttano i cicli di attenzione naturali del tuo cervello per ottimizzare le prestazioni e prevenire la fatica mentale che riduce qualità e creatività.
 
 
         - 🎯 Focus migliorato e concentrazione profonda
@@ -276,8 +241,7 @@ tasks:
         ## 📊 Ottimizzazione delle prestazioni
 
 
-        Traccia i tuoi pattern di lavoro focalizzato per comprendere i tuoi tempi
-        di produttività di picco e ottimizzare il tuo programma per la massima efficacia.
+        Traccia i tuoi pattern di lavoro focalizzato per comprendere i tuoi tempi di produttività di picco e ottimizzare il tuo programma per la massima efficacia.
 
 
         - 🏷️ Categorizza le sessioni di focus con tag per l'analisi
@@ -300,6 +264,35 @@ tasks:
     deadline_title: "Scadenza attività: {title}"
     planned_message: La tua attività è pianificata per le {time}
     reminder_title: "Promemoria attività: {title}"
+  import:
+    title: Importa attività
+    format_label: Formato di importazione
+    formats:
+      generic: CSV generico
+      todoist: CSV Todoist
+    select_file: Seleziona file CSV
+    button: Importa
+    success: "{count} attività importate con successo."
+    partial_success: "{success} attività importate. {failure} attività non riuscite."
+    error: "Impossibile importare le attività: {error}"
+    no_tasks: Nessuna attività trovata nel file.
+    generic_info_title: Formato CSV generico
+    generic_info_description:
+      "Per importare correttamente le attività, il tuo CSV deve seguire questo formato:
+
+
+      - **Colonna 1**: Titolo (Obbligatorio)
+
+      - **Colonna 2**: Descrizione (Facoltativo)
+
+      - **Colonna 3**: Priorità (0-3, Facoltativo)
+
+      - **Colonna 4**: Data pianificata (YYYY-MM-DD, Facoltativo)
+
+      - **Colonna 5**: Data di scadenza (YYYY-MM-DD, Facoltativo)
+
+
+      Nota: La prima riga viene trattata come intestazione e verrà saltata."
   page:
     completed_tasks_title: Attività completate
     title: Attività
@@ -340,9 +333,7 @@ tasks:
     urgent_important: Urgente e importante
     urgent_not_important: Urgente ma non importante
   priority:
-    description:
-      Imposta la priorità del compito usando la Matrice di Eisenhower -
-      classificazione Urgente/Importante per una gestione efficace dei compiti
+    description: Imposta la priorità del compito usando la Matrice di Eisenhower - classificazione Urgente/Importante per una gestione efficace dei compiti
     selection:
       title: Seleziona priorità
     tooltips:
@@ -359,16 +350,11 @@ tasks:
       urgent_not_important: Urgente ma non importante
   quick_task:
     create_error: Errore nella creazione dell'attività
-    lock_description:
-      Blocca le proprietà per mantenere i loro valori quando crei
-      più attività simili. Le proprietà bloccate non verranno cancellate quando resetti
-      il modulo.
+    lock_description: Blocca le proprietà per mantenere i loro valori quando crei più attività simili. Le proprietà bloccate non verranno cancellate quando resetti il modulo.
     lock_settings: Impostazioni blocco
     reset_all: Reimposta tutti i campi
     reset_confirm:
-      message:
-        Sei sicuro di voler reimpostare tutti i campi? Questa azione non può
-        essere annullata.
+      message: Sei sicuro di voler reimpostare tutti i campi? Questa azione non può essere annullata.
       title: Reimposta tutti i campi
     task_added_successfully: Attività aggiunta con successo
     title: Attività rapida
@@ -433,9 +419,7 @@ tasks:
     monthly_pattern_label: Modello mensile
     advanced_label: Impostazioni avanzate
     regenerate_label: Rigenera dopo il completamento
-    regenerate_description:
-      Quando abilitato, la successiva ricorrenza verrà pianificata
-      dalla data di completamento, invece della data pianificata.
+    regenerate_description: Quando abilitato, la successiva ricorrenza verrà pianificata dalla data di completamento, invece della data pianificata.
     on_specific_day: Giorno specifico
     on_relative_day: Giorno relativo
     on_the: Il
@@ -474,9 +458,7 @@ tasks:
     total_time: Tempo totale per il giorno
   timer:
     mode:
-      description:
-        Scegli tra tecnica Pomodoro, timer per il conto alla rovescia o
-        cronometro
+      description: Scegli tra tecnica Pomodoro, timer per il conto alla rovescia o cronometro
       normal: Timer normale
       pomodoro: Pomodoro
       stopwatch: Cronometro
@@ -491,9 +473,7 @@ tasks:
     edit_title: Modifica titolo
     increase_estimated_time: Aumenta tempo stimato
     reminder_date_required: Configura prima una data per configurare i promemoria
-    reminder_help_text:
-      Imposta un promemoria per essere notificato prima della data
-      dell'attività
+    reminder_help_text: Imposta un promemoria per essere notificato prima della data dell'attività
     set_reminder: Imposta promemoria
     set_reminder_with_status: Imposta promemoria - Nessun promemoria
     show_completed_tasks: Filtra attività completate
@@ -501,59 +481,32 @@ tasks:
     show_subtasks: Mostra sottoattività
   tour:
     add_tasks:
-      description:
-        Crea rapidamente nuove attività con questo pulsante. Imposta titoli,
-        priorità, scadenze, tag e altro. Aggiungi sotto-attività e promemoria per
-        rimanere aggiornato sul tuo lavoro.
+      description: Crea rapidamente nuove attività con questo pulsante. Imposta titoli, priorità, scadenze, tag e altro. Aggiungi sotto-attività e promemoria per rimanere aggiornato sul tuo lavoro.
       title: Aggiungi nuove attività
     filter_search:
-      description:
-        Potenti opzioni di filtro per trovare esattamente ciò di cui hai
-        bisogno. Filtra per tag, date, stato di completamento o usa la ricerca. Ordina
-        le attività e alterna le sotto-attività per una migliore organizzazione.
+      description: Potenti opzioni di filtro per trovare esattamente ciò di cui hai bisogno. Filtra per tag, date, stato di completamento o usa la ricerca. Ordina le attività e alterna le sotto-attività per una migliore organizzazione.
       title: Filtra & Cerca
     marathon:
       app_usage:
-        description:
-          Monitora i pattern di utilizzo delle app e analizza il tempo
-          dedicato a diverse attività. Ottieni approfondimenti sulle tue abitudini
-          digitali e ottimizza la tua produttività.
+        description: Monitora i pattern di utilizzo delle app e analizza il tempo dedicato a diverse attività. Ottieni approfondimenti sulle tue abitudini digitali e ottimizza la tua produttività.
         title: Utilizzo app e analisi temporale
       filter_sort:
-        description:
-          Filtra i dati sull'utilizzo delle app per intervallo di date,
-          tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo
-          per ottenere migliori prospettive sulla gestione del tempo.
+        description: Filtra i dati sull'utilizzo delle app per intervallo di date, tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo per ottenere migliori prospettive sulla gestione del tempo.
         title: Filtra & Ordina
       tracking_settings:
-        description:
-          Configura le regole di tracciamento delle app, imposta l'etichettatura
-          automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento
-          in base alle tue esigenze di produttività.
+        description: Configura le regole di tracciamento delle app, imposta l'etichettatura automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento in base alle tue esigenze di produttività.
         title: Impostazioni di tracciamento
       usage_statistics:
-        description:
-          Visualizza dati dettagliati sull'utilizzo delle app e sulla distribuzione
-          del tempo. Analizza i tuoi pattern di produttività, traccia il tempo dedicato
-          a diverse applicazioni e identifica aree di miglioramento.
+        description: Visualizza dati dettagliati sull'utilizzo delle app e sulla distribuzione del tempo. Analizza i tuoi pattern di produttività, traccia il tempo dedicato a diverse applicazioni e identifica aree di miglioramento.
         title: Statistiche di utilizzo
     task_management:
-      description:
-        Crea e organizza attività con priorità, scadenze e promemoria.
-        Usa il timer Pomodoro per rimanere focalizzato e tracciare i tuoi progressi
-        sulle attività importanti.
+      description: Crea e organizza attività con priorità, scadenze e promemoria. Usa il timer Pomodoro per rimanere focalizzato e tracciare i tuoi progressi sulle attività importanti.
       title: Gestione attività
     your_tasks:
-      description:
-        Visualizza e gestisci tutte le tue attività in un unico posto.
-        Clicca su qualsiasi attività per vedere i dettagli, contrassegnarla come completata,
-        modificare le informazioni o eliminarla. Rimani organizzato e traccia i tuoi
-        progressi.
+      description: Visualizza e gestisci tutte le tue attività in un unico posto. Clicca su qualsiasi attività per vedere i dettagli, contrassegnarla come completata, modificare le informazioni o eliminarla. Rimani organizzato e traccia i tuoi progressi.
       title: Le tue attività
   validation:
-    deadline_cannot_be_before_planned:
-      La data di scadenza deve essere successiva
-      alla data pianificata
+    deadline_cannot_be_before_planned: La data di scadenza deve essere successiva alla data pianificata
     deadline_time_invalid: L'orario della scadenza non è valido
 shared:
   time:

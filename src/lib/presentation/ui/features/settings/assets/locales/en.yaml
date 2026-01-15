@@ -37,6 +37,12 @@ settings:
     description: Export your data in various formats or import data from backup files
     select_action: Select import/export action
     title: Import/Export
+  import_source:
+    title: Select Import Source
+    backup_title: Import Backup
+    backup_description: Restore your application data from a .whph backup file
+    external_apps_title: Import Tasks (CSV)
+    external_apps_description: Import tasks from other applications via CSV file
   language:
     choose_title: Choose your language
     title: Language

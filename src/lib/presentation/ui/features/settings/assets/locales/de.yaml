@@ -437,3 +437,13 @@ settings:
       description:
         Zeigen Sie die neuesten Tage zuerst (von links nach rechts) in
         der Gewohnheitenliste an.
+  import_source:
+    title: Wählen Sie Quelle importieren
+    backup_title: Backup importieren
+    backup_description:
+      Stellen Sie Ihre Anwendungsdaten aus einer .whph-Sicherungsdatei
+      wieder her
+    external_apps_title: Aufgaben importieren (CSV)
+    external_apps_description:
+      Importieren Sie Aufgaben aus anderen Anwendungen per
+      CSV-Datei

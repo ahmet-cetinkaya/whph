@@ -421,3 +421,9 @@ settings:
       description:
         Pokaż najnowsze dni jako pierwsze (od lewej do prawej) na liście
         nawyków.
+  import_source:
+    title: Wybierz Źródło importu
+    backup_title: Importuj kopię zapasową
+    backup_description: Przywróć dane aplikacji z pliku kopii zapasowej .whph
+    external_apps_title: Zadania importu (CSV)
+    external_apps_description: Importuj zadania z innych aplikacji poprzez plik CSV

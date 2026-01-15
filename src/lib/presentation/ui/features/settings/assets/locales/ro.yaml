@@ -419,3 +419,13 @@ settings:
       description:
         Afișează cele mai recente zile prima dată (de la stânga la dreapta)
         în lista de obiceiuri.
+  import_source:
+    title: Selectați Import Source
+    backup_title: Import Backup
+    backup_description:
+      Restaurați datele aplicației dvs. dintr-un fișier de rezervă
+      .whph
+    external_apps_title: Activități de import (CSV)
+    external_apps_description:
+      Importați sarcini din alte aplicații prin fișierul
+      CSV
