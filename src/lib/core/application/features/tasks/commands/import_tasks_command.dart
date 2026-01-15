@@ -204,37 +204,48 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
   }
 
   SaveTaskCommand? _mapGenericRow(List<dynamic> row, Map<String, int> idx) {
-    final contentIdx = idx['CONTENT']!;
-    if (contentIdx < 0 || contentIdx >= row.length) return null;
+    // CONTENT column is required - throw if missing from header
+    final contentIdx = idx['CONTENT'];
+    if (contentIdx == null || contentIdx < 0) {
+      throw Exception("Required column 'TITLE' is missing in CSV header.");
+    }
+    if (contentIdx >= row.length) return null;
     final title = row[contentIdx].toString();
     if (title.isEmpty) return null;
 
+    // DESCRIPTION is optional
+    final descIdx = idx['DESCRIPTION'];
+    final description = (descIdx != null && descIdx >= 0 && descIdx < row.length)
+        ? row[descIdx]?.toString()
+        : null;
+
+    // PRIORITY: optional, default to null if column missing
     EisenhowerPriority? priority;
-    final priorityIdx = idx['PRIORITY']!;
-    if (priorityIdx >= 0 && priorityIdx < row.length) {
+    final priorityIdx = idx['PRIORITY'];
+    if (priorityIdx != null && priorityIdx >= 0 && priorityIdx < row.length) {
       final pVal = int.tryParse(row[priorityIdx].toString());
-      if (pVal != null && pVal >= 0 && pVal <= 3) {
+      if (pVal != null && pVal >= 0 && pVal < EisenhowerPriority.values.length) {
         priority = EisenhowerPriority.values[pVal];
       }
     }
 
+    // PLANNED_DATE: optional
     DateTime? plannedDate;
-    final plannedIdx = idx['PLANNED_DATE']!;
-    if (plannedIdx >= 0 && plannedIdx < row.length) {
+    final plannedIdx = idx['PLANNED_DATE'];
+    if (plannedIdx != null && plannedIdx >= 0 && plannedIdx < row.length) {
       plannedDate = _parseDate(row[plannedIdx].toString());
     }
 
+    // DEADLINE_DATE: optional
     DateTime? deadlineDate;
-    final deadlineIdx = idx['DEADLINE_DATE']!;
-    if (deadlineIdx >= 0 && deadlineIdx < row.length) {
+    final deadlineIdx = idx['DEADLINE_DATE'];
+    if (deadlineIdx != null && deadlineIdx >= 0 && deadlineIdx < row.length) {
       deadlineDate = _parseDate(row[deadlineIdx].toString());
     }
 
     return SaveTaskCommand(
       title: title,
-      description: (idx['DESCRIPTION']! >= 0 && idx['DESCRIPTION']! < row.length)
-          ? row[idx['DESCRIPTION']!]?.toString()
-          : null,
+      description: description,
       priority: priority,
       plannedDate: plannedDate,
       deadlineDate: deadlineDate,
