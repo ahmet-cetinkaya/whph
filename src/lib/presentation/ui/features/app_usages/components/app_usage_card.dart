@@ -34,12 +34,23 @@ class AppUsageCard extends StatelessWidget {
     if (useTagColorForBars && appUsage.tags.isNotEmpty) {
       final firstTag = appUsage.tags.first;
       if (firstTag.tagColor != null) {
-        return AppUsageUiConstants.getTagColor(firstTag.tagColor!);
+        try {
+          return AppUsageUiConstants.getTagColor(firstTag.tagColor!);
+        } catch (e) {
+          // Invalid color format, fall through to the next option.
+        }
       }
     }
 
     // Otherwise use app usage's own color
-    return appUsage.color != null ? AppUsageUiConstants.getTagColor(appUsage.color) : primaryColor;
+    if (appUsage.color != null) {
+      try {
+        return AppUsageUiConstants.getTagColor(appUsage.color!);
+      } catch (e) {
+        // Invalid color format, fall back to primary color.
+      }
+    }
+    return primaryColor;
   }
 
   @override
