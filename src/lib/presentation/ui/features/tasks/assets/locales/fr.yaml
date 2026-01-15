@@ -429,6 +429,12 @@ tasks:
       third: Troisième
       fourth: Quatrième
       last: Dernier
+    weekly_schedule:
+      label: Des heures différentes par jour
+      description: Définir une heure spécifique pour chaque jour de la semaine
+      hint: Sélectionnez les jours et définissez leurs heures
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: À l'heure prévue
     deadline_reminder_label: Rappel de date limite
@@ -437,7 +443,7 @@ tasks:
     none: Pas de rappel
     one_day_before: 1 jour avant
     one_hour_before: 1 heure avant
-    label: Prévue
+    label: Des heures différentes par jour
     section_title: Rappels
     custom: Personnalisé
     custom_title: Rappel personnalisé
@@ -458,7 +464,7 @@ tasks:
     total_time: Temps total de la journée
   timer:
     mode:
-      description: Choisissez entre la technique Pomodoro, le compte à rebours ou le chronomètre
+      description: Définir une heure spécifique pour chaque jour de la semaine
       normal: Minuteur normal
       pomodoro: Pomodoro
       stopwatch: Chronomètre
@@ -481,29 +487,29 @@ tasks:
     show_subtasks: Afficher les sous-tâches
   tour:
     add_tasks:
-      description: Créez rapidement de nouvelles tâches avec ce bouton. Définissez les titres, priorités, échéances, tags et plus encore. Ajoutez des sous-tâches et des rappels pour rester à jour dans votre travail.
+      description: Définir une heure spécifique pour chaque jour de la semaine
       title: Ajouter de nouvelles tâches
     filter_search:
-      description: Puissantes options de filtrage pour trouver exactement ce dont vous avez besoin. Filtrez par tags, dates, statut d'achèvement ou utilisez la recherche. Triez les tâches et basculez les sous-tâches pour une meilleure organisation.
+      description: Définir une heure spécifique pour chaque jour de la semaine
       title: Filtrer & Rechercher
     marathon:
       app_usage:
-        description: Surveillez les modèles d'utilisation des applications et analysez le temps consacré à différentes activités. Obtenez des aperçus sur vos habitudes numériques et optimisez votre productivité.
+        description: Définir une heure spécifique pour chaque jour de la semaine
         title: Utilisation des applications et analyses temporelles
       filter_sort:
-        description: Filtrez les données d'utilisation des applications par période, tags ou appareils spécifiques. Triez et organisez vos statistiques d'utilisation pour obtenir de meilleures perspectives sur votre gestion du temps.
+        description: Définir une heure spécifique pour chaque jour de la semaine
         title: Filtrer & Trier
       tracking_settings:
-        description: Configurez les règles de suivi des applications, mettez en place un étiquetage automatique et gérez les applications à surveiller. Personnalisez le suivi en fonction de vos besoins de productivité.
+        description: Définir une heure spécifique pour chaque jour de la semaine
         title: Paramètres de suivi
       usage_statistics:
-        description: Affichez des données détaillées sur l'utilisation des applications et la répartition du temps. Analysez vos modèles de productivité, suivez le temps passé sur différentes applications et identifiez les domaines d'amélioration.
+        description: Définir une heure spécifique pour chaque jour de la semaine
         title: Statistiques d'utilisation
     task_management:
-      description: Créez et organisez des tâches avec des priorités, des échéances et des rappels. Utilisez le minuteur Pomodoro pour rester concentré et suivre vos progrès sur les tâches importantes.
+      description: Définir une heure spécifique pour chaque jour de la semaine
       title: Gestion des tâches
     your_tasks:
-      description: Visualisez et gérez toutes vos tâches en un seul endroit. Cliquez sur n'importe quelle tâche pour voir les détails, la marquer comme terminée, modifier les informations ou la supprimer. Restez organisé et suivez vos progrès.
+      description: Définir une heure spécifique pour chaque jour de la semaine
       title: Vos tâches
   validation:
     deadline_cannot_be_before_planned: La date d'échéance doit être postérieure à la date planifiée

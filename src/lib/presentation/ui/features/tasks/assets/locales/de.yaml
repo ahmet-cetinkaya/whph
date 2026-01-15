@@ -428,6 +428,12 @@ tasks:
       third: Dritte
       fourth: Vierte
       last: Letzte
+    weekly_schedule:
+      label: Unterschiedliche Zeiten pro Tag
+      description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
+      hint: Wählen Sie Tage aus und legen Sie deren Zeiten fest
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: Zur geplanten Zeit
     deadline_reminder_label: Frist-Erinnerung
@@ -436,7 +442,7 @@ tasks:
     none: Keine Erinnerung
     one_day_before: 1 Tag vorher
     one_hour_before: 1 Stunde vorher
-    label: Planungs-Erinnerung
+    label: Unterschiedliche Zeiten pro Tag
     section_title: Erinnerungen
     custom: Benutzerdefiniert
     custom_title: Benutzerdefinierte Erinnerung
@@ -457,7 +463,7 @@ tasks:
     total_time: Gesamtzeit für den Tag
   timer:
     mode:
-      description: Wählen Sie zwischen Pomodoro-Technik, Countdown-Timer oder Stoppuhr
+      description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
       normal: Normaler Timer
       pomodoro: Pomodoro
       stopwatch: Stoppuhr
@@ -480,29 +486,29 @@ tasks:
     show_subtasks: Unteraufgaben anzeigen
   tour:
     add_tasks:
-      description: Erstellen Sie schnell neue Aufgaben mit dieser Schaltfläche. Legen Sie Titel, Prioritäten, Fristen, Tags und mehr fest. Fügen Sie Unteraufgaben und Erinnerungen hinzu, um Ihre Arbeit im Blick zu behalten.
+      description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
       title: Neue Aufgaben hinzufügen
     filter_search:
-      description: Leistungsstarke Filteroptionen, um genau das zu finden, was Sie benötigen. Filtern Sie nach Tags, Datumsangaben, Erledigungsstatus oder verwenden Sie die Suche. Sortieren Sie Aufgaben und schalten Sie Unteraufgaben für eine bessere Organisation.
+      description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
       title: Filter & Suche
     marathon:
       app_usage:
-        description: Überwachen Sie App-Nutzungsmuster und analysieren Sie die Zeit, die Sie für verschiedene Aktivitäten aufwenden. Erhalten Sie Einblicke in Ihre digitalen Gewohnheiten und optimieren Sie Ihre Produktivität.
+        description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
         title: App-Nutzung & Zeit-Einblicke
       filter_sort:
-        description: Filtern Sie App-Nutzungsdaten nach Zeitraum, Tags oder bestimmten Geräten. Sortieren und organisieren Sie Ihre Nutzungsstatistiken, um bessere Einblicke in Ihr Zeitmanagement zu erhalten.
+        description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
         title: Filter & Sortierung
       tracking_settings:
-        description: Konfigurieren Sie App-Tracking-Regeln, richten Sie automatische Tagging ein und verwalten Sie, welche Anwendungen überwacht werden sollen. Passen Sie das Tracking an Ihre Produktivitätsbedürfnisse an.
+        description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
         title: Tracking-Einstellungen
       usage_statistics:
-        description: Detaillierte App-Nutzungsdaten und Zeitverteilung anzeigen. Analysieren Sie Ihre Produktivitätsmuster, verfolgen Sie die Zeit, die Sie für verschiedene Anwendungen aufwenden, und identifizieren Sie Verbesserungsbereiche.
+        description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
         title: Nutzungsstatistiken
     task_management:
-      description: Erstellen und organisieren Sie Aufgaben mit Prioritäten, Fristen und Erinnerungen. Nutzen Sie den Pomodoro-Timer, um fokussiert zu bleiben und Ihren Fortschritt bei wichtigen Aufgaben zu verfolgen.
+      description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
       title: Aufgabenmanagement
     your_tasks:
-      description: Sehen und verwalten Sie alle Ihre Aufgaben an einem Ort. Klicken Sie auf eine beliebige Aufgabe, um Details anzuzeigen, als erledigt zu markieren, Informationen zu bearbeiten oder zu löschen. Bleiben Sie organisiert und verfolgen Sie Ihren Fortschritt.
+      description: Legen Sie eine bestimmte Zeit für jeden Wochentag fest
       title: Ihre Aufgaben
   validation:
     deadline_cannot_be_before_planned: Das Fälligkeitsdatum darf nicht vor dem geplanten Datum liegen

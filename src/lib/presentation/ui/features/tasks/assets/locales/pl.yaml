@@ -429,6 +429,12 @@ tasks:
       third: Trzeci
       fourth: Czwarty
       last: Ostatni
+    weekly_schedule:
+      label: Różne czasy dla każdego dnia
+      description: Ustaw konkretną godzinę dla każdego dnia tygodnia
+      hint: Wybierz dni i ustaw ich godziny
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: O zaplanowanej godzinie
     deadline_reminder_label: Przypomnienie o terminie
@@ -437,7 +443,7 @@ tasks:
     none: Brak przypomnienia
     one_day_before: 1 dzień przed
     one_hour_before: 1 godzina przed
-    label: Dacie
+    label: Różne czasy dla każdego dnia
     section_title: Przypomnienia
     custom: Własne
     custom_title: Własne przypomnienie
@@ -458,7 +464,7 @@ tasks:
     total_time: Całkowity czas dla dnia
   timer:
     mode:
-      description: Wybierz między techniką Pomodoro, minutnikiem lub stoperem
+      description: Ustaw konkretną godzinę dla każdego dnia tygodnia
       normal: Zwykły minutnik
       pomodoro: Pomodoro
       stopwatch: Stoper
@@ -481,29 +487,29 @@ tasks:
     show_subtasks: Pokaż podzadania
   tour:
     add_tasks:
-      description: Szybko twórz nowe zadania za pomocą tego przycisku. Ustaw tytuły, priorytety, terminy, tagi i więcej. Dodaj podzadania i przypomnienia, aby być na bieżąco z pracą.
+      description: Ustaw konkretną godzinę dla każdego dnia tygodnia
       title: Dodaj nowe zadania
     filter_search:
-      description: Zaawansowane opcje filtrowania, aby znaleźć dokładnie to, czego potrzebujesz. Filtruj według tagów, dat, statusu ukończenia lub użyj wyszukiwania. Sortuj zadania i przełączaj podzadania dla lepszej organizacji.
+      description: Ustaw konkretną godzinę dla każdego dnia tygodnia
       title: Filtruj i szukaj
     marathon:
       app_usage:
-        description: Monitoruj wzorce użycia aplikacji i analizuj czas poświęcany różnym aktywnościom. Zdobądź wgląd w swoje cyfrowe nawyki i zoptymalizuj produktywność.
+        description: Ustaw konkretną godzinę dla każdego dnia tygodnia
         title: Użycie aplikacji i analiza czasu
       filter_sort:
-        description: Filtruj dane użycia aplikacji według zakresu dat, tagów lub konkretnych urządzeń. Sortuj i organizuj swoje statystyki użycia, aby uzyskać lepszy wgląd w zarządzanie czasem.
+        description: Ustaw konkretną godzinę dla każdego dnia tygodnia
         title: Filtruj i sortuj
       tracking_settings:
-        description: Skonfiguruj reguły śledzenia aplikacji, ustaw automatyczne tagowanie i zarządzaj, które aplikacje mają być monitorowane. Dostosuj śledzenie do swoich potrzeb produktywnościowych.
+        description: Ustaw konkretną godzinę dla każdego dnia tygodnia
         title: Ustawienia śledzenia
       usage_statistics:
-        description: Wyświetl szczegółowe dane użycia aplikacji i rozkład czasu. Analizuj swoje wzorce produktywności, śledź czas spędzony w różnych aplikacjach i identyfikuj obszary do poprawy.
+        description: Ustaw konkretną godzinę dla każdego dnia tygodnia
         title: Statystyki użycia
     task_management:
-      description: Twórz i organizuj zadania z priorytetami, terminami i przypomnieniami. Używaj timera Pomodoro, aby zachować skupienie i śledzić postępy w ważnych zadaniach.
+      description: Ustaw konkretną godzinę dla każdego dnia tygodnia
       title: Zarządzanie zadaniami
     your_tasks:
-      description: Przeglądaj i zarządzaj wszystkimi swoimi zadaniami w jednym miejscu. Kliknij dowolne zadanie, aby zobaczyć szczegóły, oznaczyć jako ukończone, edytować informacje lub usunąć. Zachowaj organizację i śledź postępy.
+      description: Ustaw konkretną godzinę dla każdego dnia tygodnia
       title: Twoje zadania
   validation:
     deadline_cannot_be_before_planned: Data terminu musi być późniejsza niż data planowana

@@ -325,6 +325,12 @@ tasks:
       third: Al treilea
       fourth: Al patrulea
       last: Ultimul
+    weekly_schedule:
+      label: Orare diferită pe zi
+      description: Setați o oră specifică pentru fiecare zi a săptămânii
+      hint: Selectați zilele și setați orele lor
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: La ora planificată
     deadline_reminder_label: Memento termen limită
@@ -333,7 +339,7 @@ tasks:
     none: Fără memento
     one_day_before: 1 zi înainte
     one_hour_before: 1 oră înainte
-    label: Planificată
+    label: Orare diferită pe zi
     section_title: Memento-uri
     custom: Personalizat
     custom_title: Memento personalizat
@@ -354,7 +360,7 @@ tasks:
     total_time: Timp Total pentru Zi
   timer:
     mode:
-      description: Alege între tehnica Pomodoro, timer de numărătoare inversă sau cronometru
+      description: Setați o oră specifică pentru fiecare zi a săptămânii
       normal: Timer Normal
       pomodoro: Pomodoro
       stopwatch: Cronometru
@@ -377,29 +383,29 @@ tasks:
     show_subtasks: Afișează sub-sarcini
   tour:
     add_tasks:
-      description: Creează rapid sarcini noi cu acest buton. Setează titluri, priorități, termene limită, etichete și mai mult. Adaugă sub-sarcini și mementouri pentru a rămâne la curent cu munca ta.
+      description: Setați o oră specifică pentru fiecare zi a săptămânii
       title: Adaugă Sarcini Noi
     filter_search:
-      description: Opțiuni puternice de filtrare pentru a găsi exact ceea ce ai nevoie. Filtrează după etichete, date, status de finalizare sau folosește căutarea. Sortează sarcini și comută sub-sarcini pentru o mai bună organizare.
+      description: Setați o oră specifică pentru fiecare zi a săptămânii
       title: Filtrare & Căutare
     marathon:
       app_usage:
-        description: Monitorizează modelele de utilizare a aplicațiilor și analizează timpul petrecut în diverse activități. Obține perspective asupra obiceiurilor tale digitale și optimizează-ți productivitatea.
+        description: Setați o oră specifică pentru fiecare zi a săptămânii
         title: Utilizare Aplicații & Analiză Timp
       filter_sort:
-        description: Filtrează datele de utilizare a aplicațiilor după intervalul de date, etichete sau dispozitive specifice. Sortează și organizează statisticile tale de utilizare pentru perspective mai bune asupra gestionării timpului.
+        description: Setați o oră specifică pentru fiecare zi a săptămânii
         title: Filtrare & Sortare
       tracking_settings:
-        description: Configurează regulile de urmărire a aplicațiilor, setează etichetarea automată și gestionează ce aplicații să urmărești. Personalizează urmărirea în funcție de nevoile tale de productivitate.
+        description: Setați o oră specifică pentru fiecare zi a săptămânii
         title: Setări Urmărire
       usage_statistics:
-        description: Afișează date detaliate despre utilizarea aplicațiilor și distribuția timpului. Analizează modelele tale de productivitate, urmărește timpul petrecut în diverse aplicații și identifică zonele de îmbunătățire.
+        description: Setați o oră specifică pentru fiecare zi a săptămânii
         title: Statistici Utilizare
     task_management:
-      description: Creează și organizează sarcini cu priorități, termene limită și mementouri. Folosește timerul Pomodoro pentru a menține concentrarea și a urmări progresul în sarcini importante.
+      description: Setați o oră specifică pentru fiecare zi a săptămânii
       title: Gestionare Sarcini
     your_tasks:
-      description: Vizualizează și gestionează toate sarcinile tale într-un singur loc. Click pe orice sarcină pentru a vedea detalii, a o marca ca finalizată, a edita informații sau a o șterge. Rămâi organizat și urmărește progresul.
+      description: Setați o oră specifică pentru fiecare zi a săptămânii
       title: Sarcinile Tale
   validation:
     deadline_cannot_be_before_planned: Data limită trebuie să fie după data planificată

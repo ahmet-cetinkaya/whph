@@ -1,4 +1,5 @@
 import 'package:acore/acore.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 
 class DateHelper {
   static int weekDayToNumber(WeekDays day) {
@@ -26,9 +27,7 @@ class DateHelper {
     int? intervalInWeeks,
     DateTime? referenceDate,
   ) {
-    // Increase search range to accommodate large intervals (e.g. yearly recurrence)
-    // 2 intervals + 90 days buffer should be extremely safe.
-    final maxSearchDays = (intervalInWeeks != null) ? (intervalInWeeks * 7 * 2) + 90 : 365;
+    const maxSearchDays = 90;
 
     if (targetWeekdays.isEmpty) {
       throw ArgumentError('targetWeekdays cannot be empty');
@@ -50,18 +49,67 @@ class DateHelper {
       }
     }
 
-    // Fallback: if even with increased maxSearchDays no match is found,
-    // return the next matching weekday regardless of interval.
-    for (int daysFromNow = 1; daysFromNow <= 7; daysFromNow++) {
+    throw StateError(
+      'Could not find next weekday occurrence after $maxSearchDays days. '
+      'targetWeekdays: $targetWeekdays, intervalInWeeks: $intervalInWeeks, '
+      'referenceDate: $referenceDate',
+    );
+  }
+
+  /// Finds the next occurrence of a weekly schedule with per-day times.
+  /// This allows different days of the week to have different scheduled times.
+  ///
+  /// Example: Monday at 9:00 AM, Tuesday at 10:00 AM, Wednesday at 9:00 AM
+  static DateTime findNextWeekdayOccurrenceWithTimes(
+    DateTime startDate,
+    List<WeeklySchedule> weeklySchedule,
+    int? intervalInWeeks,
+    DateTime? referenceDate,
+  ) {
+    const maxSearchDays = 90;
+
+    if (weeklySchedule.isEmpty) {
+      throw ArgumentError('weeklySchedule cannot be empty');
+    }
+
+    // Extract the valid days from the schedule
+    final validDays = weeklySchedule.map((s) => s.dayOfWeek).toList();
+
+    for (int daysFromNow = 1; daysFromNow <= maxSearchDays; daysFromNow++) {
       final candidateDate = startDate.add(Duration(days: daysFromNow));
-      if (targetWeekdays.contains(candidateDate.weekday)) {
-        return candidateDate;
+      final candidateWeekday = candidateDate.weekday;
+
+      if (validDays.contains(candidateWeekday)) {
+        if (intervalInWeeks != null && intervalInWeeks > 1 && referenceDate != null) {
+          final weeksFromStart = (candidateDate.difference(referenceDate).inDays / 7).floor();
+          if (weeksFromStart % intervalInWeeks == 0) {
+            // Find the schedule for this day and apply its time
+            final schedule = weeklySchedule.firstWhere((s) => s.dayOfWeek == candidateWeekday);
+            return DateTime(
+              candidateDate.year,
+              candidateDate.month,
+              candidateDate.day,
+              schedule.hour,
+              schedule.minute,
+            );
+          }
+        } else {
+          // Find the schedule for this day and apply its time
+          final schedule = weeklySchedule.firstWhere((s) => s.dayOfWeek == candidateWeekday);
+          return DateTime(
+            candidateDate.year,
+            candidateDate.month,
+            candidateDate.day,
+            schedule.hour,
+            schedule.minute,
+          );
+        }
       }
     }
 
     throw StateError(
       'Could not find next weekday occurrence after $maxSearchDays days. '
-      'targetWeekdays: $targetWeekdays, intervalInWeeks: $intervalInWeeks, '
+      'weeklySchedule: $weeklySchedule, intervalInWeeks: $intervalInWeeks, '
       'referenceDate: $referenceDate',
     );
   }

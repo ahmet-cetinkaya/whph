@@ -324,6 +324,12 @@ tasks:
       third: Terceiro
       fourth: Quarto
       last: Último
+    weekly_schedule:
+      label: Horários diferentes por dia
+      description: Definir um horário específico para cada dia da semana
+      hint: Selecione os dias e defina seus horários
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: No horário agendado
     deadline_reminder_label: Lembrete de prazo
@@ -332,7 +338,7 @@ tasks:
     none: Sem lembrete
     one_day_before: 1 dia antes
     one_hour_before: 1 hora antes
-    label: Planejada
+    label: Horários diferentes por dia
     section_title: Lembretes
     custom: Personalizado
     custom_title: Lembrete personalizado
@@ -353,7 +359,7 @@ tasks:
     total_time: Tempo Total para o Dia
   timer:
     mode:
-      description: Escolha entre técnica Pomodoro, temporizador de contagem regressiva ou cronômetro
+      description: Definir um horário específico para cada dia da semana
       normal: Timer Normal
       pomodoro: Pomodoro
       stopwatch: Cronômetro
@@ -376,29 +382,29 @@ tasks:
     show_subtasks: Mostrar subtarefas
   tour:
     add_tasks:
-      description: Crie rapidamente novas tarefas com este botão. Defina títulos, prioridades, prazos, tags e mais. Adicione subtarefas e lembretes para manter-se atualizado com seu trabalho.
+      description: Definir um horário específico para cada dia da semana
       title: Adicionar Novas Tarefas
     filter_search:
-      description: Opções poderosas de filtragem para encontrar exatamente o que você precisa. Filtre por tags, datas, status de conclusão ou use a pesquisa. Ordene tarefas e alterne subtarefas para melhor organização.
+      description: Definir um horário específico para cada dia da semana
       title: Filtrar & Pesquisar
     marathon:
       app_usage:
-        description: Monitore padrões de uso de aplicativos e analise o tempo gasto em diferentes atividades. Obtenha insights sobre seus hábitos digitais e otimize sua produtividade.
+        description: Definir um horário específico para cada dia da semana
         title: Uso de Aplicativos & Análise de Tempo
       filter_sort:
-        description: Filtre dados de uso de aplicativos por intervalo de datas, tags ou dispositivos específicos. Ordene e organize suas estatísticas de uso para obter melhores insights sobre gestão de tempo.
+        description: Definir um horário específico para cada dia da semana
         title: Filtrar & Ordenar
       tracking_settings:
-        description: Configure regras de rastreamento de aplicativos, defina marcação automática e gerencie quais aplicativos monitorar. Personalize o rastreamento de acordo com suas necessidades de produtividade.
+        description: Definir um horário específico para cada dia da semana
         title: Configurações de Rastreamento
       usage_statistics:
-        description: Veja dados detalhados de uso de aplicativos e distribuição de tempo. Analise seus padrões de produtividade, acompanhe o tempo gasto em diferentes aplicativos e identifique áreas de melhoria.
+        description: Definir um horário específico para cada dia da semana
         title: Estatísticas de Uso
     task_management:
-      description: Crie e organize tarefas com prioridades, prazos e lembretes. Use o timer Pomodoro para manter o foco e acompanhar seu progresso em tarefas importantes.
+      description: Definir um horário específico para cada dia da semana
       title: Gerenciamento de Tarefas
     your_tasks:
-      description: Veja e gerencie todas as suas tarefas em um só lugar. Clique em qualquer tarefa para ver detalhes, marcar como concluída, editar informações ou excluir. Mantenha-se organizado e acompanhe seu progresso.
+      description: Definir um horário específico para cada dia da semana
       title: Suas Tarefas
   validation:
     deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada

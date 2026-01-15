@@ -325,6 +325,12 @@ tasks:
       third: Tretji
       fourth: Četrti
       last: Zadnji
+    weekly_schedule:
+      label: Različni časi za vsak dan
+      description: Nastavite določen čas za vsak dan v tednu
+      hint: Izberite dni in nastavite njihove čase
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: Ob načrtovanem času
     deadline_reminder_label: Opomnik za rok
@@ -333,7 +339,7 @@ tasks:
     none: Brez opomnika
     one_day_before: 1 dan prej
     one_hour_before: 1 ura prej
-    label: Datum
+    label: Različni časi za vsak dan
     section_title: Opomniki
     custom: Po meri
     custom_title: Opomnik po meri
@@ -354,7 +360,7 @@ tasks:
     total_time: Skupni Čas za Dan
   timer:
     mode:
-      description: Izberi med tehniko Pomodoro, obrnjenim časovnikom ali sekundomerom
+      description: Nastavite določen čas za vsak dan v tednu
       normal: Navaden Timer
       pomodoro: Pomodoro
       stopwatch: Sekundomer
@@ -377,29 +383,29 @@ tasks:
     show_subtasks: Pokaži podnaloge
   tour:
     add_tasks:
-      description: Hitro ustvarite nove naloge s tem gumbom. Nastavite naslove, prednosti, roke, oznake in več. Dodajte podnaloge in opomnike, da ostanete na tekočem s svojim delom.
+      description: Nastavite določen čas za vsak dan v tednu
       title: Dodaj Nove Naloge
     filter_search:
-      description: Zmogljive možnosti filtriranja za iskanje ravno tistega, kar potrebujete. Filtrirajte po oznakah, datumih, statusu zaključka ali uporabite iskanje. Razvrstite naloge in preklopite podnaloge za boljšo organizacijo.
+      description: Nastavite določen čas za vsak dan v tednu
       title: Filtriraj & Išči
     marathon:
       app_usage:
-        description: Spremljajte vzorce uporabe aplikacij in analizirajte čas, porabljen za različne dejavnosti. Pridobite vpogled v svoje digitalne navade in optimizirajte svojo produktivnost.
+        description: Nastavite določen čas za vsak dan v tednu
         title: Uporaba Aplikacij & Časovna Analiza
       filter_sort:
-        description: Filtrirajte podatke o uporabi aplikacij po časovnem obdobju, oznakah ali določenih napravah. Razvrstite in organizirajte svojo statistiko uporabe za boljše vpoglede v upravljanje časa.
+        description: Nastavite določen čas za vsak dan v tednu
         title: Filtriraj & Razvrsti
       tracking_settings:
-        description: Konfigurirajte pravila sledenja aplikacij, nastavite samodejno označevanje in upravljajte, katere aplikacije naj se spremljajo. Prilagodite sledenje glede na svoje potrebe po produktivnosti.
+        description: Nastavite določen čas za vsak dan v tednu
         title: Nastavitve Sledenja
       usage_statistics:
-        description: Ogled podrobnih podatkov o uporabi aplikacij in porazdelitvi časa. Analizirajte svoje vzorce produktivnosti, spremljajte čas, porabljen za različne aplikacije, in prepoznajte področja za izboljšave.
+        description: Nastavite določen čas za vsak dan v tednu
         title: Statistika Uporabe
     task_management:
-      description: Ustvarite in organizirajte naloge s prednostmi, roki in opomniki. Uporabite časovnik Pomodoro, da ostanete osredotočeni in spremljate napredek pri pomembnih nalogah.
+      description: Nastavite določen čas za vsak dan v tednu
       title: Upravljanje Nalog
     your_tasks:
-      description: Ogledujte in upravljajte vse svoje naloge na enem mestu. Kliknite katerokoli nalogo za ogled podrobnosti, označite kot končano, uredite informacije ali izbrišite. Ostanite organizirani in spremljajte svoj napredek.
+      description: Nastavite določen čas za vsak dan v tednu
       title: Vaše Naloge
   validation:
     deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu

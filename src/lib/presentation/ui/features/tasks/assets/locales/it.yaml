@@ -429,6 +429,12 @@ tasks:
       third: Terzo
       fourth: Quarto
       last: Ultimo
+    weekly_schedule:
+      label: Orari diversi per giorno
+      description: Imposta un orario specifico per ogni giorno della settimana
+      hint: Seleziona i giorni e imposta i loro orari
+      select_time: Select time
+      add_time: Add time
   reminder:
     at_time: All'orario programmato
     deadline_reminder_label: Promemoria scadenza
@@ -437,7 +443,7 @@ tasks:
     none: Nessun promemoria
     one_day_before: 1 giorno prima
     one_hour_before: 1 ora prima
-    label: Pianificata
+    label: Orari diversi per giorno
     section_title: Promemoria
     custom: Personalizzato
     custom_title: Promemoria personalizzato
@@ -458,7 +464,7 @@ tasks:
     total_time: Tempo totale per il giorno
   timer:
     mode:
-      description: Scegli tra tecnica Pomodoro, timer per il conto alla rovescia o cronometro
+      description: Imposta un orario specifico per ogni giorno della settimana
       normal: Timer normale
       pomodoro: Pomodoro
       stopwatch: Cronometro
@@ -481,29 +487,29 @@ tasks:
     show_subtasks: Mostra sottoattività
   tour:
     add_tasks:
-      description: Crea rapidamente nuove attività con questo pulsante. Imposta titoli, priorità, scadenze, tag e altro. Aggiungi sotto-attività e promemoria per rimanere aggiornato sul tuo lavoro.
+      description: Imposta un orario specifico per ogni giorno della settimana
       title: Aggiungi nuove attività
     filter_search:
-      description: Potenti opzioni di filtro per trovare esattamente ciò di cui hai bisogno. Filtra per tag, date, stato di completamento o usa la ricerca. Ordina le attività e alterna le sotto-attività per una migliore organizzazione.
+      description: Imposta un orario specifico per ogni giorno della settimana
       title: Filtra & Cerca
     marathon:
       app_usage:
-        description: Monitora i pattern di utilizzo delle app e analizza il tempo dedicato a diverse attività. Ottieni approfondimenti sulle tue abitudini digitali e ottimizza la tua produttività.
+        description: Imposta un orario specifico per ogni giorno della settimana
         title: Utilizzo app e analisi temporale
       filter_sort:
-        description: Filtra i dati sull'utilizzo delle app per intervallo di date, tag o dispositivi specifici. Ordina e organizza le tue statistiche di utilizzo per ottenere migliori prospettive sulla gestione del tempo.
+        description: Imposta un orario specifico per ogni giorno della settimana
         title: Filtra & Ordina
       tracking_settings:
-        description: Configura le regole di tracciamento delle app, imposta l'etichettatura automatica e gestisci quali applicazioni monitorare. Personalizza il tracciamento in base alle tue esigenze di produttività.
+        description: Imposta un orario specifico per ogni giorno della settimana
         title: Impostazioni di tracciamento
       usage_statistics:
-        description: Visualizza dati dettagliati sull'utilizzo delle app e sulla distribuzione del tempo. Analizza i tuoi pattern di produttività, traccia il tempo dedicato a diverse applicazioni e identifica aree di miglioramento.
+        description: Imposta un orario specifico per ogni giorno della settimana
         title: Statistiche di utilizzo
     task_management:
-      description: Crea e organizza attività con priorità, scadenze e promemoria. Usa il timer Pomodoro per rimanere focalizzato e tracciare i tuoi progressi sulle attività importanti.
+      description: Imposta un orario specifico per ogni giorno della settimana
       title: Gestione attività
     your_tasks:
-      description: Visualizza e gestisci tutte le tue attività in un unico posto. Clicca su qualsiasi attività per vedere i dettagli, contrassegnarla come completata, modificare le informazioni o eliminarla. Rimani organizzato e traccia i tuoi progressi.
+      description: Imposta un orario specifico per ogni giorno della settimana
       title: Le tue attività
   validation:
     deadline_cannot_be_before_planned: La data di scadenza deve essere successiva alla data pianificata

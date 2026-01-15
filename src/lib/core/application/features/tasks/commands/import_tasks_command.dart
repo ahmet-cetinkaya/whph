@@ -3,7 +3,6 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:csv/csv.dart';
 
 enum TaskImportType {
@@ -18,10 +17,7 @@ const int _maxFileSizeBytes = 10 * 1024 * 1024;
 const int _maxErrorCount = 100;
 
 /// Error ID constants for CSV import
-// ignore: unused_fields
 class _ImportErrorIds {
-  static const String fileNotFound = 'task_import_file_not_found';
-  static const String fileTooLarge = 'task_import_file_too_large';
   static const String fileReadError = 'task_import_file_read_error';
   static const String csvParseError = 'task_import_csv_parse_error';
   static const String missingRequiredColumn = 'task_import_missing_required_column';
@@ -126,7 +122,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       }
     } on FileSystemException catch (e, stackTrace) {
       Logger.error(
-        '[$_ImportErrorIds.fileReadError] ${_ImportErrorMessages.fileReadError}: ${e.message}',
+        '[${_ImportErrorIds.fileReadError}] ${_ImportErrorMessages.fileReadError}: ${e.message}',
         error: e,
         stackTrace: stackTrace,
       );
@@ -143,7 +139,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       input = await file.readAsString();
     } on FileSystemException catch (e, stackTrace) {
       Logger.error(
-        '[$_ImportErrorIds.fileReadError] ${_ImportErrorMessages.fileReadError}: ${e.message}',
+        '[${_ImportErrorIds.fileReadError}] ${_ImportErrorMessages.fileReadError}: ${e.message}',
         error: e,
         stackTrace: stackTrace,
       );
@@ -154,7 +150,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       );
     } on Exception catch (e, stackTrace) {
       Logger.error(
-        '[$_ImportErrorIds.fileReadError] ${_ImportErrorMessages.fileReadError}: $e',
+        '[${_ImportErrorIds.fileReadError}] ${_ImportErrorMessages.fileReadError}: $e',
         error: e,
         stackTrace: stackTrace,
       );
@@ -192,7 +188,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       ).convert(input);
     } on FormatException catch (e, stackTrace) {
       Logger.error(
-        '[$_ImportErrorIds.csvParseError] ${_ImportErrorMessages.csvParseError}: ${e.message}',
+        '[${_ImportErrorIds.csvParseError}] ${_ImportErrorMessages.csvParseError}: ${e.message}',
         error: e,
         stackTrace: stackTrace,
       );
@@ -203,7 +199,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       );
     } on Exception catch (e, stackTrace) {
       Logger.error(
-        '[$_ImportErrorIds.csvParseError] ${_ImportErrorMessages.csvParseError}: $e',
+        '[${_ImportErrorIds.csvParseError}] ${_ImportErrorMessages.csvParseError}: $e',
         error: e,
         stackTrace: stackTrace,
       );
@@ -254,7 +250,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
         final errorMsg = 'Row ${i + 2}: Invalid data format - ${e.message}';
         _addError(errors, errorMsg);
         Logger.error(
-          '[$_ImportErrorIds.dateParseError] $errorMsg',
+          '[${_ImportErrorIds.dateParseError}] $errorMsg',
           error: e,
           stackTrace: stackTrace,
         );
@@ -264,7 +260,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
         final errorMsg = 'Row ${i + 2}: ${e.message}';
         _addError(errors, errorMsg);
         Logger.error(
-          '[$_ImportErrorIds.missingRequiredColumn] $errorMsg',
+          '[${_ImportErrorIds.missingRequiredColumn}] $errorMsg',
           error: e,
           stackTrace: stackTrace,
         );
@@ -274,7 +270,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
         final errorMsg = 'Row ${i + 2}: ${_ImportErrorMessages.mediatorError} - ${e.message}';
         _addError(errors, errorMsg);
         Logger.error(
-          '[$_ImportErrorIds.mediatorError] $errorMsg',
+          '[${_ImportErrorIds.mediatorError}] $errorMsg',
           error: e,
           stackTrace: stackTrace,
         );
@@ -284,7 +280,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
         final errorMsg = 'Row ${i + 2}: ${_ImportErrorMessages.rowImportError} - $e';
         _addError(errors, errorMsg);
         Logger.error(
-          '[$_ImportErrorIds.mediatorError] $errorMsg',
+          '[${_ImportErrorIds.mediatorError}] $errorMsg',
           error: e,
           stackTrace: stackTrace,
         );
@@ -306,11 +302,9 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     }
 
     final normalizedPath = filePath.replaceAll('\\', '/');
-    if (normalizedPath.contains('../') ||
-        normalizedPath.contains('..\\') ||
-        normalizedPath.startsWith('..')) {
+    if (normalizedPath.contains('../') || normalizedPath.contains('..\\') || normalizedPath.startsWith('..')) {
       Logger.error(
-        '[$_ImportErrorIds.invalidFilePath] Path traversal attempt detected: $filePath',
+        '[${_ImportErrorIds.invalidFilePath}] Path traversal attempt detected: $filePath',
       );
       return _ImportErrorMessages.invalidFilePath;
     }
@@ -378,9 +372,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     if (title.isEmpty) return null;
 
     final descIdx = idx['DESCRIPTION'];
-    final description = (descIdx != null && descIdx >= 0 && descIdx < row.length)
-        ? row[descIdx]?.toString()
-        : null;
+    final description = (descIdx != null && descIdx >= 0 && descIdx < row.length) ? row[descIdx]?.toString() : null;
 
     final priorityIdx = idx['PRIORITY'];
     final priorityValue = (priorityIdx != null && priorityIdx >= 0 && priorityIdx < row.length)
@@ -421,9 +413,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     if (title.isEmpty) return null;
 
     final descIdx = idx['DESCRIPTION'];
-    final description = (descIdx != null && descIdx >= 0 && descIdx < row.length)
-        ? row[descIdx]?.toString()
-        : null;
+    final description = (descIdx != null && descIdx >= 0 && descIdx < row.length) ? row[descIdx]?.toString() : null;
 
     EisenhowerPriority? priority;
     final priorityIdx = idx['PRIORITY'];
@@ -461,7 +451,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       return DateTime.parse(dateStr);
     } on FormatException catch (e, stackTrace) {
       Logger.warning(
-        '[$_ImportErrorIds.dateParseError] Failed to parse date: "$dateStr" - ${e.message}',
+        '[${_ImportErrorIds.dateParseError}] Failed to parse date: "$dateStr" - ${e.message}',
         error: e,
         stackTrace: stackTrace,
       );

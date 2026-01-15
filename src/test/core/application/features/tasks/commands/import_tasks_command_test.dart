@@ -103,8 +103,7 @@ void main() {
       expect(response.successCount, 3);
       // Invalid date should be null
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>(
-              (cmd) => cmd.title == 'Invalid Date' && cmd.plannedDate == null && cmd.deadlineDate != null))))
-          .called(1);
+          (cmd) => cmd.title == 'Invalid Date' && cmd.plannedDate == null && cmd.deadlineDate != null)))).called(1);
       // Invalid priority should be null
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
               argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Invalid Priority' && cmd.priority == null))))
@@ -224,11 +223,12 @@ void main() {
       expect(response.successCount, 3);
       // Invalid/Out of range priority should map to Not Urgent/Not Important (WHPH default for unknown)
       // Actually Todoist parser defaults to 4 (lowest) if invalid, which is EisenhowerPriority.notUrgentNotImportant
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>(
+              (cmd) => cmd.title == 'Invalid Priority' && cmd.priority == EisenhowerPriority.notUrgentNotImportant))))
+          .called(1);
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
-          cmd.title == 'Invalid Priority' && cmd.priority == EisenhowerPriority.notUrgentNotImportant)))).called(1);
-      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
-          cmd.title == 'Out of Range Priority' &&
-          cmd.priority == EisenhowerPriority.notUrgentNotImportant)))).called(1);
+              cmd.title == 'Out of Range Priority' && cmd.priority == EisenhowerPriority.notUrgentNotImportant))))
+          .called(1);
     });
 
     test('should handle non-sequential indents in Todoist CSV hierarchy', () async {
@@ -257,12 +257,11 @@ void main() {
       // If we jump from 1 to 3, _parentsStack[2] is set, but it tries to get _parentsStack[2-1=1].
       // If indent 2 was never set, it might be null if pre-filled, or it might crash if not.
       // _parentsStack is initialized as List.filled(10, null)
-      
+
       // Verification
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Root 1' && cmd.parentTaskId == null))))
-          .called(1);
-      
+          argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Root 1' && cmd.parentTaskId == null)))).called(1);
+
       // Jump to 3 should have parentTaskId = _parentsStack[1] (which is null if indent 2 was skipped but indent 1 was Root 1)
       // Wait, _parentsStack[0] = Root 1. indent 3 -> parentTaskId = _parentsStack[3-1-1 = 1].
       // _parentsStack[1] is indeed null. So it becomes a root task if intermediate is missing.
@@ -309,8 +308,7 @@ void main() {
         'Task 1,Desc 1\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
-          .thenThrow(Exception('Mediator error'));
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).thenThrow(Exception('Mediator error'));
 
       final response = await handler.call(ImportTasksCommand(
         filePath: file.path,

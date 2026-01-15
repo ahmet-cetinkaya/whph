@@ -29,6 +29,46 @@ enum MonthlyPatternType {
   relativeDay, // e.g., 2nd Tuesday
 }
 
+/// Represents a specific day of the week with a designated time
+/// Used for weekly recurrence patterns where different days can have different times
+@jm.jsonSerializable
+class WeeklySchedule {
+  final int dayOfWeek; // 1=Monday, 7=Sunday
+  final int hour; // 0-23
+  final int minute; // 0-59
+
+  const WeeklySchedule({
+    required this.dayOfWeek,
+    required this.hour,
+    required this.minute,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'dayOfWeek': dayOfWeek,
+      'hour': hour,
+      'minute': minute,
+    };
+  }
+
+  factory WeeklySchedule.fromJson(Map<String, dynamic> json) {
+    return WeeklySchedule(
+      dayOfWeek: json['dayOfWeek'] as int,
+      hour: json['hour'] as int,
+      minute: json['minute'] as int,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is WeeklySchedule && other.dayOfWeek == dayOfWeek && other.hour == hour && other.minute == minute;
+  }
+
+  @override
+  int get hashCode => Object.hash(dayOfWeek, hour, minute);
+}
+
 /// Validation constants for RecurrenceConfiguration
 class RecurrenceConfigurationValidation {
   static const int minInterval = 1;
@@ -42,6 +82,10 @@ class RecurrenceConfigurationValidation {
   static const int minMonthOfYear = 1;
   static const int maxMonthOfYear = 12;
   static const int maxOccurrenceCount = 10000; // Reasonable upper bound
+  static const int minHour = 0;
+  static const int maxHour = 23;
+  static const int minMinute = 0;
+  static const int maxMinute = 59;
 }
 
 @jm.jsonSerializable
@@ -51,6 +95,7 @@ class RecurrenceConfiguration {
 
   // Weekly specific
   final List<int>? daysOfWeek; // 1=Monday, 7=Sunday
+  final List<WeeklySchedule>? weeklySchedule; // Per-day time schedules for weekly recurrence
 
   // Monthly specific
   final MonthlyPatternType? monthlyPatternType;
@@ -73,6 +118,7 @@ class RecurrenceConfiguration {
     required this.frequency,
     this.interval = 1,
     List<int>? daysOfWeek,
+    List<WeeklySchedule>? weeklySchedule,
     this.monthlyPatternType,
     this.dayOfMonth,
     this.weekOfMonth,
@@ -82,7 +128,8 @@ class RecurrenceConfiguration {
     this.endDate,
     this.occurrenceCount,
     this.fromPolicy = RecurrenceFromPolicy.plannedDate,
-  }) : daysOfWeek = daysOfWeek != null ? List.unmodifiable(daysOfWeek) : null {
+  })  : daysOfWeek = daysOfWeek != null ? List.unmodifiable(daysOfWeek) : null,
+        weeklySchedule = weeklySchedule != null ? List.unmodifiable(weeklySchedule) : null {
     _validate();
   }
 
@@ -93,6 +140,7 @@ class RecurrenceConfiguration {
     required RecurrenceFrequency frequency,
     int interval = 1,
     List<int>? daysOfWeek,
+    List<WeeklySchedule>? weeklySchedule,
     MonthlyPatternType? monthlyPatternType,
     int? dayOfMonth,
     int? weekOfMonth,
@@ -107,6 +155,7 @@ class RecurrenceConfiguration {
       frequency: frequency,
       interval: interval,
       daysOfWeek: daysOfWeek,
+      weeklySchedule: weeklySchedule,
       monthlyPatternType: monthlyPatternType,
       dayOfMonth: dayOfMonth,
       weekOfMonth: weekOfMonth,
@@ -136,6 +185,7 @@ class RecurrenceConfiguration {
     required this.frequency,
     required this.interval,
     this.daysOfWeek,
+    this.weeklySchedule,
     this.monthlyPatternType,
     this.dayOfMonth,
     this.weekOfMonth,
@@ -156,6 +206,7 @@ class RecurrenceConfiguration {
     RecurrenceFrequency? frequency,
     int? interval,
     List<int>? daysOfWeek,
+    List<WeeklySchedule>? weeklySchedule,
     MonthlyPatternType? monthlyPatternType,
     int? dayOfMonth,
     int? weekOfMonth,
@@ -170,6 +221,7 @@ class RecurrenceConfiguration {
       frequency: frequency ?? this.frequency,
       interval: interval ?? this.interval,
       daysOfWeek: daysOfWeek ?? this.daysOfWeek,
+      weeklySchedule: weeklySchedule ?? this.weeklySchedule,
       monthlyPatternType: monthlyPatternType ?? this.monthlyPatternType,
       dayOfMonth: dayOfMonth ?? this.dayOfMonth,
       weekOfMonth: weekOfMonth ?? this.weekOfMonth,
@@ -263,6 +315,37 @@ class RecurrenceConfiguration {
       }
     }
 
+    // Validate weeklySchedule
+    if (weeklySchedule != null && weeklySchedule!.isNotEmpty) {
+      // Check for duplicate days
+      final seenDays = <int>{};
+      for (final schedule in weeklySchedule!) {
+        // Validate dayOfWeek
+        if (schedule.dayOfWeek < RecurrenceConfigurationValidation.minDayOfWeek ||
+            schedule.dayOfWeek > RecurrenceConfigurationValidation.maxDayOfWeek) {
+          throw ArgumentError(
+              'weeklySchedule dayOfWeek must be between ${RecurrenceConfigurationValidation.minDayOfWeek} and ${RecurrenceConfigurationValidation.maxDayOfWeek}');
+        }
+        // Validate hour
+        if (schedule.hour < RecurrenceConfigurationValidation.minHour ||
+            schedule.hour > RecurrenceConfigurationValidation.maxHour) {
+          throw ArgumentError(
+              'weeklySchedule hour must be between ${RecurrenceConfigurationValidation.minHour} and ${RecurrenceConfigurationValidation.maxHour}');
+        }
+        // Validate minute
+        if (schedule.minute < RecurrenceConfigurationValidation.minMinute ||
+            schedule.minute > RecurrenceConfigurationValidation.maxMinute) {
+          throw ArgumentError(
+              'weeklySchedule minute must be between ${RecurrenceConfigurationValidation.minMinute} and ${RecurrenceConfigurationValidation.maxMinute}');
+        }
+        // Check for duplicate days
+        if (seenDays.contains(schedule.dayOfWeek)) {
+          throw ArgumentError('weeklySchedule cannot contain duplicate days');
+        }
+        seenDays.add(schedule.dayOfWeek);
+      }
+    }
+
     // Validate monthly pattern consistency
     if (monthlyPatternType != null) {
       if (monthlyPatternType == MonthlyPatternType.relativeDay) {
@@ -283,6 +366,7 @@ class RecurrenceConfiguration {
       'frequency': frequency.name,
       'interval': interval,
       'daysOfWeek': daysOfWeek,
+      'weeklySchedule': weeklySchedule?.map((e) => e.toJson()).toList(),
       'monthlyPatternType': monthlyPatternType?.name,
       'dayOfMonth': dayOfMonth,
       'weekOfMonth': weekOfMonth,
@@ -336,6 +420,9 @@ class RecurrenceConfiguration {
       frequency: _deserializeEnum(RecurrenceFrequency.values, json['frequency'], RecurrenceFrequency.daily),
       interval: json['interval'] as int? ?? 1,
       daysOfWeek: (json['daysOfWeek'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      weeklySchedule: (json['weeklySchedule'] as List<dynamic>?)
+          ?.map((e) => WeeklySchedule.fromJson(e as Map<String, dynamic>))
+          .toList(),
       monthlyPatternType: json['monthlyPatternType'] != null
           ? _deserializeEnum(MonthlyPatternType.values, json['monthlyPatternType'], MonthlyPatternType.specificDay)
           : null,
