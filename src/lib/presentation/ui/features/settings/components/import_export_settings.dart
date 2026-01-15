@@ -440,15 +440,30 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   }
 
   Future<void> _handleTaskFilePick(BuildContext context) async {
-    final filePath = await _fileService.pickFile(
-      allowedExtensions: ['csv'],
-      dialogTitle: _translationService.translate(TaskTranslationKeys.importSelectFile),
-    );
+    try {
+      final filePath = await _fileService.pickFile(
+        allowedExtensions: ['csv'],
+        dialogTitle: _translationService.translate(TaskTranslationKeys.importSelectFile),
+      );
 
-    if (filePath != null && mounted) {
-      setState(() {
-        _selectedTaskFilePath = filePath;
-      });
+      if (filePath != null && mounted) {
+        setState(() {
+          _selectedTaskFilePath = filePath;
+        });
+      }
+    } on Exception catch (e, stackTrace) {
+      Logger.error(
+        'Failed to pick CSV file: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      if (context.mounted) {
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: '${_translationService.translate(TaskTranslationKeys.importError)}: $e',
+          duration: const Duration(seconds: 4),
+        );
+      }
     }
   }
 
@@ -462,19 +477,23 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
       duration: const Duration(minutes: 2),
     );
 
-    await AsyncErrorHandler.execute<ImportTasksCommandResponse>(
-      context: context,
-      errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
-      operation: () async {
-        final mediator = container.resolve<Mediator>();
-        return await mediator.send<ImportTasksCommand, ImportTasksCommandResponse>(
-          ImportTasksCommand(
-            filePath: _selectedTaskFilePath!,
-            importType: _taskImportType,
-          ),
-        );
-      },
-      onSuccess: (response) {
+    try {
+      final response = await AsyncErrorHandler.execute<ImportTasksCommandResponse>(
+        context: context,
+        errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
+        operation: () async {
+          final mediator = container.resolve<Mediator>();
+          return await mediator.send<ImportTasksCommand, ImportTasksCommandResponse>(
+            ImportTasksCommand(
+              filePath: _selectedTaskFilePath!,
+              importType: _taskImportType,
+            ),
+          );
+        },
+      );
+
+      // Success case
+      if (context.mounted && response != null) {
         OverlayNotificationHelper.hideNotification();
         final message = response.failureCount == 0
             ? _translationService
@@ -488,13 +507,12 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           duration: const Duration(seconds: 4),
         );
         Navigator.of(context).pop();
-      },
-      onError: (e) {
-        OverlayNotificationHelper.hideNotification();
-        ErrorHelper.showUnexpectedError(context, e, StackTrace.current);
+      }
+    } finally {
+      if (mounted) {
         setState(() => _isProcessing = false);
-      },
-    );
+      }
+    }
   }
 
   Future<void> _handleStrategySelect(ImportStrategy strategy, BuildContext context) async {
