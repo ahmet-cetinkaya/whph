@@ -42,42 +42,127 @@ tags:
   help:
     content: Tag help content
     overview:
-      content: |
-        Transform your productivity with strategic tagging that helps you organize work, track time investments, and maintain clear focus on what matters most.
+      content:
+        "Transform your productivity with strategic tagging that helps you
+        organize work, track time investments, and maintain clear focus on what matters
+        most.
+
 
         ## ⚡ Why Is It Important?
 
-        Tag-based organization is fundamental to effective time management and productivity. By categorizing your activities with meaningful tags, you gain clear insights into how you spend your time and can make informed decisions to optimize your focus and efficiency.
+
+        Tag-based organization is fundamental to effective time management and productivity.
+        By categorizing your activities with meaningful tags, you gain clear insights
+        into how you spend your time and can make informed decisions to optimize your
+        focus and efficiency.
+
+
+        ## 🏷️ Tag Types: Organize Your Way
+
+
+        Tags come in three specialized types, each designed for specific organizational
+        needs:
+
+
+        ### 📌 Label Tags
+
+        Flexible categorization tags for general organization. Use them to mark content
+        by topic, priority, status, or any custom classification system that works
+        for you.
+
+
+        - **Use cases:** Categories, priorities, statuses, skills, domains
+
+        - **Examples:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Best for:** General categorization and filtering across all content types
+
+
+        ### 📍 Context Tags
+
+        Define where or how you can accomplish tasks. Context tags help you match
+        your work to your current situation, energy level, or environment.
+
+
+        - **Use cases:** Physical locations, energy levels, available tools, work
+        modes
+
+        - **Examples:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Best for:** Location-based task filtering and energy management
+
+
+        ### 🎯 Project Tags
+
+        Group related tasks toward shared goals or outcomes. Project tags create natural
+        bundles of work that contribute to specific objectives.
+
+
+        - **Use cases:** Product launches, feature development, personal goals, recurring
+        initiatives
+
+        - **Examples:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Best for:** Tracking progress toward specific milestones and deliverables
+
 
         ## 📊 Time Investment Analysis
 
-        Understand where your time goes and make data-driven decisions about your priorities. Time tracking with tags reveals patterns that help you optimize your schedule and work habits.
+
+        Understand where your time goes and make data-driven decisions about your
+        priorities. Time tracking with tags reveals patterns that help you optimize
+        your schedule and work habits.
+
 
         - ⏱️ Monitor time spent across different activity categories
+
         - 📅 Track time investments over specific periods and trends
+
         - ⚖️ Compare time allocation across projects and responsibilities
+
         - 📈 Identify productivity patterns and peak performance times
+
         - 🎯 Focus your energy on high-impact activities
+
 
         ## 🗂️ Strategic Organization
 
-        Create a systematic approach to organizing your work that scales with your needs. Well-structured tags form the foundation of an efficient productivity system.
+
+        Create a systematic approach to organizing your work that scales with your
+        needs. Well-structured tags form the foundation of an efficient productivity
+        system.
+
 
         - 🔍 Filter and find information quickly with multi-tag searches
+
         - 🗄️ Archive completed projects to maintain clean organization
+
         - 🧩 Build hierarchical structures that reflect your work patterns
+
         - 👥 Group related activities for better project management
+
         - ⏳ Enable comprehensive time tracking across all activities
+
 
         ## 💡 Optimization Strategies
 
-        Leverage advanced tagging techniques to maximize the effectiveness of your organizational system and maintain long-term productivity growth.
+
+        Leverage advanced tagging techniques to maximize the effectiveness of your
+        organizational system and maintain long-term productivity growth.
+
 
         - 🏷️ Use clear, descriptive names that remain meaningful over time
+
         - 🔗 **Create hierarchical structures:** Projects → Departments → Areas
+
         - 📊 Review time analysis reports regularly to identify improvement opportunities
+
         - 🗄️ Maintain system cleanliness by archiving completed work
+
         - 🎯 Apply focused filtering to eliminate distractions and enhance concentration
+
+        - 🔄 **Combine tag types strategically:** Use projects for goals, contexts
+        for situation, and labels for categories"
       title: Tag-Based Organization & Time Management Guide
     title: Tag Help
   labels:
@@ -97,7 +182,7 @@ tags:
   new_tag: New Tag
   name_placeholder: Enter a descriptive tag name...
   no_tags: No tags
-  none_option: None
+  none_option: "None"
   search:
     clear_all: Clear All
     label: Search tags
@@ -126,25 +211,52 @@ tags:
     remove_tag: Remove tag
     select: Click to select tag
     unarchive_tag: Unarchive tag
+  type:
+    label: Type
+    label_label: Label
+    label_tooltip: A flexible categorization tag
+    context: Context
+    context_tooltip: Where or how you can do this task (e.g., @home, @work)
+    project: Project
+    project_tooltip: Group related tasks toward a shared goal (e.g., +WebsiteRedesign)
   tour:
     smart_tagging:
       title: Smart Tagging System
-      description: Use tags to organize and group your tasks, habits, and apps. Track time spent on different activities by tags to understand where your time goes and optimize your workflow.
+      description:
+        Use tags to organize and group your tasks, habits, and apps. Track
+        time spent on different activities by tags to understand where your time goes
+        and optimize your workflow.
     your_tags:
       title: Your Tags
-      description: Browse all your tags and see their usage statistics. Click any tag to view details, edit properties, or see which tasks and habits use it. Organize your workflow efficiently.
+      description:
+        Browse all your tags and see their usage statistics. Click any
+        tag to view details, edit properties, or see which tasks and habits use it.
+        Organize your workflow efficiently.
     tag_archive_filters:
       title: Tag & Archive Filters
-      description: Filter tags by selecting specific tags to focus on, or toggle archived tags visibility. Control which tags appear in your list for better organization.
+      description:
+        Filter tags by selecting specific tags to focus on, or toggle archived
+        tags visibility. Control which tags appear in your list for better organization.
     search_sort:
       title: Search & Sort
-      description: Search for specific tags by name, sort by different criteria like name or usage count. Organize your tags list to find what you need quickly.
+      description:
+        Search for specific tags by name, sort by different criteria like
+        name or usage count. Organize your tags list to find what you need quickly.
     time_distribution_chart:
       title: Time Distribution Chart
-      description: Visualize how you spend your time across different tags and categories. See time allocation patterns and identify where your focus goes throughout the day.
+      description:
+        Visualize how you spend your time across different tags and categories.
+        See time allocation patterns and identify where your focus goes throughout
+        the day.
     chart_customization:
       title: Chart Customization
-      description: Customize the time chart by selecting date range, choosing categories (tasks, habits, apps), and filtering by specific tags to analyze your time distribution in detail.
+      description:
+        Customize the time chart by selecting date range, choosing categories
+        (tasks, habits, apps), and filtering by specific tags to analyze your time
+        distribution in detail.
     create_tags:
       title: Create New Tags
-      description: Add new tags to categorize your content. Tags help you organize tasks, habits, and apps across all features for better productivity tracking and time management.
+      description:
+        Add new tags to categorize your content. Tags help you organize
+        tasks, habits, and apps across all features for better productivity tracking
+        and time management.

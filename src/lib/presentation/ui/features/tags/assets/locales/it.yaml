@@ -12,7 +12,6 @@ tags:
     app_usage: Utilizzo app
     habits: Abitudini
     tasks: Attività
-
   details:
     archived: Archiviato
     color: Colore
@@ -42,42 +41,133 @@ tags:
   help:
     content: Contenuto aiuto tag
     overview:
-      content: |
-        Trasforma la tua produttività con etichettatura strategica che ti aiuta a organizzare il lavoro, tracciare investimenti di tempo e mantenere focus chiaro su ciò che conta di più.
+      content: "Trasforma la tua produttività con l'etichettatura strategica che
+        ti aiuta a organizzare il lavoro, tracciare gli investimenti di tempo e mantenere
+        un chiaro focus su ciò che conta di più.
 
-        ## ⚡ Perché è importante?
 
-        L'organizzazione basata su tag è fondamentale per la gestione efficace del tempo e la produttività. Categorizzando le tue attività con tag significativi, ottieni insight chiari su come trascorri il tuo tempo e puoi prendere decisioni informate per ottimizzare il tuo focus ed efficienza.
+        ## ⚡ Perché È Importante?
 
-        ## 📊 Analisi investimento tempo
 
-        Comprendi dove va il tuo tempo e prendi decisioni basate sui dati riguardo le tue priorità. Il tracciamento del tempo con tag rivela pattern che ti aiutano a ottimizzare il tuo programma e abitudini di lavoro.
+        L'organizzazione basata sulle etichette è fondamentale per una gestione efficace
+        del tempo e della produttività. Categorizzando le tue attività con etichette
+        significative, ottieni chiare intuizioni su come trascorri il tuo tempo e
+        puoi prendere decisioni informate per ottimizzare il tuo focus ed efficienza.
 
-        - ⏱️ Monitora il tempo trascorso tra diverse categorie di attività
-        - 📅 Traccia investimenti di tempo su periodi specifici e trend
+
+        ## 🏷️ Tipi di Etichette: Organizza a Modo Tuo
+
+
+        Le etichette sono disponibili in tre tipi specializzati, ciascuno progettato
+        per specifiche esigenze organizzative:
+
+
+        ### 📌 Etichette Etichetta
+
+        Etichette di categorizzazione flessibili per l'organizzazione generale. Usale
+        per marcare il contenuto per argomento, priorità, stato o qualsiasi sistema
+        di classificazione personalizzato che funziona per te.
+
+
+        - **Casi d'uso:** Categorie, priorità, stati, competenze, domini
+
+        - **Esempi:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Migliore per:** Categorizzazione generale e filtraggio su tutti i tipi
+        di contenuto
+
+
+        ### 📍 Etichette Contesto
+
+        Definiscono dove o come puoi svolgere i compiti. Le etichette di contesto
+        ti aiutano ad adattare il tuo lavoro alla tua situazione attuale, livello
+        di energia o ambiente.
+
+
+        - **Casi d'uso:** Posizioni fisiche, livelli di energia, strumenti disponibili,
+        modalità di lavoro
+
+        - **Esempi:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Migliore per:** Filtraggio dei compiti basato sulla posizione e gestione
+        dell'energia
+
+
+        ### 🎯 Etichette Progetto
+
+        Raggruppano compiti correlati verso obiettivi o risultati condivisi. Le etichette
+        di progetto creano pacchetti naturali di lavoro che contribuiscono a obiettivi
+        specifici.
+
+
+        - **Casi d'uso:** Lanci di prodotti, sviluppo di funzionalità, obiettivi
+        personali, iniziative ricorrenti
+
+        - **Esempi:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Migliore per:** Tracciare i progressi verso milestone e consegne specifiche
+
+
+        ## 📊 Analisi degli Investimenti di Tempo
+
+
+        Comprendi dove va il tuo tempo e prendi decisioni basate sui dati sulle tue
+        priorità. Il tracciamento del tempo con le etichette rivela modelli che ti
+        aiutano a ottimizzare il tuo programma e abitudini di lavoro.
+
+
+        - ⏱️ Monitora il tempo speso su diverse categorie di attività
+
+        - 📅 Traccia gli investimenti di tempo su periodi specifici e tendenze
+
         - ⚖️ Confronta l'allocazione del tempo tra progetti e responsabilità
-        - 📈 Identifica pattern di produttività e tempi di prestazione di picco
+
+        - 📈 Identifica modelli di produttività e tempi di prestazioni massime
+
         - 🎯 Concentra la tua energia su attività ad alto impatto
 
-        ## 🗂️ Organizzazione strategica
 
-        Crea un approccio sistematico per organizzare il tuo lavoro che si adatta alle tue esigenze. Tag ben strutturati formano la base di un sistema di produttività efficiente.
+        ## 🗂️ Organizzazione Strategica
 
-        - 🔍 Filtra e trova informazioni rapidamente con ricerche multi-tag
-        - 🗄️ Archivia progetti completati per mantenere organizzazione pulita
-        - 🧩 Costruisci strutture gerarchiche che riflettono i tuoi pattern di lavoro
-        - 👥 Raggruppa attività correlate per migliore gestione progetti
-        - ⏳ Abilita tracciamento tempo completo su tutte le attività
 
-        ## 💡 Strategie di ottimizzazione
+        Crea un approccio sistematico all'organizzazione del tuo lavoro che scala
+        con le tue esigenze. Le etichette ben strutturate formano la base di un sistema
+        di produttività efficiente.
 
-        Sfrutta tecniche di etichettatura avanzate per massimizzare l'efficacia del tuo sistema organizzativo e mantenere crescita di produttività a lungo termine.
 
-        - 🏷️ Usa nomi chiari e descrittivi che rimangano significativi nel tempo
+        - 🔍 Filtra e trova informazioni rapidamente con ricerche multi-etichetta
+
+        - 🗄️ Archivia progetti completati per mantenere un'organizzazione pulita
+
+        - 🧩 Costruisci strutture gerarchiche che riflettono i tuoi modelli di lavoro
+
+        - 👥 Raggruppa attività correlate per una migliore gestione dei progetti
+
+        - ⏳ Abilita il tracciamento completo del tempo su tutte le attività
+
+
+        ## 💡 Strategie di Ottimizzazione
+
+
+        Sfrutta tecniche di etichettatura avanzate per massimizzare l'efficacia del
+        tuo sistema organizzativo e mantenere la crescita della produttività a lungo
+        termine.
+
+
+        - 🏷️ Usa nomi chiari e descrittivi che rimangono significativi nel tempo
+
         - 🔗 **Crea strutture gerarchiche:** Progetti → Dipartimenti → Aree
-        - 📊 Rivedi regolarmente i report di analisi tempo per identificare opportunità di miglioramento
-        - 🗄️ Mantieni pulizia del sistema archiviando lavoro completato
-        - 🎯 Applica filtraggio focalizzato per eliminare distrazioni e migliorare concentrazione
+
+        - 📊 Rivedi regolarmente i report di analisi del tempo per identificare opportunità
+        di miglioramento
+
+        - 🗄️ Mantieni la pulizia del sistema archiviando il lavoro completato
+
+        - 🎯 Applica un filtraggio focalizzato per eliminare distrazioni e migliorare
+        la concentrazione
+
+        - 🔄 **Combina strategicamente i tipi di etichette:** Usa progetti per obiettivi,
+        contesti per situazione ed etichette per categorie"
       title: Guida all'organizzazione basata su tag e gestione tempo
     title: Aiuto tag
   labels:
@@ -129,22 +219,54 @@ tags:
   tour:
     smart_tagging:
       title: Sistema di Etichettatura Intelligente
-      description: Usa le etichette per organizzare e raggruppare le tue attività, abitudini e app. Traccia il tempo trascorso su diverse attività attraverso le etichette per capire dove va il tuo tempo e ottimizzare il flusso di lavoro.
+      description:
+        Usa le etichette per organizzare e raggruppare le tue attività,
+        abitudini e app. Traccia il tempo trascorso su diverse attività attraverso
+        le etichette per capire dove va il tuo tempo e ottimizzare il flusso di lavoro.
     your_tags:
       title: Le Tue Etichette
-      description: Sfoglia tutte le tue etichette e consulta le loro statistiche d'uso. Clicca su qualsiasi etichetta per visualizzare i dettagli, modificare le proprietà o vedere quali attività e abitudini la utilizzano. Organizza il tuo flusso di lavoro in modo efficiente.
+      description:
+        Sfoglia tutte le tue etichette e consulta le loro statistiche d'uso.
+        Clicca su qualsiasi etichetta per visualizzare i dettagli, modificare le proprietà
+        o vedere quali attività e abitudini la utilizzano. Organizza il tuo flusso
+        di lavoro in modo efficiente.
     tag_archive_filters:
       title: Filtri di Etichette e Archivio
-      description: Filtra le etichette selezionando etichette specifiche su cui concentrarti, o attiva/disattiva la visibilità delle etichette archiviate. Controlla quali etichette appaiono nella tua lista per una migliore organizzazione.
+      description:
+        Filtra le etichette selezionando etichette specifiche su cui concentrarti,
+        o attiva/disattiva la visibilità delle etichette archiviate. Controlla quali
+        etichette appaiono nella tua lista per una migliore organizzazione.
     search_sort:
       title: Ricerca e Ordinamento
-      description: Cerca etichette specifiche per nome, ordina secondo diversi criteri come nome o numero di utilizzi. Organizza la tua lista di etichette per trovare rapidamente ciò di cui hai bisogno.
+      description:
+        Cerca etichette specifiche per nome, ordina secondo diversi criteri
+        come nome o numero di utilizzi. Organizza la tua lista di etichette per trovare
+        rapidamente ciò di cui hai bisogno.
     time_distribution_chart:
       title: Grafico di Distribuzione del Tempo
-      description: Visualizza come distribuisci il tuo tempo tra diverse etichette e categorie. Osserva i modelli di allocazione del tempo e identifica dove si concentra la tua attenzione durante la giornata.
+      description:
+        Visualizza come distribuisci il tuo tempo tra diverse etichette
+        e categorie. Osserva i modelli di allocazione del tempo e identifica dove
+        si concentra la tua attenzione durante la giornata.
     chart_customization:
       title: Personalizzazione del Grafico
-      description: Personalizza il grafico temporale selezionando l'intervallo di date, scegliendo le categorie (attività, abitudini, app) e filtrando per etichette specifiche per analizzare in dettaglio la tua distribuzione del tempo.
+      description:
+        Personalizza il grafico temporale selezionando l'intervallo di
+        date, scegliendo le categorie (attività, abitudini, app) e filtrando per etichette
+        specifiche per analizzare in dettaglio la tua distribuzione del tempo.
     create_tags:
       title: Crea Nuove Etichette
-      description: Aggiungi nuove etichette per categorizzare i tuoi contenuti. Le etichette ti aiutano a organizzare attività, abitudini e app in tutte le funzionalità per un migliore monitoraggio della produttività e gestione del tempo.
+      description:
+        Aggiungi nuove etichette per categorizzare i tuoi contenuti. Le
+        etichette ti aiutano a organizzare attività, abitudini e app in tutte le funzionalità
+        per un migliore monitoraggio della produttività e gestione del tempo.
+  type:
+    label: Tipo
+    label_label: Etichetta
+    label_tooltip: Un'etichetta di categorizzazione flessibile
+    context: Contesto
+    context_tooltip: Dove o come puoi eseguire questo compito (es. @home, @work)
+    project: Progetto
+    project_tooltip:
+      Raggruppa le attività correlate verso un obiettivo comune (es.
+      +WebsiteRedesign)

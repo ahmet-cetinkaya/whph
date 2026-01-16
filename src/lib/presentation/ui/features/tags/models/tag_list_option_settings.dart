@@ -1,6 +1,6 @@
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 
 /// Model for storing tag filter and sort settings

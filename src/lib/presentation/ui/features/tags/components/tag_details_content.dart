@@ -20,6 +20,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/color_picker/color_field.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
+import 'package:whph/core/domain/features/tags/tag.dart';
 
 class TagDetailsContent extends StatefulWidget {
   final String tagId;
@@ -53,6 +54,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   // Define optional field keys
   static const String keyColor = 'color';
+  static const String keyType = 'type';
   static const String keyRelatedTags = 'relatedTags';
   static const String keyArchived = 'archived';
 
@@ -82,6 +84,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     setState(() {
       // Make fields with content automatically visible
       if (_hasFieldContent(keyColor)) _visibleOptionalFields.add(keyColor);
+      if (_hasFieldContent(keyType)) _visibleOptionalFields.add(keyType);
       if (_hasFieldContent(keyRelatedTags)) _visibleOptionalFields.add(keyRelatedTags);
       if (_hasFieldContent(keyArchived)) _visibleOptionalFields.add(keyArchived);
     });
@@ -100,6 +103,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     switch (fieldKey) {
       case keyColor:
         return _tag!.color != null && _tag!.color!.isNotEmpty;
+      case keyType:
+        return _tag!.type != TagType.label;
       case keyRelatedTags:
         return _tagTags != null && _tagTags!.items.isNotEmpty;
       case keyArchived:
@@ -254,6 +259,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       name: _nameController.text,
       color: _tag!.color,
       isArchived: _tag!.isArchived,
+      type: _tag!.type,
     );
   }
 
@@ -302,6 +308,14 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     _saveTag();
   }
 
+  void _onTypeChanged(TagType? type) {
+    if (type == null || !mounted) return;
+    setState(() {
+      _tag!.type = type;
+    });
+    _saveTag();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_tag == null || _tagTags == null) {
@@ -311,6 +325,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     // Don't show fields with content in the chips section
     final List<String> availableChipFields = [
       keyColor,
+      keyType,
       // Only show related tags chip if there are no related tags and it's not already visible
       if (_tagTags != null && _tagTags!.items.isEmpty && !_visibleOptionalFields.contains(keyRelatedTags))
         keyRelatedTags,
@@ -352,6 +367,51 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                           ? Color(int.parse("FF${_tag!.color}", radix: 16))
                           : Colors.blue,
                       onColorChanged: _onChangeColor,
+                    ),
+                  ),
+                if (_visibleOptionalFields.contains(keyType))
+                  DetailTableRowData(
+                    label: _translationService.translate(TagTranslationKeys.typeLabel),
+                    icon: Icons.category,
+                    widget: DropdownButtonFormField<TagType>(
+                      value: _tag!.type,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: TagType.label,
+                          child: Row(
+                            children: [
+                              Icon(TagUiConstants.labelIcon, size: AppTheme.iconSizeSmall),
+                              SizedBox(width: AppTheme.size2XSmall),
+                              Text('Label'),
+                            ],
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: TagType.context,
+                          child: Row(
+                            children: [
+                              Icon(TagUiConstants.contextIcon, size: AppTheme.iconSizeSmall),
+                              SizedBox(width: AppTheme.size2XSmall),
+                              Text('Context'),
+                            ],
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: TagType.project,
+                          child: Row(
+                            children: [
+                              Icon(TagUiConstants.projectIcon, size: AppTheme.iconSizeSmall),
+                              SizedBox(width: AppTheme.size2XSmall),
+                              Text('Project'),
+                            ],
+                          ),
+                        ),
+                      ],
+                      onChanged: _onTypeChanged,
                     ),
                   ),
                 if (_tagTags != null && (_tagTags!.items.isNotEmpty || _visibleOptionalFields.contains(keyRelatedTags)))
@@ -437,6 +497,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     switch (fieldKey) {
       case keyColor:
         return _translationService.translate(TagTranslationKeys.colorLabel);
+      case keyType:
+        return _translationService.translate(TagTranslationKeys.typeLabel);
       case keyRelatedTags:
         return _translationService.translate(TagTranslationKeys.detailsRelatedTags);
       case keyArchived:
@@ -451,6 +513,8 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     switch (fieldKey) {
       case keyColor:
         return TagUiConstants.colorIcon;
+      case keyType:
+        return Icons.category;
       case keyRelatedTags:
         return TagUiConstants.tagIcon;
       case keyArchived:

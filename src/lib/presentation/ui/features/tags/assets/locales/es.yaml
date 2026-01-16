@@ -40,57 +40,157 @@ tags:
     select_category: Seleccionar categoría
   filter_tooltip: Filtrar por etiquetas
   help:
-    content: |
-      🏷️ Las etiquetas te ayudan a agrupar y organizar elementos.
+    content: "🏷️ Las etiquetas te ayudan a agrupar y organizar elementos.
+
 
       ## ⚡ Características
+
       - Divide elementos en categorías
+
       - Crea orden visual con colores
+
       - Encuentra fácilmente elementos relacionados
 
+
       ## 💡 Consejos
+
       - Usa nombres claros y comprensibles
+
       - Agrupa elementos similares con la misma etiqueta
+
       - Usa codificación de colores para orden visual
+
       - Usa la función de archivo para mantener el orden
+
+      "
     description: Las etiquetas te ayudan a categorizar y agrupar elementos
     overview:
-      content: |
-        Transforma tu productividad con etiquetado estratégico que te ayude a organizar el trabajo, rastrear inversiones de tiempo y mantener enfoque claro en lo que más importa.
+      content:
+        "Transforme su productividad con etiquetado estratégico que le ayuda
+        a organizar el trabajo, rastrear inversiones de tiempo y mantener un enfoque
+        claro en lo que más importa.
 
-        ## ⚡ ¿Por qué es importante?
 
-        La organización basada en etiquetas es fundamental para la gestión efectiva del tiempo y la productividad. Al categorizar tus actividades con etiquetas significativas, obtienes insights claros sobre cómo pasas tu tiempo y puedes tomar decisiones informadas para optimizar tu enfoque y eficiencia.
+        ## ⚡ ¿Por Qué Es Importante?
 
-        ## 📊 Análisis de inversión de tiempo
 
-        Entiende a dónde va tu tiempo y toma decisiones basadas en datos sobre tus prioridades. El seguimiento de tiempo con etiquetas revela patrones que te ayudan a optimizar tu horario y hábitos de trabajo.
+        La organización basada en etiquetas es fundamental para la gestión efectiva
+        del tiempo y la productividad. Al categorizar sus actividades con etiquetas
+        significativas, obtiene información clara sobre cómo pasa su tiempo y puede
+        tomar decisiones informadas para optimizar su enfoque y eficiencia.
 
-        - ⏱️ Monitorea tiempo gastado en diferentes categorías de actividades
-        - 📅 Rastrea inversiones de tiempo sobre períodos específicos y tendencias
-        - ⚖️ Compara asignación de tiempo entre proyectos y responsabilidades
-        - 📈 Identifica patrones de productividad y tiempos de rendimiento pico
-        - 🎯 Enfoca tu energía en actividades de alto impacto
 
-        ## 🗂️ Organización estratégica
+        ## 🏷️ Tipos de Etiquetas: Organice a Su Manera
 
-        Crea un enfoque sistemático para organizar tu trabajo que escale con tus necesidades. Las etiquetas bien estructuradas forman la base de un sistema de productividad eficiente.
 
-        - 🔍 Filtra y encuentra información rápidamente con búsquedas multi-etiqueta
-        - 🗄️ Archiva proyectos completados para mantener organización limpia
-        - 🧩 Construye estructuras jerárquicas que reflejen tus patrones de trabajo
-        - 👥 Agrupa actividades relacionadas para mejor gestión de proyectos
-        - ⏳ Habilita seguimiento comprensivo de tiempo a través de todas las actividades
+        Las etiquetas vienen en tres tipos especializados, cada uno diseñado para
+        necesidades organizacionales específicas:
 
-        ## 💡 Estrategias de optimización
 
-        Aprovecha técnicas avanzadas de etiquetado para maximizar la efectividad de tu sistema organizacional y mantener crecimiento de productividad a largo plazo.
+        ### 📌 Etiquetas de Rótulo
 
-        - 🏷️ Usa nombres claros y descriptivos que permanezcan significativos a lo largo del tiempo
-        - 🔗 **Crea estructuras jerárquicas:** Proyectos → Departamentos → Áreas
-        - 📊 Revisa reportes de análisis de tiempo regularmente para identificar oportunidades de mejora
-        - 🗄️ Mantén limpieza del sistema archivando trabajo completado
-        - 🎯 Aplica filtrado enfocado para eliminar distracciones y mejorar concentración
+        Etiquetas de categorización flexible para organización general. Úselas para
+        marcar contenido por tema, prioridad, estado o cualquier sistema de clasificación
+        personalizado que funcione para usted.
+
+
+        - **Casos de uso:** Categorías, prioridades, estados, habilidades, dominios
+
+        - **Ejemplos:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Mejor para:** Categorización general y filtrado en todos los tipos de
+        contenido
+
+
+        ### 📍 Etiquetas de Contexto
+
+        Definen dónde o cómo puede cumplir tareas. Las etiquetas de contexto le ayudan
+        a adaptar su trabajo a su situación actual, nivel de energía o entorno.
+
+
+        - **Casos de uso:** Ubicaciones físicas, niveles de energía, herramientas
+        disponibles, modos de trabajo
+
+        - **Ejemplos:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Mejor para:** Filtrado de tareas basado en ubicación y gestión de energía
+
+
+        ### 🎯 Etiquetas de Proyecto
+
+        Agrupan tareas relacionadas hacia objetivos o resultados compartidos. Las
+        etiquetas de proyecto crean paquetes naturales de trabajo que contribuyen
+        a objetivos específicos.
+
+
+        - **Casos de uso:** Lanzamientos de productos, desarrollo de características,
+        metas personales, iniciativas recurrentes
+
+        - **Ejemplos:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Mejor para:** Seguir el progreso hacia hitos y entregas específicas
+
+
+        ## 📊 Análisis de Inversión de Tiempo
+
+
+        Entienda a dónde va su tiempo y tome decisiones basadas en datos sobre sus
+        prioridades. El seguimiento del tiempo con etiquetas revela patrones que le
+        ayudan a optimizar su horario y hábitos de trabajo.
+
+
+        - ⏱️ Monitoree el tiempo gastado en diferentes categorías de actividades
+
+        - 📅 Rastree inversiones de tiempo sobre períodos específicos y tendencias
+
+        - ⚖️ Compare la asignación de tiempo entre proyectos y responsabilidades
+
+        - 📈 Identifique patrones de productividad y tiempos de máximo rendimiento
+
+        - 🎯 Enfoque su energía en actividades de alto impacto
+
+
+        ## 🗂️ Organización Estratégica
+
+
+        Cree un enfoque sistemático para organizar su trabajo que escala con sus necesidades.
+        Las etiquetas bien estructuradas forman la base de un sistema de productividad
+        eficiente.
+
+
+        - 🔍 Filtre y encuentre información rápidamente con búsquedas multi-etiqueta
+
+        - 🗄️ Archive proyectos completados para mantener una organización limpia
+
+        - 🧩 Construya estructuras jerárquicas que reflejen sus patrones de trabajo
+
+        - 👥 Agrupe actividades relacionadas para mejor gestión de proyectos
+
+        - ⏳ Habilite el seguimiento comprehensivo del tiempo en todas las actividades
+
+
+        ## 💡 Estrategias de Optimización
+
+
+        Aproveche técnicas de etiquetado avanzadas para maximizar la efectividad de
+        su sistema organizacional y mantener el crecimiento de productividad a largo
+        plazo.
+
+
+        - 🏷️ Use nombres claros y descriptivos que permanezcan significativos con
+        el tiempo
+
+        - 🔗 **Cree estructuras jerárquicas:** Proyectos → Departamentos → Áreas
+
+        - 📊 Revise informes de análisis de tiempo regularmente para identificar oportunidades
+        de mejora
+
+        - 🗄️ Mantenga la limpieza del sistema archivando trabajo completado
+
+        - 🎯 Aplique filtrado enfocado para eliminar distracciones y mejorar la concentración
+
+        - 🔄 **Combine tipos de etiquetas estratégicamente:** Use proyectos para objetivos,
+        contextos para situación y rótulos para categorías"
       title: Guía de organización basada en etiquetas y gestión del tiempo
     title: Ayuda de etiquetas
   labels:
@@ -142,22 +242,51 @@ tags:
   tour:
     smart_tagging:
       title: Sistema Inteligente de Etiquetado
-      description: Usa etiquetas para organizar y agrupar tus tareas, hábitos y aplicaciones. Realiza un seguimiento del tiempo dedicado a diferentes actividades mediante etiquetas para entender a dónde va tu tiempo y optimizar tu flujo de trabajo.
+      description:
+        Usa etiquetas para organizar y agrupar tus tareas, hábitos y aplicaciones.
+        Realiza un seguimiento del tiempo dedicado a diferentes actividades mediante
+        etiquetas para entender a dónde va tu tiempo y optimizar tu flujo de trabajo.
     your_tags:
       title: Tus Etiquetas
-      description: Explora todas tus etiquetas y consulta sus estadísticas de uso. Haz clic en cualquier etiqueta para ver detalles, editar propiedades o ver qué tareas y hábitos la utilizan. Organiza tu flujo de trabajo de manera eficiente.
+      description:
+        Explora todas tus etiquetas y consulta sus estadísticas de uso.
+        Haz clic en cualquier etiqueta para ver detalles, editar propiedades o ver
+        qué tareas y hábitos la utilizan. Organiza tu flujo de trabajo de manera eficiente.
     tag_archive_filters:
       title: Filtros de Etiquetas y Archivo
-      description: Filtra etiquetas seleccionando etiquetas específicas en las que enfocarte, o alterna la visibilidad de etiquetas archivadas. Controla qué etiquetas aparecen en tu lista para una mejor organización.
+      description:
+        Filtra etiquetas seleccionando etiquetas específicas en las que
+        enfocarte, o alterna la visibilidad de etiquetas archivadas. Controla qué
+        etiquetas aparecen en tu lista para una mejor organización.
     search_sort:
       title: Buscar y Ordenar
-      description: Busca etiquetas específicas por nombre, ordena por diferentes criterios como nombre o recuento de uso. Organiza tu lista de etiquetas para encontrar rápidamente lo que necesitas.
+      description:
+        Busca etiquetas específicas por nombre, ordena por diferentes criterios
+        como nombre o recuento de uso. Organiza tu lista de etiquetas para encontrar
+        rápidamente lo que necesitas.
     time_distribution_chart:
       title: Gráfico de Distribución de Tiempo
-      description: Visualiza cómo distribuyes tu tiempo entre diferentes etiquetas y categorías. Observa los patrones de asignación de tiempo e identifica hacia dónde se dirige tu atención a lo largo del día.
+      description:
+        Visualiza cómo distribuyes tu tiempo entre diferentes etiquetas
+        y categorías. Observa los patrones de asignación de tiempo e identifica hacia
+        dónde se dirige tu atención a lo largo del día.
     chart_customization:
       title: Personalización del Gráfico
-      description: Personaliza el gráfico de tiempo seleccionando el rango de fechas, eligiendo categorías (tareas, hábitos, aplicaciones) y filtrando por etiquetas específicas para analizar en detalle tu distribución de tiempo.
+      description:
+        Personaliza el gráfico de tiempo seleccionando el rango de fechas,
+        eligiendo categorías (tareas, hábitos, aplicaciones) y filtrando por etiquetas
+        específicas para analizar en detalle tu distribución de tiempo.
     create_tags:
       title: Crear Nuevas Etiquetas
-      description: Añade nuevas etiquetas para categorizar tu contenido. Las etiquetas te ayudan a organizar tareas, hábitos y aplicaciones en todas las funciones para un mejor seguimiento de productividad y gestión del tiempo.
+      description:
+        Añade nuevas etiquetas para categorizar tu contenido. Las etiquetas
+        te ayudan a organizar tareas, hábitos y aplicaciones en todas las funciones
+        para un mejor seguimiento de productividad y gestión del tiempo.
+  type:
+    label: Tipo
+    label_label: Etiqueta
+    label_tooltip: Una etiqueta flexible de categorización
+    context: Contexto
+    context_tooltip: Dónde o cómo puedes realizar esta tarea (ej. @home, @work)
+    project: Proyecto
+    project_tooltip: Agrupar tareas relacionadas hacia un objetivo común (ej. +WebsiteRedesign)

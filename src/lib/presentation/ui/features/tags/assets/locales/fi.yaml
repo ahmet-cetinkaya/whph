@@ -42,42 +42,127 @@ tags:
   help:
     content: Tunnisteen apukuvaus
     overview:
-      content: |
-        Muuta tuottavuuttasi strategisella tunnisteella, joka auttaa sinua järjestämään työtä, seuraamaan aikainvestointeja ja ylläpitämään selkeää keskittymistä tärkeimpään.
+      content:
+        "Muuta tuottavuuttasi strategisella merkitsemisellä, joka auttaa organisoimaan
+        työtä, seuraamaan aika investointeja ja ylläpitämään selkeää keskittymistä
+        siihen, mikä on tärkeintä.
 
-        ## ⚡ Miksi se on tärkeää?
 
-        Tunnisteisiin perustuva organisointi on perustavanlaatuista tehokkaalle ajanhallinnalle ja tuottavuudelle. Luokittelemalla aktiviteettisi merkityksellisillä tunnisteilla saat selkeitä näkemyksiä siitä, miten käytät aikaasi, ja voit tehdä tietoon perustuvia päätöksiä keskittyäsi ja tehokkuutesi optimointiin.
+        ## ⚡ Miksi Se On Tärkeää?
 
-        ## 📊 Aikainvestointien analyysi
 
-        Ymmärrä, mihin aikasi menee, ja tee dataan perustuvia päätöksiä prioriteeteistasi. Tunnisteiden aikaseuranta paljastaa kuvioita, jotka auttavat optimoimaan aikataulusi ja työtapojasi.
+        Tunnistepohjainen organisaatio on perustana tehokkaalle ajanhallinnalle ja
+        tuottavuudelle. Kategorisoimalla aktiviteettisi merkityksellisillä tunnisteilla
+        saat selkeän käsityksen siitä, miten käytät aikaasi, ja voit tehdä tietoon
+        perustuvia päätöksiä keskittymisesi ja tehokkuutesi optimoimiseksi.
 
-        - ⏱️ Seuraa aikaa eri aktiivisuus kategorioissa
-        - 📅 Seuraa aikainvestointeja tietyissä aikajaksoissa ja trendeissä
-        - ⚖️ Vertaile ajan allokointia eri projekteissa ja vastuissa
-        - 📈 Tunnista tuottavuuskuvioita ja huippusuorituskyvyn aikoja
-        - 🎯 Keskity korkean vaikutuksen aktiviteetteihin
 
-        ## 🗂️ Strateginen organisointi
+        ## 🏷️ Tunnistetyypit: Organisoi Omalla Tavallasi
 
-        Luo systemaattinen lähestymistapa työn organisointiin, joka skaalautuu tarpeisiisi. Hyvin strukturoidut tunnisteet muodostavat tehokkaan tuottavuusjärjestelmän perustan.
 
-        - 🔍 Suodata ja löydä tietoa nopeasti monitunnisteisilla hauilla
-        - 🗄️ Arkistoi valmiit projektit pitääksesi organisoinnin siistinä
-        - 🧩 Rakenna hierarkkisia rakenteita, jotka heijastavat työkuvioitasi
-        - 👥 Ryhmittele liittyvät aktiviteetit parempaan projektinhallintaan
-        - ⏳ Ota käyttöön kattava aikaseuranta kaikissa aktiviteeteissa
+        Tunnisteita on kolme erikoistunutta tyyppiä, joista jokainen on suunniteltu
+        tiettyihin organisointitarpeisiin:
+
+
+        ### 📌 Nimiketunnisteet
+
+        Joustavat luokittelutunnisteet yleiseen organisointiin. Käytä niitä merkitsemään
+        sisältöä aiheen, prioriteetin, tilan tai minkä tahansa mukautetun luokittelujärjestelmän
+        mukaan, joka sopii sinulle.
+
+
+        - **Käyttötapahtumat:** Kategoriat, prioriteetit, tilat, taidot, alueet
+
+        - **Esimerkit:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Parhaita soveltuu:** Yleiseen luokitteluun ja suodattamiseen kaikissa
+        sisältötyypeissä
+
+
+        ### 📍 Kontekstitunnisteet
+
+        Määrittävät, missä tai miten voit suorittaa tehtäviä. Kontekstitunnisteet
+        auttavat sovittamaan työsi nykyiseen tilanteeseen, energiatasoon tai ympäristöön.
+
+
+        - **Käyttötapahtumat:** Fyysiset sijainnit, energiatasot, käytettävissä olevat
+        työkalut, työtilat
+
+        - **Esimerkit:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Parhaita soveltuu:** Sijaintipohjaiseen tehtäväsuodatukseen ja energianhallintaan
+
+
+        ### 🎯 Projektitunnisteet
+
+        Ryhmitä liittyvät tehtävät yhteisiin tavoitteisiin tai tuloksiin. Projektitunnisteet
+        luovat luonnollisia työpaketkeja, jotka contribut specifisiin tavoitteisiin.
+
+
+        - **Käyttötapahtumat:** Tuotelanseisut, ominaisuuksien kehitys, henkilökohtaiset
+        tavoitteet, toistuvat aloitteet
+
+        - **Esimerkit:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Parhaita soveltuu:** Edistymisen seurantaan kohti specifisiä virstanpylväitä
+        ja toimituksia
+
+
+        ## 📊 Aikainvestointianalyysi
+
+        Ymmärrä, mihin aikaasi kuluu, ja tee datapohjaisia päätöksiä prioriteeteistasi.
+        Ajan seuranta tunnisteilla paljastaa malleja, jotka auttavat optimoimaan aikataulun
+        ja työtapojasi.
+
+
+        - ⏱️ Seuraa aikaa, joka käytetään eri aktiviteettikategorioissa
+
+        - 📅 Seuraa aikainvestointeja tiettyjen jaksojen ja trendien yli
+
+        - ⚖️ Vertaile aikaa allokaatiota projektien ja vastuiden välillä
+
+        - 📈 Identifioi tuottavuusmalleja ja huippusuoritusajankohtia
+
+        - 🎯 Keskitä energiasi vaikutuskykyisiin aktiviteetteihin
+
+
+        ## 🗂️ Strateginen Organisaatio
+
+        Luo systemaattinen lähestymistapa työsi organisoimiseen, joka skaalautuu tarpeidesi
+        mukaan. Hyvin jäsennellyt tunnisteet muodostavat tehokkaan tuottavuusjärjestelmän
+        perustan.
+
+
+        - 🔍 Suodata ja löydä tiedot nopeasti moni-tunniste hauilla
+
+        - 🗄️ Arkistoi valmistuneet projektit siistin organisaation ylläpitämiseksi
+
+        - 🧩 Rakenna hierarkkisia rakenteita, jotka heijastavat työtapojasi
+
+        - 👥 Ryhmitä liittyvät aktiviteetit parempaan projektinhallintaan
+
+        - ⏳ Mahdollista kattava ajan seuranta kaikissa aktiviteeteissa
+
 
         ## 💡 Optimointistrategiat
 
-        Hyödynnä edistyneitä tunnistemerkintöjä maksimoidaksesi organisointi järjestelmäsi tehokkuuden ja ylläpitääksesi pitkän aikavälin tuottavuuden kasvua.
+        Hyödynnä edistyneitä merkitsemistekniikoita organisointijärjestelmäsi tehokkuuden
+        maksimoimiseksi ja pitkän aikavälin tuottavuuskasvun ylläpitämiseksi.
 
-        - 🏷️ Käytä selkeitä, kuvailevia nimiä, jotka pysyvät merkityksellisinä ajan myötä
+
+        - 🏷️ Käytä selkeitä, kuvaavia nimiä, jotka pysyvät merkityksellisinä ajan
+        myötä
+
         - 🔗 **Luo hierarkkisia rakenteita:** Projektit → Osastot → Alueet
-        - 📊 Tarkista säännöllisesti aikanalyysiraportteja tunnistaaksesi parannusmahdollisuuksia
-        - 🗄️ Pidä järjestelmä puhtaana arkistoimalla valmiit työt
-        - 🎯 Käytä keskittynyttä suodatusta häiriöiden poistamiseen ja keskittymisen parantamiseen
+
+        - 📊 Tarkista ajananalyysiraportit säännöllisesti tunnistaaksesi parannusmahdollisuuksia
+
+        - 🗄️ Ylläpidä järjestelmän siisteyttä arkivoimalla valmistunut työ
+
+        - 🎯 Kohdista suodatusta poistaaksesi häiriöt ja parantaaksesi keskittymistä
+
+        - 🔄 **Yhdistä tunnistetyyppejä strategisesti:** Käytä projekteja tavoitteisiin,
+        konteksteja tilanteeseen ja nimikkeitä kategorioihin"
       title: Tunnisteperustainen organisointi & ajanhallinnan opas
     title: Tunnisteiden apu
   labels:
@@ -129,22 +214,50 @@ tags:
   tour:
     smart_tagging:
       title: Älykäs Tunnistejärjestelmä
-      description: Käytä tunnisteita tehtävien, tapojen ja sovellusten järjestämiseen ja ryhmittelyyn. Seuraa eri toimintoihin käyttämääsi aikaa tunnisteiden avulla ymmärtääksesi, mihin aika kuluu, ja optimoidaksesi työnkulun.
+      description:
+        Käytä tunnisteita tehtävien, tapojen ja sovellusten järjestämiseen
+        ja ryhmittelyyn. Seuraa eri toimintoihin käyttämääsi aikaa tunnisteiden avulla
+        ymmärtääksesi, mihin aika kuluu, ja optimoidaksesi työnkulun.
     your_tags:
       title: Omat Tunnisteet
-      description: Selaa kaikkia tunnisteitasi ja katso niiden käyttötilastoja. Napsauta mitä tahansa tunnistetta nähdäksesi tiedot, muokataksesi ominaisuuksia tai nähdäksesi, mitkä tehtävät ja tavat käyttävät sitä. Järjestä työnkulku tehokkaasti.
+      description:
+        Selaa kaikkia tunnisteitasi ja katso niiden käyttötilastoja. Napsauta
+        mitä tahansa tunnistetta nähdäksesi tiedot, muokataksesi ominaisuuksia tai
+        nähdäksesi, mitkä tehtävät ja tavat käyttävät sitä. Järjestä työnkulku tehokkaasti.
     tag_archive_filters:
       title: Tunniste- ja Arkistosuodattimet
-      description: Suodata tunnisteita valitsemalla tietyt tunnisteet, joihin haluat keskittyä, tai vaihda arkistoitujen tunnisteiden näkyvyyttä. Hallitse, mitkä tunnisteet näkyvät listassasi parempaa järjestystä varten.
+      description:
+        Suodata tunnisteita valitsemalla tietyt tunnisteet, joihin haluat
+        keskittyä, tai vaihda arkistoitujen tunnisteiden näkyvyyttä. Hallitse, mitkä
+        tunnisteet näkyvät listassasi parempaa järjestystä varten.
     search_sort:
       title: Haku ja Lajittelu
-      description: Etsi tiettyjä tunnisteita nimen perusteella, lajittele eri kriteerien mukaan, kuten nimen tai käyttömäärän perusteella. Järjestä tunnistelistasi löytääksesi tarvitsemasi nopeasti.
+      description:
+        Etsi tiettyjä tunnisteita nimen perusteella, lajittele eri kriteerien
+        mukaan, kuten nimen tai käyttömäärän perusteella. Järjestä tunnistelistasi
+        löytääksesi tarvitsemasi nopeasti.
     time_distribution_chart:
       title: Aikajakaumakaavio
-      description: Visualisoi, miten käytät aikaasi eri tunnisteisiin ja luokkiin. Katso ajanjakautumismalleja ja tunnista, mihin huomiosi kohdistuu päivän aikana.
+      description:
+        Visualisoi, miten käytät aikaasi eri tunnisteisiin ja luokkiin.
+        Katso ajanjakautumismalleja ja tunnista, mihin huomiosi kohdistuu päivän aikana.
     chart_customization:
       title: Kaavion Mukauttaminen
-      description: Mukauta aikakaaviota valitsemalla ajanjakso, valitsemalla luokat (tehtävät, tavat, sovellukset) ja suodattamalla tietyillä tunnisteilla analysoidaksesi aikajakaumaa yksityiskohtaisesti.
+      description:
+        Mukauta aikakaaviota valitsemalla ajanjakso, valitsemalla luokat
+        (tehtävät, tavat, sovellukset) ja suodattamalla tietyillä tunnisteilla analysoidaksesi
+        aikajakaumaa yksityiskohtaisesti.
     create_tags:
       title: Luo Uusia Tunnisteita
-      description: Lisää uusia tunnisteita sisältösi luokittelemiseksi. Tunnisteet auttavat sinua järjestämään tehtäviä, tapoja ja sovelluksia kaikissa ominaisuuksissa parempaa tuottavuuden seurantaa ja ajanhallintaa varten.
+      description:
+        Lisää uusia tunnisteita sisältösi luokittelemiseksi. Tunnisteet
+        auttavat sinua järjestämään tehtäviä, tapoja ja sovelluksia kaikissa ominaisuuksissa
+        parempaa tuottavuuden seurantaa ja ajanhallintaa varten.
+  type:
+    label: Tyyppi
+    label_label: Nimike
+    label_tooltip: Joustava luokittelutunniste
+    context: Konteksti
+    context_tooltip: Missä tai miten voit suorittaa tämän tehtävän (esim. @koti, @työ)
+    project: Projekti
+    project_tooltip: Ryhmä liittyviä tehtäviä kohti yhteistä tavoitetta (esim. +WebsiteRedesign)

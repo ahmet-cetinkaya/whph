@@ -42,42 +42,135 @@ tags:
   help:
     content: Conținut ajutor etichetă
     overview:
-      content: |
-        Transformă-ți productivitatea cu etichetare strategică care te ajută să organizezi munca, să urmărești investițiile de timp și să menții un focus clar pe ceea ce contează cel mai mult.
+      content:
+        "Transformați-vă productivitatea cu etichetare strategică care vă ajută
+        să organizați munca, să urmăriți investițiile de timp și să mențineți un accent
+        clar pe ceea ce contează cel mai mult.
+
 
         ## ⚡ De Ce Este Important?
 
-        Organizarea bazată pe etichete este fundamentală pentru gestionarea eficientă a timpului și productivitate. Prin categorizarea activităților tale cu etichete semnificative, obții insights clare despre cum îți petreci timpul și poți lua decizii informate pentru a optimiza focusul și eficiența ta.
 
-        ## 📊 Analiză Investiții de Timp
+        Organizarea bazată pe etichete este fundamentală pentru gestionarea eficientă
+        a timpului și productivitate. Categorisindu-vă activitățile cu etichete semnificative,
+        obțineți perspective clare asupra modului în care vă petreceți timpul și puteți
+        lua decizii informate pentru a vă optimiza focusul și eficiența.
 
-        Înțelege unde merge timpul tău și ia decizii bazate pe date despre priorități. Urmărirea timpului cu etichete dezvăluie modele care te ajută să optimizezi programul și obiceiurile de muncă.
 
-        - ⏱️ Monitorizează timpul petrecut în diferite categorii de activități
-        - 📅 Urmărește investițiile de timp pe perioade specifice și tendințe
-        - ⚖️ Compară alocarea timpului între proiecte și responsabilități
-        - 📈 Identifică modele de productivitate și ore de vârf de performanță
-        - 🎯 Concentrează-ți energia pe activități cu impact ridicat
+        ## 🏷️ Tipuri de Etichete: Organizați-Vă După Cum Doriți
+
+
+        Etichetele vin în trei tipuri specializate, fiecare conceput pentru nevoi
+        organizaționale specifice:
+
+
+        ### 📌 Etichete de Etichetă
+
+        Etichete de categorizare flexibile pentru organizare generală. Folosiți-le
+        pentru a marca conținutul după subiect, prioritate, stare sau orice sistem
+        de clasificare personalizat care funcționează pentru dumneavoastră.
+
+
+        - **Cazuri de utilizare:** Categorii, priorități, stări, abilități, domenii
+
+        - **Exemple:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Cel mai bun pentru:** Categorisire generală și filtrare pe toate tipurile
+        de conținut
+
+
+        ### 📍 Etichete de Context
+
+        Definesc unde sau cum puteți îndeplini sarcini. Etichetele de context vă ajută
+        să vă adaptați munca la situația actuală, nivelul de energie sau mediu.
+
+
+        - **Cazuri de utilizare:** Locații fizice, niveluri de energie, instrumente
+        disponibile, moduri de lucru
+
+        - **Exemple:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Cel mai bun pentru:** Filtrarea sarcinilor bazată pe locație și gestionarea
+        energiei
+
+
+        ### 🎯 Etichete de Proiect
+
+        Grupează sarcini înrudite către obiective sau rezultate partajate. Etichetele
+        de proiect creează pachete naturale de muncă care contribuie la obiective
+        specifice.
+
+
+        - **Cazuri de utilizare:** Lansări de produse, dezvoltare de funcții, obiective
+        personale, inițiative recurente
+
+        - **Exemple:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Cel mai bun pentru:** Urmărirea progresului către repere și livrabile
+        specifice
+
+
+        ## 📊 Analiza Investiției de Timp
+
+
+        Înțelegeți unde merge timpul dumneavoastră și luați decizii bazate pe date
+        despre prioritățile dumneavoastră. Urmărirea timpului cu etichete dezvăluie
+        modele care vă ajută să vă optimizați programul și obiceiurile de muncă.
+
+
+        - ⏱️ Monitorizați timpul petrecut pe diferite categorii de activități
+
+        - 📅 Urmăriți investițiile de timp peste perioade specifice și tendințe
+
+        - ⚖️ Comparați alocarea timpului între proiecte și responsabilități
+
+        - 📈 Identificați modelele de productivitate și timpii de performanță maximă
+
+        - 🎯 Concentrați-vă energia pe activități cu impact ridicat
+
 
         ## 🗂️ Organizare Strategică
 
-        Creează o abordare sistematică pentru organizarea muncii tale care se scalează cu nevoile tale. Etichetele bine structurate formează baza unui sistem de productivitate eficient.
 
-        - 🔍 Filtrează și găsește informații rapid cu căutări multi-etichetă
-        - 🗄️ Arhivează proiectele finalizate pentru a menține organizarea curată
-        - 🧩 Construiește structuri ierarhice care reflectă modelele tale de muncă
-        - 👥 Grupă activități înrudite pentru un management mai bun al proiectelor
-        - ⏳ Activează urmărirea comprehensivă a timpului în toate activitățile
+        Creați o abordare sistematică pentru organizarea muncii dumneavoastră care
+        se scalează cu nevoile dumneavoastră. Etichetele bine structurate formează
+        baza unui sistem de productivitate eficient.
+
+
+        - 🔍 Filtrați și găsiți informații rapid cu căutări multi-etichetă
+
+        - 🗄️ Arhivați proiecte finalizate pentru a menține o organizație curată
+
+        - 🧩 Construiți structuri ierarhice care reflectă modelele dumneavoastră de
+        muncă
+
+        - 👥 Grupează activități înrudite pentru o mai bună gestionare a proiectelor
+
+        - ⏳ Activați urmărirea cuprinzătoare a timpului pe toate activitățile
+
 
         ## 💡 Strategii de Optimizare
 
-        Folosește tehnici avansate de etichetare pentru a maximiza eficacitatea sistemului tău organizațional și a menține creșterea pe termen lung a productivității.
 
-        - 🏷️ Folosește nume clare, descriptive care rămân semnificative în timp
-        - 🔗 **Creează structuri ierarhice:** Proiecte → Departamente → Zone
-        - 📊 Revizuiește rapoartele de analiză a timpului regulat pentru a identifica oportunități de îmbunătățire
-        - 🗄️ Menține curățenia sistemului arhivând munca finalizată
-        - 🎯 Aplică filtrare focalizată pentru a elimina distragerile și a îmbunătăți concentrarea
+        Exploatați tehnici de etichetare avansate pentru a maximiza eficacitatea sistemului
+        dumneavoastră organizațional și a menține creșterea productivității pe termen
+        lung.
+
+
+        - 🏷️ Folosiți nume clare și descriptive care rămân semnificative în timp
+
+        - 🔗 **Creați structuri ierarhice:** Proiecte → Departamente → Zone
+
+        - 📊 Revizuiți regulat rapoartele de analiză a timpului pentru a identifica
+        oportunități de îmbunătățire
+
+        - 🗄️ Mențineți curățenia sistemului arhivând munca finalizată
+
+        - 🎯 Aplicați filtrare concentrată pentru a elimina distragerile și îmbunătăți
+        concentrarea
+
+        - 🔄 **Combinați strategic tipurile de etichete:** Folosiți proiecte pentru
+        obiective, contexte pentru situație și etichete pentru categorii"
       title: Organizare Bazată pe Etichete & Ghid Gestionare Timp
     title: Ajutor Etichetă
   labels:
@@ -129,22 +222,52 @@ tags:
   tour:
     smart_tagging:
       title: Sistem Inteligent de Etichetare
-      description: Folosiți etichete pentru a vă organiza și grupa sarcinile, obiceiurile și aplicațiile. Urmăriți timpul petrecut în diferite activități după etichete pentru a înțelege unde vă merge timpul și a vă optimiza fluxul de lucru.
+      description:
+        Folosiți etichete pentru a vă organiza și grupa sarcinile, obiceiurile
+        și aplicațiile. Urmăriți timpul petrecut în diferite activități după etichete
+        pentru a înțelege unde vă merge timpul și a vă optimiza fluxul de lucru.
     your_tags:
       title: Etichetele Tale
-      description: Răsfoiește toate etichetele tale și vezi statisticile lor de utilizare. Apasă pe orice etichetă pentru a vizualiza detalii, edita proprietăți sau a vedea ce sarcini și obiceiuri o folosesc. Organizează-ți eficient fluxul de lucru.
+      description:
+        Răsfoiește toate etichetele tale și vezi statisticile lor de utilizare.
+        Apasă pe orice etichetă pentru a vizualiza detalii, edita proprietăți sau
+        a vedea ce sarcini și obiceiuri o folosesc. Organizează-ți eficient fluxul
+        de lucru.
     tag_archive_filters:
       title: Filtre pentru Etichete și Arhivă
-      description: Filtrează etichetele selectând etichete specifice pentru a te concentra pe ele, sau comută vizibilitatea etichetelor arhivate. Controlează ce etichete apar în lista ta pentru o mai bună organizare.
+      description:
+        Filtrează etichetele selectând etichete specifice pentru a te concentra
+        pe ele, sau comută vizibilitatea etichetelor arhivate. Controlează ce etichete
+        apar în lista ta pentru o mai bună organizare.
     search_sort:
       title: Căutare și Sortare
-      description: Caută etichete specifice după nume, sortează după diferite criterii precum numele sau numărul de utilizări. Organizează-ți lista de etichete pentru a găsi rapid ceea ce ai nevoie.
+      description:
+        Caută etichete specifice după nume, sortează după diferite criterii
+        precum numele sau numărul de utilizări. Organizează-ți lista de etichete pentru
+        a găsi rapid ceea ce ai nevoie.
     time_distribution_chart:
       title: Graficul Distribuției Timpului
-      description: Vizualizează cum îți petreci timpul în diferite etichete și categorii. Vezi modelele de alocare a timpului și identifică unde îți merge atenția pe parcursul zilei.
+      description:
+        Vizualizează cum îți petreci timpul în diferite etichete și categorii.
+        Vezi modelele de alocare a timpului și identifică unde îți merge atenția pe
+        parcursul zilei.
     chart_customization:
       title: Personalizarea Graficului
-      description: Personalizează graficul temporal selectând intervalul de date, alegând categorii (sarcini, obiceiuri, aplicații) și filtrând după etichete specifice pentru a analiza în detaliu distribuția timpului tău.
+      description:
+        Personalizează graficul temporal selectând intervalul de date,
+        alegând categorii (sarcini, obiceiuri, aplicații) și filtrând după etichete
+        specifice pentru a analiza în detaliu distribuția timpului tău.
     create_tags:
       title: Creează Etichete Noi
-      description: Adaugă etichete noi pentru a-ți categorisi conținutul. Etichetele te ajută să organizezi sarcini, obiceiuri și aplicații în toate funcțiile pentru un mai bun urmărire a productivității și gestionare a timpului.
+      description:
+        Adaugă etichete noi pentru a-ți categorisi conținutul. Etichetele
+        te ajută să organizezi sarcini, obiceiuri și aplicații în toate funcțiile
+        pentru un mai bun urmărire a productivității și gestionare a timpului.
+  type:
+    label: Tip
+    label_label: Etichetă
+    label_tooltip: O etichetă flexibilă de categorisare
+    context: Context
+    context_tooltip: Unde sau cum puteți efectua această sarcină (ex. @home, @work)
+    project: Proiect
+    project_tooltip: Grupează sarcinile înrudite către un obiectiv comun (ex. +WebsiteRedesign)

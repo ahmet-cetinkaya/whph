@@ -14,6 +14,7 @@ class TagTable extends Table {
   TextColumn get name => text()();
   TextColumn get color => text().nullable()();
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
+  IntColumn get type => intEnum<TagType>().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -40,6 +41,7 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
       name: entity.name,
       color: Value(entity.color),
       isArchived: Value(entity.isArchived),
+      type: Value(entity.type),
     );
   }
 
@@ -94,6 +96,7 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
         name: row.read<String>('name'),
         color: row.read<String?>('color'),
         isArchived: row.read<bool>('is_archived'),
+        type: _parseTagType(row.read<int?>('type')),
       );
 
       // Get primary tag ID from the join
@@ -114,6 +117,14 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
       pageIndex: tags.pageIndex,
       pageSize: tags.pageSize,
     );
+  }
+
+  TagType _parseTagType(int? typeIndex) {
+    if (typeIndex == null) return TagType.label;
+    if (typeIndex >= 0 && typeIndex < TagType.values.length) {
+      return TagType.values[typeIndex];
+    }
+    return TagType.label;
   }
 
   @override

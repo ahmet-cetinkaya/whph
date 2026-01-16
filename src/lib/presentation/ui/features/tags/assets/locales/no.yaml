@@ -42,42 +42,126 @@ tags:
   help:
     content: Merke hjelpeinnhold
     overview:
-      content: |
-        Transformer din produktivitet med strategisk merking som hjelper deg med å organisere arbeid, spore tidsinvesteringer og opprettholde klar fokus på det viktigste.
+      content:
+        "Transformer din produktivitet med strategisk merking som hjelper deg
+        med å organisere arbeid, spore tidsinvesteringer og opprettholde klar fokus
+        på det som betyr mest.
 
-        ## ⚡ Hvorfor er det viktig?
 
-        Merkebasert organisering er grunnleggende for effektiv tidshåndtering og produktivitet. Ved å kategorisere aktivitetene dine med meningsfulle merker får du klare innsikter i hvordan du bruker tiden din og kan ta informerte beslutninger for å optimalisere fokus og effektivitet.
+        ## ⚡ Hvorfor Er Det Viktig?
+
+
+        Merkebasert organisering er fundamentalt for effektiv tidsstyring og produktivitet.
+        Ved å kategorisere dine aktiviteter med meningsfulle merker, får du klar innsikt
+        i hvordan du bruker tiden din og kan ta informerte beslutninger for å optimalisere
+        fokus og effektivitet.
+
+
+        ## 🏷️ Merketyper: Organiser Din Måte
+
+
+        Merker kommer i tre spesialiserte typer, hver designet for spesifikke organisasjonsbehov:
+
+
+        ### 📌 Etikett Merker
+
+        Fleksible kategoriseringsmerker for generell organisering. Bruk dem til å
+        merke innhold etter emne, prioritet, status eller ethvert tilpasset klassifiseringssystem
+        som fungerer for deg.
+
+
+        - **Brukstilfeller:** Kategorier, prioriteringer, statuser, ferdigheter, domener
+
+        - **Eksempler:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Best for:** Generell kategorisering og filtrering på tvers av alle innholdstyper
+
+
+        ### 📍 Kontekst Merker
+
+        Definer hvor eller hvordan du kan fullføre oppgaver. Kontekstmerker hjelper
+        deg med å matche arbeidet ditt til din nåværende situasjon, energinivå eller
+        miljø.
+
+
+        - **Brukstilfeller:** Fysiske lokasjoner, energinivåer, tilgjengelige verktøy,
+        arbeidsmoduser
+
+        - **Eksempler:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Best for:** Lokasjonsbasert oppgavefiltrering og energistyring
+
+
+        ### 🎯 Prosjekt Merker
+
+        Grupper relaterte oppgaver mot delte mål eller resultater. Prosjektmerker
+        skaper naturlige pakker med arbeid som bidrar til spesifikke mål.
+
+
+        - **Brukstilfeller:** Produktlanseringer, funksjonsutvikling, personlige mål,
+        tilbakevendende initiativer
+
+        - **Eksempler:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Best for:** Sporing av fremgang mot spesifikke milepæler og leveranser
+
 
         ## 📊 Tidsinvesteringsanalyse
 
-        Forstå hvor tiden din går og ta datadrevne beslutninger om prioriteringene dine. Tidssporing med merker avdekker mønstre som hjelper deg med å optimalisere timeplanen og arbeidsvanene dine.
 
-        - ⏱️ Overvåk tid brukt på tvers av forskjellige aktivitetskategorier
+        Forstå hvor tiden din går og ta datadrevne beslutninger om prioriteringene
+        dine. Tidssporing med merker avslører mønstre som hjelper deg med å optimalisere
+        timeplanen og arbeidsvanene dine.
+
+
+        - ⏱️ Overvåk tid brukt på forskjellige aktivitetskategorier
+
         - 📅 Spor tidsinvesteringer over spesifikke perioder og trender
-        - ⚖️ Sammenlign tidsfordeling på tvers av prosjekter og ansvar
-        - 📈 Identifiser produktivitetsmønstre og peak-ytelsetider
-        - 🎯 Fokuser energien din på høypåvirkningsaktiviteter
 
-        ## 🗂️ Strategisk organisering
+        - ⚖️ Sammenlign tidsallokering på tvers av prosjekter og ansvarsområder
 
-        Opprett en systematisk tilnærming til organisering av arbeidet ditt som skalerer med dine behov. Velstrukturerede merker danner grunnlaget for et effektivt produktivitetssystem.
+        - 📈 Identifiser produktivitetsmønstre og topp ytelsestider
+
+        - 🎯 Fokuser energien din på høy-impact aktiviteter
+
+
+        ## 🗂️ Strategisk Organisering
+
+
+        Skap en systematisk tilnærming til å organisere arbeidet ditt som skalerer
+        med behovene dine. Velformede merker danner grunnlaget for et effektivt produktivitetssystem.
+
 
         - 🔍 Filtrer og finn informasjon raskt med multi-merke søk
+
         - 🗄️ Arkiver fullførte prosjekter for å opprettholde ren organisering
+
         - 🧩 Bygg hierarkiske strukturer som reflekterer arbeidsmønstrene dine
+
         - 👥 Grupper relaterte aktiviteter for bedre prosjektstyring
+
         - ⏳ Aktiver omfattende tidssporing på tvers av alle aktiviteter
+
 
         ## 💡 Optimaliseringsstrategier
 
-        Utnytt avanserte merkningsteknikker for å maksimere effektiviteten til organisasjonssystemet ditt og opprettholde langsiktig vekst i produktivitet.
+
+        Utnytt avanserte merkingsteknikker for å maksimere effektiviteten av organisasjonssystemet
+        ditt og opprettholde langsiktig produktivitetsvekst.
+
 
         - 🏷️ Bruk klare, beskrivende navn som forblir meningsfulle over tid
-        - 🔗 **Opprett hierarkiske strukturer:** Prosjekter → Avdelinger → Områder
-        - 📊 Gå gjennom tidsanalyserapporter regelmessig for å identifisere forbedringsmuligheter
+
+        - 🔗 **Skap hierarkiske strukturer:** Prosjekter → Avdelinger → Områder
+
+        - 📊 Gjennomgå tidsanalyserapporter regelmessig for å identifisere forbedringsmuligheter
+
         - 🗄️ Oppretthold systemrenhet ved å arkivere fullført arbeid
-        - 🎯 Bruk fokusert filtrering for å eliminere distraksjoner og forbedre konsentrasjon
+
+        - 🎯 Bruk målrettet filtrering for å eliminere distraksjoner og forbedre konsentrasjon
+
+        - 🔄 **Kombiner merketyper strategisk:** Bruk prosjekter for mål, kontekster
+        for situasjon og etiketter for kategorier"
       title: Merkebasert organisering og tidsstyringsveiledning
     title: Merkehjelp
   labels:
@@ -129,22 +213,53 @@ tags:
   tour:
     smart_tagging:
       title: Smart Tagging System
-      description: Bruk tagger for å organisere og gruppere oppgavene, vanene og appene dine. Spor tid brukt på ulike aktiviteter etter tagger for å forstå hvor tiden din går og optimalisere arbeidsflyten.
+      description:
+        Bruk tagger for å organisere og gruppere oppgavene, vanene og appene
+        dine. Spor tid brukt på ulike aktiviteter etter tagger for å forstå hvor tiden
+        din går og optimalisere arbeidsflyten.
     your_tags:
       title: Dine Tagger
-      description: Bla gjennom alle taggene dine og se bruksstatistikkene deres. Klikk på en hvilken som helst tagg for å se detaljer, redigere egenskaper eller se hvilke oppgaver og vaner som bruker den. Organiser arbeidsflyten din effektivt.
+      description:
+        Bla gjennom alle taggene dine og se bruksstatistikkene deres. Klikk
+        på en hvilken som helst tagg for å se detaljer, redigere egenskaper eller
+        se hvilke oppgaver og vaner som bruker den. Organiser arbeidsflyten din effektivt.
     tag_archive_filters:
       title: Tagg- og arkivfiltre
-      description: Filtrer tagger ved å velge spesifikke tagger å fokusere på, eller veksle mellom synlighet for arkiverte tagger. Kontroller hvilke tagger som vises i listen din for bedre organisering.
+      description:
+        Filtrer tagger ved å velge spesifikke tagger å fokusere på, eller
+        veksle mellom synlighet for arkiverte tagger. Kontroller hvilke tagger som
+        vises i listen din for bedre organisering.
     search_sort:
       title: Søk og sorter
-      description: Søk etter spesifikke tagger etter navn, sorter etter ulike kriterier som navn eller bruksantall. Organiser tagglisten din for å finne det du trenger raskt.
+      description:
+        Søk etter spesifikke tagger etter navn, sorter etter ulike kriterier
+        som navn eller bruksantall. Organiser tagglisten din for å finne det du trenger
+        raskt.
     time_distribution_chart:
       title: Tidsfordelingsdiagram
-      description: Visualiser hvordan du bruker tiden din på tvers av ulike tagger og kategorier. Se tildelingsmønstre for tid og identifiser hvor fokuset ditt går gjennom dagen.
+      description:
+        Visualiser hvordan du bruker tiden din på tvers av ulike tagger
+        og kategorier. Se tildelingsmønstre for tid og identifiser hvor fokuset ditt
+        går gjennom dagen.
     chart_customization:
       title: Diagramtilpasning
-      description: Tilpass tidsdiagrammet ved å velge datoområde, velge kategorier (oppgaver, vaner, apper) og filtrere etter spesifikke tagger for å analysere tidsfordelingen din i detalj.
+      description:
+        Tilpass tidsdiagrammet ved å velge datoområde, velge kategorier
+        (oppgaver, vaner, apper) og filtrere etter spesifikke tagger for å analysere
+        tidsfordelingen din i detalj.
     create_tags:
       title: Opprett nye tagger
-      description: Legg til nye tagger for å kategorisere innholdet ditt. Tagger hjelper deg med å organisere oppgaver, vaner og apper på tvers av alle funksjoner for bedre produktivitetssporing og tidsstyring.
+      description:
+        Legg til nye tagger for å kategorisere innholdet ditt. Tagger hjelper
+        deg med å organisere oppgaver, vaner og apper på tvers av alle funksjoner
+        for bedre produktivitetssporing og tidsstyring.
+  type:
+    label: Type
+    label_label: Etikett
+    label_tooltip: En fleksibel kategorimerkelapp
+    context: Kontekst
+    context_tooltip:
+      Hvor eller hvordan du kan utføre denne oppgaven (f.eks. @home,
+      @work)
+    project: Prosjekt
+    project_tooltip: Grupper relaterte oppgaver mot et felles mål (f.eks. +WebsiteRedesign)

@@ -12,7 +12,6 @@ tags:
     app_usage: Utilisation d'apps
     habits: Habitudes
     tasks: Tâches
-
   details:
     archived: Archivé
     color: Couleur
@@ -40,57 +39,162 @@ tags:
     select_category: Sélectionner une catégorie
   filter_tooltip: Filtrer par tags
   help:
-    content: |
-      🏷️ Les tags vous aident à grouper et organiser les éléments.
+    content: "🏷️ Les tags vous aident à grouper et organiser les éléments.
+
 
       ## ⚡ Fonctionnalités
+
       - Divisez les éléments en catégories
+
       - Créez un ordre visuel avec les couleurs
+
       - Trouvez facilement les éléments liés
 
+
       ## 💡 Conseils
+
       - Utilisez des noms clairs et compréhensibles
+
       - Groupez les éléments similaires avec le même tag
+
       - Utilisez le codage couleur pour l'ordre visuel
+
       - Utilisez la fonction d'archivage pour maintenir l'ordre
+
+      "
     description: Les tags vous aident à catégoriser et grouper les éléments
     overview:
-      content: |
-        Transformez votre productivité avec un marquage stratégique qui vous aide à organiser le travail, suivre les investissements en temps et maintenir une concentration claire sur ce qui compte le plus.
+      content:
+        "Transformez votre productivité avec un étiquetage stratégique qui
+        vous aide à organiser le travail, à suivre les investissements de temps et
+        à maintenir une concentration claire sur ce qui compte le plus.
 
-        ## ⚡ Pourquoi est-ce important ?
 
-        L'organisation basée sur les tags est fondamentale pour une gestion efficace du temps et la productivité. En catégorisant vos activités avec des tags significatifs, vous obtenez des insights clairs sur la façon dont vous passez votre temps et pouvez prendre des décisions éclairées pour optimiser votre concentration et efficacité.
+        ## ⚡ Pourquoi Est-Ce Important?
 
-        ## 📊 Analyse des investissements en temps
 
-        Comprenez où va votre temps et prenez des décisions basées sur les données concernant vos priorités. Le suivi du temps avec des tags révèle des modèles qui vous aident à optimiser votre horaire et vos habitudes de travail.
+        L'organisation basée sur les étiquettes est fondamentale pour une gestion
+        efficace du temps et la productivité. En catégorisant vos activités avec des
+        étiquettes significatives, vous obtenez un aperçu clair de la manière dont
+        vous passez votre temps et pouvez prendre des décisions éclairées pour optimiser
+        votre concentration et votre efficacité.
 
-        - ⏱️ Surveillez le temps passé dans différentes catégories d'activités
-        - 📅 Suivez les investissements en temps sur des périodes spécifiques et les tendances
-        - ⚖️ Comparez l'allocation de temps entre projets et responsabilités
-        - 📈 Identifiez les modèles de productivité et les heures de performance optimale
+
+        ## 🏷️ Types d'Étiquettes: Organisez à Votre Façon
+
+
+        Les étiquettes existent en trois types spécialisés, chacun conçu pour des
+        besoins organisationnels spécifiques:
+
+
+        ### 📌 Étiquettes de Libellé
+
+        Étiquettes de catégorisation flexibles pour l'organisation générale. Utilisez-les
+        pour marquer le contenu par sujet, priorité, statut ou tout système de classification
+        personnalisé qui fonctionne pour vous.
+
+
+        - **Cas d'utilisation:** Catégories, priorités, statuts, compétences, domaines
+
+        - **Exemples:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Idéal pour:** Catégorisation générale et filtrage sur tous les types de
+        contenu
+
+
+        ### 📍 Étiquettes de Contexte
+
+        Définissent où ou comment vous pouvez accomplir des tâches. Les étiquettes
+        de contexte vous aident à adapter votre travail à votre situation actuelle,
+        niveau d'énergie ou environnement.
+
+
+        - **Cas d'utilisation:** Lieux physiques, niveaux d'énergie, outils disponibles,
+        modes de travail
+
+        - **Exemples:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Idéal pour:** Filtrage de tâches basé sur le lieu et gestion de l'énergie
+
+
+        ### 🎯 Étiquettes de Projet
+
+        Regroupent les tâches connexes vers des objectifs ou résultats partagés. Les
+        étiquettes de projet créent des paquets naturels de travail qui contribuent
+        à des objectifs spécifiques.
+
+
+        - **Cas d'utilisation:** Lancements de produits, développement de fonctionnalités,
+        objectifs personnels, initiatives récurrentes
+
+        - **Exemples:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Idéal pour:** Suivi des progrès vers des jalons et livraisons spécifiques
+
+
+        ## 📊 Analyse des Investissements de Temps
+
+
+        Comprenez où va votre temps et prenez des décisions basées sur les données
+        sur vos priorités. Le suivi du temps avec des étiquettes révèle des modèles
+        qui vous aident à optimiser votre emploi du temps et habitudes de travail.
+
+
+        - ⏱️ Surveillez le temps passé sur différentes catégories d'activités
+
+        - 📅 Suivez les investissements de temps sur des périodes spécifiques et tendances
+
+        - ⚖️ Comparez l'allocation de temps sur les projets et responsabilités
+
+        - 📈 Identifiez les modèles de productivité et temps de performance maximale
+
         - 🎯 Concentrez votre énergie sur les activités à fort impact
 
-        ## 🗂️ Organisation stratégique
 
-        Créez une approche systématique pour organiser votre travail qui évolue avec vos besoins. Des tags bien structurés forment la base d'un système de productivité efficace.
+        ## 🗂️ Organisation Stratégique
 
-        - 🔍 Filtrez et trouvez rapidement l'information avec des recherches multi-tags
+
+        Créez une approche systématique pour organiser votre travail qui évolue avec
+        vos besoins. Des étiquettes bien structurées forment la base d'un système
+        de productivité efficace.
+
+
+        - 🔍 Filtrez et trouvez rapidement des informations avec des recherches multi-étiquettes
+
         - 🗄️ Archivez les projets terminés pour maintenir une organisation propre
-        - 🧩 Construisez des structures hiérarchiques qui reflètent vos modèles de travail
-        - 👥 Groupez les activités liées pour une meilleure gestion de projet
-        - ⏳ Activez le suivi complet du temps à travers toutes les activités
 
-        ## 💡 Stratégies d'optimisation
+        - 🧩 Construisez des structures hiérarchiques qui reflètent vos modèles de
+        travail
 
-        Exploitez les techniques de marquage avancées pour maximiser l'efficacité de votre système d'organisation et maintenir une croissance de productivité à long terme.
+        - 👥 Regroupez les activités connexes pour une meilleure gestion de projet
 
-        - 🏷️ Utilisez des noms clairs et descriptifs qui restent significatifs dans le temps
-        - 🔗 **Créez des structures hiérarchiques :** Projets → Départements → Domaines
-        - 📊 Révisez régulièrement les rapports d'analyse du temps pour identifier les opportunités d'amélioration
+        - ⏳ Activez le suivi complet du temps sur toutes les activités
+
+
+        ## 💡 Stratégies d'Optimisation
+
+
+        Exploitez des techniques d'étiquetage avancées pour maximiser l'efficacité
+        de votre système organisationnel et maintenir une croissance de productivité
+        à long terme.
+
+
+        - 🏷️ Utilisez des noms clairs et descriptifs qui restent significatifs au
+        fil du temps
+
+        - 🔗 **Créez des structures hiérarchiques:** Projets → Départements → Domaines
+
+        - 📊 Examinez régulièrement les rapports d'analyse de temps pour identifier
+        les opportunités d'amélioration
+
         - 🗄️ Maintenez la propreté du système en archivant le travail terminé
-        - 🎯 Appliquez un filtrage ciblé pour éliminer les distractions et améliorer la concentration
+
+        - 🎯 Appliquez un filtrage ciblé pour éliminer les distractions et améliorer
+        la concentration
+
+        - 🔄 **Combinez stratégiquement les types d'étiquettes:** Utilisez les projets
+        pour les objectifs, les contextes pour la situation et les libellés pour les
+        catégories"
       title: Guide d'organisation basée sur les tags et de gestion du temps
     title: Aide des tags
   labels:
@@ -142,22 +246,56 @@ tags:
   tour:
     smart_tagging:
       title: Système d'Étiquetage Intelligent
-      description: Utilisez des étiquettes pour organiser et regrouper vos tâches, habitudes et applications. Suivez le temps passé sur différentes activités par étiquettes pour comprendre où va votre temps et optimiser votre flux de travail.
+      description:
+        Utilisez des étiquettes pour organiser et regrouper vos tâches,
+        habitudes et applications. Suivez le temps passé sur différentes activités
+        par étiquettes pour comprendre où va votre temps et optimiser votre flux de
+        travail.
     your_tags:
       title: Vos Étiquettes
-      description: Parcourez toutes vos étiquettes et consultez leurs statistiques d'utilisation. Cliquez sur n'importe quelle étiquette pour voir les détails, modifier les propriétés ou voir quelles tâches et habitudes l'utilisent. Organisez efficacement votre flux de travail.
+      description:
+        Parcourez toutes vos étiquettes et consultez leurs statistiques
+        d'utilisation. Cliquez sur n'importe quelle étiquette pour voir les détails,
+        modifier les propriétés ou voir quelles tâches et habitudes l'utilisent. Organisez
+        efficacement votre flux de travail.
     tag_archive_filters:
       title: Filtres d'Étiquettes et d'Archivage
-      description: Filtrez les étiquettes en sélectionnant des étiquettes spécifiques sur lesquelles vous concentrer, ou basculez la visibilité des étiquettes archivées. Contrôlez quelles étiquettes apparaissent dans votre liste pour une meilleure organisation.
+      description:
+        Filtrez les étiquettes en sélectionnant des étiquettes spécifiques
+        sur lesquelles vous concentrer, ou basculez la visibilité des étiquettes archivées.
+        Contrôlez quelles étiquettes apparaissent dans votre liste pour une meilleure
+        organisation.
     search_sort:
       title: Recherche et Tri
-      description: Recherchez des étiquettes spécifiques par nom, triez selon différents critères comme le nom ou le nombre d'utilisations. Organisez votre liste d'étiquettes pour trouver rapidement ce dont vous avez besoin.
+      description:
+        Recherchez des étiquettes spécifiques par nom, triez selon différents
+        critères comme le nom ou le nombre d'utilisations. Organisez votre liste d'étiquettes
+        pour trouver rapidement ce dont vous avez besoin.
     time_distribution_chart:
       title: Graphique de Répartition du Temps
-      description: Visualisez comment vous passez votre temps sur différentes étiquettes et catégories. Voyez les modèles d'allocation de temps et identifiez où se porte votre attention tout au long de la journée.
+      description:
+        Visualisez comment vous passez votre temps sur différentes étiquettes
+        et catégories. Voyez les modèles d'allocation de temps et identifiez où se
+        porte votre attention tout au long de la journée.
     chart_customization:
       title: Personnalisation du Graphique
-      description: Personnalisez le graphique temporel en sélectionnant une plage de dates, en choisissant des catégories (tâches, habitudes, applications) et en filtrant par des étiquettes spécifiques pour analyser en détail votre répartition du temps.
+      description:
+        Personnalisez le graphique temporel en sélectionnant une plage
+        de dates, en choisissant des catégories (tâches, habitudes, applications)
+        et en filtrant par des étiquettes spécifiques pour analyser en détail votre
+        répartition du temps.
     create_tags:
       title: Créer de Nouvelles Étiquettes
-      description: Ajoutez de nouvelles étiquettes pour catégoriser votre contenu. Les étiquettes vous aident à organiser les tâches, les habitudes et les applications dans toutes les fonctionnalités pour un meilleur suivi de productivité et une gestion du temps améliorée.
+      description:
+        Ajoutez de nouvelles étiquettes pour catégoriser votre contenu.
+        Les étiquettes vous aident à organiser les tâches, les habitudes et les applications
+        dans toutes les fonctionnalités pour un meilleur suivi de productivité et
+        une gestion du temps améliorée.
+  type:
+    label: Type
+    label_label: Libellé
+    label_tooltip: Une étiquette de catégorisation flexible
+    context: Contexte
+    context_tooltip: Où ou comment vous pouvez accomplir cette tâche (ex. @home, @work)
+    project: Projet
+    project_tooltip: Grouper les tâches associées vers un objectif commun (ex. +WebsiteRedesign)

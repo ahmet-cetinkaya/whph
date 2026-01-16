@@ -42,42 +42,128 @@ tags:
   help:
     content: Vsebina pomoči oznake
     overview:
-      content: |
-        Transformirajte svojo produktivnost s strateško označevanjem, ki vam pomaga organizirati delo, slediti naložbam časa in ohranjati jasen fokus na tistem, kar je najbolj pomembno.
+      content:
+        "Transformirajte svojo produktivnost s strateškim označevanjem, ki
+        vam pomaga organizirati delo, slediti časovnim naložkam in ohranjati jasen
+        fokus na tistem, kar je najpomembnejše.
 
-        ## ⚡ Zakaj je to pomembno?
 
-        Organizacija na osnovi oznak je temelj za učinkovito upravljanje časa in produktivnost. S kategoriziranjem vaših aktivnosti z smiselnih oznakami dobite jasne vpoglede v to, kako porabite čas, in lahko sprejemate informirane odločitve za optimizacijo fokusa in učinkovitosti.
+        ## ⚡ Zakaj Je Pomembno?
 
-        ## 📊 Analiza naložb časa
 
-        Razumite, kam gre vaš čas, in sprejemajte odločitve na podlagi podatkov o vaših prednostnih nalogah. Sledenje času z oznakami razkriva vzorce, ki vam pomagajo optimizirati urnik in delovne navade.
+        Organizacija na osnovi značk je temelj učinkovitega upravljanja s časom in
+        produktivnosti. Z kategorizacijo vaših aktivnosti z pomenljivimi značkami
+        pridobite jasen vpogled v to, kako preživite čas, in lahko sprejemate informirane
+        odločitve za optimizacijo svojega fokusa in učinkovitosti.
 
-        - ⏱️ Spremljajte čas, porabljen za različne kategorije aktivnosti
-        - 📅 Sledite naložbam časa v specifična obdobja in trende
-        - ⚖️ Primerjajte razporeditev časa med projekti in odgovornostmi
-        - 📈 Prepoznajte vzorce produktivnosti in vrhunske čase izvajanja
-        - 🎯 Usmerite svojo energijo v dejavnosti z visokim vplivom
 
-        ## 🗂️ Strateška organizacija
+        ## 🏷️ Vrste Značk: Organiziraj Po Svoje
 
-        Ustvarite sistematičen pristop k organizaciji dela, ki se prilagaja vašim potrebam. Dobro strukturirane oznake tvorijo temelj učinkovitega sistema produktivnosti.
 
-        - 🔍 Hitro filtrirajte in najdite informacije z večoznačnimi iskanji
-        - 🗄️ Arhivirajte zaključene projekte za ohranjanje čiste organizacije
+        Značke so na voljo v treh specializiranih vrstah, od katerih je vsaka zasnovana
+        za specifične organizacijske potrebe:
+
+
+        ### 📌 Oznaka Značk
+
+        Fleksibilne značke za kategorizacijo za splošno organizacijo. Jih uporabite
+        za označevanje vsebine po temi, prednosti, statusu ali poljubnem prilagojenem
+        sistemskem razvrščanju, ki deluje za vas.
+
+
+        - **Primere uporabe:** Kategorije, prednosti, statusi, veščine, domene
+
+        - **Primeri:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Najboljše za:** Splošno kategorizacijo in filtriranje vseh vrst vsebine
+
+
+        ### 📍 Kontekstne Značke
+
+        Določijo, kje ali kako lahko opravite naloge. Kontekstne značke vam pomagajo
+        prilagoditi delo vaši trenutni situaciji, ravni energije ali okolju.
+
+
+        - **Primere uporabe:** Fizične lokacije, ravni energije, razpoložljiva orodja,
+        delovni načini
+
+        - **Primeri:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Najboljše za:** Filtriranje nalog na osnovi lokacije in upravljanje z
+        energijo
+
+
+        ### 🎯 Projektna Značka
+
+        Združuje povezane naloge proti skupnim ciljem ali rezultatom. Projektna značka
+        ustvarja naravne pakete dela, ki prispevajo k specifičnim ciljem.
+
+
+        - **Primere uporabe:** Izdaje produktov, razvoj funkcij, osebni cilji, ponavljajoče
+        se iniciative
+
+        - **Primeri:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Najboljše za:** Sledenje napredku do specifičnih mejnikov in dostav
+
+
+        ## 📊 Analiza Časovnih Naložk
+
+
+        Razumite, kam gre vaš čas, in sprejemajte odločitve na osnovi podatkov o vaših
+        prednostih. Sledenje časa s značkami razkriva vzorce, ki vam pomagajo optimizirati
+        urnik in delovne navade.
+
+
+        - ⏱️ Monitorirajte čas porabljen v različnih kategorijah aktivnosti
+
+        - 📅 Sledite časovnim naložkam v specifičnih obdobjih in trendih
+
+        - ⚖️ Primerjajte časovno alokacijo med projekti in odgovornostmi
+
+        - 📈 Identificirajte vzorce produktivnosti in časi najvišje učinkovitosti
+
+        - 🎯 Osredotočite svojo energijo na visoko-impact aktivnosti
+
+
+        ## 🗂️ Strateška Organizacija
+
+        Ustvarite sistematičen pristop k organizaciji dela, ki se skalira z vašimi
+        potrehami. Dobro strukturirane značke tvorijo osnovo učinkovitega produktivnostnega
+        sistema.
+
+
+        - 🔍 Filtrirajte in hitro najdite informacije z multi-značka iskanji
+
+        - 🗄️ Arhivirajte končane projekte za ohranitev čiste organizacije
+
         - 🧩 Gradite hierarhične strukture, ki odražajo vaše delovne vzorce
-        - 👥 Združujte sorodne aktivnosti za boljše upravljanje projektov
-        - ⏳ Omogočite obsežno sledenje časa za vse aktivnosti
 
-        ## 💡 Strategije optimizacije
+        - 👥 Združujte povezane aktivnosti za boljše upravljanje s projekti
 
-        Izkoristite napredne tehnike označevanja za maksimalno učinkovitost vašega organizacijskega sistema in dolgoročno rast produktivnosti.
+        - ⏳ Omogočite celovito sledenje časa vseh aktivitet
 
-        - 🏷️ Uporabite jasna, opisna imena, ki ostanejo smiselna skozi čas
-        - 🔗 **Ustvarite hierarhične strukture:** Projekti → Oddelki → Področja
-        - 📊 Redno pregledajte poročila o analizi časa za prepoznavanje priložnosti za izboljšave
-        - 🗄️ Ohranite čistočo sistema z arhiviranjem zaključenega dela
-        - 🎯 Uporabite osredotočeno filtriranje za odpravljanje motenj in izboljšanje koncentracije
+
+        ## 💡 Optimizacijske Strategije
+
+        Izkoristite napredne tehnike označevanja za maksimiranje učinkovitosti vašega
+        organizacijskega sistema in ohranjanje dolgoročne produktivnostne rasti.
+
+
+        - 🏷️ Uporabljajte jasne, opisne imena, ki ostanejo pomembne v času
+
+        - 🔗 **Ustvarjajte hierarhične strukture:** Projekti → Oddelki → Območja
+
+        - 📊 Redno pregledujte poročila o analizi časa za identifikacijo priložnosti
+        za izboljšave
+
+        - 🗄️ Ohranjajte čistost sistema z arhiviranjem končanega dela
+
+        - 🎯 Uporabljajte usmerjeno filtriranje za eliminacijo distrakcij in izboljšanje
+        koncentracije
+
+        - 🔄 **Strateško kombinirajte vrste značk:** Uporabljajte projekte za cilje,
+        kontekste za situacijo in oznake za kategorije"
       title: Organizacija na osnovi oznak & Vodnik za upravljanje časa
     title: Pomoč oznake
   labels:
@@ -129,22 +215,52 @@ tags:
   tour:
     smart_tagging:
       title: Pametni sistem označevanja
-      description: Uporabite oznake za organizacijo in združevanje svojih opravil, navad in aplikacij. Sledite času, porabljenem za različne dejavnosti po oznakah, da razumete, kam gre vaš čas, in optimizirate svoj delovni tok.
+      description:
+        Uporabite oznake za organizacijo in združevanje svojih opravil,
+        navad in aplikacij. Sledite času, porabljenem za različne dejavnosti po oznakah,
+        da razumete, kam gre vaš čas, in optimizirate svoj delovni tok.
     your_tags:
       title: Vaše oznake
-      description: Brskajte po vseh svojih oznakah in si oglejte njihovo statistiko uporabe. Kliknite katero koli oznako za ogled podrobnosti, urejanje lastnosti ali ogled, katera opravila in navade jo uporabljajo. Učinkovito organizirajte svoj delovni tok.
+      description:
+        Brskajte po vseh svojih oznakah in si oglejte njihovo statistiko
+        uporabe. Kliknite katero koli oznako za ogled podrobnosti, urejanje lastnosti
+        ali ogled, katera opravila in navade jo uporabljajo. Učinkovito organizirajte
+        svoj delovni tok.
     tag_archive_filters:
       title: Filtri oznak in arhiva
-      description: Filtrirajte oznake tako, da izberete določene oznake za osredotočanje, ali preklopite vidnost arhiviranih oznak. Nadzorujte, katere oznake se prikažejo na vašem seznamu za boljšo organizacijo.
+      description:
+        Filtrirajte oznake tako, da izberete določene oznake za osredotočanje,
+        ali preklopite vidnost arhiviranih oznak. Nadzorujte, katere oznake se prikažejo
+        na vašem seznamu za boljšo organizacijo.
     search_sort:
       title: Iskanje in razvrščanje
-      description: Poiščite določene oznake po imenu, razvrstite po različnih merilih, kot sta ime ali število uporab. Organizirajte svoj seznam oznak, da hitro najdete, kar potrebujete.
+      description:
+        Poiščite določene oznake po imenu, razvrstite po različnih merilih,
+        kot sta ime ali število uporab. Organizirajte svoj seznam oznak, da hitro
+        najdete, kar potrebujete.
     time_distribution_chart:
       title: Grafikon porazdelitve časa
-      description: Vizualizirajte, kako porabite svoj čas med različnimi oznakami in kategorijami. Oglejte si vzorce dodeljevanja časa in prepoznajte, kam gre vaša pozornost skozi dan.
+      description:
+        Vizualizirajte, kako porabite svoj čas med različnimi oznakami
+        in kategorijami. Oglejte si vzorce dodeljevanja časa in prepoznajte, kam gre
+        vaša pozornost skozi dan.
     chart_customization:
       title: Prilagoditev grafikona
-      description: Prilagodite časovni grafikon tako, da izberete časovno obdobje, izberete kategorije (opravila, navade, aplikacije) in filtrirate po določenih oznakah za podrobno analizo porazdelitve vašega časa.
+      description:
+        Prilagodite časovni grafikon tako, da izberete časovno obdobje,
+        izberete kategorije (opravila, navade, aplikacije) in filtrirate po določenih
+        oznakah za podrobno analizo porazdelitve vašega časa.
     create_tags:
       title: Ustvari nove oznake
-      description: Dodajte nove oznake za kategorizacijo vaše vsebine. Oznake vam pomagajo organizirati opravila, navade in aplikacije v vseh funkcijah za boljše sledenje produktivnosti in upravljanje časa.
+      description:
+        Dodajte nove oznake za kategorizacijo vaše vsebine. Oznake vam
+        pomagajo organizirati opravila, navade in aplikacije v vseh funkcijah za boljše
+        sledenje produktivnosti in upravljanje časa.
+  type:
+    label: Vrsta
+    label_label: Oznaka
+    label_tooltip: Priljpljiva oznaka za kategorizacijo
+    context: Kontekst
+    context_tooltip: Kje ali kako lahko opravite to opravilo (npr. @home, @work)
+    project: Projekt
+    project_tooltip: Združi sorodne naloge proti skupnemu cilju (npr. +WebsiteRedesign)
