@@ -317,15 +317,17 @@ class GetListHabitsQueryHandler
           direction: option.direction,
         ));
       } else {
-        // Default alphabetical sort by first tag name
+        // Default sort by first tag order, then name
         orders.add(CustomOrder(
           field: '''(
-            SELECT MIN(t.name COLLATE NOCASE) 
-            FROM habit_tag_table ht 
-            JOIN tag_table t ON ht.tag_id = t.id 
-            WHERE ht.habit_id = habit_table.id 
+            SELECT t.name
+            FROM habit_tag_table ht
+            JOIN tag_table t ON ht.tag_id = t.id
+            WHERE ht.habit_id = habit_table.id
             AND ht.deleted_date IS NULL
             AND t.deleted_date IS NULL
+            ORDER BY ht.tag_order ASC, t.name COLLATE NOCASE ASC
+            LIMIT 1
           )''',
           direction: option.direction,
         ));
