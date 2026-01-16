@@ -317,7 +317,7 @@ void main() {
 
       expect(response.successCount, 0);
       expect(response.failureCount, 1);
-      expect(response.errors.first, contains('Row 2: Unexpected error'));
+      expect(response.errors.first, contains('Failed to import row'));
     });
 
     test('should handle missing CONTENT column in generic CSV', () async {

@@ -33,7 +33,7 @@ class _ImportErrorMessages {
   static const String fileReadError = 'Failed to read file';
   static const String csvParseError = 'Failed to parse CSV';
   static const String mediatorError = 'Failed to save task';
-  // static const String rowImportError = 'Failed to import row';
+  static const String rowImportError = 'Failed to import row';
   static const String invalidFilePath = 'Invalid file path';
   static const String negativeCount = 'Count cannot be negative';
   static const String emptyFilePath = 'File path cannot be empty';

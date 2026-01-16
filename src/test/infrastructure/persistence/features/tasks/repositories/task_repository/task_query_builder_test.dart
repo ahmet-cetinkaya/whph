@@ -10,9 +10,13 @@ void main() {
       final customOrder = [CustomOrder(field: 'tag', direction: SortDirection.asc)];
       final clause = builder.buildOrderByClause(customOrder, customTagSortOrder: null);
 
-      expect(clause, contains('SELECT MIN(t.name)'));
+      expect(clause, contains('SELECT t.name'));
       expect(clause, contains('FROM task_tag_table tt'));
       expect(clause, contains('INNER JOIN tag_table t ON tt.tag_id = t.id'));
+      expect(clause, contains('WHERE tt.task_id = task_table.id'));
+      expect(clause, contains('AND tt.deleted_date IS NULL'));
+      expect(clause, contains('ORDER BY tt.tag_order ASC, t.name COLLATE NOCASE ASC'));
+      expect(clause, contains('LIMIT 1'));
     });
 
     test('buildOrderByClause generates CASE WHEN sort for tag with custom order', () {
