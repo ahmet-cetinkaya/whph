@@ -563,7 +563,7 @@ void main() {
       });
 
       test('should handle leap year February', () {
-        final result = DateHelper.getNthWeekdayOfMonth(2024, 2, DateTime.thursday, 4);
+        final result = DateHelper.getNthWeekdayOfMonth(2024, 2, DateTime.thursday, 5);
         expect(result, DateTime(2024, 2, 29)); // Leap day Thursday
       });
 

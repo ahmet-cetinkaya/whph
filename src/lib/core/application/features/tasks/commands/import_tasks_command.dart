@@ -274,6 +274,16 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
           error: e,
           stackTrace: stackTrace,
         );
+      } on Exception catch (e, stackTrace) {
+        // Known exceptions during row import
+        failureCount++;
+        final errorMsg = 'Row ${i + 2}: ${_ImportErrorMessages.rowImportError} - $e';
+        _addError(errors, errorMsg);
+        Logger.error(
+          '[${_ImportErrorIds.mediatorError}] $errorMsg',
+          error: e,
+          stackTrace: stackTrace,
+        );
       } catch (e, stackTrace) {
         // Don't catch Exception - let truly unexpected errors propagate
         // Only catch specific exceptions we know how to handle
