@@ -16,12 +16,14 @@ class NoteTagDto {
   String tagId;
   String tagName;
   String? tagColor;
+  int tagOrder;
 
   NoteTagDto({
     required this.id,
     required this.tagId,
     required this.tagName,
     this.tagColor,
+    this.tagOrder = 0,
   });
 }
 
@@ -73,6 +75,7 @@ class GetNoteQueryHandler implements IRequestHandler<GetNoteQuery, GetNoteQueryR
                 tagId: noteTag.tagId,
                 tagName: noteTag.tag?.name ?? '',
                 tagColor: noteTag.tag?.color,
+                tagOrder: noteTag.tagOrder,
               ))
           .toList(),
     );

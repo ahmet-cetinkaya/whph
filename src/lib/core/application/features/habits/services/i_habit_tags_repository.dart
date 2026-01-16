@@ -22,4 +22,6 @@ abstract class IHabitTagsRepository extends app.IRepository<HabitTag, String> {
   });
 
   Future<Map<String, List<TagListItem>>> getTagsForHabitIds(List<String> habitIds);
+
+  Future<void> updateTagOrders(String habitId, Map<String, int> tagOrders);
 }

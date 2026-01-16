@@ -16,6 +16,7 @@ import 'package:whph/core/application/features/app_usages/commands/start_track_a
 import 'package:whph/core/application/features/app_usages/commands/stop_track_app_usages_command.dart';
 import 'package:whph/core/application/features/app_usages/commands/add_app_usage_tag_command.dart';
 import 'package:whph/core/application/features/app_usages/commands/remove_tag_tag_command.dart';
+import 'package:whph/core/application/features/app_usages/commands/update_app_usage_tags_order_command.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
@@ -54,6 +55,9 @@ void registerAppUsagesFeature(
     )
     ..registerHandler<RemoveAppUsageTagCommand, RemoveAppUsageTagCommandResponse, RemoveAppUsageTagCommandHandler>(
       () => RemoveAppUsageTagCommandHandler(appUsageTagRepository: appUsageTagRepository),
+    )
+    ..registerHandler<UpdateAppUsageTagsOrderCommand, void, UpdateAppUsageTagsOrderCommandHandler>(
+      () => UpdateAppUsageTagsOrderCommandHandler(appUsageTagRepository: appUsageTagRepository),
     )
     ..registerHandler<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse, GetListAppUsageTagsQueryHandler>(
       () => GetListAppUsageTagsQueryHandler(

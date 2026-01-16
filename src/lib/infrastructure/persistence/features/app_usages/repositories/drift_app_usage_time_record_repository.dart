@@ -8,6 +8,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_
 import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/core/domain/features/tags/tag.dart';
 
 @UseRowClass(AppUsageTimeRecord)
 class AppUsageTimeRecordTable extends Table {
@@ -98,6 +99,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     List<SortOptionWithTranslationKey<AppUsageSortFields>>? sortBy,
     SortOptionWithTranslationKey<AppUsageSortFields>? groupBy,
     bool sortByCustomOrder = false,
+    List<String>? customTagSortOrder,
   }) async {
     // Helper function to generate sort clause for a given table alias
     String getSortClauseForAlias(String alias) {
@@ -116,6 +118,23 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
             break;
           case AppUsageSortFields.device:
             clauses.add('$alias.device_name $direction');
+            break;
+          case AppUsageSortFields.tag:
+            // Grouping by tag roughly means sorting by first tag
+            if (customTagSortOrder != null && customTagSortOrder.isNotEmpty) {
+              final caseStatements = StringBuffer();
+              for (int i = 0; i < customTagSortOrder.length; i++) {
+                final safeId = customTagSortOrder[i].replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '');
+                caseStatements.write("WHEN '$safeId' THEN $i ");
+              }
+              final tagSubquery =
+                  "(SELECT MIN(CASE aut.tag_id $caseStatements ELSE 999 END) FROM app_usage_tag_table aut WHERE aut.app_usage_id = $alias.id AND aut.deleted_date IS NULL)";
+              clauses.add("$tagSubquery IS NULL, $tagSubquery $direction");
+            } else {
+              final tagSubquery =
+                  "(SELECT t.name FROM app_usage_tag_table aut JOIN tag_table t ON aut.tag_id = t.id WHERE aut.app_usage_id = $alias.id AND aut.deleted_date IS NULL AND t.deleted_date IS NULL ORDER BY aut.tag_order ASC, t.name COLLATE NOCASE ASC LIMIT 1)";
+              clauses.add("$tagSubquery IS NULL, $tagSubquery $direction");
+            }
             break;
         }
       }
@@ -136,6 +155,22 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
               break;
             case AppUsageSortFields.device:
               clauses.add('$alias.device_name $direction');
+              break;
+            case AppUsageSortFields.tag:
+              if (customTagSortOrder != null && customTagSortOrder.isNotEmpty) {
+                final caseStatements = StringBuffer();
+                for (int i = 0; i < customTagSortOrder.length; i++) {
+                  final safeId = customTagSortOrder[i].replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '');
+                  caseStatements.write("WHEN '$safeId' THEN $i ");
+                }
+                final tagSubquery =
+                    "(SELECT MIN(CASE aut.tag_id $caseStatements ELSE 999 END) FROM app_usage_tag_table aut WHERE aut.app_usage_id = $alias.id AND aut.deleted_date IS NULL)";
+                clauses.add("$tagSubquery IS NULL, $tagSubquery $direction");
+              } else {
+                final tagSubquery =
+                    "(SELECT t.name FROM app_usage_tag_table aut JOIN tag_table t ON aut.tag_id = t.id WHERE aut.app_usage_id = $alias.id AND aut.deleted_date IS NULL AND t.deleted_date IS NULL ORDER BY aut.tag_order ASC, t.name COLLATE NOCASE ASC LIMIT 1)";
+                clauses.add("$tagSubquery IS NULL, $tagSubquery $direction");
+              }
               break;
           }
         }
@@ -205,7 +240,11 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           ...filterByDevices.map((device) => Variable<String>(device)),
         ],
       ],
-      readsFrom: {table},
+      readsFrom: {
+        table,
+        database.appUsageTable,
+        database.appUsageTagTable,
+      },
     );
 
     final totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
@@ -278,12 +317,14 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         fau.total_duration as duration,
         aut.id as tag_app_usage_tag_id,
         aut.tag_id,
+        aut.tag_order as ordering,
         t.name as tag_name,
-        t.color as tag_color
+        t.color as tag_color,
+        t.type as tag_type
       FROM filtered_app_usages fau
       LEFT JOIN app_usage_tag_table aut ON fau.id = aut.app_usage_id AND aut.deleted_date IS NULL
       LEFT JOIN tag_table t ON aut.tag_id = t.id AND t.deleted_date IS NULL
-      ORDER BY $outerSortClause, fau.id, aut.id
+      ORDER BY $outerSortClause, fau.id, ordering ASC
       ''',
       variables: [
         if (startDate != null) Variable<DateTime>(startDate),
@@ -299,7 +340,12 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         Variable<int>(pageSize),
         Variable<int>(pageIndex * pageSize),
       ],
-      readsFrom: {table},
+      readsFrom: {
+        table,
+        database.appUsageTable,
+        database.appUsageTagTable,
+        database.tagTable,
+      },
     );
 
     final rows = await dataQuery.get();
@@ -330,12 +376,18 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
 
         // Only add the tag if we have valid tag data
         if (tagId != null && tagName != null) {
+          final tagTypeInt = row.read<int?>('tag_type') ?? 0;
+          final tagType =
+              tagTypeInt >= 0 && tagTypeInt < TagType.values.length ? TagType.values[tagTypeInt] : TagType.label;
+
           appUsageMap[id]!.tags.add(AppUsageTagListItem(
                 id: tagAppUsageTagId,
                 appUsageId: id,
                 tagId: tagId,
                 tagName: tagName,
                 tagColor: row.read<String?>('tag_color'),
+                tagType: tagType,
+                tagOrder: row.read<int?>('ordering') ?? 0,
               ));
         }
       }

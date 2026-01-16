@@ -79,9 +79,10 @@ class ChangelogDialogService implements IChangelogDialogService {
 
   Future<String?> _getLastShownVersion() async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.lastShownChangelogVersion),
       );
+      if (response == null) return null;
       return response.getValue<String>();
     } catch (e) {
       Logger.error('Failed to get last shown changelog version: $e');

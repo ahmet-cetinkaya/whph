@@ -21,6 +21,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
   bool sortByCustomOrder;
   SortOptionWithTranslationKey<AppUsageSortFields>? groupBy;
   bool enableGrouping;
+  List<String>? customTagSortOrder;
 
   GetListByTopAppUsagesQuery({
     required this.pageIndex,
@@ -37,6 +38,7 @@ class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryR
     this.groupBy,
     this.sortByCustomOrder = false,
     this.enableGrouping = false,
+    this.customTagSortOrder,
   })  : startDate = startDate != null ? DateTimeHelper.toUtcDateTime(startDate) : null,
         endDate = endDate != null ? DateTimeHelper.toUtcDateTime(endDate) : null,
         compareStartDate = compareStartDate != null ? DateTimeHelper.toUtcDateTime(compareStartDate) : null,
@@ -72,9 +74,33 @@ class GetListByTopAppUsagesQueryHandler
       sortBy: request.sortBy,
       groupBy: request.enableGrouping ? request.groupBy : null,
       sortByCustomOrder: request.sortByCustomOrder,
+      customTagSortOrder: request.customTagSortOrder,
     );
 
     final items = results.items.map((record) {
+      // Sort tags of the app usage based on the same criteria as sorting/grouping
+      List<AppUsageTagListItem> tags = List<AppUsageTagListItem>.from(record.tags);
+      if (tags.isNotEmpty) {
+        if (request.customTagSortOrder != null && request.customTagSortOrder!.isNotEmpty) {
+          final orderMap = {
+            for (var i = 0; i < request.customTagSortOrder!.length; i++) request.customTagSortOrder![i]: i
+          };
+          tags.sort((a, b) {
+            final indexA = orderMap[a.tagId] ?? 999;
+            final indexB = orderMap[b.tagId] ?? 999;
+            if (indexA != indexB) return indexA.compareTo(indexB);
+            return a.tagOrder.compareTo(b.tagOrder);
+          });
+        } else {
+          // Default sort by tagOrder ASC, then tagName
+          tags.sort((a, b) {
+            final orderCompare = a.tagOrder.compareTo(b.tagOrder);
+            if (orderCompare != 0) return orderCompare;
+            return a.tagName.toLowerCase().compareTo(b.tagName.toLowerCase());
+          });
+        }
+      }
+
       final item = AppUsageListItem(
         id: record.id,
         name: record.name,
@@ -83,7 +109,7 @@ class GetListByTopAppUsagesQueryHandler
         deviceName: record.deviceName,
         duration: record.duration,
         compareDuration: record.compareDuration,
-        tags: record.tags,
+        tags: tags,
       );
 
       final groupField = request.enableGrouping ? request.groupBy?.field ?? request.sortBy?.firstOrNull?.field : null;

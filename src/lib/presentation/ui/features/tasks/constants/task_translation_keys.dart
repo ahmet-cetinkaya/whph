@@ -164,18 +164,8 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String reminderCustom = 'tasks.reminder.custom';
   static const String customReminderTitle = 'tasks.reminder.custom_title';
   static const String reminderBeforeSuffix = 'tasks.reminder.before_suffix';
-  static const String minutes = 'shared.time.minutes';
-  static const String hours = 'shared.time.hours';
-  static const String days = 'shared.time.days';
-  static const String weeks = 'shared.time.weeks';
   static const String reminderTime = 'tasks.reminder.time';
   static const String reminderUnit = 'tasks.reminder.unit';
-
-  // Reminder pluralization for custom offsets
-  static const String reminderMinute = 'shared.time.minute';
-  static const String reminderHour = 'shared.time.hour';
-  static const String reminderDay = 'shared.time.day';
-  static const String reminderWeek = 'shared.time.week';
 
   // Recurrence Types and Labels
   static const String recurrenceLabel = 'tasks.recurrence.label';

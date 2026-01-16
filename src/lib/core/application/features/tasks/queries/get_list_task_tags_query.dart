@@ -19,8 +19,16 @@ class TaskTagListItem {
   String tagId;
   String tagName;
   String? tagColor;
+  TagType tagType;
 
-  TaskTagListItem({required this.id, required this.taskId, required this.tagId, required this.tagName, this.tagColor});
+  TaskTagListItem({
+    required this.id,
+    required this.taskId,
+    required this.tagId,
+    required this.tagName,
+    this.tagColor,
+    this.tagType = TagType.label,
+  });
 }
 
 class GetListTaskTagsQueryResponse extends PaginatedList<TaskTagListItem> {
@@ -38,8 +46,12 @@ class GetListTaskTagsQueryHandler implements IRequestHandler<GetListTaskTagsQuer
 
   @override
   Future<GetListTaskTagsQueryResponse> call(GetListTaskTagsQuery request) async {
-    PaginatedList<TaskTag> taskTags = await _taskTagRepository.getList(request.pageIndex, request.pageSize,
-        customWhereFilter: CustomWhereFilter("task_id = ?", [request.taskId]));
+    PaginatedList<TaskTag> taskTags = await _taskTagRepository.getList(
+      request.pageIndex,
+      request.pageSize,
+      customWhereFilter: CustomWhereFilter("task_id = ?", [request.taskId]),
+      customOrder: [CustomOrder(field: 'tag_order', direction: SortDirection.asc)],
+    );
 
     List<TaskTagListItem> listItems = [];
     for (final taskTag in taskTags.items) {
@@ -50,6 +62,7 @@ class GetListTaskTagsQueryHandler implements IRequestHandler<GetListTaskTagsQuer
         tagId: taskTag.tagId,
         tagName: secondaryTag.name,
         tagColor: secondaryTag.color,
+        tagType: secondaryTag.type,
       ));
     }
     return GetListTaskTagsQueryResponse(

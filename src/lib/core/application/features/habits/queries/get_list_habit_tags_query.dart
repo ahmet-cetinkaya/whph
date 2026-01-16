@@ -40,8 +40,12 @@ class GetListHabitTagsQueryHandler implements IRequestHandler<GetListHabitTagsQu
 
   @override
   Future<GetListHabitTagsQueryResponse> call(GetListHabitTagsQuery request) async {
-    PaginatedList<HabitTag> habitTags = await _habitTagRepository.getList(request.pageIndex, request.pageSize,
-        customWhereFilter: CustomWhereFilter("habit_id = ?", [request.habitId]));
+    PaginatedList<HabitTag> habitTags = await _habitTagRepository.getList(
+      request.pageIndex,
+      request.pageSize,
+      customWhereFilter: CustomWhereFilter("habit_id = ?", [request.habitId]),
+      customOrder: [CustomOrder(field: 'tag_order', direction: SortDirection.asc)],
+    );
 
     List<HabitTagListItem> listItems = [];
     for (final habitTag in habitTags.items) {

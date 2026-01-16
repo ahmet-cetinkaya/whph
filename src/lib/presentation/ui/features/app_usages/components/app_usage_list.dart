@@ -220,29 +220,31 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
 
   Future<void> _getList({int pageIndex = 0, bool isRefresh = false}) async {
     final query = GetListByTopAppUsagesQuery(
-        pageIndex: pageIndex,
-        pageSize: isRefresh && (_appUsageList?.items.length ?? 0) > widget.pageSize
-            ? _appUsageList?.items.length ?? widget.pageSize
-            : widget.pageSize,
-        filterByTags: _currentFilters.filterByTags,
-        showNoTagsFilter: _currentFilters.showNoTagsFilter,
-        startDate: _currentFilters.filterStartDate != null
-            ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
-            : null,
-        endDate:
-            _currentFilters.filterEndDate != null ? DateTimeHelper.toUtcDateTime(_currentFilters.filterEndDate!) : null,
-        compareStartDate: _currentFilters.showComparison && _currentFilters.filterStartDate != null
-            ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!
-                .subtract(_currentFilters.filterEndDate!.difference(_currentFilters.filterStartDate!)))
-            : null,
-        compareEndDate: _currentFilters.showComparison && _currentFilters.filterEndDate != null
-            ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
-            : null,
-        filterByDevices: _currentFilters.filterByDevices,
-        sortBy: _currentFilters.sortConfig?.orderOptions,
-        groupBy: _currentFilters.sortConfig?.groupOption,
-        enableGrouping: _currentFilters.sortConfig?.enableGrouping ?? false,
-        sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false);
+      pageIndex: pageIndex,
+      pageSize: isRefresh && (_appUsageList?.items.length ?? 0) > widget.pageSize
+          ? _appUsageList?.items.length ?? widget.pageSize
+          : widget.pageSize,
+      filterByTags: _currentFilters.filterByTags,
+      showNoTagsFilter: _currentFilters.showNoTagsFilter,
+      startDate: _currentFilters.filterStartDate != null
+          ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
+          : null,
+      endDate:
+          _currentFilters.filterEndDate != null ? DateTimeHelper.toUtcDateTime(_currentFilters.filterEndDate!) : null,
+      compareStartDate: _currentFilters.showComparison && _currentFilters.filterStartDate != null
+          ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!
+              .subtract(_currentFilters.filterEndDate!.difference(_currentFilters.filterStartDate!)))
+          : null,
+      compareEndDate: _currentFilters.showComparison && _currentFilters.filterEndDate != null
+          ? DateTimeHelper.toUtcDateTime(_currentFilters.filterStartDate!)
+          : null,
+      filterByDevices: _currentFilters.filterByDevices,
+      sortBy: _currentFilters.sortConfig?.orderOptions,
+      groupBy: _currentFilters.sortConfig?.groupOption,
+      enableGrouping: _currentFilters.sortConfig?.enableGrouping ?? false,
+      sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false,
+      customTagSortOrder: _currentFilters.sortConfig?.customTagSortOrder,
+    );
 
     await AsyncErrorHandler.execute<GetListByTopAppUsagesQueryResponse>(
       context: context,

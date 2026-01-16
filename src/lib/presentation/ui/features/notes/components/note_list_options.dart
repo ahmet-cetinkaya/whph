@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -8,6 +11,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/models/note_list_option_settings.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/ui/features/tags/components/tag_order_selector_dialog.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/persistent_list_options_base.dart';
 import 'package:whph/presentation/ui/shared/components/save_button.dart';
@@ -83,6 +87,7 @@ class NoteListOptions extends PersistentListOptionsBase {
 
 class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptions> {
   final _translationService = container.resolve<ITranslationService>();
+  final _mediator = container.resolve<Mediator>();
 
   @override
   void initSettingKey() {
@@ -222,6 +227,43 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
     }
   }
 
+  Map<NoteSortFields, Future<SortConfig<NoteSortFields>> Function(BuildContext, SortConfig<NoteSortFields>)>
+      get _customOrderConfigurators {
+    return {
+      NoteSortFields.tag: (context, currentConfig) async {
+        try {
+          // Fetch tags
+          final query = GetListTagsQuery(
+            pageIndex: 0,
+            pageSize: 1000,
+            sortBy: [SortOption(field: TagSortFields.name, direction: SortDirection.asc)],
+          );
+          final response = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+
+          if (!context.mounted) return currentConfig;
+
+          final result = await ResponsiveDialogHelper.showResponsiveDialog<List<String>>(
+              context: context,
+              isScrollable: false,
+              child: TagOrderSelectorDialog(
+                tags: response.items,
+                currentOrder: currentConfig.customTagSortOrder ?? [],
+                translationService: _translationService,
+              ),
+              size: DialogSize.large);
+
+          if (result != null) {
+            return currentConfig.copyWith(customTagSortOrder: result);
+          }
+          return currentConfig;
+        } catch (e) {
+          debugPrint('Error configuring tag order: $e');
+          return currentConfig;
+        }
+      },
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
@@ -303,6 +345,7 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                       ],
                       useCustomOrder: false,
                     ),
+                    customOrderConfigurators: _customOrderConfigurators,
                     onConfigChanged: (config) {
                       widget.onSortChange!(config);
                       handleFilterChange();
@@ -322,6 +365,11 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                         field: NoteSortFields.modifiedDate,
                         direction: SortDirection.desc,
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: NoteSortFields.tag,
+                        direction: SortDirection.asc,
+                        translationKey: SharedTranslationKeys.tagsLabel,
                       ),
                     ],
                   ),
@@ -358,6 +406,10 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                       SortOptionWithTranslationKey(
                         field: NoteSortFields.modifiedDate,
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: NoteSortFields.tag,
+                        translationKey: SharedTranslationKeys.tagsLabel,
                       ),
                     ],
                   ),

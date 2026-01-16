@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/tasks/models/task_list_item.dart'
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 
 void main() {
   group('TaskGroupingHelper', () {
@@ -111,6 +112,27 @@ void main() {
             TaskSortFields.title,
           ),
           equals('#'),
+        );
+      });
+    });
+
+    group('Tag Grouping', () {
+      test('returns first tag name for tasks with tags', () {
+        final tag = TagListItem(id: 't1', name: 'Work');
+        final task = baseTask.copyWith(
+          tags: [tag],
+        );
+        expect(
+          TaskGroupingHelper.getGroupName(task, TaskSortFields.tag),
+          equals('Work'),
+        );
+      });
+
+      test('returns None for tasks without tags', () {
+        final task = baseTask.copyWith(tags: []);
+        expect(
+          TaskGroupingHelper.getGroupName(task, TaskSortFields.tag),
+          equals(SharedTranslationKeys.none),
         );
       });
     });

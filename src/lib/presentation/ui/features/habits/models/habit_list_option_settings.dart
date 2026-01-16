@@ -24,7 +24,7 @@ class HabitListOptionSettings {
   /// Whether to force the original layout even with custom sort
   final bool forceOriginalLayout;
 
-  /// The list style preference
+  /// Current habit list style
   final HabitListStyle habitListStyle;
 
   /// Default constructor
@@ -68,9 +68,25 @@ class HabitListOptionSettings {
       sortConfig = SortConfig<HabitSortFields>(
         orderOptions: orderOptions,
         useCustomOrder: sortConfigJson['useCustomOrder'] as bool? ?? false,
+        customTagSortOrder: sortConfigJson['customTagSortOrder'] != null
+            ? List<String>.from(sortConfigJson['customTagSortOrder'] as List<dynamic>)
+            : null,
         enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
         groupOption: groupOption,
       );
+    }
+
+    // Handle habit list style
+    HabitListStyle habitListStyle = HabitListStyle.grid;
+    if (json['habitListStyle'] != null) {
+      try {
+        habitListStyle = HabitListStyle.values.firstWhere(
+          (e) => e.toString() == 'HabitListStyle.${json['habitListStyle']}',
+          orElse: () => HabitListStyle.grid,
+        );
+      } catch (_) {
+        habitListStyle = HabitListStyle.grid;
+      }
     }
 
     return HabitListOptionSettings(
@@ -81,12 +97,7 @@ class HabitListOptionSettings {
       search: json['search'] as String?,
       sortConfig: sortConfig,
       forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
-      habitListStyle: json['habitListStyle'] != null
-          ? HabitListStyle.values.firstWhere(
-              (e) => e.toString() == json['habitListStyle'],
-              orElse: () => HabitListStyle.grid,
-            )
-          : HabitListStyle.grid,
+      habitListStyle: habitListStyle,
     );
   }
 
@@ -97,7 +108,7 @@ class HabitListOptionSettings {
       'filterByArchived': filterByArchived,
       'search': search, // Always include search, even if null
       'forceOriginalLayout': forceOriginalLayout,
-      'habitListStyle': habitListStyle.toString(),
+      'habitListStyle': habitListStyle.toString().split('.').last,
     };
 
     if (selectedTagIds != null) {
@@ -114,6 +125,7 @@ class HabitListOptionSettings {
                 })
             .toList(),
         'useCustomOrder': sortConfig!.useCustomOrder,
+        'customTagSortOrder': sortConfig!.customTagSortOrder,
         'enableGrouping': sortConfig!.enableGrouping,
         'groupOption': sortConfig!.groupOption != null
             ? {
@@ -143,6 +155,8 @@ class HabitListOptionSettings {
         return HabitSortFields.estimatedTime;
       case 'actualTime':
         return HabitSortFields.actualTime;
+      case 'tag':
+        return HabitSortFields.tag;
       default:
         return HabitSortFields.createdDate;
     }

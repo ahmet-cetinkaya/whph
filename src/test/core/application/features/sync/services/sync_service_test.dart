@@ -33,19 +33,21 @@ void main() {
       AppDatabase.isTestMode = true;
       AppDatabase.testDirectory = await Directory.systemTemp.createTemp('whph_test_');
 
+      // Initialize the database instance to avoid lazy initialization during tests
+      AppDatabase.setInstanceForTesting(AppDatabase.forTesting());
+
       syncService = DesktopSyncService(mockMediator, mockDeviceIdService);
       statusStreamController = StreamController<SyncStatus>.broadcast();
     });
 
     tearDown(() async {
       // Clean up the temporary database file after each test
+      syncService.dispose();
+      statusStreamController.close();
       if (AppDatabase.testDirectory != null) {
         await AppDatabase.testDirectory!.delete(recursive: true);
       }
-      AppDatabase.isTestMode = false;
-      AppDatabase.testDirectory = null;
-      syncService.dispose();
-      statusStreamController.close();
+      AppDatabase.resetInstance();
     });
 
     group('Constructor and Initialization', () {

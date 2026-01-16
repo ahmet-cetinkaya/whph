@@ -15,6 +15,7 @@ class AppUsageTagTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get appUsageId => text()();
   TextColumn get tagId => text()();
+  IntColumn get tagOrder => integer().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -38,6 +39,7 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
       deletedDate: Value(entity.deletedDate),
       appUsageId: entity.appUsageId,
       tagId: entity.tagId,
+      tagOrder: Value(entity.tagOrder),
     );
   }
 
@@ -45,6 +47,7 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
   Future<PaginatedList<AppUsageTag>> getListByAppUsageId(String appUsageId, int pageIndex, int pageSize) async {
     final query = database.select(table)
       ..where((t) => t.appUsageId.equals(appUsageId) & t.deletedDate.isNull())
+      ..orderBy([(t) => OrderingTerm(expression: t.tagOrder)])
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
@@ -130,5 +133,18 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
               tagColor: row.read<String?>('tag_color'),
             ))
         .toList();
+  }
+
+  @override
+  Future<void> updateTagOrders(String appUsageId, Map<String, int> tagOrders) async {
+    await database.batch((batch) {
+      for (final entry in tagOrders.entries) {
+        batch.update(
+          table,
+          AppUsageTagTableCompanion(tagOrder: Value(entry.value)),
+          where: (t) => t.appUsageId.equals(appUsageId) & t.tagId.equals(entry.key),
+        );
+      }
+    });
   }
 }

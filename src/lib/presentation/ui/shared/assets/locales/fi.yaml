@@ -88,25 +88,15 @@ shared:
     cannot_select_date_before_min_date: Ei voi valita päivämäärää ennen {date}
     cannot_select_time_after_max_date: Ei voi valita aikaa {time} jälkeen
     cannot_select_time_before_min_date: Ei voi valita aikaa ennen {time}
-    deadline_cannot_be_before_planned_date:
-      Määräajan on oltava suunniteltuna päivänä
-      tai sen jälkeen
+    deadline_cannot_be_before_planned_date: Määräajan on oltava suunniteltuna päivänä tai sen jälkeen
     end_date_cannot_be_after_max_date: Lopetuspäivä ei voi olla {date} jälkeen
     end_date_must_be_at_or_before: Lopetuspäivän täytyy olla {date} tai sitä ennen
     select_date_range_title: Valitse päivämääräväli
     select_date_time_title: Valitse päivämäärä ja aika
-    selected_date_must_be_at_or_after:
-      Valitun päivämäärän täytyy olla {date} tai
-      sen jälkeen
-    selected_date_must_be_at_or_before:
-      Valitun päivämäärän täytyy olla {date} tai
-      sitä ennen
-    selected_date_time_must_be_after:
-      Valitun päivämäärän ja ajan täytyy olla {dateTime}
-      jälkeen
-    start_date_cannot_be_after_end_date:
-      Aloituspäivämäärä ei voi olla loppupäivämäärän
-      jälkeen
+    selected_date_must_be_at_or_after: Valitun päivämäärän täytyy olla {date} tai sen jälkeen
+    selected_date_must_be_at_or_before: Valitun päivämäärän täytyy olla {date} tai sitä ennen
+    selected_date_time_must_be_after: Valitun päivämäärän ja ajan täytyy olla {dateTime} jälkeen
+    start_date_cannot_be_after_end_date: Aloituspäivämäärä ei voi olla loppupäivämäärän jälkeen
     start_date_cannot_be_before_min_date: Aloituspäivä ei voi olla ennen {date}
     start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
     time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
@@ -162,8 +152,7 @@ shared:
     loading: Virhe tietojen lataamisessa
     report_subject: "{appName} Sovellus: Odottamaton virheraportti"
     report_template:
-      "Hei, kohtasin odottamattoman virheen käyttäessäni {appName}
-      sovellusta.
+      "Hei, kohtasin odottamattoman virheen käyttäessäni {appName} sovellusta.
 
 
       Tässä on tietoja, jotka voivat auttaa ongelman diagnosoinnissa:
@@ -202,9 +191,7 @@ shared:
   startup_error:
     copied_to_clipboard: Virheen tiedot kopioitu leikepöydälle
     copy_button: Kopioi virheen tiedot
-    description:
-      Jokin meni pieleen sovelluksen käynnistyksessä. Tämä voi johtua järjestelmäongelmasta
-      tai yhteensopimattomasta kokoonpanosta.
+    description: Jokin meni pieleen sovelluksen käynnistyksessä. Tämä voi johtua järjestelmäongelmasta tai yhteensopimattomasta kokoonpanosta.
     details_title: Virheen Tiedot
     report_button: Ilmoita Ongelmasta
     title: Sovelluksen Käynnistysvirhe
@@ -379,24 +366,16 @@ shared:
     cannot_select_time_after_max_date: Ei voi valita aikaa {time} jälkeen
     time_must_be_at_or_after: Ajan täytyy olla {time} tai sen jälkeen
     time_must_be_at_or_before: Ajan täytyy olla {time} tai sitä ennen
-    selected_date_must_be_at_or_after:
-      Valitun päivämäärän täytyy olla {date} tai
-      sen jälkeen
-    selected_date_must_be_at_or_before:
-      Valitun päivämäärän täytyy olla {date} tai
-      sitä ennen
-    start_date_cannot_be_after_end_date:
-      Aloituspäivämäärä ei voi olla loppupäivämäärän
-      jälkeen
+    selected_date_must_be_at_or_after: Valitun päivämäärän täytyy olla {date} tai sen jälkeen
+    selected_date_must_be_at_or_before: Valitun päivämäärän täytyy olla {date} tai sitä ennen
+    start_date_cannot_be_after_end_date: Aloituspäivämäärä ei voi olla loppupäivämäärän jälkeen
     start_date_must_be_at_or_after: Aloituspäivän täytyy olla {date} tai sen jälkeen
     end_date_must_be_at_or_before: Lopetuspäivän täytyy olla {date} tai sitä ennen
     cannot_select_date_before_min_date: Ei voi valita päivämäärää ennen {date}
     cannot_select_date_after_max_date: Ei voi valita päivämäärää {date} jälkeen
     start_date_cannot_be_before_min_date: Aloituspäivä ei voi olla ennen {date}
     end_date_cannot_be_after_max_date: Lopetuspäivä ei voi olla {date} jälkeen
-    selected_date_time_must_be_after:
-      Valitun päivämäärän ja ajan täytyy olla {dateTime}
-      jälkeen
+    selected_date_time_must_be_after: Valitun päivämäärän ja ajan täytyy olla {dateTime} jälkeen
     select_date_time_title: Valitse päivämäärä ja aika
     select_date_range_title: Valitse päivämääräväli
     refresh_description: Päivitä valittu aikaväli automaattisesti
@@ -444,3 +423,4 @@ shared:
     30_60_min: 30 - 60 min
     1_2_hours: 1 - 2 tuntia
     more_than_2_hours: 2+ tuntia
+  configure: Määrittä

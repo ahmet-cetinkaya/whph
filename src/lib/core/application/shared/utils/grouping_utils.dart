@@ -62,4 +62,21 @@ class GroupingUtils {
       return SharedTranslationKeys.older;
     }
   }
+
+  static String getTagGroup(List<dynamic>? tags) {
+    if (tags == null || tags.isEmpty) return SharedTranslationKeys.none;
+    final firstTag = tags.first;
+    if (firstTag is String) return firstTag;
+
+    // Use dynamic access to handle different tag list item types without importing them
+    try {
+      return (firstTag as dynamic).tagName;
+    } catch (_) {
+      try {
+        return (firstTag as dynamic).name;
+      } catch (_) {
+        return SharedTranslationKeys.none;
+      }
+    }
+  }
 }

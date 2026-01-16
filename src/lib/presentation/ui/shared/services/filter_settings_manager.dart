@@ -35,7 +35,9 @@ class FilterSettingsManager {
     try {
       final response = await _mediator.send(
         GetSettingQuery(key: settingKey),
-      ) as GetSettingQueryResponse;
+      ) as GetSettingQueryResponse?;
+
+      if (response == null) return null;
 
       return jsonDecode(response.value) as Map<String, dynamic>;
     } catch (e) {

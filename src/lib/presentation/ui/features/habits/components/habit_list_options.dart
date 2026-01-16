@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
@@ -11,6 +12,9 @@ import 'package:whph/presentation/ui/features/habits/models/habit_list_option_se
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
+import 'package:whph/presentation/ui/features/tags/components/tag_order_selector_dialog.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/ui/shared/components/persistent_list_options_base.dart';
 import 'package:whph/presentation/ui/shared/components/search_filter.dart';
@@ -121,6 +125,43 @@ class HabitListOptions extends PersistentListOptionsBase {
 
 class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOptions> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
+  final _mediator = container.resolve<Mediator>();
+
+  Map<HabitSortFields, Future<SortConfig<HabitSortFields>> Function(BuildContext, SortConfig<HabitSortFields>)>
+      get _customOrderConfigurators => {
+            HabitSortFields.tag: (context, config) async {
+              try {
+                // Fetch tags
+                final response = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
+                  GetListTagsQuery(
+                    pageIndex: 0,
+                    pageSize: 1000,
+                    sortBy: [SortOption(field: TagSortFields.name, direction: SortDirection.asc)],
+                  ),
+                );
+
+                if (!context.mounted) return config;
+
+                final newOrder = await ResponsiveDialogHelper.showResponsiveDialog<List<String>>(
+                    context: context,
+                    isScrollable: false,
+                    child: TagOrderSelectorDialog(
+                      currentOrder: config.customTagSortOrder ?? [],
+                      tags: response.items,
+                      translationService: _translationService,
+                    ),
+                    size: DialogSize.large);
+
+                if (newOrder != null) {
+                  return config.copyWith(customTagSortOrder: newOrder);
+                }
+                return config;
+              } catch (e) {
+                debugPrint('Error configuring tag order: $e');
+              }
+              return config;
+            },
+          };
 
   @override
   void initSettingKey() {
@@ -448,8 +489,14 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                         direction: SortDirection.desc,
                         translationKey: HabitTranslationKeys.archivedDateLabel,
                       ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.tag,
+                        direction: SortDirection.asc,
+                        translationKey: SharedTranslationKeys.tagsLabel,
+                      ),
                     ],
                     showCustomOrderOption: true,
+                    customOrderConfigurators: _customOrderConfigurators,
                   ),
 
                 // Layout toggle button (only show when custom sort is enabled)
@@ -513,6 +560,10 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                       SortOptionWithTranslationKey(
                         field: HabitSortFields.archivedDate,
                         translationKey: HabitTranslationKeys.archivedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: HabitSortFields.tag,
+                        translationKey: SharedTranslationKeys.tagsLabel,
                       ),
                     ],
                   ),

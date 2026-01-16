@@ -1,5 +1,6 @@
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 class ReminderHelper {
@@ -29,18 +30,18 @@ class ReminderHelper {
     if (offset % (60 * 24 * 7) == 0) {
       final value = offset ~/ (60 * 24 * 7);
       valueStr = value.toString();
-      unitKey = value == 1 ? TaskTranslationKeys.reminderWeek : TaskTranslationKeys.weeks;
+      unitKey = value == 1 ? SharedTranslationKeys.timeWeek : SharedTranslationKeys.timeWeeks;
     } else if (offset % (60 * 24) == 0) {
       final value = offset ~/ (60 * 24);
       valueStr = value.toString();
-      unitKey = value == 1 ? TaskTranslationKeys.reminderDay : TaskTranslationKeys.days;
+      unitKey = value == 1 ? SharedTranslationKeys.timeDay : SharedTranslationKeys.timeDays;
     } else if (offset % 60 == 0) {
       final value = offset ~/ 60;
       valueStr = value.toString();
-      unitKey = value == 1 ? TaskTranslationKeys.reminderHour : TaskTranslationKeys.hours;
+      unitKey = value == 1 ? SharedTranslationKeys.timeHour : SharedTranslationKeys.timeHours;
     } else {
       valueStr = offset.toString();
-      unitKey = offset == 1 ? TaskTranslationKeys.reminderMinute : TaskTranslationKeys.minutes;
+      unitKey = offset == 1 ? SharedTranslationKeys.timeMinute : SharedTranslationKeys.timeMinutes;
     }
 
     return '$valueStr ${translationService.translate(unitKey)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';

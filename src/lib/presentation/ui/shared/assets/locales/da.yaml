@@ -88,9 +88,7 @@ shared:
     cannot_select_date_before_min_date: Kan ikke vælge dato før {date}
     cannot_select_time_after_max_date: Kan ikke vælge tid efter {time}
     cannot_select_time_before_min_date: Kan ikke vælge tid før {time}
-    deadline_cannot_be_before_planned_date:
-      Deadline skal være på eller efter den
-      planlagte dato
+    deadline_cannot_be_before_planned_date: Deadline skal være på eller efter den planlagte dato
     end_date_cannot_be_after_max_date: Slutdato kan ikke være efter {date}
     end_date_must_be_at_or_before: Slutdato skal være på eller før {date}
     select_date_range_title: Vælg datointerval
@@ -154,8 +152,7 @@ shared:
     loading: Der opstod en fejl under indlæsning af data
     report_subject: "{appName} App: Uventet fejlrapport"
     report_template:
-      "Hej, jeg stødte på en uventet fejl, mens jeg brugte {appName}
-      appen.
+      "Hej, jeg stødte på en uventet fejl, mens jeg brugte {appName} appen.
 
 
       Her er information, der kan hjælpe dig med at diagnosticere problemet:
@@ -194,9 +191,7 @@ shared:
   startup_error:
     copied_to_clipboard: Fejldetaljer kopieret til udklipsholder
     copy_button: Kopiér fejldetaljer
-    description:
-      Noget gik galt under appens opstart. Dette kan skyldes et systemproblem
-      eller inkompatibel konfiguration.
+    description: Noget gik galt under appens opstart. Dette kan skyldes et systemproblem eller inkompatibel konfiguration.
     details_title: Fejldetaljer
     report_button: Rapporter problem
     title: App-opstartfejl
@@ -271,9 +266,7 @@ shared:
     average_daily_label: Gennemsnitligt dagligt
     peak_hour_label: Spidsstime
     select_date_range_message: Vælg datointerval for at filtrere statistik
-    select_date_range_description:
-      Vælg et brugerdefineret datointerval for at se
-      brugsstatistik
+    select_date_range_description: Vælg et brugerdefineret datointerval for at se brugsstatistik
   time:
     not_set: Ikke indstillet
     minutes: minutter
@@ -430,3 +423,4 @@ shared:
     30_60_min: 30 - 60 min
     1_2_hours: 1 - 2 timer
     more_than_2_hours: 2+ timer
+  configure: Konfigurer

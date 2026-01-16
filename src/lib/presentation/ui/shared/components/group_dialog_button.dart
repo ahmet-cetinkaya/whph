@@ -44,7 +44,8 @@ class _GroupDialogButtonState<T> extends State<GroupDialogButton<T>> {
           translationService: _translationService,
           availableOptions: widget.availableOptions,
         ),
-        size: DialogSize.xLarge);
+        size: DialogSize.xLarge,
+        isScrollable: false);
   }
 
   @override
@@ -207,76 +208,84 @@ class _GroupDialogState<T> extends State<_GroupDialog<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.translationService.translate(SharedTranslationKeys.sortEnableGrouping),
-          style: AppTheme.headlineSmall,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: widget.translationService.translate(SharedTranslationKeys.backButton),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        actions: [
-          TextButton(
-            child: Text(
-              widget.translationService.translate(SharedTranslationKeys.doneButton),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Header (mimicking AppBar)
+        AppBar(
+          title: Text(
+            widget.translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+            style: AppTheme.headlineSmall,
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            tooltip: widget.translationService.translate(SharedTranslationKeys.backButton),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
-        ],
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppTheme.sizeLarge),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Card(
-                elevation: 0,
-                color: AppTheme.surface1,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-                child: SwitchListTile.adaptive(
-                  value: _currentConfig.enableGrouping,
-                  onChanged: _toggleGrouping,
-                  title: Text(
-                    widget.translationService.translate(SharedTranslationKeys.sortEnableGrouping),
-                    style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    widget.translationService.translate(SharedTranslationKeys.sortEnableGroupingDescription),
-                    style: AppTheme.bodySmall,
-                  ),
-                  secondary: StyledIcon(
-                    Icons.view_agenda,
-                    isActive: _currentConfig.enableGrouping,
-                  ),
-                ),
+          actions: [
+            TextButton(
+              child: Text(
+                widget.translationService.translate(SharedTranslationKeys.doneButton),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              if (_currentConfig.enableGrouping &&
-                  widget.availableOptions != null &&
-                  widget.availableOptions!.isNotEmpty) ...[
-                const SizedBox(height: AppTheme.sizeMedium),
-                Padding(
-                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
-                  child: Text(
-                    widget.translationService.translate(SharedTranslationKeys.groupBy),
-                    style: AppTheme.labelLarge,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+        ),
+
+        // Body
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppTheme.sizeLarge),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                  elevation: 0,
+                  color: AppTheme.surface1,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                  child: SwitchListTile.adaptive(
+                    value: _currentConfig.enableGrouping,
+                    onChanged: _toggleGrouping,
+                    title: Text(
+                      widget.translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+                      style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      widget.translationService.translate(SharedTranslationKeys.sortEnableGroupingDescription),
+                      style: AppTheme.bodySmall,
+                    ),
+                    secondary: StyledIcon(
+                      Icons.view_agenda,
+                      isActive: _currentConfig.enableGrouping,
+                    ),
                   ),
                 ),
-                ...widget.availableOptions!.map((option) => _buildGroupOptionItem(context, option)),
+                if (_currentConfig.enableGrouping &&
+                    widget.availableOptions != null &&
+                    widget.availableOptions!.isNotEmpty) ...[
+                  const SizedBox(height: AppTheme.sizeMedium),
+                  Padding(
+                    padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                    child: Text(
+                      widget.translationService.translate(SharedTranslationKeys.groupBy),
+                      style: AppTheme.labelLarge,
+                    ),
+                  ),
+                  ...widget.availableOptions!.map((option) => _buildGroupOptionItem(context, option)),
+                ],
               ],
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

@@ -25,7 +25,9 @@ class TaskGroupingHelper {
       case TaskSortFields.estimatedTime:
         return GroupingUtils.getDurationGroup(task.estimatedTime);
       case TaskSortFields.totalDuration:
-        return GroupingUtils.getDurationGroup(task.totalElapsedTime); // Assuming totalDuration maps to totalElapsedTime
+        return GroupingUtils.getDurationGroup(task.totalElapsedTime);
+      case TaskSortFields.tag:
+        return task.tags.isNotEmpty ? task.tags.first.name : SharedTranslationKeys.none;
     }
   }
 

@@ -21,6 +21,7 @@ class TaskQueryFilter {
   final bool ignoreArchivedTagVisibility;
   final bool enableGrouping;
   final bool includeNullDates;
+  final List<String>? customTagSortOrder;
 
   const TaskQueryFilter({
     this.tags,
@@ -41,6 +42,7 @@ class TaskQueryFilter {
     this.ignoreArchivedTagVisibility = false,
     this.enableGrouping = false,
     this.includeNullDates = false,
+    this.customTagSortOrder,
   });
 
   TaskQueryFilter copyWith({
@@ -62,6 +64,7 @@ class TaskQueryFilter {
     bool? ignoreArchivedTagVisibility,
     bool? enableGrouping,
     bool? includeNullDates,
+    List<String>? customTagSortOrder,
   }) {
     return TaskQueryFilter(
       tags: tags ?? this.tags,
@@ -82,6 +85,7 @@ class TaskQueryFilter {
       ignoreArchivedTagVisibility: ignoreArchivedTagVisibility ?? this.ignoreArchivedTagVisibility,
       enableGrouping: enableGrouping ?? this.enableGrouping,
       includeNullDates: includeNullDates ?? this.includeNullDates,
+      customTagSortOrder: customTagSortOrder ?? this.customTagSortOrder,
     );
   }
 }

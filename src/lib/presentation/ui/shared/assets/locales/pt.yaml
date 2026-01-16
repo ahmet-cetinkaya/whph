@@ -84,35 +84,19 @@ shared:
   date_format:
     hint: DD/MM/AAAA
   datepicker:
-    cannot_select_date_after_max_date:
-      Não é possível selecionar uma data depois de
-      {date}
-    cannot_select_date_before_min_date:
-      Não é possível selecionar uma data antes de
-      {date}
-    cannot_select_time_after_max_date:
-      Não é possível selecionar um horário depois
-      de {time}
-    cannot_select_time_before_min_date:
-      Não é possível selecionar um horário antes
-      de {time}
-    deadline_cannot_be_before_planned_date:
-      O prazo deve ser na data planejada ou
-      posterior
+    cannot_select_date_after_max_date: Não é possível selecionar uma data depois de {date}
+    cannot_select_date_before_min_date: Não é possível selecionar uma data antes de {date}
+    cannot_select_time_after_max_date: Não é possível selecionar um horário depois de {time}
+    cannot_select_time_before_min_date: Não é possível selecionar um horário antes de {time}
+    deadline_cannot_be_before_planned_date: O prazo deve ser na data planejada ou posterior
     end_date_cannot_be_after_max_date: A data de término não pode ser depois de {date}
     end_date_must_be_at_or_before: A data de término deve ser em ou antes de {date}
     select_date_range_title: Selecionar intervalo de datas
     select_date_time_title: Selecionar data e hora
     selected_date_must_be_at_or_after: A data selecionada deve ser em ou após {date}
-    selected_date_must_be_at_or_before:
-      A data selecionada deve ser em ou antes de
-      {date}
-    selected_date_time_must_be_after:
-      A data e hora selecionadas devem ser depois
-      de {dateTime}
-    start_date_cannot_be_after_end_date:
-      A data de início não pode ser posterior à
-      data de término
+    selected_date_must_be_at_or_before: A data selecionada deve ser em ou antes de {date}
+    selected_date_time_must_be_after: A data e hora selecionadas devem ser depois de {dateTime}
+    start_date_cannot_be_after_end_date: A data de início não pode ser posterior à data de término
     start_date_cannot_be_before_min_date: A data de início não pode ser antes de {date}
     start_date_must_be_at_or_after: A data de início deve ser em ou após {date}
     time_must_be_at_or_after: O horário deve ser às {time} ou depois
@@ -207,9 +191,7 @@ shared:
   startup_error:
     copied_to_clipboard: Detalhes do erro copiados para a área de transferência
     copy_button: Copiar detalhes do erro
-    description:
-      Algo deu errado durante a inicialização do aplicativo. Isso pode
-      ser devido a um problema do sistema ou configuração incompatível.
+    description: Algo deu errado durante a inicialização do aplicativo. Isso pode ser devido a um problema do sistema ou configuração incompatível.
     details_title: Detalhes do Erro
     report_button: Relatar Problema
     title: Erro de Inicialização do Aplicativo
@@ -284,9 +266,7 @@ shared:
     average_daily_label: Média diária
     peak_hour_label: Horário de pico
     select_date_range_message: Selecionar intervalo de datas para filtrar estatísticas
-    select_date_range_description:
-      Escolher um intervalo de datas personalizado para
-      visualizar estatísticas de uso
+    select_date_range_description: Escolher um intervalo de datas personalizado para visualizar estatísticas de uso
   time:
     not_set: Não definido
     minutes: minutos
@@ -379,28 +359,20 @@ shared:
     select_end_date: Selecionar data de término
     no_dates_selected: Nenhuma data selecionada
     refresh: Atualizar
-    cannot_select_time_before_min_date:
-      Não é possível selecionar horário antes de
-      {time}
+    cannot_select_time_before_min_date: Não é possível selecionar horário antes de {time}
     cannot_select_time_after_max_date: Não é possível selecionar horário após {time}
     time_must_be_at_or_after: O horário deve ser às {time} ou depois
     time_must_be_at_or_before: O horário deve ser às {time} ou antes
     selected_date_must_be_at_or_after: A data selecionada deve ser em ou após {date}
-    selected_date_must_be_at_or_before:
-      A data selecionada deve ser em ou antes de
-      {date}
-    start_date_cannot_be_after_end_date:
-      A data de início não pode ser posterior à
-      data de término
+    selected_date_must_be_at_or_before: A data selecionada deve ser em ou antes de {date}
+    start_date_cannot_be_after_end_date: A data de início não pode ser posterior à data de término
     start_date_must_be_at_or_after: A data de início deve ser em ou após {date}
     end_date_must_be_at_or_before: A data de término deve ser em ou antes de {date}
     cannot_select_date_before_min_date: Não é possível selecionar data antes de {date}
     cannot_select_date_after_max_date: Não é possível selecionar data após {date}
     start_date_cannot_be_before_min_date: A data de início não pode ser antes de {date}
     end_date_cannot_be_after_max_date: A data de término não pode ser depois de {date}
-    selected_date_time_must_be_after:
-      A data e hora selecionadas devem ser depois
-      de {dateTime}
+    selected_date_time_must_be_after: A data e hora selecionadas devem ser depois de {dateTime}
     select_date_time_title: Selecionar data e hora
     select_date_range_title: Selecionar intervalo de datas
     refresh_description: Atualizar automaticamente o intervalo de datas selecionado
@@ -450,3 +422,4 @@ shared:
     30_60_min: 30 - 60 min
     1_2_hours: 1 - 2 horas
     more_than_2_hours: 2+ horas
+  configure: Configurar

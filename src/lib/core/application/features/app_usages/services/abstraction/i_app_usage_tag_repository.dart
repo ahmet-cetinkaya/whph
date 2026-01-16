@@ -15,4 +15,6 @@ abstract class IAppUsageTagRepository extends app.IRepository<AppUsageTag, Strin
     List<String>? filterByTags,
     bool filterByIsArchived = false,
   });
+
+  Future<void> updateTagOrders(String appUsageId, Map<String, int> tagOrders);
 }

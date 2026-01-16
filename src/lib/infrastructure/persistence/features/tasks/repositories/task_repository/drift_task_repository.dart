@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
@@ -109,6 +110,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     'planned_date': TaskSortFields.plannedDate,
     'priority': TaskSortFields.priority,
     'title': TaskSortFields.title,
+    'tag': TaskSortFields.tag,
   };
 
   final TaskDataMapper _mapper = TaskDataMapper();
@@ -299,7 +301,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     ];
     String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
-    String? orderByClause = _queryBuilder.buildOrderByClause(customOrder);
+    String? orderByClause = _queryBuilder.buildOrderByClause(customOrder,
+        customTagSortOrder:
+            customWhereFilter is TaskQueryFilter ? (customWhereFilter as TaskQueryFilter).customTagSortOrder : null);
 
     final baseQuery = '''
       ${TaskQueryBuilder.selectClauseWithDuration}
@@ -464,7 +468,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     }
 
     String? whereClause = conditions.isNotEmpty ? " WHERE ${conditions.join(' AND ')} " : null;
-    String? orderByClause = _queryBuilder.buildOrderByClause(f.sortBy, useCustomSort: f.sortByCustomSort);
+    String? orderByClause = _queryBuilder.buildOrderByClause(f.sortBy,
+        useCustomSort: f.sortByCustomSort, customTagSortOrder: f.customTagSortOrder);
 
     final baseQuery = '''
       ${TaskQueryBuilder.selectClauseWithDuration}
@@ -590,12 +595,13 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     // Manually constructed query to avoid N+1 calls
     final tagsQuery = database.customSelect(
       '''
-      SELECT tt.task_id, t.id, t.name, t.color, t.is_archived
+      SELECT tt.task_id, t.id, t.name, t.color, t.is_archived, t.type
       FROM task_tag_table tt
       INNER JOIN tag_table t ON tt.tag_id = t.id
       WHERE tt.task_id IN (${taskIds.map((_) => '?').join(',')})
       AND tt.deleted_date IS NULL
       AND (t.deleted_date IS NULL)
+      ORDER BY tt.tag_order ASC
       ''',
       variables: taskIds.map((e) => Variable.withString(e)).toList(),
       readsFrom: {database.taskTagTable, database.tagTable},
@@ -610,6 +616,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         name: row.read<String>('name'),
         color: row.read<String?>('color'),
         isArchived: row.read<bool>('is_archived'),
+        type: _parseTagType(row.read<int?>('type')),
       );
       tagsMap.putIfAbsent(taskId, () => []).add(tagItem);
     }
@@ -715,5 +722,13 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         totalItemCount: tasksWithDuration.totalItemCount,
         pageIndex: pageIndex,
         pageSize: pageSize);
+  }
+
+  TagType _parseTagType(int? typeIndex) {
+    if (typeIndex == null) return TagType.label;
+    if (typeIndex >= 0 && typeIndex < TagType.values.length) {
+      return TagType.values[typeIndex];
+    }
+    return TagType.label;
   }
 }

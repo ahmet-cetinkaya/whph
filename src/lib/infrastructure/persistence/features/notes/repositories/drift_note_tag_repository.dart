@@ -9,6 +9,7 @@ class NoteTagTable extends Table {
   TextColumn get id => text()();
   TextColumn get noteId => text()();
   TextColumn get tagId => text()();
+  IntColumn get tagOrder => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
@@ -31,6 +32,7 @@ class DriftNoteTagRepository extends DriftBaseRepository<NoteTag, String, NoteTa
       id: entity.id,
       noteId: entity.noteId,
       tagId: entity.tagId,
+      tagOrder: Value(entity.tagOrder),
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
@@ -39,7 +41,10 @@ class DriftNoteTagRepository extends DriftBaseRepository<NoteTag, String, NoteTa
 
   @override
   Future<List<NoteTag>> getByNoteId(String noteId) async {
-    return (database.select(table)..where((t) => t.noteId.equals(noteId) & t.deletedDate.isNull())).get();
+    return (database.select(table)
+          ..where((t) => t.noteId.equals(noteId) & t.deletedDate.isNull())
+          ..orderBy([(t) => OrderingTerm(expression: t.tagOrder)]))
+        .get();
   }
 
   @override
@@ -54,5 +59,17 @@ class DriftNoteTagRepository extends DriftBaseRepository<NoteTag, String, NoteTa
   @override
   Future<List<NoteTag>> getByTagId(String tagId) async {
     return (database.select(table)..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull())).get();
+  }
+
+  @override
+  Future<void> updateTagOrders(String noteId, Map<String, int> tagOrders) async {
+    await database.batch((batch) {
+      for (final entry in tagOrders.entries) {
+        batch.customStatement(
+          'UPDATE note_tag_table SET tag_order = ? WHERE note_id = ? AND tag_id = ?',
+          [entry.value, noteId, entry.key],
+        );
+      }
+    });
   }
 }

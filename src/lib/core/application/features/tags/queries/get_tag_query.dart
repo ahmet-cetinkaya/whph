@@ -19,6 +19,7 @@ class GetTagQueryResponse extends Tag {
     required super.name,
     super.isArchived = false,
     super.color,
+    super.type = TagType.label,
   });
 }
 
@@ -43,6 +44,7 @@ class GetTagQueryHandler implements IRequestHandler<GetTagQuery, GetTagQueryResp
       createdDate: tags.createdDate,
       modifiedDate: tags.modifiedDate,
       color: tags.color,
+      type: tags.type,
     );
   }
 }

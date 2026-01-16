@@ -27,7 +27,9 @@ tasks:
     deadline_date:
       label: Förfallodatum
     description:
-      context: Lägg till detaljerad information om din uppgift för att hjälpa dig komma ihåg viktiga detaljer och följa framsteg.
+      context:
+        Lägg till detaljerad information om din uppgift för att hjälpa dig
+        komma ihåg viktiga detaljer och följa framsteg.
       hint: Lägg till beskrivning...
       label: Beskrivning
     elapsed_time:
@@ -67,7 +69,9 @@ tasks:
     task_tag_already_exists: Denna uppgiftstagg finns redan
     task_tag_not_found: Uppgiftstagg hittades inte
   estimated_time:
-    description: Sätt realistiska tidsuppskattningar för att effektivt planera din uppgift och följa produktivitet.
+    description:
+      Sätt realistiska tidsuppskattningar för att effektivt planera din
+      uppgift och följa produktivitet.
     label: Uppskattad Tid
   filters:
     completion: Efter Slutförandestatus
@@ -81,24 +85,51 @@ tasks:
   help:
     details:
       content:
-        "Bemästra din uppgiftshantering och maximera produktiviteten genom att organisera, prioritera och spåra ditt arbete effektivt.\n\n## ⚡ Varför Är Det Viktigt?\n\nEffektiv uppgiftshantering är grunden för produktivitet. Rätt strukturerade uppgifter med tydliga prioriteringar och deadlines hjälper dig fokusera på det som är viktigast och förhindrar att viktigt arbete faller mellan stolarna.\n\n## \U0001F4DD Uppgiftsorganisation\n\nStrukturera dina uppgifter med omfattande detaljer för att behålla klarhet och fokus. Använd taggar, prioriteringar och tidsuppskattningar för att skapa en systematisk approach till din arbetsbelastning.\n\n- \U0001F3F7️ Kategorisera uppgifter med meningsfulla taggar\n- ⚖️ Sätt prioriteringar med beprövade ramverk\n- ⏱️ Uppskatta tidsbehov korrekt\n- \U0001F4C5 Planera realistiska deadlines och scheman\n\n## ⏰ Tidsstyrning\n\nSpåra dina tidsinvesteringar för att förstå dina arbetsmönster och förbättra effektivitet. Rätt tidsstyrning förvandlar splittrade\
-        \ ansträngningar till fokuserad produktivitet.\n\n- \U0001F4CA Övervaka faktisk vs uppskattad tid\n- \U0001F3AF Fokusera på högimpact-aktiviteter\n- \U0001F4C8 Analysera produktivitetsmönster över tid\n- ⏳ Balansera brådskande och viktiga uppgifter\n\n## \U0001F4CA Prioriteringsramverk (Eisenhower Matris)\n\nOrganisera dina uppgifter med denna beprövade prioriteringsmetod för att säkerställa att du alltid arbetar med rätt saker vid rätt tid.\n\n- \U0001F525 **Brådskande & Viktigt:** Hantera omedelbart - krishantering och deadlines\n- \U0001F4C8 **Viktigt, Inte Brådskande:** Schemalägg strategiskt - planering och färdighetsutveckling  \n- ⚡ **Brådskande, Inte Viktigt:** Delegera när möjligt - avbrott och vissa möten\n- \U0001F5D1️ **Varken Brådskande eller Viktigt:** Eliminera - tidstjuvar och låg-värde aktiviteter\n"
+        "Bemästra din uppgiftshantering och maximera produktiviteten genom\
+        \ att organisera, prioritera och spåra ditt arbete effektivt.\n\n## ⚡ Varför\
+        \ Är Det Viktigt?\n\nEffektiv uppgiftshantering är grunden för produktivitet.\
+        \ Rätt strukturerade uppgifter med tydliga prioriteringar och deadlines hjälper\
+        \ dig fokusera på det som är viktigast och förhindrar att viktigt arbete faller\
+        \ mellan stolarna.\n\n## \U0001F4DD Uppgiftsorganisation\n\nStrukturera dina\
+        \ uppgifter med omfattande detaljer för att behålla klarhet och fokus. Använd\
+        \ taggar, prioriteringar och tidsuppskattningar för att skapa en systematisk\
+        \ approach till din arbetsbelastning.\n\n- \U0001F3F7️ Kategorisera uppgifter\
+        \ med meningsfulla taggar\n- ⚖️ Sätt prioriteringar med beprövade ramverk\n\
+        - ⏱️ Uppskatta tidsbehov korrekt\n- \U0001F4C5 Planera realistiska deadlines\
+        \ och scheman\n\n## ⏰ Tidsstyrning\n\nSpåra dina tidsinvesteringar för att\
+        \ förstå dina arbetsmönster och förbättra effektivitet. Rätt tidsstyrning\
+        \ förvandlar splittrade ansträngningar till fokuserad produktivitet.\n\n-\
+        \ \U0001F4CA Övervaka faktisk vs uppskattad tid\n- \U0001F3AF Fokusera på\
+        \ högimpact-aktiviteter\n- \U0001F4C8 Analysera produktivitetsmönster över\
+        \ tid\n- ⏳ Balansera brådskande och viktiga uppgifter\n\n## \U0001F4CA Prioriteringsramverk\
+        \ (Eisenhower Matris)\n\nOrganisera dina uppgifter med denna beprövade prioriteringsmetod\
+        \ för att säkerställa att du alltid arbetar med rätt saker vid rätt tid.\n\
+        \n- \U0001F525 **Brådskande & Viktigt:** Hantera omedelbart - krishantering\
+        \ och deadlines\n- \U0001F4C8 **Viktigt, Inte Brådskande:** Schemalägg strategiskt\
+        \ - planering och färdighetsutveckling  \n- ⚡ **Brådskande, Inte Viktigt:**\
+        \ Delegera när möjligt - avbrott och vissa möten\n- \U0001F5D1️ **Varken Brådskande\
+        \ eller Viktigt:** Eliminera - tidstjuvar och låg-värde aktiviteter\n"
       title: Uppgiftshantering & Produktivitetsguide
     overview:
       content:
-        "Transformera din produktivitet med systematisk uppgiftshantering som hjälper dig hålla dig organiserad, fokuserad och i kontroll över din arbetsbelastning.
+        "Transformera din produktivitet med systematisk uppgiftshantering som
+        hjälper dig hålla dig organiserad, fokuserad och i kontroll över din arbetsbelastning.
 
 
         ## ⚡ Varför Är Det Viktigt?
 
 
-        Effektiv uppgiftshantering är hörnstenen i personlig och professionell framgång. Genom att organisera ditt arbete systematiskt minskar du stress, håller deadlines och skapar utrymme för meningsfull framsteg på viktiga mål.
+        Effektiv uppgiftshantering är hörnstenen i personlig och professionell framgång.
+        Genom att organisera ditt arbete systematiskt minskar du stress, håller deadlines
+        och skapar utrymme för meningsfull framsteg på viktiga mål.
 
 
         ## 📋 Uppgiftsorganisation
 
 
-        Skapa en strukturerad approach till att hantera dina ansvar. Välorganiserade uppgifter leder till tydliga prioriteringar och effektiv utförande av ditt dagliga arbete.
+        Skapa en strukturerad approach till att hantera dina ansvar. Välorganiserade
+        uppgifter leder till tydliga prioriteringar och effektiv utförande av ditt
+        dagliga arbete.
 
 
         - ✅ Skapa och kategorisera uppgifter systematiskt
@@ -113,7 +144,9 @@ tasks:
         ## ⏱️ Tidsspårning & Fokus
 
 
-        Övervaka dina tidsinvesteringar för att förstå produktivitetsmönster och optimera ditt arbetsflöde. Tidsmedvetenhet leder till bättre planering och förbättrad prestanda.
+        Övervaka dina tidsinvesteringar för att förstå produktivitetsmönster och optimera
+        ditt arbetsflöde. Tidsmedvetenhet leder till bättre planering och förbättrad
+        prestanda.
 
 
         - ⏰ Spåra faktisk tid per uppgift
@@ -128,7 +161,8 @@ tasks:
         ## 📈 Framstegspårning
 
 
-        Håll koll på dina prestationer och lär av dina arbetsmönster. Regelbunden granskning och reflektion driver kontinuerlig förbättring i ditt produktivitetssystem.
+        Håll koll på dina prestationer och lär av dina arbetsmönster. Regelbunden
+        granskning och reflektion driver kontinuerlig förbättring i ditt produktivitetssystem.
 
 
         - 📈 Övervaka uppgiftsslutförandefrekvenser
@@ -146,8 +180,30 @@ tasks:
       title: Uppgiftsdetaljer
     help:
       content:
-        "Maximera ditt fokus och produktivitet med strukturerade arbetsessioner som hjälper dig behålla djup koncentration medan du förhindrar utbrändhet.\n\n## ⚡ Varför Är Det Viktigt?\n\nFokuserade arbetsessioner är essentiella för djupt arbete och högkvalitativ output. Genom att arbeta i strukturerade intervaller med regelbundna pauser upprätthåller du topp mental prestanda medan du undviker trötthet från förlängda, ofokuserade arbetsperioder.\n\n## ⏰ Tidsbegränsade Fokussessioner\n\nAnvänd beprövade tidsstyrningstekniker för att strukturera ditt arbete för maximal effektivitet. Strukturerade sessioner hjälper dig behålla koncentration och slutföra uppgifter mer effektivt.\n\n- \U0001F3AF **Klassisk Fokus:** 25 minuter arbete / 5 minuter paus\n- \U0001F4C8 **Utökad Fokus:** 50 minuter arbete / 10 minuter paus  \n- \U0001F504 **Lång Paus:** 15-30 minuter efter 4 sessioner\n- ⚖️ **Anpassad Timing:** Justera intervaller för att matcha din naturliga rytm\n\n## \U0001F9E0 Kognitiva\
-        \ Fördelar\n\nStrukturerade arbetsessioner utnyttjar hjärnans naturliga uppmärksamhetscykler för att optimera prestanda och förhindra mental trötthet som minskar kvalitet och kreativitet.\n\n- \U0001F3AF Förbättrad fokus och djup koncentration\n- \U0001F50B Minskad mental trötthet och utbrändhet\n- \U0001F4AA Hållbar motivation genom regelbundna prestationer\n- ⚡ Förbättrad tidsmedvetenhet och planeringsnoggrannhet\n\n## \U0001F4CA Prestandaoptimering\n\nSpåra dina fokuserade arbetsmönster för att förstå dina topp produktivitetstider och optimera ditt schema för maximal effektivitet.\n\n- \U0001F3F7️ Kategorisera fokussessioner med taggar för analys\n- \U0001F4C8 Övervaka produktivitetsmönster över olika tider\n- \U0001F6AB Eliminera distraktioner innan sessioner startas\n- \U0001F6B6 Använd pauser för fysisk rörelse och mental omstart\n"
+        "Maximera ditt fokus och produktivitet med strukturerade arbetsessioner\
+        \ som hjälper dig behålla djup koncentration medan du förhindrar utbrändhet.\n\
+        \n## ⚡ Varför Är Det Viktigt?\n\nFokuserade arbetsessioner är essentiella\
+        \ för djupt arbete och högkvalitativ output. Genom att arbeta i strukturerade\
+        \ intervaller med regelbundna pauser upprätthåller du topp mental prestanda\
+        \ medan du undviker trötthet från förlängda, ofokuserade arbetsperioder.\n\
+        \n## ⏰ Tidsbegränsade Fokussessioner\n\nAnvänd beprövade tidsstyrningstekniker\
+        \ för att strukturera ditt arbete för maximal effektivitet. Strukturerade\
+        \ sessioner hjälper dig behålla koncentration och slutföra uppgifter mer effektivt.\n\
+        \n- \U0001F3AF **Klassisk Fokus:** 25 minuter arbete / 5 minuter paus\n- \U0001F4C8\
+        \ **Utökad Fokus:** 50 minuter arbete / 10 minuter paus  \n- \U0001F504 **Lång\
+        \ Paus:** 15-30 minuter efter 4 sessioner\n- ⚖️ **Anpassad Timing:** Justera\
+        \ intervaller för att matcha din naturliga rytm\n\n## \U0001F9E0 Kognitiva\
+        \ Fördelar\n\nStrukturerade arbetsessioner utnyttjar hjärnans naturliga uppmärksamhetscykler\
+        \ för att optimera prestanda och förhindra mental trötthet som minskar kvalitet\
+        \ och kreativitet.\n\n- \U0001F3AF Förbättrad fokus och djup koncentration\n\
+        - \U0001F50B Minskad mental trötthet och utbrändhet\n- \U0001F4AA Hållbar\
+        \ motivation genom regelbundna prestationer\n- ⚡ Förbättrad tidsmedvetenhet\
+        \ och planeringsnoggrannhet\n\n## \U0001F4CA Prestandaoptimering\n\nSpåra\
+        \ dina fokuserade arbetsmönster för att förstå dina topp produktivitetstider\
+        \ och optimera ditt schema för maximal effektivitet.\n\n- \U0001F3F7️ Kategorisera\
+        \ fokussessioner med taggar för analys\n- \U0001F4C8 Övervaka produktivitetsmönster\
+        \ över olika tider\n- \U0001F6AB Eliminera distraktioner innan sessioner startas\n\
+        - \U0001F6B6 Använd pauser för fysisk rörelse och mental omstart\n"
       title: Fokuserade Arbetsessioner & Tidsstyrningsguide
       tooltip: Marathon hjälp tooltip
     label: Marathon Läge
@@ -173,7 +229,8 @@ tasks:
     no_tasks: Inga uppgifter hittades i filen.
     generic_info_title: Allmänt CSV-format
     generic_info_description:
-      "För att importera uppgifter korrekt måste din CSV följa detta format:
+      "För att importera uppgifter korrekt måste din CSV följa
+      detta format:
 
 
       - **Kolumn 1**: Titel (Obligatoriskt)
@@ -228,7 +285,9 @@ tasks:
     urgent_important: Brådskande och Viktig
     urgent_not_important: Brådskande men Inte Viktig
   priority:
-    description: Ställ in uppgiftsprioritet med Eisenhower-matrisen - Brådskande/Viktig-klassificering för effektiv uppgiftshantering
+    description:
+      Ställ in uppgiftsprioritet med Eisenhower-matrisen - Brådskande/Viktig-klassificering
+      för effektiv uppgiftshantering
     selection:
       title: Välj Prioritet
     tooltips:
@@ -245,11 +304,15 @@ tasks:
       urgent_not_important: Brådskande men Inte Viktig
   quick_task:
     create_error: Fel vid skapande av uppgift
-    lock_description: Lås egenskaper för att behålla deras värden vid skapande av flera liknande uppgifter. Låsta egenskaper rensas inte när du återställer formuläret.
+    lock_description:
+      Lås egenskaper för att behålla deras värden vid skapande av
+      flera liknande uppgifter. Låsta egenskaper rensas inte när du återställer formuläret.
     lock_settings: Lås Inställningar
     reset_all: Återställ alla fält
     reset_confirm:
-      message: Är du säker på att du vill återställa alla fält? Denna åtgärd kan inte ångras.
+      message:
+        Är du säker på att du vill återställa alla fält? Denna åtgärd kan inte
+        ångras.
       title: Återställ Alla Fält
     task_added_successfully: Uppgift tillagd med lyckat
     title: Snabb Uppgift
@@ -314,7 +377,9 @@ tasks:
     monthly_pattern_label: Månatligt mönster
     advanced_label: Avancerade inställningar
     regenerate_label: Regenerera efter slutförande
-    regenerate_description: När aktiverat kommer nästa förekomst att schemaläggas från slutförandet datumet, istället för det planerade datumet.
+    regenerate_description:
+      När aktiverat kommer nästa förekomst att schemaläggas
+      från slutförandet datumet, istället för det planerade datumet.
     on_specific_day: Specifik dag
     on_relative_day: Relativt dag
     on_the: Den
@@ -409,13 +474,3 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Deadline datum måste vara efter planerat datum
     deadline_time_invalid: Deadline tid är ogiltig
-shared:
-  time:
-    minutes: minuter
-    hours: timmar
-    days: dagar
-    weeks: veckor
-    minute: minut
-    hour: timme
-    day: dag
-    week: vecka

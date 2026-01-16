@@ -75,9 +75,10 @@ class SupportDialogService implements ISupportDialogService {
 
   Future<bool> _hasShownSupportDialog() async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.supportDialogShown),
       );
+      if (response == null) return false;
       return response.getValue<bool>();
     } catch (_) {
       return false;
@@ -94,9 +95,10 @@ class SupportDialogService implements ISupportDialogService {
 
   Future<num?> _getSupportDialogLastShownUsage() async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.supportDialogLastShownUsage),
       );
+      if (response == null) return null;
       final value = response.getValue<String>();
       return num.tryParse(value);
     } catch (_) {

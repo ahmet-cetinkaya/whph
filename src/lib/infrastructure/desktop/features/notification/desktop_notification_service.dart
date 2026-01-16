@@ -180,8 +180,13 @@ class DesktopNotificationService implements INotificationService {
   Future<bool> isEnabled() async {
     try {
       final query = GetSettingQuery(key: SettingKeys.notifications);
-      final setting = await _mediatr.send<GetSettingQuery, GetSettingQueryResponse>(query);
-      final isEnabled = setting.value == 'false' ? false : true; // Default to true if no setting
+      final setting = await _mediatr.send<GetSettingQuery, GetSettingQueryResponse?>(query);
+
+      if (setting == null) {
+        return true; // Default to true if no setting
+      }
+
+      final isEnabled = setting.value == 'false' ? false : true;
       return isEnabled;
     } catch (e) {
       Logger.error('Error checking if notifications are enabled: $e');

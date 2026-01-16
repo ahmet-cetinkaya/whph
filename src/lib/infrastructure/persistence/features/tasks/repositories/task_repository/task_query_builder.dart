@@ -41,16 +41,52 @@ class TaskQueryBuilder {
   ''';
 
   /// Builds ORDER BY clause from custom order list.
-  String? buildOrderByClause(List<CustomOrder>? customOrder, {bool useCustomSort = false}) {
+  String? buildOrderByClause(List<CustomOrder>? customOrder,
+      {bool useCustomSort = false, List<String>? customTagSortOrder}) {
     if (customOrder == null || customOrder.isEmpty) return null;
 
     return ' ORDER BY ${customOrder.map((order) {
-      // Handle total_duration which is an alias, not a table column
       if (order.field == 'total_duration') {
         return '`${order.field}` IS NULL, `${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
       }
       if (order.field == 'title') {
         return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+      }
+      if (order.field == 'tag') {
+        if (customTagSortOrder == null || customTagSortOrder.isEmpty) {
+          // Default tag sort (alphabetical by name of first tag)
+          // This subquery gets the name of the "first" tag (alphabetically)
+          final tagSubquery = '''(
+            SELECT t.name 
+            FROM task_tag_table tt 
+            INNER JOIN tag_table t ON tt.tag_id = t.id 
+            WHERE tt.task_id = task_table.id 
+            AND tt.deleted_date IS NULL
+            ORDER BY tt.tag_order ASC, t.name COLLATE NOCASE ASC 
+            LIMIT 1
+          )''';
+          return '$tagSubquery IS NULL, $tagSubquery ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+        } else {
+          // Custom tag sort
+          // Construct CASE statement for user defined order
+          final caseStatements = StringBuffer();
+          for (int i = 0; i < customTagSortOrder.length; i++) {
+            // Validate UUID simply to avoid injection (alphanumeric + hyphen)
+            final safeId = customTagSortOrder[i].replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '');
+            caseStatements.write("WHEN '$safeId' THEN $i ");
+          }
+
+          final customTagSubquery = '''(
+            SELECT MIN(CASE tt.tag_id 
+              $caseStatements
+              ELSE 999999 
+            END) 
+            FROM task_tag_table tt 
+            WHERE tt.task_id = task_table.id 
+            AND tt.deleted_date IS NULL
+          )''';
+          return '$customTagSubquery IS NULL, $customTagSubquery ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+        }
       }
       return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
     }).join(', ')} ';

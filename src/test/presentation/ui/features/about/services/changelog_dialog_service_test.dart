@@ -97,7 +97,7 @@ void main() {
         // Arrange
         final response = MockGetSettingQueryResponse();
         when(response.getValue<String>()).thenReturn('0.18.0');
-        when(mockMediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        when(mockMediator.send<GetSettingQuery, GetSettingQueryResponse?>(
           any,
         )).thenAnswer((_) async => response);
 
@@ -110,7 +110,7 @@ void main() {
 
       test('should not show dialog for first-time user', () async {
         // Arrange
-        when(mockMediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        when(mockMediator.send<GetSettingQuery, GetSettingQueryResponse?>(
           any,
         )).thenThrow(Exception('Setting not found'));
 
@@ -127,7 +127,7 @@ void main() {
         // Arrange
         final response = MockGetSettingQueryResponse();
         when(response.getValue<String>()).thenReturn('0.17.0');
-        when(mockMediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        when(mockMediator.send<GetSettingQuery, GetSettingQueryResponse?>(
           any,
         )).thenAnswer((_) async => response);
 
@@ -149,7 +149,7 @@ void main() {
 
       test('should handle exceptions gracefully', () async {
         // Arrange
-        when(mockMediator.send<GetSettingQuery, GetSettingQueryResponse>(
+        when(mockMediator.send<GetSettingQuery, GetSettingQueryResponse?>(
           any,
         )).thenThrow(Exception('Settings error'));
 

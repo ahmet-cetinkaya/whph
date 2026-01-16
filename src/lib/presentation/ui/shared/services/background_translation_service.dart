@@ -27,9 +27,15 @@ class BackgroundTranslationService {
   Future<void> _loadCurrentLocale() async {
     try {
       final mediator = container.resolve<Mediator>();
-      final response = await mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.currentLocale),
       );
+
+      if (response == null) {
+        _currentLocale = 'en';
+        return;
+      }
+
       _currentLocale = response.value.isNotEmpty ? response.value : 'en'; // Default to English
     } catch (e) {
       _currentLocale = 'en'; // Fallback to English

@@ -113,9 +113,10 @@ class TimerController extends ChangeNotifier {
 
   Future<bool> _getBoolSetting(String key, bool defaultValue) async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: key),
       );
+      if (response == null) return defaultValue;
       return response.getValue<bool>();
     } catch (_) {
       return defaultValue;
@@ -124,9 +125,10 @@ class TimerController extends ChangeNotifier {
 
   Future<TimerMode> _getTimerModeSetting() async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.defaultTimerMode),
       );
+      if (response == null) return TimerMode.pomodoro;
       return TimerMode.fromString(response.getValue<String>());
     } catch (_) {
       return TimerMode.pomodoro;
@@ -135,9 +137,10 @@ class TimerController extends ChangeNotifier {
 
   Future<int> _getSetting(String key, int defaultValue) async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: key),
       );
+      if (response == null) return defaultValue;
       return response.getValue<int>();
     } catch (_) {
       return defaultValue;

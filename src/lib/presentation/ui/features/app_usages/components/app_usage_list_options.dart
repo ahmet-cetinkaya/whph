@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/models/app_usage_filter_settings.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -19,9 +20,13 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/ui/shared/components/sort_dialog_button.dart';
 import 'package:whph/presentation/ui/shared/components/group_dialog_button.dart';
-import 'package:acore/acore.dart' show SortDirection;
+// Consolidated with acore.dart import above
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/presentation/ui/features/tags/components/tag_order_selector_dialog.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'dart:async';
 
 class AppUsageFilterState {
@@ -94,7 +99,50 @@ class AppUsageListOptions extends PersistentListOptionsBase {
 class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListOptions> {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
+  final _mediator = container.resolve<Mediator>();
   late AppUsageFilterState _currentState;
+
+  Map<AppUsageSortFields, Future<SortConfig<AppUsageSortFields>> Function(BuildContext, SortConfig<AppUsageSortFields>)>
+      get _customOrderConfigurators => {
+            AppUsageSortFields.tag: (context, currentConfig) async {
+              try {
+                final tags = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
+                  GetListTagsQuery(
+                    pageIndex: 0,
+                    pageSize: 1000, // Fetch all tags
+                    sortBy: [
+                      SortOptionWithTranslationKey(
+                        field: TagSortFields.name,
+                        direction: SortDirection.asc,
+                        translationKey: SharedTranslationKeys.nameLabel,
+                      )
+                    ],
+                  ),
+                );
+
+                if (!context.mounted) return currentConfig;
+
+                final result = await ResponsiveDialogHelper.showResponsiveDialog<List<String>>(
+                    context: context,
+                    isScrollable: false,
+                    child: TagOrderSelectorDialog(
+                      tags: tags.items,
+                      currentOrder: currentConfig.customTagSortOrder ?? [],
+                      translationService: _translationService,
+                    ),
+                    size: DialogSize.large);
+
+                if (result == null) return currentConfig;
+
+                return currentConfig.copyWith(
+                  customTagSortOrder: result,
+                );
+              } catch (e) {
+                debugPrint('Error configuring tag order: $e');
+                return currentConfig;
+              }
+            },
+          };
 
   @override
   void initState() {
@@ -434,7 +482,12 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
                 field: AppUsageSortFields.device,
                 translationKey: AppUsageTranslationKeys.sortDevice,
               ),
+              SortOptionWithTranslationKey(
+                field: AppUsageSortFields.tag,
+                translationKey: SharedTranslationKeys.tagsLabel,
+              ),
             ],
+            customOrderConfigurators: _customOrderConfigurators,
             config: _currentState.sortConfig ??
                 SortConfig(
                   orderOptions: [
@@ -485,6 +538,10 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
               SortOptionWithTranslationKey(
                 field: AppUsageSortFields.duration,
                 translationKey: AppUsageTranslationKeys.sortDuration,
+              ),
+              SortOptionWithTranslationKey(
+                field: AppUsageSortFields.tag,
+                translationKey: SharedTranslationKeys.tagsLabel,
               ),
             ],
           ),

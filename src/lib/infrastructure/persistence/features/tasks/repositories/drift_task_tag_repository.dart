@@ -14,6 +14,7 @@ class TaskTagTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get taskId => text()();
   TextColumn get tagId => text()();
+  IntColumn get tagOrder => integer().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -39,6 +40,7 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
       deletedDate: Value(entity.deletedDate),
       taskId: entity.taskId,
       tagId: entity.tagId,
+      tagOrder: Value(entity.tagOrder),
     );
   }
 
@@ -53,7 +55,10 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
 
   @override
   Future<List<TaskTag>> getByTaskId(String taskId) async {
-    return (database.select(table)..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())).get();
+    return (database.select(table)
+          ..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())
+          ..orderBy([(t) => OrderingTerm(expression: t.tagOrder)]))
+        .get();
   }
 
   @override
@@ -119,5 +124,17 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
               tagColor: row.read<String?>('tag_color'),
             ))
         .toList();
+  }
+
+  @override
+  Future<void> updateTagOrders(String taskId, Map<String, int> tagOrders) async {
+    await database.batch((batch) {
+      for (final entry in tagOrders.entries) {
+        batch.customStatement(
+          'UPDATE task_tag_table SET tag_order = ? WHERE task_id = ? AND tag_id = ?',
+          [entry.value, taskId, entry.key],
+        );
+      }
+    });
   }
 }

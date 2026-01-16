@@ -80,6 +80,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       final orderClauses = customOrder!.map((order) {
         if (order.field == 'title') {
           return "title COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
+        } else if (order.field.trim().startsWith('(')) {
+          return "${order.field} IS NULL, ${order.field} ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
         }
         return "`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
       }).join(', ');
@@ -87,6 +89,11 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       final outerOrderClauses = customOrder.map((order) {
         if (order.field == 'title') {
           return "n.title COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
+        } else if (order.field.trim().startsWith('(')) {
+          // Replace table name with alias 'n' for the outer query
+          // and ensure NULLs (items with no tags) come last
+          final field = order.field.replaceAll('note_table.', 'n.');
+          return "$field IS NULL, $field ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
         }
         return "n.`${order.field}` ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}";
       }).join(', ');
@@ -123,7 +130,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
         n.*,
         nt.id as nt_id, nt.note_id as nt_note_id, nt.tag_id as nt_tag_id, 
         nt.created_date as nt_created_date, nt.modified_date as nt_modified_date, nt.deleted_date as nt_deleted_date,
-        t.id as t_id, t.name as t_name, t.color as t_color, t.created_date as t_created_date
+        nt.tag_order as nt_tag_order,
+        t.id as t_id, t.name as t_name, t.color as t_color, t.created_date as t_created_date, t.type as t_type
       FROM (
         SELECT id 
         FROM note_table
@@ -135,6 +143,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       LEFT JOIN note_tag_table nt ON nt.note_id = n.id AND nt.deleted_date IS NULL
       LEFT JOIN tag_table t ON t.id = nt.tag_id AND t.deleted_date IS NULL
       ${outerOrderByClause ?? ''}
+      ${outerOrderByClause != null ? ', nt.tag_order ASC' : 'ORDER BY nt.tag_order ASC'}
     ''';
 
     final List<Variable<Object>> variables = [
@@ -172,6 +181,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
           id: noteTagId,
           noteId: row.read<String>('nt_note_id'),
           tagId: row.read<String>('nt_tag_id'),
+          tagOrder: row.read<int>('nt_tag_order'),
           createdDate: row.read<DateTime>('nt_created_date'),
           modifiedDate: row.readNullable<DateTime>('nt_modified_date'),
           deletedDate: row.readNullable<DateTime>('nt_deleted_date'),
@@ -184,6 +194,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
             name: row.read<String>('t_name'),
             color: row.readNullable<String>('t_color'),
             createdDate: row.read<DateTime>('t_created_date'),
+            type: _parseTagType(row.read<int?>('t_type')),
           );
         }
 
@@ -206,11 +217,13 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
         n.*,
         nt.id as nt_id, nt.note_id as nt_note_id, nt.tag_id as nt_tag_id, 
         nt.created_date as nt_created_date, nt.modified_date as nt_modified_date, nt.deleted_date as nt_deleted_date,
-        t.id as t_id, t.name as t_name, t.color as t_color, t.created_date as t_created_date
+        nt.tag_order as nt_tag_order,
+        t.id as t_id, t.name as t_name, t.color as t_color, t.created_date as t_created_date, t.type as t_type
       FROM note_table n
       LEFT JOIN note_tag_table nt ON nt.note_id = n.id AND nt.deleted_date IS NULL
       LEFT JOIN tag_table t ON t.id = nt.tag_id AND t.deleted_date IS NULL
       WHERE n.id = ? ${includeDeleted ? '' : 'AND n.deleted_date IS NULL'}
+      ORDER BY nt.tag_order ASC
     ''';
 
     final rows = await database.customSelect(
@@ -235,6 +248,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
           id: noteTagId,
           noteId: row.read<String>('nt_note_id'),
           tagId: row.read<String>('nt_tag_id'),
+          tagOrder: row.read<int>('nt_tag_order'),
           createdDate: row.read<DateTime>('nt_created_date'),
           modifiedDate: row.readNullable<DateTime>('nt_modified_date'),
           deletedDate: row.readNullable<DateTime>('nt_deleted_date'),
@@ -247,6 +261,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
             name: row.read<String>('t_name'),
             color: row.readNullable<String>('t_color'),
             createdDate: row.read<DateTime>('t_created_date'),
+            type: _parseTagType(row.read<int?>('t_type')),
           );
         }
         note.tags.add(noteTag);
@@ -254,5 +269,13 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     }
 
     return note;
+  }
+
+  TagType _parseTagType(int? typeIndex) {
+    if (typeIndex == null) return TagType.label;
+    if (typeIndex >= 0 && typeIndex < TagType.values.length) {
+      return TagType.values[typeIndex];
+    }
+    return TagType.label;
   }
 }

@@ -421,3 +421,4 @@ shared:
     30_60_min: 30 - 60分钟
     1_2_hours: 1 - 2小时
     more_than_2_hours: 2+小时
+  configure: 配置

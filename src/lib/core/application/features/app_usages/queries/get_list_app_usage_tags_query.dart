@@ -19,9 +19,18 @@ class AppUsageTagListItem {
   String tagId;
   String tagName;
   String? tagColor;
+  TagType tagType;
+  int tagOrder;
 
-  AppUsageTagListItem(
-      {required this.id, required this.appUsageId, required this.tagId, required this.tagName, this.tagColor});
+  AppUsageTagListItem({
+    required this.id,
+    required this.appUsageId,
+    required this.tagId,
+    required this.tagName,
+    this.tagColor,
+    this.tagType = TagType.label,
+    this.tagOrder = 0,
+  });
 }
 
 class GetListAppUsageTagsQueryResponse extends PaginatedList<AppUsageTagListItem> {
@@ -56,6 +65,8 @@ class GetListAppUsageTagsQueryHandler
         tagId: appUsageTag.tagId,
         tagName: secondaryTag.name,
         tagColor: secondaryTag.color,
+        tagType: secondaryTag.type,
+        tagOrder: appUsageTag.tagOrder,
       ));
     }
     return GetListAppUsageTagsQueryResponse(

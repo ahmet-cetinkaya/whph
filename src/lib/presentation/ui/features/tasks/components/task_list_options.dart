@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'dart:async';
 import 'package:acore/acore.dart';
+import 'package:whph/presentation/ui/features/tags/components/tag_order_selector_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';
@@ -153,6 +157,44 @@ class TaskListOptions extends PersistentListOptionsBase {
 class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptions> {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
+  final _mediator = container.resolve<Mediator>();
+
+  Map<TaskSortFields, Future<SortConfig<TaskSortFields>> Function(BuildContext, SortConfig<TaskSortFields>)>
+      get _customOrderConfigurators => {
+            TaskSortFields.tag: (context, config) async {
+              try {
+                // Fetch tags
+                final response = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
+                  GetListTagsQuery(
+                    pageIndex: 0,
+                    pageSize: 1000, // Fetch all tags (reasonably high limit)
+                    sortBy: [SortOption(field: TagSortFields.name, direction: SortDirection.asc)],
+                  ),
+                );
+
+                if (!context.mounted) return config;
+
+                final newOrder = await ResponsiveDialogHelper.showResponsiveDialog<List<String>>(
+                    context: context,
+                    isScrollable: false,
+                    child: TagOrderSelectorDialog(
+                      currentOrder: config.customTagSortOrder ?? [],
+                      tags: response.items,
+                      translationService: _translationService,
+                    ),
+                    size: DialogSize.large);
+
+                if (newOrder != null) {
+                  return config.copyWith(customTagSortOrder: newOrder);
+                }
+                return config;
+              } catch (e) {
+                // Handle error or just ignore
+                debugPrint('Error configuring tag order: $e');
+              }
+              return config;
+            },
+          };
 
   @override
   void initSettingKey() {
@@ -610,8 +652,14 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         direction: SortDirection.desc,
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
                       ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.tag,
+                        direction: SortDirection.asc,
+                        translationKey: SharedTranslationKeys.tagsLabel,
+                      ),
                     ],
                     showCustomOrderOption: true,
+                    customOrderConfigurators: _customOrderConfigurators,
                   ),
 
                 // Layout toggle button (only show when custom sort is enabled)
@@ -667,6 +715,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.totalDuration,
                         translationKey: SharedTranslationKeys.timeDisplayElapsed,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.tag,
+                        translationKey: SharedTranslationKeys.tagsLabel,
                       ),
                     ],
                   ),

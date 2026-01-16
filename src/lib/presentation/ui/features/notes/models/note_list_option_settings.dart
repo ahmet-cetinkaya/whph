@@ -17,12 +17,16 @@ class NoteListOptionSettings {
   /// Current sort configuration
   final SortConfig<NoteSortFields>? sortConfig;
 
+  /// Whether to force the original layout even with custom sort
+  final bool forceOriginalLayout;
+
   /// Default constructor
   NoteListOptionSettings({
     this.selectedTagIds,
     this.showNoTagsFilter = false,
     this.search,
     this.sortConfig,
+    this.forceOriginalLayout = false,
   });
 
   /// Create settings from a JSON map
@@ -55,6 +59,9 @@ class NoteListOptionSettings {
       sortConfig = SortConfig<NoteSortFields>(
         orderOptions: orderOptions,
         useCustomOrder: sortConfigJson['useCustomOrder'] as bool? ?? false,
+        customTagSortOrder: sortConfigJson['customTagSortOrder'] != null
+            ? List<String>.from(sortConfigJson['customTagSortOrder'] as List<dynamic>)
+            : null,
         enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
         groupOption: groupOption,
       );
@@ -66,6 +73,7 @@ class NoteListOptionSettings {
       showNoTagsFilter: json['showNoTagsFilter'] as bool? ?? false,
       search: json['search'] as String?,
       sortConfig: sortConfig,
+      forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
     );
   }
 
@@ -74,6 +82,7 @@ class NoteListOptionSettings {
     final Map<String, dynamic> json = {
       'showNoTagsFilter': showNoTagsFilter,
       'search': search, // Always include search, even if null
+      'forceOriginalLayout': forceOriginalLayout,
     };
 
     if (selectedTagIds != null) {
@@ -90,6 +99,7 @@ class NoteListOptionSettings {
                 })
             .toList(),
         'useCustomOrder': sortConfig!.useCustomOrder,
+        'customTagSortOrder': sortConfig!.customTagSortOrder,
         'enableGrouping': sortConfig!.enableGrouping,
         'groupOption': sortConfig!.groupOption != null
             ? {
@@ -113,6 +123,8 @@ class NoteListOptionSettings {
         return NoteSortFields.createdDate;
       case 'modifiedDate':
         return NoteSortFields.modifiedDate;
+      case 'tag':
+        return NoteSortFields.tag;
       default:
         return NoteSortFields.createdDate;
     }

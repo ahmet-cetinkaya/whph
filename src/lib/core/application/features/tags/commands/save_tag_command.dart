@@ -10,12 +10,14 @@ class SaveTagCommand implements IRequest<SaveTagCommandResponse> {
   final String name;
   final bool isArchived;
   final String? color;
+  final TagType type;
 
   SaveTagCommand({
     this.id,
     required this.name,
     this.isArchived = false,
     this.color,
+    this.type = TagType.label,
   });
 }
 
@@ -49,6 +51,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
       tag.name = request.name;
       tag.isArchived = request.isArchived;
       tag.color = request.color;
+      tag.type = request.type;
       await _tagRepository.update(tag);
     } else {
       tag = Tag(
@@ -57,6 +60,7 @@ class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCo
         name: request.name,
         isArchived: request.isArchived,
         color: request.color,
+        type: request.type,
       );
       await _tagRepository.add(tag);
     }

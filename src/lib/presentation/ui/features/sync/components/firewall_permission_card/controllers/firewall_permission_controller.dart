@@ -88,7 +88,12 @@ class FirewallPermissionController extends ChangeNotifier {
 
     try {
       final query = GetSettingQuery(key: _linuxFirewallManualConfirmationKey);
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(query);
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(query);
+
+      if (response == null) {
+        _isManuallyConfirmed = false;
+        return;
+      }
 
       _isManuallyConfirmed = response.getValue<bool>();
       if (_isManuallyConfirmed) {

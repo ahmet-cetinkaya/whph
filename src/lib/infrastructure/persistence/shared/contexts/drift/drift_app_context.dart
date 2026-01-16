@@ -127,7 +127,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 32;
+  int get schemaVersion => 33;
 
   /// Validates migration version numbers
   void _validateMigrationVersions(int from, int to) {

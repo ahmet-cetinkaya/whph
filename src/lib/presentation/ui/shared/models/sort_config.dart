@@ -5,12 +5,14 @@ class SortConfig<T> {
   final bool useCustomOrder;
   final bool enableGrouping;
   final SortOptionWithTranslationKey<T>? groupOption;
+  final List<String>? customTagSortOrder;
 
   const SortConfig({
     required this.orderOptions,
     this.useCustomOrder = false,
     this.enableGrouping = false,
     this.groupOption,
+    this.customTagSortOrder,
   });
 
   SortConfig<T> copyWith({
@@ -18,12 +20,14 @@ class SortConfig<T> {
     bool? useCustomOrder,
     bool? enableGrouping,
     SortOptionWithTranslationKey<T>? groupOption,
+    List<String>? customTagSortOrder,
   }) {
     return SortConfig<T>(
       orderOptions: orderOptions ?? this.orderOptions,
       useCustomOrder: useCustomOrder ?? this.useCustomOrder,
       enableGrouping: enableGrouping ?? this.enableGrouping,
       groupOption: groupOption ?? this.groupOption,
+      customTagSortOrder: customTagSortOrder ?? this.customTagSortOrder,
     );
   }
 
@@ -38,6 +42,7 @@ class SortConfig<T> {
       groupOption: json['groupOption'] != null
           ? SortOptionWithTranslationKey.fromJson(json['groupOption'] as Map<String, dynamic>, fromJsonT)
           : null,
+      customTagSortOrder: (json['customTagSortOrder'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
   }
 
@@ -47,6 +52,7 @@ class SortConfig<T> {
       'useCustomOrder': useCustomOrder,
       'enableGrouping': enableGrouping,
       'groupOption': groupOption?.toJson(toJsonT),
+      'customTagSortOrder': customTagSortOrder,
     };
   }
 }

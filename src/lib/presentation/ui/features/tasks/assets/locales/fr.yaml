@@ -27,7 +27,9 @@ tasks:
     deadline_date:
       label: Date d'échéance
     description:
-      context: Ajoutez des informations détaillées sur votre tâche pour vous aider à vous souvenir des détails clés et suivre les progrès.
+      context:
+        Ajoutez des informations détaillées sur votre tâche pour vous aider
+        à vous souvenir des détails clés et suivre les progrès.
       hint: Ajouter une description...
       label: Description
     elapsed_time:
@@ -68,7 +70,9 @@ tasks:
     task_tag_already_exists: Ce tag de tâche existe déjà
     task_tag_not_found: Tag de tâche non trouvé
   estimated_time:
-    description: Définissez des temps estimés réalistes pour planifier votre tâche efficacement et suivre la productivité.
+    description:
+      Définissez des temps estimés réalistes pour planifier votre tâche
+      efficacement et suivre la productivité.
     label: Temps estimé
   filters:
     completion: Par statut d'achèvement
@@ -82,19 +86,25 @@ tasks:
   help:
     details:
       content:
-        "Maîtrisez votre gestion des tâches et maximisez la productivité en organisant, priorisant et suivant votre travail efficacement.
+        "Maîtrisez votre gestion des tâches et maximisez la productivité en
+        organisant, priorisant et suivant votre travail efficacement.
 
 
         ## ⚡ Pourquoi est-ce important ?
 
 
-        La gestion efficace des tâches est le fondement de la productivité. Des tâches bien structurées avec des priorités claires et des échéances vous aident à vous concentrer sur ce qui compte le plus et empêchent le travail important de passer à travers les mailles du filet.
+        La gestion efficace des tâches est le fondement de la productivité. Des tâches
+        bien structurées avec des priorités claires et des échéances vous aident à
+        vous concentrer sur ce qui compte le plus et empêchent le travail important
+        de passer à travers les mailles du filet.
 
 
         ## 📝 Organisation des tâches
 
 
-        Structurez vos tâches avec des détails complets pour maintenir la clarté et la concentration. Utilisez des tags, priorités et estimations de temps pour créer une approche systématique de votre charge de travail.
+        Structurez vos tâches avec des détails complets pour maintenir la clarté et
+        la concentration. Utilisez des tags, priorités et estimations de temps pour
+        créer une approche systématique de votre charge de travail.
 
 
         - 🏷️ Catégorisez les tâches avec des tags significatifs
@@ -109,7 +119,9 @@ tasks:
         ## ⏰ Gestion du temps
 
 
-        Suivez vos investissements en temps pour comprendre vos modèles de travail et améliorer l'efficacité. Une gestion appropriée du temps transforme les efforts dispersés en productivité focalisée.
+        Suivez vos investissements en temps pour comprendre vos modèles de travail
+        et améliorer l'efficacité. Une gestion appropriée du temps transforme les
+        efforts dispersés en productivité focalisée.
 
 
         - 📊 Surveillez le temps réel vs estimé
@@ -124,34 +136,45 @@ tasks:
         ## 📊 Cadre de priorité (Matrice d'Eisenhower)
 
 
-        Organisez vos tâches en utilisant cette méthode de priorisation éprouvée pour vous assurer de toujours travailler sur les bonnes choses au bon moment.
+        Organisez vos tâches en utilisant cette méthode de priorisation éprouvée pour
+        vous assurer de toujours travailler sur les bonnes choses au bon moment.
 
 
         - 🔥 **Urgent et Important :** Gérez immédiatement - gestion de crise et échéances
 
-        - 📈 **Important, pas urgent :** Planifiez stratégiquement - planification et développement des compétences
+        - 📈 **Important, pas urgent :** Planifiez stratégiquement - planification
+        et développement des compétences
 
-        - ⚡ **Urgent, pas important :** Déléguez si possible - interruptions et certaines réunions
+        - ⚡ **Urgent, pas important :** Déléguez si possible - interruptions et certaines
+        réunions
 
-        - 🗑️ **Ni urgent ni important :** Éliminez - activités chronophages et de faible valeur
+        - 🗑️ **Ni urgent ni important :** Éliminez - activités chronophages et de
+        faible valeur
 
         "
       title: Guide de gestion des tâches et de productivité
     overview:
       content:
-        "Transformez votre productivité avec une gestion systématique des tâches qui vous aide à rester organisé, concentré et en contrôle de votre charge de travail.
+        "Transformez votre productivité avec une gestion systématique des tâches
+        qui vous aide à rester organisé, concentré et en contrôle de votre charge
+        de travail.
 
 
         ## ⚡ Pourquoi est-ce important ?
 
 
-        La gestion efficace des tâches est la pierre angulaire du succès personnel et professionnel. En organisant systématiquement votre travail, vous réduisez le stress, respectez les échéances de manière cohérente et créez de l'espace pour des progrès significatifs sur des objectifs importants.
+        La gestion efficace des tâches est la pierre angulaire du succès personnel
+        et professionnel. En organisant systématiquement votre travail, vous réduisez
+        le stress, respectez les échéances de manière cohérente et créez de l'espace
+        pour des progrès significatifs sur des objectifs importants.
 
 
         ## 📋 Organisation des tâches
 
 
-        Créez une approche structurée pour gérer vos responsabilités. Des tâches bien organisées mènent à des priorités claires et une exécution efficace de votre travail quotidien.
+        Créez une approche structurée pour gérer vos responsabilités. Des tâches bien
+        organisées mènent à des priorités claires et une exécution efficace de votre
+        travail quotidien.
 
 
         - ✅ Créez et catégorisez les tâches systématiquement
@@ -166,7 +189,9 @@ tasks:
         ## ⏱️ Suivi du temps et concentration
 
 
-        Surveillez vos investissements en temps pour comprendre les modèles de productivité et optimiser votre flux de travail. La conscience du temps mène à une meilleure planification et une performance améliorée.
+        Surveillez vos investissements en temps pour comprendre les modèles de productivité
+        et optimiser votre flux de travail. La conscience du temps mène à une meilleure
+        planification et une performance améliorée.
 
 
         - ⏰ Suivez le temps réel passé par tâche
@@ -181,7 +206,9 @@ tasks:
         ## 📈 Surveillance des progrès
 
 
-        Suivez vos accomplissements et apprenez de vos modèles de travail. La révision et réflexion régulières favorisent l'amélioration continue de votre système de productivité.
+        Suivez vos accomplissements et apprenez de vos modèles de travail. La révision
+        et réflexion régulières favorisent l'amélioration continue de votre système
+        de productivité.
 
 
         - 📈 Surveillez les taux d'achèvement des tâches
@@ -199,19 +226,27 @@ tasks:
       title: Détails de la tâche
     help:
       content:
-        "Maximisez votre concentration et productivité avec des sessions de travail structurées qui vous aident à maintenir une concentration profonde tout en prévenant l'épuisement.
+        "Maximisez votre concentration et productivité avec des sessions de
+        travail structurées qui vous aident à maintenir une concentration profonde
+        tout en prévenant l'épuisement.
 
 
         ## ⚡ Pourquoi est-ce important ?
 
 
-        Les sessions de travail concentrées sont essentielles pour le travail en profondeur et des résultats de haute qualité. En travaillant par intervalles structurés avec des pauses régulières, vous maintenez des performances mentales optimales tout en évitant la fatigue qui vient de périodes de travail prolongées et non concentrées.
+        Les sessions de travail concentrées sont essentielles pour le travail en profondeur
+        et des résultats de haute qualité. En travaillant par intervalles structurés
+        avec des pauses régulières, vous maintenez des performances mentales optimales
+        tout en évitant la fatigue qui vient de périodes de travail prolongées et
+        non concentrées.
 
 
         ## ⏰ Sessions de concentration chronométrées
 
 
-        Utilisez des techniques de gestion du temps éprouvées pour structurer votre travail pour une efficacité maximale. Les sessions structurées vous aident à maintenir la concentration et à accomplir les tâches plus efficacement.
+        Utilisez des techniques de gestion du temps éprouvées pour structurer votre
+        travail pour une efficacité maximale. Les sessions structurées vous aident
+        à maintenir la concentration et à accomplir les tâches plus efficacement.
 
 
         - 🎯 **Concentration classique :** 25 minutes de travail / 5 minutes de pause
@@ -220,13 +255,16 @@ tasks:
 
         - 🔄 **Pause longue :** 15-30 minutes après 4 sessions
 
-        - ⚖️ **Timing personnalisé :** Ajustez les intervalles selon votre rythme naturel
+        - ⚖️ **Timing personnalisé :** Ajustez les intervalles selon votre rythme
+        naturel
 
 
         ## 🧠 Avantages cognitifs
 
 
-        Les sessions de travail structurées exploitent les cycles d'attention naturels de votre cerveau pour optimiser les performances et prévenir la fatigue mentale qui réduit la qualité et la créativité.
+        Les sessions de travail structurées exploitent les cycles d'attention naturels
+        de votre cerveau pour optimiser les performances et prévenir la fatigue mentale
+        qui réduit la qualité et la créativité.
 
 
         - 🎯 Concentration améliorée et concentration profonde
@@ -241,7 +279,8 @@ tasks:
         ## 📊 Optimisation des performances
 
 
-        Suivez vos modèles de travail concentré pour comprendre vos heures de productivité optimales et optimiser votre horaire pour une efficacité maximale.
+        Suivez vos modèles de travail concentré pour comprendre vos heures de productivité
+        optimales et optimiser votre horaire pour une efficacité maximale.
 
 
         - 🏷️ Catégorisez les sessions de concentration avec des tags pour l'analyse
@@ -250,7 +289,8 @@ tasks:
 
         - 🚫 Éliminez les distractions avant de commencer les sessions
 
-        - 🚶 Utilisez les pauses pour le mouvement physique et la réinitialisation mentale
+        - 🚶 Utilisez les pauses pour le mouvement physique et la réinitialisation
+        mentale
 
         "
       title: Guide des sessions de travail concentrées et de gestion du temps
@@ -278,7 +318,8 @@ tasks:
     no_tasks: Aucune tâche trouvée dans le fichier.
     generic_info_title: Format CSV générique
     generic_info_description:
-      "Pour importer correctement les tâches, votre CSV doit suivre ce format :
+      "Pour importer correctement les tâches, votre CSV doit
+      suivre ce format :
 
 
       - **Colonne 1** : Titre (Obligatoire)
@@ -333,7 +374,9 @@ tasks:
     urgent_important: Urgent et important
     urgent_not_important: Urgent mais pas important
   priority:
-    description: Définissez la priorité de la tâche en utilisant la matrice d'Eisenhower - classification Urgent/Important pour une gestion efficace des tâches
+    description:
+      Définissez la priorité de la tâche en utilisant la matrice d'Eisenhower
+      - classification Urgent/Important pour une gestion efficace des tâches
     selection:
       title: Sélectionner la priorité
     tooltips:
@@ -350,11 +393,16 @@ tasks:
       urgent_not_important: Urgent mais pas important
   quick_task:
     create_error: Erreur lors de la création de la tâche
-    lock_description: Verrouillez les propriétés pour conserver leurs valeurs lors de la création de plusieurs tâches similaires. Les propriétés verrouillées ne seront pas effacées lors de la réinitialisation du formulaire.
+    lock_description:
+      Verrouillez les propriétés pour conserver leurs valeurs lors
+      de la création de plusieurs tâches similaires. Les propriétés verrouillées ne
+      seront pas effacées lors de la réinitialisation du formulaire.
     lock_settings: Paramètres de verrouillage
     reset_all: Réinitialiser tous les champs
     reset_confirm:
-      message: Êtes-vous sûr de vouloir réinitialiser tous les champs ? Cette action ne peut pas être annulée.
+      message:
+        Êtes-vous sûr de vouloir réinitialiser tous les champs ? Cette action
+        ne peut pas être annulée.
       title: Réinitialiser tous les champs
     task_added_successfully: Tâche ajoutée avec succès
     title: Tâche rapide
@@ -419,7 +467,9 @@ tasks:
     monthly_pattern_label: Modèle mensuel
     advanced_label: Paramètres avancés
     regenerate_label: Régénérer après achèvement
-    regenerate_description: Lorsqu'il est activé, la prochaine occurrence sera planifiée à partir de la date d'achèvement, au lieu de la date prévue.
+    regenerate_description:
+      Lorsqu'il est activé, la prochaine occurrence sera planifiée
+      à partir de la date d'achèvement, au lieu de la date prévue.
     on_specific_day: Jour spécifique
     on_relative_day: Jour relatif
     on_the: Le
@@ -479,7 +529,9 @@ tasks:
     increase_estimated_time: Augmenter le temps estimé
     edit_title: Modifier le titre
     reminder_date_required: Configurez d'abord une date pour configurer les rappels
-    reminder_help_text: Définissez un rappel pour être notifié avant la date de la tâche
+    reminder_help_text:
+      Définissez un rappel pour être notifié avant la date de la
+      tâche
     set_reminder: Définir un rappel
     set_reminder_with_status: Définir un rappel - Aucun rappel
     show_completed_tasks: Filtrer les tâches terminées
@@ -512,15 +564,7 @@ tasks:
       description: Définir une heure spécifique pour chaque jour de la semaine
       title: Vos tâches
   validation:
-    deadline_cannot_be_before_planned: La date d'échéance doit être postérieure à la date planifiée
+    deadline_cannot_be_before_planned:
+      La date d'échéance doit être postérieure à
+      la date planifiée
     deadline_time_invalid: L'heure d'échéance n'est pas valide
-shared:
-  time:
-    minutes: minutes
-    hours: heures
-    days: jours
-    weeks: semaines
-    minute: minute
-    hour: heure
-    day: jour
-    week: semaine

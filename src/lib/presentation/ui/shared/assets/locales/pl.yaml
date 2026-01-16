@@ -88,9 +88,7 @@ shared:
     cannot_select_date_before_min_date: Nie można wybrać daty przed {date}
     cannot_select_time_after_max_date: Nie można wybrać czasu po {time}
     cannot_select_time_before_min_date: Nie można wybrać czasu przed {time}
-    deadline_cannot_be_before_planned_date:
-      Termin musi być w dniu zaplanowanej daty
-      lub później
+    deadline_cannot_be_before_planned_date: Termin musi być w dniu zaplanowanej daty lub później
     end_date_cannot_be_after_max_date: Data zakończenia nie może być po {date}
     end_date_must_be_at_or_before: Data zakończenia musi być {date} lub wcześniej
     select_date_range_title: Wybierz zakres dat
@@ -98,9 +96,7 @@ shared:
     selected_date_must_be_at_or_after: Wybrana data musi być {date} lub później
     selected_date_must_be_at_or_before: Wybrana data musi być {date} lub wcześniej
     selected_date_time_must_be_after: Wybrana data i czas muszą być po {dateTime}
-    start_date_cannot_be_after_end_date:
-      Data rozpoczęcia nie może być późniejsza
-      niż data zakończenia
+    start_date_cannot_be_after_end_date: Data rozpoczęcia nie może być późniejsza niż data zakończenia
     start_date_cannot_be_before_min_date: Data rozpoczęcia nie może być przed {date}
     start_date_must_be_at_or_after: Data rozpoczęcia musi być {date} lub później
     time_must_be_at_or_after: Czas musi być o {time} lub później
@@ -156,8 +152,7 @@ shared:
     loading: Wystąpił błąd podczas ładowania danych
     report_subject: "{appName} App: Raport nieoczekiwanego błędu"
     report_template:
-      "Cześć, napotkałem nieoczekiwany błąd podczas korzystania z aplikacji
-      {appName}.
+      "Cześć, napotkałem nieoczekiwany błąd podczas korzystania z aplikacji {appName}.
 
 
       Oto informacje, które mogą pomóc w zdiagnozowaniu problemu:
@@ -196,9 +191,7 @@ shared:
   startup_error:
     copied_to_clipboard: Szczegóły błędu skopiowane do schowka
     copy_button: Kopiuj szczegóły błędu
-    description:
-      Coś poszło nie tak podczas uruchamiania aplikacji. Może to być spowodowane
-      problemem systemowym lub niezgodną konfiguracją.
+    description: Coś poszło nie tak podczas uruchamiania aplikacji. Może to być spowodowane problemem systemowym lub niezgodną konfiguracją.
     details_title: Szczegóły Błędu
     report_button: Zgłoś Problem
     title: Błąd Uruchamiania Aplikacji
@@ -273,9 +266,7 @@ shared:
     average_daily_label: Średnia dzienna
     peak_hour_label: Szczytowa godzina
     select_date_range_message: Wybierz zakres dat, aby filtrować statystyki
-    select_date_range_description:
-      Wybierz niestandardowy zakres dat, aby wyświetlić
-      statystyki użycia
+    select_date_range_description: Wybierz niestandardowy zakres dat, aby wyświetlić statystyki użycia
   time:
     not_set: Nie ustawiono
     minutes: minuty
@@ -374,9 +365,7 @@ shared:
     time_must_be_at_or_before: Czas musi być o {time} lub wcześniej
     selected_date_must_be_at_or_after: Wybrana data musi być {date} lub później
     selected_date_must_be_at_or_before: Wybrana data musi być {date} lub wcześniej
-    start_date_cannot_be_after_end_date:
-      Data początkowa nie może być późniejsza niż
-      data końcowa
+    start_date_cannot_be_after_end_date: Data początkowa nie może być późniejsza niż data końcowa
     start_date_must_be_at_or_after: Data początkowa musi być {date} lub później
     end_date_must_be_at_or_before: Data końcowa musi być {date} lub wcześniej
     cannot_select_date_before_min_date: Nie można wybrać daty przed {date}
@@ -433,3 +422,4 @@ shared:
     30_60_min: 30 - 60 min
     1_2_hours: 1 - 2 godziny
     more_than_2_hours: 2+ godzin
+  configure: Konfiguruj
