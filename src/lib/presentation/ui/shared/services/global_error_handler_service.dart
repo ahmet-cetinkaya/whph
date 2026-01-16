@@ -6,16 +6,30 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Service responsible for global error handling and error widget configuration
 class GlobalErrorHandlerService {
+  /// The original ErrorWidget.builder, preserved for resetting
+  static ErrorWidgetBuilder? _originalErrorWidgetBuilder;
+
   /// Sets up global error handling for the application
   ///
   /// Configures custom error widgets and zone error handling
   static void setupErrorHandling(GlobalKey<NavigatorState> navigatorKey) {
     Logger.debug('GlobalErrorHandlerService: Setting up global error handling...');
 
+    // Store original builder if not already stored (to allow multiple calls)
+    _originalErrorWidgetBuilder ??= ErrorWidget.builder;
+
     // Configure custom error widget for Flutter rendering errors
     ErrorWidget.builder = _buildErrorWidget;
 
     Logger.debug('GlobalErrorHandlerService: Error handling setup completed');
+  }
+
+  /// Resets the global error handling state (useful for tests)
+  static void reset() {
+    if (_originalErrorWidgetBuilder != null) {
+      ErrorWidget.builder = _originalErrorWidgetBuilder!;
+      // Do not clear _originalErrorWidgetBuilder, so we don't pick up a custom one if called again
+    }
   }
 
   /// Handles uncaught exceptions in the application zone

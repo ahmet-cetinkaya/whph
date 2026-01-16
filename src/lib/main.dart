@@ -23,12 +23,12 @@ import 'package:whph/infrastructure/android/features/share/share_to_create_servi
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Global navigator key for accessing context throughout the application
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 /// Global DI container instance
-late final IContainer container;
+late IContainer container;
 
-void main(List<String> args) async {
+Future<void> main(List<String> args) async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
