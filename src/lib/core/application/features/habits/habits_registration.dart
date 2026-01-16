@@ -35,82 +35,103 @@ void registerHabitsFeature(
   ISettingRepository settingsRepository,
 ) {
   mediator
-    ..registerHandler<SaveHabitCommand, SaveHabitCommandResponse, SaveHabitCommandHandler>(
+    ..registerHandler<SaveHabitCommand, SaveHabitCommandResponse,
+        SaveHabitCommandHandler>(
       () => SaveHabitCommandHandler(habitRepository: habitRepository),
     )
-    ..registerHandler<DeleteHabitCommand, DeleteHabitCommandResponse, DeleteHabitCommandHandler>(
+    ..registerHandler<DeleteHabitCommand, DeleteHabitCommandResponse,
+        DeleteHabitCommandHandler>(
       () => DeleteHabitCommandHandler(
         habitRepository: habitRepository,
         habitTagsRepository: habitTagRepository,
         habitRecordRepository: habitRecordRepository,
       ),
     )
-    ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse, GetListHabitsQueryHandler>(
+    ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse,
+        GetListHabitsQueryHandler>(
       () => GetListHabitsQueryHandler(
         habitRepository: habitRepository,
         habitTagRepository: habitTagRepository,
         habitRecordRepository: habitRecordRepository,
       ),
     )
-    ..registerHandler<GetHabitQuery, GetHabitQueryResponse, GetHabitQueryHandler>(
+    ..registerHandler<GetHabitQuery, GetHabitQueryResponse,
+        GetHabitQueryHandler>(
       () => GetHabitQueryHandler(
         habitRepository: habitRepository,
         habitRecordRepository: habitRecordRepository,
         settingsRepository: settingsRepository,
       ),
     )
-    ..registerHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse, AddHabitRecordCommandHandler>(
+    ..registerHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse,
+        AddHabitRecordCommandHandler>(
       () => AddHabitRecordCommandHandler(
         habitRecordRepository: habitRecordRepository,
         habitRepository: habitRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )
-    ..registerHandler<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse, AddHabitTimeRecordCommandHandler>(
-      () => AddHabitTimeRecordCommandHandler(habitTimeRecordRepository: habitTimeRecordRepository),
+    ..registerHandler<AddHabitTimeRecordCommand,
+        AddHabitTimeRecordCommandResponse, AddHabitTimeRecordCommandHandler>(
+      () => AddHabitTimeRecordCommandHandler(
+          habitTimeRecordRepository: habitTimeRecordRepository),
     )
-    ..registerHandler<SaveHabitTimeRecordCommand, SaveHabitTimeRecordCommandResponse,
-        SaveHabitTimeRecordCommandHandler>(
-      () => SaveHabitTimeRecordCommandHandler(habitTimeRecordRepository: habitTimeRecordRepository),
+    ..registerHandler<SaveHabitTimeRecordCommand,
+        SaveHabitTimeRecordCommandResponse, SaveHabitTimeRecordCommandHandler>(
+      () => SaveHabitTimeRecordCommandHandler(
+          habitTimeRecordRepository: habitTimeRecordRepository),
     )
-    ..registerHandler<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse, DeleteHabitRecordCommandHandler>(
+    ..registerHandler<DeleteHabitRecordCommand,
+        DeleteHabitRecordCommandResponse, DeleteHabitRecordCommandHandler>(
       () => DeleteHabitRecordCommandHandler(
         habitRecordRepository: habitRecordRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )
-    ..registerHandler<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
-      () => GetListHabitRecordsQueryHandler(habitRecordRepository: habitRecordRepository),
+    ..registerHandler<GetListHabitRecordsQuery,
+        GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
+      () => GetListHabitRecordsQueryHandler(
+          habitRecordRepository: habitRecordRepository),
     )
-    ..registerHandler<GetListHabitTagsQuery, GetListHabitTagsQueryResponse, GetListHabitTagsQueryHandler>(
+    ..registerHandler<GetListHabitTagsQuery, GetListHabitTagsQueryResponse,
+        GetListHabitTagsQueryHandler>(
       () => GetListHabitTagsQueryHandler(
         tagRepository: tagRepository,
         habitTagRepository: habitTagRepository,
       ),
     )
-    ..registerHandler<AddHabitTagCommand, AddHabitTagCommandResponse, AddHabitTagCommandHandler>(
+    ..registerHandler<AddHabitTagCommand, AddHabitTagCommandResponse,
+        AddHabitTagCommandHandler>(
       () => AddHabitTagCommandHandler(habitTagRepository: habitTagRepository),
     )
-    ..registerHandler<RemoveHabitTagCommand, RemoveHabitTagCommandResponse, RemoveHabitTagCommandHandler>(
-      () => RemoveHabitTagCommandHandler(habitTagRepository: habitTagRepository),
+    ..registerHandler<RemoveHabitTagCommand, RemoveHabitTagCommandResponse,
+        RemoveHabitTagCommandHandler>(
+      () =>
+          RemoveHabitTagCommandHandler(habitTagRepository: habitTagRepository),
     )
-    ..registerHandler<UpdateHabitOrderCommand, UpdateHabitOrderResponse, UpdateHabitOrderCommandHandler>(
+    ..registerHandler<UpdateHabitOrderCommand, UpdateHabitOrderResponse,
+        UpdateHabitOrderCommandHandler>(
       () => UpdateHabitOrderCommandHandler(habitRepository),
     )
-    ..registerHandler<UpdateHabitOrderCommand, UpdateHabitOrderResponse, UpdateHabitOrderCommandHandler>(
-      () => UpdateHabitOrderCommandHandler(habitRepository),
+    ..registerHandler<UpdateHabitTagsOrderCommand, void,
+        UpdateHabitTagsOrderCommandHandler>(
+      () => UpdateHabitTagsOrderCommandHandler(
+          habitTagRepository: habitTagRepository),
     )
-    ..registerHandler<UpdateHabitTagsOrderCommand, void, UpdateHabitTagsOrderCommandHandler>(
-      () => UpdateHabitTagsOrderCommandHandler(habitTagRepository: habitTagRepository),
-    )
-    ..registerHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
+    ..registerHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse,
+        NormalizeHabitOrdersCommandHandler>(
       () => NormalizeHabitOrdersCommandHandler(habitRepository),
     )
-    ..registerHandler<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse,
+    ..registerHandler<
+        GetTotalDurationByHabitIdQuery,
+        GetTotalDurationByHabitIdQueryResponse,
         GetTotalDurationByHabitIdQueryHandler>(
-      () => GetTotalDurationByHabitIdQueryHandler(habitTimeRecordRepository: habitTimeRecordRepository),
+      () => GetTotalDurationByHabitIdQueryHandler(
+          habitTimeRecordRepository: habitTimeRecordRepository),
     )
-    ..registerHandler<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse,
+    ..registerHandler<
+        ToggleHabitCompletionCommand,
+        ToggleHabitCompletionCommandResponse,
         ToggleHabitCompletionCommandHandler>(
       () => ToggleHabitCompletionCommandHandler(
         habitRepository: habitRepository,
