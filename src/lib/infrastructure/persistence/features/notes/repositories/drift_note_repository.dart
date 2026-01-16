@@ -6,6 +6,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
 
 @UseRowClass(Note)
 class NoteTable extends Table {
@@ -21,8 +22,10 @@ class NoteTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> implements INoteRepository {
-  DriftNoteRepository() : super(AppDatabase.instance(), AppDatabase.instance().noteTable);
+class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable>
+    implements INoteRepository {
+  DriftNoteRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().noteTable);
 
   @override
   Expression<String> getPrimaryKey(NoteTable t) {
@@ -43,7 +46,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
   }
 
   @override
-  Future<void> updateNoteOrder(List<String> noteIds, List<double> orders) async {
+  Future<void> updateNoteOrder(
+      List<String> noteIds, List<double> orders) async {
     await database.transaction(() async {
       for (var i = 0; i < noteIds.length; i++) {
         await database.customUpdate(
@@ -71,7 +75,9 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    String? whereClause = whereClauses.isNotEmpty
+        ? " WHERE ${whereClauses.join(' AND ')} "
+        : null;
 
     String? orderByClause;
     String? outerOrderByClause;
@@ -105,7 +111,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     final countResult = await database.customSelect(
       'SELECT COUNT(*) AS count FROM note_table${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
 
@@ -147,7 +154,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     ''';
 
     final List<Variable<Object>> variables = [
-      if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+      if (customWhereFilter != null)
+        ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       Variable.withInt(pageSize),
       Variable.withInt(pageIndex * pageSize)
     ];
@@ -194,7 +202,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
             name: row.read<String>('t_name'),
             color: row.readNullable<String>('t_color'),
             createdDate: row.read<DateTime>('t_created_date'),
-            type: _parseTagType(row.read<int?>('t_type')),
+            type: parseTagType(row.read<int?>('t_type')),
           );
         }
 
@@ -261,7 +269,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
             name: row.read<String>('t_name'),
             color: row.readNullable<String>('t_color'),
             createdDate: row.read<DateTime>('t_created_date'),
-            type: _parseTagType(row.read<int?>('t_type')),
+            type: parseTagType(row.read<int?>('t_type')),
           );
         }
         note.tags.add(noteTag);
@@ -269,13 +277,5 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     }
 
     return note;
-  }
-
-  TagType _parseTagType(int? typeIndex) {
-    if (typeIndex == null) return TagType.label;
-    if (typeIndex >= 0 && typeIndex < TagType.values.length) {
-      return TagType.values[typeIndex];
-    }
-    return TagType.label;
   }
 }

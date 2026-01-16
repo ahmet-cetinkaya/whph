@@ -8,6 +8,7 @@ import 'package:whph/core/application/features/tasks/models/task_sort_fields.dar
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
+import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart';
@@ -40,32 +41,35 @@ class TaskTable extends Table {
   RealColumn get order => real().withDefault(const Constant(0.0))();
 
   // Reminder settings
-  IntColumn get plannedDateReminderTime =>
-      intEnum<ReminderTime>().withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
-  IntColumn get deadlineDateReminderTime =>
-      intEnum<ReminderTime>().withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
+  IntColumn get plannedDateReminderTime => intEnum<ReminderTime>()
+      .withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
+  IntColumn get deadlineDateReminderTime => intEnum<ReminderTime>()
+      .withDefault(const Constant(0))(); // Default to ReminderTime.none (0)
   IntColumn get plannedDateReminderCustomOffset => integer().nullable()();
   IntColumn get deadlineDateReminderCustomOffset => integer().nullable()();
 
   // Recurrence settings
-  IntColumn get recurrenceType =>
-      intEnum<RecurrenceType>().withDefault(const Constant(0))(); // Default to RecurrenceType.none (0)
+  IntColumn get recurrenceType => intEnum<RecurrenceType>()
+      .withDefault(const Constant(0))(); // Default to RecurrenceType.none (0)
   IntColumn get recurrenceInterval => integer().nullable()();
   TextColumn get recurrenceDaysString => text().nullable()();
   DateTimeColumn get recurrenceStartDate => dateTime().nullable()();
   DateTimeColumn get recurrenceEndDate => dateTime().nullable()();
   IntColumn get recurrenceCount => integer().nullable()();
   TextColumn get recurrenceParentId => text().nullable()();
-  TextColumn get recurrenceConfiguration => text().map(const RecurrenceConfigurationConverter()).nullable()();
+  TextColumn get recurrenceConfiguration =>
+      text().map(const RecurrenceConfigurationConverter()).nullable()();
 }
 
-class RecurrenceConfigurationConverter extends TypeConverter<RecurrenceConfiguration, String> {
+class RecurrenceConfigurationConverter
+    extends TypeConverter<RecurrenceConfiguration, String> {
   const RecurrenceConfigurationConverter();
 
   @override
   RecurrenceConfiguration fromSql(String fromDb) {
     try {
-      return RecurrenceConfiguration.fromJson(jsonDecode(fromDb) as Map<String, dynamic>);
+      return RecurrenceConfiguration.fromJson(
+          jsonDecode(fromDb) as Map<String, dynamic>);
     } on FormatException catch (e, stackTrace) {
       Logger.error(
         'Invalid JSON in recurrence_configuration column - returning safe default. Task ID context not available at this layer [$TaskErrorIds.recurrenceConfigInvalidJson]',
@@ -100,7 +104,8 @@ class RecurrenceConfigurationConverter extends TypeConverter<RecurrenceConfigura
   }
 }
 
-class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> implements ITaskRepository {
+class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable>
+    implements ITaskRepository {
   static const sortFieldMap = <String, TaskSortFields>{
     'created_date': TaskSortFields.createdDate,
     'deadline_date': TaskSortFields.deadlineDate,
@@ -116,9 +121,11 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   final TaskDataMapper _mapper = TaskDataMapper();
   final TaskQueryBuilder _queryBuilder = TaskQueryBuilder();
 
-  DriftTaskRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTable);
+  DriftTaskRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().taskTable);
 
-  DriftTaskRepository.withDatabase(AppDatabase appDatabase) : super(appDatabase, appDatabase.taskTable);
+  DriftTaskRepository.withDatabase(AppDatabase appDatabase)
+      : super(appDatabase, appDatabase.taskTable);
 
   @override
   Expression<String> getPrimaryKey(TaskTable t) {
@@ -128,12 +135,16 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   /// Override getList to use custom mapper that correctly handles all Task fields including recurrenceParentId
   @override
   Future<PaginatedList<Task>> getList(int pageIndex, int pageSize,
-      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+      {bool includeDeleted = false,
+      CustomWhereFilter? customWhereFilter,
+      List<CustomOrder>? customOrder}) async {
     List<String> whereClauses = [
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    String? whereClause = whereClauses.isNotEmpty
+        ? " WHERE ${whereClauses.join(' AND ')} "
+        : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
         ? ' ORDER BY ${customOrder!.map((order) {
@@ -147,7 +158,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     final query = database.customSelect(
       "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
@@ -158,7 +170,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     final countQuery = await database.customSelect(
       'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
     final totalCount = countQuery?.data['count'] as int? ?? 0;
@@ -195,18 +208,21 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     return _mapper.mapTaskFromRow(results.first.data);
   }
 
-  Future<void> _cleanupDuplicateTasksInBackground(String taskId, List<QueryRow> duplicatesToDelete) async {
+  Future<void> _cleanupDuplicateTasksInBackground(
+      String taskId, List<QueryRow> duplicatesToDelete) async {
     if (duplicatesToDelete.isEmpty) return;
 
     try {
-      final rowIds = duplicatesToDelete.map((d) => d.data['rowid'] as int).toList();
+      final rowIds =
+          duplicatesToDelete.map((d) => d.data['rowid'] as int).toList();
       final placeholders = List.filled(rowIds.length, '?').join(',');
 
       await database.customStatement(
         'DELETE FROM ${table.actualTableName} WHERE rowid IN ($placeholders)',
         rowIds.map((id) => Variable.withInt(id)).toList(),
       );
-      Logger.info('Cleaned up ${rowIds.length} duplicate tasks for ID $taskId.');
+      Logger.info(
+          'Cleaned up ${rowIds.length} duplicate tasks for ID $taskId.');
     } on Exception catch (e, stackTrace) {
       // Log the error but don't throw - this is a background cleanup operation
       Logger.error(
@@ -239,11 +255,13 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
         if (customWhereFilter != null) {
           query += ' AND ${customWhereFilter.query}';
-          variables.addAll(customWhereFilter.variables.map((e) => _convertToQueryVariable(e)));
+          variables.addAll(customWhereFilter.variables
+              .map((e) => _convertToQueryVariable(e)));
         }
       } else if (customWhereFilter != null) {
         query += customWhereFilter.query;
-        variables.addAll(customWhereFilter.variables.map((e) => _convertToQueryVariable(e)));
+        variables.addAll(
+            customWhereFilter.variables.map((e) => _convertToQueryVariable(e)));
       }
     }
 
@@ -299,11 +317,14 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'task_table.deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    String? whereClause = whereClauses.isNotEmpty
+        ? " WHERE ${whereClauses.join(' AND ')} "
+        : null;
 
     String? orderByClause = _queryBuilder.buildOrderByClause(customOrder,
-        customTagSortOrder:
-            customWhereFilter is TaskQueryFilter ? (customWhereFilter as TaskQueryFilter).customTagSortOrder : null);
+        customTagSortOrder: customWhereFilter is TaskQueryFilter
+            ? (customWhereFilter as TaskQueryFilter).customTagSortOrder
+            : null);
 
     final baseQuery = '''
       ${TaskQueryBuilder.selectClauseWithDuration}
@@ -315,7 +336,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     final query = database.customSelect(
       baseQuery,
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
@@ -332,11 +354,15 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     ''';
     final count = await database.customSelect(
       countQuery,
-      variables: [if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e))],
+      variables: [
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e))
+      ],
     ).getSingleOrNull();
     final totalCount = count?.data['count'] as int? ?? 0;
 
-    final items = result.map((row) => _mapToTaskWithTotalDuration(row.data)).toList();
+    final items =
+        result.map((row) => _mapToTaskWithTotalDuration(row.data)).toList();
 
     return PaginatedList(
       items: items,
@@ -414,7 +440,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         areParentAndSubTasksIncluded: true,
       );
 
-      final parentSubtaskResult = _queryBuilder.buildParentAndSubtaskFilterCondition(
+      final parentSubtaskResult =
+          _queryBuilder.buildParentAndSubtaskFilterCondition(
         searchCondition: searchResult.condition,
         dateCondition: dateResult.condition,
         completedCondition: completionResult.condition,
@@ -443,7 +470,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         variables.addAll(dateResult.variables);
       }
 
-      final searchResult = _queryBuilder.buildSearchCondition(filterBySearch: f.search);
+      final searchResult =
+          _queryBuilder.buildSearchCondition(filterBySearch: f.search);
       if (searchResult.condition != '1=1') {
         conditions.add(searchResult.condition);
         variables.addAll(searchResult.variables);
@@ -451,7 +479,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
       // Completed filter
       if (f.completed != null) {
-        conditions.add(f.completed! ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL');
+        conditions.add(f.completed!
+            ? 'task_table.completed_at IS NOT NULL'
+            : 'task_table.completed_at IS NULL');
       }
 
       // Parent task filter
@@ -467,9 +497,11 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       conditions.add('task_table.deleted_date IS NULL');
     }
 
-    String? whereClause = conditions.isNotEmpty ? " WHERE ${conditions.join(' AND ')} " : null;
+    String? whereClause =
+        conditions.isNotEmpty ? " WHERE ${conditions.join(' AND ')} " : null;
     String? orderByClause = _queryBuilder.buildOrderByClause(f.sortBy,
-        useCustomSort: f.sortByCustomSort, customTagSortOrder: f.customTagSortOrder);
+        useCustomSort: f.sortByCustomSort,
+        customTagSortOrder: f.customTagSortOrder);
 
     final baseQuery = '''
       ${TaskQueryBuilder.selectClauseWithDuration}
@@ -480,7 +512,11 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
     final query = database.customSelect(
       baseQuery,
-      variables: [...variables, Variable.withInt(pageSize), Variable.withInt(pageIndex * pageSize)],
+      variables: [
+        ...variables,
+        Variable.withInt(pageSize),
+        Variable.withInt(pageIndex * pageSize)
+      ],
       readsFrom: {table, database.taskTimeRecordTable},
     );
 
@@ -500,7 +536,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         .getSingleOrNull();
     final totalCount = count?.data['count'] as int? ?? 0;
 
-    final items = result.map((row) => _mapToTaskWithTotalDuration(row.data)).toList();
+    final items =
+        result.map((row) => _mapToTaskWithTotalDuration(row.data)).toList();
 
     return PaginatedList(
       items: items,
@@ -582,11 +619,17 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }) async {
     // 1. Fetch Request Page
     final tasksWithDuration = await getListWithOptions(
-        pageIndex: pageIndex, pageSize: pageSize, filter: filter, includeDeleted: includeDeleted);
+        pageIndex: pageIndex,
+        pageSize: pageSize,
+        filter: filter,
+        includeDeleted: includeDeleted);
 
     if (tasksWithDuration.items.isEmpty) {
       return PaginatedList(
-          items: [], totalItemCount: tasksWithDuration.totalItemCount, pageIndex: pageIndex, pageSize: pageSize);
+          items: [],
+          totalItemCount: tasksWithDuration.totalItemCount,
+          pageIndex: pageIndex,
+          pageSize: pageSize);
     }
 
     final taskIds = tasksWithDuration.items.map((e) => e.id).toList();
@@ -616,7 +659,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         name: row.read<String>('name'),
         color: row.read<String?>('color'),
         isArchived: row.read<bool>('is_archived'),
-        type: _parseTagType(row.read<int?>('type')),
+        type: parseTagType(row.read<int?>('type')),
       );
       tagsMap.putIfAbsent(taskId, () => []).add(tagItem);
     }
@@ -628,7 +671,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       readsFrom: {table},
     );
     final subtasksResult = await subtasksQuery.get();
-    final allSubtasks = subtasksResult.map((row) => _mapper.mapTaskFromRow(row.data)).toList();
+    final allSubtasks =
+        subtasksResult.map((row) => _mapper.mapTaskFromRow(row.data)).toList();
 
     // 4. Batch Fetch Subtask Durations
     final subtaskIds = allSubtasks.map((e) => e.id).toList();
@@ -646,7 +690,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
           readsFrom: {database.taskTimeRecordTable});
       final durationResult = await durationQuery.get();
       for (final row in durationResult) {
-        subtaskDurationsMap[row.read<String>('task_id')] = row.read<int>('total_duration');
+        subtaskDurationsMap[row.read<String>('task_id')] =
+            row.read<int>('total_duration');
       }
     }
 
@@ -711,8 +756,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       );
 
       // Add grouping
-      final groupName =
-          filter?.enableGrouping == true ? TaskGroupingHelper.getGroupName(tItem, primarySortField) : null;
+      final groupName = filter?.enableGrouping == true
+          ? TaskGroupingHelper.getGroupName(tItem, primarySortField)
+          : null;
 
       return tItem.copyWith(groupName: groupName);
     }).toList();
@@ -722,13 +768,5 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         totalItemCount: tasksWithDuration.totalItemCount,
         pageIndex: pageIndex,
         pageSize: pageSize);
-  }
-
-  TagType _parseTagType(int? typeIndex) {
-    if (typeIndex == null) return TagType.label;
-    if (typeIndex >= 0 && typeIndex < TagType.values.length) {
-      return TagType.values[typeIndex];
-    }
-    return TagType.label;
   }
 }
