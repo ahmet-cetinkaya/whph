@@ -225,6 +225,7 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
     for (var i = 0; i < _tags!.items.length; i++) {
       final tag = _tags!.items[i];
 
+      /*
       if (showHeaders && tag.groupName != null && tag.groupName != currentGroup) {
         currentGroup = tag.groupName;
         if (i > 0) {
@@ -238,7 +239,7 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
           title: tag.groupName!,
           shouldTranslate: tag.isGroupNameTranslatable,
         ));
-      } else if (i > 0) {
+      } else */ if (i > 0) {
         listItems.add(SizedBox(
           key: ValueKey('separator_item_${tag.id}'),
           height: AppTheme.sizeSmall, // Consistent gap

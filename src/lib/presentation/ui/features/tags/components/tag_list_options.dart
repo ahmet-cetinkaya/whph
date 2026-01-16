@@ -16,7 +16,7 @@ import 'package:whph/presentation/ui/shared/components/persistent_list_options_b
 import 'package:whph/presentation/ui/shared/components/save_button.dart';
 import 'package:whph/presentation/ui/shared/components/search_filter.dart';
 import 'package:whph/presentation/ui/shared/components/sort_dialog_button.dart';
-import 'package:whph/presentation/ui/shared/components/group_dialog_button.dart';
+// import 'package:whph/presentation/ui/shared/components/group_dialog_button.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -344,7 +344,8 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                     },
                   ),
 
-                // Group button
+                // Group button removed for separate commit
+                /*
                 if (widget.showGroupButton)
                   GroupDialogButton<TagSortFields>(
                     iconColor: Theme.of(context).primaryColor,
@@ -369,6 +370,7 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                       ),
                     ],
                   ),
+                */
 
                 // Archived toggle button
                 if (widget.showArchivedToggle && widget.onArchivedToggle != null && widget.hasItems)
