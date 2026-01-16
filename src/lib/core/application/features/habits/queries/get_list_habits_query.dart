@@ -45,14 +45,10 @@ class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
 
 class GetListHabitsQueryResponse extends PaginatedList<HabitListItem> {
   GetListHabitsQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
-class GetListHabitsQueryHandler
-    implements IRequestHandler<GetListHabitsQuery, GetListHabitsQueryResponse> {
+class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, GetListHabitsQueryResponse> {
   late final IHabitRepository _habitRepository;
   late final IHabitTagsRepository _habitTagsRepository;
   late final IHabitRecordRepository _habitRecordRepository;
@@ -68,8 +64,7 @@ class GetListHabitsQueryHandler
   @override
   Future<GetListHabitsQueryResponse> call(GetListHabitsQuery request) async {
     // 1. Fetch habits with aggregated actualTime in a single query
-    PaginatedList<HabitListItem> habits =
-        await _habitRepository.getHabitListItems(
+    PaginatedList<HabitListItem> habits = await _habitRepository.getHabitListItems(
       request.pageIndex,
       request.pageSize,
       customWhereFilter: _getCustomWhereFilter(request),
@@ -79,8 +74,7 @@ class GetListHabitsQueryHandler
     // Apply period-aware filtering if excludeCompletedForDate is specified
     List<HabitListItem> filteredHabits = habits.items;
     if (request.excludeCompletedForDate != null) {
-      filteredHabits = await _filterHabitsWithPeriodAwareness(
-          habits.items, request.excludeCompletedForDate!);
+      filteredHabits = await _filterHabitsWithPeriodAwareness(habits.items, request.excludeCompletedForDate!);
     }
 
     if (filteredHabits.isEmpty) {
@@ -94,8 +88,7 @@ class GetListHabitsQueryHandler
 
     // 2. Fetch tags for the retrieved habits in a single batch query
     final habitIds = filteredHabits.map((h) => h.id).toList();
-    final habitTagsMap =
-        await _habitTagsRepository.getTagsForHabitIds(habitIds);
+    final habitTagsMap = await _habitTagsRepository.getTagsForHabitIds(habitIds);
 
     // 3. Populate tags and calculate group names
     // Determine sort field for grouping
@@ -116,11 +109,9 @@ class GetListHabitsQueryHandler
       // Sort tags of the habit based on the same criteria as sorting/grouping
       // This ensures the "best" tag is first for HabitGroupingHelper.getGroupName
       if (tags.isNotEmpty) {
-        if (request.customTagSortOrder != null &&
-            request.customTagSortOrder!.isNotEmpty) {
+        if (request.customTagSortOrder != null && request.customTagSortOrder!.isNotEmpty) {
           final orderMap = {
-            for (var i = 0; i < request.customTagSortOrder!.length; i++)
-              request.customTagSortOrder![i]: i
+            for (var i = 0; i < request.customTagSortOrder!.length; i++) request.customTagSortOrder![i]: i
           };
           tags.sort((a, b) {
             final indexA = orderMap[a.id] ?? 999;
@@ -132,8 +123,7 @@ class GetListHabitsQueryHandler
       }
 
       // Assign group name
-      final groupName = HabitGroupingHelper.getGroupName(
-          habitItem.copyWith(tags: tags), primarySortField);
+      final groupName = HabitGroupingHelper.getGroupName(habitItem.copyWith(tags: tags), primarySortField);
 
       return habitItem.copyWith(
         tags: tags,
@@ -161,16 +151,14 @@ class GetListHabitsQueryHandler
 
     // Filter by archive status if specified
     if (request.filterByArchived != null) {
-      conditions.add(request.filterByArchived!
-          ? "habit_table.archived_date IS NOT NULL"
-          : "habit_table.archived_date IS NULL");
+      conditions.add(
+          request.filterByArchived! ? "habit_table.archived_date IS NOT NULL" : "habit_table.archived_date IS NULL");
     }
 
     if (request.excludeCompleted) {
       final now = DateTime.now();
       final startDate = DateTime(now.year, now.month, now.day).toUtc();
-      final endDate =
-          DateTime(now.year, now.month, now.day, 23, 59, 59).toUtc();
+      final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59).toUtc();
       conditions.add(
           "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.occurred_at > ? AND habit_record_table.occurred_at < ? AND habit_record_table.deleted_date IS NULL) < COALESCE(habit_table.daily_target, 1)");
       variables.add(startDate);
@@ -179,19 +167,11 @@ class GetListHabitsQueryHandler
 
     // Exclude habits completed for a specific date (only daily target check in SQL)
     if (request.excludeCompletedForDate != null) {
-      final startDate = DateTime(
-              request.excludeCompletedForDate!.year,
-              request.excludeCompletedForDate!.month,
+      final startDate = DateTime(request.excludeCompletedForDate!.year, request.excludeCompletedForDate!.month,
               request.excludeCompletedForDate!.day)
           .toUtc();
-      final endDate = DateTime(
-              request.excludeCompletedForDate!.year,
-              request.excludeCompletedForDate!.month,
-              request.excludeCompletedForDate!.day,
-              23,
-              59,
-              59,
-              999)
+      final endDate = DateTime(request.excludeCompletedForDate!.year, request.excludeCompletedForDate!.month,
+              request.excludeCompletedForDate!.day, 23, 59, 59, 999)
           .toUtc();
       conditions.add(
           "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.occurred_at >= ? AND habit_record_table.occurred_at <= ? AND habit_record_table.deleted_date IS NULL) < COALESCE(habit_table.daily_target, 1)");
@@ -203,8 +183,7 @@ class GetListHabitsQueryHandler
       // Filter habits with no tags
       conditions.add(
           "(SELECT COUNT(*) FROM habit_tag_table WHERE habit_tag_table.habit_id = habit_table.id AND habit_tag_table.deleted_date IS NULL) = 0");
-    } else if (request.filterByTags != null &&
-        request.filterByTags!.isNotEmpty) {
+    } else if (request.filterByTags != null && request.filterByTags!.isNotEmpty) {
       // Filter habits with specific tags
       final placeholders = request.filterByTags!.map((e) => '?').join(',');
       conditions.add(
@@ -245,8 +224,7 @@ class GetListHabitsQueryHandler
     }
 
     if (request.sortByCustomSort) {
-      customOrders
-          .add(CustomOrder(field: "order", direction: SortDirection.asc));
+      customOrders.add(CustomOrder(field: "order", direction: SortDirection.asc));
       return customOrders;
     }
 
@@ -268,39 +246,31 @@ class GetListHabitsQueryHandler
     return customOrders.isEmpty ? null : customOrders;
   }
 
-  void _addCustomOrder(List<CustomOrder> orders,
-      SortOption<HabitSortFields> option, GetListHabitsQuery request) {
+  void _addCustomOrder(List<CustomOrder> orders, SortOption<HabitSortFields> option, GetListHabitsQuery request) {
     if (option.field == HabitSortFields.name) {
       orders.add(CustomOrder(field: "name", direction: option.direction));
     } else if (option.field == HabitSortFields.createdDate) {
-      orders
-          .add(CustomOrder(field: "created_date", direction: option.direction));
+      orders.add(CustomOrder(field: "created_date", direction: option.direction));
     } else if (option.field == HabitSortFields.modifiedDate) {
-      orders.add(
-          CustomOrder(field: "modified_date", direction: option.direction));
+      orders.add(CustomOrder(field: "modified_date", direction: option.direction));
     } else if (option.field == HabitSortFields.estimatedTime) {
-      orders.add(
-          CustomOrder(field: "estimated_time", direction: option.direction));
+      orders.add(CustomOrder(field: "estimated_time", direction: option.direction));
     } else if (option.field == HabitSortFields.actualTime) {
       // actualTime sorting is now handled at the database level with LEFT JOIN
-      orders
-          .add(CustomOrder(field: "actual_time", direction: option.direction));
+      orders.add(CustomOrder(field: "actual_time", direction: option.direction));
     } else if (option.field == HabitSortFields.archivedDate) {
-      orders.add(
-          CustomOrder(field: "archived_date", direction: option.direction));
+      orders.add(CustomOrder(field: "archived_date", direction: option.direction));
     } else if (option.field == HabitSortFields.tag) {
       // Sort by the first tag
       // Logic:
       // 1. Get the "best" tag for each habit based on custom order or name
       // 2. Sort habits by that tag
 
-      if (request.customTagSortOrder != null &&
-          request.customTagSortOrder!.isNotEmpty) {
+      if (request.customTagSortOrder != null && request.customTagSortOrder!.isNotEmpty) {
         // Create a CASE statement for custom ordering
         final caseStatements = StringBuffer();
         for (int i = 0; i < request.customTagSortOrder!.length; i++) {
-          final safeId =
-              sanitizeAndValidateUuid(request.customTagSortOrder![i]);
+          final safeId = sanitizeAndValidateId(request.customTagSortOrder![i]);
           caseStatements.write("WHEN '$safeId' THEN $i ");
         }
 
@@ -336,26 +306,21 @@ class GetListHabitsQueryHandler
   }
 
   /// Filters habits with period-aware completion logic
-  Future<List<HabitListItem>> _filterHabitsWithPeriodAwareness(
-      List<HabitListItem> habits, DateTime targetDate) async {
+  Future<List<HabitListItem>> _filterHabitsWithPeriodAwareness(List<HabitListItem> habits, DateTime targetDate) async {
     final List<HabitListItem> filteredHabits = [];
     final today = DateTime(targetDate.year, targetDate.month, targetDate.day);
-    final endOfDay =
-        DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
+    final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
 
     // Identify period-based habits and their date ranges
-    final periodHabits =
-        habits.where((habit) => habit.hasGoal && habit.periodDays > 1).toList();
+    final periodHabits = habits.where((habit) => habit.hasGoal && habit.periodDays > 1).toList();
     final Map<String, dynamic> habitPeriodData = {};
 
     // Calculate the earliest period start date to fetch all needed records in one query
     DateTime? earliestPeriodStart;
 
     for (final habit in periodHabits) {
-      final periodStartDate =
-          today.subtract(Duration(days: habit.periodDays - 1));
-      final periodStartOfDay = DateTime(
-          periodStartDate.year, periodStartDate.month, periodStartDate.day);
+      final periodStartDate = today.subtract(Duration(days: habit.periodDays - 1));
+      final periodStartOfDay = DateTime(periodStartDate.year, periodStartDate.month, periodStartDate.day);
 
       habitPeriodData[habit.id] = {
         'periodStartOfDay': periodStartOfDay,
@@ -363,8 +328,7 @@ class GetListHabitsQueryHandler
         'targetFrequency': habit.targetFrequency,
       };
 
-      if (earliestPeriodStart == null ||
-          periodStartOfDay.isBefore(earliestPeriodStart)) {
+      if (earliestPeriodStart == null || periodStartOfDay.isBefore(earliestPeriodStart)) {
         earliestPeriodStart = periodStartOfDay;
       }
     }
@@ -408,10 +372,8 @@ class GetListHabitsQueryHandler
         // Filter records to the specific period for this habit and group by date
         final recordsByDate = <DateTime, List>{};
         for (final record in habitRecords) {
-          final recordDate = DateTime(record.occurredAt.year,
-              record.occurredAt.month, record.occurredAt.day);
-          if (!recordDate.isBefore(periodStartOfDay) &&
-              !recordDate.isAfter(today)) {
+          final recordDate = DateTime(record.occurredAt.year, record.occurredAt.month, record.occurredAt.day);
+          if (!recordDate.isBefore(periodStartOfDay) && !recordDate.isAfter(today)) {
             recordsByDate.putIfAbsent(recordDate, () => []).add(record);
           }
         }

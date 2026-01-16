@@ -47,8 +47,7 @@ class GetListNotesQueryResponse extends PaginatedList<NoteListItem> {
   });
 }
 
-class GetListNotesQueryHandler
-    implements IRequestHandler<GetListNotesQuery, GetListNotesQueryResponse> {
+class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, GetListNotesQueryResponse> {
   final INoteRepository _noteRepository;
 
   GetListNotesQueryHandler({
@@ -142,11 +141,9 @@ class GetListNotesQueryHandler
       // Sort tags of the note based on the same criteria as sorting/grouping
       // This ensures the "best" tag is first for GroupingUtils.getTagGroup
       if (tags.isNotEmpty) {
-        if (request.customTagSortOrder != null &&
-            request.customTagSortOrder!.isNotEmpty) {
+        if (request.customTagSortOrder != null && request.customTagSortOrder!.isNotEmpty) {
           final orderMap = {
-            for (var i = 0; i < request.customTagSortOrder!.length; i++)
-              request.customTagSortOrder![i]: i
+            for (var i = 0; i < request.customTagSortOrder!.length; i++) request.customTagSortOrder![i]: i
           };
           tags.sort((a, b) {
             final indexA = orderMap[a.tagId] ?? 999;
@@ -172,10 +169,8 @@ class GetListNotesQueryHandler
     // Populate group name if sorting is applied
     for (var i = 0; i < items.length; i++) {
       final item = items[i];
-      final groupField =
-          request.groupBy?.field ?? request.sortBy?.firstOrNull?.field;
-      final groupInfo =
-          NoteGroupingHelper.getGroupInfo(item, groupField, now: now);
+      final groupField = request.groupBy?.field ?? request.sortBy?.firstOrNull?.field;
+      final groupInfo = NoteGroupingHelper.getGroupInfo(item, groupField, now: now);
       items[i] = item.copyWith(
         groupName: groupInfo?.name,
         isGroupNameTranslatable: groupInfo?.isTranslatable ?? true,
@@ -228,29 +223,24 @@ class GetListNotesQueryHandler
     return customOrders;
   }
 
-  void _addCustomOrder(List<CustomOrder> orders,
-      SortOption<NoteSortFields> option, GetListNotesQuery request) {
+  void _addCustomOrder(List<CustomOrder> orders, SortOption<NoteSortFields> option, GetListNotesQuery request) {
     if (option.field == NoteSortFields.title) {
       orders.add(CustomOrder(field: "title", direction: option.direction));
     } else if (option.field == NoteSortFields.createdDate) {
-      orders
-          .add(CustomOrder(field: "created_date", direction: option.direction));
+      orders.add(CustomOrder(field: "created_date", direction: option.direction));
     } else if (option.field == NoteSortFields.modifiedDate) {
-      orders.add(
-          CustomOrder(field: "modified_date", direction: option.direction));
+      orders.add(CustomOrder(field: "modified_date", direction: option.direction));
     } else if (option.field == NoteSortFields.tag) {
       // Sort by the first tag
       // Logic:
       // 1. Get the "best" tag for each note based on custom order or name
       // 2. Sort notes by that tag
 
-      if (request.customTagSortOrder != null &&
-          request.customTagSortOrder!.isNotEmpty) {
+      if (request.customTagSortOrder != null && request.customTagSortOrder!.isNotEmpty) {
         // Create a CASE statement for custom ordering
         final caseStatements = StringBuffer();
         for (int i = 0; i < request.customTagSortOrder!.length; i++) {
-          final safeId =
-              sanitizeAndValidateUuid(request.customTagSortOrder![i]);
+          final safeId = sanitizeAndValidateId(request.customTagSortOrder![i]);
           caseStatements.write("WHEN '$safeId' THEN $i ");
         }
 

@@ -10,8 +10,7 @@ class GetListTaskTagsQuery implements IRequest<GetListTaskTagsQueryResponse> {
   late int pageIndex;
   late int pageSize;
 
-  GetListTaskTagsQuery(
-      {required this.taskId, required this.pageIndex, required this.pageSize});
+  GetListTaskTagsQuery({required this.taskId, required this.pageIndex, required this.pageSize});
 }
 
 class TaskTagListItem {
@@ -36,34 +35,24 @@ class TaskTagListItem {
 
 class GetListTaskTagsQueryResponse extends PaginatedList<TaskTagListItem> {
   GetListTaskTagsQueryResponse(
-      {required super.items,
-      required super.totalItemCount,
-      required super.pageIndex,
-      required super.pageSize});
+      {required super.items, required super.totalItemCount, required super.pageIndex, required super.pageSize});
 }
 
-class GetListTaskTagsQueryHandler
-    implements
-        IRequestHandler<GetListTaskTagsQuery, GetListTaskTagsQueryResponse> {
+class GetListTaskTagsQueryHandler implements IRequestHandler<GetListTaskTagsQuery, GetListTaskTagsQueryResponse> {
   late final ITagRepository _tagRepository;
   late final ITaskTagRepository _taskTagRepository;
 
-  GetListTaskTagsQueryHandler(
-      {required ITagRepository tagRepository,
-      required ITaskTagRepository taskTagRepository})
+  GetListTaskTagsQueryHandler({required ITagRepository tagRepository, required ITaskTagRepository taskTagRepository})
       : _tagRepository = tagRepository,
         _taskTagRepository = taskTagRepository;
 
   @override
-  Future<GetListTaskTagsQueryResponse> call(
-      GetListTaskTagsQuery request) async {
+  Future<GetListTaskTagsQueryResponse> call(GetListTaskTagsQuery request) async {
     PaginatedList<TaskTag> taskTags = await _taskTagRepository.getList(
       request.pageIndex,
       request.pageSize,
       customWhereFilter: CustomWhereFilter("task_id = ?", [request.taskId]),
-      customOrder: [
-        CustomOrder(field: 'tag_order', direction: SortDirection.asc)
-      ],
+      customOrder: [CustomOrder(field: 'tag_order', direction: SortDirection.asc)],
     );
 
     List<TaskTagListItem> listItems = [];

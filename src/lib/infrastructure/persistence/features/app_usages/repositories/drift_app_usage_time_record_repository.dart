@@ -24,13 +24,9 @@ class AppUsageTimeRecordTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
-    AppUsageTimeRecord,
-    String,
-    AppUsageTimeRecordTable> implements IAppUsageTimeRecordRepository {
-  DriftAppUsageTimeRecordRepository()
-      : super(AppDatabase.instance(),
-            AppDatabase.instance().appUsageTimeRecordTable);
+class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTimeRecord, String, AppUsageTimeRecordTable>
+    implements IAppUsageTimeRecordRepository {
+  DriftAppUsageTimeRecordRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageTimeRecordTable);
 
   @override
   Expression<String> getPrimaryKey(AppUsageTimeRecordTable t) {
@@ -80,23 +76,16 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
 
     final results = await query.get();
 
-    return {
-      for (final row in results)
-        row.read<String>('app_usage_id'): row.read<int>('total_duration')
-    };
+    return {for (final row in results) row.read<String>('app_usage_id'): row.read<int>('total_duration')};
   }
 
   @override
   Future<List<AppUsageTimeRecord>> getByAppUsageId(String appUsageId) async {
-    return (database.select(table)
-          ..where(
-              (t) => t.appUsageId.equals(appUsageId) & t.deletedDate.isNull()))
-        .get();
+    return (database.select(table)..where((t) => t.appUsageId.equals(appUsageId) & t.deletedDate.isNull())).get();
   }
 
   @override
-  Future<PaginatedList<AppUsageTimeRecordWithDetails>>
-      getTopAppUsagesWithDetails({
+  Future<PaginatedList<AppUsageTimeRecordWithDetails>> getTopAppUsagesWithDetails({
     int pageIndex = 0,
     int pageSize = 10,
     List<String>? filterByTags,
@@ -121,8 +110,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
         if (customTagSortOrder != null && customTagSortOrder.isNotEmpty) {
           final caseStatements = StringBuffer();
           for (int i = 0; i < customTagSortOrder.length; i++) {
-            final safeId =
-                customTagSortOrder[i].replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '');
+            final safeId = customTagSortOrder[i].replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '');
             caseStatements.write("WHEN '$safeId' THEN $i ");
           }
           final tagSubquery =
@@ -137,13 +125,11 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
 
       // Prioritize grouping field if exists
       if (groupBy != null) {
-        final direction =
-            groupBy.direction == SortDirection.desc ? 'DESC' : 'ASC';
+        final direction = groupBy.direction == SortDirection.desc ? 'DESC' : 'ASC';
         switch (groupBy.field) {
           case AppUsageSortFields.name:
             // Use only the first character for grouping to allow secondary sorting within the group
-            clauses.add(
-                'SUBSTR(COALESCE($alias.display_name, $alias.name), 1, 1) COLLATE NOCASE $direction');
+            clauses.add('SUBSTR(COALESCE($alias.display_name, $alias.name), 1, 1) COLLATE NOCASE $direction');
             break;
           case AppUsageSortFields.duration:
             clauses.add('$alias.total_duration $direction');
@@ -170,8 +156,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
               clauses.add('$alias.total_duration $direction');
               break;
             case AppUsageSortFields.name:
-              clauses.add(
-                  'COALESCE($alias.display_name, $alias.name) COLLATE NOCASE $direction');
+              clauses.add('COALESCE($alias.display_name, $alias.name) COLLATE NOCASE $direction');
               break;
             case AppUsageSortFields.device:
               clauses.add('$alias.device_name $direction');
@@ -255,8 +240,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
       },
     );
 
-    final totalCount =
-        await countQuery.map((row) => row.read<int>('total_count')).getSingle();
+    final totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
 
     // Check if the requested page is beyond available data
     if (pageIndex * pageSize >= totalCount) {
@@ -386,9 +370,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
         // Only add the tag if we have valid tag data
         if (tagId != null && tagName != null) {
           final tagTypeInt = row.read<int?>('tag_type') ?? 0;
-          final tagType = tagTypeInt >= 0 && tagTypeInt < TagType.values.length
-              ? TagType.values[tagTypeInt]
-              : TagType.label;
+          final tagType =
+              tagTypeInt >= 0 && tagTypeInt < TagType.values.length ? TagType.values[tagTypeInt] : TagType.label;
 
           appUsageMap[id]!.tags.add(AppUsageTagListItem(
                 id: tagAppUsageTagId,
@@ -407,9 +390,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
     final allResults = appUsageMap.values.toList();
 
     // Fetch comparison data if needed
-    if (compareStartDate != null &&
-        compareEndDate != null &&
-        allResults.isNotEmpty) {
+    if (compareStartDate != null && compareEndDate != null && allResults.isNotEmpty) {
       final appUsageIds = allResults.map((e) => e.id).toList();
       final comparisonDurations = await getAppUsageDurations(
         appUsageIds: appUsageIds,
