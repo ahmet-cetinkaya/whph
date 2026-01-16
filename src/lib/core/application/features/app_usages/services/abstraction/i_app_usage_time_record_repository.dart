@@ -28,6 +28,7 @@ abstract class IAppUsageTimeRecordRepository extends app.IRepository<AppUsageTim
     List<SortOptionWithTranslationKey<AppUsageSortFields>>? sortBy,
     bool sortByCustomOrder = false,
     SortOptionWithTranslationKey<AppUsageSortFields>? groupBy,
+    List<String>? customTagSortOrder,
   });
 
   Future<List<String>> getDistinctDeviceNames();

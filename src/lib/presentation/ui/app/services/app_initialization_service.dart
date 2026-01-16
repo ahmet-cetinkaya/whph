@@ -51,9 +51,13 @@ class AppInitializationService {
   /// Determine if onboarding dialog should be shown
   Future<bool> _shouldShowOnboardingDialog() async {
     try {
-      final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.onboardingCompleted),
       );
+
+      if (setting == null) {
+        return false;
+      }
 
       final hasCompletedOnboarding = setting.value == 'true';
       Logger.info("Onboarding completed setting: $hasCompletedOnboarding");

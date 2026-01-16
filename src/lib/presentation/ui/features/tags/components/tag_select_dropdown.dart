@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dialog.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -130,10 +132,13 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       return true;
     }
 
-    final oldValues = oldTags.map((e) => e.value).toSet();
-    final newValues = newTags.map((e) => e.value).toSet();
+    for (int i = 0; i < oldTags.length; i++) {
+      if (oldTags[i].value != newTags[i].value) {
+        return true;
+      }
+    }
 
-    return oldValues.union(newValues).length != oldValues.length;
+    return false;
   }
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
@@ -164,10 +169,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
             if (_tags == null) {
               _tags = result;
-              _selectedTags = widget.initialSelectedTags
-                  .where((tag) => result.items.any((t) => t.id == tag.value))
-                  .map((e) => e.value)
-                  .toList();
             } else {
               _tags!.items.addAll(result.items);
               _tags!.pageIndex = result.pageIndex;
@@ -176,6 +177,31 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         }
       },
     );
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      final String item = _selectedTags.removeAt(oldIndex);
+      _selectedTags.insert(newIndex, item);
+    });
+
+    // Construct the updated list of DropdownOptions to pass back
+    final List<DropdownOption<String>> updatedTags = _selectedTags.map((tagId) {
+      // Find tag name
+      String label = '';
+      if (_tags != null) {
+        try {
+          final tag = _tags!.items.firstWhere((t) => t.id == tagId);
+          label = tag.name;
+        } catch (_) {}
+      }
+      return DropdownOption(label: label, value: tagId);
+    }).toList();
+
+    widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
   }
 
   Future<void> _showTagSelectionModal(BuildContext context) async {
@@ -243,49 +269,86 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           .toList();
 
       if (widget.showSelectedInDropdown) {
-        displayWidget = SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: uniqueSelectedTagIds.map((id) {
-              final tag = _tags!.items.firstWhere((t) => t.id == id);
-              return Padding(
-                padding: const EdgeInsets.only(right: 4.0),
-                child: GestureDetector(
-                  onTap: () => _navigateToTagDetails(tag.id),
-                  child: Chip(
-                      visualDensity: VisualDensity.compact,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      backgroundColor: AppTheme.surface3,
-                      side: BorderSide.none,
-                      label: Text(
-                          tag.name.isNotEmpty
-                              ? tag.name
-                              : _translationService.translate(SharedTranslationKeys.untitled),
-                          style: AppTheme.labelSmall),
-                      onDeleted: () {
-                        final List<DropdownOption<String>> updatedTags =
-                            uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
-                          final tagItem = _tags!.items.firstWhere((t) => t.id == tagId);
-                          return DropdownOption(label: tagItem.name, value: tagItem.id);
-                        }).toList();
-                        widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
-                        setState(() {
-                          _selectedTags.removeWhere((tagId) => tagId == id);
-                        });
-                      },
-                      deleteIcon: Icon(
-                        Icons.close,
-                        size: AppTheme.iconSizeXSmall,
-                        color: widget.color ?? Theme.of(context).iconTheme.color,
-                      ),
-                      deleteButtonTooltipMessage: _translationService.translate(TagTranslationKeys.removeTagTooltip)),
-                ),
-              );
-            }).toList(),
-          ),
-        );
+        displayWidget = SizedBox(
+            height: 48,
+            child: ReorderableListView.builder(
+              scrollDirection: Axis.horizontal,
+              buildDefaultDragHandles: false,
+              onReorder: _onReorder,
+              proxyDecorator: (child, index, animation) {
+                return Material(
+                  color: Colors.transparent,
+                  child: child,
+                );
+              },
+              itemCount: uniqueSelectedTagIds.length,
+              itemBuilder: (context, index) {
+                if (index < 0 || index >= uniqueSelectedTagIds.length) return const SizedBox.shrink();
+
+                final id = uniqueSelectedTagIds[index];
+                final tagsResponse = _tags;
+                if (tagsResponse == null) return const SizedBox.shrink();
+
+                final tag = tagsResponse.items.firstWhereOrNull((t) => t.id == id);
+                if (tag == null) return const SizedBox.shrink();
+
+                return ReorderableDelayedDragStartListener(
+                  key: ValueKey(id),
+                  index: index,
+                  child: Padding(
+                      padding: const EdgeInsets.only(right: 4.0),
+                      child: GestureDetector(
+                        onTap: () => _navigateToTagDetails(tag.id),
+                        child: Chip(
+                          visualDensity: VisualDensity.compact,
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          backgroundColor: AppTheme.surface3,
+                          side: BorderSide.none,
+                          label: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                TagUiConstants.getTagTypeIcon(tag.type),
+                                size: AppTheme.iconSizeXSmall,
+                                color: TagUiConstants.getTagColor(tag.color),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                  tag.name.isNotEmpty
+                                      ? tag.name
+                                      : _translationService.translate(SharedTranslationKeys.untitled),
+                                  style: AppTheme.labelSmall),
+                              const SizedBox(width: 4),
+                              GestureDetector(
+                                onTap: () {
+                                  final currentTags = _tags;
+                                  if (currentTags == null) return;
+
+                                  final List<DropdownOption<String>> updatedTags =
+                                      uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
+                                    final tagItem = currentTags.items.firstWhereOrNull((t) => t.id == tagId);
+                                    return DropdownOption(label: tagItem?.name ?? '', value: tagId);
+                                  }).toList();
+
+                                  widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
+                                  setState(() {
+                                    _selectedTags.removeWhere((tagId) => tagId == id);
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  size: AppTheme.iconSizeXSmall,
+                                  color: widget.color ?? Theme.of(context).iconTheme.color,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+                );
+              },
+            ));
       } else if (widget.buttonLabel != null) {
         displayWidget = Text(
           widget.buttonLabel!,

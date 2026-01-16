@@ -6,6 +6,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:acore/acore.dart';
 
 @UseRowClass(HabitTag)
@@ -16,6 +17,7 @@ class HabitTagTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get habitId => text()();
   TextColumn get tagId => text()();
+  IntColumn get tagOrder => integer().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -41,6 +43,7 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
       deletedDate: Value(entity.deletedDate),
       habitId: entity.habitId,
       tagId: entity.tagId,
+      tagOrder: Value(entity.tagOrder),
     );
   }
 
@@ -57,6 +60,7 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
   Future<PaginatedList<HabitTag>> getListByHabitId(String habitId, int pageIndex, int pageSize) async {
     final query = database.select(table)
       ..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())
+      ..orderBy([(t) => OrderingTerm(expression: t.tagOrder)])
       ..limit(pageSize, offset: pageIndex * pageSize);
     final result = await query.get();
 
@@ -76,7 +80,10 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
 
   @override
   Future<List<HabitTag>> getByHabitId(String habitId) async {
-    return (database.select(table)..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())).get();
+    return (database.select(table)
+          ..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())
+          ..orderBy([(t) => OrderingTerm(expression: t.tagOrder)]))
+        .get();
   }
 
   @override
@@ -157,12 +164,13 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
 
     final query = database.customSelect(
       """
-      SELECT ht.habit_id, t.id as tag_id, t.name as tag_name, t.color as tag_color
+      SELECT ht.habit_id, t.id as tag_id, t.name as tag_name, t.color as tag_color, t.type as tag_type, ht.tag_order as tag_order
       FROM habit_tag_table ht
       JOIN tag_table t ON ht.tag_id = t.id
       WHERE ht.habit_id IN (${habitIds.map((_) => '?').join(',')})
       AND ht.deleted_date IS NULL
       AND t.deleted_date IS NULL
+      ORDER BY ht.tag_order ASC
       """,
       variables: habitIds.map((id) => Variable.withString(id)).toList(),
       readsFrom: {database.habitTagTable, database.tagTable},
@@ -176,16 +184,39 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
       final tagId = row.read<String>('tag_id');
       final tagName = row.read<String>('tag_name');
       final tagColor = row.read<String?>('tag_color');
+      final tagOrder = row.read<int>('tag_order');
 
       result.putIfAbsent(habitId, () => []).add(
             TagListItem(
               id: tagId,
               name: tagName,
               color: tagColor,
+              type: _parseTagType(row.read<int?>('tag_type')),
+              tagOrder: tagOrder,
             ),
           );
     }
 
     return result;
+  }
+
+  TagType _parseTagType(int? typeIndex) {
+    if (typeIndex == null) return TagType.label;
+    if (typeIndex >= 0 && typeIndex < TagType.values.length) {
+      return TagType.values[typeIndex];
+    }
+    return TagType.label;
+  }
+
+  @override
+  Future<void> updateTagOrders(String habitId, Map<String, int> tagOrders) async {
+    await database.batch((batch) {
+      for (final entry in tagOrders.entries) {
+        batch.customStatement(
+          'UPDATE habit_tag_table SET tag_order = ? WHERE habit_id = ? AND tag_id = ?',
+          [entry.value, habitId, entry.key],
+        );
+      }
+    });
   }
 }

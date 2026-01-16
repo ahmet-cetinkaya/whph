@@ -88,9 +88,7 @@ shared:
     cannot_select_date_before_min_date: Nelze vybrat datum před {date}
     cannot_select_time_after_max_date: Nelze vybrat čas po {time}
     cannot_select_time_before_min_date: Nelze vybrat čas před {time}
-    deadline_cannot_be_before_planned_date:
-      Termín musí být v den plánovaného data
-      nebo později
+    deadline_cannot_be_before_planned_date: Termín musí být v den plánovaného data nebo později
     end_date_cannot_be_after_max_date: Koncové datum nemůže být po {date}
     end_date_must_be_at_or_before: Koncové datum musí být do {date} nebo dříve
     select_date_range_title: Vybrat rozsah dat
@@ -154,8 +152,7 @@ shared:
     loading: Při načítání dat došlo k chybě
     report_subject: "{appName} Aplikace: Hlášení neočekávané chyby"
     report_template:
-      "Dobrý den, narazil jsem na neočekávanou chybu při používání
-      aplikace {appName}.
+      "Dobrý den, narazil jsem na neočekávanou chybu při používání aplikace {appName}.
 
 
       Zde jsou informace, které by vám mohly pomoci diagnostikovat problém:
@@ -194,9 +191,7 @@ shared:
   startup_error:
     copied_to_clipboard: Podrobnosti chyby zkopírovány do schránky
     copy_button: Kopírovat podrobnosti chyby
-    description:
-      Během spuštění aplikace došlo k chybě. Může to být způsobeno systémovým
-      problémem nebo nekompatibilní konfigurací.
+    description: Během spuštění aplikace došlo k chybě. Může to být způsobeno systémovým problémem nebo nekompatibilní konfigurací.
     details_title: Podrobnosti chyby
     report_button: Nahlásit problém
     title: Datum a čas
@@ -271,9 +266,7 @@ shared:
     average_daily_label: Průměr denně
     peak_hour_label: Špičková hodina
     select_date_range_message: Vyberte rozsah dat pro filtrování statistik
-    select_date_range_description:
-      Zvolte vlastní rozsah dat pro zobrazení statistik
-      využití
+    select_date_range_description: Zvolte vlastní rozsah dat pro zobrazení statistik využití
   time:
     not_set: Nenastaveno
     minutes: minuty
@@ -430,3 +423,4 @@ shared:
     30_60_min: 30 - 60 min
     1_2_hours: 1 - 2 hodiny
     more_than_2_hours: 2+ hodin
+  configure: Nastavit

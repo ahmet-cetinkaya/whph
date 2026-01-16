@@ -12,7 +12,6 @@ tags:
     app_usage: Uygulama Kullanımı
     habits: Alışkanlıklar
     tasks: Görevler
-
   details:
     archived: Arşivlenmiş
     color: Renk
@@ -40,57 +39,158 @@ tags:
     select_category: Kategori Seç
   filter_tooltip: Etiketlere göre filtrele
   help:
-    content: |
-      🏷️ Etiketler, öğeleri gruplandırmanıza ve organize etmenize yardımcı olur.
+    content:
+      "🏷️ Etiketler, öğeleri gruplandırmanıza ve organize etmenize yardımcı
+      olur.
+
 
       ## ⚡ Özellikler
+
       - Öğeleri kategorilere ayırın
+
       - Renklerle görsel düzen oluşturun
+
       - İlgili öğeleri kolayca bulun
 
+
       ## 💡 İpuçları
+
       - Net ve anlaşılır isimler kullanın
+
       - Benzer öğeleri aynı etiketle gruplandırın
+
       - Renk kodlaması ile görsel düzen sağlayın
+
       - Arşivleme özelliği ile düzeni koruyun
-    description: Etiketler, öğeleri kategorize etmenize ve gruplandırmanıza yardımcı olur
+
+      "
+    description:
+      Etiketler, öğeleri kategorize etmenize ve gruplandırmanıza yardımcı
+      olur
     overview:
-      content: |
-        İşlerinizi organize etmenize, zaman yatırımlarınızı takip etmenize ve en önemli konularda net odaklanma sağlamanıza yardımcı olan stratejik etiketleme ile verimliliğinizi dönüştürün.
+      content:
+        "Stratejik etiketleme ile üretkenliğinizi dönüştürün, işinizi organize
+        etmenize, zaman yatırımlarını takip etmenize ve en önemli şeylere odaklanmanıza
+        yardımcı olur.
+
 
         ## ⚡ Neden Önemli?
 
-        Etiket tabanlı organizasyon, etkili zaman yönetimi ve verimliliğin temelidir. Faaliyetlerinizi anlamlı etiketlerle kategorilere ayırarak, zamanınızı nasıl geçirdiğiniz konusunda net içgörüler kazanır ve odağınızı ve verimliliğinizi optimize etmek için bilinçli kararlar alabilirsiniz.
+
+        Etiket tabanlı organizasyon, etkili zaman yönetimi ve üretkenliğin temelidir.
+        Anlamlı etiketlerle aktivitelerinizi kategorize ederek, zamanınızı nasıl harcadığınıza
+        dair net bir anlayış elde edebilir ve odak ve verimliliğinizi optimize etmek
+        için bilgilendirilmiş kararlar alabilirsiniz.
+
+
+        ## 🏷️ Etiket Tipleri: Kendi Yolunuzla Organize Edin
+
+
+        Etiketler, her biri belirli organizasyon ihtiyaçları için tasarlanmış üç uzmanlık
+        türünde gelir:
+
+
+        ### 📌 Etiket Etiketleri
+
+        Genel organizasyon için esnek kategorize etiketleri. Konuya, önceliğe, duruma
+        veya sizin için çalışan herhangi bir özel sınıflandırma sistemine göre içerikleri
+        işaretlemek için kullanın.
+
+
+        - **Kullanım durumları:** Kategoriler, öncelikler, durumlar, beceriler, alanlar
+
+        - **Örnekler:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **En iyi için:** Tüm içerik türlerinde genel kategorize etme ve filtreleme
+
+
+        ### 📍 Bağlam Etiketleri
+
+        Görevleri nerede veya nasıl yapabileceğinizi tanımlar. Bağlam etiketleri,
+        çalışmanızı mevcut durumunuza, enerji seviyenize veya ortamınıza uyarlamanıza
+        yardımcı olur.
+
+
+        - **Kullanım durumları:** Fiziksel konumlar, enerji seviyeleri, mevcut araçlar,
+        çalışma modları
+
+        - **Örnekler:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **En iyi için:** Konum tabanlı görev filtreleme ve enerji yönetimi
+
+
+        ### 🎯 Proje Etiketleri
+
+        Paylaşılan hedeflere veya sonuçlara doğru ilgili görevleri gruplandırır. Proje
+        etiketleri, belirli hedeflere katkıda çalışan doğal iş paketleri oluşturur.
+
+
+        - **Kullanım durumları:** Ürün lansmanları, özellik geliştirme, kişisel hedefler,
+        tekrarlayan girişimler
+
+        - **Örnekler:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **En iyi için:** Belirli kilometre taşlarına ve teslimatlara doğru ilerlemeyi
+        takip etme
+
 
         ## 📊 Zaman Yatırımı Analizi
 
-        Zamanınızın nereye gittiğini anlayın ve öncelikleriniz hakkında veri odaklı kararlar alın. Etiketlerle zaman takibi, zamanlamanızı ve çalışma alışkanlıklarınızı optimize etmenize yardımcı olan kalıpları ortaya çıkarır.
+        Zamanınızın nereye gittiğini anlayın ve öncelikleriniz hakkında veriye dayalı
+        kararlar alın. Etiketlerle zaman takibi, programınızı ve çalışma alışkanlıklarınızı
+        optimize etmenize yardımcı olan desenleri ortaya çıkarır.
 
-        - ⏱️ Farklı faaliyet kategorilerinde harcanan zamanı izleyin
-        - 📅 Belirli dönemler ve eğilimler boyunca zaman yatırımlarını takip edin
-        - ⚖️ Projeler ve sorumluluklar arasında zaman dağılımını karşılaştırın
-        - 📈 Verimlilik kalıplarını ve en üst performans zamanlarını belirleyin
-        - 🎯 Enerjinizi yüksek etkili faaliyetlere odaklayın
+
+        - ⏱️ Farklı aktivite kategorilerinde harcanan zamanı izleyin
+
+        - 📅 Belirli dönemler ve trendler üzerinde zaman yatırımlarını takip edin
+
+        - ⚖️ Projeler ve sorumluluklar arasında zaman tahsisini karşılaştırın
+
+        - 📈 Üretkenlik desenlerini ve tepe performans zamanlarını belirleyin
+
+        - 🎯 Enerjinizi yüksek etkili aktivitelere odaklayın
+
 
         ## 🗂️ Stratejik Organizasyon
 
-        İhtiyaçlarınızla ölçeklenen sistematik bir iş organizasyonu yaklaşımı oluşturun. İyi yapılandırılmış etiketler, verimli bir verimlilik sisteminin temelini oluşturur.
+        İhtiyaçlarınızla ölçeklenen çalışmanızı organize etmek için sistem yaklaşımı
+        oluşturun. İyi yapılandırılmış etiketler, verimli bir üretkenlik sisteminin
+        temelini oluşturur.
 
-        - 🔍 Çoklu etiket aramalarıyla bilgileri hızlı filtreleyerek bulun
-        - 🗄️ Temiz organizasyonu korumak için tamamlanan projeleri arşivleyin
-        - 🧩 İş kalıplarınızı yansıtan hiyerarşik yapılar oluşturun
-        - 👥 Daha iyi proje yönetimi için ilgili faaliyetleri gruplayın
-        - ⏳ Tüm faaliyetlerde kapsamlı zaman takibini etkinleştirin
+
+        - 🔍 Çoklu etiket aramalarıyla bilgiyi hızla filtreleyin ve bulun
+
+        - 🗄️ Temiz organizasyonu sürdürmek için tamamlanan projeleri arşivleyin
+
+        - 🧩 Çalışma desenlerinizi yansıtan hiyerarşik yapılar oluşturun
+
+        - 👥 Daha iyi proje yönetimi için ilgili aktiviteleri gruplandırın
+
+        - ⏳ Tüm aktivitelerde kapsamlı zaman takibini etkinleştirin
+
 
         ## 💡 Optimizasyon Stratejileri
 
-        Organizasyon sisteminizin etkinliğini maksimize etmek ve uzun vadeli verimlilik büyümesini sürdürmek için gelişmiş etiketleme tekniklerinden yararlanın.
 
-        - 🏷️ Zaman içinde anlamlı kalacak açık, tanımlayıcı isimler kullanın
+        Organizasyon sisteminizin etkinliğini en üst düzeye çıkarmak ve uzun vadeli
+        üretkenlik büyümesini sürdürmek için gelişmiş etiketleme tekniklerinden yararlanın.
+
+
+        - 🏷️ Zamanla anlamlı kalan net, açıklayıcı adlar kullanın
+
         - 🔗 **Hiyerarşik yapılar oluşturun:** Projeler → Departmanlar → Alanlar
-        - 📊 Gelişim fırsatlarını belirlemek için zaman analizi raporlarını düzenli inceleyin
-        - 🗄️ Tamamlanan işleri arşivleyerek sistem temizliğini koruyun
-        - 🎯 Dikkat dağıtıcıları ortadan kaldırmak ve konsantrasyonu artırmak için odaklı filtreleme uygulayın
+
+        - 📊 İyileştirme fırsatlarını belirlemek için düzenli olarak zaman analizi
+        raporlarını inceleyin
+
+        - 🗄️ Tamamlanan çalışmaları arşivleyerek sistem temizliğini sürdürün
+
+        - 🎯 Dikkati dağıtıcıları ortadan kaldırmak ve konsantrasyonu artırmak için
+        hedefli filtreleme uygulayın
+
+        - 🔄 **Stratejik olarak etiket tiplerini birleştirin:** Hedefler için projeleri,
+        durum için bağlamları ve kategoriler için etiketleri kullanın"
       title: Etiket Tabanlı Organizasyon ve Zaman Yönetimi Rehberi
     title: Etiket Yardım
   labels:
@@ -142,22 +242,53 @@ tags:
   tour:
     smart_tagging:
       title: Akıllı Etiketleme Sistemi
-      description: Görevlerinizi, alışkanlıklarınızı ve uygulamalarınızı düzenlemek ve gruplamak için etiketleri kullanın. Zamanınızın nereye gittiğini anlamak ve iş akışınızı optimize etmek için farklı etkinliklere harcadığınız zamanı etiketlere göre takip edin.
+      description:
+        Görevlerinizi, alışkanlıklarınızı ve uygulamalarınızı düzenlemek
+        ve gruplamak için etiketleri kullanın. Zamanınızın nereye gittiğini anlamak
+        ve iş akışınızı optimize etmek için farklı etkinliklere harcadığınız zamanı
+        etiketlere göre takip edin.
     your_tags:
       title: Etiketleriniz
-      description: Tüm etiketlerinize göz atın ve kullanım istatistiklerini görün. Ayrıntıları görüntülemek, özellikleri düzenlemek veya hangi görev ve alışkanlıkların kullandığını görmek için herhangi bir etiketi tıklayın. İş akışınızı verimli bir şekilde düzenleyin.
+      description:
+        Tüm etiketlerinize göz atın ve kullanım istatistiklerini görün.
+        Ayrıntıları görüntülemek, özellikleri düzenlemek veya hangi görev ve alışkanlıkların
+        kullandığını görmek için herhangi bir etiketi tıklayın. İş akışınızı verimli
+        bir şekilde düzenleyin.
     tag_archive_filters:
       title: Etiket ve Arşiv Filtreleri
-      description: Odaklanmak için belirli etiketleri seçerek etiketleri filtreleyin veya arşivlenmiş etiketlerin görünürlüğünü açıp kapatın. Daha iyi organizasyon için listenizde hangi etiketlerin görüneceğini kontrol edin.
+      description:
+        Odaklanmak için belirli etiketleri seçerek etiketleri filtreleyin
+        veya arşivlenmiş etiketlerin görünürlüğünü açıp kapatın. Daha iyi organizasyon
+        için listenizde hangi etiketlerin görüneceğini kontrol edin.
     search_sort:
       title: Ara ve Sırala
-      description: Belirli etiketleri ada göre arayın, ada veya kullanım sayısına göre farklı ölçütlere göre sıralayın. İhtiyacınız olanı hızlı bir şekilde bulmak için etiket listenizi düzenleyin.
+      description:
+        Belirli etiketleri ada göre arayın, ada veya kullanım sayısına
+        göre farklı ölçütlere göre sıralayın. İhtiyacınız olanı hızlı bir şekilde
+        bulmak için etiket listenizi düzenleyin.
     time_distribution_chart:
       title: Zaman Dağılımı Grafiği
-      description: Zamanınızı farklı etiketler ve kategoriler arasında nasıl harcadığınızı görselleştirin. Zaman tahsisatı kalıplarını görün ve gündüz boyu odaklandığınız yerleri belirleyin.
+      description:
+        Zamanınızı farklı etiketler ve kategoriler arasında nasıl harcadığınızı
+        görselleştirin. Zaman tahsisatı kalıplarını görün ve gündüz boyu odaklandığınız
+        yerleri belirleyin.
     chart_customization:
       title: Grafik Özelleştirme
-      description: Tarih aralığını seçerek, kategorileri (görevler, alışkanlıklar, uygulamalar) seçerek ve belirli etiketlere göre filtreleyerek zaman grafiğini özelleştirin ve zaman dağılımınızı ayrıntılı analiz edin.
+      description:
+        Tarih aralığını seçerek, kategorileri (görevler, alışkanlıklar,
+        uygulamalar) seçerek ve belirli etiketlere göre filtreleyerek zaman grafiğini
+        özelleştirin ve zaman dağılımınızı ayrıntılı analiz edin.
     create_tags:
       title: Yeni Etiketler Oluştur
-      description: İçeriğinizi kategorilere ayırmak için yeni etiketler ekleyin. Etiketler, daha iyi üretkenlik takibi ve zaman yönetimi için tüm özelliklerde görevleri, alışkanlıkları ve uygulamaları organize etmenize yardımcı olur.
+      description:
+        İçeriğinizi kategorilere ayırmak için yeni etiketler ekleyin. Etiketler,
+        daha iyi üretkenlik takibi ve zaman yönetimi için tüm özelliklerde görevleri,
+        alışkanlıkları ve uygulamaları organize etmenize yardımcı olur.
+  type:
+    label: Tür
+    label_label: Etiket
+    label_tooltip: Esnek bir kategorikasyon etiketi
+    context: Bağlam
+    context_tooltip: Bu görevi nerede veya nasıl yapabileceğiniz (ör. @home, @work)
+    project: Proje
+    project_tooltip: Ortak bir hedefe doğru ilgili görevleri gruplandırın (ör. +WebsiteRedesign)

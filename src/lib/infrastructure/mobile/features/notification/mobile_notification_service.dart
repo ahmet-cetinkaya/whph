@@ -122,10 +122,15 @@ class MobileNotificationService implements INotificationService {
   Future<bool> isEnabled() async {
     try {
       final query = GetSettingQuery(key: SettingKeys.notifications);
-      final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(query);
-      return setting.value == 'false' ? false : true; // Default to true if no setting
+      final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(query);
+
+      if (setting == null) {
+        return true; // Default to true if setting not found
+      }
+
+      return setting.value == 'false' ? false : true;
     } catch (e) {
-      return true; // Default to true if setting not found
+      return true; // Default to true if error occurs
     }
   }
 

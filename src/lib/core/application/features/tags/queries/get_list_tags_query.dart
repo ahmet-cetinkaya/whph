@@ -1,14 +1,10 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/domain/features/tags/tag.dart';
 
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/core/application/features/tags/utils/tag_grouping_helper.dart';
-
-enum TagSortFields {
-  name,
-  createdDate,
-  modifiedDate,
-}
 
 class GetListTagsQuery implements IRequest<GetListTagsQueryResponse> {
   late int pageIndex;
@@ -42,6 +38,8 @@ class TagListItem {
   DateTime? modifiedDate;
   String? groupName;
   bool isGroupNameTranslatable;
+  TagType type;
+  int tagOrder;
 
   TagListItem({
     required this.id,
@@ -53,6 +51,8 @@ class TagListItem {
     this.modifiedDate,
     this.groupName,
     this.isGroupNameTranslatable = false,
+    this.type = TagType.label,
+    this.tagOrder = 0,
   });
 }
 
@@ -84,6 +84,7 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
         isArchived: tag.isArchived,
         createdDate: tag.createdDate,
         modifiedDate: tag.modifiedDate,
+        type: tag.type,
         relatedTags: relatedTags
             .map((relatedTag) => TagListItem(
                   id: relatedTag.id,
@@ -92,6 +93,7 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
                   isArchived: relatedTag.isArchived,
                   createdDate: relatedTag.createdDate,
                   modifiedDate: relatedTag.modifiedDate,
+                  type: relatedTag.type,
                 ))
             .toList(),
       );
@@ -184,6 +186,9 @@ class GetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetLi
         break;
       case TagSortFields.modifiedDate:
         field = "modified_date";
+        break;
+      case TagSortFields.type:
+        field = "type";
         break;
       // ignore: unreachable_switch_default
       default:

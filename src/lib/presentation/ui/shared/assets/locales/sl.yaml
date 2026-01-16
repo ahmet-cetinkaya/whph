@@ -88,9 +88,7 @@ shared:
     cannot_select_date_before_min_date: Ne morete izbrati datuma pred {date}
     cannot_select_time_after_max_date: Ne morete izbrati časa po {time}
     cannot_select_time_before_min_date: Ne morete izbrati časa pred {time}
-    deadline_cannot_be_before_planned_date:
-      Rok mora biti na načrtovani datum ali
-      kasneje
+    deadline_cannot_be_before_planned_date: Rok mora biti na načrtovani datum ali kasneje
     end_date_cannot_be_after_max_date: Končni datum ne more biti po {date}
     end_date_must_be_at_or_before: Končni datum mora biti na ali pred {date}
     select_date_range_title: Izberite obdobje
@@ -154,8 +152,7 @@ shared:
     loading: Napaka pri nalaganju podatkov
     report_subject: "{appName} Aplikacija: Poročilo o nepričakovani napaki"
     report_template:
-      "Pozdravljeni, naletел sem na nepričakovano napako med uporabo
-      aplikacije {appName}.
+      "Pozdravljeni, naletел sem na nepričakovano napako med uporabo aplikacije {appName}.
 
 
       Tukaj so informacije, ki lahko pomagajo pri diagnosticiranju problema:
@@ -194,9 +191,7 @@ shared:
   startup_error:
     copied_to_clipboard: Podrobnosti napake kopirane v odložišče
     copy_button: Kopiraj podrobnosti napake
-    description:
-      Nekaj je šlo narobe med zagonom aplikacije. To je lahko posledica
-      sistemske težave ali nekompatibilne konfiguracije.
+    description: Nekaj je šlo narobe med zagonom aplikacije. To je lahko posledica sistemske težave ali nekompatibilne konfiguracije.
     details_title: Podrobnosti Napake
     report_button: Prijavi Težavo
     title: Napaka Zagona Aplikacije
@@ -271,9 +266,7 @@ shared:
     average_daily_label: Povprečno dnevno
     peak_hour_label: Vrh ure
     select_date_range_message: Izberite datumski razpon za filtriranje statistik
-    select_date_range_description:
-      Izberite datumski razpon po meri za ogled statistik
-      uporabe
+    select_date_range_description: Izberite datumski razpon po meri za ogled statistik uporabe
   time:
     not_set: Ni nastavljeno
     minutes: minute
@@ -430,3 +423,4 @@ shared:
     30_60_min: 30 - 60 min
     1_2_hours: 1 - 2 uri
     more_than_2_hours: 2+ ur
+  configure: Konfiguriraj

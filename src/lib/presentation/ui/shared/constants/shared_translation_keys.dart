@@ -239,6 +239,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String reportIssueButton = 'shared.startup_error.report_button';
 
   static const String change = 'shared.change';
+  static const String configure = 'shared.configure';
 
   // Date Picker Translations
   static const String selectedDateMustBeAtOrAfter = 'shared.datepicker.selected_date_must_be_at_or_after';
@@ -370,6 +371,12 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String skipTour = "shared.skip_tour";
   static const String previousButton = "shared.buttons.previous";
   static const String tapToResume = "shared.tap_to_resume";
+
+  // Plural time unit keys
+  static const String timeMinutes = 'shared.time.minutes';
+  static const String timeHours = 'shared.time.hours';
+  static const String timeDays = 'shared.time.days';
+  static const String timeWeeks = 'shared.time.weeks';
 
   // Singular time unit keys for proper pluralization
   static const String timeMinute = 'shared.time.minute';

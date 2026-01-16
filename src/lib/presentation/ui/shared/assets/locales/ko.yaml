@@ -423,3 +423,4 @@ shared:
     30_60_min: 30 - 60분
     1_2_hours: 1 - 2시간
     more_than_2_hours: 2시간 이상
+  configure: 구성

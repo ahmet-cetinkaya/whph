@@ -57,5 +57,27 @@ void main() {
       expect(NoteGroupingHelper.getGroupInfo(none, NoteSortFields.modifiedDate, now: now)?.name,
           SharedTranslationKeys.noDate);
     });
+    test('getGroupInfo groups by Tag', () {
+      final noteWithTag = NoteListItem(
+        id: '1',
+        title: 'Tagged',
+        createdDate: DateTime.now(),
+        tags: [const TagListItem(tagId: 't1', tagName: 'Work', tagColor: null)],
+      );
+      final noteNoTag = NoteListItem(
+        id: '2',
+        title: 'No Tag',
+        createdDate: DateTime.now(),
+        tags: [],
+      );
+
+      final groupWithTag = NoteGroupingHelper.getGroupInfo(noteWithTag, NoteSortFields.tag);
+      expect(groupWithTag?.name, 'Work');
+      expect(groupWithTag?.isTranslatable, isFalse);
+
+      final groupNoTag = NoteGroupingHelper.getGroupInfo(noteNoTag, NoteSortFields.tag);
+      expect(groupNoTag?.name, SharedTranslationKeys.none);
+      expect(groupNoTag?.isTranslatable, isTrue);
+    });
   });
 }

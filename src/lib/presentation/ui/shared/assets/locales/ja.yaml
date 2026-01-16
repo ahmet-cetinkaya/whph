@@ -422,3 +422,4 @@ shared:
     30_60_min: 30 - 60分
     1_2_hours: 1 - 2時間
     more_than_2_hours: 2時間以上
+  configure: 設定

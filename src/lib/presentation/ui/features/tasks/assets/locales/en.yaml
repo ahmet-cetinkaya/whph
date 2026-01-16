@@ -213,19 +213,35 @@ tasks:
     planned_message: Your task is planned for {time}
     reminder_title: "Task Reminder: {title}"
   import:
-    title: "Import Tasks"
-    format_label: "Import Format"
+    title: Import Tasks
+    format_label: Import Format
     formats:
-      generic: "Generic CSV"
-      todoist: "Todoist CSV"
-    select_file: "Select CSV File"
-    button: "Import"
-    success: "Imported {count} tasks successfully."
-    partial_success: "Imported {success} tasks. {failure} tasks failed."
+      generic: Generic CSV
+      todoist: Todoist CSV
+    select_file: Select CSV File
+    button: Import
+    success: Imported {count} tasks successfully.
+    partial_success: Imported {success} tasks. {failure} tasks failed.
     error: "Failed to import tasks: {error}"
-    no_tasks: "No tasks found in the file."
-    generic_info_title: "Generic CSV Format"
-    generic_info_description: "To import tasks correctly, your CSV should follow this format:\n\n- **Column 1**: Title (Required)\n- **Column 2**: Description (Optional)\n- **Column 3**: Priority (0-3, Optional)\n- **Column 4**: Planned Date (YYYY-MM-DD, Optional)\n- **Column 5**: Deadline Date (YYYY-MM-DD, Optional)\n\nNote: The first row is treated as a header and will be skipped."
+    no_tasks: No tasks found in the file.
+    generic_info_title: Generic CSV Format
+    generic_info_description:
+      "To import tasks correctly, your CSV should follow this
+      format:
+
+
+      - **Column 1**: Title (Required)
+
+      - **Column 2**: Description (Optional)
+
+      - **Column 3**: Priority (0-3, Optional)
+
+      - **Column 4**: Planned Date (YYYY-MM-DD, Optional)
+
+      - **Column 5**: Deadline Date (YYYY-MM-DD, Optional)
+
+
+      Note: The first row is treated as a header and will be skipped."
   page:
     completed_tasks_title: Completed tasks
     title: Tasks
@@ -311,7 +327,7 @@ tasks:
     daily: Daily
     hourly: Hourly
     minutely: Minutely
-    daySuffix: "."
+    daySuffix: .
     daysOfWeek: Days of week
     endDate: End date
     ends:
@@ -354,9 +370,11 @@ tasks:
     months_plural: months
     years_plural: years
     monthly_pattern_label: Monthly Pattern
-    advanced_label: "Advanced Settings"
-    regenerate_label: "Regenerate after completion"
-    regenerate_description: "When enabled, the next occurrence will be scheduled from the date of completion, instead of the planned date."
+    advanced_label: Advanced Settings
+    regenerate_label: Regenerate after completion
+    regenerate_description:
+      When enabled, the next occurrence will be scheduled from
+      the date of completion, instead of the planned date.
     on_specific_day: Specific Day
     on_relative_day: Relative Day
     on_the: On the
@@ -475,13 +493,3 @@ tasks:
       Deadline must be scheduled after the planned
       date
     deadline_time_invalid: Please enter a valid deadline time
-shared:
-  time:
-    minute: minute
-    minutes: minutes
-    hour: hour
-    hours: hours
-    day: day
-    days: days
-    week: week
-    weeks: weeks

@@ -12,7 +12,6 @@ tags:
     app_usage: Użycie aplikacji
     habits: Nawyki
     tasks: Zadania
-
   details:
     archived: Zarchiwizowane
     color: Kolor
@@ -42,42 +41,133 @@ tags:
   help:
     content: Treść pomocy tagów
     overview:
-      content: |
-        Przekształć swoją produktywność dzięki strategicznemu tagowaniu, które pomaga organizować pracę, śledzić inwestycje czasowe i utrzymywać jasny fokus na tym, co najważniejsze.
+      content:
+        "Przekształć swoją produktywność dzięki strategicznemu oznaczaniu,
+        które pomaga w organizacji pracy, śledzeniu inwestycji czasowych i utrzymaniu
+        jasnego skupienia na tym, co najważniejsze.
 
-        ## ⚡ Dlaczego to ważne?
 
-        Organizacja oparta na tagach jest fundamentalna dla efektywnego zarządzania czasem i produktywności. Kategoryzując swoje aktywności za pomocą znaczących tagów, zyskujesz jasny wgląd w to, jak spędzasz czas i możesz podejmować świadome decyzje w celu optymalizacji skupienia i efektywności.
+        ## ⚡ Dlaczego To Jest Ważne?
 
-        ## 📊 Analiza inwestycji czasowych
 
-        Zrozum, gdzie idzie twój czas i podejmuj decyzje oparte na danych dotyczące priorytetów. Śledzenie czasu za pomocą tagów ujawnia wzorce, które pomagają zoptymalizować harmonogram i nawyki pracy.
+        Organizacja oparta na znacznikach jest fundamentalna dla efektywnego zarządzania
+        czasem i produktywności. Kategoryzując swoje działania znaczącymi znacznikami,
+        uzyskujesz jasny wgląd w to, jak spędzasz czas, i możesz podejmować świadome
+        decyzje w celu optymalizacji skupienia i wydajności.
+
+
+        ## 🏷️ Typy Znaczników: Organizuj Po Swoim
+
+
+        Znaczniki występują w trzech wyspecjalizowanych typach, z których każdy został
+        zaprojektowany do specyficznych potrzeb organizacyjnych:
+
+
+        ### 📌 Znaczniki Etykiety
+
+        Elastyczne znaczniki kategoryzacji do ogólnej organizacji. Używaj ich do oznaczania
+        zawartości według tematu, priorytetu, statusu lub dowolnego niestandardowego
+        systemu klasyfikacji, który dla Ciebie działa.
+
+
+        - **Przypadki użycia:** Kategorie, priorytety, statusy, umiejętności, domeny
+
+        - **Przykłady:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Najlepsze dla:** Ogólnej kategoryzacji i filtrowania we wszystkich typach
+        zawartości
+
+
+        ### 📍 Znaczniki Kontekstu
+
+        Definiują, gdzie lub jak możesz wykonywać zadania. Znaczniki kontekstu pomagają
+        dopasować pracę do obecnej sytuacji, poziomu energii lub środowiska.
+
+
+        - **Przypadki użycia:** Lokalizacje fizyczne, poziomy energii, dostępne narzędzia,
+        tryby pracy
+
+        - **Przykłady:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Najlepsze dla:** Filtrowania zadań na podstawie lokalizacji i zarządzania
+        energią
+
+
+        ### 🎯 Znaczniki Projektu
+
+        Grupują powiązane zadania w kierunku wspólnych celów lub wyników. Znaczniki
+        projektu tworzą naturalne pakiety pracy, które przyczyniają się do określonych
+        celów.
+
+
+        - **Przypadki użycia:** Wprowadzenia produktów, rozwój funkcji, cele osobiste,
+        powtarzające się inicjatywy
+
+        - **Przykłady:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Najlepsze dla:** Śledzenia postępu w kierunku określonych kamieni milowych
+        i dostaw
+
+
+        ## 📊 Analiza Inwestycji Czasowych
+
+
+        Zrozum, dokąd zmierza Twój czas, i podejmuj decyzje oparte na danych o swoich
+        priorytetach. Śledzenie czasu ze znacznikami ujawnia wzorce, które pomagają
+        optymalizować harmonogram i nawyki pracy.
+
 
         - ⏱️ Monitoruj czas spędzony w różnych kategoriach aktywności
-        - 📅 Śledź inwestycje czasowe w określonych okresach i trendy
-        - ⚖️ Porównuj alokację czasu między projektami i obowiązkami
-        - 📈 Identyfikuj wzorce produktywności i szczytowe czasy wydajności
-        - 🎯 Skupiaj energię na aktywnościach o wysokim wpływie
 
-        ## 🗂️ Strategiczna organizacja
+        - 📅 Śledź inwestycje czasowe w określonych okresach i trendach
 
-        Stwórz systematyczne podejście do organizowania pracy, które skaluje się z twoimi potrzebami. Dobrze ustrukturyzowane tagi stanowią podstawę efektywnego systemu produktywności.
+        - ⚖️ Porównuj alokację czasu w projektach i odpowiedzialnościach
 
-        - 🔍 Filtruj i znajdź informacje szybko za pomocą wyszukiwania wielotagowego
+        - 📈 Identyfikuj wzorce produktywności i czasy szczytowej wydajności
+
+        - 🎯 Skupiaj energię na działaniach o wysokim wpływie
+
+
+        ## 🗂️ Strategiczna Organizacja
+
+
+        Stwórz systematyczne podejście do organizacji pracy, które skaluje się z Twoimi
+        potrzebami. Dobrze ustrukturyzowane znaczniki stanowią fundament wydajnego
+        systemu produktywności.
+
+
+        - 🔍 Filtruj i znajdź informacje szybko z wyszukiwaniami multi-znacznik
+
         - 🗄️ Archiwizuj ukończone projekty, aby utrzymać czystą organizację
-        - 🧩 Buduj hierarchiczne struktury, które odzwierciedlają wzorce pracy
-        - 👥 Grupuj powiązane aktywności dla lepszego zarządzania projektami
-        - ⏳ Umożliwiaj kompleksowe śledzenie czasu we wszystkich aktywnościach
 
-        ## 💡 Strategie optymalizacji
+        - 🧩 Buduj struktury hierarchiczne, które odzwierciedlają Twoje wzorce pracy
 
-        Wykorzystuj zaawansowane techniki tagowania, aby zmaksymalizować efektywność systemu organizacyjnego i utrzymać długoterminowy wzrost produktywności.
+        - 👥 Grupuj powiązane działania dla lepszego zarządzania projektami
+
+        - ⏳ Włącz kompleksowe śledzenie czasu we wszystkich aktywnościach
+
+
+        ## 💡 Strategie Optymalizacji
+
+
+        Wykorzystaj zaawansowane techniki oznaczania, aby zmaksymalizować efektywność
+        systemu organizacyjnego i utrzymać długoterminowy wzrost produktywności.
+
 
         - 🏷️ Używaj jasnych, opisowych nazw, które pozostają znaczące w czasie
+
         - 🔗 **Twórz struktury hierarchiczne:** Projekty → Działy → Obszary
-        - 📊 Regularnie przeglądaj raporty analizy czasu, aby zidentyfikować możliwości poprawy
-        - 🗑️ Utrzymuj czystość systemu poprzez archiwizowanie ukończonej pracy
-        - 🎯 Stosuj skupione filtrowanie, aby wyeliminować rozproszenia i zwiększyć koncentrację
+
+        - 📊 Regularnie przeglądaj raporty analizy czasu, aby identyfikować możliwości
+        poprawy
+
+        - 🗄️ Utrzymuj czystość systemu, archiwizując ukończoną pracę
+
+        - 🎯 Zastosuj ukierunkowane filtrowanie, aby wyeliminować rozproszenia i poprawić
+        koncentrację
+
+        - 🔄 **Strategicznie łącz typy znaczników:** Używaj projektów do celów, kontekstów
+        do sytuacji, a etykiet do kategorii"
       title: Przewodnik organizacji opartej na tagach i zarządzania czasem
     title: Pomoc tagów
   labels:
@@ -129,22 +219,51 @@ tags:
   tour:
     smart_tagging:
       title: Inteligentny System Tagowania
-      description: Używaj tagów do organizowania i grupowania zadań, nawyków i aplikacji. Śledź czas spędzany na różnych aktywnościach według tagów, aby zrozumieć, gdzie mija Twój czas i zoptymalizować przepływ pracy.
+      description:
+        Używaj tagów do organizowania i grupowania zadań, nawyków i aplikacji.
+        Śledź czas spędzany na różnych aktywnościach według tagów, aby zrozumieć,
+        gdzie mija Twój czas i zoptymalizować przepływ pracy.
     your_tags:
       title: Twoje Tagi
-      description: Przeglądaj wszystkie swoje tagi i sprawdź ich statystyki użytkowania. Kliknij dowolny tag, aby wyświetlić szczegóły, edytować właściwości lub zobaczyć, które zadania i nawyki go używają. Skutecznie organizuj swój przepływ pracy.
+      description:
+        Przeglądaj wszystkie swoje tagi i sprawdź ich statystyki użytkowania.
+        Kliknij dowolny tag, aby wyświetlić szczegóły, edytować właściwości lub zobaczyć,
+        które zadania i nawyki go używają. Skutecznie organizuj swój przepływ pracy.
     tag_archive_filters:
       title: Filtry Tagów i Archiwum
-      description: Filtruj tagi, wybierając konkretne tagi, na których chcesz się skupić, lub przełącz widoczność zarchiwizowanych tagów. Kontroluj, które tagi pojawiają się na Twojej liście dla lepszej organizacji.
+      description:
+        Filtruj tagi, wybierając konkretne tagi, na których chcesz się
+        skupić, lub przełącz widoczność zarchiwizowanych tagów. Kontroluj, które tagi
+        pojawiają się na Twojej liście dla lepszej organizacji.
     search_sort:
       title: Wyszukiwanie i Sortowanie
-      description: Wyszukuj konkretne tagi według nazwy, sortuj według różnych kryteriów, takich jak nazwa lub liczba użyć. Organizuj swoją listę tagów, aby szybko znaleźć to, czego potrzebujesz.
+      description:
+        Wyszukuj konkretne tagi według nazwy, sortuj według różnych kryteriów,
+        takich jak nazwa lub liczba użyć. Organizuj swoją listę tagów, aby szybko
+        znaleźć to, czego potrzebujesz.
     time_distribution_chart:
       title: Wykres Rozkładu Czasu
-      description: Wizualizuj, jak spędzasz czas na różnych tagach i kategoriach. Zobacz wzorce alokacji czasu i zidentyfikuj, gdzie skupione jest Twoje внимание przez cały dzień.
+      description:
+        Wizualizuj, jak spędzasz czas na różnych tagach i kategoriach.
+        Zobacz wzorce alokacji czasu i zidentyfikuj, gdzie skupione jest Twoje внимание
+        przez cały dzień.
     chart_customization:
       title: Dostosowanie Wykresu
-      description: Dostosuj wykres czasu, wybierając zakres dat, wybierając kategorie (zadania, nawyki, aplikacje) i filtrując według konkretnych tagów, aby szczegółowo przeanalizować swój rozkład czasu.
+      description:
+        Dostosuj wykres czasu, wybierając zakres dat, wybierając kategorie
+        (zadania, nawyki, aplikacje) i filtrując według konkretnych tagów, aby szczegółowo
+        przeanalizować swój rozkład czasu.
     create_tags:
       title: Utwórz Nowe Tagi
-      description: Dodaj nowe tagi, aby kategoryzować swoją zawartość. Tagi pomagają Ci organizować zadania, nawyki i aplikacje we wszystkich funkcjach dla lepszego śledzenia produktywności i zarządzania czasem.
+      description:
+        Dodaj nowe tagi, aby kategoryzować swoją zawartość. Tagi pomagają
+        Ci organizować zadania, nawyki i aplikacje we wszystkich funkcjach dla lepszego
+        śledzenia produktywności i zarządzania czasem.
+  type:
+    label: Typ
+    label_label: Etykieta
+    label_tooltip: Elastyczna etykieta kategoryzacji
+    context: Kontekst
+    context_tooltip: Gdzie lub jak możesz wykonać to zadanie (np. @home, @work)
+    project: Projekt
+    project_tooltip: Grupowanie powiązanych zadań wspólnym celem (np. +WebsiteRedesign)

@@ -125,6 +125,11 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
           return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else if (order.field == "name") {
           return "h.${order.field} IS NULL, h.${order.field} COLLATE NOCASE ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+        } else if (order.field.trim().startsWith('(')) {
+          // For subqueries (like tag sorting), replace table name with alias 'h'
+          // and ensure NULLs (items with no tags) come last
+          final field = order.field.replaceAll('habit_table.', 'h.');
+          return "$field IS NULL, $field ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else {
           // Quote the field name to handle reserved words like "order"
           return "h.\"${order.field}\" IS NULL, h.\"${order.field}\" ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
@@ -215,6 +220,11 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
           return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else if (order.field == "name") {
           return "h.${order.field} IS NULL, h.${order.field} COLLATE NOCASE ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+        } else if (order.field.trim().startsWith('(')) {
+          // For subqueries (like tag sorting), replace table name with alias 'h'
+          // and ensure NULLs (items with no tags) come last
+          final field = order.field.replaceAll('habit_table.', 'h.');
+          return "$field IS NULL, $field ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else {
           // Quote the field name to handle reserved words like "order"
           return "h.\"${order.field}\" IS NULL, h.\"${order.field}\" ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";

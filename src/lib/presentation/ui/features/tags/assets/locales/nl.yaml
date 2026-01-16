@@ -42,42 +42,133 @@ tags:
   help:
     content: Tag hulpinhoud
     overview:
-      content: |
-        Transformeer je productiviteit met strategische tagging die je helpt werk te organiseren, tijdsinvesteringen te volgen en duidelijke focus te behouden op wat het belangrijkste is.
+      content:
+        "Transformeer uw productiviteit met strategische labeling die u helpt
+        bij het organiseren van werk, het volgen van tijdsinvesteringen en het behouden
+        van duidelijke focus op wat het belangrijkst is.
 
-        ## ⚡ Waarom is het belangrijk?
 
-        Tag-gebaseerde organisatie is fundamenteel voor effectief tijdmanagement en productiviteit. Door je activiteiten te categoriseren met betekenisvolle tags, krijg je duidelijke inzichten in hoe je je tijd besteedt en kun je geïnformeerde beslissingen nemen om je focus en efficiëntie te optimaliseren.
+        ## ⚡ Waarom Is Het Belangrijk?
+
+
+        Label-gebaseerde organisatie is fundamenteel voor effectief tijdsbeheer en
+        productiviteit. Door het categoriseren van uw activiteiten met betekenisvolle
+        labels, krijgt u duidelijk inzicht in hoe u uw tijd besteedt en kunt u geïnformeerde
+        beslissingen nemen om uw focus en efficiëntie te optimaliseren.
+
+
+        ## 🏷️ Labeltypen: Organiseer Op Uw Manier
+
+
+        Labels zijn er in drie gespecialiseerde typen, elk ontworpen voor specifieke
+        organisatiebehoeften:
+
+
+        ### 📌 Label Labels
+
+        Flexibele categorisatielabels voor algemene organisatie. Gebruik ze om inhoud
+        te markeren op onderwerp, prioriteit, status of elk aangepast classificatiesysteem
+        dat voor u werkt.
+
+
+        - **Gebruiksgevallen:** Categorieën, prioriteiten, statussen, vaardigheden,
+        domeinen
+
+        - **Voorbeelden:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Het beste voor:** Algemene categorisering en filtering over alle inhoudstypen
+        heen
+
+
+        ### 📍 Context Labels
+
+        Definieer waar of hoe u taken kunt voltooien. Context labels helpen u uw werk
+        aan te passen aan uw huidige situatie, energieniveau of omgeving.
+
+
+        - **Gebruiksgevallen:** Fysieke locaties, energieniveaus, beschikbare tools,
+        werkmodes
+
+        - **Voorbeelden:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Het beste voor:** Locatie-gebaseerde taakfiltering en energiemanagement
+
+
+        ### 🎯 Project Labels
+
+        Groepeer gerelateerde taken naar gedeelde doelen of resultaten. Project labels
+        creëren natuurlijke bundels werk die bijdragen aan specifieke doelstellingen.
+
+
+        - **Gebruiksgevallen:** Productlanceringen, functieontwikkeling, persoonlijke
+        doelen, terugkerende initiatieven
+
+        - **Voorbeelden:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Het beste voor:** Het volgen van voortgang naar specifieke mijlpalen en
+        leveringen
+
 
         ## 📊 Tijdsinvestering Analyse
 
-        Begrijp waar je tijd naartoe gaat en neem datagestuurde beslissingen over je prioriteiten. Tijdtracking met tags onthult patronen die je helpen je schema en werkgewoonten te optimaliseren.
 
-        - ⏱️ Monitor tijd besteed aan verschillende activiteitencategorieën
+        Begrijp waar uw tijd heen gaat en neem datagestuurde beslissingen over uw
+        prioriteiten. Tijdtracking met labels onthult patronen die u helpen uw schema
+        en werkgewoonten te optimaliseren.
+
+
+        - ⏱️ Monitor tijd besteed aan verschillende activiteitscategorieën
+
         - 📅 Volg tijdsinvesteringen over specifieke periodes en trends
-        - ⚖️ Vergelijk tijdstoewijzing over projecten en verantwoordelijkheden
-        - 📈 Identificeer productiviteitspatronen en piekprestatietijden
-        - 🎯 Richt je energie op activiteiten met hoge impact
+
+        - ⚖️ Vergelijk tijdstoewijzing over projecten en verantwoordelijkheden heen
+
+        - 📈 Identificeer productiviteitspatronen en piek prestatietijden
+
+        - 🎯 Focus uw energie op hoog-impact activiteiten
+
 
         ## 🗂️ Strategische Organisatie
 
-        Creëer een systematische aanpak voor het organiseren van je werk die meeschaalt met je behoeften. Goed gestructureerde tags vormen de basis van een efficiënt productiviteitssysteem.
 
-        - 🔍 Filter en vind informatie snel met multi-tag zoekopdrachten
-        - 🗄️ Archiveer voltooide projecten om schone organisatie te behouden
-        - 🧩 Bouw hiërarchische structuren die je werkpatronen weerspiegelen
-        - 👥 Groepeer gerelateerde activiteiten voor beter projectmanagement
-        - ⏳ Schakel uitgebreide tijdtracking in over alle activiteiten
+        Creëer een systematische aanpak voor het organiseren van uw werk die schaalt
+        met uw behoeften. Goed gestructureerde labels vormen de basis van een efficiënt
+        productiviteitssysteem.
+
+
+        - 🔍 Filter en vind informatie snel met multi-label zoekopdrachten
+
+        - 🗄️ Archiveer voltooide projecten om een schone organisatie te behouden
+
+        - 🧩 Bouw hiërarchische structuren die uw werkgewoonten weerspiegelen
+
+        - 👥 Groepeer gerelateerde activiteiten voor beter projectbeheer
+
+        - ⏳ Schakel uitgebreide tijdtracking in voor alle activiteiten
+
 
         ## 💡 Optimalisatiestrategieën
 
-        Gebruik geavanceerde taggingtechnieken om de effectiviteit van je organisatiesysteem te maximaliseren en langetermijngroei in productiviteit te behouden.
 
-        - 🏷️ Gebruik duidelijke, beschrijvende namen die betekenisvol blijven in de tijd
-        - 🔗 **Creëer hiërarchische structuren:** Projecten → Afdelingen → Gebieden
-        - 📊 Bekijk tijdanalyse-rapporten regelmatig om verbeteringsmogelijkheden te identificeren
-        - 🗄️ Houd het systeem schoon door voltooide werk te archiveren
-        - 🎯 Pas gefocuste filtering toe om afleidingen te elimineren en concentratie te verbeteren
+        Benut geavanceerde labelingstechnieken om de effectiviteit van uw organisatiesysteem
+        te maximaliseren en langetermijnproductiviteitsgroei te behouden.
+
+
+        - 🏷️ Gebruik duidelijke, beschrijvende namen die betekenisvol blijven in de
+        loop van de tijd
+
+        - 🔗 **Maak hiërarchische structuren:** Projecten → Afdelingen → Gebieden
+
+        - 📊 Beoordeel tijdanalyse rapporten regelmatig om verbetermogelijkheden te
+        identificeren
+
+        - 🗄️ Behoud systeemreinheid door voltooid werk te archiveren
+
+        - 🎯 Pas gerichte filtering toe om afleidingen te elimineren en concentratie
+        te verbeteren
+
+        - 🔄 **Combineer labeltypen strategisch:** Gebruik projecten voor doelen, contexten
+        voor situatie en labels voor categorieën"
       title: Tag-gebaseerde Organisatie & Tijdmanagement Gids
     title: Tag Hulp
   labels:
@@ -129,22 +220,53 @@ tags:
   tour:
     smart_tagging:
       title: Slimme Tagging Systeem
-      description: Gebruik tags om je taken, gewoontes en apps te organiseren en groeperen. Volg de tijd die je besteedt aan verschillende activiteiten via tags om te begrijpen waar je tijd naartoe gaat en je workflow te optimaliseren.
+      description:
+        Gebruik tags om je taken, gewoontes en apps te organiseren en groeperen.
+        Volg de tijd die je besteedt aan verschillende activiteiten via tags om te
+        begrijpen waar je tijd naartoe gaat en je workflow te optimaliseren.
     your_tags:
       title: Jouw Tags
-      description: Blader door al je tags en bekijk hun gebruiksstatistieken. Klik op een tag om details te bekijken, eigenschappen te bewerken of te zien welke taken en gewoontes deze gebruiken. Organiseer je workflow efficiënt.
+      description:
+        Blader door al je tags en bekijk hun gebruiksstatistieken. Klik
+        op een tag om details te bekijken, eigenschappen te bewerken of te zien welke
+        taken en gewoontes deze gebruiken. Organiseer je workflow efficiënt.
     tag_archive_filters:
       title: Tag & Archief Filters
-      description: Filter tags door specifieke tags te selecteren om je op te focussen, of schakel de zichtbaarheid van gearchiveerde tags aan/uit. Bepaal welke tags in je lijst verschijnen voor betere organisatie.
+      description:
+        Filter tags door specifieke tags te selecteren om je op te focussen,
+        of schakel de zichtbaarheid van gearchiveerde tags aan/uit. Bepaal welke tags
+        in je lijst verschijnen voor betere organisatie.
     search_sort:
       title: Zoeken & Sorteren
-      description: Zoek naar specifieke tags op naam, sorteer op verschillende criteria zoals naam of gebruiksaantal. Organiseer je taglijst om snel te vinden wat je nodig hebt.
+      description:
+        Zoek naar specifieke tags op naam, sorteer op verschillende criteria
+        zoals naam of gebruiksaantal. Organiseer je taglijst om snel te vinden wat
+        je nodig hebt.
     time_distribution_chart:
       title: Tijdverdelingsgrafiek
-      description: Visualiseer hoe je je tijd verdeelt over verschillende tags en categorieën. Bekijk patronen in tijdsallocatie en identificeer waar je aandacht gedurende de dag naartoe gaat.
+      description:
+        Visualiseer hoe je je tijd verdeelt over verschillende tags en
+        categorieën. Bekijk patronen in tijdsallocatie en identificeer waar je aandacht
+        gedurende de dag naartoe gaat.
     chart_customization:
       title: Grafiek Aanpassing
-      description: Pas de tijdgrafiek aan door datumbereik te selecteren, categorieën te kiezen (taken, gewoontes, apps) en te filteren op specifieke tags om je tijdsverdeling in detail te analyseren.
+      description:
+        Pas de tijdgrafiek aan door datumbereik te selecteren, categorieën
+        te kiezen (taken, gewoontes, apps) en te filteren op specifieke tags om je
+        tijdsverdeling in detail te analyseren.
     create_tags:
       title: Nieuwe Tags Maken
-      description: Voeg nieuwe tags toe om je inhoud te categoriseren. Tags helpen je bij het organiseren van taken, gewoontes en apps in alle functies voor beter productiviteitstracking en tijdsbeheer.
+      description:
+        Voeg nieuwe tags toe om je inhoud te categoriseren. Tags helpen
+        je bij het organiseren van taken, gewoontes en apps in alle functies voor
+        beter productiviteitstracking en tijdsbeheer.
+  type:
+    label: Type
+    label_label: Label
+    label_tooltip: Een flexibele categorisatielabel
+    context: Context
+    context_tooltip: Waar of hoe je deze taak kunt uitvoeren (bijv. @home, @work)
+    project: Project
+    project_tooltip:
+      Gerelateerde taken groeperen naar een gemeenschappelijk doel
+      (bijv. +WebsiteRedesign)

@@ -305,6 +305,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           sortBy: _currentFilters.sortConfig?.orderOptions,
           groupBy: _currentFilters.sortConfig?.groupOption,
           sortByCustomSort: _currentFilters.sortConfig?.useCustomOrder ?? false,
+          customTagSortOrder: _currentFilters.sortConfig?.customTagSortOrder,
           excludeCompletedForDate: _currentFilters.excludeCompletedForDate,
         );
 

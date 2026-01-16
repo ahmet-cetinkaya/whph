@@ -22,12 +22,21 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       final lockFile = await _getLockFile();
 
       if (!await portFile.exists()) {
-        // If port file missing but lock file exists, another instance is starting or assumed running
+        // If port file missing but lock file exists, another instance might be starting or it might be a stale lock.
         if (await lockFile.exists()) {
-          Logger.debug('Lock file exists but port file missing. Instance might be starting.');
-          // Give it a small moment to write the port file? Or just assume it's running.
-          // Safety: return true to let lockInstance handle the final arbitrating if it's dead.
-          return true;
+          Logger.debug('Lock file exists but port file missing. Checking if instance is starting...');
+
+          // Wait for a short moment to see if the port file appears (handling instances that are currently starting)
+          for (int i = 0; i < 5; i++) {
+            await Future.delayed(const Duration(milliseconds: 100));
+            if (await portFile.exists()) {
+              Logger.debug('Port file appeared after waiting, another instance is starting.');
+              return true;
+            }
+          }
+
+          Logger.debug('Port file did not appear after waiting. Assuming lock is stale.');
+          return false;
         }
         Logger.debug('Port and lock files not found, assuming no instance running');
         return false;

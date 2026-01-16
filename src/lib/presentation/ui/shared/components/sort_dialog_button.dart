@@ -22,6 +22,7 @@ class SortDialogButton<T> extends StatefulWidget {
   final double? dialogMaxWidthRatio;
   final bool showCustomOrderOption;
   final VoidCallback? onDialogClose;
+  final Map<T, Future<SortConfig<T>> Function(BuildContext, SortConfig<T>)>? customOrderConfigurators;
 
   const SortDialogButton({
     super.key,
@@ -36,6 +37,7 @@ class SortDialogButton<T> extends StatefulWidget {
     this.dialogMaxWidthRatio = 0.6,
     this.showCustomOrderOption = false,
     this.onDialogClose,
+    this.customOrderConfigurators,
   });
 
   @override
@@ -56,8 +58,10 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
           showCustomOrderOption: widget.showCustomOrderOption,
           translationService: _translationService,
           onClose: widget.onDialogClose,
+          customOrderConfigurators: widget.customOrderConfigurators,
         ),
-        size: DialogSize.xLarge);
+        size: DialogSize.xLarge,
+        isScrollable: false);
   }
 
   @override
@@ -85,6 +89,7 @@ class _SortDialog<T> extends StatefulWidget {
   final bool showCustomOrderOption;
   final ITranslationService translationService;
   final VoidCallback? onClose;
+  final Map<T, Future<SortConfig<T>> Function(BuildContext, SortConfig<T>)>? customOrderConfigurators;
 
   const _SortDialog({
     required this.availableOptions,
@@ -94,6 +99,7 @@ class _SortDialog<T> extends StatefulWidget {
     required this.translationService,
     this.showCustomOrderOption = false,
     this.onClose,
+    this.customOrderConfigurators,
   });
 
   @override
@@ -204,156 +210,164 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
   Widget build(BuildContext context) {
     final bool isDisabled = _currentConfig.useCustomOrder;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.translationService.translate(SharedTranslationKeys.sort),
-          style: AppTheme.headlineSmall,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: widget.translationService.translate(SharedTranslationKeys.backButton),
-          onPressed: () {
-            widget.onClose?.call();
-            Navigator.of(context).pop();
-          },
-        ),
-        actions: [
-          TextButton(
-            child: Text(
-              widget.translationService.translate(SharedTranslationKeys.doneButton),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Header (mimicking AppBar)
+        AppBar(
+          title: Text(
+            widget.translationService.translate(SharedTranslationKeys.sort),
+            style: AppTheme.headlineSmall,
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            tooltip: widget.translationService.translate(SharedTranslationKeys.backButton),
             onPressed: () {
               widget.onClose?.call();
               Navigator.of(context).pop();
             },
           ),
-        ],
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: ReorderableListView.builder(
-          padding: const EdgeInsets.all(AppTheme.sizeLarge),
-          header: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.showCustomOrderOption) ...[
-                Card(
-                  elevation: 0,
-                  color: AppTheme.surface1,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-                  child: SwitchListTile.adaptive(
-                    value: _currentConfig.useCustomOrder,
-                    onChanged: _toggleCustomOrder,
-                    title: Text(
-                      widget.translationService.translate(SharedTranslationKeys.sortCustomTitle),
-                      style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      widget.translationService.translate(SharedTranslationKeys.sortCustomDescription),
-                      style: AppTheme.bodySmall,
-                    ),
-                    secondary: StyledIcon(
-                      Icons.low_priority,
-                      isActive: _currentConfig.useCustomOrder,
+          actions: [
+            TextButton(
+              child: Text(
+                widget.translationService.translate(SharedTranslationKeys.doneButton),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onPressed: () {
+                widget.onClose?.call();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+          elevation: 0,
+          backgroundColor: Colors.transparent, // Important for dialogs
+        ),
+
+        // Body
+        Expanded(
+          child: ReorderableListView.builder(
+            padding: const EdgeInsets.all(AppTheme.sizeLarge),
+            header: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.showCustomOrderOption) ...[
+                  Card(
+                    elevation: 0,
+                    color: AppTheme.surface1,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                    child: SwitchListTile.adaptive(
+                      value: _currentConfig.useCustomOrder,
+                      onChanged: _toggleCustomOrder,
+                      title: Text(
+                        widget.translationService.translate(SharedTranslationKeys.sortCustomTitle),
+                        style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        widget.translationService.translate(SharedTranslationKeys.sortCustomDescription),
+                        style: AppTheme.bodySmall,
+                      ),
+                      secondary: StyledIcon(
+                        Icons.low_priority,
+                        isActive: _currentConfig.useCustomOrder,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppTheme.sizeSmall),
+                  const SizedBox(height: AppTheme.sizeSmall),
+                ],
+                if (!isDisabled)
+                  Padding(
+                    padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
+                    child: Text(
+                      widget.translationService.translate(SharedTranslationKeys.sortCriteria),
+                      style: AppTheme.labelLarge,
+                    ),
+                  ),
               ],
-              if (!isDisabled)
-                Padding(
-                  padding: const EdgeInsets.only(left: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall),
-                  child: Text(
-                    widget.translationService.translate(SharedTranslationKeys.sortCriteria),
-                    style: AppTheme.labelLarge,
-                  ),
-                ),
-            ],
-          ),
-          itemCount: isDisabled ? 0 : _currentConfig.orderOptions.length,
-          itemBuilder: (context, index) {
-            return _buildCriteriaRow(index);
-          },
-          onReorder: _reorderCriteria,
-          buildDefaultDragHandles: false,
-          proxyDecorator: (child, index, animation) {
-            return Material(
-              elevation: 2,
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-              child: child,
-            );
-          },
-          footer: isDisabled
-              ? null
-              : Column(
-                  children: [
-                    const SizedBox(height: AppTheme.sizeMedium),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: _canAddMoreCriteria() ? _addCriteria : null,
-                            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: _canAddMoreCriteria()
-                                      ? Theme.of(context).primaryColor.withValues(alpha: 0.5)
-                                      : Theme.of(context).disabledColor.withValues(alpha: 0.2),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                                color: _canAddMoreCriteria()
-                                    ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
-                                    : Colors.transparent,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.add,
-                                    size: 20,
+            ),
+            itemCount: isDisabled ? 0 : _currentConfig.orderOptions.length,
+            itemBuilder: (context, index) {
+              return _buildCriteriaRow(index);
+            },
+            onReorder: _reorderCriteria,
+            buildDefaultDragHandles: false,
+            proxyDecorator: (child, index, animation) {
+              return Material(
+                elevation: 2,
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                child: child,
+              );
+            },
+            footer: isDisabled
+                ? null
+                : Column(
+                    children: [
+                      const SizedBox(height: AppTheme.sizeMedium),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: _canAddMoreCriteria() ? _addCriteria : null,
+                              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
                                     color: _canAddMoreCriteria()
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context).disabledColor,
+                                        ? Theme.of(context).primaryColor.withValues(alpha: 0.5)
+                                        : Theme.of(context).disabledColor.withValues(alpha: 0.2),
+                                    width: 1,
                                   ),
-                                  const SizedBox(width: AppTheme.sizeSmall),
-                                  Text(
-                                    widget.translationService.translate(SharedTranslationKeys.addButton),
-                                    style: AppTheme.bodyMedium.copyWith(
+                                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                                  color: _canAddMoreCriteria()
+                                      ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
+                                      : Colors.transparent,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add,
+                                      size: 20,
                                       color: _canAddMoreCriteria()
                                           ? Theme.of(context).primaryColor
                                           : Theme.of(context).disabledColor,
-                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: AppTheme.sizeSmall),
+                                    Text(
+                                      widget.translationService.translate(SharedTranslationKeys.addButton),
+                                      style: AppTheme.bodyMedium.copyWith(
+                                        color: _canAddMoreCriteria()
+                                            ? Theme.of(context).primaryColor
+                                            : Theme.of(context).disabledColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: AppTheme.sizeMedium),
-                        IconButton(
-                          icon: const Icon(Icons.refresh, size: 20),
-                          onPressed: _resetToDefault,
-                          tooltip: widget.translationService.translate(SharedTranslationKeys.sortResetToDefault),
-                          style: IconButton.styleFrom(
-                            backgroundColor: AppTheme.surface1,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-                            padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                          const SizedBox(width: AppTheme.sizeMedium),
+                          IconButton(
+                            icon: const Icon(Icons.refresh, size: 20),
+                            onPressed: _resetToDefault,
+                            tooltip: widget.translationService.translate(SharedTranslationKeys.sortResetToDefault),
+                            style: IconButton.styleFrom(
+                              backgroundColor: AppTheme.surface1,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                              padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                        ],
+                      ),
+                    ],
+                  ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -399,6 +413,23 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (widget.customOrderConfigurators?.containsKey(option.field) == true)
+              IconButton(
+                icon: Icon(
+                  Icons.settings,
+                  size: 20,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                onPressed: () async {
+                  final configurator = widget.customOrderConfigurators![option.field]!;
+                  final newConfig = await configurator(context, _currentConfig);
+                  setState(() {
+                    _currentConfig = newConfig;
+                    widget.onConfigChanged(_currentConfig);
+                  });
+                },
+                tooltip: widget.translationService.translate(SharedTranslationKeys.configure),
+              ),
             IconButton(
               icon: Icon(
                 option.direction == SortDirection.asc ? Icons.arrow_upward : Icons.arrow_downward,

@@ -32,7 +32,7 @@ class TaskTagsSection {
             left: AppTheme.sizeSmall + AppTheme.sizeMedium, // 20px to match TextFormField alignment
           ),
           child: TagSelectDropdown(
-            key: ValueKey(taskTags.items.length),
+            key: ValueKey(taskTags.items.map((t) => t.tagId).join(',')),
             isMultiSelect: true,
             onTagsSelected: (options, _) => onTagsSelected(options),
             showSelectedInDropdown: true,

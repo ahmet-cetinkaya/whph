@@ -25,6 +25,12 @@ class SharedTranslationKeys {
   static const String sortEnableGroupingDescription = 'shared.sort.enable_grouping_description';
   static const String sortAndGroup = 'shared.sort.sort_and_group';
 
+  // Plural time unit keys
+  static const String timeMinutes = 'shared.time.minutes';
+  static const String timeHours = 'shared.time.hours';
+  static const String timeDays = 'shared.time.days';
+  static const String timeWeeks = 'shared.time.weeks';
+
   // Singular time unit keys for proper pluralization
   static const String timeMinute = 'shared.time.minute';
   static const String timeHour = 'shared.time.hour';

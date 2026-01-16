@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/core/application/features/habits/commands/remove_habit_tag_command.dart';
+import 'package:whph/core/application/features/habits/commands/update_habit_tags_order_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
@@ -83,7 +84,16 @@ class HabitTagOperations {
       }
     }
 
-    if (tagsToAdd.isNotEmpty || tagsToRemove.isNotEmpty) {
+    if (tagOptions.isNotEmpty) {
+      final tagOrders = {for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i};
+      final orderCommand = UpdateHabitTagsOrderCommand(habitId: habitId, tagOrders: tagOrders);
+      await _mediator.send(orderCommand);
+      if (context.mounted) {
+        await reloadTags(habitId, context);
+      }
+    }
+
+    if (tagsToAdd.isNotEmpty || tagsToRemove.isNotEmpty || tagOptions.isNotEmpty) {
       _habitsService.notifyHabitUpdated(habitId);
     }
   }

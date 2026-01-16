@@ -302,22 +302,26 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   Future<void> _loadThemeSettings() async {
     // Load theme mode preference
     try {
-      final themeResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final themeResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.themeMode),
       );
 
-      switch (themeResponse.value) {
-        case 'light':
-          _storedThemeMode = AppThemeMode.light;
-          break;
-        case 'dark':
-          _storedThemeMode = AppThemeMode.dark;
-          break;
-        case 'auto':
-          _storedThemeMode = AppThemeMode.auto;
-          break;
-        default:
-          _storedThemeMode = AppThemeMode.auto;
+      if (themeResponse != null) {
+        switch (themeResponse.value) {
+          case 'light':
+            _storedThemeMode = AppThemeMode.light;
+            break;
+          case 'dark':
+            _storedThemeMode = AppThemeMode.dark;
+            break;
+          case 'auto':
+            _storedThemeMode = AppThemeMode.auto;
+            break;
+          default:
+            _storedThemeMode = AppThemeMode.auto;
+        }
+      } else {
+        _storedThemeMode = AppThemeMode.auto;
       }
     } catch (e) {
       _storedThemeMode = AppThemeMode.auto;
@@ -328,21 +332,26 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
 
     // Load dynamic accent color
     try {
-      final dynamicResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final dynamicResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.dynamicAccentColor),
       );
-      _isDynamicAccentColorEnabled = dynamicResponse.getValue<bool>();
+      if (dynamicResponse != null) {
+        _isDynamicAccentColorEnabled = dynamicResponse.getValue<bool>();
+      } else {
+        _isDynamicAccentColorEnabled = false;
+      }
     } catch (e) {
       _isDynamicAccentColorEnabled = false;
     }
 
     // Load custom accent color
     try {
-      final customResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final customResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.customAccentColor),
       );
-      final colorValue = customResponse.value;
-      if (colorValue.isNotEmpty) {
+
+      if (customResponse != null && customResponse.value.isNotEmpty) {
+        final colorValue = customResponse.value;
         _customAccentColor = Color(int.parse(colorValue));
         _isCustomAccentColorEnabled = true;
       } else {
@@ -356,13 +365,18 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
 
     // Load UI density
     try {
-      final densityResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse>(
+      final densityResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.uiDensity),
       );
-      _currentUiDensity = domain.UiDensity.values.firstWhere(
-        (density) => density.name == densityResponse.value,
-        orElse: () => domain.AppTheme.defaultUiDensity,
-      );
+
+      if (densityResponse != null) {
+        _currentUiDensity = domain.UiDensity.values.firstWhere(
+          (density) => density.name == densityResponse.value,
+          orElse: () => domain.AppTheme.defaultUiDensity,
+        );
+      } else {
+        _currentUiDensity = domain.AppTheme.defaultUiDensity;
+      }
     } catch (e) {
       _currentUiDensity = domain.AppTheme.defaultUiDensity;
     }

@@ -42,42 +42,131 @@ tags:
   help:
     content: Obsah nápovědy štítků
     overview:
-      content: |
-        Transformujte svou produktivitu strategickým označováním, které vám pomůže organizovat práci, sledovat investice času a udržovat jasné zaměření na to nejdůležitější.
+      content:
+        "Transformujte svou produktivitu pomocí strategického označování, které
+        vám pomůže organizovat práci, sledovat časové investice a udržovat jasné zaměření
+        na to, co je nejdůležitější.
+
 
         ## ⚡ Proč je to důležité?
 
-        Organizace založená na štítcích je základní pro efektivní řízení času a produktivitu. Kategorizováním svých aktivit smysluplnými štítky získáte jasné postřehy o tom, jak trávíte čas, a můžete učinit informovaná rozhodnutí k optimalizaci zaměření a efektivity.
 
-        ## 📊 Analýza investic času
+        Organizace založená na značkách je základem efektivního časového řízení a
+        produktivity. Kategorizací svých aktivit smysluplnými značkami získáte jasný
+        přehled o tom, jak trávíte svůj čas, a můžete činit informovaná rozhodnutí
+        pro optimalizaci svého zaměření a efektivity.
 
-        Pochopte, kam váš čas jde, a učinte datově řízená rozhodnutí o svých prioritách. Sledování času s štítky odhaluje vzorce, které vám pomohou optimalizovat váš rozvrh a pracovní návyky.
+
+        ## 🏷️ Typy značek: Organizujte po svém
+
+
+        Značky existují ve třech specializovaných typech, z nichž každý je navržen
+        pro specifické organizační potřeby:
+
+
+        ### 📌 Značky štítků
+
+        Flexibilní kategorizační značky pro obecnou organizaci. Používejte je k označení
+        obsahu podle tématu, priority, stavu nebo jakéhokoli vlastního klasifikačního
+        systému, který vám vyhovuje.
+
+
+        - **Případy použití:** Kategorie, priority, stavy, dovednosti, oblasti
+
+        - **Příklady:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Nejvhodnější pro:** Obecnou kategorizaci a filtrování napříč všemi typy
+        obsahu
+
+
+        ### 📍 Značky kontextu
+
+        Definují, kde nebo jak můžete plnit úkoly. Značky kontextu vám pomáhají sladit
+        práci s vaší aktuální situací, úrovní energie nebo prostředím.
+
+
+        - **Případy použití:** Fyzická umístění, úrovně energie, dostupné nástroje,
+        pracovní režimy
+
+        - **Příklady:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Nejvhodnější pro:** Filtrování úkolů na základě umístění a řízení energie
+
+
+        ### 🎯 Značky projektů
+
+        Seskupují související úkoly směrem ke sdíleným cílům nebo výsledkům. Značky
+        projektů vytvářejí přirozené balíčky práce, které přispívají ke specifickým
+        cílům.
+
+
+        - **Případy použití:** Uvedení produktů na trh, vývoj funkcí, osobní cíle,
+        opakující se iniciativy
+
+        - **Příklady:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Nejvhodnější pro:** Sledování pokroku směrem ke specifickým milníkům a
+        dodávkám
+
+
+        ## 📊 Analýza časových investic
+
+
+        Pochopení toho, kam vám čas odchází, a rozhodování na základě dat o vašich
+        prioritách. Sledování času se značkami odhaluje vzorce, které vám pomáhají
+        optimalizovat váš rozvrh a pracovní návyky.
+
 
         - ⏱️ Sledujte čas strávený v různých kategoriích aktivit
-        - 📅 Sledujte investice času v určitých obdobích a trendech
-        - ⚖️ Porovnávejte rozložení času v projektech a odpovědnostech
-        - 📈 Identifikujte vzorce produktivity a časy špičkového výkonu
+
+        - 📅 Sledujte časové investice po specifických obdobích a trendech
+
+        - ⚖️ Porovnávejte časovou alokaci napříč projekty a odpovědnostmi
+
+        - 📈 Identifikujte vzorce produktivity a časy nejvyššího výkonu
+
         - 🎯 Soustřeďte svou energii na aktivity s vysokým dopadem
+
 
         ## 🗂️ Strategická organizace
 
-        Vytvořte systematický přístup k organizaci práce, který se škáluje s vašimi potřebami. Dobře strukturované štítky tvoří základ efektivního systému produktivity.
 
-        - 🔍 Filtrování a nalezení informací rychle s multi-štítkovými vyhledáváními
+        Vytvořte systematický přístup k organizaci práce, který se škáluje podle vašich
+        potřeb. Dobře strukturované značky tvoří základ efektivního produktivního
+        systému.
+
+
+        - 🔍 Filtrujte a vyhledejte informace rychle pomocí multi-značek vyhledávání
+
         - 🗄️ Archivujte dokončené projekty pro udržení čisté organizace
-        - 🧩 Vytvářejte hierarchické struktury, které odrážejí vaše pracovní vzorce
-        - 👥 Grupujte související aktivity pro lepší řízení projektů
+
+        - 🧩 Budujte hierarchické struktury odrážející vaše pracovní vzorce
+
+        - 👥 Seskupujte související aktivity pro lepší řízení projektů
+
         - ⏳ Povolte komplexní sledování času napříč všemi aktivitami
 
-        ## 💡 Strategie optimalizace
 
-        Využívejte pokročilé techniky označování pro maximalizaci efektivity vašeho organizačního systému a udržení dlouhodobého růstu produktivity.
+        ## 💡 Optimalizační strategie
+
+
+        Využijte pokročilé techniky označování pro maximalizaci efektivity vašeho
+        organizačního systému a udržení dlouhodobého růstu produktivity.
+
 
         - 🏷️ Používejte jasné, popisné názvy, které zůstávají smysluplné v čase
-        - 🔗 **Vytvořte hierarchické struktury:** Projekty → Oddělení → Oblasti
-        - 📊 Pravidelně kontrolujte zprávy o analýze času pro identifikaci příležitostí k zlepšení
+
+        - 🔗 **Vytvářejte hierarchické struktury:** Projekty → Oddělení → Oblasti
+
+        - 📊 Pravidelně kontrolujte zprávy o analýze času pro identifikaci možností
+        zlepšení
+
         - 🗄️ Udržujte čistotu systému archivací dokončené práce
-        - 🎯 Používejte zaměřené filtrování k eliminaci rušivých prvků a zlepšení koncentrace
+
+        - 🎯 Aplikujte cílené filtrování pro odstranění rozptýlení a zvýšení koncentrace
+
+        - 🔄 **Strategicky kombinujte typy značek:** Používejte projekty pro cíle,
+        kontexty pro situaci a štítky pro kategorie"
       title: Průvodce organizací založenou na štítcích a řízením času
     title: Nápověda štítků
   labels:
@@ -129,22 +218,52 @@ tags:
   tour:
     smart_tagging:
       title: Systém inteligentního označování
-      description: Používejte štítky k organizaci a seskupování úkolů, návyků a aplikací. Sledujte čas strávený různými aktivitami pomocí štítků, abyste pochopili, kam váš čas putuje, a optimalizovali svůj pracovní postup.
+      description:
+        Používejte štítky k organizaci a seskupování úkolů, návyků a aplikací.
+        Sledujte čas strávený různými aktivitami pomocí štítků, abyste pochopili,
+        kam váš čas putuje, a optimalizovali svůj pracovní postup.
     your_tags:
       title: Vaše štítky
-      description: Procházejte všechny své štítky a prohlédněte si jejich statistiky používání. Kliknutím na libovolný štítek zobrazíte podrobnosti, upravíte vlastnosti nebo zjistíte, které úkoly a návyky jej používají. Efektivně organizujte svůj pracovní postup.
+      description:
+        Procházejte všechny své štítky a prohlédněte si jejich statistiky
+        používání. Kliknutím na libovolný štítek zobrazíte podrobnosti, upravíte vlastnosti
+        nebo zjistíte, které úkoly a návyky jej používají. Efektivně organizujte svůj
+        pracovní postup.
     tag_archive_filters:
       title: Filtry štítků a archivu
-      description: Filtrujte štítky výběrem konkrétních štítků, na které se chcete zaměřit, nebo přepínáním viditelnosti archivovaných štítků. Ovládejte, které štítky se zobrazují ve vašem seznamu pro lepší organizaci.
+      description:
+        Filtrujte štítky výběrem konkrétních štítků, na které se chcete
+        zaměřit, nebo přepínáním viditelnosti archivovaných štítků. Ovládejte, které
+        štítky se zobrazují ve vašem seznamu pro lepší organizaci.
     search_sort:
       title: Hledání a řazení
-      description: Vyhledávejte konkrétní štítky podle názvu, řaďte je podle různých kritérií jako název nebo počet použití. Organizujte seznam štítků pro rychlé nalezení toho, co potřebujete.
+      description:
+        Vyhledávejte konkrétní štítky podle názvu, řaďte je podle různých
+        kritérií jako název nebo počet použití. Organizujte seznam štítků pro rychlé
+        nalezení toho, co potřebujete.
     time_distribution_chart:
       title: Graf rozdělení času
-      description: Vizualizujte, jak trávíte čas v různých štítcích a kategoriích. Podívejte se na vzory přidělení času a identifikujte, kam se zaměřujete během dne.
+      description:
+        Vizualizujte, jak trávíte čas v různých štítcích a kategoriích.
+        Podívejte se na vzory přidělení času a identifikujte, kam se zaměřujete během
+        dne.
     chart_customization:
       title: Přizpůsobení grafu
-      description: Přizpůsobte si časový graf výběrem časového období, výběrem kategorií (úkoly, návyky, aplikace) a filtrováním podle konkrétních štítků pro detailní analýzu rozdělení času.
+      description:
+        Přizpůsobte si časový graf výběrem časového období, výběrem kategorií
+        (úkoly, návyky, aplikace) a filtrováním podle konkrétních štítků pro detailní
+        analýzu rozdělení času.
     create_tags:
       title: Vytvoření nových štítků
-      description: Přidejte nové štítky pro kategorizaci vašeho obsahu. Štítky vám pomáhají organizovat úkoly, návyky a aplikace napříč všemi funkcemi pro lepší sledování produktivity a řízení času.
+      description:
+        Přidejte nové štítky pro kategorizaci vašeho obsahu. Štítky vám
+        pomáhají organizovat úkoly, návyky a aplikace napříč všemi funkcemi pro lepší
+        sledování produktivity a řízení času.
+  type:
+    label: Typ
+    label_label: Štítek
+    label_tooltip: Flexibilní štítek pro kategorizaci
+    context: Kontext
+    context_tooltip: Kde nebo jak můžete tento úkol provést (např. @domů, @práce)
+    project: Projekt
+    project_tooltip: Seskupení souvisejících úkolů se společným cílem (např. +RedesignWebu)

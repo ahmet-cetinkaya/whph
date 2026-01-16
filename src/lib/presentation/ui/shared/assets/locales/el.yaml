@@ -84,43 +84,21 @@ shared:
   date_format:
     hint: ΗΗ/ΜΜ/ΕΕΕΕ
   datepicker:
-    cannot_select_date_after_max_date:
-      Δεν μπορείτε να επιλέξετε ημερομηνία μετά την
-      {date}
-    cannot_select_date_before_min_date:
-      Δεν μπορείτε να επιλέξετε ημερομηνία πριν
-      την {date}
+    cannot_select_date_after_max_date: Δεν μπορείτε να επιλέξετε ημερομηνία μετά την {date}
+    cannot_select_date_before_min_date: Δεν μπορείτε να επιλέξετε ημερομηνία πριν την {date}
     cannot_select_time_after_max_date: Δεν μπορείτε να επιλέξετε ώρα μετά τις {time}
     cannot_select_time_before_min_date: Δεν μπορείτε να επιλέξετε ώρα πριν τις {time}
-    deadline_cannot_be_before_planned_date:
-      Η προθεσμία πρέπει να είναι την ή μετά
-      την προγραμματισμένη ημερομηνία
-    end_date_cannot_be_after_max_date:
-      Η ημερομηνία λήξης δεν μπορεί να είναι μετά
-      την {date}
-    end_date_must_be_at_or_before:
-      Η ημερομηνία λήξης πρέπει να είναι την ή πριν την
-      {date}
+    deadline_cannot_be_before_planned_date: Η προθεσμία πρέπει να είναι την ή μετά την προγραμματισμένη ημερομηνία
+    end_date_cannot_be_after_max_date: Η ημερομηνία λήξης δεν μπορεί να είναι μετά την {date}
+    end_date_must_be_at_or_before: Η ημερομηνία λήξης πρέπει να είναι την ή πριν την {date}
     select_date_range_title: Επιλέξτε εύρος ημερομηνιών
     select_date_time_title: Επιλέξτε ημερομηνία και ώρα
-    selected_date_must_be_at_or_after:
-      Η επιλεγμένη ημερομηνία πρέπει να είναι την
-      ή μετά την {date}
-    selected_date_must_be_at_or_before:
-      Η επιλεγμένη ημερομηνία πρέπει να είναι την
-      ή πριν την {date}
-    selected_date_time_must_be_after:
-      Η επιλεγμένη ημερομηνία και ώρα πρέπει να είναι
-      μετά τις {dateTime}
-    start_date_cannot_be_after_end_date:
-      Η ημερομηνία έναρξης δεν μπορεί να είναι
-      μετά την ημερομηνία λήξης
-    start_date_cannot_be_before_min_date:
-      Η ημερομηνία έναρξης δεν μπορεί να είναι
-      πριν την {date}
-    start_date_must_be_at_or_after:
-      Η ημερομηνία έναρξης πρέπει να είναι την ή μετά
-      την {date}
+    selected_date_must_be_at_or_after: Η επιλεγμένη ημερομηνία πρέπει να είναι την ή μετά την {date}
+    selected_date_must_be_at_or_before: Η επιλεγμένη ημερομηνία πρέπει να είναι την ή πριν την {date}
+    selected_date_time_must_be_after: Η επιλεγμένη ημερομηνία και ώρα πρέπει να είναι μετά τις {dateTime}
+    start_date_cannot_be_after_end_date: Η ημερομηνία έναρξης δεν μπορεί να είναι μετά την ημερομηνία λήξης
+    start_date_cannot_be_before_min_date: Η ημερομηνία έναρξης δεν μπορεί να είναι πριν την {date}
+    start_date_must_be_at_or_after: Η ημερομηνία έναρξης πρέπει να είναι την ή μετά την {date}
     time_must_be_at_or_after: Η ώρα πρέπει να είναι τις ή μετά τις {time}
     time_must_be_at_or_before: Η ώρα πρέπει να είναι τις ή πριν τις {time}
     select_time_title: Επιλογή ώρας
@@ -174,8 +152,7 @@ shared:
     loading: Παρουσιάστηκε σφάλμα κατά τη φόρτωση δεδομένων
     report_subject: "{appName} Εφαρμογή: Αναφορά απροσδόκητου σφάλματος"
     report_template:
-      "Γεια σας, αντιμετώπισα ένα απροσδόκητο σφάλμα κατά τη χρήση
-      της εφαρμογής {appName}.
+      "Γεια σας, αντιμετώπισα ένα απροσδόκητο σφάλμα κατά τη χρήση της εφαρμογής {appName}.
 
 
       Εδώ είναι πληροφορίες που μπορεί να σας βοηθήσουν να διαγνώσετε το πρόβλημα:
@@ -214,9 +191,7 @@ shared:
   startup_error:
     copied_to_clipboard: Λεπτομέρειες σφάλματος αντιγράφηκαν στο πρόχειρο
     copy_button: Αντιγραφή λεπτομερειών σφάλματος
-    description:
-      Κάτι πήγε στραβά κατά την εκκίνηση της εφαρμογής. Αυτό μπορεί να
-      οφείλεται σε πρόβλημα συστήματος ή μη συμβατή διαμόρφωση.
+    description: Κάτι πήγε στραβά κατά την εκκίνηση της εφαρμογής. Αυτό μπορεί να οφείλεται σε πρόβλημα συστήματος ή μη συμβατή διαμόρφωση.
     details_title: Λεπτομέρειες Σφάλματος
     report_button: Αναφορά Προβλήματος
     title: Σφάλμα Εκκίνησης Εφαρμογής
@@ -277,9 +252,7 @@ shared:
     sort: Ταξινόμηση
     criteria: Κριτήρια ταξινόμησης
     enable_grouping: Ομαδοποίηση κατά ταξινόμηση
-    enable_grouping_description:
-      Ομαδοποίηση αντικειμένων βάσει του πρώτου πεδίου
-      ταξινόμησης
+    enable_grouping_description: Ομαδοποίηση αντικειμένων βάσει του πρώτου πεδίου ταξινόμησης
     sort_and_group: Ταξινόμηση & Ομαδοποίηση
     group_by: Ομαδοποίηση κατά
   statistics:
@@ -293,9 +266,7 @@ shared:
     average_daily_label: Μέσο ημερήσιο
     peak_hour_label: Ώρη αιχμής
     select_date_range_message: Επιλέξτε εύρος ημερομηνιών για φιλτράρισμα στατιστικών
-    select_date_range_description:
-      Επιλέξτε προσαρμοσμένο εύρος ημερομηνιών για προβολή
-      στατιστικών χρήσης
+    select_date_range_description: Επιλέξτε προσαρμοσμένο εύρος ημερομηνιών για προβολή στατιστικών χρήσης
   time:
     not_set: Δεν έχει οριστεί
     minutes: λεπτά
@@ -388,38 +359,20 @@ shared:
     select_end_date: Επιλογή ημερομηνίας λήξης
     no_dates_selected: Δεν επιλέχθηκαν ημερομηνίες
     refresh: Ανανέωση
-    cannot_select_time_before_min_date:
-      Δεν μπορείτε να επιλέξετε ώρα πριν από τις
-      {time}
-    cannot_select_time_after_max_date:
-      Δεν μπορείτε να επιλέξετε ώρα μετά από τις
-      {time}
+    cannot_select_time_before_min_date: Δεν μπορείτε να επιλέξετε ώρα πριν από τις {time}
+    cannot_select_time_after_max_date: Δεν μπορείτε να επιλέξετε ώρα μετά από τις {time}
     time_must_be_at_or_after: Η ώρα πρέπει να είναι {time} ή μεταγενέστερη
     time_must_be_at_or_before: Η ώρα πρέπει να είναι {time} ή προγενέστερη
     selected_date_must_be_at_or_after: Η ημερομηνία πρέπει να είναι {date} ή μεταγενέστερη
     selected_date_must_be_at_or_before: Η ημερομηνία πρέπει να είναι {date} ή προγενέστερη
-    start_date_cannot_be_after_end_date:
-      Η ημερομηνία έναρξης δεν μπορεί να είναι
-      μετά την ημερομηνία λήξης
-    start_date_must_be_at_or_after:
-      Η ημερομηνία έναρξης πρέπει να είναι {date} ή
-      μεταγενέστερη
+    start_date_cannot_be_after_end_date: Η ημερομηνία έναρξης δεν μπορεί να είναι μετά την ημερομηνία λήξης
+    start_date_must_be_at_or_after: Η ημερομηνία έναρξης πρέπει να είναι {date} ή μεταγενέστερη
     end_date_must_be_at_or_before: Η ημερομηνία λήξης πρέπει να είναι {date} ή προγενέστερη
-    cannot_select_date_before_min_date:
-      Δεν μπορείτε να επιλέξετε ημερομηνία πριν
-      από τις {date}
-    cannot_select_date_after_max_date:
-      Δεν μπορείτε να επιλέξετε ημερομηνία μετά από
-      τις {date}
-    start_date_cannot_be_before_min_date:
-      Η ημερομηνία έναρξης δεν μπορεί να είναι
-      πριν από τις {date}
-    end_date_cannot_be_after_max_date:
-      Η ημερομηνία λήξης δεν μπορεί να είναι μετά
-      από τις {date}
-    selected_date_time_must_be_after:
-      Η ημερομηνία και η ώρα πρέπει να είναι μετά
-      από τις {dateTime}
+    cannot_select_date_before_min_date: Δεν μπορείτε να επιλέξετε ημερομηνία πριν από τις {date}
+    cannot_select_date_after_max_date: Δεν μπορείτε να επιλέξετε ημερομηνία μετά από τις {date}
+    start_date_cannot_be_before_min_date: Η ημερομηνία έναρξης δεν μπορεί να είναι πριν από τις {date}
+    end_date_cannot_be_after_max_date: Η ημερομηνία λήξης δεν μπορεί να είναι μετά από τις {date}
+    selected_date_time_must_be_after: Η ημερομηνία και η ώρα πρέπει να είναι μετά από τις {dateTime}
     select_date_time_title: Επιλογή ημερομηνίας και ώρας
     select_date_range_title: Επιλογή εύρους ημερομηνιών
     refresh_description: Αυτόματη ανανέωση επιλεγμένου εύρους ημερομηνιών
@@ -469,3 +422,4 @@ shared:
     30_60_min: 30 - 60 λεπ
     1_2_hours: 1 - 2 ώρες
     more_than_2_hours: 2+ ώρες
+  configure: Διαμόρφωση

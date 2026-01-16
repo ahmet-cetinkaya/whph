@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -11,6 +12,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:acore/acore.dart' show SortDirection, SortOption;
 
 class TagSelectDialog extends StatefulWidget {
@@ -283,9 +285,21 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
 
                     final tag = _tags!.items[actualIndex];
                     return CheckboxListTile(
-                      title: Text(tag.name.isNotEmpty
-                          ? tag.name
-                          : _translationService.translate(SharedTranslationKeys.untitled)),
+                      title: Row(
+                        children: [
+                          Icon(
+                            TagUiConstants.getTagTypeIcon(tag.type),
+                            size: AppTheme.iconSizeSmall,
+                            color: TagUiConstants.getTagColor(tag.color),
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(tag.name.isNotEmpty
+                                ? tag.name
+                                : _translationService.translate(SharedTranslationKeys.untitled)),
+                          ),
+                        ],
+                      ),
                       value: _tempSelectedTags.contains(tag.id),
                       onChanged: (bool? value) {
                         if (!mounted) return;

@@ -33,6 +33,8 @@ class _TagCardState extends State<TagCard> {
   @override
   Widget build(BuildContext context) {
     final spacing = widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall;
+    final typeIcon = TagUiConstants.getTagTypeIcon(widget.tag.type);
+    final typePrefix = TagUiConstants.getTagTypePrefix(widget.tag.type);
 
     return ListTile(
       tileColor: widget.transparent ? Colors.transparent : AppTheme.surface1,
@@ -44,14 +46,35 @@ class _TagCardState extends State<TagCard> {
       minTileHeight: 48,
       dense: widget.isDense,
       onTap: widget.onOpenDetails,
-      title: Text(
-        widget.tag.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.tag.name,
-        style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
-          fontWeight: FontWeight.bold,
-          color: AppTheme.textColor,
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: widget.isDense ? 1 : 2,
+      leading: Icon(
+        typeIcon,
+        color: widget.tag.color != null
+            ? Color(int.parse('FF${widget.tag.color}', radix: 16))
+            : AppTheme.secondaryTextColor,
+        size: widget.isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
+      ),
+      title: Row(
+        children: [
+          Text(
+            typePrefix,
+            style: AppTheme.bodySmall.copyWith(
+              color: AppTheme.secondaryTextColor,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          const SizedBox(width: AppTheme.size2XSmall),
+          Expanded(
+            child: Text(
+              widget.tag.name.isEmpty ? _translationService.translate(SharedTranslationKeys.untitled) : widget.tag.name,
+              style: (widget.isDense ? AppTheme.bodySmall : AppTheme.bodyMedium).copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textColor,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: widget.isDense ? 1 : 2,
+            ),
+          ),
+        ],
       ),
       subtitle: widget.tag.relatedTags.isNotEmpty
           ? Padding(

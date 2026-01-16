@@ -35,6 +35,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final bool ignoreArchivedTagVisibility;
   final bool enableGrouping;
   final SortOption<TaskSortFields>? groupBy;
+  final List<String>? customTagSortOrder;
 
   GetListTasksQuery({
     required this.pageIndex,
@@ -58,6 +59,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     this.sortByCustomSort = false,
     this.ignoreArchivedTagVisibility = false,
     this.enableGrouping = true,
+    this.customTagSortOrder,
   })  : filterByPlannedStartDate =
             filterByPlannedStartDate != null ? DateTimeHelper.toUtcDateTime(filterByPlannedStartDate) : null,
         filterByPlannedEndDate =
@@ -92,6 +94,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
     bool ignoreArchivedTagVisibility = false,
     bool enableGrouping = true,
     SortOption<TaskSortFields>? groupBy,
+    List<String>? customTagSortOrder,
   }) {
     return GetListTasksQuery(
       pageIndex: pageIndex,
@@ -115,6 +118,7 @@ class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
       enableGrouping: enableGrouping,
       areParentAndSubTasksIncluded: true,
       filterByParentTaskId: null,
+      customTagSortOrder: customTagSortOrder,
     );
   }
 }
@@ -153,6 +157,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         sortByCustomSort: request.sortByCustomSort,
         ignoreArchivedTagVisibility: request.ignoreArchivedTagVisibility,
         enableGrouping: request.enableGrouping,
+        customTagSortOrder: request.customTagSortOrder,
       ),
     );
 
@@ -211,6 +216,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       orders.add(CustomOrder(field: "priority", direction: option.direction));
     } else if (option.field == TaskSortFields.title) {
       orders.add(CustomOrder(field: "title", direction: option.direction));
+    } else if (option.field == TaskSortFields.tag) {
+      orders.add(CustomOrder(field: "tag", direction: option.direction));
     }
   }
 }

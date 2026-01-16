@@ -6,6 +6,7 @@ import 'package:whph/core/domain/features/tags/tag.dart';
 class NoteTag extends BaseEntity<String> {
   String noteId;
   String tagId;
+  int tagOrder;
   Tag? tag; // Reference to the associated tag
 
   NoteTag({
@@ -15,6 +16,7 @@ class NoteTag extends BaseEntity<String> {
     super.deletedDate,
     required this.noteId,
     required this.tagId,
+    this.tagOrder = 0,
     this.tag,
   });
 
@@ -23,6 +25,7 @@ class NoteTag extends BaseEntity<String> {
         ...super.toJson(),
         'noteId': noteId,
         'tagId': tagId,
+        'tagOrder': tagOrder,
         'tag': tag?.toJson(),
       };
 
@@ -34,6 +37,7 @@ class NoteTag extends BaseEntity<String> {
       deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
       noteId: json['noteId'] as String,
       tagId: json['tagId'] as String,
+      tagOrder: json['tagOrder'] as int? ?? 0,
       tag: json['tag'] != null ? Tag.fromJson(json['tag'] as Map<String, dynamic>) : null,
     );
   }

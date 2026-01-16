@@ -42,42 +42,124 @@ tags:
   help:
     content: Tagg hjälpinhåll
     overview:
-      content: |
-        Transformera din produktivitet med strategisk taggning som hjälper dig att organisera arbete, spåra tidsinvesteringar och bibehålla tydlig fokus på det som betyder mest.
+      content:
+        "Transformera din produktivitet med strategisk taggning som hjälper
+        dig att organisera arbete, spåra tidsinvesteringar och behålla fokus på det
+        som betyder mest.
 
-        ## ⚡ Varför är det viktigt?
 
-        Taggbaserad organisation är grundläggande för effektivt tidshantering och produktivitet. Genom att kategorisera dina aktiviteter med meningsfulla taggar får du tydliga insikter i hur du spenderar din tid och kan fatta välgrundade beslut för att optimera ditt fokus och din effektivitet.
+        ## ⚡ Varför Är Det Viktigt?
 
-        ## 📊 Tidsinvestering Analys
 
-        Förstå var din tid går och fatta datadrivna beslut om dina prioriteringar. Tidsspårning med taggar avslöjar mönster som hjälper dig att optimera ditt schema och arbetsvanor.
+        Taggbaserad organisation är grundläggande för effektiv tidshantering och produktivitet.
+        Genom att kategorisera dina aktiviteter med meningsfulla taggar får du klar
+        insikt i hur du spenderar din tid och kan ta informerade beslut för att optimera
+        ditt fokus och effektivitet.
 
-        - ⏱️ Övervaka tid spenderad över olika aktivitetskategorier
+
+        ## 🏷️ Taggtyper: Organisera På Ditt Sätt
+
+
+        Taggar kommer i tre specialiserade typer, varje designad för specifika organisationsbehov:
+
+
+        ### 📌 Etikett Taggar
+
+        Flexibla kategoriseringstaggar för allmän organisation. Använd dem för att
+        markera innehåll efter ämne, prioritet, status eller ett anpassat klassificeringssystem
+        som fungerar för dig.
+
+
+        - **Användningsfall:** Kategorier, prioriteringar, statusar, färdigheter,
+        domäner
+
+        - **Exempel:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Bäst för:** Allmän kategorisering och filtrering över alla innehållstyper
+
+
+        ### 📍 Kontext Taggar
+
+        Definierar var eller hur du kan utföra uppgifter. Kontexttaggar hjälper dig
+        att matcha ditt arbete till din nuvarande situation, energinivå eller miljö.
+
+
+        - **Användningsfall:** Fysiska platser, energinivåer, tillgängliga verktyg,
+        arbetslägen
+
+        - **Exempel:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Bäst för:** Platsbaserad uppgiftsfiltrering och energihantering
+
+
+        ### 🎯 Projekt Taggar
+
+        Grupperar relaterade uppgifter mot delade mål eller resultat. Projekttaggar
+        skapar naturliga paket av arbete som bidrar till specifika mål.
+
+
+        - **Användningsfall:** Produktlanseringar, funktionutveckling, personliga
+        mål, återkommande initiativ
+
+        - **Exempel:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Bäst för:** Att spåra framsteg mot specifika milstolpar och leveranser
+
+
+        ## 📊 Tidsinvesteringsanalys
+
+
+        Förstå vart din tid går och ta datadrivna beslut om dina prioriteringar. Tidsspårning
+        med taggar avslöjar mönster som hjälper dig att optimera ditt schema och arbetsvanor.
+
+
+        - ⏱️ Övervaka tid spenderad på olika aktivitetskategorier
+
         - 📅 Spåra tidsinvesteringar över specifika perioder och trender
-        - ⚖️ Jämför tidsallokering över projekt och ansvar
-        - 📈 Identifiera produktivitetsmönster och topprestationstider
-        - 🎯 Fokusera din energi på högimpactaktiviteter
+
+        - ⚖️ Jämför tidsallokering över projekt och ansvarsområden
+
+        - 📈 Identifiera produktivitetsmönster och prestandatider
+
+        - 🎯 Fokusera din energi på hög-impact aktiviteter
+
 
         ## 🗂️ Strategisk Organisation
 
-        Skapa ett systematiskt tillvägagångssätt för att organisera ditt arbete som skalar med dina behov. Välstrukturerade taggar bildar grunden för ett effektivt produktivitetssystem.
+        Skapa ett systematiskt tillvägagångssätt för att organisera ditt arbete som
+        skalar med dina behov. Välstrukturerade taggar bildar grunden för ett effektivitetssystem.
 
-        - 🔍 Filtrera och hitta information snabbt med multi-taggsökningar
+
+        - 🔍 Filtrera och hitta information snabbt med multi-tagg sökningar
+
         - 🗄️ Arkivera slutförda projekt för att behålla ren organisation
+
         - 🧩 Bygg hierarkiska strukturer som speglar dina arbetsmönster
-        - 👥 Gruppera relaterade aktiviteter för bättre projektledning
+
+        - 👥 Gruppera relaterade aktiviteter för bättre projekthantering
+
         - ⏳ Aktivera omfattande tidsspårning över alla aktiviteter
 
-        ## 💡 Optimiseringsstrategier
 
-        Utnyttja avancerade taggningstekniker för att maximera effektiviteten i ditt organisationssystem och upprätthålla långsiktig produktivitetsväxt.
+        ## 💡 Optimeringsstrategier
+
+        Utnyttja avancerade taggningstekniker för att maximera effektiviteten i ditt
+        organisationssystem och upprätthålla långsiktig produktivitetstillväxt.
+
 
         - 🏷️ Använd tydliga, beskrivande namn som förblir meningsfulla över tid
-        - 🔗 **Skapa hierarkiska strukturer:** Projekt → Avdelningar → Områden
-        - 📊 Granska tidsanalysrapporter regelbundet för att identifiera förbättringsmöjligheter
-        - 🗄️ Håll systemet rent genom att arkivera slutfört arbete
-        - 🎯 Applicera fokuserad filtrering för att eliminera distraktioner och förbättra koncentrationen
+
+        - 🔗 **Skapa hierarkiska strukturer:** Projekt → Avdelningar -> Domäner
+
+        - 📊 Granska tidsanalyserapporter regelbundet för att identifiera förbättringsmöjligheter
+
+        - 🗄️ Underhåll systemrenhet genom att arkivera slutfört arbete
+
+        - 🎯 Använd fokuserad filtrering för att eliminera distraktioner och förbättra
+        koncentration
+
+        - 🔄 **Kombinera taggtyper strategiskt:** Använd projekt för mål, kontexter
+        för situation och etiketter för kategorier"
       title: Taggbaserad Organisation & Tidsstyrningsguide
     title: Tagg Hjälp
   labels:
@@ -129,22 +211,50 @@ tags:
   tour:
     smart_tagging:
       title: Smart taggningssystem
-      description: Använd taggar för att organisera och gruppera dina uppgifter, vanor och appar. Spåra tid som spenderas på olika aktiviteter efter taggar för att förstå vart din tid går och optimera ditt arbetsflöde.
+      description:
+        Använd taggar för att organisera och gruppera dina uppgifter, vanor
+        och appar. Spåra tid som spenderas på olika aktiviteter efter taggar för att
+        förstå vart din tid går och optimera ditt arbetsflöde.
     your_tags:
       title: Dina taggar
-      description: Bläddra bland alla dina taggar och se deras användningsstatistik. Klicka på valfri tagg för att visa detaljer, redigera egenskaper eller se vilka uppgifter och vanor som använder den. Organisera ditt arbetsflöde effektivt.
+      description:
+        Bläddra bland alla dina taggar och se deras användningsstatistik.
+        Klicka på valfri tagg för att visa detaljer, redigera egenskaper eller se
+        vilka uppgifter och vanor som använder den. Organisera ditt arbetsflöde effektivt.
     tag_archive_filters:
       title: Tagg- och arkivfilter
-      description: Filtrera taggar genom att välja specifika taggar att fokusera på, eller växla synligheten för arkiverade taggar. Kontrollera vilka taggar som visas i din lista för bättre organisation.
+      description:
+        Filtrera taggar genom att välja specifika taggar att fokusera på,
+        eller växla synligheten för arkiverade taggar. Kontrollera vilka taggar som
+        visas i din lista för bättre organisation.
     search_sort:
       title: Sök och sortera
-      description: Sök efter specifika taggar efter namn, sortera efter olika kriterier som namn eller antal användningar. Organisera din tagglista för att snabbt hitta det du behöver.
+      description:
+        Sök efter specifika taggar efter namn, sortera efter olika kriterier
+        som namn eller antal användningar. Organisera din tagglista för att snabbt
+        hitta det du behöver.
     time_distribution_chart:
       title: Tidsfördelningstabell
-      description: Visualisera hur du spenderar din tid över olika taggar och kategorier. Se mönster för tidsfördelning och identifiera var ditt fokus går under dagen.
+      description:
+        Visualisera hur du spenderar din tid över olika taggar och kategorier.
+        Se mönster för tidsfördelning och identifiera var ditt fokus går under dagen.
     chart_customization:
       title: Diagramanpassning
-      description: Anpassa tidsdiagrammet genom att välja datumintervall, välja kategorier (uppgifter, vanor, appar) och filtrera efter specifika taggar för att analysera din tidsfördelning i detalj.
+      description:
+        Anpassa tidsdiagrammet genom att välja datumintervall, välja kategorier
+        (uppgifter, vanor, appar) och filtrera efter specifika taggar för att analysera
+        din tidsfördelning i detalj.
     create_tags:
       title: Skapa nya taggar
-      description: Lägg till nya taggar för att kategorisera ditt innehåll. Taggar hjälper dig att organisera uppgifter, vanor och appar över alla funktioner för bättre produktivitetsspårning och tidsmanagement.
+      description:
+        Lägg till nya taggar för att kategorisera ditt innehåll. Taggar
+        hjälper dig att organisera uppgifter, vanor och appar över alla funktioner
+        för bättre produktivitetsspårning och tidsmanagement.
+  type:
+    label: Typ
+    label_label: Etikett
+    label_tooltip: En flexibel kategoriseringsetikett
+    context: Kontext
+    context_tooltip: Var eller hur du kan utföra denna uppgift (t.ex. @home, @work)
+    project: Projekt
+    project_tooltip: Gruppera relaterade uppgifter mot ett gemensamt mål (t.ex. +WebsiteRedesign)

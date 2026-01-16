@@ -24,6 +24,17 @@ if [ -d "android/fdroid/build" ]; then
     done
 fi
 
+# Remove generated files
+echo "> 🧹 Removing generated files (*.g.dart, *.mocks.dart)..."
+find . -type f -name "*.g.dart" -delete
+find . -type f -name "*.mocks.dart" -delete
+
+# Remove drift generated schema files
+echo "> 🧹 Removing drift generated schema files..."
+if [ -d "test/drift/app_database/generated" ]; then
+    rm -rf test/drift/app_database/generated/*
+fi
+
 # Remove pub cache
 echo "> 🗄️  Removing pub cache..."
 if [ -d ~/.pub-cache/hosted/pub.dev ]; then
@@ -41,4 +52,8 @@ echo "> 🔧 Repairing and fetching pub packages..."
 fvm flutter pub cache repair || echo "  ⚠️  Warning: pub cache repair failed, continuing..."
 fvm flutter pub get
 
-echo "> ✅ Clean completed."
+# Run code generation
+echo "> 🔨 Running code generation (rps gen)..."
+bash scripts/generate_gen_files.sh
+
+echo "> ✅ Clean and generation completed."

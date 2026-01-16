@@ -1,6 +1,7 @@
 import 'package:whph/core/application/features/notes/models/note_list_item.dart';
 import 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
 import 'package:whph/core/application/shared/utils/grouping_utils.dart';
+import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 
 class NoteGroupInfo {
   final String name;
@@ -23,6 +24,12 @@ class NoteGroupingHelper {
       case NoteSortFields.modifiedDate:
         final name = GroupingUtils.getBackwardDateGroup(note.modifiedDate, now: now);
         return NoteGroupInfo(name: name, isTranslatable: true);
+      case NoteSortFields.tag:
+        final name = GroupingUtils.getTagGroup(note.tags);
+        return NoteGroupInfo(
+          name: name,
+          isTranslatable: name == SharedTranslationKeys.none,
+        );
     }
   }
 }

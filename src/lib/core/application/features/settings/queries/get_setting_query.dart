@@ -1,10 +1,8 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 
-class GetSettingQuery implements IRequest<GetSettingQueryResponse> {
+class GetSettingQuery implements IRequest<GetSettingQueryResponse?> {
   late String? id;
   late String? key;
 
@@ -37,13 +35,13 @@ class GetSettingQueryResponse extends Setting {
   });
 }
 
-class GetSettingQueryHandler implements IRequestHandler<GetSettingQuery, GetSettingQueryResponse> {
+class GetSettingQueryHandler implements IRequestHandler<GetSettingQuery, GetSettingQueryResponse?> {
   late final ISettingRepository _settingRepository;
 
   GetSettingQueryHandler({required ISettingRepository settingRepository}) : _settingRepository = settingRepository;
 
   @override
-  Future<GetSettingQueryResponse> call(GetSettingQuery request) async {
+  Future<GetSettingQueryResponse?> call(GetSettingQuery request) async {
     Setting? settings;
     if (request.id != null) {
       settings = await _settingRepository.getById(
@@ -55,7 +53,7 @@ class GetSettingQueryHandler implements IRequestHandler<GetSettingQuery, GetSett
       );
     }
     if (settings == null) {
-      throw BusinessException('Setting not found', SettingsTranslationKeys.settingNotFoundError);
+      return null;
     }
 
     return GetSettingQueryResponse(

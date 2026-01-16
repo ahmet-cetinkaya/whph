@@ -12,7 +12,6 @@ tags:
     app_usage: App-Nutzung
     habits: Gewohnheiten
     tasks: Aufgaben
-
   details:
     archived: Archiviert
     color: Farbe
@@ -40,57 +39,164 @@ tags:
     select_category: Kategorie auswählen
   filter_tooltip: Nach Tags filtern
   help:
-    content: |
-      🏷️ Tags helfen Ihnen dabei, Elemente zu gruppieren und zu organisieren.
+    content:
+      "🏷️ Tags helfen Ihnen dabei, Elemente zu gruppieren und zu organisieren.
+
 
       ## ⚡ Funktionen
+
       - Elemente in Kategorien einteilen
+
       - Visuelle Ordnung mit Farben schaffen
+
       - Verwandte Elemente leicht finden
 
+
       ## 💡 Tipps
+
       - Klare und verständliche Namen verwenden
+
       - Ähnliche Elemente mit demselben Tag gruppieren
+
       - Farbkodierung für visuelle Ordnung nutzen
+
       - Archivierungsfunktion zur Ordnungserhaltung verwenden
+
+      "
     description: Tags helfen Ihnen dabei, Elemente zu kategorisieren und zu gruppieren
     overview:
-      content: |
-        Transformieren Sie Ihre Produktivität mit strategischem Tagging, das Ihnen hilft, Arbeit zu organisieren, Zeitinvestitionen zu verfolgen und klaren Fokus auf das Wichtigste zu behalten.
+      content:
+        "Transformieren Sie Ihre Produktivität durch strategische Kennzeichnung,
+        die Ihnen hilft, Arbeit zu organisieren, Zeitinvestitionen zu verfolgen und
+        den Fokus auf das zu halten, was am wichtigsten ist.
 
-        ## ⚡ Warum ist es wichtig?
 
-        Tag-basierte Organisation ist fundamental für effektives Zeitmanagement und Produktivität. Durch die Kategorisierung Ihrer Aktivitäten mit aussagekräftigen Tags gewinnen Sie klare Einblicke, wie Sie Ihre Zeit verbringen, und können informierte Entscheidungen treffen, um Ihren Fokus und Ihre Effizienz zu optimieren.
+        ## ⚡ Warum ist das wichtig?
 
-        ## 📊 Zeitinvestitions-Analyse
 
-        Verstehen Sie, wohin Ihre Zeit geht, und treffen Sie datengesteuerte Entscheidungen über Ihre Prioritäten. Zeitverfolgung mit Tags enthüllt Muster, die Ihnen helfen, Ihren Zeitplan und Ihre Arbeitsgewohnheiten zu optimieren.
+        Kennzeichenbasierte Organisation ist grundlegend für effektives Zeitmanagement
+        und Produktivität. Durch Kategorisierung Ihrer Aktivitäten mit aussagekräftigen
+        Kennzeichen gewinnen Sie klare Einblicke darin, wie Sie Ihre Zeit verbringen,
+        und können fundierte Entscheidungen treffen, um Ihren Fokus und Ihre Effizienz
+        zu optimieren.
 
-        - ⏱️ Zeit überwachen, die in verschiedenen Aktivitätskategorien verbracht wird
-        - 📅 Zeitinvestitionen über bestimmte Zeiträume und Trends verfolgen
-        - ⚖️ Zeitverteilung zwischen Projekten und Verantwortlichkeiten vergleichen
-        - 📈 Produktivitätsmuster und Spitzenleistungszeiten identifizieren
-        - 🎯 Ihre Energie auf wirkungsvolle Aktivitäten fokussieren
+
+        ## 🏷️ Kennzeichentypen: Organisieren Sie auf Ihre Weise
+
+
+        Kennzeichen gibt es in drei spezialisierten Typen, die jeweils für spezifische
+        Organisationsbedürfnisse konzipiert sind:
+
+
+        ### 📌 Bezeichnungs-Kennzeichen
+
+        Flexible Kategorisierungskennzeichen für die allgemeine Organisation. Verwenden
+        Sie sie, um Inhalte nach Thema, Priorität, Status oder einem benutzerdefinierten
+        Klassifikationssystem zu markieren, das für Sie funktioniert.
+
+
+        - **Anwendungsfälle:** Kategorien, Prioritäten, Status, Fähigkeiten, Bereiche
+
+        - **Beispiele:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Am besten für:** Allgemeine Kategorisierung und Filterung über alle Inhaltstypen
+        hinweg
+
+
+        ### 📍 Kontext-Kennzeichen
+
+        Definieren Sie, wo oder wie Sie Aufgaben erledigen können. Kontext-Kennzeichen
+        helfen Ihnen, Ihre Arbeit an Ihre aktuelle Situation, Ihr Energi niveau oder
+        Ihre Umgebung anzupassen.
+
+
+        - **Anwendungsfälle:** Physische Standorte, Energieniveaus, verfügbare Tools,
+        Arbeitsmodi
+
+        - **Beispiele:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Am besten für:** Standortbasierte Aufgabenfilterung und Energiemanagement
+
+
+        ### 🎯 Projekt-Kennzeichen
+
+        Gruppieren Sie verwandte Aufgaben zu gemeinsamen Zielen oder Ergebnissen.
+        Projekt-Kennzeichen schaffen natürliche Arbeitspakete, die zu spezifischen
+        Zielen beitragen.
+
+
+        - **Anwendungsfälle:** Produktstarts, Funktionsentwicklung, persönliche Ziele,
+        wiederkehrende Initiativen
+
+        - **Beispiele:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Am besten für:** Verfolgung des Fortschritts towards spezifische Meilensteine
+        und Lieferungen
+
+
+        ## 📊 Zeitinvestitionsanalyse
+
+
+        Verstehen Sie, wohin Ihre Zeit geht, und treffen Sie datengesteuerte Entscheidungen
+        über Ihre Prioritäten. Zeitverfolgung mit Kennzeichen enthüllt Muster, die
+        Ihnen helfen, Ihren Zeitplan und Arbeitsgewohnheiten zu optimieren.
+
+
+        - ⏱️ Überwachen Sie die Zeit über verschiedene Aktivitätskategorien hinweg
+
+        - 📅 Verfolgen Sie Zeitinvestitionen über bestimmte Zeiträume und Trends
+
+        - ⚖️ Vergleichen Sie Zeitzuteilungen über Projekte und Verantwortlichkeiten
+        hinweg
+
+        - 📈 Identifizieren Sie Produktivitätsmuster und Peak-Leistungszeiten
+
+        - 🎯 Konzentrieren Sie Ihre Energie auf hochwirksame Aktivitäten
+
 
         ## 🗂️ Strategische Organisation
 
-        Erstellen Sie einen systematischen Ansatz zur Organisation Ihrer Arbeit, der mit Ihren Bedürfnissen skaliert. Gut strukturierte Tags bilden das Fundament eines effizienten Produktivitätssystems.
 
-        - 🔍 Informationen schnell mit Multi-Tag-Suchen filtern und finden
-        - 🗄️ Abgeschlossene Projekte archivieren, um saubere Organisation zu erhalten
-        - 🧩 Hierarchische Strukturen aufbauen, die Ihre Arbeitsmuster widerspiegeln
-        - 👥 Verwandte Aktivitäten für besseres Projektmanagement gruppieren
-        - ⏳ Umfassende Zeitverfolgung über alle Aktivitäten ermöglichen
+        Schaffen Sie einen systematischen Ansatz für die Organisation Ihrer Arbeit,
+        der mit Ihren Bedürfnissen skaliert. Wohlstrukturierte Kennzeichen bilden
+        das Fundament eines effizienten Produktivitätssystems.
+
+
+        - 🔍 Filtern und finden Sie Informationen schnell mit Multi-Kennzeichen-Suchen
+
+        - 🗄️ Archivieren Sie abgeschlossene Projekte, um eine saubere Organisation
+        aufrechtzuerhalten
+
+        - 🧩 Bauen Sie hierarchische Strukturen auf, die Ihre Arbeitsmuster widerspiegeln
+
+        - 👥 Gruppieren Sie verwandte Aktivitäten für besseres Projektmanagement
+
+        - ⏳ Aktivieren Sie umfassende Zeitverfolgung über alle Aktivitäten hinweg
+
 
         ## 💡 Optimierungsstrategien
 
-        Nutzen Sie fortgeschrittene Tagging-Techniken, um die Effektivität Ihres Organisationssystems zu maximieren und langfristiges Produktivitätswachstum zu erhalten.
 
-        - 🏷️ Klare, beschreibende Namen verwenden, die über die Zeit bedeutsam bleiben
-        - 🔗 **Hierarchische Strukturen erstellen:** Projekte → Abteilungen → Bereiche
-        - 📊 Zeitanalyse-Berichte regelmäßig überprüfen, um Verbesserungsmöglichkeiten zu identifizieren
-        - 🗄️ Systemsauberkeit durch Archivierung abgeschlossener Arbeit erhalten
-        - 🎯 Fokussierte Filterung anwenden, um Ablenkungen zu eliminieren und Konzentration zu verstärken
+        Nutzen Sie fortschrittliche Kennzeichnungstechniken, um die Effektivität Ihres
+        Organisationssystems zu maximieren und langfristiges Produktivitätswachstum
+        aufrechtzuerhalten.
+
+
+        - 🏷️ Verwenden Sie klare, beschreibende Namen, die im Laufe der Zeit bedeutungsvoll
+        bleiben
+
+        - 🔗 **Erstellen Sie hierarchische Strukturen:** Projekte → Abteilungen → Bereiche
+
+        - 📊 Überprüfen Sie Zeitanalyseberichte regelmäßig, um Verbesserungsmöglichkeiten
+        zu identifizieren
+
+        - 🗄️ Erhalten Sie System Sauberkeit durch Archivierung abgeschlossener Arbeiten
+
+        - 🎯 Wenden Sie gezielte Filterung an, um Ablenkungen zu eliminieren und die
+        Konzentration zu verbessern
+
+        - 🔄 **Kombinieren Sie Kennzeichentypen strategisch:** Verwenden Sie Projekte
+        für Ziele, Kontexte für Situationen und Bezeichnungen für Kategorien"
       title: Tag-basierte Organisation & Zeitmanagement-Leitfaden
     title: Tag-Hilfe
   labels:
@@ -105,8 +211,12 @@ tags:
     archive_confirm: Sind Sie sicher, dass Sie dieses Tag archivieren möchten?
     confirm_archive: Sind Sie sicher, dass Sie dieses Tag archivieren möchten?
     confirm_delete: Sind Sie sicher, dass Sie dieses Tag löschen möchten?
-    confirm_unarchive: Sind Sie sicher, dass Sie dieses Tag aus dem Archiv entfernen möchten?
-    unarchive_confirm: Sind Sie sicher, dass Sie dieses Tag aus dem Archiv entfernen möchten?
+    confirm_unarchive:
+      Sind Sie sicher, dass Sie dieses Tag aus dem Archiv entfernen
+      möchten?
+    unarchive_confirm:
+      Sind Sie sicher, dass Sie dieses Tag aus dem Archiv entfernen
+      möchten?
   new_tag: Neues Tag
   name_placeholder: Geben Sie einen beschreibenden Tag-Namen ein...
   no_tags: Keine Tags
@@ -142,22 +252,57 @@ tags:
   tour:
     smart_tagging:
       title: Intelligentes Tagging-System
-      description: Verwenden Sie Tags, um Ihre Aufgaben, Gewohnheiten und Apps zu organisieren und zu gruppieren. Verfolgen Sie die Zeit, die Sie für verschiedene Aktivitäten aufwenden, mithilfe von Tags, um zu verstehen, wo Ihre Zeit bleibt, und Ihren Arbeitsablauf zu optimieren.
+      description:
+        Verwenden Sie Tags, um Ihre Aufgaben, Gewohnheiten und Apps zu
+        organisieren und zu gruppieren. Verfolgen Sie die Zeit, die Sie für verschiedene
+        Aktivitäten aufwenden, mithilfe von Tags, um zu verstehen, wo Ihre Zeit bleibt,
+        und Ihren Arbeitsablauf zu optimieren.
     your_tags:
       title: Ihre Tags
-      description: Durchsuchen Sie alle Ihre Tags und sehen Sie deren Nutzungsstatistiken. Klicken Sie auf ein beliebiges Tag, um Details anzuzeigen, Eigenschaften zu bearbeiten oder zu sehen, welche Aufgaben und Gewohnheiten es verwenden. Organisieren Sie Ihren Arbeitsablauf effizient.
+      description:
+        Durchsuchen Sie alle Ihre Tags und sehen Sie deren Nutzungsstatistiken.
+        Klicken Sie auf ein beliebiges Tag, um Details anzuzeigen, Eigenschaften zu
+        bearbeiten oder zu sehen, welche Aufgaben und Gewohnheiten es verwenden. Organisieren
+        Sie Ihren Arbeitsablauf effizient.
     tag_archive_filters:
       title: Tag- und Archivfilter
-      description: Filtern Sie Tags, indem Sie bestimmte Tags zum Fokus auswählen oder die Sichtbarkeit archivierter Tags umschalten. Kontrollieren Sie, welche Tags in Ihrer Liste angezeigt werden, für eine bessere Organisation.
+      description:
+        Filtern Sie Tags, indem Sie bestimmte Tags zum Fokus auswählen
+        oder die Sichtbarkeit archivierter Tags umschalten. Kontrollieren Sie, welche
+        Tags in Ihrer Liste angezeigt werden, für eine bessere Organisation.
     search_sort:
       title: Suchen und Sortieren
-      description: Suchen Sie nach bestimmten Tags nach Namen, sortieren Sie nach verschiedenen Kriterien wie Name oder Nutzungshäufigkeit. Organisieren Sie Ihre Tag-Liste, um schnell zu finden, was Sie brauchen.
+      description:
+        Suchen Sie nach bestimmten Tags nach Namen, sortieren Sie nach
+        verschiedenen Kriterien wie Name oder Nutzungshäufigkeit. Organisieren Sie
+        Ihre Tag-Liste, um schnell zu finden, was Sie brauchen.
     time_distribution_chart:
       title: Zeitverteilungsdiagramm
-      description: Visualisieren Sie, wie Sie Ihre Zeit auf verschiedene Tags und Kategorien verteilen. Sehen Sie Zeitverteilungsmuster und identifizieren Sie, wo sich Ihr Fokus über den Tag verteilt.
+      description:
+        Visualisieren Sie, wie Sie Ihre Zeit auf verschiedene Tags und
+        Kategorien verteilen. Sehen Sie Zeitverteilungsmuster und identifizieren Sie,
+        wo sich Ihr Fokus über den Tag verteilt.
     chart_customization:
       title: Diagrammanpassung
-      description: Passen Sie das Zeitdiagramm an, indem Sie den Datumsbereich auswählen, Kategorien wählen (Aufgaben, Gewohnheiten, Apps) und nach bestimmten Tags filtern, um Ihre Zeitverteilung detailliert zu analysieren.
+      description:
+        Passen Sie das Zeitdiagramm an, indem Sie den Datumsbereich auswählen,
+        Kategorien wählen (Aufgaben, Gewohnheiten, Apps) und nach bestimmten Tags
+        filtern, um Ihre Zeitverteilung detailliert zu analysieren.
     create_tags:
       title: Neue Tags erstellen
-      description: Fügen Sie neue Tags hinzu, um Ihre Inhalte zu kategorisieren. Tags helfen Ihnen dabei, Aufgaben, Gewohnheiten und Apps in allen Funktionen für ein besseres Produktivitäts-Tracking und Zeitmanagement zu organisieren.
+      description:
+        Fügen Sie neue Tags hinzu, um Ihre Inhalte zu kategorisieren. Tags
+        helfen Ihnen dabei, Aufgaben, Gewohnheiten und Apps in allen Funktionen für
+        ein besseres Produktivitäts-Tracking und Zeitmanagement zu organisieren.
+  type:
+    label: Typ
+    label_label: Bezeichnung
+    label_tooltip: Ein flexibler Kategorisierungs-Tag
+    context: Kontext
+    context_tooltip:
+      Wo oder wie Sie diese Aufgabe erledigen können (z. B. @home,
+      @work)
+    project: Projekt
+    project_tooltip:
+      Verwandte Aufgaben zu einem gemeinsamen Ziel gruppieren (z. B.
+      +WebsiteRedesign)

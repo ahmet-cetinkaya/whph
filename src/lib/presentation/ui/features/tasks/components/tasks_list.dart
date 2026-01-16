@@ -367,6 +367,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
           groupBy: widget.sortConfig?.groupOption,
           sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
           enableGrouping: widget.sortConfig?.enableGrouping ?? true,
+          customTagSortOrder: widget.sortConfig?.customTagSortOrder,
           ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         );
 

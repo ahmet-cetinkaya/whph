@@ -1,18 +1,23 @@
 import 'package:equatable/equatable.dart';
+import 'package:whph/core/domain/features/tags/tag.dart';
 
 class TagListItem extends Equatable {
   final String tagId;
   final String tagName;
   final String? tagColor;
+  final TagType tagType;
+  final int tagOrder;
 
   const TagListItem({
     required this.tagId,
     required this.tagName,
     this.tagColor,
+    this.tagType = TagType.label,
+    this.tagOrder = 0,
   });
 
   @override
-  List<Object?> get props => [tagId, tagName, tagColor];
+  List<Object?> get props => [tagId, tagName, tagColor, tagType, tagOrder];
 }
 
 class NoteListItem extends Equatable {

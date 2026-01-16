@@ -7,4 +7,5 @@ enum TaskSortFields {
   plannedDate,
   priority,
   title,
+  tag,
 }

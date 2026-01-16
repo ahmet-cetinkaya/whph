@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_time_chart_options.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_defaults.dart';

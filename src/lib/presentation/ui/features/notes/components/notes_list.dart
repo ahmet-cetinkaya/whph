@@ -197,6 +197,7 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
           sortBy: _currentFilters.sortConfig?.orderOptions,
           groupBy: _currentFilters.sortConfig?.groupOption,
           sortByCustomOrder: _currentFilters.sortConfig?.useCustomOrder ?? false,
+          customTagSortOrder: _currentFilters.sortConfig?.customTagSortOrder,
         );
 
         return await _mediator.send<GetListNotesQuery, GetListNotesQueryResponse>(query);

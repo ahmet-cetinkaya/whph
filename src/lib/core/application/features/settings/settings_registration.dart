@@ -63,7 +63,7 @@ void registerSettingsFeature(
     ..registerHandler<DeleteSettingCommand, DeleteSettingCommandResponse, DeleteSettingCommandHandler>(
       () => DeleteSettingCommandHandler(settingRepository: settingRepository),
     )
-    ..registerHandler<GetSettingQuery, GetSettingQueryResponse, GetSettingQueryHandler>(
+    ..registerHandler<GetSettingQuery, GetSettingQueryResponse?, GetSettingQueryHandler>(
       () => GetSettingQueryHandler(settingRepository: settingRepository),
     )
     ..registerHandler<GetListSettingsQuery, GetListSettingsQueryResponse, GetListSettingsQueryHandler>(

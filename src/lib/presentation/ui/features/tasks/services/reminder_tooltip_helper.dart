@@ -1,5 +1,6 @@
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 /// Helper utility for generating context-aware reminder tooltip text
@@ -34,15 +35,15 @@ class ReminderTooltipHelper {
     if (currentReminder == ReminderTime.custom && customOffset != null) {
       if (customOffset % (60 * 24 * 7) == 0) {
         final weeks = customOffset ~/ (60 * 24 * 7);
-        return '$weeks ${translationService.translate(TaskTranslationKeys.weeks)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+        return '$weeks ${translationService.translate(SharedTranslationKeys.timeWeeks)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
       } else if (customOffset % (60 * 24) == 0) {
         final days = customOffset ~/ (60 * 24);
-        return '$days ${translationService.translate(TaskTranslationKeys.days)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+        return '$days ${translationService.translate(SharedTranslationKeys.timeDays)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
       } else if (customOffset % 60 == 0) {
         final hours = customOffset ~/ 60;
-        return '$hours ${translationService.translate(TaskTranslationKeys.hours)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+        return '$hours ${translationService.translate(SharedTranslationKeys.timeHours)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
       } else {
-        return '$customOffset ${translationService.translate(TaskTranslationKeys.minutes)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
+        return '$customOffset ${translationService.translate(SharedTranslationKeys.timeMinutes)} ${translationService.translate(TaskTranslationKeys.reminderBeforeSuffix)}';
       }
     }
 

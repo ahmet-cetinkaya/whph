@@ -107,6 +107,9 @@ class TaskListOptionSettings {
       sortConfig = SortConfig<TaskSortFields>(
         orderOptions: orderOptions,
         useCustomOrder: sortConfigJson['useCustomOrder'] as bool? ?? false,
+        customTagSortOrder: sortConfigJson['customTagSortOrder'] != null
+            ? List<String>.from(sortConfigJson['customTagSortOrder'] as List<dynamic>)
+            : null,
         enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
         groupOption: groupOption,
       );
@@ -165,6 +168,7 @@ class TaskListOptionSettings {
                 })
             .toList(),
         'useCustomOrder': sortConfig!.useCustomOrder,
+        'customTagSortOrder': sortConfig!.customTagSortOrder,
         'enableGrouping': sortConfig!.enableGrouping,
         'groupOption': sortConfig!.groupOption != null
             ? {
@@ -198,6 +202,8 @@ class TaskListOptionSettings {
         return TaskSortFields.createdDate;
       case 'modifiedDate':
         return TaskSortFields.modifiedDate;
+      case 'tag':
+        return TaskSortFields.tag;
       default:
         return TaskSortFields.createdDate;
     }

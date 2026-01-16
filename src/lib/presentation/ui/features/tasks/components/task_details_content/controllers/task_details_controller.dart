@@ -8,6 +8,7 @@ import 'package:whph/core/application/features/tasks/commands/add_task_time_reco
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
+import 'package:whph/core/application/features/tasks/commands/update_task_tags_order_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
@@ -437,7 +438,14 @@ class TaskDetailsController extends ChangeNotifier {
       await removeTag(taskTag.id, context);
     }
 
-    if (tagOptionsToAdd.isNotEmpty || tagsToRemove.isNotEmpty) {
+    if (tagOptions.isNotEmpty) {
+      final tagOrders = {for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i};
+      final orderCommand = UpdateTaskTagsOrderCommand(taskId: _task!.id, tagOrders: tagOrders);
+      await _mediator.send(orderCommand);
+    }
+
+    if (tagOptionsToAdd.isNotEmpty || tagsToRemove.isNotEmpty || tagOptions.isNotEmpty) {
+      await loadTaskTags(_task!.id);
       _tasksService.notifyTaskUpdated(_task!.id);
     }
   }

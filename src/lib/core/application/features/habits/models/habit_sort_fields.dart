@@ -5,4 +5,5 @@ enum HabitSortFields {
   estimatedTime,
   actualTime,
   archivedDate,
+  tag,
 }

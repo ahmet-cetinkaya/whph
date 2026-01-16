@@ -64,6 +64,7 @@ shared:
       wednesday: Wednesday
       wednesday_short: Wed
   change: Change
+  configure: Configure
   color_picker:
     confirm_selection: Confirm Selection
     select_color_title: Select Color
@@ -227,7 +228,7 @@ shared:
       tags: Tags
       tasks: Tasks
       today: Today
-  none: None
+  none: "None"
   none_option: No tags
   regex_help:
     examples:

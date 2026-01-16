@@ -5,6 +5,7 @@ import 'package:acore/acore.dart';
 class HabitTag extends BaseEntity<String> {
   String habitId;
   String tagId;
+  int tagOrder;
 
   HabitTag({
     required super.id,
@@ -13,6 +14,7 @@ class HabitTag extends BaseEntity<String> {
     super.deletedDate,
     required this.habitId,
     required this.tagId,
+    this.tagOrder = 0,
   });
 
   @override
@@ -20,6 +22,7 @@ class HabitTag extends BaseEntity<String> {
         ...super.toJson(),
         'habitId': habitId,
         'tagId': tagId,
+        'tagOrder': tagOrder,
       };
 
   factory HabitTag.fromJson(Map<String, dynamic> json) {
@@ -30,6 +33,7 @@ class HabitTag extends BaseEntity<String> {
       deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
       habitId: json['habitId'] as String,
       tagId: json['tagId'] as String,
+      tagOrder: json['tagOrder'] as int? ?? 0,
     );
   }
 }

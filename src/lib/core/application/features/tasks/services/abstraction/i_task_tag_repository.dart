@@ -16,4 +16,6 @@ abstract class ITaskTagRepository extends app.IRepository<TaskTag, String> {
     List<String>? filterByTags,
     bool filterByIsArchived = false,
   });
+
+  Future<void> updateTagOrders(String taskId, Map<String, int> tagOrders);
 }

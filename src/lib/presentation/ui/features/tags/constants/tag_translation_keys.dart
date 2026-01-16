@@ -91,6 +91,15 @@ class TagTranslationKeys extends application.TagTranslationKeys {
   static const String detailsRelatedTags = 'tags.details.related_tags';
   static const String detailsArchived = 'tags.details.archived';
 
+  // Tag Types
+  static const String typeLabel = 'tags.type.label';
+  static const String typeLabelLabel = 'tags.type.label_label';
+  static const String typeLabelTooltip = 'tags.type.label_tooltip';
+  static const String typeContext = 'tags.type.context';
+  static const String typeContextTooltip = 'tags.type.context_tooltip';
+  static const String typeProject = 'tags.type.project';
+  static const String typeProjectTooltip = 'tags.type.project_tooltip';
+
   // Page Sections
   static const String title = 'tags.title';
   static const String timeDistribution = 'tags.time_distribution';

@@ -1,6 +1,7 @@
 import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
 import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/core/application/shared/utils/grouping_utils.dart';
+import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 
 enum AppUsageGroupType { unknownDevice }
 
@@ -49,6 +50,12 @@ class AppUsageGroupingHelper {
           return AppUsageGroupInfo.type(AppUsageGroupType.unknownDevice);
         }
         return AppUsageGroupInfo.raw(item.deviceName!);
+      case AppUsageSortFields.tag:
+        final name = GroupingUtils.getTagGroup(item.tags);
+        if (name == SharedTranslationKeys.none) {
+          return AppUsageGroupInfo.translatable(name);
+        }
+        return AppUsageGroupInfo.raw(name);
     }
   }
 }

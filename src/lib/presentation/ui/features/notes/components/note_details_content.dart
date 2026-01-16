@@ -6,6 +6,7 @@ import 'package:acore/acore.dart' show MarkdownEditor;
 import 'package:whph/core/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/remove_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
+import 'package:whph/core/application/features/notes/commands/update_note_tags_order_command.dart';
 import 'package:whph/core/application/features/notes/queries/get_note_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
@@ -216,8 +217,16 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         await _removeTagFromNote(noteTag.id);
       }
 
+      // Update Order
+      if (tagOptions.isNotEmpty) {
+        final tagOrders = {for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i};
+        final orderCommand = UpdateNoteTagsOrderCommand(noteId: widget.noteId, tagOrders: tagOrders);
+        await _mediator.send(orderCommand);
+      }
+
       // Notify only once after all tag operations are complete
-      if (tagsToAdd.isNotEmpty || tagsToRemove.isNotEmpty) {
+      if (tagsToAdd.isNotEmpty || tagsToRemove.isNotEmpty || tagOptions.isNotEmpty) {
+        await _getNote();
         _notesService.notifyNoteUpdated(widget.noteId);
       }
     }
@@ -429,7 +438,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         icon: TagUiConstants.tagIcon,
         widget: _note != null
             ? TagSelectDropdown(
-                key: ValueKey(_note!.tags.length),
+                key: ValueKey(_note!.tags.map((t) => '${t.tagId}_${t.tagOrder}').join(',')),
                 isMultiSelect: true,
                 onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
                 showSelectedInDropdown: true,

@@ -126,13 +126,13 @@ class _CustomReminderDialogState extends State<CustomReminderDialog> {
   String _getUnitLabel(CustomReminderUnit unit) {
     switch (unit) {
       case CustomReminderUnit.minutes:
-        return widget.translationService.translate(TaskTranslationKeys.minutes);
+        return widget.translationService.translate(SharedTranslationKeys.timeMinutes);
       case CustomReminderUnit.hours:
-        return widget.translationService.translate(TaskTranslationKeys.hours);
+        return widget.translationService.translate(SharedTranslationKeys.timeHours);
       case CustomReminderUnit.days:
-        return widget.translationService.translate(TaskTranslationKeys.days);
+        return widget.translationService.translate(SharedTranslationKeys.timeDays);
       case CustomReminderUnit.weeks:
-        return widget.translationService.translate(TaskTranslationKeys.weeks);
+        return widget.translationService.translate(SharedTranslationKeys.timeWeeks);
     }
   }
 

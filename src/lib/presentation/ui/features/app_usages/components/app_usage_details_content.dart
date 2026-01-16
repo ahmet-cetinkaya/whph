@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/commands/add_app_usage_tag_command.dart';
 import 'package:whph/core/application/features/app_usages/commands/remove_tag_tag_command.dart';
+import 'package:whph/core/application/features/app_usages/commands/update_app_usage_tags_order_command.dart';
 import 'package:whph/core/application/features/app_usages/commands/save_app_usage_command.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_app_usage_query.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
@@ -67,7 +68,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     _nameFocusNode.addListener(_handleNameFocusChange);
 
     _getAppUsage();
-    _getAppUsageTags();
+    _getAppUsageTags(clearExisting: true);
     _appUsagesService.onAppUsageUpdated.addListener(_handleAppUsageUpdate);
     super.initState();
   }
@@ -95,7 +96,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     if (_isNameFieldActive) return;
 
     _getAppUsage();
-    _getAppUsageTags(); // Also refresh tags when app usage is updated
+    _getAppUsageTags(clearExisting: true); // Also refresh tags when app usage is updated
   }
 
   void _handleNameFocusChange() {
@@ -180,9 +181,15 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     });
   }
 
-  Future<void> _getAppUsageTags() async {
+  Future<void> _getAppUsageTags({bool clearExisting = false}) async {
     int pageIndex = 0;
     const int pageSize = 50;
+
+    if (clearExisting) {
+      setState(() {
+        _appUsageTags = null;
+      });
+    }
 
     while (true) {
       final query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
@@ -196,7 +203,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         onSuccess: (result) {
           if (mounted) {
             setState(() {
-              if (_appUsageTags == null) {
+              if (_appUsageTags == null || pageIndex == 0) {
                 _appUsageTags = result;
               } else {
                 _appUsageTags!.items.addAll(result.items);
@@ -213,9 +220,10 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
+    if (_appUsageTags == null) return;
+
     final tagOptionsToAdd = tagOptions
-        .where(
-            (tagOption) => !_appUsageTags!.items.any((appUsageAppUsage) => appUsageAppUsage.tagId == tagOption.value))
+        .where((tagOption) => !_appUsageTags!.items.any((appUsageTag) => appUsageTag.tagId == tagOption.value))
         .toList();
     final appUsageTagsToRemove = _appUsageTags!.items
         .where((appUsageTag) => !tagOptions.map((tag) => tag.value).toList().contains(appUsageTag.tagId))
@@ -238,14 +246,22 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
           if (success) hasChanges = true;
         }
 
+        // Update Order
+        if (tagOptions.isNotEmpty) {
+          final tagOrders = {for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i};
+          final orderCommand = UpdateAppUsageTagsOrderCommand(appUsageId: widget.id, tagOrders: tagOrders);
+          await _mediator.send(orderCommand);
+          hasChanges = true;
+        }
+
         // Only notify once after all operations complete successfully
         if (hasChanges) {
-          await _getAppUsageTags(); // Refresh tags list
+          await _getAppUsageTags(clearExisting: true); // Refresh tags list
           _appUsagesService.notifyAppUsageUpdated(widget.id);
         }
       } catch (e) {
         // Silently refresh the tags list to ensure UI is in sync
-        await _getAppUsageTags();
+        await _getAppUsageTags(clearExisting: true);
       }
     }
 
@@ -439,7 +455,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                   label: _translationService.translate(AppUsageTranslationKeys.tagsLabel),
                   icon: AppUsageUiConstants.tagsIcon,
                   widget: TagSelectDropdown(
-                    key: ValueKey(_appUsageTags!.items.length),
+                    key: ValueKey(_appUsageTags!.items.map((t) => '${t.tagId}_${t.tagOrder}').join(',')),
                     isMultiSelect: true,
                     onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
                     showSelectedInDropdown: true,

@@ -19,6 +19,8 @@ class HabitGroupingHelper {
         return GroupingUtils.getDurationGroup(habit.actualTime); // actualTime is in minutes
       case HabitSortFields.archivedDate:
         return GroupingUtils.getBackwardDateGroup(habit.archivedDate, now: now);
+      case HabitSortFields.tag:
+        return GroupingUtils.getTagGroup(habit.tags);
     }
   }
 }

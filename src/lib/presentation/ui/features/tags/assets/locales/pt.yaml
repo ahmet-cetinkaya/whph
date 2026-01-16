@@ -42,42 +42,132 @@ tags:
   help:
     content: Conteúdo de ajuda da tag
     overview:
-      content: |
-        Transforme sua produtividade com tagging estratégico que ajuda a organizar o trabalho, rastrear investimentos de tempo e manter foco claro no que mais importa.
+      content:
+        "Transforme sua produtividade com etiquetagem estratégica que ajuda
+        a organizar o trabalho, rastrear investimentos de tempo e manter foco claro
+        no que importa mais.
+
 
         ## ⚡ Por Que É Importante?
 
-        A organização baseada em tags é fundamental para o gerenciamento eficaz de tempo e produtividade. Ao categorizar suas atividades com tags significativas, você obtém insights claros sobre como gasta seu tempo e pode tomar decisões informadas para otimizar seu foco e eficiência.
+
+        Organização baseada em etiquetas é fundamental para gestão eficaz do tempo
+        e produtividade. Ao categorizar suas atividades com etiquetas significativas,
+        você obtém insights claros sobre como passa seu tempo e pode tomar decisões
+        informadas para otimizar seu foco e eficiência.
+
+
+        ## 🏷️ Tipos de Etiquetas: Organize do Seu Jeito
+
+
+        Etiquetas vêm em três tipos especializados, cada um projetado para necessidades
+        organizacionais específicas:
+
+
+        ### 📌 Etiquetas de Rótulo
+
+        Etiquetas de categorização flexível para organização geral. Use-as para marcar
+        conteúdo por tópico, prioridade, status ou qualquer sistema de classificação
+        personalizado que funcione para você.
+
+
+        - **Casos de uso:** Categorias, prioridades, status, habilidades, domínios
+
+        - **Exemplos:** #urgent, #backend, #learning, #code-review, #bug
+
+        - **Melhor para:** Categorização geral e filtragem em todos os tipos de conteúdo
+
+
+        ### 📍 Etiquetas de Contexto
+
+        Definem onde ou como você pode realizar tarefas. Etiquetas de contexto ajudam
+        a adaptar seu trabalho à sua situação atual, nível de energia ou ambiente.
+
+
+        - **Casos de uso:** Locais físicos, níveis de energia, ferramentas disponíveis,
+        modos de trabalho
+
+        - **Exemplos:** @home, @work, @computer, @phone, @high-energy, @deep-work
+
+        - **Melhor para:** Filtragem de tarefas baseada em localização e gerenciamento
+        de energia
+
+
+        ### 🎯 Etiquetas de Projeto
+
+        Agrupam tarefas relacionadas em direção a objetivos ou resultados compartilhados.
+        Etiquetas de projeto criam pacotes naturais de trabalho que contribuem para
+        objetivos específicos.
+
+
+        - **Casos de uso:** Lançamentos de produtos, desenvolvimento de recursos,
+        metas pessoais, iniciativas recorrentes
+
+        - **Exemplos:** +WebsiteRedesign, +MobileApp, +Q1Planning, +FitnessChallenge
+
+        - **Melhor para:** Acompanhamento de progresso em direção a marcos e entregas
+        específicas
+
 
         ## 📊 Análise de Investimento de Tempo
 
-        Entenda onde seu tempo vai e tome decisões baseadas em dados sobre suas prioridades. O rastreamento de tempo com tags revela padrões que ajudam a otimizar sua agenda e hábitos de trabalho.
 
-        - ⏱️ Monitore tempo gasto em diferentes categorias de atividades
-        - 📅 Rastreie investimentos de tempo em períodos específicos e tendências
-        - ⚖️ Compare alocação de tempo em projetos e responsabilidades
-        - 📈 Identifique padrões de produtividade e horários de pico de desempenho
+        Entenda para onde seu tempo vai e tome decisões baseadas em dados sobre suas
+        prioridades. Rastreamento de tempo com etiquetas revela padrões que ajudam
+        a otimizar sua agenda e hábitos de trabalho.
+
+
+        - ⏱️ Monitore o tempo gasto em diferentes categorias de atividades
+
+        - 📅 Rastreie investimentos de tempo sobre períodos específicos e tendências
+
+        - ⚖️ Compare alocação de tempo entre projetos e responsabilidades
+
+        - 📈 Identifique padrões de produtividade e tempos de pico de desempenho
+
         - 🎯 Foque sua energia em atividades de alto impacto
+
 
         ## 🗂️ Organização Estratégica
 
-        Crie uma abordagem sistemática para organizar seu trabalho que escala com suas necessidades. Tags bem estruturadas formam a base de um sistema de produtividade eficiente.
 
-        - 🔍 Filtre e encontre informações rapidamente com buscas multi-tag
+        Crie uma abordagem sistemática para organizar seu trabalho que escala com
+        suas necessidades. Etiquetas bem estruturadas formam a base de um sistema
+        de produtividade eficiente.
+
+
+        - 🔍 Filtre e encontre informações rapidamente com pesquisas multi-etiqueta
+
         - 🗄️ Arquive projetos concluídos para manter organização limpa
-        - 🧩 Construa estruturas hierárquicas que reflitam seus padrões de trabalho
+
+        - 🧩 Construa estruturas hierárquicas que refletem seus padrões de trabalho
+
         - 👥 Agrupe atividades relacionadas para melhor gerenciamento de projetos
-        - ⏳ Habilite rastreamento de tempo abrangente em todas as atividades
+
+        - ⏳ Ative rastreamento abrangente de tempo em todas as atividades
+
 
         ## 💡 Estratégias de Otimização
 
-        Aproveite técnicas avançadas de tagging para maximizar a efetividade de seu sistema organizacional e manter o crescimento de longo prazo em produtividade.
 
-        - 🏷️ Use nomes claros e descritivos que permaneçam significativos ao longo do tempo
+        Aproveite técnicas de etiquetagem avançadas para maximizar a eficácia do seu
+        sistema organizacional e manter crescimento de produtividade a longo prazo.
+
+
+        - 🏷️ Use nomes claros e descritivos que permanecem significativos ao longo
+        do tempo
+
         - 🔗 **Crie estruturas hierárquicas:** Projetos → Departamentos → Áreas
-        - 📊 Revise relatórios de análise de tempo regularmente para identificar oportunidades de melhoria
-        - 🗄️ Mantenha a limpeza do sistema arquivando trabalho concluído
-        - 🎯 Aplique filtragem focada para eliminar distrações e melhorar a concentração
+
+        - 📊 Revise relatórios de análise de tempo regularmente para identificar oportunidades
+        de melhoria
+
+        - 🗄️ Mantenha limpeza do sistema arquivando trabalho concluído
+
+        - 🎯 Aplique filtragem focada para eliminar distrações e melhorar concentração
+
+        - 🔄 **Combine tipos de etiquetas estrategicamente:** Use projetos para metas,
+        contextos para situação e rótulos para categorias"
       title: Organização Baseada em Tags & Guia de Gerenciamento de Tempo
     title: Ajuda de Tag
   labels:
@@ -129,22 +219,52 @@ tags:
   tour:
     smart_tagging:
       title: Sistema de Marcação Inteligente
-      description: Use marcadores para organizar e agrupar suas tarefas, hábitos e aplicativos. Acompanhe o tempo gasto em diferentes atividades por marcadores para entender para onde vai o seu tempo e otimizar seu fluxo de trabalho.
+      description:
+        Use marcadores para organizar e agrupar suas tarefas, hábitos e
+        aplicativos. Acompanhe o tempo gasto em diferentes atividades por marcadores
+        para entender para onde vai o seu tempo e otimizar seu fluxo de trabalho.
     your_tags:
       title: Seus Marcadores
-      description: Navegue por todos os seus marcadores e veja suas estatísticas de uso. Clique em qualquer marcador para ver detalhes, editar propriedades ou ver quais tarefas e hábitos o utilizam. Organize seu fluxo de trabalho de forma eficiente.
+      description:
+        Navegue por todos os seus marcadores e veja suas estatísticas de
+        uso. Clique em qualquer marcador para ver detalhes, editar propriedades ou
+        ver quais tarefas e hábitos o utilizam. Organize seu fluxo de trabalho de
+        forma eficiente.
     tag_archive_filters:
       title: Filtros de Marcadores e Arquivo
-      description: Filtre marcadores selecionando marcadores específicos para focar, ou alterne a visibilidade dos marcadores arquivados. Controle quais marcadores aparecem na sua lista para melhor organização.
+      description:
+        Filtre marcadores selecionando marcadores específicos para focar,
+        ou alterne a visibilidade dos marcadores arquivados. Controle quais marcadores
+        aparecem na sua lista para melhor organização.
     search_sort:
       title: Buscar e Ordenar
-      description: Procure marcadores específicos pelo nome, ordene por diferentes critérios como nome ou contagem de uso. Organize sua lista de marcadores para encontrar rapidamente o que precisa.
+      description:
+        Procure marcadores específicos pelo nome, ordene por diferentes
+        critérios como nome ou contagem de uso. Organize sua lista de marcadores para
+        encontrar rapidamente o que precisa.
     time_distribution_chart:
       title: Gráfico de Distribuição de Tempo
-      description: Visualize como você gasta seu tempo em diferentes marcadores e categorias. Veja padrões de alocação de tempo e identifique para onde vai o seu foco durante o dia.
+      description:
+        Visualize como você gasta seu tempo em diferentes marcadores e
+        categorias. Veja padrões de alocação de tempo e identifique para onde vai
+        o seu foco durante o dia.
     chart_customization:
       title: Personalização do Gráfico
-      description: Personalize o gráfico de tempo selecionando o intervalo de datas, escolhendo categorias (tarefas, hábitos, aplicativos) e filtrando por marcadores específicos para analisar sua distribuição de tempo em detalhes.
+      description:
+        Personalize o gráfico de tempo selecionando o intervalo de datas,
+        escolhendo categorias (tarefas, hábitos, aplicativos) e filtrando por marcadores
+        específicos para analisar sua distribuição de tempo em detalhes.
     create_tags:
       title: Criar Novos Marcadores
-      description: Adicione novos marcadores para categorizar seu conteúdo. Os marcadores ajudam você a organizar tarefas, hábitos e aplicativos em todos os recursos para melhor acompanhamento de produtividade e gestão do tempo.
+      description:
+        Adicione novos marcadores para categorizar seu conteúdo. Os marcadores
+        ajudam você a organizar tarefas, hábitos e aplicativos em todos os recursos
+        para melhor acompanhamento de produtividade e gestão do tempo.
+  type:
+    label: Tipo
+    label_label: Rótulo
+    label_tooltip: Uma etiqueta flexível de categorização
+    context: Contexto
+    context_tooltip: Onde ou como você pode realizar esta tarefa (ex. @home, @work)
+    project: Projeto
+    project_tooltip: Agrupar tarefas relacionadas para um objetivo comum (ex. +WebsiteRedesign)

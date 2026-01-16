@@ -27,7 +27,9 @@ tasks:
     deadline_date:
       label: Fristdato
     description:
-      context: Tilføj detaljerede oplysninger om din opgave for at hjælpe dig med at huske nøgleoplysninger og spore fremskridt.
+      context:
+        Tilføj detaljerede oplysninger om din opgave for at hjælpe dig med
+        at huske nøgleoplysninger og spore fremskridt.
       hint: Tilføj beskrivelse...
       label: Beskrivelse
     elapsed_time:
@@ -68,7 +70,9 @@ tasks:
     task_tag_already_exists: Denne opgavetag findes allerede
     task_tag_not_found: Opgavetag ikke fundet
   estimated_time:
-    description: Sæt en realistisk tidsvurdering for at planere din opgave effektivt og spore produktivitet.
+    description:
+      Sæt en realistisk tidsvurdering for at planere din opgave effektivt
+      og spore produktivitet.
     label: Estimeret tid
   filters:
     completion: Efter færdiggørelsesstatus
@@ -82,19 +86,24 @@ tasks:
   help:
     details:
       content:
-        "Mestre din opgavehåndtering og maksimer produktivitet ved at organisere, prioritere og spore din arbejde effektivt.
+        "Mestre din opgavehåndtering og maksimer produktivitet ved at organisere,
+        prioritere og spore din arbejde effektivt.
 
 
         ## ⚡ Hvorfor er det vigtigt?
 
 
-        Effektiv opgavehåndtering er fundamentet for produktivitet. Korrekte struktureret opgaver med klare prioriteter og deadlines hjælper dig med at fokusere på det, der betyder mest, og forhindre vigtigt arbejde i at falde igennem revnerne.
+        Effektiv opgavehåndtering er fundamentet for produktivitet. Korrekte struktureret
+        opgaver med klare prioriteter og deadlines hjælper dig med at fokusere på
+        det, der betyder mest, og forhindre vigtigt arbejde i at falde igennem revnerne.
 
 
         ## 📝 Opgaveorganisation
 
 
-        Strukturer dine opgaver med omfattende detaljer for at opretholde klarhed og fokus. Brug tags, prioriteter og tidsestimater til at skabe en systematisk tilgang til din arbejdsbyrde.
+        Strukturer dine opgaver med omfattende detaljer for at opretholde klarhed
+        og fokus. Brug tags, prioriteter og tidsestimater til at skabe en systematisk
+        tilgang til din arbejdsbyrde.
 
 
         - 🏷️ Kategoriser opgaver med meningsfulde tags
@@ -109,7 +118,9 @@ tasks:
         ## ⏰ Tidsstyring
 
 
-        Spor dine tidsinvesteringer for at forstå dine arbejdsrutiner og forbedre effektivitet. Korrekte tidsstyring transformerer spredte indsatser til fokuseret produktivitet.
+        Spor dine tidsinvesteringer for at forstå dine arbejdsrutiner og forbedre
+        effektivitet. Korrekte tidsstyring transformerer spredte indsatser til fokuseret
+        produktivitet.
 
 
         - 📊 Overvåg faktisk vs. estimeret tid
@@ -124,34 +135,41 @@ tasks:
         ## 📊 Prioritetsramme (Eisenhower Matrix)
 
 
-        Organisér dine opgaver ved hjælp af denne beviste prioriteringsmetode for at sikre, at du altid arbejder på de rigtige ting på det rigtige tidspunkt.
+        Organisér dine opgaver ved hjælp af denne beviste prioriteringsmetode for
+        at sikre, at du altid arbejder på de rigtige ting på det rigtige tidspunkt.
 
 
         - 🔥 **Presserende & Vigtig:** Håndter umiddelbart - krisehåndtering og deadlines
 
         - 📈 **Vigtig, Ikke Presserende:** Planlæg strategisk - planlægning og færdighedsudvikling
 
-        - ⚡ **Presserende, Ikke Vigtig:** Delegér når muligt - afbrydelser og nogle møder
+        - ⚡ **Presserende, Ikke Vigtig:** Delegér når muligt - afbrydelser og nogle
+        møder
 
-        - 🗑️ **Hverken Presserende eller Vigtig:** Eliminér - tidspildere og lav-værdi aktiviteter
+        - 🗑️ **Hverken Presserende eller Vigtig:** Eliminér - tidspildere og lav-værdi
+        aktiviteter
 
         "
       title: Opgavehåndtering & Produktivitetsguide
     overview:
       content:
-        "Transformér din produktivitet med systematisk opgavehåndtering, der hjælper dig med at forblive organiseret, fokuseret og i kontrol over din arbejdsbyrde.
+        "Transformér din produktivitet med systematisk opgavehåndtering, der
+        hjælper dig med at forblive organiseret, fokuseret og i kontrol over din arbejdsbyrde.
 
 
         ## ⚡ Hvorfor er det vigtigt?
 
 
-        Effektiv opgavehåndtering er hjørnestenen i personlig og professionel succes. Ved at organisere dit arbejde systematisk reducerer du stress, opfylder deadlines konsekvent og skaber plads til meningsfuld fremskridt på vigtige mål.
+        Effektiv opgavehåndtering er hjørnestenen i personlig og professionel succes.
+        Ved at organisere dit arbejde systematisk reducerer du stress, opfylder deadlines
+        konsekvent og skaber plads til meningsfuld fremskridt på vigtige mål.
 
 
         ## 📋 Opgaveorganisation
 
 
-        Skab en struktureret tilgang til håndtering af dine ansvar. Velorganiserede opgaver fører til klare prioriteter og effektiv udførelse af dit daglige arbejde.
+        Skab en struktureret tilgang til håndtering af dine ansvar. Velorganiserede
+        opgaver fører til klare prioriteter og effektiv udførelse af dit daglige arbejde.
 
 
         - ✅ Skab og kategorisér opgaver systematisk
@@ -166,7 +184,8 @@ tasks:
         ## ⏱️ Tidssporing & Fokus
 
 
-        Overvåg dine tidsinvesteringer for at forstå produktivitetsmønstre og optimere din workflow. Tidsbevidsthed fører til bedre planlægning og forbedret ydeevne.
+        Overvåg dine tidsinvesteringer for at forstå produktivitetsmønstre og optimere
+        din workflow. Tidsbevidsthed fører til bedre planlægning og forbedret ydeevne.
 
 
         - ⏰ Spor faktisk tid brugt pr. opgave
@@ -181,7 +200,8 @@ tasks:
         ## 📈 Fremskridtsmonitorering
 
 
-        Hold styr på dine præstationer og lær af dine arbejdsrutiner. Regelmæssig gennemgang og refleksion driver kontinuerlig forbedring i dit produktivitetssystem.
+        Hold styr på dine præstationer og lær af dine arbejdsrutiner. Regelmæssig
+        gennemgang og refleksion driver kontinuerlig forbedring i dit produktivitetssystem.
 
 
         - 📈 Overvåg opgavefærdiggørelsesrater
@@ -199,19 +219,25 @@ tasks:
       title: Opgavedetaljer
     help:
       content:
-        "Maksimer dit fokus og produktivitet med struktureret arbejdssessioner, der hjælper dig med at opretholde dyb koncentration mens du forhindrer udbrændthed.
+        "Maksimer dit fokus og produktivitet med struktureret arbejdssessioner,
+        der hjælper dig med at opretholde dyb koncentration mens du forhindrer udbrændthed.
 
 
         ## ⚡ Hvorfor er det vigtigt?
 
 
-        Fokuserede arbejdssessioner er essentielle for dybt arbejde og høj kvalitet output. Ved at arbejde i struktureret intervaller med regelmæssige pauser opretholder du peak mentalt ydeevne mens du undgår træthed, der kommer fra forlængede, ude-fokuserede arbejdsperioder.
+        Fokuserede arbejdssessioner er essentielle for dybt arbejde og høj kvalitet
+        output. Ved at arbejde i struktureret intervaller med regelmæssige pauser
+        opretholder du peak mentalt ydeevne mens du undgår træthed, der kommer fra
+        forlængede, ude-fokuserede arbejdsperioder.
 
 
         ## ⏰ Tid-boksede fokus sessioner
 
 
-        Brug beviste tidsstyringsteknikker til at strukturere dit arbejde for maksimal effektivitet. Strukturerede sessioner hjælper dig med at opretholde koncentration og fuldføre opgaver mere effektivt.
+        Brug beviste tidsstyringsteknikker til at strukturere dit arbejde for maksimal
+        effektivitet. Strukturerede sessioner hjælper dig med at opretholde koncentration
+        og fuldføre opgaver mere effektivt.
 
 
         - 🎯 **Klassisk fokus:** 25 minutter arbejde / 5 minutter pause
@@ -220,13 +246,16 @@ tasks:
 
         - 🔄 **Lang pause:** 15-30 minutter efter 4 sessioner
 
-        - ⚖️ **Egendefineret timing:** Juster intervaller til at matche din naturlige rytme
+        - ⚖️ **Egendefineret timing:** Juster intervaller til at matche din naturlige
+        rytme
 
 
         ## 🧠 Kognitive fordele
 
 
-        Strukturerede arbejdssessioner udnytter hjernens naturlige opmærksomhedscyklusser til at optimere ydeevne og forhindre mental træthed, der reducerer kvalitet og kreativitet.
+        Strukturerede arbejdssessioner udnytter hjernens naturlige opmærksomhedscyklusser
+        til at optimere ydeevne og forhindre mental træthed, der reducerer kvalitet
+        og kreativitet.
 
 
         - 🎯 Forbedret fokus og dyb koncentration
@@ -241,7 +270,8 @@ tasks:
         ## 📊 Ydeevneoptimering
 
 
-        Spor dine fokuserede arbejdsrutiner for at forstå dine peak produktivitetstider og optimere din tidsplan for maksimal effektivitet.
+        Spor dine fokuserede arbejdsrutiner for at forstå dine peak produktivitetstider
+        og optimere din tidsplan for maksimal effektivitet.
 
 
         - 🏷️ Kategorisér fokus sessioner med tags for analyse
@@ -278,7 +308,8 @@ tasks:
     no_tasks: Ingen opgaver fundet i filen.
     generic_info_title: Generisk CSV-format
     generic_info_description:
-      "For at importere opgaver korrekt skal din CSV følge dette format:
+      "For at importere opgaver korrekt skal din CSV følge
+      dette format:
 
 
       - **Kolonne 1**: Titlen (Påkrævet)
@@ -333,7 +364,9 @@ tasks:
     urgent_important: Presserende og vigtig
     urgent_not_important: Presserende men ikke vigtig
   priority:
-    description: Indstil opgaveprioritet ved hjælp af Eisenhowers Matrix - Presserende/Vigtig klassifikation for effektiv opgavestyring
+    description:
+      Indstil opgaveprioritet ved hjælp af Eisenhowers Matrix - Presserende/Vigtig
+      klassifikation for effektiv opgavestyring
     selection:
       title: Vælg prioritet
     tooltips:
@@ -351,15 +384,19 @@ tasks:
   quick_task:
     create_error: Fejl ved oprettelse af opgave
     lock_description:
-      "Lås egenskaber for at beholde deres værdier, når du opretter flere
+      "Lås egenskaber for at beholde deres værdier, når du opretter
+      flere
 
-      lignende opgaver. Låste egenskaber vil ikke blive ryddet, når du nulstiller formularen.
+      lignende opgaver. Låste egenskaber vil ikke blive ryddet, når du nulstiller
+      formularen.
 
       "
     lock_settings: Lås Indstillinger
     reset_all: Nulstil alle felter
     reset_confirm:
-      message: Er du sikker på, at du vil nulstille alle felter? Denne handling kan ikke fortrydes.
+      message:
+        Er du sikker på, at du vil nulstille alle felter? Denne handling kan
+        ikke fortrydes.
       title: Nulstil Alle Felter
     task_added_successfully: Opgave tilføjet med succes
     title: Hurtig opgave
@@ -424,7 +461,9 @@ tasks:
     monthly_pattern_label: Månedligt mønster
     advanced_label: Avancerede indstillinger
     regenerate_label: Regenerer efter fuldførelse
-    regenerate_description: Når aktiveret, vil den næste forekomst blive planlagt fra fuldførelsens dato i stedet for den planlagte dato.
+    regenerate_description:
+      Når aktiveret, vil den næste forekomst blive planlagt
+      fra fuldførelsens dato i stedet for den planlagte dato.
     on_specific_day: Bestemt dag
     on_relative_day: Relativ dag
     on_the: Den
@@ -484,7 +523,9 @@ tasks:
     edit_title: Rediger titel
     increase_estimated_time: Øg estimeret tid
     reminder_date_required: Indstil en dato først for at konfigurere påminnelser
-    reminder_help_text: Indstil en påminnelse for at blive notificeret før opgavedato dato
+    reminder_help_text:
+      Indstil en påminnelse for at blive notificeret før opgavedato
+      dato
     set_reminder: Sæt påmindelse
     set_reminder_with_status: Angi påminnelse - Ingen påminnelse
     show_completed_tasks: Filtrer færdige opgaver
@@ -519,13 +560,3 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Frist skal være efter den planlagte dato
     deadline_time_invalid: Indtast gyldig fristtid
-shared:
-  time:
-    minutes: minutter
-    hours: timer
-    days: dage
-    weeks: uger
-    minute: minut
-    hour: time
-    day: dag
-    week: uge
