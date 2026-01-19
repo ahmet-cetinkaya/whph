@@ -10,6 +10,10 @@ source "$PROJECT_ROOT/scripts/_common.sh"
 
 print_header "WHPH - Test Suite"
 
+# Kill any running whph processes before testing
+print_info "Killing any running whph processes..."
+pkill -9 whph 2>/dev/null || true
+
 # Parse arguments
 SKIP_FLUTTER=false
 SKIP_CPP=false

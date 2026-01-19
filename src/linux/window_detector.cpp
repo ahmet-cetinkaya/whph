@@ -65,7 +65,10 @@ std::string ExecuteCommand(const std::string& command) {
     std::string result;
     FILE* pipe = popen(command.c_str(), "r");
     if (!pipe) {
-        std::cerr << "ExecuteCommand: popen failed for command: " << command << std::endl;
+        // Only log popen failures for non-probe commands (not 'which' or 'pgrep')
+        if (command.find("which ") != 0 && command.find("pgrep ") != 0) {
+            std::cerr << "ExecuteCommand: popen failed for command: " << command << std::endl;
+        }
         return result;
     }
 
@@ -75,9 +78,14 @@ std::string ExecuteCommand(const std::string& command) {
     }
     int status = pclose(pipe);
 
+    // Only log unexpected failures (not probe commands like 'which' or 'pgrep')
     if (status != 0) {
-        // Command failed but might still have output
-        std::cerr << "ExecuteCommand: command exited with status " << status << ": " << command << std::endl;
+        bool is_probe_command = (command.find("which ") == 0 || command.find("pgrep ") == 0 ||
+                                 command.find("2>/dev/null") != std::string::npos ||
+                                 command.find("2>&1") != std::string::npos);
+        if (!is_probe_command) {
+            std::cerr << "ExecuteCommand: command exited with status " << status << ": " << command << std::endl;
+        }
     }
 
     // Remove trailing newline
