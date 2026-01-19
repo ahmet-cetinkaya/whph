@@ -9,6 +9,9 @@
 #include <sys/wait.h>
 #include <algorithm>
 #include <fstream>
+#include <ctime>
+#include <random>
+#include <cstdio>
 
 // X11 headers (will be conditionally compiled)
 #ifdef HAVE_X11
@@ -16,6 +19,10 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #endif
+
+// Forward declarations of helper functions
+std::string ExecuteCommand(const std::string& command);
+std::string ShellEscape(const std::string& input);
 
 std::unique_ptr<WindowDetector> WindowDetector::Create() {
     // Detect display server type
@@ -35,28 +42,87 @@ std::unique_ptr<WindowDetector> WindowDetector::Create() {
     return std::make_unique<FallbackWindowDetector>();
 }
 
+// Helper function to escape shell arguments to prevent command injection
+std::string ShellEscape(const std::string& input) {
+    std::string escaped;
+    escaped += "'";
+
+    for (char c : input) {
+        if (c == '\'') {
+            // End current string, add escaped quote, start new string
+            escaped += "'\\''";
+        } else {
+            escaped += c;
+        }
+    }
+
+    escaped += "'";
+    return escaped;
+}
+
 // Helper function to execute shell command and get output
 std::string ExecuteCommand(const std::string& command) {
     std::string result;
     FILE* pipe = popen(command.c_str(), "r");
-    if (!pipe) return result;
-    
+    if (!pipe) {
+        // Only log popen failures for non-probe commands (not 'which' or 'pgrep')
+        if (command.find("which ") != 0 && command.find("pgrep ") != 0) {
+            std::cerr << "ExecuteCommand: popen failed for command: " << command << std::endl;
+        }
+        return result;
+    }
+
     char buffer[128];
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         result += buffer;
     }
-    pclose(pipe);
-    
+    int status = pclose(pipe);
+
+    // Only log unexpected failures (not probe commands like 'which' or 'pgrep')
+    if (status != 0) {
+        bool is_probe_command = (command.find("which ") == 0 || command.find("pgrep ") == 0 ||
+                                 command.find("2>/dev/null") != std::string::npos ||
+                                 command.find("2>&1") != std::string::npos);
+        if (!is_probe_command) {
+            std::cerr << "ExecuteCommand: command exited with status " << status << ": " << command << std::endl;
+        }
+    }
+
     // Remove trailing newline
     if (!result.empty() && result.back() == '\n') {
         result.pop_back();
     }
-    
+
     return result;
 }
 
+WindowInfo WaylandWindowDetector::ParseKdeJournalOutput(const std::string& journal_out, const std::string& request_token) {
+    WindowInfo info{"unknown", "unknown"};
+    
+    // Expected format: ... process[pid]: WHPH_REQ_12345:resourceClass::WHPH_SEP::caption
+    size_t token_pos = journal_out.find(request_token + ":");
+    if (token_pos == std::string::npos) return info;
+    
+    std::string data = journal_out.substr(token_pos + request_token.length() + 1);
+    // data should be "resourceClass::WHPH_SEP::caption"
+    
+    std::string sep = "::WHPH_SEP::";
+    size_t sep_pos = data.find(sep);
+    if (sep_pos != std::string::npos) {
+         std::string app_id = data.substr(0, sep_pos);
+         std::string title = data.substr(sep_pos + sep.length());
+         
+         if (app_id != "null" && !app_id.empty()) {
+             info.application = WindowDetector::ValidateUtf8(app_id);
+             info.title = WindowDetector::ValidateUtf8(title);
+         }
+    }
+    
+    return info;
+}
+
 // Helper function to clean quotes from strings
-std::string CleanQuotes(const std::string& input) {
+std::string WindowDetector::CleanQuotes(const std::string& input) {
     std::string result = input;
     // Remove quotes
     result.erase(std::remove(result.begin(), result.end(), '"'), result.end());
@@ -66,7 +132,7 @@ std::string CleanQuotes(const std::string& input) {
 
 #include <glib.h>
 // Helper function to validate and clean UTF-8 strings
-std::string ValidateUtf8(const std::string& input) {
+std::string WindowDetector::ValidateUtf8(const std::string& input) {
     if (g_utf8_validate(input.c_str(), -1, nullptr)) {
         return input;
     }
@@ -105,7 +171,7 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
         if (XGetWindowProperty(display, active_window, wm_name, 0, 1024, False,
                               AnyPropertyType, &actual_type, &actual_format,
                               &nitems, &bytes_after, &prop) == Success && prop) {
-            info.title = ValidateUtf8(std::string(reinterpret_cast<char*>(prop)));
+            info.title = WindowDetector::ValidateUtf8(std::string(reinterpret_cast<char*>(prop)));
             XFree(prop);
         }
         
@@ -122,7 +188,7 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
             std::ifstream comm_file(comm_path);
             if (comm_file.is_open()) {
                 std::getline(comm_file, info.application);
-                info.application = ValidateUtf8(info.application);
+                info.application = WindowDetector::ValidateUtf8(info.application);
                 comm_file.close();
             }
         }
@@ -151,17 +217,17 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
     }
     
     std::string title_cmd = "xprop -id " + window_id + " | grep '^WM_NAME' | cut -d '\"' -f 2";
-    info.title = ValidateUtf8(ExecuteCommand(title_cmd));
+    info.title = WindowDetector::ValidateUtf8(ExecuteCommand(title_cmd));
     
     std::string pid_cmd = "xprop -id " + window_id + " | grep '^_NET_WM_PID' | awk -F '= ' '{print $2}'";
     std::string pid_str = ExecuteCommand(pid_cmd);
     
     if (!pid_str.empty()) {
         std::string comm_cmd = "cat /proc/" + pid_str + "/comm 2>/dev/null";
-        info.application = ValidateUtf8(ExecuteCommand(comm_cmd));
+        info.application = WindowDetector::ValidateUtf8(ExecuteCommand(comm_cmd));
         if (info.application.empty()) {
             std::string ps_cmd = "ps -p " + pid_str + " -o comm= 2>/dev/null";
-            info.application = ValidateUtf8(ExecuteCommand(ps_cmd));
+            info.application = WindowDetector::ValidateUtf8(ExecuteCommand(ps_cmd));
         }
     }
     
@@ -169,7 +235,7 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
 }
 
 bool X11WindowDetector::IsX11Available() {
-    return !ExecuteCommand("which xprop").empty();
+    return !ExecuteCommand("which xprop 2>/dev/null").empty();
 }
 #endif
 
@@ -201,8 +267,8 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
     WindowInfo info{"unknown", "unknown"};
     
     // Check if gdbus is available and gnome-shell is running
-    if (ExecuteCommand("which gdbus").empty() || 
-        ExecuteCommand("pgrep -f gnome-shell").empty()) {
+    if (ExecuteCommand("which gdbus 2>/dev/null").empty() || 
+        ExecuteCommand("pgrep -f gnome-shell 2>/dev/null").empty()) {
         return info;
     }
     
@@ -216,7 +282,7 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
             start += 7; // Length of "(true, "
             size_t end = title_result.find(")", start);
             if (end != std::string::npos) {
-                info.title = ValidateUtf8(CleanQuotes(title_result.substr(start, end - start)));
+                info.title = WindowDetector::ValidateUtf8(WindowDetector::CleanQuotes(title_result.substr(start, end - start)));
             }
         }
     }
@@ -231,7 +297,7 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
             start += 7;
             size_t end = app_result.find(")", start);
             if (end != std::string::npos) {
-                info.application = ValidateUtf8(CleanQuotes(app_result.substr(start, end - start)));
+                info.application = WindowDetector::ValidateUtf8(WindowDetector::CleanQuotes(app_result.substr(start, end - start)));
             }
         }
     }
@@ -243,9 +309,9 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
     WindowInfo info{"unknown", "unknown"};
     
     // Check if swaymsg and jq are available, and sway is running
-    if (ExecuteCommand("which swaymsg").empty() || 
-        ExecuteCommand("which jq").empty() ||
-        ExecuteCommand("pgrep -f sway").empty()) {
+    if (ExecuteCommand("which swaymsg 2>/dev/null").empty() || 
+        ExecuteCommand("which jq 2>/dev/null").empty() ||
+        ExecuteCommand("pgrep -f sway 2>/dev/null").empty()) {
         return info;
     }
     
@@ -255,11 +321,11 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
     if (!result.empty()) {
         // Extract title
         std::string title_cmd = "echo '" + result + "' | jq -r '.name' 2>/dev/null";
-        info.title = ValidateUtf8(ExecuteCommand(title_cmd));
+        info.title = WindowDetector::ValidateUtf8(ExecuteCommand(title_cmd));
         
         // Extract app_id
         std::string app_cmd = "echo '" + result + "' | jq -r '.app_id // .window_properties.class' 2>/dev/null";
-        info.application = ValidateUtf8(ExecuteCommand(app_cmd));
+        info.application = WindowDetector::ValidateUtf8(ExecuteCommand(app_cmd));
         
         // Fallback to PID if app_id is null
         if (info.application == "null" || info.application.empty()) {
@@ -267,7 +333,7 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
             std::string pid = ExecuteCommand(pid_cmd);
             if (!pid.empty() && pid != "null") {
                 std::string comm_cmd = "cat /proc/" + pid + "/comm 2>/dev/null";
-                info.application = ValidateUtf8(ExecuteCommand(comm_cmd));
+                info.application = WindowDetector::ValidateUtf8(ExecuteCommand(comm_cmd));
             }
         }
     }
@@ -279,54 +345,105 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
     WindowInfo info{"unknown", "unknown"};
     
     // Check if KDE Plasma is running
-    if (ExecuteCommand("pgrep -f plasmashell").empty()) {
+    if (ExecuteCommand("pgrep -f plasmashell 2>/dev/null").empty()) {
         return info;
     }
     
-    // Method 1: Try using qdbus to interact with KWin
-    if (!ExecuteCommand("which qdbus").empty()) {
-        // Check what KWin services are actually available
-        std::string kwin_services = ExecuteCommand("qdbus 2>/dev/null | grep -E '(org\\.kde\\.KWin|org\\.kde\\.kwin)' 2>/dev/null");
+    // Method 1: Try using qdbus to query KWin directly
+    std::vector<std::string> qdbus_binaries = {"qdbus", "qdbus-qt5", "qdbus6"};
+    std::string qdbus_bin;
+    
+    for (const auto& bin : qdbus_binaries) {
+        std::string check_cmd = "which " + bin + " 2>/dev/null";
+        if (!ExecuteCommand(check_cmd).empty()) {
+            qdbus_bin = bin;
+            break;
+        }
+    }
+
+    if (!qdbus_bin.empty()) {
+        // Generate a unique ID for this request to ensure we don't read stale logs
+        // Using modern C++ random number generation for better uniqueness
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distrib(100000, 999999);
+        int request_id = distrib(gen);
+        std::string request_token = "WHPH_REQ_" + std::to_string(request_id);
         
-        if (!kwin_services.empty()) {
-            // Try different KWin D-Bus interfaces
-            std::vector<std::string> kwin_attempts = {
-                // Try KWin scripting with simpler approach
-                "qdbus org.kde.KWin /Scripting 2>/dev/null",
-                "qdbus org.kde.kwin /Scripting 2>/dev/null"
-            };
+        // 1. Create the script file with a unique path to avoid conflicts
+        // Uses process ID and request ID for uniqueness
+        std::string script_path = "/tmp/whph_kwin_script_" + std::to_string(getpid()) + "_" + std::to_string(request_id) + ".js";
+        std::ofstream script_file(script_path);
+        if (script_file.is_open()) {
+            script_file << "var client = workspace.activeWindow || workspace.activeClient;" << std::endl;
+            script_file << "var res = '" << request_token << ":';" << std::endl;
+            script_file << "if (client) {" << std::endl;
+            script_file << "    res += client.resourceClass + '::WHPH_SEP::' + client.caption;" << std::endl;
+            script_file << "} else {" << std::endl;
+            script_file << "    res += 'null::WHPH_SEP::null';" << std::endl;
+            script_file << "}" << std::endl;
+            script_file << "console.info(res);" << std::endl;
+            script_file.close();
             
-            for (const auto& attempt : kwin_attempts) {
-                std::string scripting_check = ExecuteCommand(attempt);
-                if (!scripting_check.empty()) {
-                    // KWin scripting is available, but the inline script approach might not work
-                    // Let's try a different approach - check for window manager info
-                    break;
+            // 2. Load the script
+            std::string load_cmd = qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.loadScript " + ShellEscape(script_path) + " 2>&1";
+            std::string script_id_str = ExecuteCommand(load_cmd);
+            
+            // Clean up whitespace/newline from script_id_str
+            script_id_str.erase(0, script_id_str.find_first_not_of(" \t\n\r"));
+            script_id_str.erase(script_id_str.find_last_not_of(" \t\n\r") + 1);
+            
+            if (!script_id_str.empty() && std::all_of(script_id_str.begin(), script_id_str.end(), [](unsigned char c) { return std::isdigit(c); })) {
+                // 3. Start the script
+                ExecuteCommand(qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.start 2>&1");
+                
+                // 4. Wait a moment for kwin to execute and syslog to flush
+                // 100ms might be enough, but 200ms is safer
+                usleep(200000); 
+                
+                // 5. Check Journal
+                // We grep for our unique request token
+                std::string journal_cmd = "journalctl --user --since \"5 seconds ago\" --no-pager | grep " + ShellEscape(request_token) + " | tail -1";
+                std::string journal_out = ExecuteCommand(journal_cmd);
+                
+                if (!journal_out.empty()) {
+                    WindowInfo parsed = WaylandWindowDetector::ParseKdeJournalOutput(journal_out, request_token);
+                    if (!parsed.application.empty() && parsed.application != "unknown" && parsed.application != "null") {
+                        info = parsed;
+                        
+                        // Cleanup (Best Effort)
+                        ExecuteCommand(qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.unloadScript " + ShellEscape(script_id_str) + " >/dev/null 2>&1");
+                        std::remove(script_path.c_str());
+
+                        return info;
+                    }
                 }
             }
         }
+    } else {
+        // Fallback or log if no qdbus
     }
     
     // Method 2: Try using xprop even on Wayland (sometimes works with XWayland)
-    if (!ExecuteCommand("which xprop").empty()) {
+    if (!ExecuteCommand("which xprop 2>/dev/null").empty()) {
         std::string xprop_result = ExecuteCommand("xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | cut -d' ' -f5");
         if (!xprop_result.empty() && xprop_result != "0x0") {
-            std::string title_cmd = "xprop -id " + xprop_result + " WM_NAME 2>/dev/null | cut -d'\"' -f2";
-            std::string class_cmd = "xprop -id " + xprop_result + " WM_CLASS 2>/dev/null | cut -d'\"' -f4";
+            std::string title_cmd = "xprop -id " + ShellEscape(xprop_result) + " WM_NAME 2>/dev/null | cut -d'\"' -f2";
+            std::string class_cmd = "xprop -id " + ShellEscape(xprop_result) + " WM_CLASS 2>/dev/null | cut -d'\"' -f4";
             
             std::string title = ExecuteCommand(title_cmd);
             std::string app_class = ExecuteCommand(class_cmd);
             
             if (!title.empty() && title != "unknown") {
-                info.title = ValidateUtf8(title);
-                info.application = ValidateUtf8(!app_class.empty() ? app_class : title);
+                info.title = WindowDetector::ValidateUtf8(title);
+                info.application = WindowDetector::ValidateUtf8(!app_class.empty() ? app_class : title);
                 return info;
             }
         }
     }
     
     // Method 3: Try using wmctrl (sometimes works on KDE Wayland)
-    if (!ExecuteCommand("which wmctrl").empty()) {
+    if (!ExecuteCommand("which wmctrl 2>/dev/null").empty()) {
         std::string wmctrl_result = ExecuteCommand("wmctrl -l 2>/dev/null | head -1");
         if (!wmctrl_result.empty()) {
             // Parse wmctrl output: window_id desktop_id hostname window_title
@@ -337,8 +454,8 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
                 std::getline(iss, title);
                 if (!title.empty()) {
                     title = title.substr(1); // Remove leading space
-                    info.title = ValidateUtf8(title);
-                    info.application = ValidateUtf8(title); // Use title as application name
+                    info.title = WindowDetector::ValidateUtf8(title);
+                    info.application = WindowDetector::ValidateUtf8(title); // Use title as application name
                     return info;
                 }
             }
@@ -370,8 +487,8 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
                 }
                 
                 if (!comm.empty() && comm != "unknown") {
-                    info.application = ValidateUtf8(comm);
-                    info.title = ValidateUtf8(comm);
+                    info.application = WindowDetector::ValidateUtf8(comm);
+                    info.title = WindowDetector::ValidateUtf8(comm);
                     return info;
                 }
             }
@@ -385,16 +502,16 @@ WindowInfo WaylandWindowDetector::TryWlrootsWayland() {
     WindowInfo info{"unknown", "unknown"};
     
     // Try Hyprland
-    if (!ExecuteCommand("which hyprctl").empty()) {
+    if (!ExecuteCommand("which hyprctl 2>/dev/null").empty()) {
         std::string cmd = "hyprctl activewindow -j 2>/dev/null";
         std::string result = ExecuteCommand(cmd);
         
-        if (!result.empty() && !ExecuteCommand("which jq").empty()) {
+        if (!result.empty() && !ExecuteCommand("which jq 2>/dev/null").empty()) {
             std::string title_cmd = "echo '" + result + "' | jq -r '.title' 2>/dev/null";
-            info.title = ValidateUtf8(ExecuteCommand(title_cmd));
+            info.title = WindowDetector::ValidateUtf8(ExecuteCommand(title_cmd));
             
             std::string class_cmd = "echo '" + result + "' | jq -r '.class' 2>/dev/null";
-            info.application = ValidateUtf8(ExecuteCommand(class_cmd));
+            info.application = WindowDetector::ValidateUtf8(ExecuteCommand(class_cmd));
             
             if (info.title != "null" && info.application != "null") {
                 return info;
@@ -403,9 +520,9 @@ WindowInfo WaylandWindowDetector::TryWlrootsWayland() {
     }
     
     // Try wayinfo for river and other wlroots compositors
-    if (!ExecuteCommand("which wayinfo").empty()) {
-        info.title = ValidateUtf8(ExecuteCommand("wayinfo active-window-title 2>/dev/null"));
-        info.application = ValidateUtf8(ExecuteCommand("wayinfo active-window-app-id 2>/dev/null"));
+    if (!ExecuteCommand("which wayinfo 2>/dev/null").empty()) {
+        info.title = WindowDetector::ValidateUtf8(ExecuteCommand("wayinfo active-window-title 2>/dev/null"));
+        info.application = WindowDetector::ValidateUtf8(ExecuteCommand("wayinfo active-window-app-id 2>/dev/null"));
     }
     
     return info;
@@ -422,8 +539,8 @@ WindowInfo FallbackWindowDetector::GetActiveWindow() {
         std::istringstream iss(result);
         std::string pid, pcpu, comm;
         if (iss >> pid >> pcpu >> comm) {
-            info.application = ValidateUtf8(comm);
-            info.title = ValidateUtf8(comm); // Use process name as title fallback
+            info.application = WindowDetector::ValidateUtf8(comm);
+            info.title = WindowDetector::ValidateUtf8(comm); // Use process name as title fallback
             
             // Try to get more descriptive name from cmdline
             std::string cmdline_cmd = "tr '\\0' ' ' < /proc/" + pid + "/cmdline 2>/dev/null";
@@ -438,7 +555,7 @@ WindowInfo FallbackWindowDetector::GetActiveWindow() {
                         filename = filename.substr(0, space_pos);
                     }
                     if (!filename.empty()) {
-                        info.title = ValidateUtf8(filename);
+                        info.title = WindowDetector::ValidateUtf8(filename);
                     }
                 }
             }
@@ -531,7 +648,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
     // Detect which compositor is running and use appropriate method
     
     // Try GNOME/Mutter first
-    if (!ExecuteCommand("pgrep -f gnome-shell").empty()) {
+    if (!ExecuteCommand("pgrep -f gnome-shell 2>/dev/null").empty()) {
         std::string gnome_cmd = "gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval \"global.get_window_actors().find(w => w.get_meta_window().get_title().includes('" + windowTitle + "')).get_meta_window().activate(global.get_current_time())\" 2>/dev/null";
         if (system(gnome_cmd.c_str()) == 0) {
             return true;
@@ -545,7 +662,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
     }
     
     // Try Sway
-    if (!ExecuteCommand("pgrep -f sway").empty()) {
+    if (!ExecuteCommand("pgrep -f sway 2>/dev/null").empty()) {
         std::vector<std::string> sway_commands = {
             "swaymsg '[title=\"" + windowTitle + "\"] focus' 2>/dev/null",
             "swaymsg '[app_id=\"whph\"] focus' 2>/dev/null",
@@ -560,7 +677,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
     }
     
     // Try KDE/KWin with safer methods
-    if (!ExecuteCommand("pgrep -f plasmashell").empty()) {
+    if (!ExecuteCommand("pgrep -f plasmashell 2>/dev/null").empty()) {
         // Method 1: Try using wmctrl first (sometimes works on KDE Wayland)
         std::vector<std::string> wmctrl_commands = {
             "wmctrl -a \"" + windowTitle + "\" 2>/dev/null",
@@ -574,7 +691,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
         }
         
         // Method 2: Try KWin D-Bus methods if available
-        if (!ExecuteCommand("which qdbus").empty()) {
+        if (!ExecuteCommand("which qdbus 2>/dev/null").empty()) {
             // Check if KWin scripting is available
             std::string kwin_check = ExecuteCommand("qdbus org.kde.KWin /Scripting 2>/dev/null");
             if (!kwin_check.empty()) {
@@ -622,7 +739,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
     }
     
     // Try Hyprland
-    if (!ExecuteCommand("pgrep -f Hyprland").empty()) {
+    if (!ExecuteCommand("pgrep -f Hyprland 2>/dev/null").empty()) {
         std::vector<std::string> hypr_commands = {
             "hyprctl dispatch focuswindow title:\"" + windowTitle + "\" 2>/dev/null",
             "hyprctl dispatch focuswindow class:whph 2>/dev/null"
