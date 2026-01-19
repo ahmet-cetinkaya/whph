@@ -22,6 +22,7 @@
 
 // Forward declarations of helper functions
 std::string ExecuteCommand(const std::string& command);
+std::string ShellEscape(const std::string& input);
 
 std::unique_ptr<WindowDetector> WindowDetector::Create() {
     // Detect display server type
@@ -41,23 +42,49 @@ std::unique_ptr<WindowDetector> WindowDetector::Create() {
     return std::make_unique<FallbackWindowDetector>();
 }
 
+// Helper function to escape shell arguments to prevent command injection
+std::string ShellEscape(const std::string& input) {
+    std::string escaped;
+    escaped += "'";
+
+    for (char c : input) {
+        if (c == '\'') {
+            // End current string, add escaped quote, start new string
+            escaped += "'\\''";
+        } else {
+            escaped += c;
+        }
+    }
+
+    escaped += "'";
+    return escaped;
+}
+
 // Helper function to execute shell command and get output
 std::string ExecuteCommand(const std::string& command) {
     std::string result;
     FILE* pipe = popen(command.c_str(), "r");
-    if (!pipe) return result;
-    
+    if (!pipe) {
+        std::cerr << "ExecuteCommand: popen failed for command: " << command << std::endl;
+        return result;
+    }
+
     char buffer[128];
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         result += buffer;
     }
-    pclose(pipe);
-    
+    int status = pclose(pipe);
+
+    if (status != 0) {
+        // Command failed but might still have output
+        std::cerr << "ExecuteCommand: command exited with status " << status << ": " << command << std::endl;
+    }
+
     // Remove trailing newline
     if (!result.empty() && result.back() == '\n') {
         result.pop_back();
     }
-    
+
     return result;
 }
 
@@ -351,7 +378,7 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
             script_file.close();
             
             // 2. Load the script
-            std::string load_cmd = qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.loadScript " + script_path + " 2>&1";
+            std::string load_cmd = qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.loadScript " + ShellEscape(script_path) + " 2>&1";
             std::string script_id_str = ExecuteCommand(load_cmd);
             
             // Clean up whitespace/newline from script_id_str
@@ -368,7 +395,7 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
                 
                 // 5. Check Journal
                 // We grep for our unique request token
-                std::string journal_cmd = "journalctl --user --since \"5 seconds ago\" --no-pager | grep \"" + request_token + "\" | tail -1";
+                std::string journal_cmd = "journalctl --user --since \"5 seconds ago\" --no-pager | grep " + ShellEscape(request_token) + " | tail -1";
                 std::string journal_out = ExecuteCommand(journal_cmd);
                 
                 if (!journal_out.empty()) {
@@ -377,7 +404,7 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
                         info = parsed;
                         
                         // Cleanup (Best Effort)
-                        ExecuteCommand(qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.unloadScript " + script_id_str + " >/dev/null 2>&1");
+                        ExecuteCommand(qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.unloadScript " + ShellEscape(script_id_str) + " >/dev/null 2>&1");
                         std::remove(script_path.c_str());
 
                         return info;
@@ -393,8 +420,8 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
     if (!ExecuteCommand("which xprop").empty()) {
         std::string xprop_result = ExecuteCommand("xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | cut -d' ' -f5");
         if (!xprop_result.empty() && xprop_result != "0x0") {
-            std::string title_cmd = "xprop -id " + xprop_result + " WM_NAME 2>/dev/null | cut -d'\"' -f2";
-            std::string class_cmd = "xprop -id " + xprop_result + " WM_CLASS 2>/dev/null | cut -d'\"' -f4";
+            std::string title_cmd = "xprop -id " + ShellEscape(xprop_result) + " WM_NAME 2>/dev/null | cut -d'\"' -f2";
+            std::string class_cmd = "xprop -id " + ShellEscape(xprop_result) + " WM_CLASS 2>/dev/null | cut -d'\"' -f4";
             
             std::string title = ExecuteCommand(title_cmd);
             std::string app_class = ExecuteCommand(class_cmd);
