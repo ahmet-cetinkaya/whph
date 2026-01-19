@@ -11,6 +11,8 @@
 #include <fstream>
 #include <map>
 #include <ctime>
+#include <random>
+#include <cstdio>
 
 // X11 headers (will be conditionally compiled)
 #ifdef HAVE_X11
@@ -327,14 +329,16 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
 
     if (!qdbus_bin.empty()) {
         // Generate a unique ID for this request to ensure we don't read stale logs
-        // Using simple random number for brevity
-        srand(time(NULL));
-        int request_id = rand();
+        // Using modern C++ random number generation for better uniqueness
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distrib(100000, 999999);
+        int request_id = distrib(gen);
         std::string request_token = "WHPH_REQ_" + std::to_string(request_id);
         
-        // 1. Create the script file
-        // We include resourceClass and caption separated by a delimiter
-        std::string script_path = "/tmp/whph_kwin_script.js";
+        // 1. Create the script file with a unique path to avoid conflicts
+        // Uses process ID and request ID for uniqueness
+        std::string script_path = "/tmp/whph_kwin_script_" + std::to_string(getpid()) + "_" + std::to_string(request_id) + ".js";
         std::ofstream script_file(script_path);
         if (script_file.is_open()) {
             script_file << "var client = workspace.activeWindow || workspace.activeClient;" << std::endl;
@@ -355,7 +359,7 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
             script_id_str.erase(0, script_id_str.find_first_not_of(" \t\n\r"));
             script_id_str.erase(script_id_str.find_last_not_of(" \t\n\r") + 1);
             
-            if (!script_id_str.empty() && std::all_of(script_id_str.begin(), script_id_str.end(), ::isdigit)) {
+            if (!script_id_str.empty() && std::all_of(script_id_str.begin(), script_id_str.end(), [](unsigned char c) { return std::isdigit(c); })) {
                 // 3. Start the script
                 ExecuteCommand(qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.start 2>&1");
                 
@@ -375,7 +379,8 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
                         
                         // Cleanup (Best Effort)
                         ExecuteCommand(qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.unloadScript " + script_id_str + " >/dev/null 2>&1");
-                        
+                        std::remove(script_path.c_str());
+
                         return info;
                     }
                 }
