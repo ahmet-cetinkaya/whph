@@ -9,6 +9,8 @@
 #include <sys/wait.h>
 #include <algorithm>
 #include <fstream>
+#include <map>
+#include <ctime>
 
 // X11 headers (will be conditionally compiled)
 #ifdef HAVE_X11
@@ -283,28 +285,93 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
         return info;
     }
     
-    // Method 1: Try using qdbus to interact with KWin
-    if (!ExecuteCommand("which qdbus").empty()) {
-        // Check what KWin services are actually available
-        std::string kwin_services = ExecuteCommand("qdbus 2>/dev/null | grep -E '(org\\.kde\\.KWin|org\\.kde\\.kwin)' 2>/dev/null");
+    // Method 1: Try using qdbus to query KWin directly
+    std::vector<std::string> qdbus_binaries = {"qdbus", "qdbus-qt5", "qdbus6"};
+    std::string qdbus_bin;
+    
+    for (const auto& bin : qdbus_binaries) {
+        std::string check_cmd = "which " + bin + " 2>/dev/null";
+        if (!ExecuteCommand(check_cmd).empty()) {
+            qdbus_bin = bin;
+            break;
+        }
+    }
+
+    if (!qdbus_bin.empty()) {
+        // Generate a unique ID for this request to ensure we don't read stale logs
+        // Using simple random number for brevity
+        srand(time(NULL));
+        int request_id = rand();
+        std::string request_token = "WHPH_REQ_" + std::to_string(request_id);
         
-        if (!kwin_services.empty()) {
-            // Try different KWin D-Bus interfaces
-            std::vector<std::string> kwin_attempts = {
-                // Try KWin scripting with simpler approach
-                "qdbus org.kde.KWin /Scripting 2>/dev/null",
-                "qdbus org.kde.kwin /Scripting 2>/dev/null"
-            };
+        // 1. Create the script file
+        // We include resourceClass and caption separated by a delimiter
+        std::string script_path = "/tmp/whph_kwin_script.js";
+        std::ofstream script_file(script_path);
+        if (script_file.is_open()) {
+            script_file << "var client = workspace.activeWindow || workspace.activeClient;" << std::endl;
+            script_file << "var res = '" << request_token << ":';" << std::endl;
+            script_file << "if (client) {" << std::endl;
+            script_file << "    res += client.resourceClass + '::WHPH_SEP::' + client.caption;" << std::endl;
+            script_file << "} else {" << std::endl;
+            script_file << "    res += 'null::WHPH_SEP::null';" << std::endl;
+            script_file << "}" << std::endl;
+            script_file << "console.info(res);" << std::endl;
+            script_file.close();
             
-            for (const auto& attempt : kwin_attempts) {
-                std::string scripting_check = ExecuteCommand(attempt);
-                if (!scripting_check.empty()) {
-                    // KWin scripting is available, but the inline script approach might not work
-                    // Let's try a different approach - check for window manager info
-                    break;
+            // 2. Load the script
+            std::string load_cmd = qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.loadScript " + script_path + " 2>&1";
+            std::string script_id_str = ExecuteCommand(load_cmd);
+            
+            // Clean up whitespace/newline from script_id_str
+            script_id_str.erase(0, script_id_str.find_first_not_of(" \t\n\r"));
+            script_id_str.erase(script_id_str.find_last_not_of(" \t\n\r") + 1);
+            
+            if (!script_id_str.empty() && std::all_of(script_id_str.begin(), script_id_str.end(), ::isdigit)) {
+                // 3. Start the script
+                ExecuteCommand(qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.start 2>&1");
+                
+                // 4. Wait a moment for kwin to execute and syslog to flush
+                // 100ms might be enough, but 200ms is safer
+                usleep(200000); 
+                
+                // 5. Check Journal
+                // We grep for our unique request token
+                std::string journal_cmd = "journalctl --user --since \"5 seconds ago\" --no-pager | grep \"" + request_token + "\" | tail -1";
+                std::string journal_out = ExecuteCommand(journal_cmd);
+                
+                if (!journal_out.empty()) {
+                    // Expected format: ... process[pid]: WHPH_REQ_12345:resourceClass::WHPH_SEP::caption
+                    size_t token_pos = journal_out.find(request_token + ":");
+                    if (token_pos != std::string::npos) {
+                        std::string data = journal_out.substr(token_pos + request_token.length() + 1);
+                        // data should be "resourceClass::WHPH_SEP::caption"
+                        
+                        std::string sep = "::WHPH_SEP::";
+                        size_t sep_pos = data.find(sep);
+                        if (sep_pos != std::string::npos) {
+                             std::string app_id = data.substr(0, sep_pos);
+                             std::string title = data.substr(sep_pos + sep.length());
+                             
+                             if (app_id != "null") {
+                                 info.application = ValidateUtf8(app_id);
+                                 info.title = ValidateUtf8(title);
+                                 
+                                 // Cleanup (Best Effort)
+                                 // Try to unload the script to avoid pollution
+                                 // org.kde.kwin.Scripting.unloadScript(QString pluginName)
+                                 // The plugin name is often the script ID or filename. Let's try ID.
+                                 ExecuteCommand(qdbus_bin + " org.kde.KWin /Scripting org.kde.kwin.Scripting.unloadScript " + script_id_str + " >/dev/null 2>&1");
+                                 
+                                 return info;
+                             }
+                        }
+                    }
                 }
             }
         }
+    } else {
+        // Fallback or log if no qdbus
     }
     
     // Method 2: Try using xprop even on Wayland (sometimes works with XWayland)
