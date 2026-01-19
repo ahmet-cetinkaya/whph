@@ -33,3 +33,7 @@ core.[0-9]*
 
 # Coverage reports
 src/coverage/
+
+# Linux Native Tests
+src/test/infrastructure/linux/features/tracking/*_test
+!src/test/infrastructure/linux/features/tracking/*_test.cpp

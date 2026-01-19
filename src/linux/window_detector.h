@@ -15,6 +15,10 @@ public:
     virtual ~WindowDetector() = default;
     virtual WindowInfo GetActiveWindow() = 0;
     virtual bool FocusWindow(const std::string& windowTitle) = 0;
+
+    // Helper utilities (exposed for testing)
+    static std::string CleanQuotes(const std::string& input);
+    static std::string ValidateUtf8(const std::string& input);
 };
 
 // X11 implementation
@@ -36,6 +40,9 @@ private:
     WindowInfo TrySwayWayland();
     WindowInfo TryKdeWayland();
     WindowInfo TryWlrootsWayland();
+
+public:
+    static WindowInfo ParseKdeJournalOutput(const std::string& journal_out, const std::string& request_token);
 };
 
 // Fallback implementation
