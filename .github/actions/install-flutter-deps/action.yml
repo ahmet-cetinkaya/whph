@@ -22,12 +22,12 @@ runs:
     - name: Set PATH for Flutter (Unix)
       if: runner.os != 'Windows'
       shell: bash
-      run: echo "PATH=$HOME/.pub-cache/bin:$PATH" >> $GITHUB_ENV
+      run: echo "PATH=$(pwd)/.pub-cache/bin:$PATH" >> $GITHUB_ENV
 
     - name: Set PATH for Flutter (Windows)
       if: runner.os == 'Windows'
       shell: pwsh
-      run: echo "$env:USERPROFILE\.pub-cache\bin" >> $env:GITHUB_PATH
+      run: echo "$(Get-Location)\.pub-cache\bin" >> $env:GITHUB_PATH
 
     - name: Enable platform
       if: inputs.enable-platform != ''
@@ -36,6 +36,125 @@ runs:
         echo "Enabling platform: ${{ inputs.enable-platform }}"
         cd src
         fvm flutter config --enable-${{ inputs.enable-platform }}
+
+    - name: Ensure FVM Flutter SDK symlink exists (Unix)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        echo "Ensuring FVM Flutter SDK symlink exists..."
+        echo "Checking possible FVM locations..."
+
+        # FVM might be in different locations
+        FVM_DIRS=("$HOME/.fvm" "$HOME/fvm")
+        FVM_BASE=""
+
+        for dir in "${FVM_DIRS[@]}"; do
+          if [ -d "$dir/versions" ]; then
+            echo "Found FVM directory: $dir"
+            FVM_BASE="$dir"
+            break
+          fi
+        done
+
+        if [ -z "$FVM_BASE" ]; then
+          echo "❌ FVM versions directory not found in any location."
+          echo "Searched: ${FVM_DIRS[*]}"
+          echo "Home directory listing:"
+          ls -la "$HOME/" | grep -E "fvm|\.fvm" || true
+          exit 1
+        fi
+
+        # Get the Flutter version from .fvmrc
+        FLUTTER_VERSION=$(cat src/.fvmrc | grep -o '"flutter": "[^"]*"' | cut -d'"' -f4)
+        echo "Flutter version: $FLUTTER_VERSION"
+
+        # Check if the Flutter version is installed
+        if [ ! -d "$FVM_BASE/versions/$FLUTTER_VERSION" ]; then
+          echo "❌ Flutter version $FLUTTER_VERSION not found in $FVM_BASE/versions/"
+          echo "Available versions:"
+          ls -la "$FVM_BASE/versions/" || true
+          exit 1
+        fi
+
+        # Use ~/.fvm as the standard location for the symlink
+        if [ "$FVM_BASE" != "$HOME/.fvm" ]; then
+          echo "Creating standard ~/.fvm directory..."
+          mkdir -p "$HOME/.fvm"
+        fi
+
+        # Remove existing symlink if it's broken
+        if [ -L "$HOME/.fvm/flutter_sdk" ] && [ ! -e "$HOME/.fvm/flutter_sdk" ]; then
+          echo "Removing broken symlink..."
+          rm "$HOME/.fvm/flutter_sdk"
+        fi
+
+        # Create symlink to the actual Flutter installation
+        if [ ! -e "$HOME/.fvm/flutter_sdk" ]; then
+          echo "Creating FVM flutter_sdk symlink..."
+          ln -s "$FVM_BASE/versions/$FLUTTER_VERSION" "$HOME/.fvm/flutter_sdk"
+          echo "✅ Created symlink: $HOME/.fvm/flutter_sdk -> $FVM_BASE/versions/$FLUTTER_VERSION"
+        fi
+
+        # Verify dart is accessible
+        if [ -f "$HOME/.fvm/flutter_sdk/bin/dart" ]; then
+          echo "✅ Dart SDK found at $HOME/.fvm/flutter_sdk/bin/dart"
+        else
+          echo "❌ Dart SDK not found at $HOME/.fvm/flutter_sdk/bin/dart"
+          exit 1
+        fi
+
+    - name: Ensure Dart SDK is accessible (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Ensuring Dart SDK is accessible on Windows..."
+
+        # Get the Flutter version from .fvmrc
+        $fvmrcContent = Get-Content "src\.fvmrc" -Raw
+        if ($fvmrcContent -match '"flutter":\s*"([^"]+)"') {
+          $flutterVersion = $matches[1]
+          Write-Host "Flutter version: $flutterVersion"
+        } else {
+          Write-Host "❌ Could not parse Flutter version from .fvmrc"
+          exit 1
+        }
+
+        # Possible FVM locations on Windows
+        $fvmLocations = @(
+          "$env:USERPROFILE\.fvm",
+          "$env:USERPROFILE\fvm",
+          "C:\fvm"
+        )
+
+        $flutterSdkPath = $null
+        foreach ($loc in $fvmLocations) {
+          $testPath = Join-Path $loc "versions\$flutterVersion"
+          if (Test-Path $testPath) {
+            Write-Host "Found Flutter SDK at: $testPath"
+            $flutterSdkPath = $testPath
+            break
+          }
+        }
+
+        if (-not $flutterSdkPath) {
+          Write-Host "❌ Flutter SDK not found for version $flutterVersion"
+          Write-Host "Searched locations:"
+          foreach ($loc in $fvmLocations) {
+            Write-Host "  - $loc"
+          }
+          exit 1
+        }
+
+        # Ensure dart.bat exists
+        $dartPath = Join-Path $flutterSdkPath "bin\dart.bat"
+        if (Test-Path $dartPath) {
+          Write-Host "✅ Dart SDK found at: $dartPath"
+        } else {
+          Write-Host "❌ Dart SDK not found at: $dartPath"
+          Write-Host "Listing Flutter SDK directory:"
+          Get-ChildItem (Join-Path $flutterSdkPath "bin") | Select-Object -First 10
+          exit 1
+        }
 
     - name: Install Flutter dependencies
       shell: bash

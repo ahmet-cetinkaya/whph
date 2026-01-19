@@ -47,13 +47,11 @@ jobs:
         with:
           enable-platform: windows-desktop
 
-      - name: Install RPS
+      - name: Install RPS and generate code
         shell: bash
-        run: dart pub global activate rps
-
-      - name: Generate code
-        shell: bash
-        run: rps gen
+        run: |
+          fvm dart pub global activate rps
+          fvm dart pub global run rps:rps gen
 
       - name: Check plugin compatibility
         run: |
