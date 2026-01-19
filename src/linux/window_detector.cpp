@@ -235,7 +235,7 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
 }
 
 bool X11WindowDetector::IsX11Available() {
-    return !ExecuteCommand("which xprop").empty();
+    return !ExecuteCommand("which xprop 2>/dev/null").empty();
 }
 #endif
 
@@ -267,8 +267,8 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
     WindowInfo info{"unknown", "unknown"};
     
     // Check if gdbus is available and gnome-shell is running
-    if (ExecuteCommand("which gdbus").empty() || 
-        ExecuteCommand("pgrep -f gnome-shell").empty()) {
+    if (ExecuteCommand("which gdbus 2>/dev/null").empty() || 
+        ExecuteCommand("pgrep -f gnome-shell 2>/dev/null").empty()) {
         return info;
     }
     
@@ -309,9 +309,9 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
     WindowInfo info{"unknown", "unknown"};
     
     // Check if swaymsg and jq are available, and sway is running
-    if (ExecuteCommand("which swaymsg").empty() || 
-        ExecuteCommand("which jq").empty() ||
-        ExecuteCommand("pgrep -f sway").empty()) {
+    if (ExecuteCommand("which swaymsg 2>/dev/null").empty() || 
+        ExecuteCommand("which jq 2>/dev/null").empty() ||
+        ExecuteCommand("pgrep -f sway 2>/dev/null").empty()) {
         return info;
     }
     
@@ -345,7 +345,7 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
     WindowInfo info{"unknown", "unknown"};
     
     // Check if KDE Plasma is running
-    if (ExecuteCommand("pgrep -f plasmashell").empty()) {
+    if (ExecuteCommand("pgrep -f plasmashell 2>/dev/null").empty()) {
         return info;
     }
     
@@ -425,7 +425,7 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
     }
     
     // Method 2: Try using xprop even on Wayland (sometimes works with XWayland)
-    if (!ExecuteCommand("which xprop").empty()) {
+    if (!ExecuteCommand("which xprop 2>/dev/null").empty()) {
         std::string xprop_result = ExecuteCommand("xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | cut -d' ' -f5");
         if (!xprop_result.empty() && xprop_result != "0x0") {
             std::string title_cmd = "xprop -id " + ShellEscape(xprop_result) + " WM_NAME 2>/dev/null | cut -d'\"' -f2";
@@ -443,7 +443,7 @@ WindowInfo WaylandWindowDetector::TryKdeWayland() {
     }
     
     // Method 3: Try using wmctrl (sometimes works on KDE Wayland)
-    if (!ExecuteCommand("which wmctrl").empty()) {
+    if (!ExecuteCommand("which wmctrl 2>/dev/null").empty()) {
         std::string wmctrl_result = ExecuteCommand("wmctrl -l 2>/dev/null | head -1");
         if (!wmctrl_result.empty()) {
             // Parse wmctrl output: window_id desktop_id hostname window_title
@@ -502,11 +502,11 @@ WindowInfo WaylandWindowDetector::TryWlrootsWayland() {
     WindowInfo info{"unknown", "unknown"};
     
     // Try Hyprland
-    if (!ExecuteCommand("which hyprctl").empty()) {
+    if (!ExecuteCommand("which hyprctl 2>/dev/null").empty()) {
         std::string cmd = "hyprctl activewindow -j 2>/dev/null";
         std::string result = ExecuteCommand(cmd);
         
-        if (!result.empty() && !ExecuteCommand("which jq").empty()) {
+        if (!result.empty() && !ExecuteCommand("which jq 2>/dev/null").empty()) {
             std::string title_cmd = "echo '" + result + "' | jq -r '.title' 2>/dev/null";
             info.title = WindowDetector::ValidateUtf8(ExecuteCommand(title_cmd));
             
@@ -520,7 +520,7 @@ WindowInfo WaylandWindowDetector::TryWlrootsWayland() {
     }
     
     // Try wayinfo for river and other wlroots compositors
-    if (!ExecuteCommand("which wayinfo").empty()) {
+    if (!ExecuteCommand("which wayinfo 2>/dev/null").empty()) {
         info.title = WindowDetector::ValidateUtf8(ExecuteCommand("wayinfo active-window-title 2>/dev/null"));
         info.application = WindowDetector::ValidateUtf8(ExecuteCommand("wayinfo active-window-app-id 2>/dev/null"));
     }
@@ -648,7 +648,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
     // Detect which compositor is running and use appropriate method
     
     // Try GNOME/Mutter first
-    if (!ExecuteCommand("pgrep -f gnome-shell").empty()) {
+    if (!ExecuteCommand("pgrep -f gnome-shell 2>/dev/null").empty()) {
         std::string gnome_cmd = "gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval \"global.get_window_actors().find(w => w.get_meta_window().get_title().includes('" + windowTitle + "')).get_meta_window().activate(global.get_current_time())\" 2>/dev/null";
         if (system(gnome_cmd.c_str()) == 0) {
             return true;
@@ -662,7 +662,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
     }
     
     // Try Sway
-    if (!ExecuteCommand("pgrep -f sway").empty()) {
+    if (!ExecuteCommand("pgrep -f sway 2>/dev/null").empty()) {
         std::vector<std::string> sway_commands = {
             "swaymsg '[title=\"" + windowTitle + "\"] focus' 2>/dev/null",
             "swaymsg '[app_id=\"whph\"] focus' 2>/dev/null",
@@ -677,7 +677,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
     }
     
     // Try KDE/KWin with safer methods
-    if (!ExecuteCommand("pgrep -f plasmashell").empty()) {
+    if (!ExecuteCommand("pgrep -f plasmashell 2>/dev/null").empty()) {
         // Method 1: Try using wmctrl first (sometimes works on KDE Wayland)
         std::vector<std::string> wmctrl_commands = {
             "wmctrl -a \"" + windowTitle + "\" 2>/dev/null",
@@ -691,7 +691,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
         }
         
         // Method 2: Try KWin D-Bus methods if available
-        if (!ExecuteCommand("which qdbus").empty()) {
+        if (!ExecuteCommand("which qdbus 2>/dev/null").empty()) {
             // Check if KWin scripting is available
             std::string kwin_check = ExecuteCommand("qdbus org.kde.KWin /Scripting 2>/dev/null");
             if (!kwin_check.empty()) {
@@ -739,7 +739,7 @@ bool WaylandWindowDetector::FocusWindow(const std::string& windowTitle) {
     }
     
     // Try Hyprland
-    if (!ExecuteCommand("pgrep -f Hyprland").empty()) {
+    if (!ExecuteCommand("pgrep -f Hyprland 2>/dev/null").empty()) {
         std::vector<std::string> hypr_commands = {
             "hyprctl dispatch focuswindow title:\"" + windowTitle + "\" 2>/dev/null",
             "hyprctl dispatch focuswindow class:whph 2>/dev/null"
