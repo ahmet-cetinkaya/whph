@@ -45,74 +45,88 @@ class ChangelogDialog extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.sizeLarge),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: AppTheme.sizeLarge,
             children: [
-              // Logo
-              const Image(
-                image: AssetImage(AppInfo.logoPath),
-                width: 80,
-                height: 80,
-              ),
-              const SizedBox(height: AppTheme.sizeMedium),
+              Center(
+                child: Column(
+                  spacing: AppTheme.sizeMedium,
+                  children: [
+                    // Logo
+                    const Image(
+                      image: AssetImage(AppInfo.logoPath),
+                      width: 80,
+                      height: 80,
+                    ),
 
-              // App name
-              Text(
-                AppInfo.name,
-                style: AppTheme.headlineMedium.copyWith(fontWeight: FontWeight.bold),
-              ),
+                    // App name
+                    Text(
+                      AppInfo.name,
+                      style: AppTheme.headlineMedium.copyWith(fontWeight: FontWeight.bold),
+                    ),
 
-              // Version
-              Text(
-                translationService.translate(
-                  AboutTranslationKeys.version,
-                  namedArgs: {'version': changelogEntry.version},
+                    // Version
+                    Text(
+                      translationService.translate(
+                        AboutTranslationKeys.version,
+                        namedArgs: {'version': changelogEntry.version},
+                      ),
+                      style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
+                    ),
+                  ],
                 ),
-                style: AppTheme.bodyMedium.copyWith(color: AppTheme.secondaryTextColor),
               ),
-              const SizedBox(height: AppTheme.sizeXLarge),
 
               // Changelog content - using MarkdownBody instead of Markdown to avoid unbounded height
-              Align(
-                alignment: Alignment.centerLeft,
-                child: MarkdownBody(
-                  data: changelogEntry.content,
-                  onTapLink: (text, href, title) {
-                    if (href != null) {
-                      _launchUrl(href);
-                    }
-                  },
-                  styleSheet: MarkdownStyleSheet(
-                    p: TextStyle(
-                      fontSize: AppTheme.fontSizeMedium,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    h1: TextStyle(
-                      fontSize: AppTheme.fontSizeXXLarge,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    h2: TextStyle(
-                      fontSize: AppTheme.fontSizeXLarge,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    h3: TextStyle(
-                      fontSize: AppTheme.fontSizeLarge,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    listBullet: TextStyle(
-                      fontSize: AppTheme.fontSizeLarge,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    a: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      decoration: TextDecoration.underline,
-                    ),
+              MarkdownBody(
+                data: changelogEntry.content,
+                onTapLink: (text, href, title) {
+                  if (href != null) {
+                    _launchUrl(href);
+                  }
+                },
+                styleSheet: MarkdownStyleSheet(
+                  p: TextStyle(
+                    fontSize: AppTheme.fontSizeMedium,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  h1: TextStyle(
+                    fontSize: AppTheme.fontSizeXXLarge,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  h2: TextStyle(
+                    fontSize: AppTheme.fontSizeXLarge,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  h3: TextStyle(
+                    fontSize: AppTheme.fontSizeLarge,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  listBullet: TextStyle(
+                    fontSize: AppTheme.fontSizeLarge,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  a: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
-              const SizedBox(height: AppTheme.sizeLarge),
+
+              // Read more button
+              TextButton(
+                onPressed: () => _launchUrl(AppInfo.changelogUrl),
+                child: Text(
+                  translationService.translate(AboutTranslationKeys.changelogReadMore),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

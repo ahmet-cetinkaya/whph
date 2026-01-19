@@ -40,5 +40,6 @@ class AboutTranslationKeys extends application.AboutTranslationKeys {
   // Changelog dialog
   static const String changelogTitle = 'about.changelog.title';
   static const String changelogCloseButton = 'about.changelog.close_button';
+  static const String changelogReadMore = 'about.changelog.read_more';
   static const String changelogFetchError = 'about.changelog.fetch_error';
 }

@@ -60,7 +60,7 @@ class ChangelogDialogService implements IChangelogDialogService {
             changelogEntry: changelogEntry,
             translationService: _translationService,
           ),
-          size: DialogSize.medium,
+          size: DialogSize.large,
         );
       }
 

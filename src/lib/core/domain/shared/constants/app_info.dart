@@ -15,6 +15,7 @@ class AppInfo {
   static const String buildNumber = "69";
   static const String websiteUrl = "https://whph.ahmetcetinkaya.me/";
   static const String sourceCodeUrl = "https://github.com/ahmet-cetinkaya/whph";
+  static const String changelogUrl = "$sourceCodeUrl/blob/main/CHANGELOG.md";
   static const String logoPath = AppAssets.logo;
   static const String supportUrl = "https://ahmetcetinkaya.me/donate";
   static const String updateCheckerUrl = "https://api.github.com/repos/ahmet-cetinkaya/whph/releases/latest";

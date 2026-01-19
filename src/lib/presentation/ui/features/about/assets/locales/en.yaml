@@ -38,4 +38,5 @@ about:
   changelog:
     title: "What's New"
     close_button: "Got it!"
+    read_more: "Read all changes"
     fetch_error: "Couldn't fetch changelog"
