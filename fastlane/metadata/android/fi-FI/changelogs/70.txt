@@ -1,0 +1,22 @@
+Uusia järjestelytyökaluja:
+
+• Tägityypit ja ryhmittely
+• Viikko-ohjelmat eri aikoina
+• CSV tuonti prioriteetilla
+• Jaa luodaksesi Androidista
+• Pyyhkäise valmiiksi
+• Toistuminen valmistumispvm mukaan
+• 3-tila seuranta
+• Ryhmittelyvaihtoehdot
+• Nopeät päivämäärä presets
+
+Parannukset:
+• Nopeampi lataus Android
+• Päivämäärävalitsin
+
+Korjaukset:
+• KDE tehtäväpalkki
+• Wayland tunnistus
+• Widget lajittelu
+• Kohdistin korjaukset
+• Sync vakaus

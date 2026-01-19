@@ -1,0 +1,22 @@
+Neue Orga-Tools:
+
+• Tag-Typen & Gruppierung
+• Wöchentliche Pläne mit Zeiten
+• CSV-Import mit Priorität
+• Teilen für Erstellung von Android
+• Wischen zum Abschließen
+• Wiederholung nach Abschluss
+• 3-Zustands-Gewohnheiten
+• Listen-Gruppierung
+• Schnelle Datumsvorgaben
+
+Verbesserungen:
+• Schnelleres Laden
+• Bessere Datumsauswahl
+
+Korrekturen:
+• KDE-Taskleisten-Icon
+• Wayland-Fenstererkennung
+• Widget-Sortierung
+• Cursor-Fixes
+• Sync-Stabilität

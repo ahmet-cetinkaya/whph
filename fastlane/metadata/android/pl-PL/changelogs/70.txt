@@ -1,0 +1,22 @@
+Nowe narzędzia:
+
+• Typy tagów i grupowanie
+• Harmonogramy tygodniowe
+• Import CSV z priorytetem
+• Udostępnij aby utworzyć z Android
+• Przesuń aby ukończyć
+• Rekurencja wg ukończenia
+• Śledzenie 3 stanów
+• Opcje grupowania
+• Szybkie presety daty
+
+Ulepszenia:
+• Szybsze ładowanie Android
+• Lepszy wybór daty
+
+Poprawki:
+• Pasek zadań KDE
+• Wykrywanie Wayland
+• Sortowanie widgetów
+• Poprawki kursora
+• Stabilność sync

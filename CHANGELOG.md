@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-01-20
+
+### Added
+
+- **Tag Organization**: Organize tags into three types (labels, contexts, projects) for better categorization
+- **Tag Grouping & Sorting**: Group tasks, habits, and notes by tag with customizable tag order
+- **Weekly Scheduling**: Set different times for each day when configuring weekly schedules
+- **Tag Colors in App Usage**: Display app usage time bars using your tag colors for visual clarity
+- **CSV Import**: Import tasks from CSV files with support for priority, dates, and descriptions
+- **Android Sharing**: Quickly create tasks and notes directly from Android's share menu
+- **Easy Task Completion**: Complete tasks with a simple swipe or directly from notifications
+- **Flexible Recurrence**: Set tasks to recur based on completion date (e.g., "3 days after I finish it")
+- **Task Reminders**: Get reminded before tasks are due with customizable timing
+- **Three-State Habit Tracking**: Track habits as complete, skipped, or missed for more accurate statistics
+- **List Grouping**: Group tasks, habits, and notes by date, tag, priority, and more
+- **Quick Date Selection**: Choose from presets like "Today", "This Week", "This Month" in date pickers
+
+### Changed
+
+- **Improved Performance**: Lists now load faster and scroll more smoothly on Android
+- **Better Date Picker**: More intuitive date and time selection with localized options
+
+### Fixed
+
+- **Linux Integration**: App icon now appears correctly in KDE taskbar on X11
+- **Window Detection**: Improved app tracking on Wayland with KDE Plasma
+- **Widget Sorting**: Home screen widgets now display items in the correct order
+- **Text Input**: Fixed cursor jumping when typing quickly in description fields
+- **List Reordering**: Drag-and-drop customization now works reliably in all lists
+- **Memory Management**: Fixed memory leaks to improve app stability
+- **Import Errors**: Better error messages when CSV imports fail
+- **Translation Issues**: Fixed various localization problems across languages
+- **Sync Reliability**: Improved sync connection stability and error handling
+
 ## [0.19.3] - 2026-01-02
 
 ### Added

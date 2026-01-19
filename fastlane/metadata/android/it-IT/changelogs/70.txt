@@ -1,0 +1,22 @@
+Nuovi strumenti:
+
+• Tipi di tag e raggruppamento
+• Orari settimanali con ore
+• Importa CSV con priorità
+• Condividi per creare da Android
+• Scorri per completare
+• Ricorrenza per completamento
+• Tracciamento 3 stati
+• Opzioni raggruppamento
+• Preset rapidi data
+
+Miglioramenti:
+• Caricamento più rapido
+• Migliore selezione data
+
+Correzioni:
+• Icona barra KDE
+• Rilevamento Wayland
+• Ordinamento widget
+• Fixes cursore
+• Stabilità sync

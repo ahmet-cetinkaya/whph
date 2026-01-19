@@ -1,0 +1,22 @@
+New organization tools:
+
+• Tag types & grouping
+• Weekly schedules with times per day
+• CSV import with priority
+• Share to create from Android
+• Swipe to complete tasks
+• Task recurrence by completion
+• 3-state habit tracking
+• List grouping options
+• Quick date presets
+
+Improvements:
+• Faster Android loading
+• Better date picker
+
+Fixes:
+• KDE taskbar icon
+• Wayland window detection
+• Widget sorting
+• Text cursor fixes
+• Sync stability

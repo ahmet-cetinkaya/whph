@@ -1,0 +1,22 @@
+Unelte noi de organizare:
+
+• Tipuri de etichete și grupare
+• Programe săptămânale cu ore
+• Import CSV cu prioritate
+• Partajați pentru a crea din Android
+• Glisați pentru a finaliza
+• Recurență per finalizare
+• Urmărire 3 stări
+• Opțiuni de grupare
+• Presets rapide dată
+
+Îmbunătățiri:
+• Încărcare mai rapidă Android
+• Selector de dată mai bun
+
+Corecturi:
+• Bară KDE
+• Detectare Wayland
+• Sortare widget
+• Corecturi cursor
+• Stabilitate sync

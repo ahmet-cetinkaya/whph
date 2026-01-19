@@ -1,0 +1,22 @@
+Nieuwe organisatietools:
+
+• Tagtypes en groepering
+• Weekschema's met uren
+• CSV import met prioriteit
+• Delen om te maken van Android
+• Veeg om te voltooien
+• Recurrentie op voltooiing
+• 3-status tracking
+• Groepeer opties
+• Snelle datum presets
+
+Verbeteringen:
+• Snellere lading Android
+• Betere datumkiezer
+
+Fixes:
+• KDE taakbalk
+• Wayland detectie
+• Widget sortering
+• Cursor fixes
+• Sync stabiliteit

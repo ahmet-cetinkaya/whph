@@ -1,0 +1,22 @@
+Nova organizacijska orodja:
+
+• Vrste oznak in združevanje
+• Tedenski urniki z urami
+• CSV uvoz s prioriteto
+• Deli za ustvarjanje z Androida
+• Pomakni za dokončanje
+• Ponavljanje po dokončanju
+• 3-staško sledenje
+• Možnosti združevanja
+• Hitri presets datuma
+
+Izboljšave:
+• Hitrejše nalaganje Android
+• Boljši izbirnik datuma
+
+Popravki:
+• Vrstica KDE
+• Zaznavanje Wayland
+• Razvrščanje gradnikov
+• Popravki kazalca
+• Stabilnost sync

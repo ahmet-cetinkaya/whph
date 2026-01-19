@@ -1,0 +1,22 @@
+Nové organizační nástroje:
+
+• Typy štítků a skupiny
+• Týdenní plány s hodinami
+• Import CSV s prioritou
+• Sdílet pro vytvoření z Android
+• Přesunout pro dokončení
+• Recurrence podle dokončení
+• 3-stavové sledování
+• Možnosti skupin
+• Rychlé datum presets
+
+Vylepšení:
+• Rychlejší načítání Android
+• Lepší výběr data
+
+Opravy:
+• Panel KDE
+• Detekce Wayland
+• Řazení widgetů
+• Opravy kurzoru
+• Stabilita sync

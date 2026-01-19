@@ -1,0 +1,22 @@
+Yeni organizasyon araçları:
+
+• Etiket türleri ve gruplama
+• Haftalık saatler
+• CSV içe aktarma (öncelik)
+• Android paylaşarak oluştur
+• Kaydırarak tamamla
+• Bitiş tarihine göre tekrarlama
+• 3 durumlu takip
+• Gruplama seçenekleri
+• Hızlı tarih önayarları
+
+İyileştirmeler:
+• Android'de hızlı yükleme
+• Daha iyi tarih seçici
+
+Düzeltmeler:
+• KDE görev çubuğu
+• Wayland algılama
+• Widget sıralama
+• İmleç düzeltmeleri
+• Sync kararlılığı

@@ -1,0 +1,22 @@
+Nye organisationsværktøjer:
+
+• Tag-typer og gruppering
+• Ugeplaner med timer
+• CSV import med prioritet
+• Del for at oprette fra Android
+• Stryg for at færdiggøre
+• Rekurrens per færdiggørelse
+• 3-status sporing
+• Grupperingsmuligheder
+• Hurtige dato presets
+
+Forbedringer:
+• Hurtigere indlæsning Android
+• Bedre datovælger
+
+Fixes:
+• KDE opgavelinje
+• Wayland detektion
+• Widget sortering
+• Cursor rettelser
+• Sync stabilitet

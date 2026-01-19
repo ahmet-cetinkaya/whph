@@ -1,0 +1,22 @@
+Nouveaux outils:
+
+• Types de tags et groupement
+• Horaires hebdo avec heures
+• Import CSV avec priorité
+• Partager pour créer depuis Android
+• Glisser pour compléter
+• Récurrence par achèvement
+• Suivi 3 états
+• Options de groupement
+• Presets rapides date
+
+Améliorations:
+• Chargement plus rapide
+• Meilleur sélecteur date
+
+Corrections:
+• Icône barre KDE
+• Détection Wayland
+• Tri widget
+• Fixes curseur
+• Stabilité sync
