@@ -141,10 +141,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout main branch (latest fixes)
+      - name: Checkout tag commit
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ steps.get_tag.outputs.tag-name }}
           fetch-depth: 0
           submodules: false
 
