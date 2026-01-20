@@ -54,10 +54,21 @@ jobs:
             RELEASE_RUN_ID="${{ github.event.workflow_run.id }}"
             echo "Release workflow run ID: $RELEASE_RUN_ID"
             
+            # First check if should-release is true
+            SHOULD_RELEASE=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs | .["should-release"]')
+            echo "Should release: $SHOULD_RELEASE"
+
+            if [[ "$SHOULD_RELEASE" != "true" ]]; then
+              echo "❌ Release workflow indicates not all workflows completed yet"
+              echo "Available outputs:"
+              gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs'
+              exit 1
+            fi
+
             # Get the outputs from the release workflow
-            TAG_NAME=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["tag-name"]')
-            TAG_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["tag-version"]')
-            APP_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs | .["app-version"]')
+            TAG_NAME=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs | .["tag-name"]')
+            TAG_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs | .["tag-version"]')
+            APP_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs | .["app-version"]')
             
             echo "Tag name: $TAG_NAME"
             echo "Tag version: $TAG_VERSION"
