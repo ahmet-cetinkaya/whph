@@ -62,6 +62,10 @@ runs:
         ${{ inputs.flutter-command }} pub run build_runner build --delete-conflicting-outputs
         echo "✅ build_runner completed successfully"
 
+        echo "🔨 Generating drift schema helper files..."
+        ${{ inputs.flutter-command }} pub run drift_dev schema generate lib/infrastructure/persistence/shared/contexts/drift/schemas/app_database/ test/drift/app_database/generated
+        echo "✅ Drift schema generation completed"
+
     # Step 4: Create test results directory
     - name: Create test results directory
       shell: bash
