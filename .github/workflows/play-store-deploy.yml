@@ -101,6 +101,11 @@ jobs:
         id: app_version
         uses: ./.github/actions/get-app-version
 
+      - name: Install RPS and generate code
+        run: |
+          fvm dart pub global activate rps
+          rps gen
+
       - name: Remove non-Android platforms
         run: |
           cd src

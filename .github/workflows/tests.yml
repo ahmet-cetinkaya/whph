@@ -97,6 +97,13 @@ jobs:
       - name: Install Flutter Dependencies
         uses: ./.github/actions/install-flutter-deps
 
+      - name: Generate Code
+        shell: bash
+        run: |
+          cd src
+          fvm flutter pub run build_runner build --delete-conflicting-outputs
+          fvm dart run drift_dev schema generate lib/infrastructure/persistence/shared/contexts/drift/schemas/app_database/ test/drift/app_database/generated
+
       - name: Run Performance Tests
         shell: bash
         run: |
@@ -145,6 +152,13 @@ jobs:
 
       - name: Install Flutter Dependencies
         uses: ./.github/actions/install-flutter-deps
+
+      - name: Generate Code
+        shell: bash
+        run: |
+          cd src
+          fvm flutter pub run build_runner build --delete-conflicting-outputs
+          fvm dart run drift_dev schema generate lib/infrastructure/persistence/shared/contexts/drift/schemas/app_database/ test/drift/app_database/generated
 
       - name: Run Security Audit
         shell: bash
