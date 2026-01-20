@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:whph/presentation/ui/features/about/components/changelog_dialog.dart';
+import 'package:whph/presentation/ui/features/about/constants/about_translation_keys.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
@@ -17,7 +18,10 @@ void main() {
     setUp(() {
       mockTranslationService = MockITranslationService();
       when(mockTranslationService.translate(any)).thenReturn('Translated text');
-      when(mockTranslationService.translate(any, namedArgs: anyNamed('namedArgs'))).thenReturn('Version 0.18.0');
+      when(mockTranslationService.translate(AboutTranslationKeys.changelogCloseButton)).thenReturn('Close');
+      when(mockTranslationService.translate(AboutTranslationKeys.changelogReadMore)).thenReturn('Read More');
+      when(mockTranslationService.translate(AboutTranslationKeys.version, namedArgs: anyNamed('namedArgs')))
+          .thenReturn('Version 0.18.0');
     });
 
     Widget createWidgetUnderTest() {
@@ -81,13 +85,10 @@ void main() {
     testWidgets('should have close button', (WidgetTester tester) async {
       // Arrange
       await tester.pumpWidget(createWidgetUnderTest());
-
-      // Act
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.byType(TextButton), findsOneWidget);
-      expect(find.text('Version 0.18.0'), findsAtLeastNWidgets(1)); // Version number appears multiple times
+      expect(find.text('Close'), findsOneWidget);
     });
 
     testWidgets('should close dialog when close button pressed', (WidgetTester tester) async {
@@ -96,13 +97,11 @@ void main() {
       await tester.pumpAndSettle();
 
       // Act
-      final closeButton = tester.widget<TextButton>(find.byType(TextButton));
-      closeButton.onPressed?.call();
+      await tester.tap(find.text('Close'));
       await tester.pumpAndSettle();
 
       // Assert
       // Dialog should be closed (navigation popped)
-      // In a real app, this would navigate back
     });
 
     testWidgets('should handle markdown links', (WidgetTester tester) async {
