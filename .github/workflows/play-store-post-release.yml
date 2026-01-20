@@ -80,7 +80,7 @@ jobs:
 
               # Wait for all CI workflows to complete with retry mechanism
               WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
-              MAX_RETRIES=12  # 12 retries * 30 seconds = 6 minutes max wait
+              MAX_RETRIES=40  # 40 retries * 30 seconds = 20 minutes max wait
               RETRY_COUNT=0
               ALL_SUCCESS=false
 
@@ -126,7 +126,7 @@ jobs:
                 echo "tag-found=true" >> $GITHUB_OUTPUT
                 echo "✅ All workflows completed successfully for tag $TAG_NAME"
               else
-                echo "❌ Not all workflows completed successfully after $MAX_RETRIES attempts (6 minutes)"
+                echo "❌ Not all workflows completed successfully after $MAX_RETRIES attempts (20 minutes)"
                 echo "💡 Tip: The CI workflows may still be running. Please wait for them to complete and retry manually."
                 exit 1
               fi
