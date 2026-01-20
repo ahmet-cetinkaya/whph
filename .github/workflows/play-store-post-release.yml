@@ -64,11 +64,11 @@ jobs:
             echo "App version: $APP_VERSION"
 
             if [[ -z "$TAG_NAME" || "$TAG_NAME" == "null" ]]; then
-              echo "❌ No tag found in release workflow outputs, getting tag from release workflow head branch..."
+              echo "❌ No tag found in release workflow outputs, getting latest tag from repository..."
 
-              # Get the tag name from the release workflow's head branch (tag push)
-              TAG_NAME=$(gh run view "$RELEASE_RUN_ID" --json headBranch --jq '.headBranch')
-              echo "Tag from release workflow head branch: $TAG_NAME"
+              # Get the latest tag from the repository
+              TAG_NAME=$(git describe --tags --abbrev=0)
+              echo "Tag from repository: $TAG_NAME"
 
               # Extract version from tag name (remove 'v' prefix)
               TAG_VERSION="${TAG_NAME#v}"
