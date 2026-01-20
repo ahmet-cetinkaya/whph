@@ -64,7 +64,19 @@ jobs:
             echo "App version: $APP_VERSION"
 
             if [[ -z "$TAG_NAME" || "$TAG_NAME" == "null" ]]; then
-              echo "❌ No tag found in release workflow outputs, checking CI workflows directly..."
+              echo "❌ No tag found in release workflow outputs, getting tag from release workflow head branch..."
+
+              # Get the tag name from the release workflow's head branch (tag push)
+              TAG_NAME=$(gh run view "$RELEASE_RUN_ID" --json headBranch --jq '.headBranch')
+              echo "Tag from release workflow head branch: $TAG_NAME"
+
+              # Extract version from tag name (remove 'v' prefix)
+              TAG_VERSION="${TAG_NAME#v}"
+              echo "Tag version: $TAG_VERSION"
+
+              # Get the app version from pubspec.yaml
+              APP_VERSION=$(awk '/^version:/ {print $2}' src/pubspec.yaml)
+              echo "App version: $APP_VERSION"
 
               # Check if all three CI workflows have completed successfully for this tag
               WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
