@@ -74,7 +74,7 @@ jobs:
               echo "tag-found=false" >> $GITHUB_OUTPUT
               echo "❌ No tag found in release workflow outputs"
               echo "Available outputs:"
-              gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "release") | .outputs'
+              gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs'
               exit 1
             fi
           fi
