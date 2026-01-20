@@ -10,7 +10,7 @@ on:
 jobs:
   deploy-to-internal:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Release All Platforms') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Release All Platforms' && github.event.workflow_run.event == 'workflow_run') }}
     
     steps:
       - name: Checkout code
@@ -78,29 +78,44 @@ jobs:
               APP_VERSION=$(awk '/^version:/ {print $2}' src/pubspec.yaml)
               echo "App version: $APP_VERSION"
 
-              # Check if all three CI workflows have completed successfully for this tag
+              # Wait for all CI workflows to complete with retry mechanism
               WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
-              ALL_SUCCESS=true
+              MAX_RETRIES=12  # 12 retries * 30 seconds = 6 minutes max wait
+              RETRY_COUNT=0
+              ALL_SUCCESS=false
 
-              for workflow in "${WORKFLOWS[@]}"; do
-                echo "Checking workflow: $workflow"
-                LATEST_RUN=$(gh run list --workflow="$workflow" --limit=10 --json status,conclusion,headBranch --jq ".[] | select(.headBranch == \"$TAG_NAME\")" | head -1)
+              while [[ $RETRY_COUNT -lt $MAX_RETRIES && "$ALL_SUCCESS" == "false" ]]; do
+                echo "🔄 Checking CI workflows (attempt $((RETRY_COUNT + 1))/$MAX_RETRIES)..."
+                ALL_SUCCESS=true
 
-                if [[ -n "$LATEST_RUN" ]]; then
-                  STATUS=$(echo "$LATEST_RUN" | jq -r '.status')
-                  CONCLUSION=$(echo "$LATEST_RUN" | jq -r '.conclusion')
+                for workflow in "${WORKFLOWS[@]}"; do
+                  echo "Checking workflow: $workflow"
+                  LATEST_RUN=$(gh run list --workflow="$workflow" --limit=10 --json status,conclusion,headBranch --jq ".[] | select(.headBranch == \"$TAG_NAME\")" | head -1)
 
-                  echo "  Status: $STATUS, Conclusion: $CONCLUSION"
+                  if [[ -n "$LATEST_RUN" ]]; then
+                    STATUS=$(echo "$LATEST_RUN" | jq -r '.status')
+                    CONCLUSION=$(echo "$LATEST_RUN" | jq -r '.conclusion')
 
-                  if [[ "$STATUS" != "completed" ]] || [[ "$CONCLUSION" != "success" ]]; then
-                    echo "  ❌ Workflow $workflow not ready"
-                    ALL_SUCCESS=false
+                    echo "  Status: $STATUS, Conclusion: $CONCLUSION"
+
+                    if [[ "$STATUS" != "completed" ]] || [[ "$CONCLUSION" != "success" ]]; then
+                      echo "  ⏳ Workflow $workflow not ready yet"
+                      ALL_SUCCESS=false
+                    else
+                      echo "  ✅ Workflow $workflow completed successfully"
+                    fi
                   else
-                    echo "  ✅ Workflow $workflow completed successfully"
+                    echo "  ❌ No run found for workflow $workflow with tag $TAG_NAME"
+                    ALL_SUCCESS=false
                   fi
-                else
-                  echo "  ❌ No run found for workflow $workflow with tag $TAG_NAME"
-                  ALL_SUCCESS=false
+                done
+
+                if [[ "$ALL_SUCCESS" == "false" ]]; then
+                  RETRY_COUNT=$((RETRY_COUNT + 1))
+                  if [[ $RETRY_COUNT -lt $MAX_RETRIES ]]; then
+                    echo "⏱️ Waiting 30 seconds before next check..."
+                    sleep 30
+                  fi
                 fi
               done
 
@@ -111,7 +126,8 @@ jobs:
                 echo "tag-found=true" >> $GITHUB_OUTPUT
                 echo "✅ All workflows completed successfully for tag $TAG_NAME"
               else
-                echo "❌ Not all workflows completed successfully yet"
+                echo "❌ Not all workflows completed successfully after $MAX_RETRIES attempts (6 minutes)"
+                echo "💡 Tip: The CI workflows may still be running. Please wait for them to complete and retry manually."
                 exit 1
               fi
             else
