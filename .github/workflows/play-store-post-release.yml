@@ -10,7 +10,7 @@ on:
 jobs:
   deploy-to-internal:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.workflow == 'Release All Platforms') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Release All Platforms') }}
     
     steps:
       - name: Checkout code
