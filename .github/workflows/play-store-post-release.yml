@@ -53,40 +53,61 @@ jobs:
             # Get the release workflow run ID
             RELEASE_RUN_ID="${{ github.event.workflow_run.id }}"
             echo "Release workflow run ID: $RELEASE_RUN_ID"
-            
-            # First check if should-release is true
-            SHOULD_RELEASE=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs | .["should-release"]')
-            echo "Should release: $SHOULD_RELEASE"
 
-            if [[ "$SHOULD_RELEASE" != "true" ]]; then
-              echo "❌ Release workflow indicates not all workflows completed yet"
-              echo "Available outputs:"
-              gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs'
-              exit 1
-            fi
-
-            # Get the outputs from the release workflow
+            # Get the tag name from the release workflow
             TAG_NAME=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs | .["tag-name"]')
             TAG_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs | .["tag-version"]')
             APP_VERSION=$(gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs | .["app-version"]')
-            
+
             echo "Tag name: $TAG_NAME"
             echo "Tag version: $TAG_VERSION"
             echo "App version: $APP_VERSION"
-            
-            if [[ -n "$TAG_NAME" && "$TAG_NAME" != "null" ]]; then
+
+            if [[ -z "$TAG_NAME" || "$TAG_NAME" == "null" ]]; then
+              echo "❌ No tag found in release workflow outputs, checking CI workflows directly..."
+
+              # Check if all three CI workflows have completed successfully for this tag
+              WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
+              ALL_SUCCESS=true
+
+              for workflow in "${WORKFLOWS[@]}"; do
+                echo "Checking workflow: $workflow"
+                LATEST_RUN=$(gh run list --workflow="$workflow" --limit=10 --json status,conclusion,headBranch --jq ".[] | select(.headBranch == \"$TAG_NAME\")" | head -1)
+
+                if [[ -n "$LATEST_RUN" ]]; then
+                  STATUS=$(echo "$LATEST_RUN" | jq -r '.status')
+                  CONCLUSION=$(echo "$LATEST_RUN" | jq -r '.conclusion')
+
+                  echo "  Status: $STATUS, Conclusion: $CONCLUSION"
+
+                  if [[ "$STATUS" != "completed" ]] || [[ "$CONCLUSION" != "success" ]]; then
+                    echo "  ❌ Workflow $workflow not ready"
+                    ALL_SUCCESS=false
+                  else
+                    echo "  ✅ Workflow $workflow completed successfully"
+                  fi
+                else
+                  echo "  ❌ No run found for workflow $workflow with tag $TAG_NAME"
+                  ALL_SUCCESS=false
+                fi
+              done
+
+              if [[ "$ALL_SUCCESS" == "true" ]]; then
+                echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
+                echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
+                echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
+                echo "tag-found=true" >> $GITHUB_OUTPUT
+                echo "✅ All workflows completed successfully for tag $TAG_NAME"
+              else
+                echo "❌ Not all workflows completed successfully yet"
+                exit 1
+              fi
+            else
               echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
               echo "tag-version=$TAG_VERSION" >> $GITHUB_OUTPUT
               echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
               echo "tag-found=true" >> $GITHUB_OUTPUT
               echo "✅ Successfully retrieved tag information from release workflow"
-            else
-              echo "tag-name=" >> $GITHUB_OUTPUT
-              echo "tag-found=false" >> $GITHUB_OUTPUT
-              echo "❌ No tag found in release workflow outputs"
-              echo "Available outputs:"
-              gh run view "$RELEASE_RUN_ID" --json jobs --jq '.jobs[] | select(.name == "check-workflows") | .outputs'
-              exit 1
             fi
           fi
         env:
