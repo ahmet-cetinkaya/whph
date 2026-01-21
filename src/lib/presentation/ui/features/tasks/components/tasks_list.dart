@@ -771,7 +771,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
                       }
                       trailingButtons.add(ReorderableDragStartListener(
                         index: i,
-                        child: const Icon(Icons.drag_handle, color: Colors.grey),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
+                          child: Icon(Icons.drag_handle, color: Colors.grey),
+                        ),
                       ));
 
                       return Padding(
@@ -901,7 +904,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
         trailingButtons.add(ReorderableDragStartListener(
           index: index,
-          child: const Icon(Icons.drag_handle, color: Colors.grey),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
+            child: Icon(Icons.drag_handle, color: Colors.grey),
+          ),
         ));
       }
 
