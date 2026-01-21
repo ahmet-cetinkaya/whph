@@ -113,6 +113,12 @@ class AndroidReminderService implements IReminderService {
       return;
     }
 
+    // Translate action button text if payload contains taskId or habitId
+    String? actionButtonText;
+    if (payload != null && (payload.contains('taskId') || payload.contains('habitId'))) {
+      actionButtonText = _translateText('shared.buttons.done', payload);
+    }
+
     try {
       final success = await _scheduleNotification(
         id: notificationId,
@@ -121,6 +127,7 @@ class AndroidReminderService implements IReminderService {
         delaySeconds: delaySeconds,
         payload: payload,
         reminderId: id, // Pass the original string ID for pattern matching
+        actionButtonText: actionButtonText,
       );
 
       if (!success) {
@@ -142,6 +149,7 @@ class AndroidReminderService implements IReminderService {
     required int delaySeconds,
     String? payload,
     String? reminderId,
+    String? actionButtonText,
   }) async {
     if (!Platform.isAndroid) {
       return false;
@@ -178,6 +186,7 @@ class AndroidReminderService implements IReminderService {
         'body': body,
         'payload': enhancedPayload,
         'delaySeconds': delaySeconds,
+        'actionButtonText': actionButtonText,
       });
 
       return result ?? false;
@@ -216,6 +225,12 @@ class AndroidReminderService implements IReminderService {
     final translatedTitle = _translateText(title, payload);
     final translatedBody = _translateText(body, payload);
 
+    // Translate action button text if payload contains taskId or habitId
+    String? actionButtonText;
+    if (payload != null && (payload.contains('taskId') || payload.contains('habitId'))) {
+      actionButtonText = _translateText('shared.buttons.done', payload);
+    }
+
     // Schedule a notification for each day of the week within the current week period
     for (final day in days) {
       // Create a unique ID for each day by combining base ID with day
@@ -245,6 +260,7 @@ class AndroidReminderService implements IReminderService {
           delaySeconds: delaySeconds,
           payload: payload,
           reminderId: daySpecificId, // Pass the day-specific ID for pattern matching
+          actionButtonText: actionButtonText,
         );
       } catch (e) {
         Logger.error('Error scheduling recurring reminder: $e');

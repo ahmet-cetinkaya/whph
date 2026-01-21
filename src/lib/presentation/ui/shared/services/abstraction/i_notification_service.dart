@@ -16,6 +16,7 @@ abstract class INotificationService {
     required String body,
     String? payload,
     int? id,
+    String? actionButtonText,
   });
 
   /// Clear all active notifications
@@ -39,4 +40,9 @@ abstract class INotificationService {
   /// Mobile platforms (Android/iOS) should implement this to process task completions
   /// Desktop platforms provide a no-op implementation
   Future<void> handleNotificationTaskCompletion(String taskId);
+
+  /// Handle habit completion from notification action button
+  /// Mobile platforms (Android/iOS) should implement this to process habit completions
+  /// Desktop platforms provide a no-op implementation
+  Future<void> handleNotificationHabitCompletion(String habitId);
 }

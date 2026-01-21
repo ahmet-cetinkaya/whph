@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WHPH</string>
+    <string name="tasks_widget_description">Zobrazte a plňte své denní úkoly</string>
+    <string name="habits_widget_description">Sledujte a plňte své denní návyky</string>
+</resources>

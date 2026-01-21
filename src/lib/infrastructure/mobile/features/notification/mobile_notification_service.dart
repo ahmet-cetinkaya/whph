@@ -12,6 +12,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 
 class MobileNotificationService implements INotificationService {
   final Mediator _mediator;
@@ -51,11 +52,34 @@ class MobileNotificationService implements INotificationService {
   }
 
   @override
+  Future<void> handleNotificationHabitCompletion(String habitId) async {
+    try {
+      Logger.info('MobileNotificationService: Completing habit from notification: $habitId');
+
+      await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
+        ToggleHabitCompletionCommand(
+          habitId: habitId,
+          date: DateTime.now(),
+        ),
+      );
+
+      Logger.info('MobileNotificationService: Habit completed successfully from notification');
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.notificationActionFailed] MobileNotificationService: Failed to complete habit from notification',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  @override
   Future<void> show({
     required String title,
     required String body,
     String? payload,
     int? id,
+    String? actionButtonText,
   }) async {
     if (!await isEnabled()) return;
 

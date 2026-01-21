@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WHPH</string>
+    <string name="tasks_widget_description">매일의 할 일을 보고 완료하세요</string>
+    <string name="habits_widget_description">매일의 습관을 추적하고 완료하세요</string>
+</resources>

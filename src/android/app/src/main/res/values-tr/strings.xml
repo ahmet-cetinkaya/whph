@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WHPH</string>
+    <string name="tasks_widget_description">Günlük görevlerinizi görüntüleyin ve tamamlayın</string>
+    <string name="habits_widget_description">Günlük alışkanlıklarınızı takip edin ve tamamlayın</string>
+</resources>

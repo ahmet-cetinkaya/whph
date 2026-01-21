@@ -43,6 +43,8 @@ object Constants {
     const val ALARM_TRIGGERED = "$PACKAGE_NAME.ALARM_TRIGGERED"
     const val TASK_COMPLETE_ACTION = "$PACKAGE_NAME.TASK_COMPLETE"
     const val TASK_COMPLETE_BROADCAST = "$PACKAGE_NAME.TASK_COMPLETE_BROADCAST"
+    const val HABIT_COMPLETE_ACTION = "$PACKAGE_NAME.HABIT_COMPLETE"
+    const val HABIT_COMPLETE_BROADCAST = "$PACKAGE_NAME.HABIT_COMPLETE_BROADCAST"
   }
 
   // Intent Extras
@@ -53,5 +55,7 @@ object Constants {
     const val TITLE = "title"
     const val BODY = "body"
     const val TASK_ID = "task_id"
+    const val HABIT_ID = "habit_id"
+    const val ACTION_BUTTON_TEXT = "action_button_text"
   }
 }

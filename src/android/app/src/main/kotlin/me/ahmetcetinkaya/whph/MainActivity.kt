@@ -92,6 +92,37 @@ class MainActivity : FlutterActivity() {
       }
     }
 
+  // Broadcast receiver for habit completions from notification action buttons
+  private val habitCompletionReceiver =
+    object : BroadcastReceiver() {
+      override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent?.action == Constants.IntentActions.HABIT_COMPLETE_BROADCAST) {
+          val habitId = intent.getStringExtra(Constants.IntentExtras.HABIT_ID)
+          Log.d(TAG, "Habit completion broadcast received: $habitId")
+
+          if (habitId != null) {
+            // Send habit completion to Flutter via MethodChannel
+            val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+            if (binaryMessenger != null) {
+              val channel = MethodChannel(binaryMessenger, Constants.Channels.NOTIFICATION)
+              channel.invokeMethod("completeHabit", habitId)
+              Log.d(TAG, "Successfully sent habit completion to Flutter: $habitId")
+
+              // Clear the pending entry since we successfully sent it to Flutter
+              val prefs = context?.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+              prefs?.edit()?.remove("complete_habit_$habitId")?.apply()
+              Log.d(TAG, "Cleared pending habit completion entry: $habitId")
+            } else {
+              Log.w(
+                TAG,
+                "Flutter engine not ready for habit completion - already stored as pending by NotificationReceiver",
+              )
+            }
+          }
+        }
+      }
+    }
+
   // Define constants for notification actions
   companion object {
     const val ACTION_NOTIFICATION_CLICK = "${Constants.PACKAGE_NAME}.NOTIFICATION_CLICK"
@@ -125,6 +156,19 @@ class MainActivity : FlutterActivity() {
       registerReceiver(taskCompletionReceiver, taskCompletionFilter)
     }
     Log.d(TAG, "Registered task completion broadcast receiver")
+
+    // Register broadcast receiver for habit completions from notification actions
+    val habitCompletionFilter = IntentFilter(Constants.IntentActions.HABIT_COMPLETE_BROADCAST)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      registerReceiver(
+        habitCompletionReceiver,
+        habitCompletionFilter,
+        Context.RECEIVER_NOT_EXPORTED,
+      )
+    } else {
+      registerReceiver(habitCompletionReceiver, habitCompletionFilter)
+    }
+    Log.d(TAG, "Registered habit completion broadcast receiver")
 
     // Process the intent that started this activity
     processIntent(startIntent)
@@ -353,6 +397,13 @@ class MainActivity : FlutterActivity() {
       Log.d(TAG, "Unregistered task completion broadcast receiver")
     } catch (e: Exception) {
       Log.e(TAG, "Error unregistering task completion receiver: ${e.message}")
+    }
+
+    try {
+      unregisterReceiver(habitCompletionReceiver)
+      Log.d(TAG, "Unregistered habit completion broadcast receiver")
+    } catch (e: Exception) {
+      Log.e(TAG, "Error unregistering habit completion receiver: ${e.message}")
     }
 
     try {
@@ -807,9 +858,10 @@ class MainActivity : FlutterActivity() {
               val title = call.argument<String>("title") ?: "Notification"
               val body = call.argument<String>("body") ?: "You have a notification"
               val payload = call.argument<String>("payload")
+              val actionButtonText = call.argument<String>("actionButtonText")
 
               val notificationHelper = NotificationHelper(context)
-              notificationHelper.showNotification(id, title, body, payload)
+              notificationHelper.showNotification(id, title, body, payload, actionButtonText)
 
               result.success(true)
             } catch (e: Exception) {
@@ -824,6 +876,7 @@ class MainActivity : FlutterActivity() {
               val body = call.argument<String>("body") ?: "You have a reminder"
               val payload = call.argument<String>("payload")
               val delaySeconds = call.argument<Int>("delaySeconds") ?: 10
+              val actionButtonText = call.argument<String>("actionButtonText")
 
               val intent =
                 Intent(context, NotificationReceiver::class.java).apply {
@@ -832,6 +885,9 @@ class MainActivity : FlutterActivity() {
                   putExtra(Constants.IntentExtras.TITLE, title)
                   putExtra(Constants.IntentExtras.BODY, body)
                   putExtra(Constants.IntentExtras.PAYLOAD, payload)
+                  if (actionButtonText != null) {
+                    putExtra(Constants.IntentExtras.ACTION_BUTTON_TEXT, actionButtonText)
+                  }
                 }
 
               val pendingIntent =
@@ -1161,6 +1217,53 @@ class MainActivity : FlutterActivity() {
               }
             } catch (e: Exception) {
               Log.e(TAG, "Error clearing pending task completion: ${e.message}", e)
+              result.error("CLEAR_PENDING_ERROR", e.message, null)
+            }
+          }
+          "completeHabit" -> {
+            // Habit completion is handled by Dart code via NotificationPayloadService
+            // This handler acknowledges receipt of the method call
+            try {
+              val habitId = call.arguments as? String
+              if (habitId != null) {
+                Log.d(TAG, "completeHabit called with habitId: $habitId")
+                // Return success - actual habit completion is handled by Dart side
+                result.success(null)
+              } else {
+                result.error("INVALID_ARGS", "habitId is required", null)
+              }
+            } catch (e: Exception) {
+              Log.e(TAG, "Error processing habit completion: ${e.message}", e)
+              result.error("HABIT_COMPLETION_ERROR", e.message, null)
+            }
+          }
+          "getPendingHabitCompletions" -> {
+            // Retrieve all pending habit completions from SharedPreferences
+            try {
+              val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+              val allKeys = prefs.all.keys.filter { it.startsWith("complete_habit_") }
+              val habitIds = allKeys.map { it.removePrefix("complete_habit_") }
+              Log.d(TAG, "Found ${habitIds.size} pending habit completions: $habitIds")
+              result.success(habitIds)
+            } catch (e: Exception) {
+              Log.e(TAG, "Error getting pending habit completions: ${e.message}", e)
+              result.error("GET_PENDING_ERROR", e.message, null)
+            }
+          }
+          "clearPendingHabitCompletion" -> {
+            // Clear a processed pending habit completion from SharedPreferences
+            try {
+              val habitId = call.arguments as? String
+              if (habitId != null) {
+                val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+                prefs.edit().remove("complete_habit_$habitId").apply()
+                Log.d(TAG, "Cleared pending habit completion: $habitId")
+                result.success(true)
+              } else {
+                result.error("INVALID_ARGS", "habitId is required", null)
+              }
+            } catch (e: Exception) {
+              Log.e(TAG, "Error clearing pending habit completion: ${e.message}", e)
               result.error("CLEAR_PENDING_ERROR", e.message, null)
             }
           }

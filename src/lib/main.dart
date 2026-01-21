@@ -156,11 +156,17 @@ Future<void> main(List<String> args) async {
     NotificationPayloadService.setupNotificationListener(
       payloadHandler,
       onTaskCompletion: notificationService.handleNotificationTaskCompletion,
+      onHabitCompletion: notificationService.handleNotificationHabitCompletion,
     );
 
     // Process any pending task completions from notifications that arrived while app was closed
     await NotificationPayloadService.processPendingTaskCompletions(
       notificationService.handleNotificationTaskCompletion,
+    );
+
+    // Process any pending habit completions
+    await NotificationPayloadService.processPendingHabitCompletions(
+      notificationService.handleNotificationHabitCompletion,
     );
 
     // Get translation service for app wrapper

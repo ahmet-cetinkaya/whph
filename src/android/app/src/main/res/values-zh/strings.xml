@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WHPH</string>
+    <string name="tasks_widget_description">查看并完成您的每日任务</string>
+    <string name="habits_widget_description">跟踪并完成您的每日习惯</string>
+</resources>

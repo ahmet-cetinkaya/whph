@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WHPH</string>
+    <string name="tasks_widget_description">Vizualizați și completați sarcinile zilnice</string>
+    <string name="habits_widget_description">Urmăriți și completați obiceiurile zilnice</string>
+</resources>

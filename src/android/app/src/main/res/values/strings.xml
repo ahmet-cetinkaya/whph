@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WHPH</string>
-    <string name="widget_description">View and manage your daily tasks and habits</string>
     <string name="tasks_widget_description">View and complete your daily tasks</string>
     <string name="habits_widget_description">Track and complete your daily habits</string>
-    <string name="notification_action_mark_done">Mark Done</string>
 </resources>

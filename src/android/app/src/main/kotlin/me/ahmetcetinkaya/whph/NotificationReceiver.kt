@@ -69,16 +69,29 @@ class NotificationReceiver : BroadcastReceiver() {
           Log.e(TAG, "Task ID is null in TASK_COMPLETE_ACTION")
         }
       }
+      Constants.IntentActions.HABIT_COMPLETE_ACTION -> {
+        val habitId = intent.getStringExtra(Constants.IntentExtras.HABIT_ID)
+        val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
+
+        Log.d(TAG, "Habit complete action: habitId=$habitId, notificationId=$notificationId")
+
+        if (habitId != null) {
+          handleHabitCompleteAction(context, habitId, notificationId)
+        } else {
+          Log.e(TAG, "Habit ID is null in HABIT_COMPLETE_ACTION")
+        }
+      }
       Constants.IntentActions.ALARM_TRIGGERED -> {
         val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
         val title = intent.getStringExtra(Constants.IntentExtras.TITLE) ?: "Reminder"
         val body = intent.getStringExtra(Constants.IntentExtras.BODY) ?: "You have a reminder"
         val payload = intent.getStringExtra(Constants.IntentExtras.PAYLOAD)
+        val actionButtonText = intent.getStringExtra(Constants.IntentExtras.ACTION_BUTTON_TEXT)
 
         Log.d(TAG, "Alarm triggered for notification ID: $notificationId, payload: $payload")
 
         val notificationHelper = NotificationHelper(context)
-        notificationHelper.showNotification(notificationId, title, body, payload)
+        notificationHelper.showNotification(notificationId, title, body, payload, actionButtonText)
       }
       else -> {
         Log.d(TAG, "Received unhandled intent action: ${intent.action}")
@@ -244,6 +257,44 @@ class NotificationReceiver : BroadcastReceiver() {
       Log.d(TAG, "Stored pending task completion for processing on app startup: $taskId")
     } catch (e: Exception) {
       Log.e(TAG, "Error storing pending task completion: ${e.message}", e)
+    }
+  }
+
+  /** Handle habit complete action from notification button */
+  private fun handleHabitCompleteAction(context: Context, habitId: String, notificationId: Int) {
+    try {
+      // Cancel the notification
+      val notificationManager = NotificationManagerCompat.from(context)
+      notificationManager.cancel(notificationId)
+
+      Log.d(TAG, "Habit completion triggered: $habitId")
+
+      // Always store as pending first (in case broadcast fails or app not running)
+      storePendingHabitCompletion(context, habitId)
+
+      // Send a broadcast to check if the app is running
+      // MainActivity will handle this and send to Flutter, then clear the pending entry
+      val broadcastIntent =
+        Intent(Constants.IntentActions.HABIT_COMPLETE_BROADCAST).apply {
+          putExtra(Constants.IntentExtras.HABIT_ID, habitId)
+          setPackage(context.packageName) // Local broadcast within the app
+        }
+
+      context.sendBroadcast(broadcastIntent)
+      Log.d(TAG, "Sent habit completion broadcast for: $habitId")
+    } catch (e: Exception) {
+      Log.e(TAG, "Error handling habit complete action: ${e.message}", e)
+    }
+  }
+
+  /** Store habit completion as pending for processing when app starts */
+  private fun storePendingHabitCompletion(context: Context, habitId: String) {
+    try {
+      val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+      prefs.edit().putString("complete_habit_$habitId", habitId).apply()
+      Log.d(TAG, "Stored pending habit completion for processing on app startup: $habitId")
+    } catch (e: Exception) {
+      Log.e(TAG, "Error storing pending habit completion: ${e.message}", e)
     }
   }
 }

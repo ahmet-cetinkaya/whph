@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WHPH</string>
+    <string name="tasks_widget_description">Visa och slutför dina dagliga uppgifter</string>
+    <string name="habits_widget_description">Spåra och slutför dina dagliga vanor</string>
+</resources>
