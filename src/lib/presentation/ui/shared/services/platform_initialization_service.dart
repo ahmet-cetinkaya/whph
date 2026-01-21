@@ -110,11 +110,6 @@ class PlatformInitializationService {
     await windowManager.setPreventClose(true);
     await windowManager.setTitle(AppInfo.name);
 
-    // Fix for missing taskbar icon on Linux (KDE/X11) by matching .desktop file StartupWMClass
-    if (Platform.isLinux) {
-      await windowManager.setWindowClass('whph');
-    }
-
     Logger.debug('PlatformInitializationService: Window manager initialized');
   }
 
