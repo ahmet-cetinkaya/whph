@@ -231,7 +231,7 @@ class NotificationReceiver : BroadcastReceiver() {
       notificationId = notificationId,
       broadcastAction = Constants.IntentActions.TASK_COMPLETE_BROADCAST,
       extraKey = Constants.IntentExtras.TASK_ID,
-      pendingPrefix = "complete_task_"
+      pendingPrefix = "complete_task_",
     )
   }
 
@@ -244,7 +244,7 @@ class NotificationReceiver : BroadcastReceiver() {
       notificationId = notificationId,
       broadcastAction = Constants.IntentActions.HABIT_COMPLETE_BROADCAST,
       extraKey = Constants.IntentExtras.HABIT_ID,
-      pendingPrefix = "complete_habit_"
+      pendingPrefix = "complete_habit_",
     )
   }
 
@@ -256,7 +256,7 @@ class NotificationReceiver : BroadcastReceiver() {
     notificationId: Int,
     broadcastAction: String,
     extraKey: String,
-    pendingPrefix: String
+    pendingPrefix: String,
   ) {
     try {
       // Cancel the notification
@@ -294,7 +294,12 @@ class NotificationReceiver : BroadcastReceiver() {
   }
 
   /** Generic method to store completion as pending for processing when app starts */
-  private fun storePendingCompletion(context: Context, entityId: String, pendingPrefix: String, entityType: String) {
+  private fun storePendingCompletion(
+    context: Context,
+    entityId: String,
+    pendingPrefix: String,
+    entityType: String,
+  ) {
     try {
       val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
       prefs.edit().putString("$pendingPrefix$entityId", entityId).apply()
