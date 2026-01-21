@@ -70,8 +70,17 @@ class NotificationHelper(private val context: Context) {
     }
   }
 
-  fun showNotification(id: Int, title: String, body: String, payload: String?) {
-    Log.d(TAG, "Showing notification with ID: $id, Title: $title, Payload: $payload")
+  fun showNotification(
+    id: Int,
+    title: String,
+    body: String,
+    payload: String?,
+    actionButtonText: String? = null,
+  ) {
+    Log.d(
+      TAG,
+      "Showing notification with ID: $id, Title: $title, Payload: $payload, ActionText: $actionButtonText",
+    )
 
     // Create an explicit intent to launch MainActivity
     // Use the specific action we defined in the AndroidManifest
@@ -113,11 +122,16 @@ class NotificationHelper(private val context: Context) {
       }
 
     // Extract taskId from payload for action button (only for task notifications)
-    val taskId = extractTaskId(payload)
+    val taskId = extractEntityId(payload, "taskId")
     val isTaskNotification =
       channelId == Constants.NotificationChannels.TASK_CHANNEL_ID && taskId != null
 
-    // Create complete action intent (only for task notifications)
+    // Extract habitId from payload for action button
+    val habitId = extractEntityId(payload, "habitId")
+    val isHabitNotification =
+      channelId == Constants.NotificationChannels.HABIT_CHANNEL_ID && habitId != null
+
+    // Create complete action intent (only for task or habit notifications)
     val completePendingIntent =
       if (isTaskNotification) {
         val completeIntent =
@@ -129,6 +143,19 @@ class NotificationHelper(private val context: Context) {
         PendingIntent.getBroadcast(
           context,
           id + 1000, // Unique request code for action
+          completeIntent,
+          PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+      } else if (isHabitNotification) {
+        val completeIntent =
+          Intent(context, NotificationReceiver::class.java).apply {
+            action = Constants.IntentActions.HABIT_COMPLETE_ACTION
+            putExtra(Constants.IntentExtras.HABIT_ID, habitId)
+            putExtra(Constants.IntentExtras.NOTIFICATION_ID, id)
+          }
+        PendingIntent.getBroadcast(
+          context,
+          id + 2000, // Unique request code for action (different from task)
           completeIntent,
           PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
@@ -148,11 +175,9 @@ class NotificationHelper(private val context: Context) {
 
     // Add action button if available
     completePendingIntent?.let {
-      builder.addAction(
-        R.drawable.ic_done_all,
-        context.getString(R.string.notification_action_mark_done),
-        it,
-      )
+      val actionLabel =
+        actionButtonText ?: context.getString(R.string.notification_action_mark_done)
+      builder.addAction(R.drawable.ic_done_all, actionLabel, it)
     }
 
     try {
@@ -164,13 +189,13 @@ class NotificationHelper(private val context: Context) {
     }
   }
 
-  private fun extractTaskId(payload: String?): String? {
+  private fun extractEntityId(payload: String?, key: String): String? {
     if (payload == null) return null
     return try {
       val jsonPayload = JSONObject(payload)
-      jsonPayload.getJSONObject("arguments")?.optString("taskId")
+      jsonPayload.getJSONObject("arguments")?.optString(key)
     } catch (e: Exception) {
-      Log.d(TAG, "Failed to extract taskId from payload: ${e.message}")
+      Log.d(TAG, "Failed to extract $key from payload: ${e.message}")
       null
     }
   }

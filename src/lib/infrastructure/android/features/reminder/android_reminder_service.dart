@@ -113,6 +113,8 @@ class AndroidReminderService implements IReminderService {
       return;
     }
 
+    final actionButtonText = _getActionButtonText(payload);
+
     try {
       final success = await _scheduleNotification(
         id: notificationId,
@@ -121,6 +123,7 @@ class AndroidReminderService implements IReminderService {
         delaySeconds: delaySeconds,
         payload: payload,
         reminderId: id, // Pass the original string ID for pattern matching
+        actionButtonText: actionButtonText,
       );
 
       if (!success) {
@@ -142,6 +145,7 @@ class AndroidReminderService implements IReminderService {
     required int delaySeconds,
     String? payload,
     String? reminderId,
+    String? actionButtonText,
   }) async {
     if (!Platform.isAndroid) {
       return false;
@@ -178,6 +182,7 @@ class AndroidReminderService implements IReminderService {
         'body': body,
         'payload': enhancedPayload,
         'delaySeconds': delaySeconds,
+        'actionButtonText': actionButtonText,
       });
 
       return result ?? false;
@@ -216,6 +221,9 @@ class AndroidReminderService implements IReminderService {
     final translatedTitle = _translateText(title, payload);
     final translatedBody = _translateText(body, payload);
 
+    // Get action button text if payload contains taskId or habitId
+    final actionButtonText = _getActionButtonText(payload);
+
     // Schedule a notification for each day of the week within the current week period
     for (final day in days) {
       // Create a unique ID for each day by combining base ID with day
@@ -245,6 +253,7 @@ class AndroidReminderService implements IReminderService {
           delaySeconds: delaySeconds,
           payload: payload,
           reminderId: daySpecificId, // Pass the day-specific ID for pattern matching
+          actionButtonText: actionButtonText,
         );
       } catch (e) {
         Logger.error('Error scheduling recurring reminder: $e');
@@ -515,5 +524,13 @@ class AndroidReminderService implements IReminderService {
       // If we can't check, assume we don't have permission to use fallback methods
       return false;
     }
+  }
+
+  /// Get the translated action button text if payload contains taskId or habitId
+  String? _getActionButtonText(String? payload) {
+    if (payload != null && (payload.contains('taskId') || payload.contains('habitId'))) {
+      return _translateText('shared.buttons.done', payload);
+    }
+    return null;
   }
 }

@@ -121,22 +121,30 @@ void main() {
         when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
 
         final completedEvents = <bool>[];
-        final subscription = syncService.onSyncComplete.listen((event) {
+        final completer = Completer<void>();
+        StreamSubscription? subscription;
+
+        subscription = syncService.onSyncComplete.listen((event) {
           completedEvents.add(event);
+          if (completedEvents.isNotEmpty) {
+            completer.complete();
+          }
         });
 
         // Act
         await syncService.runPaginatedSync(isManual: true);
 
-        // Wait for async completion notifications
-        await Future.delayed(const Duration(milliseconds: 100));
+        // Wait for async completion notification (with timeout for safety)
+        await completer.future.timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => throw Exception('Timeout waiting for sync completion notification'),
+        );
+
+        await subscription.cancel();
 
         // Assert
         expect(completedEvents, isNotEmpty);
         expect(completedEvents.first, true);
-
-        // Clean up
-        subscription.cancel();
       });
 
       test('should not notify sync completion for background sync with no meaningful activity', () async {
@@ -333,15 +341,26 @@ void main() {
         when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
 
         final statusUpdates = <SyncStatus>[];
-        syncService.syncStatusStream.listen((status) {
+        final completer = Completer<void>();
+        StreamSubscription? subscription;
+
+        subscription = syncService.syncStatusStream.listen((status) {
           statusUpdates.add(status);
+          if (status.state == SyncState.completed) {
+            completer.complete();
+          }
         });
 
         // Act
         await syncService.runPaginatedSync(isManual: true);
 
-        // Wait for async status updates to complete
-        await Future.delayed(const Duration(milliseconds: 100));
+        // Wait for the completed status (with timeout for safety)
+        await completer.future.timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => throw Exception('Timeout waiting for sync completion'),
+        );
+
+        await subscription.cancel();
 
         // Assert
         expect(statusUpdates.length, greaterThanOrEqualTo(2));

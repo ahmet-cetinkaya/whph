@@ -69,16 +69,29 @@ class NotificationReceiver : BroadcastReceiver() {
           Log.e(TAG, "Task ID is null in TASK_COMPLETE_ACTION")
         }
       }
+      Constants.IntentActions.HABIT_COMPLETE_ACTION -> {
+        val habitId = intent.getStringExtra(Constants.IntentExtras.HABIT_ID)
+        val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
+
+        Log.d(TAG, "Habit complete action: habitId=$habitId, notificationId=$notificationId")
+
+        if (habitId != null) {
+          handleHabitCompleteAction(context, habitId, notificationId)
+        } else {
+          Log.e(TAG, "Habit ID is null in HABIT_COMPLETE_ACTION")
+        }
+      }
       Constants.IntentActions.ALARM_TRIGGERED -> {
         val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
         val title = intent.getStringExtra(Constants.IntentExtras.TITLE) ?: "Reminder"
         val body = intent.getStringExtra(Constants.IntentExtras.BODY) ?: "You have a reminder"
         val payload = intent.getStringExtra(Constants.IntentExtras.PAYLOAD)
+        val actionButtonText = intent.getStringExtra(Constants.IntentExtras.ACTION_BUTTON_TEXT)
 
         Log.d(TAG, "Alarm triggered for notification ID: $notificationId, payload: $payload")
 
         val notificationHelper = NotificationHelper(context)
-        notificationHelper.showNotification(notificationId, title, body, payload)
+        notificationHelper.showNotification(notificationId, title, body, payload, actionButtonText)
       }
       else -> {
         Log.d(TAG, "Received unhandled intent action: ${intent.action}")
@@ -211,39 +224,88 @@ class NotificationReceiver : BroadcastReceiver() {
 
   /** Handle task complete action from notification button */
   private fun handleTaskCompleteAction(context: Context, taskId: String, notificationId: Int) {
+    handleCompleteAction(
+      context = context,
+      entityType = "Task",
+      entityId = taskId,
+      notificationId = notificationId,
+      broadcastAction = Constants.IntentActions.TASK_COMPLETE_BROADCAST,
+      extraKey = Constants.IntentExtras.TASK_ID,
+      pendingPrefix = "complete_task_",
+    )
+  }
+
+  /** Handle habit complete action from notification button */
+  private fun handleHabitCompleteAction(context: Context, habitId: String, notificationId: Int) {
+    handleCompleteAction(
+      context = context,
+      entityType = "Habit",
+      entityId = habitId,
+      notificationId = notificationId,
+      broadcastAction = Constants.IntentActions.HABIT_COMPLETE_BROADCAST,
+      extraKey = Constants.IntentExtras.HABIT_ID,
+      pendingPrefix = "complete_habit_",
+    )
+  }
+
+  /** Generic handler for complete actions (task or habit) */
+  private fun handleCompleteAction(
+    context: Context,
+    entityType: String,
+    entityId: String,
+    notificationId: Int,
+    broadcastAction: String,
+    extraKey: String,
+    pendingPrefix: String,
+  ) {
     try {
       // Cancel the notification
       val notificationManager = NotificationManagerCompat.from(context)
       notificationManager.cancel(notificationId)
 
-      Log.d(TAG, "Task completion triggered: $taskId")
+      Log.d(TAG, "$entityType completion triggered: $entityId")
 
       // Always store as pending first (in case broadcast fails or app not running)
-      storePendingTaskCompletion(context, taskId)
+      storePendingCompletion(context, entityId, pendingPrefix, entityType)
 
       // Send a broadcast to check if the app is running
       // MainActivity will handle this and send to Flutter, then clear the pending entry
       val broadcastIntent =
-        Intent(Constants.IntentActions.TASK_COMPLETE_BROADCAST).apply {
-          putExtra(Constants.IntentExtras.TASK_ID, taskId)
+        Intent(broadcastAction).apply {
+          putExtra(extraKey, entityId)
           setPackage(context.packageName) // Local broadcast within the app
         }
 
       context.sendBroadcast(broadcastIntent)
-      Log.d(TAG, "Sent task completion broadcast for: $taskId")
+      Log.d(TAG, "Sent $entityType completion broadcast for: $entityId")
     } catch (e: Exception) {
-      Log.e(TAG, "Error handling task complete action: ${e.message}", e)
+      Log.e(TAG, "Error handling $entityType complete action: ${e.message}", e)
     }
   }
 
   /** Store task completion as pending for processing when app starts */
   private fun storePendingTaskCompletion(context: Context, taskId: String) {
+    storePendingCompletion(context, taskId, "complete_task_", "Task")
+  }
+
+  /** Store habit completion as pending for processing when app starts */
+  private fun storePendingHabitCompletion(context: Context, habitId: String) {
+    storePendingCompletion(context, habitId, "complete_habit_", "Habit")
+  }
+
+  /** Generic method to store completion as pending for processing when app starts */
+  private fun storePendingCompletion(
+    context: Context,
+    entityId: String,
+    pendingPrefix: String,
+    entityType: String,
+  ) {
     try {
       val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
-      prefs.edit().putString("complete_task_$taskId", taskId).apply()
-      Log.d(TAG, "Stored pending task completion for processing on app startup: $taskId")
+      prefs.edit().putString("$pendingPrefix$entityId", entityId).apply()
+      Log.d(TAG, "Stored pending $entityType completion for processing on app startup: $entityId")
     } catch (e: Exception) {
-      Log.e(TAG, "Error storing pending task completion: ${e.message}", e)
+      Log.e(TAG, "Error storing pending $entityType completion: ${e.message}", e)
     }
   }
 }

@@ -7,6 +7,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
@@ -116,6 +117,7 @@ class DesktopNotificationService implements INotificationService {
     required String body,
     String? payload,
     int? id,
+    String? actionButtonText, // Unused on desktop platforms
   }) async {
     if (!await isEnabled()) return;
 
@@ -276,6 +278,28 @@ class DesktopNotificationService implements INotificationService {
     } catch (e, stackTrace) {
       Logger.error(
         '[$TaskErrorIds.notificationActionFailed] DesktopNotificationService: Failed to complete task from notification',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  @override
+  Future<void> handleNotificationHabitCompletion(String habitId) async {
+    try {
+      Logger.info('DesktopNotificationService: Completing habit from notification: $habitId');
+
+      await _mediatr.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
+        ToggleHabitCompletionCommand(
+          habitId: habitId,
+          date: DateTime.now(),
+        ),
+      );
+
+      Logger.info('DesktopNotificationService: Habit completed successfully from notification');
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.notificationActionFailed] DesktopNotificationService: Failed to complete habit from notification',
         error: e,
         stackTrace: stackTrace,
       );

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WHPH</string>
+    <string name="tasks_widget_description">Affichez et complétez vos tâches quotidiennes</string>
+    <string name="habits_widget_description">Suivez et complétez vos habitudes quotidiennes</string>
+    <string name="notification_action_mark_done">Marquer comme terminé</string>
+</resources>

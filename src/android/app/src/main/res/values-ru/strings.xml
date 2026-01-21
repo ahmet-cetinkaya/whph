@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WHPH</string>
+    <string name="tasks_widget_description">Просматривайте и выполняйте ежедневные задачи</string>
+    <string name="habits_widget_description">Отслеживайте и выполняйте ежедневные привычки</string>
+    <string name="notification_action_mark_done">Отметить как выполненное</string>
+</resources>

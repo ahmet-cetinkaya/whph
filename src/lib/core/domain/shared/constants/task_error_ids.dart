@@ -29,6 +29,8 @@ class TaskErrorIds {
   static const String notificationActionFailed = 'notification_action_failed';
   static const String pendingTaskProcessingFailed = 'pending_task_processing_failed';
   static const String pendingTaskMaxRetriesExceeded = 'pending_task_max_retries_exceeded';
+  static const String pendingHabitProcessingFailed = 'pending_habit_processing_failed';
+  static const String pendingHabitMaxRetriesExceeded = 'pending_habit_max_retries_exceeded';
 
   // Gesture Errors
   static const String swipeGestureFailed = 'swipe_gesture_failed';
