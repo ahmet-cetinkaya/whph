@@ -60,11 +60,14 @@ void main() {
   late GetHabitQueryHandler handler;
 
   final habitId = 'habit-1';
+  // Fixed date at noon to avoid timezone issues with UTC conversion
+  final testDate = DateTime(2026, 1, 21, 12, 0, 0);
   final habit = Habit(
     id: habitId,
     name: 'Test Habit',
-    createdDate: DateTime.now().subtract(const Duration(days: 30)),
+    createdDate: testDate.subtract(const Duration(days: 30)),
     description: '',
+    archivedDate: testDate, // Set to testDate so score calculation uses consistent dates
   );
 
   setUp(() {
@@ -84,21 +87,20 @@ void main() {
     when(habitRepository.getById(habitId, includeDeleted: false)).thenAnswer((_) async => habit);
     when(settingRepository.getByKey(SettingKeys.habitThreeStateEnabled)).thenAnswer((_) async => null); // Disabled
 
-    final now = DateTime.now();
     final records = [
       // Streak 1 (2 days)
       HabitRecord(
           id: '1',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 0)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 0)).toUtc(),
+          createdDate: testDate),
       HabitRecord(
           id: '2',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 1)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 1)).toUtc(),
+          createdDate: testDate),
 
       // Gap at Day 2 (Missing)
 
@@ -107,14 +109,14 @@ void main() {
           id: '4',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 3)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 3)).toUtc(),
+          createdDate: testDate),
       HabitRecord(
           id: '5',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 4)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 4)).toUtc(),
+          createdDate: testDate),
     ];
 
     habitRecordRepository.setRecords(records);
@@ -133,26 +135,25 @@ void main() {
     when(habitRepository.getById(habitId, includeDeleted: false)).thenAnswer((_) async => habit);
     when(settingRepository.getByKey(SettingKeys.habitThreeStateEnabled)).thenAnswer((_) async => Setting(
           id: 'setting-1',
-          createdDate: DateTime.now(),
+          createdDate: testDate,
           key: SettingKeys.habitThreeStateEnabled,
           value: 'true',
           valueType: SettingValueType.bool,
         ));
 
-    final now = DateTime.now();
     final records = [
       HabitRecord(
           id: '1',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 0)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 0)).toUtc(),
+          createdDate: testDate),
       HabitRecord(
           id: '2',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 1)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 1)).toUtc(),
+          createdDate: testDate),
 
       // Gap at Day 2 (Missing - Skipped)
 
@@ -160,14 +161,14 @@ void main() {
           id: '4',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 3)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 3)).toUtc(),
+          createdDate: testDate),
       HabitRecord(
           id: '5',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 4)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 4)).toUtc(),
+          createdDate: testDate),
     ];
 
     habitRecordRepository.setRecords(records);
@@ -188,49 +189,48 @@ void main() {
     when(habitRepository.getById(habitId, includeDeleted: false)).thenAnswer((_) async => habit);
     when(settingRepository.getByKey(SettingKeys.habitThreeStateEnabled)).thenAnswer((_) async => Setting(
           id: 'setting-1',
-          createdDate: DateTime.now(),
+          createdDate: testDate,
           key: SettingKeys.habitThreeStateEnabled,
           value: 'true',
           valueType: SettingValueType.bool,
         ));
 
-    final now = DateTime.now();
     final records = [
       // Streak 1
       HabitRecord(
           id: '1',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 0)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 0)).toUtc(),
+          createdDate: testDate),
       HabitRecord(
           id: '2',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 1)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 1)).toUtc(),
+          createdDate: testDate),
 
       // Explicit Not Done at Day 2
       HabitRecord(
           id: '3',
           habitId: habitId,
           status: HabitRecordStatus.notDone,
-          occurredAt: now.subtract(const Duration(days: 2)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 2)).toUtc(),
+          createdDate: testDate),
 
       // Streak 2
       HabitRecord(
           id: '4',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 3)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 3)).toUtc(),
+          createdDate: testDate),
       HabitRecord(
           id: '5',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 4)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 4)).toUtc(),
+          createdDate: testDate),
     ];
 
     habitRecordRepository.setRecords(records);
@@ -249,27 +249,26 @@ void main() {
     when(habitRepository.getById(habitId, includeDeleted: false)).thenAnswer((_) async => habit);
     when(settingRepository.getByKey(SettingKeys.habitThreeStateEnabled)).thenAnswer((_) async => Setting(
           id: 'setting-1',
-          createdDate: DateTime.now(),
+          createdDate: testDate,
           key: SettingKeys.habitThreeStateEnabled,
           value: 'true',
           valueType: SettingValueType.bool,
         ));
 
-    final now = DateTime.now();
     final records = [
       HabitRecord(
           id: '1',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 0)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 0)).toUtc(),
+          createdDate: testDate),
       // Day 1: Skipped (Empty)
       HabitRecord(
           id: '3',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 2)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 2)).toUtc(),
+          createdDate: testDate),
     ];
 
     habitRecordRepository.setRecords(records);
@@ -289,21 +288,20 @@ void main() {
     when(habitRepository.getById(habitId, includeDeleted: false)).thenAnswer((_) async => habit);
     when(settingRepository.getByKey(SettingKeys.habitThreeStateEnabled)).thenAnswer((_) async => null); // Disabled
 
-    final now = DateTime.now();
     final records = [
       HabitRecord(
           id: '1',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 0)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 0)).toUtc(),
+          createdDate: testDate),
       // Day 1: Skipped (Empty) -> Counts as Not Done
       HabitRecord(
           id: '3',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 2)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 2)).toUtc(),
+          createdDate: testDate),
     ];
 
     habitRecordRepository.setRecords(records);
@@ -323,31 +321,35 @@ void main() {
     final multiHabit = Habit(
       id: habitId,
       name: 'Multi Habit',
-      createdDate: DateTime.now().subtract(const Duration(days: 30)),
+      createdDate: testDate.subtract(const Duration(days: 30)),
       description: '',
       dailyTarget: 2,
+      archivedDate: testDate, // Set to testDate so score calculation uses consistent dates
     );
     when(habitRepository.getById(habitId, includeDeleted: false)).thenAnswer((_) async => multiHabit);
     when(settingRepository.getByKey(SettingKeys.habitThreeStateEnabled)).thenAnswer((_) async => null);
 
-    final now = DateTime.now();
     final records = [
       // Day 0: 1/2 completed (50%)
       HabitRecord(
-          id: '1', habitId: habitId, status: HabitRecordStatus.complete, occurredAt: now.toUtc(), createdDate: now),
+          id: '1',
+          habitId: habitId,
+          status: HabitRecordStatus.complete,
+          occurredAt: testDate.toUtc(),
+          createdDate: testDate),
       // Day 1: 2/2 completed (100%)
       HabitRecord(
           id: '2',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 1)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 1)).toUtc(),
+          createdDate: testDate),
       HabitRecord(
           id: '3',
           habitId: habitId,
           status: HabitRecordStatus.complete,
-          occurredAt: now.subtract(const Duration(days: 1)).toUtc(),
-          createdDate: now),
+          occurredAt: testDate.subtract(const Duration(days: 1)).toUtc(),
+          createdDate: testDate),
     ];
 
     habitRecordRepository.setRecords(records);

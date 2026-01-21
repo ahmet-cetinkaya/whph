@@ -121,7 +121,7 @@ void main() {
         expect(
             log.any((c) =>
                 c.method == 'setRetryCount' &&
-                (c.arguments as Map)['key'] == 'retry_count_habit_fail' &&
+                (c.arguments as Map)['key'] == 'retry_count_habit_habit_fail' &&
                 (c.arguments as Map)['count'] == 1),
             isTrue);
 
