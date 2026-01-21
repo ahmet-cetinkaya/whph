@@ -122,12 +122,12 @@ class NotificationHelper(private val context: Context) {
       }
 
     // Extract taskId from payload for action button (only for task notifications)
-    val taskId = extractTaskId(payload)
+    val taskId = extractEntityId(payload, "taskId")
     val isTaskNotification =
       channelId == Constants.NotificationChannels.TASK_CHANNEL_ID && taskId != null
 
     // Extract habitId from payload for action button
-    val habitId = extractHabitId(payload)
+    val habitId = extractEntityId(payload, "habitId")
     val isHabitNotification =
       channelId == Constants.NotificationChannels.HABIT_CHANNEL_ID && habitId != null
 
@@ -188,24 +188,13 @@ class NotificationHelper(private val context: Context) {
     }
   }
 
-  private fun extractTaskId(payload: String?): String? {
+  private fun extractEntityId(payload: String?, key: String): String? {
     if (payload == null) return null
     return try {
       val jsonPayload = JSONObject(payload)
-      jsonPayload.getJSONObject("arguments")?.optString("taskId")
+      jsonPayload.getJSONObject("arguments")?.optString(key)
     } catch (e: Exception) {
-      Log.d(TAG, "Failed to extract taskId from payload: ${e.message}")
-      null
-    }
-  }
-
-  private fun extractHabitId(payload: String?): String? {
-    if (payload == null) return null
-    return try {
-      val jsonPayload = JSONObject(payload)
-      jsonPayload.getJSONObject("arguments")?.optString("habitId")
-    } catch (e: Exception) {
-      Log.d(TAG, "Failed to extract habitId from payload: ${e.message}")
+      Log.d(TAG, "Failed to extract $key from payload: ${e.message}")
       null
     }
   }

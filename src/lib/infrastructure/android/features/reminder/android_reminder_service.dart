@@ -113,11 +113,7 @@ class AndroidReminderService implements IReminderService {
       return;
     }
 
-    // Translate action button text if payload contains taskId or habitId
-    String? actionButtonText;
-    if (payload != null && (payload.contains('taskId') || payload.contains('habitId'))) {
-      actionButtonText = _translateText('shared.buttons.done', payload);
-    }
+    final actionButtonText = _getActionButtonText(payload);
 
     try {
       final success = await _scheduleNotification(
@@ -225,11 +221,8 @@ class AndroidReminderService implements IReminderService {
     final translatedTitle = _translateText(title, payload);
     final translatedBody = _translateText(body, payload);
 
-    // Translate action button text if payload contains taskId or habitId
-    String? actionButtonText;
-    if (payload != null && (payload.contains('taskId') || payload.contains('habitId'))) {
-      actionButtonText = _translateText('shared.buttons.done', payload);
-    }
+    // Get action button text if payload contains taskId or habitId
+    final actionButtonText = _getActionButtonText(payload);
 
     // Schedule a notification for each day of the week within the current week period
     for (final day in days) {
@@ -531,5 +524,13 @@ class AndroidReminderService implements IReminderService {
       // If we can't check, assume we don't have permission to use fallback methods
       return false;
     }
+  }
+
+  /// Get the translated action button text if payload contains taskId or habitId
+  String? _getActionButtonText(String? payload) {
+    if (payload != null && (payload.contains('taskId') || payload.contains('habitId'))) {
+      return _translateText('shared.buttons.done', payload);
+    }
+    return null;
   }
 }
