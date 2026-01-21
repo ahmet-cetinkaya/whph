@@ -185,7 +185,16 @@ class NotificationPayloadService {
       // Process each pending task completion
       for (final taskId in pendingTaskIds) {
         if (taskId is String && taskId.isNotEmpty) {
-          await _processPendingTaskWithRetry(platform, taskId, onTaskCompletion);
+          await _processPendingCompletionWithRetry(
+            platform: platform,
+            entityId: taskId,
+            retryCountPrefix: _retryCountTaskPrefix,
+            clearMethod: 'clearPendingTaskCompletion',
+            entityName: 'Task',
+            maxRetriesErrorId: TaskErrorIds.pendingTaskMaxRetriesExceeded,
+            processingErrorId: TaskErrorIds.pendingTaskProcessingFailed,
+            completionCallback: () => onTaskCompletion(taskId),
+          );
         }
       }
     } catch (e, stackTrace) {
@@ -197,43 +206,93 @@ class NotificationPayloadService {
     }
   }
 
-  /// Process a single pending task with retry limit enforcement
-  static Future<void> _processPendingTaskWithRetry(
-    MethodChannel platform,
-    String taskId,
-    TaskCompletionCallback onTaskCompletion,
-  ) async {
+  /// Processes any pending habit completions that were stored while app was not running
+  /// Should be called on app startup after the habit completion callback is registered
+  static Future<void> processPendingHabitCompletions(HabitCompletionCallback onHabitCompletion) async {
+    if (!Platform.isAndroid && !forceAndroid) {
+      return;
+    }
+
+    try {
+      Logger.debug('NotificationPayloadService: Checking for pending habit completions...');
+
+      final platform = MethodChannel(AndroidAppConstants.channels.notification);
+      final pendingHabitIds = await platform.invokeMethod<List<dynamic>>('getPendingHabitCompletions');
+
+      if (pendingHabitIds == null || pendingHabitIds.isEmpty) {
+        Logger.debug('NotificationPayloadService: No pending habit completions found');
+        return;
+      }
+
+      Logger.debug('NotificationPayloadService: Found ${pendingHabitIds.length} pending habit completions');
+
+      // Process each pending habit completion
+      for (final habitId in pendingHabitIds) {
+        if (habitId is String && habitId.isNotEmpty) {
+          await _processPendingCompletionWithRetry(
+            platform: platform,
+            entityId: habitId,
+            retryCountPrefix: _retryCountHabitPrefix,
+            clearMethod: 'clearPendingHabitCompletion',
+            entityName: 'Habit',
+            maxRetriesErrorId: TaskErrorIds.pendingHabitMaxRetriesExceeded,
+            processingErrorId: TaskErrorIds.pendingHabitProcessingFailed,
+            completionCallback: () => onHabitCompletion(habitId),
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[$TaskErrorIds.pendingHabitProcessingFailed] NotificationPayloadService: Critical error processing pending habit completions',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  /// Generic method to process a pending completion with retry limit enforcement
+  /// Reduces code duplication between task and habit completion handlers
+  static Future<void> _processPendingCompletionWithRetry({
+    required MethodChannel platform,
+    required String entityId,
+    required String retryCountPrefix,
+    required String clearMethod,
+    required String entityName,
+    required String maxRetriesErrorId,
+    required String processingErrorId,
+    required Future<void> Function() completionCallback,
+  }) async {
     // Get current retry count from SharedPreferences
-    final retryCountKey = '$_retryCountTaskPrefix$taskId';
+    final retryCountKey = '$retryCountPrefix$entityId';
     final currentRetryCount = await _getRetryCount(platform, retryCountKey);
 
     // Check if max retries exceeded
     if (currentRetryCount >= _maxPendingRetries) {
       Logger.error(
-        '[$TaskErrorIds.pendingTaskMaxRetriesExceeded] NotificationPayloadService: Max retries ($_maxPendingRetries) exceeded for task $taskId, clearing pending entry',
+        '[$maxRetriesErrorId] NotificationPayloadService: Max retries ($_maxPendingRetries) exceeded for $entityName $entityId, clearing pending entry',
       );
-      // Clear both the pending task and the retry count
-      await platform.invokeMethod('clearPendingTaskCompletion', taskId);
+      // Clear both the pending entry and the retry count
+      await platform.invokeMethod(clearMethod, entityId);
       await _clearRetryCount(platform, retryCountKey);
       return;
     }
 
     try {
-      // Complete the task
-      await onTaskCompletion(taskId);
+      // Complete the action
+      await completionCallback();
 
       // Success: clear the pending action and retry count
-      await platform.invokeMethod('clearPendingTaskCompletion', taskId);
+      await platform.invokeMethod(clearMethod, entityId);
       await _clearRetryCount(platform, retryCountKey);
 
-      Logger.debug('NotificationPayloadService: Processed pending task completion: $taskId');
+      Logger.debug('NotificationPayloadService: Processed pending $entityName completion: $entityId');
     } catch (e, stackTrace) {
       // Increment retry count
       final newRetryCount = currentRetryCount + 1;
       await _setRetryCount(platform, retryCountKey, newRetryCount);
 
       Logger.error(
-        '[$TaskErrorIds.pendingTaskProcessingFailed] NotificationPayloadService: Failed to process pending task $taskId (attempt $newRetryCount/$_maxPendingRetries) - will retry on next startup',
+        '[$processingErrorId] NotificationPayloadService: Failed to process pending $entityName $entityId (attempt $newRetryCount/$_maxPendingRetries) - will retry on next startup',
         error: e,
         stackTrace: stackTrace,
       );
@@ -266,84 +325,6 @@ class NotificationPayloadService {
       await platform.invokeMethod('clearRetryCount', key);
     } catch (e) {
       Logger.warning('NotificationPayloadService: Failed to clear retry count for $key: $e');
-    }
-  }
-
-  /// Processes any pending habit completions that were stored while app was not running
-  /// Should be called on app startup after the habit completion callback is registered
-  static Future<void> processPendingHabitCompletions(HabitCompletionCallback onHabitCompletion) async {
-    if (!Platform.isAndroid && !forceAndroid) {
-      return;
-    }
-
-    try {
-      Logger.debug('NotificationPayloadService: Checking for pending habit completions...');
-
-      final platform = MethodChannel(AndroidAppConstants.channels.notification);
-      final pendingHabitIds = await platform.invokeMethod<List<dynamic>>('getPendingHabitCompletions');
-
-      if (pendingHabitIds == null || pendingHabitIds.isEmpty) {
-        Logger.debug('NotificationPayloadService: No pending habit completions found');
-        return;
-      }
-
-      Logger.debug('NotificationPayloadService: Found ${pendingHabitIds.length} pending habit completions');
-
-      // Process each pending habit completion
-      for (final habitId in pendingHabitIds) {
-        if (habitId is String && habitId.isNotEmpty) {
-          await _processPendingHabitWithRetry(platform, habitId, onHabitCompletion);
-        }
-      }
-    } catch (e, stackTrace) {
-      Logger.error(
-        '[$TaskErrorIds.pendingHabitProcessingFailed] NotificationPayloadService: Critical error processing pending habit completions',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
-  }
-
-  /// Process a single pending habit with retry limit enforcement
-  static Future<void> _processPendingHabitWithRetry(
-    MethodChannel platform,
-    String habitId,
-    HabitCompletionCallback onHabitCompletion,
-  ) async {
-    // Get current retry count from SharedPreferences
-    final retryCountKey = '$_retryCountHabitPrefix$habitId';
-    final currentRetryCount = await _getRetryCount(platform, retryCountKey);
-
-    // Check if max retries exceeded
-    if (currentRetryCount >= _maxPendingRetries) {
-      Logger.error(
-        '[$TaskErrorIds.pendingHabitMaxRetriesExceeded] NotificationPayloadService: Max retries ($_maxPendingRetries) exceeded for habit $habitId, clearing pending entry',
-      );
-      // Clear both the pending habit and the retry count
-      await platform.invokeMethod('clearPendingHabitCompletion', habitId);
-      await _clearRetryCount(platform, retryCountKey);
-      return;
-    }
-
-    try {
-      // Complete the habit
-      await onHabitCompletion(habitId);
-
-      // Success: clear the pending action and retry count
-      await platform.invokeMethod('clearPendingHabitCompletion', habitId);
-      await _clearRetryCount(platform, retryCountKey);
-
-      Logger.debug('NotificationPayloadService: Processed pending habit completion: $habitId');
-    } catch (e, stackTrace) {
-      // Increment retry count
-      final newRetryCount = currentRetryCount + 1;
-      await _setRetryCount(platform, retryCountKey, newRetryCount);
-
-      Logger.error(
-        '[$TaskErrorIds.pendingHabitProcessingFailed] NotificationPayloadService: Failed to process pending habit $habitId (attempt $newRetryCount/$_maxPendingRetries) - will retry on next startup',
-        error: e,
-        stackTrace: stackTrace,
-      );
     }
   }
 }
