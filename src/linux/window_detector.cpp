@@ -114,6 +114,8 @@ WindowInfo WaylandWindowDetector::ParseKdeJournalOutput(const std::string& journ
          
          if (app_id != "null" && !app_id.empty()) {
              info.application = WindowDetector::ValidateUtf8(app_id);
+         }
+         if (!title.empty()) {
              info.title = WindowDetector::ValidateUtf8(title);
          }
     }
@@ -124,9 +126,20 @@ WindowInfo WaylandWindowDetector::ParseKdeJournalOutput(const std::string& journ
 // Helper function to clean quotes from strings
 std::string WindowDetector::CleanQuotes(const std::string& input) {
     std::string result = input;
-    // Remove quotes
-    result.erase(std::remove(result.begin(), result.end(), '"'), result.end());
-    result.erase(std::remove(result.begin(), result.end(), '\''), result.end());
+    
+    if (result.empty()) {
+        return result;
+    }
+    
+    // Check if string is enclosed in double quotes
+    if (result.size() >= 2 && result.front() == '"' && result.back() == '"') {
+        result = result.substr(1, result.size() - 2);
+    }
+    // Check if string is enclosed in single quotes
+    else if (result.size() >= 2 && result.front() == '\'' && result.back() == '\'') {
+        result = result.substr(1, result.size() - 2);
+    }
+    
     return result;
 }
 
