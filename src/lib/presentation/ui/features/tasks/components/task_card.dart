@@ -119,7 +119,7 @@ class TaskCard extends StatelessWidget {
               : null,
           contentPadding: EdgeInsets.only(
             left: AppTheme.sizeMedium,
-            right: isCustomOrder ? AppTheme.sizeSmall : 0,
+            right: isCustomOrder ? AppTheme.sizeMedium : AppTheme.size2XSmall,
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -304,6 +304,7 @@ class TaskCard extends StatelessWidget {
           transparent: true,
           showSubTasks: showSubTasks,
           isDense: isDense,
+          isCustomOrder: isCustomOrder,
           enableSwipeToComplete: false, // Disable swipe on subtasks to avoid accidental completion
         ),
       );
