@@ -23,13 +23,16 @@ class NotificationPayloadService {
   static const String _retryCountPrefix = 'retry_count_';
   static const int _maxPendingRetries = 5;
 
+  /// Override for testing purposes to simulate Android platform
+  static bool forceAndroid = false;
+
   /// Sets up notification click listener for Android platform
   static void setupNotificationListener(
     INotificationPayloadHandler payloadHandler, {
     TaskCompletionCallback? onTaskCompletion,
     HabitCompletionCallback? onHabitCompletion,
   }) {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !forceAndroid) {
       Logger.debug('NotificationPayloadService: Not Android platform, skipping notification listener setup');
       return;
     }
@@ -134,7 +137,7 @@ class NotificationPayloadService {
   /// Gets the initial notification payload if the app was launched from a notification
   static Future<String?> _getInitialNotificationPayload() async {
     try {
-      if (Platform.isAndroid) {
+      if (Platform.isAndroid || forceAndroid) {
         // Get the initial notification payload from the platform channel
         final platform = MethodChannel(AndroidAppConstants.channels.notification);
         final payload = await platform.invokeMethod<String>('getInitialNotificationPayload');
@@ -149,7 +152,7 @@ class NotificationPayloadService {
   /// Acknowledges receipt of payload to the native side
   static Future<void> _acknowledgePayload(String payload) async {
     try {
-      if (Platform.isAndroid) {
+      if (Platform.isAndroid || forceAndroid) {
         final platform = MethodChannel(AndroidAppConstants.channels.notification);
         await platform.invokeMethod('acknowledgePayload', payload);
       }
@@ -161,7 +164,7 @@ class NotificationPayloadService {
   /// Processes any pending task completions that were stored while app was not running
   /// Should be called on app startup after the task completion callback is registered
   static Future<void> processPendingTaskCompletions(TaskCompletionCallback onTaskCompletion) async {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !forceAndroid) {
       return;
     }
 
@@ -268,7 +271,7 @@ class NotificationPayloadService {
   /// Processes any pending habit completions that were stored while app was not running
   /// Should be called on app startup after the habit completion callback is registered
   static Future<void> processPendingHabitCompletions(HabitCompletionCallback onHabitCompletion) async {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !forceAndroid) {
       return;
     }
 
