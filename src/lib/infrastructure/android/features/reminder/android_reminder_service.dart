@@ -33,7 +33,24 @@ class AndroidReminderService implements IReminderService {
       final String timeZoneName = DateTime.now().timeZoneName;
       tz.setLocalLocation(tz.getLocation(timeZoneName));
     } catch (e) {
-      Logger.error('Error setting timezone: $e');
+      // Handle numeric timezone offsets (common on some Android devices, e.g., "+03")
+      if (e is tz.LocationNotFoundException) {
+        try {
+          final now = DateTime.now();
+          final offsetHours = now.timeZoneOffset.inHours;
+          // In Etc/GMT, the sign is inverted (UTC+3 is Etc/GMT-3)
+          final gmtSign = offsetHours >= 0 ? '-' : '+';
+          final gmtName = 'Etc/GMT$gmtSign${offsetHours.abs()}';
+
+          tz.setLocalLocation(tz.getLocation(gmtName));
+          Logger.info('Mapped numeric timezone to $gmtName');
+          return;
+        } catch (_) {
+          // Fallback failed
+        }
+      }
+
+      Logger.warning('Error setting timezone: $e');
       // Even if we can't determine the timezone name, we'll use local time
     }
 
