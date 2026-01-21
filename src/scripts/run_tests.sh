@@ -80,7 +80,7 @@ if [ "$SKIP_CPP" = false ]; then
                 g++ -o "$BINARY" \
                     "$SOURCE" \
                     "$NATIVE_SRC" \
-                    "$(pkg-config --cflags --libs glib-2.0)" \
+                    $(pkg-config --cflags --libs glib-2.0) \
                     -I "$INCLUDE_DIR" || {
                     print_error "C++ compilation failed for $TEST_NAME"
                     exit 1
