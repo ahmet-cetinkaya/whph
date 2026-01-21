@@ -117,7 +117,7 @@ class DesktopNotificationService implements INotificationService {
     required String body,
     String? payload,
     int? id,
-    String? actionButtonText,
+    String? actionButtonText, // Unused on desktop platforms
   }) async {
     if (!await isEnabled()) return;
 

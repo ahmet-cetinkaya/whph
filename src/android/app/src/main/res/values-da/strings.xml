@@ -3,4 +3,5 @@
     <string name="app_name">WHPH</string>
     <string name="tasks_widget_description">Se og fuldfør dine daglige opgaver</string>
     <string name="habits_widget_description">Følg og fuldfør dine daglige vaner</string>
+    <string name="notification_action_mark_done">Markér som færdig</string>
 </resources>

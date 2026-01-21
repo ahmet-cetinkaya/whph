@@ -3,4 +3,5 @@
     <string name="app_name">WHPH</string>
     <string name="tasks_widget_description">Tarkastele ja suorita päivittäisiä tehtäviäsi</string>
     <string name="habits_widget_description">Seuraa ja suorita päivittäisiä tapojasi</string>
+    <string name="notification_action_mark_done">Merkitse valmiiksi</string>
 </resources>

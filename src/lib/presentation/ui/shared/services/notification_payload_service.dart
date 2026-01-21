@@ -20,7 +20,8 @@ class NotificationPayloadService {
   static const int _maxRetries = 3;
 
   // Retry count tracking constants
-  static const String _retryCountPrefix = 'retry_count_';
+  static const String _retryCountTaskPrefix = 'retry_count_task_';
+  static const String _retryCountHabitPrefix = 'retry_count_habit_';
   static const int _maxPendingRetries = 5;
 
   /// Override for testing purposes to simulate Android platform
@@ -203,7 +204,7 @@ class NotificationPayloadService {
     TaskCompletionCallback onTaskCompletion,
   ) async {
     // Get current retry count from SharedPreferences
-    final retryCountKey = '$_retryCountPrefix$taskId';
+    final retryCountKey = '$_retryCountTaskPrefix$taskId';
     final currentRetryCount = await _getRetryCount(platform, retryCountKey);
 
     // Check if max retries exceeded
@@ -310,7 +311,7 @@ class NotificationPayloadService {
     HabitCompletionCallback onHabitCompletion,
   ) async {
     // Get current retry count from SharedPreferences
-    final retryCountKey = '$_retryCountPrefix$habitId';
+    final retryCountKey = '$_retryCountHabitPrefix$habitId';
     final currentRetryCount = await _getRetryCount(platform, retryCountKey);
 
     // Check if max retries exceeded

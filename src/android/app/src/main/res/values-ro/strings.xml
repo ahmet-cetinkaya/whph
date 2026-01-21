@@ -3,4 +3,5 @@
     <string name="app_name">WHPH</string>
     <string name="tasks_widget_description">Vizualizați și completați sarcinile zilnice</string>
     <string name="habits_widget_description">Urmăriți și completați obiceiurile zilnice</string>
+    <string name="notification_action_mark_done">Marchează ca finalizat</string>
 </resources>

@@ -3,4 +3,5 @@
     <string name="app_name">WHPH</string>
     <string name="tasks_widget_description">Переглядайте та виконуйте щоденні завдання</string>
     <string name="habits_widget_description">Відстежуйте та виконуйте щоденні звички</string>
+    <string name="notification_action_mark_done">Позначити як виконане</string>
 </resources>

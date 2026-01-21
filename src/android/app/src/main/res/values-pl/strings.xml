@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WHPH</string>
-    <string name="tasks_widget_description">Wyświetlaj i completing swoje codzienne zadania</string>
+    <string name="tasks_widget_description">Wyświetlaj i wykonuj swoje codzienne zadania</string>
     <string name="habits_widget_description">Śledź i wypełniaj swoje codzienne nawyki</string>
+    <string name="notification_action_mark_done">Oznacz jako wykonane</string>
 </resources>

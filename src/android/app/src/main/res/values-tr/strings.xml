@@ -3,4 +3,5 @@
     <string name="app_name">WHPH</string>
     <string name="tasks_widget_description">Günlük görevlerinizi görüntüleyin ve tamamlayın</string>
     <string name="habits_widget_description">Günlük alışkanlıklarınızı takip edin ve tamamlayın</string>
+    <string name="notification_action_mark_done">Tamamlandı Olarak İşaretle</string>
 </resources>

@@ -155,7 +155,7 @@ class NotificationHelper(private val context: Context) {
           }
         PendingIntent.getBroadcast(
           context,
-          id + 1000, // Unique request code for action
+          id + 2000, // Unique request code for action (different from task)
           completeIntent,
           PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
@@ -175,7 +175,7 @@ class NotificationHelper(private val context: Context) {
 
     // Add action button if available
     completePendingIntent?.let {
-      val actionLabel = actionButtonText ?: "Mark Done"
+      val actionLabel = actionButtonText ?: context.getString(R.string.notification_action_mark_done)
       builder.addAction(R.drawable.ic_done_all, actionLabel, it)
     }
 
