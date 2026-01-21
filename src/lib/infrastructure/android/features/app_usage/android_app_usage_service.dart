@@ -213,6 +213,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
       // Save each app's TOTAL usage for today as a single record
       for (final entry in todayUsageMap.entries) {
+        if (entry.key == '_metadata') continue;
+
         final usageData = entry.value as Map<String, dynamic>;
         final usageTimeSeconds = usageData['usageTimeSeconds'] as int;
         final appName = usageData['appName'] as String;
