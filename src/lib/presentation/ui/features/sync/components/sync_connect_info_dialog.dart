@@ -25,7 +25,7 @@ class SyncConnectInfoDialog extends StatefulWidget {
   static Future<void> show(BuildContext context) async {
     await ResponsiveDialogHelper.showResponsiveDialog<void>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: const SyncConnectInfoDialog(),
     );
   }

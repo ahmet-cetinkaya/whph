@@ -158,7 +158,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   Future<void> _showHabitTimeLoggingDialog() async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: TimeLoggingDialog(
         entityId: widget.habitId,
         onCancel: () {},

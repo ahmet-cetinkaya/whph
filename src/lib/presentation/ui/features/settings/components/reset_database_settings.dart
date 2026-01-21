@@ -36,7 +36,7 @@ class ResetDatabaseSettings extends StatelessWidget {
           ResponsiveDialogHelper.showResponsiveDialog(
             context: context,
             child: const ResetDatabaseDialog(),
-            size: DialogSize.medium,
+            size: DialogSize.large,
           );
         },
       ),

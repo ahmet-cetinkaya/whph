@@ -28,8 +28,6 @@ import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:acore/utils/dialog_size.dart';
 
-/// Task details content widget - displays and edits task information.
-/// Uses [TaskDetailsController] for business logic separation.
 class TaskDetailsContent extends StatefulWidget {
   final String taskId;
   final VoidCallback? onTaskUpdated;
@@ -52,19 +50,16 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   late final TaskDetailsController _controller;
   late final TaskFieldHelpers _fieldHelpers;
 
-  // Text controllers for form fields
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _plannedDateController = TextEditingController();
   final TextEditingController _deadlineDateController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  // Focus nodes
   final FocusNode _titleFocusNode = FocusNode();
   final FocusNode _plannedDateFocusNode = FocusNode();
   final FocusNode _deadlineDateFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
 
-  // Track date picker interaction state
   bool _isPlannedDatePickerActive = false;
   bool _isDeadlineDatePickerActive = false;
 
@@ -113,7 +108,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     setState(() {});
   }
 
-  // Track last synced values to detect dirty state
   String? _lastSyncedTitle;
   String? _lastSyncedDescription;
 
@@ -130,8 +124,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
         _lastSyncedTitle = task.title;
       }
     }
-
-    // ... date logic ...
 
     if (!_isPlannedDatePickerActive && !_plannedDateFocusNode.hasFocus) {
       final plannedDateText = task.plannedDate != null
@@ -194,7 +186,6 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     await _controller.initialize(widget.taskId);
   }
 
-  // Event handlers
   void _onTitleChanged(String value) => _controller.updateTitle(value);
   void _onPriorityChanged(EisenhowerPriority? value) => _controller.updatePriority(value);
   void _onEstimatedTimeChanged(int value) => _controller.updateEstimatedTime(value);
@@ -246,7 +237,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: TimeLoggingDialog(
         entityId: task.id,
         onCancel: () {},

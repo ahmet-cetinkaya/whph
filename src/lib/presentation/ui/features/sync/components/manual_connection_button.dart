@@ -25,7 +25,7 @@ class ManualConnectionButton extends StatelessWidget {
   }) async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: ManualConnectionDialog(
         onConnect: onConnect,
         onCancel: onCancel,

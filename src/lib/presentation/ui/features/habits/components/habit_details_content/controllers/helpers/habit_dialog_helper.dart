@@ -7,7 +7,6 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_translation
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 
-/// Result of reminder dialog operations.
 class ReminderDialogResult {
   final bool hasReminder;
   final TimeOfDay? reminderTime;
@@ -20,7 +19,6 @@ class ReminderDialogResult {
   });
 }
 
-/// Result of goal dialog operations.
 class GoalDialogResult {
   final bool hasGoal;
   final int? targetFrequency;
@@ -35,13 +33,11 @@ class GoalDialogResult {
   });
 }
 
-/// Handles dialog operations for habit details.
 class HabitDialogHelper {
   final ITranslationService _translationService;
 
   HabitDialogHelper({required ITranslationService translationService}) : _translationService = translationService;
 
-  /// Gets a summary text for reminder settings.
   String getReminderSummaryText(GetHabitQueryResponse? habit) {
     if (habit == null || !habit.hasReminder) {
       return _translationService.translate(HabitTranslationKeys.noReminder);
@@ -69,7 +65,6 @@ class HabitDialogHelper {
     return summary;
   }
 
-  /// Opens the reminder settings dialog.
   Future<ReminderDialogResult?> openReminderDialog(BuildContext context, GetHabitQueryResponse habit) async {
     final now = DateTime.now();
     final bool isArchived =
@@ -79,7 +74,7 @@ class HabitDialogHelper {
 
     final result = await ResponsiveDialogHelper.showResponsiveDialog<HabitReminderSettingsResult>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: HabitReminderSettingsDialog(
         hasReminder: habit.hasReminder,
         reminderTime: habit.getReminderTimeOfDay(),
@@ -98,7 +93,6 @@ class HabitDialogHelper {
     return null;
   }
 
-  /// Opens the goal settings dialog.
   Future<GoalDialogResult?> openGoalDialog(BuildContext context, GetHabitQueryResponse habit) async {
     final now = DateTime.now();
     final bool isArchived =

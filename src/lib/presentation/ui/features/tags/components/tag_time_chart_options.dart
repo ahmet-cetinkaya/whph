@@ -19,7 +19,6 @@ import 'package:acore/acore.dart' show CollectionUtils;
 import 'package:whph/main.dart';
 
 class TagTimeChartOptions extends PersistentListOptionsBase {
-  /// Date filter setting with support for quick selections
   final DateFilterSetting? dateFilterSetting;
 
   /// Selected start date for filtering (deprecated - use dateFilterSetting)
@@ -28,25 +27,19 @@ class TagTimeChartOptions extends PersistentListOptionsBase {
   /// Selected end date for filtering (deprecated - use dateFilterSetting)
   final DateTime? selectedEndDate;
 
-  /// Selected categories for filtering
   final Set<TagTimeCategory> selectedCategories;
 
-  /// Whether to show date filter
   final bool showDateFilter;
 
-  /// Whether to show category filter
   final bool showCategoryFilter;
 
-  /// Whether there are items to filter
   final bool hasItems;
 
-  /// Callback when date filter changes
   final void Function(DateTime?, DateTime?)? onDateFilterChange;
 
   /// Callback when date filter setting changes (with quick selection support)
   final Function(DateFilterSetting?)? onDateFilterSettingChange;
 
-  /// Callback when categories filter changes
   final void Function(Set<TagTimeCategory>)? onCategoriesChanged;
 
   const TagTimeChartOptions({
@@ -275,7 +268,7 @@ class _TagTimeChartOptionsState extends PersistentListOptionsBaseState<TagTimeCh
   Future<void> _showCategoryDialog() async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<Set<TagTimeCategory>>(
       context: context,
-      size: DialogSize.medium,
+      size: DialogSize.large,
       child: _CategorySelectionDialog(
         selectedCategories: _selectedCategories,
       ),
@@ -509,6 +502,7 @@ class _CategorySelectionDialogState extends State<_CategorySelectionDialog> {
                             ),
                           ),
                         ),
+
                         // Check Icon
                         if (isSelected)
                           Container(
