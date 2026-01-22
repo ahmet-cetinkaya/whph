@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Comprehensive linting script for WHPH project
-# Runs Flutter analyze, dart_unused_files, markdownlint, and shellcheck
+# Runs Flutter analyze, dart_unused_files, markdownlint, shellcheck, and ktlint
 # Usage: ./scripts/lint.sh
 
 set -e
@@ -152,6 +152,29 @@ if command -v shellcheck &>/dev/null; then
 else
     print_warning "⚠️ shellcheck not found, skipping shell script linting"
     print_info "Install from https://github.com/koalaman/shellcheck?tab=readme-ov-file#installing"
+fi
+
+# 5. Kotlin ktlint (run from project root for Android Kotlin files)
+# Note: ktfmt handles formatting via 'rps format' pre-commit hook
+# ktlint checks code quality issues and respects .editorconfig settings
+if command -v ktlint &>/dev/null; then
+    print_section "🔍 Running ktlint on Kotlin files..."
+    cd "$PROJECT_ROOT"
+
+    # Run ktlint to check code quality
+    # .editorconfig disables property-naming rule for uppercase TAG constants
+    if ktlint "src/android/app/src/main/kotlin/**/*.kt"; then
+        print_success "✅ ktlint passed"
+    else
+        print_error "❌ ktlint failed"
+        print_info "Note: This project uses ktfmt for formatting. ktlint checks code quality only."
+        OVERALL_SUCCESS=false
+    fi
+
+    cd "$SRC_DIR"
+else
+    print_warning "⚠️ ktlint not found, skipping Kotlin linting"
+    print_info "Install with: brew install ktlint (macOS) or see https://pinterest.github.io/ktlint/install/"
 fi
 
 # Final result

@@ -1,0 +1,39 @@
+root = true
+
+# ===================================================================
+# Kotlin Formatting Configuration
+# ===================================================================
+# This project uses ktfmt for formatting (via rps format pre-commit hook)
+#
+# ktfmt handles all formatting:
+#   - Indentation (4-space)
+#   - Function signatures (parameters on new lines when needed)
+#   - Class signatures
+#   - Chain method continuation
+#   - Trailing commas
+#   - Import ordering
+#
+# ktlint is used for additional code quality checks, but all formatting
+# rules are disabled since ktfmt handles formatting.
+# ===================================================================
+
+[*.{kt,kts}]
+# Disable all ktlint standard rules since ktfmt handles formatting
+# Code quality rules can be selectively enabled below if needed
+ktlint_standard = disabled
+
+# Enable specific code quality rules (formatting rules remain disabled)
+ktlint_standard_no-wildcard-imports = enabled
+ktlint_standard_no-unused-imports = enabled
+
+# Disable property-naming to allow uppercase TAG constants (Android convention)
+ktlint_standard_property-naming = disabled
+
+# Disable IntelliJ formatter to prevent conflicts with ktfmt
+ij_formatter_enabled = false
+
+# ===================================================================
+# JSON/YAML Formatting Configuration
+# ===================================================================
+[*.{json,yml}]
+indent_size = 2
