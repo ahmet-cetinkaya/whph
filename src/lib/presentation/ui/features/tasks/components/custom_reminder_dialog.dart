@@ -7,6 +7,7 @@ import 'package:acore/components/numeric_input/numeric_input.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
+import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 
 enum CustomReminderUnit {
   minutes,
@@ -136,6 +137,19 @@ class _CustomReminderDialogState extends State<CustomReminderDialog> {
     }
   }
 
+  double _getMaxValueForUnit(CustomReminderUnit unit) {
+    switch (unit) {
+      case CustomReminderUnit.minutes:
+        return 60;
+      case CustomReminderUnit.hours:
+        return 24;
+      case CustomReminderUnit.days:
+        return 30;
+      case CustomReminderUnit.weeks:
+        return 4;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Theme.of(context);
@@ -170,98 +184,104 @@ class _CustomReminderDialogState extends State<CustomReminderDialog> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Settings Card
+              // Settings Table
+              DetailTable(
+                rowData: [
+                  DetailTableRowData(
+                    icon: Icons.category,
+                    label: widget.translationService.translate(TaskTranslationKeys.reminderUnit),
+                    widget: SizedBox(
+                      width: 150,
+                      child: DropdownButtonFormField<CustomReminderUnit>(
+                        value: _unit,
+                        isExpanded: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.sizeMedium,
+                            vertical: AppTheme.sizeSmall,
+                          ),
+                          filled: true,
+                          fillColor: AppTheme.surface2,
+                        ),
+                        dropdownColor: AppTheme.surface1,
+                        items: CustomReminderUnit.values.map((unit) {
+                          return DropdownMenuItem(
+                            value: unit,
+                            child: Text(
+                              _getUnitLabel(unit),
+                              style: AppTheme.bodyLarge,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newUnit) {
+                          if (newUnit != null) {
+                            setState(() {
+                              _unit = newUnit;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.sizeMedium),
               Container(
-                padding: const EdgeInsets.all(AppTheme.sizeLarge),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.sizeSmall,
+                  vertical: AppTheme.sizeLarge,
+                ),
                 decoration: BoxDecoration(
                   color: AppTheme.surface1,
-                  borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+                  borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Value Input Section
                     Row(
                       children: [
-                        StyledIcon(Icons.timer, isActive: true),
-                        const SizedBox(width: AppTheme.sizeLarge),
-                        Expanded(
-                          child: Text(
-                            widget.translationService.translate(TaskTranslationKeys.reminderTime),
-                            style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                          ),
+                        StyledIcon(
+                          Icons.timer,
+                          isActive: true,
+                          size: AppTheme.iconSizeSmall,
                         ),
-                        const SizedBox(width: AppTheme.sizeMedium),
-                        SizedBox(
-                          width: 200,
-                          child: Center(
-                            child: NumericInput(
-                              initialValue: _value,
-                              minValue: 1,
-                              onValueChanged: (val) {
-                                setState(() {
-                                  _value = val;
-                                });
-                              },
-                              style: MediaQuery.of(context).size.width < 600
-                                  ? NumericInputStyle.minimal
-                                  : NumericInputStyle.contained,
-                            ),
-                          ),
+                        const SizedBox(width: AppTheme.sizeSmall),
+                        Text(
+                          widget.translationService.translate(TaskTranslationKeys.reminderTime),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.normal,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                              ),
                         ),
                       ],
                     ),
-
-                    const SizedBox(height: AppTheme.sizeLarge),
-                    const Divider(),
-                    const SizedBox(height: AppTheme.sizeLarge),
-
-                    // Unit Selection Section
-                    Row(
+                    const SizedBox(height: AppTheme.sizeMedium),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        StyledIcon(Icons.category, isActive: true),
-                        const SizedBox(width: AppTheme.sizeLarge),
-                        Expanded(
-                          child: Text(
-                            widget.translationService.translate(TaskTranslationKeys.reminderUnit),
-                            style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                          ),
+                        NumericInput(
+                          value: _value,
+                          minValue: 1,
+                          onValueChanged: (val) {
+                            setState(() {
+                              _value = val;
+                            });
+                          },
+                          style: NumericInputStyle.minimal,
                         ),
-                        const SizedBox(width: AppTheme.sizeMedium),
-                        SizedBox(
-                          width: 200,
-                          child: DropdownButtonFormField<CustomReminderUnit>(
-                            value: _unit,
-                            isExpanded: true,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: AppTheme.sizeMedium,
-                                vertical: AppTheme.sizeSmall,
-                              ),
-                              filled: true,
-                              fillColor: AppTheme.surface2,
-                            ),
-                            dropdownColor: AppTheme.surface1,
-                            items: CustomReminderUnit.values.map((unit) {
-                              return DropdownMenuItem(
-                                value: unit,
-                                child: Text(
-                                  _getUnitLabel(unit),
-                                  style: AppTheme.bodyLarge,
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (newUnit) {
-                              if (newUnit != null) {
-                                setState(() {
-                                  _unit = newUnit;
-                                });
-                              }
-                            },
-                          ),
+                        Slider(
+                          value: _value.toDouble().clamp(1.0, _getMaxValueForUnit(_unit)),
+                          min: 1,
+                          max: _getMaxValueForUnit(_unit),
+                          divisions: _getMaxValueForUnit(_unit).toInt() - 1,
+                          onChanged: (val) {
+                            setState(() {
+                              _value = val.round();
+                            });
+                          },
                         ),
                       ],
                     ),
