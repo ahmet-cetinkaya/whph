@@ -23,6 +23,20 @@ constexpr const char* ARG_SYNC = "--sync";
 // Global variable to store the main window for later access
 static GtkWindow* main_window = nullptr;
 
+// Helper to get the directory of the executable
+std::string get_executable_dir() {
+  char result[PATH_MAX];
+  ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+  if (count != -1) {
+    std::string path(result, count);
+    size_t last_slash_idx = path.rfind('/');
+    if (std::string::npos != last_slash_idx) {
+      return path.substr(0, last_slash_idx);
+    }
+  }
+  return "";
+}
+
 // Method channel callback for getting active window and focusing windows
 static void get_active_window_method_call_cb(FlMethodChannel* channel,
                                            FlMethodCall* method_call,
@@ -160,10 +174,42 @@ static void my_application_activate(GApplication* application) {
 
   // Set window icon
   GError *error = nullptr;
-  GdkPixbuf* icon = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/512x512/apps/whph.png", &error);
+  GdkPixbuf* icon = nullptr;
+  
+  // Try loading from standard legacy path first
+  icon = gdk_pixbuf_new_from_file("/usr/share/icons/hicolor/512x512/apps/whph.png", &error);
+  
+  // If not found, try relative path from executable
+  if (icon == nullptr) {
+    if (error) {
+       g_clear_error(&error); 
+    }
+    
+    std::string exe_dir = get_executable_dir();
+    if (!exe_dir.empty()) {
+      // Check relative path: ../share/icons/hicolor/512x512/apps/whph.png
+      // This assumes the executable is in bin/ or a similar structure relative to share/
+      std::string relative_path = exe_dir + "/../share/icons/hicolor/512x512/apps/whph.png";
+      icon = gdk_pixbuf_new_from_file(relative_path.c_str(), &error);
+      
+      // Also try local relative path for development/bundle: share/icons/hicolor/512x512/apps/whph.png
+      // or simply relative to executable
+       if (icon == nullptr) {
+         if (error) {
+           g_clear_error(&error);
+         }
+         std::string local_path = exe_dir + "/share/icons/hicolor/512x512/apps/whph.png";
+         icon = gdk_pixbuf_new_from_file(local_path.c_str(), &error);
+       }
+    }
+  }
+
   if (icon != nullptr) {
     gtk_window_set_icon(window, icon);
     g_object_unref(icon);
+  } else {
+    g_warning("Failed to load icon: %s", error ? error->message : "Unknown error");
+    if (error) g_error_free(error);
   }
 
   // Use a header bar when running in GNOME as this is the common style used
