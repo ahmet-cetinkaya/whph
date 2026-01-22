@@ -66,18 +66,11 @@ class AppInfoHandler(private val context: Context) {
   fun isRunningInWorkProfile(): Boolean {
     return try {
       val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
-      val currentUser = android.os.Process.myUserHandle()
 
-      // Use UserManager's isManagedProfile() API which is the proper way to check
-      // This requires API level 21+ (Lollipop), which is safe for modern Android
-      val isWorkProfile =
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-          userManager.isManagedProfile(currentUser.identifier)
-        } else {
-          false
-        }
+      // Use UserManager's isManagedProfile property to check if current user is a managed profile
+      // This property is available from API 21+ and checks the current user context
+      val isWorkProfile = userManager.isManagedProfile
 
-      Log.d(TAG, "Current user: $currentUser (identifier: ${currentUser.identifier})")
       Log.d(TAG, "Is running in work profile: $isWorkProfile")
       isWorkProfile
     } catch (e: Exception) {
