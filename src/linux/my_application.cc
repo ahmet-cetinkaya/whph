@@ -201,6 +201,16 @@ static void my_application_activate(GApplication* application) {
          std::string local_path = exe_dir + "/share/icons/hicolor/512x512/apps/whph.png";
          icon = gdk_pixbuf_new_from_file(local_path.c_str(), &error);
        }
+
+       // Fallback: Check in data/flutter_assets (guaranteed content)
+       if (icon == nullptr) {
+          if (error) {
+            g_clear_error(&error);
+          }
+          // Path: data/flutter_assets/lib/core/domain/shared/assets/images/whph_logo.png
+          std::string asset_path = exe_dir + "/data/flutter_assets/lib/core/domain/shared/assets/images/whph_logo.png";
+          icon = gdk_pixbuf_new_from_file(asset_path.c_str(), &error);
+       }
     }
   }
 
