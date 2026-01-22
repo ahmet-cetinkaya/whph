@@ -30,28 +30,37 @@ object MethodChannelHelper {
   }
 
   /**
-   * Wrap a handler function with try-catch and error handling.
+   * Wrap a handler function with try-catch and error handling. Returns the result of the block, or
+   * null if an exception occurs.
    *
+   * @param result The MethodChannel.Result to report errors to
    * @param errorCode The error code to use on failure
    * @param block The handler function
    */
-  fun safeCall(errorCode: String = "ERROR", block: () -> Unit) {
+  fun safeCall(result: MethodChannel.Result, errorCode: String = "ERROR", block: () -> Any?) {
     try {
-      block()
+      val returnValue = block()
+      result.success(returnValue)
     } catch (e: Exception) {
-      Log.e(TAG, "Error in $errorCode: ${e.message}", e)
-      throw e
+      Log.e(TAG, "Error in safeCall: ${e.message}", e)
+      result.error(errorCode, e.message, null)
     }
   }
 
-  /** Create a result wrapper that handles errors consistently. */
-  fun Result.Companion.fromCall(block: () -> Any?): MethodChannel.Result {
-    return object : MethodChannel.Result {
-      override fun success(result: Any?) = Unit
-
-      override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) = Unit
-
-      override fun notImplemented() = Unit
+  /**
+   * Wrap a handler function with try-catch for unit-returning operations.
+   *
+   * @param result The MethodChannel.Result to report errors to
+   * @param errorCode The error code to use on failure
+   * @param block The handler function
+   */
+  fun safeCallUnit(result: MethodChannel.Result, errorCode: String = "ERROR", block: () -> Unit) {
+    try {
+      block()
+      result.success(null)
+    } catch (e: Exception) {
+      Log.e(TAG, "Error in safeCallUnit: ${e.message}", e)
+      result.error(errorCode, e.message, null)
     }
   }
 }

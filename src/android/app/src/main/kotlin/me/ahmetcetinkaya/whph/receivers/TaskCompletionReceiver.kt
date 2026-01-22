@@ -17,29 +17,33 @@ class TaskCompletionReceiver : BroadcastReceiver() {
   private val TAG = "TaskCompletionReceiver"
 
   override fun onReceive(context: Context?, intent: Intent?) {
-    if (intent?.action == Constants.IntentActions.TASK_COMPLETE_BROADCAST) {
-      val taskId = intent.getStringExtra(Constants.IntentExtras.TASK_ID)
-      Log.d(TAG, "Task completion broadcast received: $taskId")
+    try {
+      if (intent?.action == Constants.IntentActions.TASK_COMPLETE_BROADCAST) {
+        val taskId = intent.getStringExtra(Constants.IntentExtras.TASK_ID)
+        Log.d(TAG, "Task completion broadcast received: $taskId")
 
-      if (taskId != null) {
-        // Send completion to Flutter via MethodChannel
-        val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
-        if (binaryMessenger != null) {
-          val channel = MethodChannel(binaryMessenger, Constants.Channels.NOTIFICATION)
-          channel.invokeMethod("completeTask", taskId)
-          Log.d(TAG, "Successfully sent task completion to Flutter: $taskId")
+        if (taskId != null) {
+          // Send completion to Flutter via MethodChannel
+          val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+          if (binaryMessenger != null) {
+            val channel = MethodChannel(binaryMessenger, Constants.Channels.NOTIFICATION)
+            channel.invokeMethod("completeTask", taskId)
+            Log.d(TAG, "Successfully sent task completion to Flutter: $taskId")
 
-          // Clear the pending entry since we successfully sent it to Flutter
-          val prefs = context?.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
-          prefs?.edit()?.remove("complete_task_$taskId")?.apply()
-          Log.d(TAG, "Cleared pending task completion entry: $taskId")
-        } else {
-          Log.w(
-            TAG,
-            "Flutter engine not ready for task completion - already stored as pending by NotificationReceiver",
-          )
+            // Clear the pending entry since we successfully sent it to Flutter
+            val prefs = context?.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+            prefs?.edit()?.remove("complete_task_$taskId")?.apply()
+            Log.d(TAG, "Cleared pending task completion entry: $taskId")
+          } else {
+            Log.w(
+              TAG,
+              "Flutter engine not ready for task completion - already stored as pending by NotificationReceiver",
+            )
+          }
         }
       }
+    } catch (e: Exception) {
+      Log.e(TAG, "Error in TaskCompletionReceiver.onReceive: ${e.message}", e)
     }
   }
 

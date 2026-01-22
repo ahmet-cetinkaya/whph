@@ -38,7 +38,8 @@ class NotificationMethodHandler(private val context: Context) {
       Log.d(TAG, "Cleared initial notification payload")
       return true
     }
-    return true
+    Log.d(TAG, "Payload did not match, acknowledgement failed")
+    return false
   }
 
   /** Set the initial notification payload (used by IntentProcessor). */

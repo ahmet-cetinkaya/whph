@@ -16,18 +16,22 @@ class SyncTriggerReceiver : BroadcastReceiver() {
   private val TAG = "SyncTriggerReceiver"
 
   override fun onReceive(context: Context?, intent: Intent?) {
-    if (intent?.action == "${Constants.PACKAGE_NAME}.SYNC_TRIGGER") {
-      Log.d(TAG, "Sync trigger received from WorkManager")
+    try {
+      if (intent?.action == "${Constants.PACKAGE_NAME}.SYNC_TRIGGER") {
+        Log.d(TAG, "Sync trigger received from WorkManager")
 
-      // Trigger sync via method channel to Flutter
-      val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
-      if (binaryMessenger != null) {
-        val channel = MethodChannel(binaryMessenger, Constants.Channels.SYNC)
-        channel.invokeMethod("triggerSync", null)
-        Log.d(TAG, "Successfully triggered sync via method channel")
-      } else {
-        Log.w(TAG, "Flutter engine not ready, cannot trigger sync")
+        // Trigger sync via method channel to Flutter
+        val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+        if (binaryMessenger != null) {
+          val channel = MethodChannel(binaryMessenger, Constants.Channels.SYNC)
+          channel.invokeMethod("triggerSync", null)
+          Log.d(TAG, "Successfully triggered sync via method channel")
+        } else {
+          Log.w(TAG, "Flutter engine not ready, cannot trigger sync")
+        }
       }
+    } catch (e: Exception) {
+      Log.e(TAG, "Error in SyncTriggerReceiver.onReceive: ${e.message}", e)
     }
   }
 

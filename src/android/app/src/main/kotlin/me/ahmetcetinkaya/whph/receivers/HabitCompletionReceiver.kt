@@ -17,29 +17,33 @@ class HabitCompletionReceiver : BroadcastReceiver() {
   private val TAG = "HabitCompletionReceiver"
 
   override fun onReceive(context: Context?, intent: Intent?) {
-    if (intent?.action == Constants.IntentActions.HABIT_COMPLETE_BROADCAST) {
-      val habitId = intent.getStringExtra(Constants.IntentExtras.HABIT_ID)
-      Log.d(TAG, "Habit completion broadcast received: $habitId")
+    try {
+      if (intent?.action == Constants.IntentActions.HABIT_COMPLETE_BROADCAST) {
+        val habitId = intent.getStringExtra(Constants.IntentExtras.HABIT_ID)
+        Log.d(TAG, "Habit completion broadcast received: $habitId")
 
-      if (habitId != null) {
-        // Send completion to Flutter via MethodChannel
-        val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
-        if (binaryMessenger != null) {
-          val channel = MethodChannel(binaryMessenger, Constants.Channels.NOTIFICATION)
-          channel.invokeMethod("completeHabit", habitId)
-          Log.d(TAG, "Successfully sent habit completion to Flutter: $habitId")
+        if (habitId != null) {
+          // Send completion to Flutter via MethodChannel
+          val binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger
+          if (binaryMessenger != null) {
+            val channel = MethodChannel(binaryMessenger, Constants.Channels.NOTIFICATION)
+            channel.invokeMethod("completeHabit", habitId)
+            Log.d(TAG, "Successfully sent habit completion to Flutter: $habitId")
 
-          // Clear the pending entry since we successfully sent it to Flutter
-          val prefs = context?.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
-          prefs?.edit()?.remove("complete_habit_$habitId")?.apply()
-          Log.d(TAG, "Cleared pending habit completion entry: $habitId")
-        } else {
-          Log.w(
-            TAG,
-            "Flutter engine not ready for habit completion - already stored as pending by NotificationReceiver",
-          )
+            // Clear the pending entry since we successfully sent it to Flutter
+            val prefs = context?.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
+            prefs?.edit()?.remove("complete_habit_$habitId")?.apply()
+            Log.d(TAG, "Cleared pending habit completion entry: $habitId")
+          } else {
+            Log.w(
+              TAG,
+              "Flutter engine not ready for habit completion - already stored as pending by NotificationReceiver",
+            )
+          }
         }
       }
+    } catch (e: Exception) {
+      Log.e(TAG, "Error in HabitCompletionReceiver.onReceive: ${e.message}", e)
     }
   }
 

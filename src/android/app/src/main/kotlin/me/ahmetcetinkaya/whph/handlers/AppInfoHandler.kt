@@ -58,8 +58,8 @@ class AppInfoHandler(private val context: Context) {
   }
 
   /**
-   * Check if the app is running in a work profile. Uses UserManager and UserHandle APIs to
-   * determine profile context.
+   * Check if the app is running in a work profile. Uses UserManager to check if the current user is
+   * a managed profile.
    *
    * @return true if running in a work profile, false otherwise
    */
@@ -67,20 +67,17 @@ class AppInfoHandler(private val context: Context) {
     return try {
       val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
       val currentUser = android.os.Process.myUserHandle()
-      val userProfiles = userManager.userProfiles
 
-      Log.d(TAG, "Current user: $currentUser")
-      Log.d(TAG, "User profiles: $userProfiles")
+      // Use UserManager's isManagedProfile() API which is the proper way to check
+      // This requires API level 21+ (Lollipop), which is safe for modern Android
+      val isWorkProfile =
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+          userManager.isManagedProfile(currentUser.identifier)
+        } else {
+          false
+        }
 
-      // Find the main user (typically UserHandle{0})
-      val mainUser =
-        userProfiles.firstOrNull { userManager.isUserRunning(it) && it.hashCode() == 0 }
-
-      Log.d(TAG, "Main user: $mainUser")
-
-      // If we have multiple profiles and current user is not the main user, we're in work profile
-      val isWorkProfile = currentUser != mainUser && userProfiles.size > 1
-
+      Log.d(TAG, "Current user: $currentUser (identifier: ${currentUser.identifier})")
       Log.d(TAG, "Is running in work profile: $isWorkProfile")
       isWorkProfile
     } catch (e: Exception) {

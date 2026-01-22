@@ -53,9 +53,12 @@ class MainActivity : FlutterActivity() {
     intentProcessor =
       me.ahmetcetinkaya.whph.intent.IntentProcessor(
         context,
-        handlers["notification"] as me.ahmetcetinkaya.whph.handlers.NotificationMethodHandler,
-        handlers["share"] as me.ahmetcetinkaya.whph.handlers.ShareIntentHandler,
-        handlers["boot"] as me.ahmetcetinkaya.whph.handlers.BootCompletedHandler,
+        handlers["notification"] as? me.ahmetcetinkaya.whph.handlers.NotificationMethodHandler
+          ?: throw IllegalStateException("NotificationMethodHandler not found"),
+        handlers["share"] as? me.ahmetcetinkaya.whph.handlers.ShareIntentHandler
+          ?: throw IllegalStateException("ShareIntentHandler not found"),
+        handlers["boot"] as? me.ahmetcetinkaya.whph.handlers.BootCompletedHandler
+          ?: throw IllegalStateException("BootCompletedHandler not found"),
       )
 
     registerReceivers()
@@ -81,8 +84,11 @@ class MainActivity : FlutterActivity() {
 
     // Deliver pending payloads
     val notificationHandler =
-      handlers["notification"] as me.ahmetcetinkaya.whph.handlers.NotificationMethodHandler
-    val shareHandler = handlers["share"] as me.ahmetcetinkaya.whph.handlers.ShareIntentHandler
+      handlers["notification"] as? me.ahmetcetinkaya.whph.handlers.NotificationMethodHandler
+        ?: throw IllegalStateException("NotificationMethodHandler not found")
+    val shareHandler =
+      handlers["share"] as? me.ahmetcetinkaya.whph.handlers.ShareIntentHandler
+        ?: throw IllegalStateException("ShareIntentHandler not found")
 
     notificationHandler.initialNotificationPayload?.let {
       intentProcessor.notifyFlutterOfPayload(it, flutterEngine.dartExecutor.binaryMessenger)
@@ -102,9 +108,15 @@ class MainActivity : FlutterActivity() {
 
   override fun onDestroy() {
     unregisterReceivers()
+    // Clear static FlutterEngine references to prevent memory leaks
+    me.ahmetcetinkaya.whph.receivers.SyncTriggerReceiver.setFlutterEngine(null)
+    me.ahmetcetinkaya.whph.receivers.TaskCompletionReceiver.setFlutterEngine(null)
+    me.ahmetcetinkaya.whph.receivers.HabitCompletionReceiver.setFlutterEngine(null)
+    // Stop pending collection checks to prevent Handler leaks
+    pendingCollectionHandler.removeCallbacksAndMessages(null)
     try {
       (getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager).cancel(
-        888
+        PENDING_NOTIFICATION_ID
       )
     } catch (e: Exception) {
       Log.e(TAG, "Error cancelling notification: ${e.message}")
@@ -117,7 +129,12 @@ class MainActivity : FlutterActivity() {
 
     // App Info
     MethodChannel(m, Constants.Channels.APP_INFO).setMethodCallHandler { call, result ->
-      val h = handlers["appInfo"] as me.ahmetcetinkaya.whph.handlers.AppInfoHandler
+      val h =
+        handlers["appInfo"] as? me.ahmetcetinkaya.whph.handlers.AppInfoHandler
+          ?: run {
+            result.error("INTERNAL_ERROR", "AppInfoHandler not found", null)
+            return@setMethodCallHandler
+          }
       when (call.method) {
         "getAppName" ->
           result.success(
@@ -134,17 +151,25 @@ class MainActivity : FlutterActivity() {
 
     // Battery
     MethodChannel(m, Constants.Channels.BATTERY_OPTIMIZATION).setMethodCallHandler { call, result ->
+      val h =
+        handlers["battery"] as? me.ahmetcetinkaya.whph.handlers.BatteryOptimizationHandler
+          ?: run {
+            result.error("INTERNAL_ERROR", "BatteryOptimizationHandler not found", null)
+            return@setMethodCallHandler
+          }
       if (call.method == "isIgnoringBatteryOptimizations")
-        result.success(
-          (handlers["battery"] as me.ahmetcetinkaya.whph.handlers.BatteryOptimizationHandler)
-            .isIgnoringBatteryOptimizations()
-        )
+        result.success(h.isIgnoringBatteryOptimizations())
       else result.notImplemented()
     }
 
     // Exact Alarm
     MethodChannel(m, Constants.Channels.EXACT_ALARM).setMethodCallHandler { call, result ->
-      val h = handlers["alarm"] as me.ahmetcetinkaya.whph.handlers.ExactAlarmHandler
+      val h =
+        handlers["alarm"] as? me.ahmetcetinkaya.whph.handlers.ExactAlarmHandler
+          ?: run {
+            result.error("INTERNAL_ERROR", "ExactAlarmHandler not found", null)
+            return@setMethodCallHandler
+          }
       when (call.method) {
         "canScheduleExactAlarms" -> result.success(h.canScheduleExactAlarms())
         "checkExactAlarmPermission" -> result.success(h.checkExactAlarmPermission())
@@ -164,7 +189,12 @@ class MainActivity : FlutterActivity() {
 
     // Notification (large handler - inline for compactness)
     MethodChannel(m, Constants.Channels.NOTIFICATION).setMethodCallHandler { call, result ->
-      val h = handlers["notification"] as me.ahmetcetinkaya.whph.handlers.NotificationMethodHandler
+      val h =
+        handlers["notification"] as? me.ahmetcetinkaya.whph.handlers.NotificationMethodHandler
+          ?: run {
+            result.error("INTERNAL_ERROR", "NotificationMethodHandler not found", null)
+            return@setMethodCallHandler
+          }
       when (call.method) {
         "getInitialNotificationPayload" -> result.success(h.initialNotificationPayload)
         "acknowledgePayload" -> result.success(h.acknowledgePayload(call.arguments as? String))
@@ -258,7 +288,12 @@ class MainActivity : FlutterActivity() {
 
     // App Usage Stats
     MethodChannel(m, Constants.Channels.APP_USAGE_STATS).setMethodCallHandler { call, result ->
-      val h = handlers["usage"] as me.ahmetcetinkaya.whph.handlers.AppUsageStatsMethodHandler
+      val h =
+        handlers["usage"] as? me.ahmetcetinkaya.whph.handlers.AppUsageStatsMethodHandler
+          ?: run {
+            result.error("INTERNAL_ERROR", "AppUsageStatsMethodHandler not found", null)
+            return@setMethodCallHandler
+          }
       when (call.method) {
         "checkUsageStatsPermission" -> result.success(h.checkUsageStatsPermission())
         "openUsageAccessSettings" -> result.success(h.openUsageAccessSettings())
@@ -292,7 +327,12 @@ class MainActivity : FlutterActivity() {
 
     // Work Manager
     MethodChannel(m, Constants.Channels.WORK_MANAGER).setMethodCallHandler { call, result ->
-      val h = handlers["workManager"] as me.ahmetcetinkaya.whph.handlers.WorkManagerHandler
+      val h =
+        handlers["workManager"] as? me.ahmetcetinkaya.whph.handlers.WorkManagerHandler
+          ?: run {
+            result.error("INTERNAL_ERROR", "WorkManagerHandler not found", null)
+            return@setMethodCallHandler
+          }
       when (call.method) {
         "startPeriodicAppUsageWork" ->
           result.success(
@@ -307,7 +347,12 @@ class MainActivity : FlutterActivity() {
 
     // Sync
     MethodChannel(m, Constants.Channels.SYNC).setMethodCallHandler { call, result ->
-      val h = handlers["sync"] as me.ahmetcetinkaya.whph.handlers.SyncWorkManagerHandler
+      val h =
+        handlers["sync"] as? me.ahmetcetinkaya.whph.handlers.SyncWorkManagerHandler
+          ?: run {
+            result.error("INTERNAL_ERROR", "SyncWorkManagerHandler not found", null)
+            return@setMethodCallHandler
+          }
       when (call.method) {
         "startPeriodicSyncWork" ->
           result.success(h.startPeriodicSyncWork(call.argument<Int>("intervalMinutes")?.toLong()))
@@ -320,7 +365,12 @@ class MainActivity : FlutterActivity() {
 
     // Share
     MethodChannel(m, Constants.Channels.SHARE).setMethodCallHandler { call, result ->
-      val h = handlers["share"] as me.ahmetcetinkaya.whph.handlers.ShareIntentHandler
+      val h =
+        handlers["share"] as? me.ahmetcetinkaya.whph.handlers.ShareIntentHandler
+          ?: run {
+            result.error("INTERNAL_ERROR", "ShareIntentHandler not found", null)
+            return@setMethodCallHandler
+          }
       when (call.method) {
         "getInitialShareIntent" -> result.success(h.getInitialShareIntent())
         "acknowledgeShareIntent" -> {
@@ -368,12 +418,16 @@ class MainActivity : FlutterActivity() {
       object : Runnable {
         override fun run() {
           try {
-            (handlers["workManager"] as me.ahmetcetinkaya.whph.handlers.WorkManagerHandler)
-              .checkPendingCollection(flutterEngine?.dartExecutor?.binaryMessenger)
+            val h = handlers["workManager"] as? me.ahmetcetinkaya.whph.handlers.WorkManagerHandler
+            if (h != null) {
+              h.checkPendingCollection(flutterEngine?.dartExecutor?.binaryMessenger)
+            } else {
+              Log.e(TAG, "WorkManagerHandler not found")
+            }
           } catch (e: Exception) {
             Log.e(TAG, "Error in pending collection check: ${e.message}", e)
           }
-          pendingCollectionHandler.postDelayed(this, 30000)
+          pendingCollectionHandler.postDelayed(this, PENDING_COLLECTION_CHECK_INTERVAL_MS)
         }
       }
     )
@@ -382,5 +436,8 @@ class MainActivity : FlutterActivity() {
   companion object {
     const val ACTION_NOTIFICATION_CLICK = "${Constants.PACKAGE_NAME}.NOTIFICATION_CLICK"
     const val ACTION_SELECT_NOTIFICATION = "SELECT_NOTIFICATION"
+    private const val PENDING_NOTIFICATION_ID = 888 // Notification ID for pending notifications
+    private const val PENDING_COLLECTION_CHECK_INTERVAL_MS =
+      30000L // Check interval in milliseconds
   }
 }
