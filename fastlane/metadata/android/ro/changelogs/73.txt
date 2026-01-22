@@ -1,0 +1,1 @@
+• Linux: Pictograma aplicației este acum afișat corect pe mai multe distribuții

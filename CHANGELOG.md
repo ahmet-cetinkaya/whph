@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.3] - 2026-01-22
+
+### Fixed
+- **Linux Icons**: App icon now displays correctly on more Linux distributions by adding a fallback path for Flutter assets
+
 ## [0.20.2] - 2026-01-22
 
 ### Changed

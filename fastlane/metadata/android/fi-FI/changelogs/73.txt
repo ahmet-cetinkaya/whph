@@ -1,0 +1,1 @@
+• Linux: Sovelluksen kuvake näkyy nyt oikein useammissa jakelupaketeissa

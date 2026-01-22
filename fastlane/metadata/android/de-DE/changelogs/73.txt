@@ -1,0 +1,1 @@
+• Linux: App-Symbol wird nun auf mehr Distributionen korrekt angezeigt

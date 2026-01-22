@@ -1,0 +1,1 @@
+• Linux: App-pictogram wordt nu correct weergegeven op meer distributies

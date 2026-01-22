@@ -1,0 +1,1 @@
+• Linux: Ikona aplikace se nyní správně zobrazuje na více distribucích

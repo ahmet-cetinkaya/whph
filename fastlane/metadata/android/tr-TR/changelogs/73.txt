@@ -1,0 +1,1 @@
+• Linux: Uygulama ikonu artık daha fazla dağıtımda doğru şekilde görüntüleniyor

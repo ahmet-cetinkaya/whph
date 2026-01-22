@@ -1,0 +1,1 @@
+• Linux: Ikona aplikacji wyświetla się teraz poprawnie na większej liczbie dystrybucji

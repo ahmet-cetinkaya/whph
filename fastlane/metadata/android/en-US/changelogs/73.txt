@@ -1,0 +1,1 @@
+• Linux: App icon now displays correctly on more distributions

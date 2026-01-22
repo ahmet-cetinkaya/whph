@@ -1,0 +1,1 @@
+• Linux: El icono de la app ahora se muestra correctamente en más distribuciones
