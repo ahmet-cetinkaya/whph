@@ -1,0 +1,6 @@
+• Gewohnheiten direkt aus Benachrichtigungen als erledigt markieren
+• Aufgaben als unerledigt markieren, auch wenn Filter "Erledigt" aktiv ist
+• Erinnerungen für Geräte mit numerischen Zeitzonen behoben
+• Verbesserte App-Nutzungsverfolgung
+• Bessere Abstände und einfacheres Ziehen bei Aufgabenkarten
+• Linux: App-Symbol wird jetzt korrekt in der Taskleiste angezeigt

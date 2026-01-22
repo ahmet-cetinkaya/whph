@@ -1,0 +1,6 @@
+• Segna le abitudini come completate direttamente dalle notifiche
+• Annulla il completamento dei task anche quando filtri per completati
+• Corretti promemoria per dispositivi con fusi orari numerici
+• Migliorata la precisione del tracciamento dell'uso delle app
+• Migliore spaziatura e riordino più facile sulle card delle attività
+• Linux: L'icona dell'app viene ora visualizzata correttamente nella barra delle applicazioni

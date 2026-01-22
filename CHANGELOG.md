@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.1] - 2026-01-22
+
+### Added
+
+- **Habit Completion Notifications**: Mark habits as done directly from notifications with localized support
+
+### Fixed
+
+- **Task Management**: You can now uncomplete tasks even when the "Done" filter is active
+- **Android Notifications**: Fixed reminder delivery issues for devices with numeric timezone settings
+- **App Usage Tracking**: Improved accuracy by skipping system metadata entries
+- **Task Cards**: Better spacing and easier drag handle positioning for smoother reordering
+- **Linux Desktop**: App icon now displays correctly in system taskbars
+- **Dialogs**: More consistent button layout across all dialogs
+
 ## [0.20.0] - 2026-01-20
 
 ### Added

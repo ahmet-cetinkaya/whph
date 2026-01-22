@@ -1,0 +1,6 @@
+• Marquez les habitudes comme terminées directement depuis les notifications
+• Annulez l'achèvement des tâches même lors du filtrage par terminées
+• Corrections des rappels pour les appareils avec fuseaux horaires numériques
+• Amélioration de la précision du suivi de l'utilisation des apps
+• Meilleur espacement et réagencement plus facile sur les cartes de tâches
+• Linux: L'icône de l'application s'affiche maintenant correctement dans la barre des tâches

@@ -1,0 +1,6 @@
+• Markér vaner som færdige direkte fra notifikationer
+• Opret færdige opgaver selv når du filtrer efter afsluttede
+• Ret påmindelser for enheder med numeriske tidszoner
+• Forbedret sporing af app-forbrug
+• Bedre afstand og nemmere træk-og-slip på opgavekort
+• Linux: App-ikonet vises nu korrekt i proceslinjen

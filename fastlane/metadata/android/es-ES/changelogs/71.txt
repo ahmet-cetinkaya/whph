@@ -1,0 +1,6 @@
+• Marca hábitos como completados directamente desde las notificaciones
+• Desmarca tareas completadas incluso al filtrar por completadas
+• Recordatorios arreglados para dispositivos con zonas horarias numéricas
+• Mejora la precisión del seguimiento del uso de apps
+• Mejor espaciado y arrastrar más fácil en las tarjetas de tareas
+• Linux: El icono de la app ahora se muestra correctamente en la barra de tareas

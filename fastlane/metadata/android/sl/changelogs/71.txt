@@ -1,0 +1,6 @@
+• Oznakite navade kot končane neposredno iz obvestil
+• Razveljavite dokončane naloge tudi pri filtriranju po končanih
+• Popravljena opomnika za naprave z numeričnimi časovnimi pasovi
+• Izboljšana natančnost sledenja uporabe aplikacij
+• Boljši razmaki in enostavnejše premikanje kartic nalog
+• Linux: Ikona aplikacije se zdaj pravilno prikazuje v opravilni vrstici

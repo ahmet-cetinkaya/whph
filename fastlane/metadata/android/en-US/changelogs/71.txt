@@ -1,0 +1,6 @@
+• Mark habits as done directly from notifications
+• Uncomplete tasks even when filtering by completed
+• Fixed reminders for devices with numeric timezones
+• Improved app usage tracking accuracy
+• Better spacing and easier drag-to-reorder on task cards
+• Linux: App icon now displays correctly in taskbars

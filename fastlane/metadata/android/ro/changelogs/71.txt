@@ -1,0 +1,6 @@
+• Marchează obiceiurile ca finalizate direct din notificări
+• Anulează finalizarea sarcinilor chiar și când filtrezi după finalizate
+• Reamintiri fixate pentru dispozitive cu fusuri orare numerice
+• Îmbunătățită precizia urmăririi utilizării aplicațiilor
+• Spațiere mai bună și reordonare mai ușoară pe cardurile de sarcini
+• Linux: Pictograma aplicației este acum afișată corect în bara de activități

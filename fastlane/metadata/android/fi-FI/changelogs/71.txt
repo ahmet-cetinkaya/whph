@@ -1,0 +1,6 @@
+• Merkitse tavat suoritetuiksi suoraan ilmoituksista
+• Peru tehtävien suoritus myös kun suoritetut on suodatettu
+• Korjattu muistutukset laitteille, joilla on numeeriset aikavyöhykkeet
+• Parannettu sovelluskäytön seurannan tarkkuutta
+• Paremmat välimät ja helpompi vetää tehtäväkortteja
+• Linux: Sovelluskuvake näkyy nyt oikein tehtäväpalkissa

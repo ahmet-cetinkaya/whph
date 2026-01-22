@@ -1,0 +1,6 @@
+• Alışkanlıkları doğrudan bildirimlerden tamamlandı olarak işaretleyin
+• Tamamlandı olarak filtrelerken bile görevlerin tamamlandığını iptal edin
+• Sayısal saat dilimli cihazlar için hatırlatıcılar düzeltildi
+• Uygulama kullanım takibi doğruluğu geliştirildi
+• Görev kartlarında daha iyi boşluklar ve sürükleyle yeniden sıralama kolaylığı
+• Linux: Uygulama simgesi artık görev çubuğunda doğru görüntüleniyor

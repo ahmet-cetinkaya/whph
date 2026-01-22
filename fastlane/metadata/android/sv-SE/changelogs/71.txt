@@ -1,0 +1,6 @@
+• Markera vanor som klara direkt från notiser
+• Ångra klara uppgifter även när du filtrerar på klara
+• Fixade påminnelser för enheter med numeriska tidszoner
+• Förbättrad precision för app-användningsspårning
+• Bättre mellanrum och enklare att dra om i uppgiftskort
+• Linux: Appikonen visas nu korrekt i aktivitetsfältet

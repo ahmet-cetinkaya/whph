@@ -1,0 +1,6 @@
+• Marque hábitos como concluídos diretamente das notificações
+• Desmarque tarefas concluídas mesmo ao filtrar por concluídas
+• Lembretes corrigidos para dispositivos com fusos horários numéricos
+• Melhorada a precisão do rastreamento de uso de apps
+• Melhor espaçamento e reordenar mais fácil nos cartões de tarefas
+• Linux: O ícone da aplicação agora é exibido corretamente na barra de tarefas

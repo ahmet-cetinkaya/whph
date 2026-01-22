@@ -1,0 +1,6 @@
+• Oznaczaj nawyki jako ukończone bezpośrednio z powiadomień
+• Cofnij ukończenie zadań nawet przy filtrowaniu po ukończonych
+• Naprawiono przypomnienia dla urządzeń z numerycznymi strefami czasowymi
+• Poprawiono dokładność śledzenia użycia aplikacji
+• Lepsze odstępy i łatwiejsze przeciąganie na kartach zadań
+• Linux: Ikona aplikacji wyświetla się teraz poprawnie na pasku zadań

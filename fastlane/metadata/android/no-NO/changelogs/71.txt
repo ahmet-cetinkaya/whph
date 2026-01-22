@@ -1,0 +1,6 @@
+• Marker vaner som ferdige direkte fra varsler
+• Kan angre ferdige oppgaver selv når du filtrerer på fullførte
+• Fikset påminnelser for enheter med numeriske tidssoner
+• Forbedret nøyaktighet for app-brukssporing
+• Bedre mellomrom og enklere dra-og-slipp på oppgavekort
+• Linux: App-ikonet vises nå korrekt i oppgavelinjen

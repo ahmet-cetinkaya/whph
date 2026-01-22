@@ -1,0 +1,6 @@
+• Markeren gewoontes als voltooid direct vanaf meldingen
+• Taken als onvoltooid markeren, zelfs bij filteren op voltooid
+• Herinneringen gefixeerd voor apparaten met numerieke tijdzones
+• Verbeterde nauwkeurigheid van app-gebruikstracking
+• Betere tussenruimte en makkelijker slepen op taakkaarten
+• Linux: App-pictogram wordt nu correct weergegeven in de taakbalk

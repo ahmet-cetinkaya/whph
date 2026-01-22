@@ -1,0 +1,6 @@
+• Označujte návyky jako splněné přímo z oznámení
+• Rušte dokončení úkolů i při filtrování podle dokončených
+• Opraveny připomínky pro zařízení s číselnými časovými pásmy
+• Vylepšeno sledování využití aplikací
+• Lepší rozestupy a jednodušší přetahování úkolů
+• Linux: Ikona aplikace se nyní správně zobrazuje v liště
