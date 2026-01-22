@@ -1,0 +1,4 @@
+• Rediseñado el diálogo de recordatorio personalizado con un diseño más claro para seleccionar unidades de tiempo
+• Mejorada la visualización del icono de la aplicación en sistemas Linux
+• Mejorada la respuesta táctil de los botones en toda la aplicación
+• Corregida la fiabilidad de sincronización en plataformas de escritorio

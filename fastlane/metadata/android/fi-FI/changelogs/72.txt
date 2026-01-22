@@ -1,0 +1,4 @@
+• Mukautettu hälytysikkuna on suunniteltu uudelleen selkeämmällä asettelulla aikayksiköiden valitsemiseksi
+• Parannettu sovelluskuvakkeen näyttö Linux-järjestelmissä
+• Parannettu kosketuspalautetta painikkeissa koko sovelluksessa
+• Korjattu synkronoinnin luotettavuus työpöytäalustoilla

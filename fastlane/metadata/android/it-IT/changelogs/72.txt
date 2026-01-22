@@ -1,0 +1,4 @@
+• Ridisegnato la finestra di promemoria personalizzata con un layout più chiaro per selezionare le unità di tempo
+• Migliorata la visualizzazione dell'icona dell'app sui sistemi Linux
+• Migliorato il feedback tattile dei pulsanti in tutta l'app
+• Corretta l'affidabilità della sincronizzazione sulle piattaforme desktop

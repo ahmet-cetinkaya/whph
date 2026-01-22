@@ -1,0 +1,4 @@
+• Özel hatırlatıcı iletişim kutusu, zaman birimi seçimi için daha net bir düzen ile yeniden tasarlandı
+• Linux sistemlerdeki uygulama simgesi görüntülenmesi iyileştirildi
+• Uygulama genelindeki düğme dokunma geri bildirimi güçlendirildi
+• Masaüstü platformlarında eşitleme güvenilirliği düzeltildi

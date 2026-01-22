@@ -1,0 +1,4 @@
+• Diálogo de lembrete personalizado redesenhado com um layout mais claro para selecionar unidades de tempo
+• Melhorada a visualização do ícone da aplicação em sistemas Linux
+• Melhorado o feedback tátil dos botões em toda a aplicação
+• Corrigida a fiabilidade da sincronização em plataformas desktop

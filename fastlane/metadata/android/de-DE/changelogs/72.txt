@@ -1,0 +1,4 @@
+• Dialog für benutzerdefinierte Erinnerungen mit klarerem Layout für die Zeiteinheiten-Auswahl neu gestaltet
+• Verbesserte App-Symbolanzeige auf Linux-Systemen
+• Verbesserte Touch-Feedback für Schaltflächen in der gesamten App
+• Synchronisierungszuverlässigkeit auf Desktop-Plattformen behoben

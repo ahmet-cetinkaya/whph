@@ -1,0 +1,4 @@
+• Przeprojektowano okno niestandardowego przypomnienia jaśniejszym układem do wyboru jednostek czasu
+• Poprawiono wyświetlanie ikony aplikacji w systemach Linux
+• Poprawiono dotykową informację zwrotną przycisków w całej aplikacji
+• Naprawiono niezawodność synchronizacji na platformach desktopowych

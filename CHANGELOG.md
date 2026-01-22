@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.2] - 2026-01-22
+
+### Changed
+- **Custom Reminder Dialog**: Redesigned reminder settings with a clearer table layout for selecting time units
+- **Linux Icons**: Improved app icon loading to display correctly across different Linux distributions
+
+### Fixed
+- **Desktop Sync**: Resolved service lifecycle issues on desktop platforms for more reliable synchronization
+- **Button Styling**: Enhanced interaction feedback on sorting and grouping buttons throughout the app
+
 ## [0.20.1] - 2026-01-22
 
 ### Added

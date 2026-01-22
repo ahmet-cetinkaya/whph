@@ -1,0 +1,4 @@
+• Aangepaste herinneringsdialoog opnieuw ontworpen met een duidelijkere indeling voor het selecteren van tijdseenheden
+• Verbeterde weergave van app-pictogram op Linux-systemen
+• Verbeterde touch-feedback op knoppen in de hele app
+• Synchronisatiebetrouwbaarheid op desktopplatforms opgelost

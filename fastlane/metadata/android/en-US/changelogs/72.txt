@@ -1,0 +1,4 @@
+• Redesigned custom reminder dialog with a clearer layout for selecting time units
+• Improved app icon display on Linux systems
+• Enhanced button touch feedback throughout the app
+• Fixed sync reliability on desktop platforms

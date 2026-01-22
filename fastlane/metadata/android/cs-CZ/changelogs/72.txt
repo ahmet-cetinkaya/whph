@@ -1,0 +1,4 @@
+• Předefinováno dialogové okno vlastního připomenutí s přehlednějším rozložením pro výběr časových jednotek
+• Zlepšeno zobrazení ikony aplikace na systémech Linux
+• Vylepšena zpětná vazba dotyků tlačítek v celé aplikaci
+• Opravena spolehlivost synchronizace na desktopových platformách

@@ -1,0 +1,4 @@
+• Dialogue de rappel personnalisé repensé avec une disposition plus claire pour sélectionner les unités de temps
+• Amélioration de l'affichage de l'icône de l'application sur les systèmes Linux
+• Amélioration du retour tactile des boutons dans toute l'application
+• Correction de la fiabilité de la synchronisation sur les plateformes de bureau

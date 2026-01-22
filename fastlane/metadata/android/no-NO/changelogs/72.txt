@@ -1,0 +1,4 @@
+• Ondesignet dialog for tilpasset påminnelse med en klarere layout for å velge tidsenheter
+• Forbedret app-ikonvisning på Linux-systemer
+• Forbedret touch-feedback på knapper i hele appen
+• Fikset synkroniseringspålitelighet på desktop-plattformer

@@ -1,0 +1,4 @@
+• Pogovorno okno za prilagojene opomine je bilo prenovljeno z jasnšo postavitvijo za izbiro časovnih enot
+• Izboljšan prikaz ikone aplikacije na sistemih Linux
+• Izboljšan haptični povratni informaciji gum po vsej aplikaciji
+• Popravljena zanesljivost sinhronizacije na namiznih platformah
