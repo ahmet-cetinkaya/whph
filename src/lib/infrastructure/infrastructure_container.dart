@@ -250,13 +250,23 @@ void registerInfrastructure(IContainer container) {
     throw Exception('Unsupported platform for reminder service.');
   });
 
+  // Register DesktopSyncService explicitly for desktop platforms
+  // This is needed because AppBootstrapService resolves it directly for clean-up
+  if (PlatformUtils.isDesktop) {
+    container.registerSingleton<DesktopSyncService>((_) {
+      final mediator = container.resolve<Mediator>();
+      final deviceIdService = container.resolve<IDeviceIdService>();
+      return DesktopSyncService(mediator, deviceIdService);
+    });
+  }
+
   // Register ISyncService with platform-specific implementations
   container.registerSingleton<ISyncService>((_) {
     final mediator = container.resolve<Mediator>();
 
     if (PlatformUtils.isDesktop) {
-      final deviceIdService = container.resolve<IDeviceIdService>();
-      return DesktopSyncService(mediator, deviceIdService);
+      // Reuse the already registered DesktopSyncService
+      return container.resolve<DesktopSyncService>();
     }
 
     if (Platform.isAndroid) {
