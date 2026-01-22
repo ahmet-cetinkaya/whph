@@ -64,6 +64,8 @@ class _GroupDialogButtonState<T> extends State<GroupDialogButton<T>> {
       ),
       isSelected: isActive,
       iconSize: widget.iconSize,
+      constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+      padding: EdgeInsets.zero,
       tooltip: widget.tooltip,
       onPressed: () => _showGroupDialog(context),
     );

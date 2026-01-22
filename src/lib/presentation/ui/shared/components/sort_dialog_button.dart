@@ -75,6 +75,8 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
         color: isActive ? effectiveColor : Colors.grey,
       ),
       iconSize: widget.iconSize,
+      constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+      padding: EdgeInsets.zero,
       tooltip: widget.tooltip,
       onPressed: () => _showOrderDialog(context),
     );
