@@ -5,7 +5,8 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import kotlin.collections.HashMap
 
 /**
@@ -17,7 +18,6 @@ import kotlin.collections.HashMap
  * 4. Cross-referencing with system time for precision
  */
 class AppUsageStatsHandler(private val context: Context) {
-
   private val usageStatsManager: UsageStatsManager by lazy {
     context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
   }
@@ -186,7 +186,7 @@ class AppUsageStatsHandler(private val context: Context) {
                 appStates[packageName] = AppState(AppState.State.BACKGROUND, event.timeStamp)
                 Log.d(
                   TAG,
-                  "Screen off: closed session for $packageName (${(event.timeStamp - state.timestamp)/1000}s)",
+                  "Screen off: closed session for $packageName (${(event.timeStamp - state.timestamp) / 1000}s)",
                 )
               }
             Log.d(TAG, "Screen off: closed all foreground sessions")
@@ -215,7 +215,7 @@ class AppUsageStatsHandler(private val context: Context) {
           )
           Log.d(
             TAG,
-            "Closed remaining session for $packageName at query end (${(endTime - state.timestamp)/1000}s)",
+            "Closed remaining session for $packageName at query end (${(endTime - state.timestamp) / 1000}s)",
           )
         }
 
@@ -227,7 +227,7 @@ class AppUsageStatsHandler(private val context: Context) {
           usageMap[packageName] = totalTime
           Log.d(
             TAG,
-            "Event total for $packageName: ${totalTime/1000}s (${sessions.size} raw -> ${deduplicatedSessions.size} deduplicated)",
+            "Event total for $packageName: ${totalTime / 1000}s (${sessions.size} raw -> ${deduplicatedSessions.size} deduplicated)",
           )
         }
       }
@@ -318,12 +318,12 @@ class AppUsageStatsHandler(private val context: Context) {
       completedSessions.getOrPut(packageName) { mutableListOf() }.add(session)
       Log.d(
         TAG,
-        "Session finalized: $packageName ${session.duration/1000}s (${Date(session.startTime)} - ${Date(session.endTime)})",
+        "Session finalized: $packageName ${session.duration / 1000}s (${Date(session.startTime)} - ${Date(session.endTime)})",
       )
     } else {
       Log.d(
         TAG,
-        "Invalid session rejected: $packageName ${duration/1000}s (original: ${(endTime - startTime)/1000}s)",
+        "Invalid session rejected: $packageName ${duration / 1000}s (original: ${(endTime - startTime) / 1000}s)",
       )
     }
   }
@@ -356,7 +356,7 @@ class AppUsageStatsHandler(private val context: Context) {
             )
           Log.d(
             TAG,
-            "Merged overlapping sessions for ${currentSession.packageName}: ${currentSession.duration/1000}s",
+            "Merged overlapping sessions for ${currentSession.packageName}: ${currentSession.duration / 1000}s",
           )
         }
         // If nextSession is completely contained within current, ignore it
@@ -401,35 +401,38 @@ class AppUsageStatsHandler(private val context: Context) {
                 ratio > EVENT_STATS_RATIO_THRESHOLD -> {
                   Log.d(
                     TAG,
-                    "Combined $packageName: events too high (${(ratio*100).toInt()}%), using stats=${statsTime/1000}s",
+                    "Combined $packageName: events too high (${(ratio * 100).toInt()}%), using stats=${statsTime / 1000}s",
                   )
                   statsTime
                 }
+
                 // If stats time is much higher than events (>150%), likely stats includes
                 // background - use events
                 ratio < STATS_EVENT_RATIO_THRESHOLD &&
                   statsTime > eventTime * EVENT_STATS_RATIO_THRESHOLD -> {
                   Log.d(
                     TAG,
-                    "Combined $packageName: stats too high (${((1/ratio)*100).toInt()}%), using events=${eventTime/1000}s",
+                    "Combined $packageName: stats too high (${((1 / ratio) * 100).toInt()}%), using events=${eventTime / 1000}s",
                   )
                   eventTime
                 }
+
                 // If they're reasonably close (within 50%), use the average for better accuracy
                 ratio >= RATIO_LOWER_BOUND && ratio <= RATIO_UPPER_BOUND -> {
                   val averageTime = (statsTime + eventTime) / 2
                   Log.d(
                     TAG,
-                    "Combined $packageName: stats=${statsTime/1000}s, events=${eventTime/1000}s -> average=${averageTime/1000}s (${(ratio*100).toInt()}%)",
+                    "Combined $packageName: stats=${statsTime / 1000}s, events=${eventTime / 1000}s -> average=${averageTime / 1000}s (${(ratio * 100).toInt()}%)",
                   )
                   averageTime
                 }
+
                 // Default case - use the higher value
                 else -> {
                   val chosenTime = maxOf(statsTime, eventTime)
                   Log.d(
                     TAG,
-                    "Combined $packageName: stats=${statsTime/1000}s, events=${eventTime/1000}s -> max=${chosenTime/1000}s (${(ratio*100).toInt()}%)",
+                    "Combined $packageName: stats=${statsTime / 1000}s, events=${eventTime / 1000}s -> max=${chosenTime / 1000}s (${(ratio * 100).toInt()}%)",
                   )
                   chosenTime
                 }
@@ -439,17 +442,19 @@ class AppUsageStatsHandler(private val context: Context) {
 
           // If only stats has data, use it (UsageStats is generally more reliable for totals)
           statsTime > 0 -> {
-            Log.d(TAG, "Combined $packageName: using stats=${statsTime/1000}s (no event data)")
+            Log.d(TAG, "Combined $packageName: using stats=${statsTime / 1000}s (no event data)")
             statsTime
           }
 
           // If only events has data, use it
           eventTime > 0 -> {
-            Log.d(TAG, "Combined $packageName: using events=${eventTime/1000}s (no stats data)")
+            Log.d(TAG, "Combined $packageName: using events=${eventTime / 1000}s (no stats data)")
             eventTime
           }
 
-          else -> 0L
+          else -> {
+            0L
+          }
         }
 
       if (finalTime > 0) {
@@ -492,16 +497,16 @@ class AppUsageStatsHandler(private val context: Context) {
             if (existingTime > 0) {
               Log.d(
                 TAG,
-                "Stats summed: ${stats.packageName} = ${existingTime/1000}s + ${foregroundTime/1000}s = ${totalTime/1000}s",
+                "Stats summed: ${stats.packageName} = ${existingTime / 1000}s + ${foregroundTime / 1000}s = ${totalTime / 1000}s",
               )
             } else {
-              Log.d(TAG, "Stats: ${stats.packageName} = ${foregroundTime/1000}s")
+              Log.d(TAG, "Stats: ${stats.packageName} = ${foregroundTime / 1000}s")
             }
 
             if (cappedTime != totalTime) {
               Log.d(
                 TAG,
-                "Stats capped: ${stats.packageName} = ${totalTime/1000}s -> ${cappedTime/1000}s",
+                "Stats capped: ${stats.packageName} = ${totalTime / 1000}s -> ${cappedTime / 1000}s",
               )
             }
           }
@@ -527,27 +532,54 @@ class AppUsageStatsHandler(private val context: Context) {
       // More aggressive filtering to match Digital Wellbeing
       return when {
         // Skip known background service packages
-        packageName.contains(".service") -> false
-        packageName.contains(".provider") -> false
-        packageName.endsWith(":background") -> false
-        packageName.endsWith(":remote") -> false
-        packageName.contains(":") -> false // Skip all process variants
+        packageName.contains(".service") -> {
+          false
+        }
+
+        packageName.contains(".provider") -> {
+          false
+        }
+
+        packageName.endsWith(":background") -> {
+          false
+        }
+
+        packageName.endsWith(":remote") -> {
+          false
+        }
+
+        packageName.contains(":") -> {
+          false
+        }
+
+        // Skip all process variants
 
         // Skip most system processes
-        packageName.startsWith("com.android.") && !isUserFacingSystemApp(packageName) -> false
-        packageName.startsWith("android.") -> false
-        packageName.startsWith("com.google.android.") && !isUserFacingSystemApp(packageName) ->
+        packageName.startsWith("com.android.") && !isUserFacingSystemApp(packageName) -> {
           false
+        }
+
+        packageName.startsWith("android.") -> {
+          false
+        }
+
+        packageName.startsWith("com.google.android.") && !isUserFacingSystemApp(packageName) -> {
+          false
+        }
 
         // Check if it has a launcher intent (main indicator of user app)
-        packageManager.getLaunchIntentForPackage(packageName) != null -> true
+        packageManager.getLaunchIntentForPackage(packageName) != null -> {
+          true
+        }
 
         // For system apps without launcher, check if they're commonly used user apps
         (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0 -> {
           isUserFacingSystemApp(packageName)
         }
 
-        else -> true // Allow other user apps
+        else -> {
+          true
+        } // Allow other user apps
       }
     } catch (e: PackageManager.NameNotFoundException) {
       Log.w(TAG, "Package not found: $packageName")
@@ -601,8 +633,11 @@ class AppUsageStatsHandler(private val context: Context) {
         (applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0
 
       return when {
-        hasLauncherIntent && !isSystemApp -> true // User-installed apps with launcher
+        hasLauncherIntent && !isSystemApp -> true
+
+        // User-installed apps with launcher
         hasLauncherIntent && isSystemApp -> isDigitalWellbeingApprovedSystemApp(packageName)
+
         else -> false
       }
     } catch (e: PackageManager.NameNotFoundException) {
@@ -619,36 +654,62 @@ class AppUsageStatsHandler(private val context: Context) {
     return when {
       // Browsers
       packageName == "com.android.chrome" -> true
+
       packageName == "com.chrome.beta" -> true
+
       packageName == "com.chrome.dev" -> true
+
       packageName == "org.mozilla.firefox" -> true
 
       // Google Apps (specific packages only)
       packageName == "com.google.android.youtube" -> true
-      packageName == "com.google.android.gm" -> true // Gmail
+
+      packageName == "com.google.android.gm" -> true
+
+      // Gmail
       packageName == "com.google.android.apps.maps" -> true
+
       packageName == "com.google.android.apps.photos" -> true
+
       packageName == "com.google.android.apps.drive" -> true
-      packageName == "com.android.vending" -> true // Play Store
+
+      packageName == "com.android.vending" -> true
+
+      // Play Store
 
       // Communication
       packageName == "com.whatsapp" -> true
-      packageName == "com.facebook.orca" -> true // Messenger
+
+      packageName == "com.facebook.orca" -> true
+
+      // Messenger
       packageName == "com.instagram.android" -> true
-      packageName == "com.facebook.katana" -> true // Facebook
+
+      packageName == "com.facebook.katana" -> true
+
+      // Facebook
       packageName == "com.twitter.android" -> true
 
       // Entertainment
       packageName == "com.spotify.music" -> true
+
       packageName == "com.netflix.mediaclient" -> true
-      packageName == "com.zhiliaoapp.musically" -> true // TikTok
+
+      packageName == "com.zhiliaoapp.musically" -> true
+
+      // TikTok
 
       // System Utilities (only main user-facing ones)
       packageName == "com.android.settings" -> true
+
       packageName == "com.android.calculator2" -> true
+
       packageName == "com.android.calendar" -> true
+
       packageName == "com.android.deskclock" -> true
+
       packageName == "com.android.camera2" -> true
+
       packageName == "com.google.android.apps.wellbeing" -> true
 
       else -> false
@@ -659,19 +720,17 @@ class AppUsageStatsHandler(private val context: Context) {
    * Checks if a system app is user-facing (should be included in usage stats). DEPRECATED: Use
    * isValidUserAppStrict for Digital Wellbeing precision.
    */
-  private fun isUserFacingSystemApp(packageName: String): Boolean {
-    return isDigitalWellbeingApprovedSystemApp(packageName)
-  }
+  private fun isUserFacingSystemApp(packageName: String): Boolean =
+    isDigitalWellbeingApprovedSystemApp(packageName)
 
   /** Gets the display name for a package. */
-  fun getAppDisplayName(packageName: String): String {
-    return try {
+  fun getAppDisplayName(packageName: String): String =
+    try {
       val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
       packageManager.getApplicationLabel(applicationInfo).toString()
     } catch (e: Exception) {
       packageName
     }
-  }
 
   /**
    * Gets accurate foreground usage time for today, matching Digital Wellbeing's time boundaries.
@@ -726,7 +785,7 @@ class AppUsageStatsHandler(private val context: Context) {
           val foregroundTime = stats.totalTimeInForeground
           if (foregroundTime > 0) {
             packageUsageMap.getOrPut(stats.packageName) { mutableListOf() }.add(foregroundTime)
-            Log.d(TAG, "Daily: ${stats.packageName} = ${foregroundTime/1000}s")
+            Log.d(TAG, "Daily: ${stats.packageName} = ${foregroundTime / 1000}s")
           }
         }
       }
@@ -754,14 +813,27 @@ class AppUsageStatsHandler(private val context: Context) {
             dailyTotal > 0 && bestTotal > 0 -> {
               val ratio = if (dailyTotal > 0) bestTotal.toDouble() / dailyTotal.toDouble() else 1.0
               when {
-                ratio >= 0.9 && ratio <= 1.1 -> dailyTotal // Close match - use daily
-                ratio < 0.9 -> dailyTotal // Best is less - use daily
+                ratio >= 0.9 && ratio <= 1.1 -> dailyTotal
+
+                // Close match - use daily
+                ratio < 0.9 -> dailyTotal
+
+                // Best is less - use daily
                 else -> minOf(dailyTotal, bestTotal) // Prefer smaller value to be conservative
               }
             }
-            dailyTotal > 0 -> dailyTotal
-            bestTotal > 0 -> bestTotal
-            else -> 0L
+
+            dailyTotal > 0 -> {
+              dailyTotal
+            }
+
+            bestTotal > 0 -> {
+              bestTotal
+            }
+
+            else -> {
+              0L
+            }
           }
 
         // STEP 4: Apply EXACT Digital Wellbeing filtering
@@ -771,11 +843,11 @@ class AppUsageStatsHandler(private val context: Context) {
           usageMap[packageName] = processedTime
 
           if (processedTime != finalTime) {
-            Log.d(TAG, "Filtered: ${packageName} = ${finalTime/1000}s -> ${processedTime/1000}s")
+            Log.d(TAG, "Filtered: $packageName = ${finalTime / 1000}s -> ${processedTime / 1000}s")
           } else {
             Log.d(
               TAG,
-              "Final: ${packageName} = ${processedTime/1000}s (${(processedTime/60000).toInt()}m)",
+              "Final: $packageName = ${processedTime / 1000}s (${(processedTime / 60000).toInt()}m)",
             )
           }
         }
@@ -809,7 +881,7 @@ class AppUsageStatsHandler(private val context: Context) {
     if (filteredTime > maxPossibleTime) {
       Log.w(
         TAG,
-        "Impossible usage time for $packageName: ${filteredTime/1000}s > ${maxPossibleTime/1000}s",
+        "Impossible usage time for $packageName: ${filteredTime / 1000}s > ${maxPossibleTime / 1000}s",
       )
       filteredTime = maxPossibleTime
     }
@@ -820,7 +892,7 @@ class AppUsageStatsHandler(private val context: Context) {
     if (filteredTime > maxSingleSession) {
       Log.w(
         TAG,
-        "Capping session for $packageName: ${filteredTime/1000/60}m -> ${maxSingleSession/1000/60}m",
+        "Capping session for $packageName: ${filteredTime / 1000 / 60}m -> ${maxSingleSession / 1000 / 60}m",
       )
       filteredTime = maxSingleSession
     }

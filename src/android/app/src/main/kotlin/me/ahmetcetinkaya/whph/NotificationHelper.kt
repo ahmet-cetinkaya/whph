@@ -15,7 +15,7 @@ import androidx.core.app.NotificationManagerCompat
 import org.json.JSONObject
 
 class NotificationHelper(private val context: Context) {
-  private val TAG = "NotificationHelper"
+  @Suppress("PropertyNaming") private val TAG = "NotificationHelper"
 
   init {
     createNotificationChannels()
@@ -159,7 +159,9 @@ class NotificationHelper(private val context: Context) {
           completeIntent,
           PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-      } else null
+      } else {
+        null
+      }
 
     // Build the notification
     val builder =

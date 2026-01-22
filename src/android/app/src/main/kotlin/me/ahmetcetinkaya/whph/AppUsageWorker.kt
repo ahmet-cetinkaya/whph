@@ -3,16 +3,24 @@ package me.ahmetcetinkaya.whph
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.work.*
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 
 class AppUsageWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
-
   private val sharedPreferences: SharedPreferences =
     context.getSharedPreferences("app_usage_worker", Context.MODE_PRIVATE)
 
-  override fun doWork(): Result {
-    return try {
+  override fun doWork(): Result =
+    try {
       Log.d("AppUsageWorker", "Starting app usage data collection...")
 
       // Set a flag to collect app usage data
@@ -34,7 +42,6 @@ class AppUsageWorker(context: Context, params: WorkerParameters) : Worker(contex
         Result.failure()
       }
     }
-  }
 
   companion object {
     private const val WORK_NAME = "app_usage_periodic_work"

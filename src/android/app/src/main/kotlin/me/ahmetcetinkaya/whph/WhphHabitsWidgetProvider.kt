@@ -10,7 +10,8 @@ import android.util.Log
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetPlugin
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import org.json.JSONObject
 
 class WhphHabitsWidgetProvider : AppWidgetProvider() {
