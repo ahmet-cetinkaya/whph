@@ -14,7 +14,7 @@ import me.ahmetcetinkaya.whph.Constants
  * initialShareSubject) and provides methods to retrieve and acknowledge share data.
  */
 class ShareIntentHandler(private val context: Context) {
-  private val TAG = "ShareIntentHandler"
+  @Suppress("PropertyNaming") private val TAG = "ShareIntentHandler"
 
   // Store the initial share intent data
   var initialShareText: String? = null

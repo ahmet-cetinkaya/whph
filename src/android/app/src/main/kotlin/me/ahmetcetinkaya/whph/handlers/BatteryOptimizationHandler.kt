@@ -9,15 +9,15 @@ import android.util.Log
  * ignoring battery optimizations.
  */
 class BatteryOptimizationHandler(private val context: Context) {
-  private val TAG = "BatteryOptimizationHandler"
+  @Suppress("PropertyNaming") private val TAG = "BatteryOptimizationHandler"
 
   /**
    * Check if the app is ignoring battery optimizations.
    *
    * @return true if the app is ignoring battery optimizations, false otherwise
    */
-  fun isIgnoringBatteryOptimizations(): Boolean {
-    return try {
+  fun isIgnoringBatteryOptimizations(): Boolean =
+    try {
       val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
       val packageName = context.packageName
 
@@ -30,5 +30,4 @@ class BatteryOptimizationHandler(private val context: Context) {
       Log.e(TAG, "Error checking battery optimization: ${e.message}", e)
       false
     }
-  }
 }

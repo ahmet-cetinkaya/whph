@@ -23,7 +23,7 @@ class IntentProcessor(
   private val shareIntentHandler: ShareIntentHandler,
   private val bootCompletedHandler: BootCompletedHandler,
 ) {
-  private val TAG = "IntentProcessor"
+  @Suppress("PropertyNaming") private val TAG = "IntentProcessor"
 
   companion object {
     const val ACTION_NOTIFICATION_CLICK = "${Constants.PACKAGE_NAME}.NOTIFICATION_CLICK"
@@ -87,17 +87,20 @@ class IntentProcessor(
           Log.d(TAG, "Processing custom notification intent")
           intent.getStringExtra(Constants.IntentExtras.NOTIFICATION_PAYLOAD)
         }
+
         // Handle SELECT_NOTIFICATION action from FlutterLocalNotifications
         ACTION_SELECT_NOTIFICATION -> {
           Log.d(TAG, "Processing SELECT_NOTIFICATION intent")
           intent.getStringExtra("payload")
         }
+
         // Handle boot completed notification from NotificationReceiver
         "BOOT_COMPLETED_NOTIFICATION" -> {
           Log.d(TAG, "Processing boot completed notification")
           handleBootCompletedNotification(flutterEngine?.dartExecutor?.binaryMessenger)
           null // No payload for boot completed
         }
+
         // For any other intent, check if it has our payload extra
         else -> {
           if (intent.hasExtra(Constants.IntentExtras.NOTIFICATION_PAYLOAD)) {

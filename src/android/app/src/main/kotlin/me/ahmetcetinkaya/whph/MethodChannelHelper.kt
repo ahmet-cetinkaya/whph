@@ -10,7 +10,7 @@ import io.flutter.plugin.common.MethodChannel
  * common patterns.
  */
 object MethodChannelHelper {
-  private val TAG = "MethodChannelHelper"
+  @Suppress("PropertyNaming") private val TAG = "MethodChannelHelper"
 
   /**
    * Set up a simple method channel that delegates to handler functions.

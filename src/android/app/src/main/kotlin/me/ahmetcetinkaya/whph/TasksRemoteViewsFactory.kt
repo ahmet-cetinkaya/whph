@@ -40,9 +40,7 @@ class TasksRemoteViewsFactory(private val context: Context) :
     tasks = null
   }
 
-  override fun getCount(): Int {
-    return tasks?.length() ?: 0
-  }
+  override fun getCount(): Int = tasks?.length() ?: 0
 
   override fun getViewAt(position: Int): RemoteViews {
     val views = RemoteViews(context.packageName, R.layout.widget_task_item)
@@ -79,23 +77,16 @@ class TasksRemoteViewsFactory(private val context: Context) :
     return views
   }
 
-  override fun getLoadingView(): RemoteViews? {
-    return null
-  }
+  override fun getLoadingView(): RemoteViews? = null
 
-  override fun getViewTypeCount(): Int {
-    return 1
-  }
+  override fun getViewTypeCount(): Int = 1
 
-  override fun getItemId(position: Int): Long {
-    return try {
+  override fun getItemId(position: Int): Long =
+    try {
       tasks?.getJSONObject(position)?.getString("id")?.hashCode()?.toLong() ?: position.toLong()
     } catch (e: Exception) {
       position.toLong()
     }
-  }
 
-  override fun hasStableIds(): Boolean {
-    return true
-  }
+  override fun hasStableIds(): Boolean = true
 }

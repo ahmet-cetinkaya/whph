@@ -11,7 +11,7 @@ import me.ahmetcetinkaya.whph.AppUsageWorker
  * and managing periodic app usage collection.
  */
 class WorkManagerHandler(private val context: Context) {
-  private val TAG = "WorkManagerHandler"
+  @Suppress("PropertyNaming") private val TAG = "WorkManagerHandler"
   private val sharedPrefs: SharedPreferences =
     context.getSharedPreferences("app_usage_worker", Context.MODE_PRIVATE)
 
@@ -21,8 +21,8 @@ class WorkManagerHandler(private val context: Context) {
    * @param intervalMinutes Optional interval in minutes (default is 60 minutes)
    * @return true if work was scheduled successfully, false otherwise
    */
-  fun startPeriodicAppUsageWork(intervalMinutes: Long? = null): Boolean {
-    return try {
+  fun startPeriodicAppUsageWork(intervalMinutes: Long? = null): Boolean =
+    try {
       AppUsageWorker.schedulePeriodicWork(context, intervalMinutes)
       Log.d(TAG, "Started periodic app usage work with interval: ${intervalMinutes ?: 60} minutes")
       true
@@ -30,15 +30,14 @@ class WorkManagerHandler(private val context: Context) {
       Log.e(TAG, "Error starting periodic work: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Stop periodic app usage collection work.
    *
    * @return true if work was canceled successfully, false otherwise
    */
-  fun stopPeriodicAppUsageWork(): Boolean {
-    return try {
+  fun stopPeriodicAppUsageWork(): Boolean =
+    try {
       AppUsageWorker.cancelPeriodicWork(context)
       Log.d(TAG, "Stopped periodic app usage work")
       true
@@ -46,15 +45,14 @@ class WorkManagerHandler(private val context: Context) {
       Log.e(TAG, "Error stopping periodic work: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Check if app usage collection work is currently scheduled.
    *
    * @return true if work is scheduled, false otherwise
    */
-  fun isWorkScheduled(): Boolean {
-    return try {
+  fun isWorkScheduled(): Boolean =
+    try {
       val isScheduled = AppUsageWorker.isWorkScheduled(context)
       Log.d(TAG, "Work scheduled status: $isScheduled")
       isScheduled
@@ -62,7 +60,6 @@ class WorkManagerHandler(private val context: Context) {
       Log.e(TAG, "Error checking work status: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Check for pending app usage collection and trigger it if needed. Uses SharedPreferences to
@@ -71,8 +68,8 @@ class WorkManagerHandler(private val context: Context) {
    * @param binaryMessenger The binary messenger to invoke Flutter method channel
    * @return true if collection was triggered, false otherwise
    */
-  fun checkPendingCollection(binaryMessenger: io.flutter.plugin.common.BinaryMessenger?): Boolean {
-    return try {
+  fun checkPendingCollection(binaryMessenger: io.flutter.plugin.common.BinaryMessenger?): Boolean =
+    try {
       val shouldCollect = sharedPrefs.getBoolean("should_collect_usage", false)
 
       if (shouldCollect) {
@@ -100,7 +97,6 @@ class WorkManagerHandler(private val context: Context) {
       Log.e(TAG, "Error checking pending collection: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Get the SharedPreferences for app usage worker. Used by MainActivity to check for pending

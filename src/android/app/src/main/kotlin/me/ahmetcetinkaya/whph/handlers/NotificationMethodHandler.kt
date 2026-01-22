@@ -18,7 +18,7 @@ import me.ahmetcetinkaya.whph.ReminderTracker
  * scheduling, canceling notifications, and managing completions.
  */
 class NotificationMethodHandler(private val context: Context) {
-  private val TAG = "NotificationMethodHandler"
+  @Suppress("PropertyNaming") private val TAG = "NotificationMethodHandler"
   private val reminderTracker by lazy { ReminderTracker(context) }
 
   // Store the initial notification payload
@@ -55,8 +55,8 @@ class NotificationMethodHandler(private val context: Context) {
     body: String,
     payload: String?,
     actionButtonText: String?,
-  ): Boolean {
-    return try {
+  ): Boolean =
+    try {
       val notificationHelper = NotificationHelper(context)
       notificationHelper.showNotification(id, title, body, payload, actionButtonText)
       true
@@ -64,7 +64,6 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error showing direct notification: ${e.message}", e)
       false
     }
-  }
 
   /** Schedule a direct notification with an alarm. */
   fun scheduleDirectNotification(
@@ -200,8 +199,8 @@ class NotificationMethodHandler(private val context: Context) {
   }
 
   /** Cancel a notification by ID. */
-  fun cancelNotification(id: Int): Boolean {
-    return try {
+  fun cancelNotification(id: Int): Boolean =
+    try {
       // Get the alarm manager
       val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -233,11 +232,10 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error canceling notification: ${e.message}", e)
       false
     }
-  }
 
   /** Cancel all notifications. */
-  fun cancelAllNotifications(): Boolean {
-    return try {
+  fun cancelAllNotifications(): Boolean =
+    try {
       // Get all tracked reminder IDs
       val reminderIds = reminderTracker.getReminderIds()
 
@@ -290,11 +288,10 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error canceling all notifications: ${e.message}", e)
       false
     }
-  }
 
   /** Cancel notifications matching a pattern. */
-  fun cancelNotificationsWithPattern(startsWith: String?, contains: String?): Boolean {
-    return try {
+  fun cancelNotificationsWithPattern(startsWith: String?, contains: String?): Boolean =
+    try {
       // Use our ReminderTracker to find matching reminders
       val matchingIds = reminderTracker.findRemindersByPattern(startsWith, contains)
 
@@ -347,11 +344,10 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error canceling notifications with pattern: ${e.message}", e)
       false
     }
-  }
 
   /** Get active notification IDs. */
-  fun getActiveNotificationIds(): List<String> {
-    return try {
+  fun getActiveNotificationIds(): List<String> =
+    try {
       val activeNotificationIds =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
           val notificationManager =
@@ -368,42 +364,34 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error getting active notification IDs: ${e.message}", e)
       emptyList()
     }
-  }
 
   /** Get pending task completions. */
-  fun getPendingTaskCompletions(): List<String> {
-    return getPendingCompletions("complete_task_", "Task")
-  }
+  fun getPendingTaskCompletions(): List<String> = getPendingCompletions("complete_task_", "Task")
 
   /** Clear a pending task completion. */
-  fun clearPendingTaskCompletion(taskId: String): Boolean {
-    return clearPendingCompletion("complete_task_", "Task", "taskId", taskId)
-  }
+  fun clearPendingTaskCompletion(taskId: String): Boolean =
+    clearPendingCompletion("complete_task_", "Task", "taskId", taskId)
 
   /** Get pending habit completions. */
-  fun getPendingHabitCompletions(): List<String> {
-    return getPendingCompletions("complete_habit_", "Habit")
-  }
+  fun getPendingHabitCompletions(): List<String> = getPendingCompletions("complete_habit_", "Habit")
 
   /** Clear a pending habit completion. */
-  fun clearPendingHabitCompletion(habitId: String): Boolean {
-    return clearPendingCompletion("complete_habit_", "Habit", "habitId", habitId)
-  }
+  fun clearPendingHabitCompletion(habitId: String): Boolean =
+    clearPendingCompletion("complete_habit_", "Habit", "habitId", habitId)
 
   /** Get retry count for a pending completion. */
-  fun getRetryCount(key: String): Int {
-    return try {
+  fun getRetryCount(key: String): Int =
+    try {
       val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
       prefs.getInt(key, 0)
     } catch (e: Exception) {
       Log.e(TAG, "Error getting retry count: ${e.message}", e)
       0
     }
-  }
 
   /** Set retry count for a pending completion. */
-  fun setRetryCount(key: String, count: Int): Boolean {
-    return try {
+  fun setRetryCount(key: String, count: Int): Boolean =
+    try {
       val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
       prefs.edit().putInt(key, count).apply()
       Log.d(TAG, "Set retry count: $key = $count")
@@ -412,11 +400,10 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error setting retry count: ${e.message}", e)
       false
     }
-  }
 
   /** Clear retry count for a pending completion. */
-  fun clearRetryCount(key: String): Boolean {
-    return try {
+  fun clearRetryCount(key: String): Boolean =
+    try {
       val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
       prefs.edit().remove(key).apply()
       Log.d(TAG, "Cleared retry count: $key")
@@ -425,12 +412,11 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error clearing retry count: ${e.message}", e)
       false
     }
-  }
 
   // Private helper methods
 
-  private fun getPendingCompletions(pendingPrefix: String, entityName: String): List<String> {
-    return try {
+  private fun getPendingCompletions(pendingPrefix: String, entityName: String): List<String> =
+    try {
       val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
       val allKeys = prefs.all.keys.filter { it.startsWith(pendingPrefix) }
       val entityIds = allKeys.map { it.removePrefix(pendingPrefix) }
@@ -440,15 +426,14 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error getting pending $entityName completions: ${e.message}", e)
       emptyList()
     }
-  }
 
   private fun clearPendingCompletion(
     pendingPrefix: String,
     entityName: String,
     idParamName: String,
     entityId: String,
-  ): Boolean {
-    return try {
+  ): Boolean =
+    try {
       val prefs = context.getSharedPreferences("pending_actions", Context.MODE_PRIVATE)
       prefs.edit().remove("$pendingPrefix$entityId").apply()
       Log.d(TAG, "Cleared pending $entityName completion: $entityId")
@@ -457,5 +442,4 @@ class NotificationMethodHandler(private val context: Context) {
       Log.e(TAG, "Error clearing pending $entityName completion: ${e.message}", e)
       false
     }
-  }
 }

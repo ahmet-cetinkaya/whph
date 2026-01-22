@@ -9,7 +9,7 @@ import me.ahmetcetinkaya.whph.SyncWorker
  * periodic sync operations.
  */
 class SyncWorkManagerHandler(private val context: Context) {
-  private val TAG = "SyncWorkManagerHandler"
+  @Suppress("PropertyNaming") private val TAG = "SyncWorkManagerHandler"
 
   /**
    * Start periodic sync work.
@@ -17,8 +17,8 @@ class SyncWorkManagerHandler(private val context: Context) {
    * @param intervalMinutes Optional interval in minutes (default is 30 minutes)
    * @return true if work was scheduled successfully, false otherwise
    */
-  fun startPeriodicSyncWork(intervalMinutes: Long? = null): Boolean {
-    return try {
+  fun startPeriodicSyncWork(intervalMinutes: Long? = null): Boolean =
+    try {
       SyncWorker.schedulePeriodicWork(context, intervalMinutes)
       Log.d(TAG, "Started periodic sync work with interval: ${intervalMinutes ?: 30} minutes")
       true
@@ -26,15 +26,14 @@ class SyncWorkManagerHandler(private val context: Context) {
       Log.e(TAG, "Error starting periodic sync work: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Stop periodic sync work.
    *
    * @return true if work was canceled successfully, false otherwise
    */
-  fun stopPeriodicSyncWork(): Boolean {
-    return try {
+  fun stopPeriodicSyncWork(): Boolean =
+    try {
       SyncWorker.cancelPeriodicWork(context)
       Log.d(TAG, "Stopped periodic sync work")
       true
@@ -42,15 +41,14 @@ class SyncWorkManagerHandler(private val context: Context) {
       Log.e(TAG, "Error stopping periodic sync work: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Check if sync work is currently scheduled.
    *
    * @return true if work is scheduled, false otherwise
    */
-  fun isSyncWorkScheduled(): Boolean {
-    return try {
+  fun isSyncWorkScheduled(): Boolean =
+    try {
       val isScheduled = SyncWorker.isWorkScheduled(context)
       Log.d(TAG, "Sync work scheduled status: $isScheduled")
       isScheduled
@@ -58,15 +56,14 @@ class SyncWorkManagerHandler(private val context: Context) {
       Log.e(TAG, "Error checking sync work status: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Check for pending sync. For broadcast-based sync, we don't need to check SharedPreferences.
    *
    * @return false since we're not using SharedPreferences for sync
    */
-  fun checkPendingSync(): Boolean {
-    return try {
+  fun checkPendingSync(): Boolean =
+    try {
       // For broadcast-based sync, we don't need to check SharedPreferences
       // Return false since we're not using SharedPreferences anymore
       Log.d(TAG, "Pending sync check: not using SharedPreferences (broadcast-based)")
@@ -75,5 +72,4 @@ class SyncWorkManagerHandler(private val context: Context) {
       Log.e(TAG, "Error checking pending sync: ${e.message}", e)
       false
     }
-  }
 }

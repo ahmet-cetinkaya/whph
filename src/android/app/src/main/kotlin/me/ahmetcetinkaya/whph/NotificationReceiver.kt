@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 
 class NotificationReceiver : BroadcastReceiver() {
-  private val TAG = "NotificationReceiver"
+  @Suppress("PropertyNaming") private val TAG = "NotificationReceiver"
 
   override fun onReceive(context: Context, intent: Intent) {
     Log.d(TAG, "Received intent with action: ${intent.action}")
@@ -26,6 +26,7 @@ class NotificationReceiver : BroadcastReceiver() {
           Log.e(TAG, "Error rescheduling notifications after boot: ${e.message}", e)
         }
       }
+
       Constants.IntentActions.NOTIFICATION_CLICKED -> {
         val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
         val payload =
@@ -57,6 +58,7 @@ class NotificationReceiver : BroadcastReceiver() {
           Log.e(TAG, "Error starting MainActivity: ${e.message}")
         }
       }
+
       Constants.IntentActions.TASK_COMPLETE_ACTION -> {
         val taskId = intent.getStringExtra(Constants.IntentExtras.TASK_ID)
         val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
@@ -69,6 +71,7 @@ class NotificationReceiver : BroadcastReceiver() {
           Log.e(TAG, "Task ID is null in TASK_COMPLETE_ACTION")
         }
       }
+
       Constants.IntentActions.HABIT_COMPLETE_ACTION -> {
         val habitId = intent.getStringExtra(Constants.IntentExtras.HABIT_ID)
         val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
@@ -81,6 +84,7 @@ class NotificationReceiver : BroadcastReceiver() {
           Log.e(TAG, "Habit ID is null in HABIT_COMPLETE_ACTION")
         }
       }
+
       Constants.IntentActions.ALARM_TRIGGERED -> {
         val notificationId = intent.getIntExtra(Constants.IntentExtras.NOTIFICATION_ID, -1)
         val title = intent.getStringExtra(Constants.IntentExtras.TITLE) ?: "Reminder"
@@ -93,6 +97,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val notificationHelper = NotificationHelper(context)
         notificationHelper.showNotification(notificationId, title, body, payload, actionButtonText)
       }
+
       else -> {
         Log.d(TAG, "Received unhandled intent action: ${intent.action}")
 

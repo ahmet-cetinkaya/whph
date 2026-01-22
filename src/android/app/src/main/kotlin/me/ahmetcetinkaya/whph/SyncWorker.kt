@@ -3,13 +3,15 @@ package me.ahmetcetinkaya.whph
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.work.*
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 
 class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
-
-  override fun doWork(): Result {
-    return try {
+  override fun doWork(): Result =
+    try {
       Log.d(TAG, "Starting background sync operation...")
 
       // Send broadcast to trigger sync in MainActivity
@@ -28,7 +30,6 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
         Result.failure()
       }
     }
-  }
 
   companion object {
     private const val WORK_NAME = Constants.WorkManager.SYNC_WORK_NAME

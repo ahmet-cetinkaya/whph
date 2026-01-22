@@ -13,7 +13,7 @@ import me.ahmetcetinkaya.whph.Constants
  * device has finished booting.
  */
 class BootCompletedHandler(private val context: Context) {
-  private val TAG = "BootCompletedHandler"
+  @Suppress("PropertyNaming") private val TAG = "BootCompletedHandler"
 
   private val NOTIFICATION_HANDLER_DELAY_MS = 1000L // Wait 1 second before trying to send event
 

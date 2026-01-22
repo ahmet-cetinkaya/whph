@@ -13,7 +13,7 @@ import android.util.Log
  * request exact alarm permission on Android 12+.
  */
 class ExactAlarmHandler(private val context: Context) {
-  private val TAG = "ExactAlarmHandler"
+  @Suppress("PropertyNaming") private val TAG = "ExactAlarmHandler"
 
   /**
    * Check if the app can schedule exact alarms. On Android 12 (API 31) and above, this uses
@@ -22,8 +22,8 @@ class ExactAlarmHandler(private val context: Context) {
    *
    * @return true if exact alarms can be scheduled, false otherwise
    */
-  fun canScheduleExactAlarms(): Boolean {
-    return try {
+  fun canScheduleExactAlarms(): Boolean =
+    try {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -48,7 +48,6 @@ class ExactAlarmHandler(private val context: Context) {
       Log.e(TAG, "Error checking exact alarm permission: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Check exact alarm permission and return permission status code. Returns
@@ -56,16 +55,19 @@ class ExactAlarmHandler(private val context: Context) {
    *
    * @return Permission status code
    */
-  fun checkExactAlarmPermission(): Int {
-    return try {
+  fun checkExactAlarmPermission(): Int =
+    try {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val canSchedule = alarmManager.canScheduleExactAlarms()
 
         // Return 0 (PERMISSION_GRANTED) if granted, -1 (PERMISSION_DENIED) if not
         val permissionStatus =
-          if (canSchedule) android.content.pm.PackageManager.PERMISSION_GRANTED
-          else android.content.pm.PackageManager.PERMISSION_DENIED
+          if (canSchedule) {
+            android.content.pm.PackageManager.PERMISSION_GRANTED
+          } else {
+            android.content.pm.PackageManager.PERMISSION_DENIED
+          }
 
         Log.d(TAG, "checkExactAlarmPermission: $permissionStatus (canSchedule: $canSchedule)")
         permissionStatus
@@ -76,7 +78,6 @@ class ExactAlarmHandler(private val context: Context) {
       Log.e(TAG, "Error checking direct permission: ${e.message}", e)
       android.content.pm.PackageManager.PERMISSION_DENIED
     }
-  }
 
   /**
    * Test exact alarm permission by attempting to schedule and cancel a test alarm. This is the most
@@ -152,8 +153,8 @@ class ExactAlarmHandler(private val context: Context) {
    *
    * @return true if settings were opened successfully, false otherwise
    */
-  fun openExactAlarmsSettings(): Boolean {
-    return try {
+  fun openExactAlarmsSettings(): Boolean =
+    try {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         // First, check current permission status
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -177,5 +178,4 @@ class ExactAlarmHandler(private val context: Context) {
       Log.e(TAG, "Error opening exact alarm settings: ${e.message}", e)
       false
     }
-  }
 }

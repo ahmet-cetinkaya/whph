@@ -14,7 +14,7 @@ import me.ahmetcetinkaya.whph.Constants
  * channel.
  */
 class HabitCompletionReceiver : BroadcastReceiver() {
-  private val TAG = "HabitCompletionReceiver"
+  @Suppress("PropertyNaming") private val TAG = "HabitCompletionReceiver"
 
   override fun onReceive(context: Context?, intent: Intent?) {
     try {
@@ -57,8 +57,7 @@ class HabitCompletionReceiver : BroadcastReceiver() {
     }
 
     /** Create the intent filter for this receiver. */
-    fun createIntentFilter(): IntentFilter {
-      return IntentFilter(Constants.IntentActions.HABIT_COMPLETE_BROADCAST)
-    }
+    fun createIntentFilter(): IntentFilter =
+      IntentFilter(Constants.IntentActions.HABIT_COMPLETE_BROADCAST)
   }
 }

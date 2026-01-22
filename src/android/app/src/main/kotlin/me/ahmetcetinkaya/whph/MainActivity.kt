@@ -16,8 +16,7 @@ import io.flutter.plugin.common.MethodChannel
  * handle its own method channel calls.
  */
 class MainActivity : FlutterActivity() {
-
-  private val TAG = "MainActivity"
+  @Suppress("PropertyNaming") private val TAG = "MainActivity"
 
   // All handlers
   private val handlers by lazy {
@@ -136,16 +135,26 @@ class MainActivity : FlutterActivity() {
             return@setMethodCallHandler
           }
       when (call.method) {
-        "getAppName" ->
+        "getAppName" -> {
           result.success(
             h.getAppName(
               call.argument("packageName")
                 ?: return@setMethodCallHandler result.error("ERROR", "packageName is null", null)
             )
           )
-        "getInstalledApps" -> result.success(h.getInstalledApps())
-        "isRunningInWorkProfile" -> result.success(h.isRunningInWorkProfile())
-        else -> result.notImplemented()
+        }
+
+        "getInstalledApps" -> {
+          result.success(h.getInstalledApps())
+        }
+
+        "isRunningInWorkProfile" -> {
+          result.success(h.isRunningInWorkProfile())
+        }
+
+        else -> {
+          result.notImplemented()
+        }
       }
     }
 
@@ -157,9 +166,11 @@ class MainActivity : FlutterActivity() {
             result.error("INTERNAL_ERROR", "BatteryOptimizationHandler not found", null)
             return@setMethodCallHandler
           }
-      if (call.method == "isIgnoringBatteryOptimizations")
+      if (call.method == "isIgnoringBatteryOptimizations") {
         result.success(h.isIgnoringBatteryOptimizations())
-      else result.notImplemented()
+      } else {
+        result.notImplemented()
+      }
     }
 
     // Exact Alarm
@@ -196,8 +207,14 @@ class MainActivity : FlutterActivity() {
             return@setMethodCallHandler
           }
       when (call.method) {
-        "getInitialNotificationPayload" -> result.success(h.initialNotificationPayload)
-        "acknowledgePayload" -> result.success(h.acknowledgePayload(call.arguments as? String))
+        "getInitialNotificationPayload" -> {
+          result.success(h.initialNotificationPayload)
+        }
+
+        "acknowledgePayload" -> {
+          result.success(h.acknowledgePayload(call.arguments as? String))
+        }
+
         "showDirectNotification" -> {
           val success =
             h.showDirectNotification(
@@ -209,6 +226,7 @@ class MainActivity : FlutterActivity() {
             )
           result.success(success)
         }
+
         "scheduleDirectNotification" -> {
           val success =
             h.scheduleDirectNotification(
@@ -221,38 +239,65 @@ class MainActivity : FlutterActivity() {
             )
           result.success(success)
         }
-        "cancelNotification" -> result.success(h.cancelNotification(call.argument("id") ?: 0))
-        "cancelAllNotifications" -> result.success(h.cancelAllNotifications())
-        "cancelNotificationsWithPattern" ->
+
+        "cancelNotification" -> {
+          result.success(h.cancelNotification(call.argument("id") ?: 0))
+        }
+
+        "cancelAllNotifications" -> {
+          result.success(h.cancelAllNotifications())
+        }
+
+        "cancelNotificationsWithPattern" -> {
           result.success(
             h.cancelNotificationsWithPattern(call.argument("startsWith"), call.argument("contains"))
           )
-        "getActiveNotificationIds" -> result.success(h.getActiveNotificationIds())
+        }
+
+        "getActiveNotificationIds" -> {
+          result.success(h.getActiveNotificationIds())
+        }
+
         "completeTask",
-        "completeHabit" -> result.success(null)
-        "getPendingTaskCompletions" -> result.success(h.getPendingTaskCompletions())
-        "clearPendingTaskCompletion" ->
+        "completeHabit" -> {
+          result.success(null)
+        }
+
+        "getPendingTaskCompletions" -> {
+          result.success(h.getPendingTaskCompletions())
+        }
+
+        "clearPendingTaskCompletion" -> {
           result.success(
             h.clearPendingTaskCompletion(
               call.arguments as? String
                 ?: return@setMethodCallHandler result.error("INVALID_ARGS", "id is required", null)
             )
           )
-        "getPendingHabitCompletions" -> result.success(h.getPendingHabitCompletions())
-        "clearPendingHabitCompletion" ->
+        }
+
+        "getPendingHabitCompletions" -> {
+          result.success(h.getPendingHabitCompletions())
+        }
+
+        "clearPendingHabitCompletion" -> {
           result.success(
             h.clearPendingHabitCompletion(
               call.arguments as? String
                 ?: return@setMethodCallHandler result.error("INVALID_ARGS", "id is required", null)
             )
           )
-        "getRetryCount" ->
+        }
+
+        "getRetryCount" -> {
           result.success(
             h.getRetryCount(
               call.arguments as? String
                 ?: return@setMethodCallHandler result.error("INVALID_ARGS", "key is required", null)
             )
           )
+        }
+
         "setRetryCount" -> {
           @Suppress("UNCHECKED_CAST")
           val args =
@@ -275,14 +320,19 @@ class MainActivity : FlutterActivity() {
             )
           )
         }
-        "clearRetryCount" ->
+
+        "clearRetryCount" -> {
           result.success(
             h.clearRetryCount(
               call.arguments as? String
                 ?: return@setMethodCallHandler result.error("INVALID_ARGS", "key is required", null)
             )
           )
-        else -> result.notImplemented()
+        }
+
+        else -> {
+          result.notImplemented()
+        }
       }
     }
 
@@ -295,8 +345,14 @@ class MainActivity : FlutterActivity() {
             return@setMethodCallHandler
           }
       when (call.method) {
-        "checkUsageStatsPermission" -> result.success(h.checkUsageStatsPermission())
-        "openUsageAccessSettings" -> result.success(h.openUsageAccessSettings())
+        "checkUsageStatsPermission" -> {
+          result.success(h.checkUsageStatsPermission())
+        }
+
+        "openUsageAccessSettings" -> {
+          result.success(h.openUsageAccessSettings())
+        }
+
         "getAccurateForegroundUsage" -> {
           val data =
             h.getAccurateForegroundUsage(
@@ -313,15 +369,25 @@ class MainActivity : FlutterActivity() {
                   null,
                 ),
             )
-          if (data != null) result.success(data)
-          else result.error("USAGE_ERROR", "Failed to get usage data", null)
+          if (data != null) {
+            result.success(data)
+          } else {
+            result.error("USAGE_ERROR", "Failed to get usage data", null)
+          }
         }
+
         "getTodayForegroundUsage" -> {
           val data = h.getTodayForegroundUsage()
-          if (data != null) result.success(data)
-          else result.error("PRECISION_USAGE_ERROR", "Failed to get today's usage", null)
+          if (data != null) {
+            result.success(data)
+          } else {
+            result.error("PRECISION_USAGE_ERROR", "Failed to get today's usage", null)
+          }
         }
-        else -> result.notImplemented()
+
+        else -> {
+          result.notImplemented()
+        }
       }
     }
 
@@ -334,14 +400,27 @@ class MainActivity : FlutterActivity() {
             return@setMethodCallHandler
           }
       when (call.method) {
-        "startPeriodicAppUsageWork" ->
+        "startPeriodicAppUsageWork" -> {
           result.success(
             h.startPeriodicAppUsageWork(call.argument<Int>("intervalMinutes")?.toLong())
           )
-        "stopPeriodicAppUsageWork" -> result.success(h.stopPeriodicAppUsageWork())
-        "isWorkScheduled" -> result.success(h.isWorkScheduled())
-        "checkPendingCollection" -> result.success(h.checkPendingCollection(m))
-        else -> result.notImplemented()
+        }
+
+        "stopPeriodicAppUsageWork" -> {
+          result.success(h.stopPeriodicAppUsageWork())
+        }
+
+        "isWorkScheduled" -> {
+          result.success(h.isWorkScheduled())
+        }
+
+        "checkPendingCollection" -> {
+          result.success(h.checkPendingCollection(m))
+        }
+
+        else -> {
+          result.notImplemented()
+        }
       }
     }
 
@@ -354,12 +433,25 @@ class MainActivity : FlutterActivity() {
             return@setMethodCallHandler
           }
       when (call.method) {
-        "startPeriodicSyncWork" ->
+        "startPeriodicSyncWork" -> {
           result.success(h.startPeriodicSyncWork(call.argument<Int>("intervalMinutes")?.toLong()))
-        "stopPeriodicSyncWork" -> result.success(h.stopPeriodicSyncWork())
-        "isSyncWorkScheduled" -> result.success(h.isSyncWorkScheduled())
-        "checkPendingSync" -> result.success(h.checkPendingSync())
-        else -> result.notImplemented()
+        }
+
+        "stopPeriodicSyncWork" -> {
+          result.success(h.stopPeriodicSyncWork())
+        }
+
+        "isSyncWorkScheduled" -> {
+          result.success(h.isSyncWorkScheduled())
+        }
+
+        "checkPendingSync" -> {
+          result.success(h.checkPendingSync())
+        }
+
+        else -> {
+          result.notImplemented()
+        }
       }
     }
 
@@ -372,12 +464,18 @@ class MainActivity : FlutterActivity() {
             return@setMethodCallHandler
           }
       when (call.method) {
-        "getInitialShareIntent" -> result.success(h.getInitialShareIntent())
+        "getInitialShareIntent" -> {
+          result.success(h.getInitialShareIntent())
+        }
+
         "acknowledgeShareIntent" -> {
           h.acknowledgeShareIntent()
           result.success(true)
         }
-        else -> result.notImplemented()
+
+        else -> {
+          result.notImplemented()
+        }
       }
     }
   }
@@ -393,13 +491,15 @@ class MainActivity : FlutterActivity() {
           receivers["habit"]!!,
       )
       .forEach { (filter, receiver) ->
-        if (hasTiramisu)
+        if (hasTiramisu) {
           registerReceiver(
             receiver as android.content.BroadcastReceiver,
             filter,
             Context.RECEIVER_NOT_EXPORTED,
           )
-        else registerReceiver(receiver as android.content.BroadcastReceiver, filter)
+        } else {
+          registerReceiver(receiver as android.content.BroadcastReceiver, filter)
+        }
       }
   }
 

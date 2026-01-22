@@ -9,7 +9,6 @@ import android.os.Build
 import android.util.Log
 
 class AppUsageAlarmReceiver : BroadcastReceiver() {
-
   override fun onReceive(context: Context, intent: Intent) {
     Log.d(TAG, "onReceive called with action: ${intent.action}")
 
@@ -135,8 +134,8 @@ class AppUsageAlarmReceiver : BroadcastReceiver() {
      * @param context Application context
      * @return true if alarm is scheduled, false otherwise
      */
-    fun isCollectionScheduled(context: Context): Boolean {
-      return try {
+    fun isCollectionScheduled(context: Context): Boolean =
+      try {
         val intent = Intent(context, AppUsageAlarmReceiver::class.java)
         val pendingIntent =
           PendingIntent.getBroadcast(
@@ -150,6 +149,5 @@ class AppUsageAlarmReceiver : BroadcastReceiver() {
         Log.e(TAG, "Error checking if collection is scheduled", e)
         false
       }
-    }
   }
 }

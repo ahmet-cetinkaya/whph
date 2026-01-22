@@ -13,7 +13,7 @@ import me.ahmetcetinkaya.whph.Constants
  * forwards them to Flutter via the sync method channel.
  */
 class SyncTriggerReceiver : BroadcastReceiver() {
-  private val TAG = "SyncTriggerReceiver"
+  @Suppress("PropertyNaming") private val TAG = "SyncTriggerReceiver"
 
   override fun onReceive(context: Context?, intent: Intent?) {
     try {
@@ -45,8 +45,6 @@ class SyncTriggerReceiver : BroadcastReceiver() {
     }
 
     /** Create the intent filter for this receiver. */
-    fun createIntentFilter(): IntentFilter {
-      return IntentFilter("${Constants.PACKAGE_NAME}.SYNC_TRIGGER")
-    }
+    fun createIntentFilter(): IntentFilter = IntentFilter("${Constants.PACKAGE_NAME}.SYNC_TRIGGER")
   }
 }

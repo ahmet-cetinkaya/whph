@@ -40,9 +40,7 @@ class HabitsRemoteViewsFactory(private val context: Context) :
     habits = null
   }
 
-  override fun getCount(): Int {
-    return habits?.length() ?: 0
-  }
+  override fun getCount(): Int = habits?.length() ?: 0
 
   override fun getViewAt(position: Int): RemoteViews {
     val views = RemoteViews(context.packageName, R.layout.widget_habit_item)
@@ -67,9 +65,11 @@ class HabitsRemoteViewsFactory(private val context: Context) :
           currentCompletionCount == 0 -> {
             views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_check_box_outline)
           }
+
           currentCompletionCount < dailyTarget -> {
             views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_add)
           }
+
           currentCompletionCount >= dailyTarget -> {
             views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_check_box)
           }
@@ -110,23 +110,16 @@ class HabitsRemoteViewsFactory(private val context: Context) :
     return views
   }
 
-  override fun getLoadingView(): RemoteViews? {
-    return null
-  }
+  override fun getLoadingView(): RemoteViews? = null
 
-  override fun getViewTypeCount(): Int {
-    return 1
-  }
+  override fun getViewTypeCount(): Int = 1
 
-  override fun getItemId(position: Int): Long {
-    return try {
+  override fun getItemId(position: Int): Long =
+    try {
       habits?.getJSONObject(position)?.getString("id")?.hashCode()?.toLong() ?: position.toLong()
     } catch (e: Exception) {
       position.toLong()
     }
-  }
 
-  override fun hasStableIds(): Boolean {
-    return true
-  }
+  override fun hasStableIds(): Boolean = true
 }

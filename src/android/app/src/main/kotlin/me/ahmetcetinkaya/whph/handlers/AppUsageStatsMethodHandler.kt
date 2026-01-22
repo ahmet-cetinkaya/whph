@@ -11,7 +11,7 @@ import me.ahmetcetinkaya.whph.AppUsageStatsHandler
  * opening settings, and retrieving usage statistics.
  */
 class AppUsageStatsMethodHandler(private val context: Context) {
-  private val TAG = "AppUsageStatsMethodHandler"
+  @Suppress("PropertyNaming") private val TAG = "AppUsageStatsMethodHandler"
   private val usageHandler by lazy { AppUsageStatsHandler(context) }
 
   /**
@@ -19,8 +19,8 @@ class AppUsageStatsMethodHandler(private val context: Context) {
    *
    * @return true if permission is granted, false otherwise
    */
-  fun checkUsageStatsPermission(): Boolean {
-    return try {
+  fun checkUsageStatsPermission(): Boolean =
+    try {
       val appOpsManager =
         context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
       val mode =
@@ -55,15 +55,14 @@ class AppUsageStatsMethodHandler(private val context: Context) {
       Log.e(TAG, "Error checking usage stats permission: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Open the usage access settings page.
    *
    * @return true if settings were opened successfully, false otherwise
    */
-  fun openUsageAccessSettings(): Boolean {
-    return try {
+  fun openUsageAccessSettings(): Boolean =
+    try {
       val intent = Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       context.startActivity(intent)
@@ -72,7 +71,6 @@ class AppUsageStatsMethodHandler(private val context: Context) {
       Log.e(TAG, "Error opening usage access settings: ${e.message}", e)
       false
     }
-  }
 
   /**
    * Get accurate foreground usage for a specific time range.
@@ -81,8 +79,8 @@ class AppUsageStatsMethodHandler(private val context: Context) {
    * @param endTime End time in milliseconds
    * @return Map of package names to usage data
    */
-  fun getAccurateForegroundUsage(startTime: Long, endTime: Long): Map<String, Any>? {
-    return try {
+  fun getAccurateForegroundUsage(startTime: Long, endTime: Long): Map<String, Any>? =
+    try {
       Log.d(TAG, "Getting accurate foreground usage from $startTime to $endTime")
 
       val usageMap = usageHandler.getAccurateForegroundUsage(startTime, endTime)
@@ -105,15 +103,14 @@ class AppUsageStatsMethodHandler(private val context: Context) {
       Log.e(TAG, "Error getting accurate foreground usage: ${e.message}", e)
       null
     }
-  }
 
   /**
    * Get today's foreground usage with Digital Wellbeing precision.
    *
    * @return Map of package names to usage data with metadata
    */
-  fun getTodayForegroundUsage(): Map<String, Any>? {
-    return try {
+  fun getTodayForegroundUsage(): Map<String, Any>? =
+    try {
       Log.d(TAG, "Getting today's foreground usage (PRECISION Digital Wellbeing compatible)")
 
       val usageMap = usageHandler.getTodayForegroundUsage()
@@ -153,5 +150,4 @@ class AppUsageStatsMethodHandler(private val context: Context) {
       Log.e(TAG, "Error getting precision today's usage: ${e.message}", e)
       null
     }
-  }
 }

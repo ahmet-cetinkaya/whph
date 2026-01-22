@@ -22,7 +22,7 @@ data class NotificationData(
  * pattern-based cancellation and management of reminders
  */
 class ReminderTracker(context: Context) {
-  private val TAG = "ReminderTracker"
+  @Suppress("PropertyNaming") private val TAG = "ReminderTracker"
   private val PREFS_NAME = "whph_reminder_tracker"
   private val KEY_PREFIX = "reminder_"
   private val KEY_NOTIFICATION_DATA_PREFIX = "notif_data_"
@@ -155,9 +155,7 @@ class ReminderTracker(context: Context) {
    *
    * @return Set of reminder IDs as strings
    */
-  fun getReminderIds(): Set<String> {
-    return prefs.getStringSet(KEY_REMINDER_IDS, emptySet()) ?: emptySet()
-  }
+  fun getReminderIds(): Set<String> = prefs.getStringSet(KEY_REMINDER_IDS, emptySet()) ?: emptySet()
 
   /**
    * Find all reminder IDs matching a specific pattern
@@ -192,11 +190,21 @@ class ReminderTracker(context: Context) {
 
         val matches =
           when {
-            startsWith != null && contains != null ->
+            startsWith != null && contains != null -> {
               reminderId.startsWith(startsWith) && reminderId.contains(contains)
-            startsWith != null -> reminderId.startsWith(startsWith)
-            contains != null -> reminderId.contains(contains)
-            else -> false
+            }
+
+            startsWith != null -> {
+              reminderId.startsWith(startsWith)
+            }
+
+            contains != null -> {
+              reminderId.contains(contains)
+            }
+
+            else -> {
+              false
+            }
           }
 
         if (matches) {
