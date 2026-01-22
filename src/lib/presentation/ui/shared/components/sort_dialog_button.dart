@@ -69,16 +69,26 @@ class _SortDialogButtonState<T> extends State<SortDialogButton<T>> {
     final Color effectiveColor = widget.iconColor ?? Theme.of(context).primaryColor;
     final bool isActive = widget.config.orderOptions.isNotEmpty;
 
-    return IconButton(
-      icon: Icon(
-        Icons.sort,
-        color: isActive ? effectiveColor : Colors.grey,
+    return Material(
+      type: MaterialType.transparency,
+      child: Tooltip(
+        message: widget.tooltip,
+        child: InkWell(
+          onTap: () => _showOrderDialog(context),
+          customBorder: const CircleBorder(),
+          hoverColor: AppTheme.surface1,
+          child: Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.sort,
+              color: isActive ? effectiveColor : Colors.grey,
+              size: widget.iconSize,
+            ),
+          ),
+        ),
       ),
-      iconSize: widget.iconSize,
-      constraints: const BoxConstraints.tightFor(width: 40, height: 40),
-      padding: EdgeInsets.zero,
-      tooltip: widget.tooltip,
-      onPressed: () => _showOrderDialog(context),
     );
   }
 }

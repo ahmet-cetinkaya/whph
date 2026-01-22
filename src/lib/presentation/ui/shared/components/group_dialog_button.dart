@@ -53,21 +53,26 @@ class _GroupDialogButtonState<T> extends State<GroupDialogButton<T>> {
     final Color effectiveColor = widget.iconColor ?? Theme.of(context).primaryColor;
     final bool isActive = widget.config.enableGrouping;
 
-    return IconButton(
-      icon: Icon(
-        Icons.view_agenda_outlined,
-        color: isActive ? effectiveColor : Colors.grey,
+    return Material(
+      type: MaterialType.transparency,
+      child: Tooltip(
+        message: widget.tooltip,
+        child: InkWell(
+          onTap: () => _showGroupDialog(context),
+          customBorder: const CircleBorder(),
+          hoverColor: AppTheme.surface1,
+          child: Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            child: Icon(
+              isActive ? Icons.view_agenda : Icons.view_agenda_outlined,
+              color: isActive ? effectiveColor : Colors.grey,
+              size: widget.iconSize,
+            ),
+          ),
+        ),
       ),
-      selectedIcon: Icon(
-        Icons.view_agenda,
-        color: effectiveColor,
-      ),
-      isSelected: isActive,
-      iconSize: widget.iconSize,
-      constraints: const BoxConstraints.tightFor(width: 40, height: 40),
-      padding: EdgeInsets.zero,
-      tooltip: widget.tooltip,
-      onPressed: () => _showGroupDialog(context),
     );
   }
 }
