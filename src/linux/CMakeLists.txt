@@ -163,7 +163,6 @@ endif()
 # Enhanced variables for desktop integration
 set(APP_VERSION "@APP_VERSION@")
 set(EXEC_PATH "${CMAKE_INSTALL_PREFIX}/bin/${BINARY_NAME}")
-set(ICON_PATH "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps/whph.png")
 
 # Development vs Production handling
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -171,6 +170,9 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
     set(ICON_PATH "${CMAKE_BINARY_DIR}/bundle/share/icons/hicolor/512x512/apps/whph.png")
     message(STATUS "Development mode: Exec path ${EXEC_PATH}")
 else()
+    # In production/install, we use the icon name so the system looks it up
+    # in standard directories (e.g. /usr/share/icons or ~/.local/share/icons)
+    set(ICON_PATH "whph")
     message(STATUS "Production mode: Exec path ${EXEC_PATH}")
 endif()
 

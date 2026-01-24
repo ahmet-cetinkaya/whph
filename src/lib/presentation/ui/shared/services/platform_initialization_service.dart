@@ -17,6 +17,7 @@ import 'package:whph/core/application/features/settings/services/abstraction/i_s
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/infrastructure/linux/constants/linux_app_constants.dart';
 
 /// Service responsible for platform-specific initialization
 /// Handles desktop and mobile platform setup
@@ -109,6 +110,10 @@ class PlatformInitializationService {
     await windowManager.initialize();
     await windowManager.setPreventClose(true);
     await windowManager.setTitle(AppInfo.name);
+
+    if (Platform.isLinux) {
+      await windowManager.setWindowClass(LinuxAppConstants.packageName);
+    }
 
     Logger.debug('PlatformInitializationService: Window manager initialized');
   }
