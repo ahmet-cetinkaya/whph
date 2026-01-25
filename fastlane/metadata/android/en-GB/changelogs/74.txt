@@ -1,0 +1,2 @@
+• Improved color picker with better organization and transparency support
+• Better app icon display on Linux

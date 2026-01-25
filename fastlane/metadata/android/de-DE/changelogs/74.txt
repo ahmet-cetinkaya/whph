@@ -1,0 +1,2 @@
+• Verbesserte Farbauswahl mit besserer Organisation und Transparenzunterstützung
+• Bessere Anzeige des App-Symbols unter Linux

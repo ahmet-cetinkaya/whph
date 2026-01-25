@@ -1,0 +1,2 @@
+• Ulepszony selektor kolorów z lepszą organizacją i obsługą przezroczystości
+• Lepsze wyświetlanie ikony aplikacji na Linuxie

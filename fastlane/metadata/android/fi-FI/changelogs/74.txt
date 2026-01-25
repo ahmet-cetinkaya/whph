@@ -1,0 +1,2 @@
+• Parannettu värivalitsin paremmalla järjestelyllä ja läpinäkyvyyden tuella
+• Parempi sovelluskuvakkeen näyttö Linuxissa

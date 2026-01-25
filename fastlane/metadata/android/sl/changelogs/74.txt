@@ -1,0 +1,2 @@
+• Izbirnik barv izboljšan z boljšo organizacijo in podporo prosojnosti
+• Boljši prikaz ikone aplikacije na Linuxu

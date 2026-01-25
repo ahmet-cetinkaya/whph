@@ -1,0 +1,2 @@
+• Vylepšený výběr barev s lepším uspořádáním a podporou průhlednosti
+• Lepší zobrazení ikony aplikace na Linuxu

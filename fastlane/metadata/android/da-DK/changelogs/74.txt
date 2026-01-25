@@ -1,0 +1,2 @@
+• Forbedret farvevælger med bedre organisering og gennemsigtighedsunderstøttelse
+• Bedre visning af app-ikon på Linux

@@ -1,0 +1,2 @@
+• Verbeterde kleurenkiezer met betere organisatie en ondersteuning voor transparantie
+• Betere weergave van app-pictogram op Linux

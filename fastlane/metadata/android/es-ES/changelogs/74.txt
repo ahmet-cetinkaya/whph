@@ -1,0 +1,2 @@
+• Selector de color mejorado con mejor organización y compatibilidad con transparencia
+• Mejor visualización del icono de la app en Linux
