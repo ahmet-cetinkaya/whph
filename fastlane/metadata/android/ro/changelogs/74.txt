@@ -1,0 +1,2 @@
+• Selector de culori îmbunătățit cu o organizare mai bună și suport pentru transparență
+• Afișare mai bună a iconiței aplicației pe Linux

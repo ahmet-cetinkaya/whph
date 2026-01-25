@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.4] - 2026-01-25
+
+### Fixed
+- Enhance color picker component with tabbed interface and full alpha support
+- Improve window class setting and icon path handling
+
 ## [0.20.3] - 2026-01-22
 
 ### Fixed

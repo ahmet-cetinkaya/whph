@@ -1,0 +1,2 @@
+• Sekmeli arayüz ve şeffaflık desteği ile geliştirilmiş renk seçici
+• Linux'ta daha iyi uygulama ikonu görüntüleme
