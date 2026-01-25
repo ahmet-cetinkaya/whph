@@ -298,11 +298,10 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
   }
 
   void _onChangeColor(Color color) {
-    if (mounted) {
+    if (mounted && _tag != null) {
       setState(() {
-        // Remove the FF prefix from the hex string if it exists
         final hexString = color.toHexString();
-        _tag!.color = hexString.startsWith('FF') ? hexString.substring(2) : hexString;
+        _tag!.color = hexString;
       });
     }
     _saveTag();
