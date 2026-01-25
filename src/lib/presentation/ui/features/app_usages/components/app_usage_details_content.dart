@@ -270,11 +270,10 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   void _onChangeColor(Color color) {
-    if (mounted) {
+    if (mounted && _appUsage != null) {
       setState(() {
-        // Remove the FF prefix from the hex string if it exists
         final hexString = color.toHexString();
-        _appUsage!.color = hexString.startsWith('FF') ? hexString.substring(2) : hexString;
+        _appUsage!.color = hexString;
       });
     }
 
@@ -379,30 +378,34 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   // Add the method to handle adding a tag to an app usage
   Future<bool> _addTagToAppUsage(String tagId) async {
-    try {
-      final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
-      final result = await _mediator.send(command);
-      if (result != null) {
-        return true;
-      }
-    } catch (_) {
-      // Silently handle the error
-    }
-    return false;
+    bool success = false;
+    await AsyncErrorHandler.execute<bool>(
+      context: context,
+      errorMessage: 'Failed to add tag to app usage',
+      operation: () async {
+        final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
+        final result = await _mediator.send(command);
+        success = result != null;
+        return success;
+      },
+    );
+    return success;
   }
 
   // Add the method to handle removing a tag from an app usage
   Future<bool> _removeTagFromAppUsage(String id) async {
-    try {
-      final command = RemoveAppUsageTagCommand(id: id);
-      final result = await _mediator.send(command);
-      if (result != null) {
-        return true;
-      }
-    } catch (_) {
-      // Silently handle the error
-    }
-    return false;
+    bool success = false;
+    await AsyncErrorHandler.execute<bool>(
+      context: context,
+      errorMessage: 'Failed to remove tag from app usage',
+      operation: () async {
+        final command = RemoveAppUsageTagCommand(id: id);
+        final result = await _mediator.send(command);
+        success = result != null;
+        return success;
+      },
+    );
+    return success;
   }
 
   @override

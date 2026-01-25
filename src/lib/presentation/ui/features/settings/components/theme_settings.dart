@@ -566,19 +566,16 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                           Divider(height: 1, color: theme.dividerColor),
                           Padding(
                             padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                            child: SizedBox(
-                              height: 300,
-                              child: ColorPicker(
-                                pickerColor: _customAccentColorValue ?? theme.colorScheme.primary,
-                                onChangeColor: (color) async {
-                                  setState(() {
-                                    _customAccentColorValue = color;
-                                  });
-                                  _updateTheme();
-                                  await widget.onSaveCustomAccentColor(color);
-                                },
-                                translationService: _translationService,
-                              ),
+                            child: ColorPicker(
+                              pickerColor: _customAccentColorValue ?? theme.colorScheme.primary,
+                              onChangeColor: (color) async {
+                                setState(() {
+                                  _customAccentColorValue = color;
+                                });
+                                _updateTheme();
+                                await widget.onSaveCustomAccentColor(color);
+                              },
+                              translationService: _translationService,
                             ),
                           ),
                         ],

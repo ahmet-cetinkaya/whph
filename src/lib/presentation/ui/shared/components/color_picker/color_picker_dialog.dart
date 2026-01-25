@@ -45,14 +45,26 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
           ),
         ],
       ),
-      body: ColorPicker(
-        pickerColor: _selectedColor,
-        onChangeColor: (color) {
-          setState(() {
-            _selectedColor = color;
-          });
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: constraints.maxWidth,
+                maxWidth: constraints.maxWidth,
+              ),
+              child: ColorPicker(
+                pickerColor: _selectedColor,
+                onChangeColor: (color) {
+                  setState(() {
+                    _selectedColor = color;
+                  });
+                },
+                translationService: _translationService,
+              ),
+            ),
+          );
         },
-        translationService: _translationService,
       ),
     );
   }
