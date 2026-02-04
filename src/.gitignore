@@ -54,3 +54,10 @@ key.properties
 
 # Drift ORM generated files
 test/drift/app_database/generated/
+
+# Linux Native Tests
+test/infrastructure/linux/features/tracking/*_test
+!test/infrastructure/linux/features/tracking/*_test.cpp
+
+# Coverage reports
+coverage/

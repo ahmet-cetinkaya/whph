@@ -5,20 +5,20 @@
 #.vscode/
 
 # AI Agent files
-.ai/
 .claude/
 .gemini/
 .opencode/
 .qwen/
+.serena/
+.sisyphus/
 .specify/
 *AGENTS.md
 *CLAUDE.md
 *GEMINI.md
 *QWEN.md
-openspec/
-.serena/
-PROJECT_INDEX.md
+docs/.tasks/
 PROJECT_INDEX.json
+PROJECT_INDEX.md
 
 # FVM Version Cache
 .fvm/
@@ -30,10 +30,3 @@ PROJECT_INDEX.json
 *.log
 .temp/
 core.[0-9]*
-
-# Coverage reports
-src/coverage/
-
-# Linux Native Tests
-src/test/infrastructure/linux/features/tracking/*_test
-!src/test/infrastructure/linux/features/tracking/*_test.cpp
