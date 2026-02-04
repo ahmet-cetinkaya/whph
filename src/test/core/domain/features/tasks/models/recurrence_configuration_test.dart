@@ -401,6 +401,19 @@ void main() {
         expect(deserialized.endDate?.toIso8601String(), original.endDate?.toIso8601String());
         expect(deserialized.fromPolicy, original.fromPolicy);
       });
+
+      test('should allow past endDate during JSON deserialization', () {
+        final json = {
+          'frequency': 'daily',
+          'interval': 1,
+          'endDate': '2020-01-01T00:00:00.000Z', // Past date
+        };
+
+        final deserialized = RecurrenceConfiguration.fromJson(json);
+
+        expect(deserialized.endDate, isNotNull);
+        expect(deserialized.endDate?.year, 2020);
+      });
     });
 
     group('End Condition Tests - New Configuration System', () {

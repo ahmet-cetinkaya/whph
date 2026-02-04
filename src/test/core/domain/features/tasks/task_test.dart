@@ -310,6 +310,27 @@ void main() {
         expect(task.plannedDateReminderTime, equals(ReminderTime.oneHourBefore));
         expect(task.deadlineDateReminderTime, equals(ReminderTime.atTime));
       });
+
+      test('Task sync failure due to past recurrence end date', () {
+        final taskJson = {
+          'id': 'test-task-id',
+          'title': 'Test Task',
+          'description': 'Test Description',
+          'isCompleted': false,
+          'priority': null,
+          'createdDate': '2023-01-01T00:00:00.000Z',
+          'modifiedDate': '2023-01-01T00:00:00.000Z',
+          'recurrenceConfiguration': {
+            'frequency': 'daily',
+            'interval': 1,
+            'endDate': '2020-01-01T00:00:00.000Z', // Past date
+          },
+        };
+
+        final task = Task.fromJson(taskJson);
+        expect(task, isA<Task>());
+        expect(task.recurrenceConfiguration?.endDate, isNotNull);
+      });
     });
   });
 }

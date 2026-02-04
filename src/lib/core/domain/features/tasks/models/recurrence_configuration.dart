@@ -463,7 +463,7 @@ class RecurrenceConfiguration {
   }
 
   factory RecurrenceConfiguration.fromJson(Map<String, dynamic> json) {
-    return RecurrenceConfiguration(
+    return RecurrenceConfiguration._internal(
       frequency: _deserializeEnum(RecurrenceFrequency.values, json['frequency'], RecurrenceFrequency.daily),
       interval: json['interval'] as int? ?? 1,
       daysOfWeek: (json['daysOfWeek'] as List<dynamic>?)?.map((e) => e as int).toList(),
