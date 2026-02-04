@@ -364,8 +364,19 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         // If version is different but no migration is needed:
         // 1. If imported version is older, it's compatible (patch update or no schema changes), so we allow it.
         // 2. If imported version is newer, we block it (downgrade not supported).
-        final importedSemVer = SemanticVersion.parse(importedVersion);
-        final currentSemVer = SemanticVersion.parse(AppInfo.version);
+        final SemanticVersion importedSemVer;
+        final SemanticVersion currentSemVer;
+
+        try {
+          importedSemVer = SemanticVersion.parse(importedVersion);
+          currentSemVer = SemanticVersion.parse(AppInfo.version);
+        } catch (e) {
+          throw BusinessException(
+            'Invalid version format in imported data',
+            SettingsTranslationKeys.backupInvalidFormatError,
+            args: {'version': importedVersion},
+          );
+        }
 
         if (importedSemVer > currentSemVer) {
           throw BusinessException(

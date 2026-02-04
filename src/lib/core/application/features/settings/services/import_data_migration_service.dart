@@ -1,5 +1,6 @@
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 
@@ -92,7 +93,16 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
 
     for (final step in migrationSteps) {
-      migratedData = await step.migrationFunction(migratedData);
+      try {
+        migratedData = await step.migrationFunction(migratedData);
+      } catch (e, stackTrace) {
+        Logger.error(
+          'Migration failed in step (${step.fromVersion} -> ${step.toVersion}): $e',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        rethrow;
+      }
     }
 
     // Update the app version in the migrated data
