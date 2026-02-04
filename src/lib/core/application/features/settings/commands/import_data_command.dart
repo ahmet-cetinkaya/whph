@@ -361,15 +361,24 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
           );
         }
       } else if (importedVersion != AppInfo.version) {
-        // Version is not supported for migration
-        throw BusinessException(
-          'Unsupported version in imported data',
-          SettingsTranslationKeys.versionMismatchError,
-          args: {
-            'importedVersion': importedVersion,
-            'currentVersion': AppInfo.version,
-          },
-        );
+        // If version is different but no migration is needed:
+        // 1. If imported version is older, it's compatible (patch update or no schema changes), so we allow it.
+        // 2. If imported version is newer, we block it (downgrade not supported).
+        final importedSemVer = SemanticVersion.parse(importedVersion);
+        final currentSemVer = SemanticVersion.parse(AppInfo.version);
+
+        if (importedSemVer > currentSemVer) {
+          throw BusinessException(
+            'Unsupported version in imported data (Newer version)',
+            SettingsTranslationKeys.versionMismatchError,
+            args: {
+              'importedVersion': importedVersion,
+              'currentVersion': AppInfo.version,
+            },
+          );
+        }
+
+        // If older, we proceed (fall through)
       }
 
       // Execute import operations in a transaction

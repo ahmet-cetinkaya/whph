@@ -41,6 +41,14 @@ class ImportDataMigrationService implements IImportDataMigrationService {
       description: 'Migrate task isCompleted to completedAt and add habit time tracking fields',
       migrationFunction: _migrate0_15_0to0_16_0,
     );
+
+    // Migration from 0.16.0 to 0.20.0: Add habit status, task recurrence, tag type and order
+    _migrationRegistry.registerMigration(
+      fromVersion: '0.16.0',
+      toVersion: '0.20.0',
+      description: 'Add habit status, task recurrence, tag type and order',
+      migrationFunction: _migrate0_16_0to0_20_0,
+    );
   }
 
   @override
@@ -270,6 +278,77 @@ class ImportDataMigrationService implements IImportDataMigrationService {
           // Ensure occurredAt field exists (fallback to createdDate if missing)
           if (!record.containsKey('occurredAt') && record.containsKey('createdDate')) {
             record['occurredAt'] = record['createdDate'];
+          }
+        }
+      }
+    }
+
+    return migratedData;
+  }
+
+  /// Migration from 0.16.0 to 0.20.0
+  ///
+  /// This migration handles schema changes introduced in v0.20.0 (Schemas 30-33):
+  /// - HabitRecord: Add status (default 0)
+  /// - Task: Add recurrenceConfiguration (default null)
+  /// - Tag: Add type (default 0 - Label)
+  /// - Relations: Add tagOrder (default 0)
+  Future<Map<String, dynamic>> _migrate0_16_0to0_20_0(Map<String, dynamic> data) async {
+    Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
+
+    // 1. Migrate HabitRecord entities: Add status
+    if (migratedData['habitRecords'] != null) {
+      final habitRecords = migratedData['habitRecords'] as List;
+      for (var record in habitRecords) {
+        if (record is Map<String, dynamic>) {
+          if (!record.containsKey('status')) {
+            record['status'] = 0; // Default status: Pending/Skipped (0)
+          }
+        }
+      }
+    }
+
+    // 2. Migrate Task entities: Add recurrenceConfiguration
+    if (migratedData['tasks'] != null) {
+      final tasks = migratedData['tasks'] as List;
+      for (var task in tasks) {
+        if (task is Map<String, dynamic>) {
+          if (!task.containsKey('recurrenceConfiguration')) {
+            task['recurrenceConfiguration'] = null;
+          }
+          if (!task.containsKey('plannedDateReminderCustomOffset')) {
+            task['plannedDateReminderCustomOffset'] = null;
+          }
+          if (!task.containsKey('deadlineDateReminderCustomOffset')) {
+            task['deadlineDateReminderCustomOffset'] = null;
+          }
+        }
+      }
+    }
+
+    // 3. Migrate Tag entities: Add type
+    if (migratedData['tags'] != null) {
+      final tags = migratedData['tags'] as List;
+      for (var tag in tags) {
+        if (tag is Map<String, dynamic>) {
+          if (!tag.containsKey('type')) {
+            tag['type'] = 0; // Default type: Label (0)
+          }
+        }
+      }
+    }
+
+    // 4. Migrate Relations: Add tagOrder
+    final relationTables = ['taskTags', 'noteTags', 'habitTags', 'appUsageTags', 'taskTimeRecords'];
+    for (final tableName in relationTables) {
+      if (migratedData[tableName] != null) {
+        final relations = migratedData[tableName] as List;
+        for (var relation in relations) {
+          if (relation is Map<String, dynamic>) {
+            // Only add tagOrder for tables that need it (strictly relations)
+            if (tableName != 'taskTimeRecords' && !relation.containsKey('tagOrder')) {
+              relation['tagOrder'] = 0;
+            }
           }
         }
       }
