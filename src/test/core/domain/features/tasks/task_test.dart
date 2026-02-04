@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 
 void main() {
   group('Task Enum Parsing Tests', () {
@@ -283,32 +284,43 @@ void main() {
         expect(() => Task.fromJson(json), returnsNormally);
       });
 
-      test('should parse all enum types correctly in a complete task', () {
-        final now = DateTime.now();
+      test('Bug #220 Additional: Should parse priority without crashing', () {
+        // This reproduces the crash seen in logs:
+        // type '() => EisenhowerPriority?' is not a subtype of type '(() => EisenhowerPriority)?' of 'orElse'
         final json = {
-          'id': 'task-1',
-          'createdDate': now.toIso8601String(),
-          'modifiedDate': now.toIso8601String(),
-          'deletedDate': null,
-          'title': 'Complete Task',
-          'description': 'Test Description',
-          'order': 1.0,
-          'estimatedTime': 60,
-          'recurrenceType': 'RecurrenceType.daily',
-          'recurrenceInterval': 1,
-          'plannedDateReminderTime': 'ReminderTime.oneHourBefore',
-          'deadlineDateReminderTime': 'ReminderTime.atTime',
-          'completedAt': null,
+          'id': 'task-priority-crash',
+          'createdDate': DateTime.now().toIso8601String(),
+          'title': 'Priority Crash Test',
+          'priority': 'EisenhowerPriority.urgentImportant',
         };
 
         final task = Task.fromJson(json);
+        expect(task.priority, equals(EisenhowerPriority.urgentImportant));
+      });
+    });
 
-        expect(task.id, equals('task-1'));
-        expect(task.title, equals('Complete Task'));
-        expect(task.priority, isNull); // No priority provided
-        expect(task.recurrenceType, equals(RecurrenceType.daily));
-        expect(task.plannedDateReminderTime, equals(ReminderTime.oneHourBefore));
-        expect(task.deadlineDateReminderTime, equals(ReminderTime.atTime));
+    group('Edge Cases and Error Handling', () {
+      test('Task sync successfully handles past recurrence end date', () {
+        final taskJson = {
+          'id': 'test-task-id',
+          'title': 'Test Task',
+          'description': 'Test Description',
+          'isCompleted': false,
+          'priority': null,
+          'createdDate': '2023-01-01T00:00:00.000Z',
+          'modifiedDate': '2023-01-01T00:00:00.000Z',
+          'recurrenceConfiguration': {
+            'frequency': 'daily',
+            'interval': 1,
+            'endDate': '2020-01-01T00:00:00.000Z', // Past date
+          },
+        };
+
+        final task = Task.fromJson(taskJson);
+        expect(task, isA<Task>());
+        expect(task.recurrenceConfiguration?.endDate, isNotNull);
+        expect(task.recurrenceConfiguration?.frequency, RecurrenceFrequency.daily);
+        expect(task.recurrenceConfiguration?.interval, 1);
       });
     });
   });

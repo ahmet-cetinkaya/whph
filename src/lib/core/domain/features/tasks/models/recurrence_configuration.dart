@@ -462,8 +462,15 @@ class RecurrenceConfiguration {
     }
   }
 
+  /// Deserializes a [RecurrenceConfiguration] from JSON.
+  ///
+  /// Uses the [_internal] constructor to bypass validation that would reject
+  /// recurrence end dates in the past. This is intentional to allow proper
+  /// deserialization of historical tasks during sync - tasks that were created
+  /// in the past may have recurrence configurations with end dates that are now
+  /// in the past, and these should still be valid for historical data integrity.
   factory RecurrenceConfiguration.fromJson(Map<String, dynamic> json) {
-    return RecurrenceConfiguration(
+    return RecurrenceConfiguration._internal(
       frequency: _deserializeEnum(RecurrenceFrequency.values, json['frequency'], RecurrenceFrequency.daily),
       interval: json['interval'] as int? ?? 1,
       daysOfWeek: (json['daysOfWeek'] as List<dynamic>?)?.map((e) => e as int).toList(),
