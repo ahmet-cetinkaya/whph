@@ -134,14 +134,6 @@ void main() {
     AppDatabase.resetInstance();
   });
 
-  Uint8List _createMockBackup({required String version}) {
-    final jsonData = jsonEncode({
-      'appInfo': {'version': version},
-      'tasks': [],
-    });
-    return Uint8List.fromList(utf8.encode(jsonData));
-  }
-
   group('ImportDataCommandHandler Version Compatibility Tests', () {
     test('should allow import when older version provided and no migration needed (Issue #219)', () async {
       // Arrange

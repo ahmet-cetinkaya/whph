@@ -339,14 +339,14 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     }
 
     // 4. Migrate Relations: Add tagOrder
-    final relationTables = ['taskTags', 'noteTags', 'habitTags', 'appUsageTags', 'taskTimeRecords'];
+    final relationTables = ['taskTags', 'noteTags', 'habitTags', 'appUsageTags'];
     for (final tableName in relationTables) {
       if (migratedData[tableName] != null) {
         final relations = migratedData[tableName] as List;
         for (var relation in relations) {
           if (relation is Map<String, dynamic>) {
             // Only add tagOrder for tables that need it (strictly relations)
-            if (tableName != 'taskTimeRecords' && !relation.containsKey('tagOrder')) {
+            if (!relation.containsKey('tagOrder')) {
               relation['tagOrder'] = 0;
             }
           }
