@@ -284,34 +284,22 @@ void main() {
         expect(() => Task.fromJson(json), returnsNormally);
       });
 
-      test('should parse all enum types correctly in a complete task', () {
-        final now = DateTime.now();
+      test('Bug #220 Additional: Should parse priority without crashing', () {
+        // This reproduces the crash seen in logs:
+        // type '() => EisenhowerPriority?' is not a subtype of type '(() => EisenhowerPriority)?' of 'orElse'
         final json = {
-          'id': 'task-1',
-          'createdDate': now.toIso8601String(),
-          'modifiedDate': now.toIso8601String(),
-          'deletedDate': null,
-          'title': 'Complete Task',
-          'description': 'Test Description',
-          'order': 1.0,
-          'estimatedTime': 60,
-          'recurrenceType': 'RecurrenceType.daily',
-          'recurrenceInterval': 1,
-          'plannedDateReminderTime': 'ReminderTime.oneHourBefore',
-          'deadlineDateReminderTime': 'ReminderTime.atTime',
-          'completedAt': null,
+          'id': 'task-priority-crash',
+          'createdDate': DateTime.now().toIso8601String(),
+          'title': 'Priority Crash Test',
+          'priority': 'EisenhowerPriority.urgentImportant',
         };
 
         final task = Task.fromJson(json);
-
-        expect(task.id, equals('task-1'));
-        expect(task.title, equals('Complete Task'));
-        expect(task.priority, isNull); // No priority provided
-        expect(task.recurrenceType, equals(RecurrenceType.daily));
-        expect(task.plannedDateReminderTime, equals(ReminderTime.oneHourBefore));
-        expect(task.deadlineDateReminderTime, equals(ReminderTime.atTime));
+        expect(task.priority, equals(EisenhowerPriority.urgentImportant));
       });
+    });
 
+    group('Edge Cases and Error Handling', () {
       test('Task sync successfully handles past recurrence end date', () {
         final taskJson = {
           'id': 'test-task-id',

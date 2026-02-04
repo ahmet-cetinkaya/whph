@@ -235,10 +235,12 @@ class Task extends BaseEntity<String> {
   // Helper method to parse enums with error handling
   static T _parseEnum<T>(List<T> values, String? value, T defaultValue, String enumName) {
     if (value == null) return defaultValue;
-    return values.firstWhere(
+    return values.cast<T>().firstWhere(
       (e) {
         if (e.toString() == value) return true;
         try {
+          // Verify if e is dynamic or needs casting to access .name
+          // In most cases with enums, e.toString() is sufficient, but for safety:
           return (e as dynamic).name == value;
         } catch (_) {
           return false;
