@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 
 void main() {
   group('Task Enum Parsing Tests', () {
@@ -311,7 +312,7 @@ void main() {
         expect(task.deadlineDateReminderTime, equals(ReminderTime.atTime));
       });
 
-      test('Task sync failure due to past recurrence end date', () {
+      test('Task sync successfully handles past recurrence end date', () {
         final taskJson = {
           'id': 'test-task-id',
           'title': 'Test Task',
@@ -330,6 +331,8 @@ void main() {
         final task = Task.fromJson(taskJson);
         expect(task, isA<Task>());
         expect(task.recurrenceConfiguration?.endDate, isNotNull);
+        expect(task.recurrenceConfiguration?.frequency, RecurrenceFrequency.daily);
+        expect(task.recurrenceConfiguration?.interval, 1);
       });
     });
   });

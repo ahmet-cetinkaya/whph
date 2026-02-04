@@ -413,6 +413,8 @@ void main() {
 
         expect(deserialized.endDate, isNotNull);
         expect(deserialized.endDate?.year, 2020);
+        expect(deserialized.frequency, RecurrenceFrequency.daily);
+        expect(deserialized.interval, 1);
       });
     });
 
