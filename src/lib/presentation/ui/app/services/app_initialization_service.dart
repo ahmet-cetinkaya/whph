@@ -56,7 +56,7 @@ class AppInitializationService {
       );
 
       if (setting == null) {
-        return false;
+        return true;
       }
 
       final hasCompletedOnboarding = setting.value == 'true';
