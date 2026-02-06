@@ -42,6 +42,9 @@ settings:
     title: Import
     unsupported_version: Versiune nesuportată
     version_mismatch: Versiunea nu a fost găsită
+    version_parse_error: Nu s-a putut analiza versiunea din fișierul de backup
+    integrity_check_error: Nu s-a putut verifica integritatea backup-ului
+    data_integrity_error: Verificarea integrității datelor a eșuat
   import_export:
     description:
       Exportați datele în diverse formate sau importați date din fișiere
@@ -263,6 +266,7 @@ settings:
     invalid_format_error: Format fișier backup invalid
     corrupted: Fișierul de backup este corupt sau deteriorat
     export_description: Creați un fișier de backup comprimat care conține toate datele
+    create_error: Nu s-a putut crea backup-ul
   theme:
     title: Temă
     description: Personalizați aspectul WHPH

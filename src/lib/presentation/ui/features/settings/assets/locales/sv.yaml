@@ -38,6 +38,9 @@ settings:
     title: Import
     unsupported_version: Version ej stödd
     version_mismatch: Version inte hittad
+    version_parse_error: Kunde inte tolka version från säkerhetskopieringsfil
+    integrity_check_error: Kunde inte verifiera säkerhetskopians integritet
+    data_integrity_error: Kontroll av dataintegritet misslyckades
   import_export:
     description: Exportera dina data i olika format eller importera data från backup-filer
     select_action: Välj import/export-åtgärd
@@ -254,6 +257,7 @@ settings:
     export_description:
       Skapa en komprimerad säkerhetskopia-fil som innehåller alla
       dina data
+    create_error: Kunde inte skapa säkerhetskopia
   theme:
     title: Tema
     description: Anpassa WHPH:s utseende

@@ -129,6 +129,77 @@ void main() {
         final taskTags = result['taskTags'] as List;
         expect(taskTags[0]['tagOrder'], 0); // Default order
       });
+
+      test('should correctly migrate all relation tables with tagOrder', () async {
+        final inputData = {
+          'version': '0.16.0',
+          'taskTags': <Map<String, dynamic>>[
+            {'id': '1'}
+          ],
+          'noteTags': <Map<String, dynamic>>[
+            {'id': '2'}
+          ],
+          'habitTags': <Map<String, dynamic>>[
+            {'id': '3'}
+          ],
+          'appUsageTags': <Map<String, dynamic>>[
+            {'id': '4'}
+          ]
+        };
+
+        final result = await migrationService.migrateData(inputData, '0.16.0');
+
+        expect(result['appInfo']['version'], AppInfo.version);
+
+        // Verify all relation tables got tagOrder
+        expect((result['taskTags'] as List)[0]['tagOrder'], 0);
+        expect((result['noteTags'] as List)[0]['tagOrder'], 0);
+        expect((result['habitTags'] as List)[0]['tagOrder'], 0);
+        expect((result['appUsageTags'] as List)[0]['tagOrder'], 0);
+      });
+
+      test('should handle null/missing collections gracefully', () async {
+        final inputData = {
+          'version': '0.16.0',
+          // No habitRecords, tasks, tags, or relation tables - just appInfo
+        };
+
+        final result = await migrationService.migrateData(inputData, '0.16.0');
+
+        expect(result['appInfo']['version'], AppInfo.version);
+        // Should not throw, should complete successfully
+      });
+
+      test('should handle mixed scenarios with some records having fields', () async {
+        final inputData = {
+          'version': '0.16.0',
+          'habitRecords': <Map<String, dynamic>>[
+            {'id': '1'}, // Missing status
+            {'id': '2', 'status': 1}, // Already has status
+          ],
+          'tasks': <Map<String, dynamic>>[
+            {'id': '1'}, // Missing recurrenceConfiguration
+            {'id': '2', 'recurrenceConfiguration': 'daily'}, // Has it
+          ]
+        };
+
+        final result = await migrationService.migrateData(inputData, '0.16.0');
+
+        expect(result['appInfo']['version'], AppInfo.version);
+
+        final habitRecords = result['habitRecords'] as List;
+        // Record 1 should have status added
+        expect(habitRecords[0]['status'], 0);
+        // Record 2 should keep existing status
+        expect(habitRecords[1]['status'], 1);
+
+        final tasks = result['tasks'] as List;
+        // Record 1 should have recurrenceConfiguration added
+        expect(tasks[0].containsKey('recurrenceConfiguration'), true);
+        expect(tasks[0]['recurrenceConfiguration'], null);
+        // Record 2 should keep existing recurrenceConfiguration
+        expect(tasks[1]['recurrenceConfiguration'], 'daily');
+      });
     });
   });
 }

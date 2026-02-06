@@ -36,6 +36,9 @@ settings:
     title: 导入
     unsupported_version: 不支持的版本
     version_mismatch: 未找到版本
+    version_parse_error: 无法从备份文件解析版本
+    integrity_check_error: 无法验证备份完整性
+    data_integrity_error: 数据完整性检查失败
   import_export:
     description: 以各种格式导出您的数据或从备份文件导入数据
     select_action: 选择导入/导出操作
@@ -200,6 +203,7 @@ settings:
     invalid_format_error: 无效的备份文件格式
     corrupted: 备份文件已损坏或损坏
     export_description: 创建包含所有数据的压缩备份文件
+    create_error: 创建备份失败
   theme:
     title: 主题
     description: 自定义WHPH的外观

@@ -40,6 +40,9 @@ settings:
     title: İçe Aktar
     unsupported_version: Desteklenmeyen sürüm
     version_mismatch: Sürüm bulunamadı
+    version_parse_error: Yedek dosyasından sürüm ayrıştırılamadı
+    integrity_check_error: Yedek bütünlüğü doğrulanamadı
+    data_integrity_error: Veri bütünlük kontrolü başarısız oldu
   import_export:
     description:
       Verilerinizi çeşitli formatlarda dışa aktarın veya yedek dosyalarından
@@ -257,6 +260,7 @@ settings:
     invalid_format_error: Geçersiz yedek dosya formatı
     corrupted: Yedek dosyası bozuk veya hasarlı
     export_description: Tüm verilerinizi içeren sıkıştırılmış yedek dosyası oluşturun
+    create_error: Yedek oluşturulamadı
   theme:
     title: Tema
     description: WHPH'nin görünümünü özelleştirin

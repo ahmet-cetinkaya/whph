@@ -40,6 +40,9 @@ settings:
     title: Importa
     unsupported_version: Versione non supportata
     version_mismatch: Versione non trovata
+    version_parse_error: Impossibile analizzare la versione dal file di backup
+    integrity_check_error: Impossibile verificare l'integrità del backup
+    data_integrity_error: Verifica integrità dati fallita
   import_export:
     description: Esporta i tuoi dati in vari formati o importa dati da file di backup
     select_action: Seleziona azione importa/esporta
@@ -259,6 +262,7 @@ settings:
     invalid_format_error: Formato file di backup non valido
     corrupted: Il file di backup è corrotto o danneggiato
     export_description: Crea un file di backup compresso contenente tutti i tuoi dati
+    create_error: Impossibile creare il backup
   theme:
     title: Tema
     description: Personalizza l'aspetto di WHPH

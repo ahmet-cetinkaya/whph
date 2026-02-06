@@ -40,6 +40,9 @@ settings:
     title: Import
     unsupported_version: Nieobsługiwana wersja
     version_mismatch: Nie znaleziono wersji
+    version_parse_error: Nie udało się przeanalizować wersji z pliku kopii zapasowej
+    integrity_check_error: Nie udało się zweryfikować integralności kopii zapasowej
+    data_integrity_error: Sprawdzenie integralności danych nie powiodło się
   import_export:
     description:
       Eksportuj swoje dane w różnych formatach lub importuj dane z plików
@@ -267,6 +270,7 @@ settings:
     export_description:
       Utwórz skompresowany plik kopii zapasowej zawierający wszystkie
       twoje dane
+    create_error: Nie udało się utworzyć kopii zapasowej
   theme:
     title: Motyw
     description: Dostosuj wygląd WHPH

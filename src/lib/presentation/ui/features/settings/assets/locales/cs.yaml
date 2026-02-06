@@ -40,6 +40,9 @@ settings:
     title: Import
     unsupported_version: Nepodporovaná verze
     version_mismatch: Verze nenalezena
+    version_parse_error: Nepodařilo se analyzovat verzi ze záložního souboru
+    integrity_check_error: Nepodařilo se ověřit integritu zálohy
+    data_integrity_error: Kontrola integrity dat selhala
   import_export:
     description:
       Exportujte svá data v různých formátech nebo importujte data z záložních
@@ -254,6 +257,7 @@ settings:
     export_description:
       Vytvořte komprimovaný soubor zálohy obsahující všechna vaše
       data
+    create_error: Nepodařilo se vytvořit zálohu
   theme:
     title: Téma
     description: Přizpůsobte vzhled WHPH

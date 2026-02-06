@@ -95,9 +95,20 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     for (final step in migrationSteps) {
       try {
         migratedData = await step.migrationFunction(migratedData);
+      } on BusinessException catch (e, stackTrace) {
+        // Business exceptions are expected and should be logged as warnings
+        Logger.warning(
+          'Migration validation failed in step (${step.fromVersion} -> ${step.toVersion}): ${step.description}. '
+          'Error: ${e.message}',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        rethrow;
       } catch (e, stackTrace) {
+        // Unexpected errors indicate bugs and should be logged as errors with full context
         Logger.error(
-          'Migration failed in step (${step.fromVersion} -> ${step.toVersion}): $e',
+          'Unexpected error in migration step (${step.fromVersion} -> ${step.toVersion}): ${step.description}. '
+          'Error: $e',
           error: e,
           stackTrace: stackTrace,
         );
@@ -137,9 +148,17 @@ class ImportDataMigrationService implements IImportDataMigrationService {
       // If no specific migrations are defined, no migration is needed
       // The version will be updated during import without requiring migration steps
       return false;
-    } catch (e) {
-      // Invalid version format
-      return false;
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Invalid version format when checking if migration is needed: $sourceVersion',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw BusinessException(
+        'Invalid version format in backup data: $sourceVersion',
+        SettingsTranslationKeys.backupInvalidFormatError,
+        args: {'version': sourceVersion},
+      );
     }
   }
 

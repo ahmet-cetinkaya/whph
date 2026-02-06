@@ -42,6 +42,9 @@ settings:
     title: Importieren
     unsupported_version: Nicht unterstützte Version
     version_mismatch: Version nicht gefunden
+    version_parse_error: Version konnte nicht aus der Sicherungsdatei analysiert werden
+    integrity_check_error: Integrität der Sicherung konnte nicht überprüft werden
+    data_integrity_error: Datenintegritätsprüfung fehlgeschlagen
   import_export:
     description:
       Exportieren Sie Ihre Daten in verschiedenen Formaten oder importieren
@@ -272,6 +275,7 @@ settings:
     export_description:
       Erstellen Sie eine komprimierte Sicherungsdatei mit all Ihren
       Daten
+    create_error: Sicherung konnte nicht erstellt werden
   theme:
     title: Design
     description: Passen Sie das Erscheinungsbild von WHPH an

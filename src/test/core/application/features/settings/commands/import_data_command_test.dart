@@ -239,5 +239,41 @@ void main() {
       expect(response, isA<ImportDataCommandResponse>());
       verify(mockMigrationService.migrateData(any, oldVersion)).called(1);
     });
+
+    test('should throw BusinessException with correct error code when version format is invalid', () async {
+      // Arrange
+      final backupData = Uint8List(0);
+
+      when(mockCompressionService.extractFromWhphFile(any)).thenAnswer((_) async {
+        return jsonEncode({
+          'appInfo': {'version': 'invalid.version.format'},
+          'tasks': []
+        });
+      });
+
+      // Migration not needed (invalid version will be caught before this check)
+      when(mockMigrationService.isMigrationNeeded(any)).thenReturn(false);
+
+      // Act & Assert
+      final command = ImportDataCommand(backupData, ImportStrategy.replace);
+      expect(
+          () => handler.call(command),
+          throwsA(predicate(
+              (e) => e is BusinessException && e.errorCode == SettingsTranslationKeys.backupInvalidFormatError)));
+    });
+
+    test('should throw BusinessException with error when backup is corrupted', () async {
+      // Arrange
+      final backupData = Uint8List(0);
+
+      when(mockCompressionService.validateChecksum(any)).thenAnswer((_) async => false);
+
+      // Act & Assert
+      final command = ImportDataCommand(backupData, ImportStrategy.replace);
+      expect(
+          () => handler.call(command),
+          throwsA(
+              predicate((e) => e is BusinessException && e.errorCode == SettingsTranslationKeys.backupCorruptedError)));
+    });
   });
 }

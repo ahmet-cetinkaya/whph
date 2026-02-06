@@ -42,6 +42,9 @@ settings:
     title: Importer
     unsupported_version: Version non supportée
     version_mismatch: Version non trouvée
+    version_parse_error: Échec de l'analyse de la version du fichier de sauvegarde
+    integrity_check_error: Échec de la vérification de l'intégrité de la sauvegarde
+    data_integrity_error: La vérification de l'intégrité des données a échoué
   import_export:
     description:
       Exportez vos données dans différents formats ou importez des données
@@ -275,6 +278,7 @@ settings:
     export_description:
       Créer un fichier de sauvegarde compressé contenant toutes
       vos données
+    create_error: Échec de la création de la sauvegarde
   theme:
     title: Thème
     description: Personnaliser l'apparence de WHPH
