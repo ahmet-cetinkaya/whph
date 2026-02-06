@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/settings/services/import_data_migration_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 
 void main() {
   group('ImportDataMigrationService', () {
@@ -37,12 +38,13 @@ void main() {
         expect(result, false); // Newer versions don't need migration
       });
 
-      test('should return false for invalid version formats', () {
-        // Act
-        final result = migrationService.isMigrationNeeded('invalid-version');
-
-        // Assert
-        expect(result, false); // Invalid versions return false
+      test('should throw BusinessException for invalid version formats', () {
+        // Act & Assert
+        expect(
+          () => migrationService.isMigrationNeeded('invalid-version'),
+          throwsA(predicate(
+              (e) => e is BusinessException && e.errorCode == SettingsTranslationKeys.backupInvalidFormatError)),
+        );
       });
     });
 

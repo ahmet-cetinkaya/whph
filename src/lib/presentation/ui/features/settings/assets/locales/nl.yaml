@@ -42,6 +42,9 @@ settings:
     title: Import
     unsupported_version: Niet-ondersteunde versie
     version_mismatch: Versie niet gevonden
+    version_parse_error: Kon versie niet parseren uit back-upbestand
+    integrity_check_error: Kon integriteit van back-up niet verifiëren
+    data_integrity_error: Data-integriteitscontrole mislukt
   import_export:
     description:
       Exporteer uw data in verschillende formaten of importeer data uit
@@ -261,6 +264,7 @@ settings:
     invalid_format_error: Ongeldig back-upbestandsformaat
     corrupted: Back-upbestand is beschadigd of corrupt
     export_description: Maak een gecomprimeerd back-upbestand dat al uw data bevat
+    create_error: Back-up maken mislukt
   theme:
     title: Thema
     description: Pas het uiterlijk van WHPH aan

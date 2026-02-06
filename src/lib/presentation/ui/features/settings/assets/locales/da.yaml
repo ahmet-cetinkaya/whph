@@ -38,6 +38,9 @@ settings:
     title: Import
     unsupported_version: Uunderstøttet version
     version_mismatch: Version ikke fundet
+    version_parse_error: Kunne ikke analysere version fra sikkerhedskopifil
+    integrity_check_error: Kunne ikke verificere sikkerhedskopiens integritet
+    data_integrity_error: Kontrol af dataintegritet mislykkedes
   import_export:
     description:
       Eksportér dine data i forskellige formater eller importér data fra
@@ -244,6 +247,7 @@ settings:
     invalid_format_error: Ugyldigt backup-filformat
     corrupted: Backup-fil er korrupt eller beskadiget
     export_description: Opret en komprimeret backup-fil indeholdende alle dine data
+    create_error: Kunne ikke oprette sikkerhedskopi
   theme:
     title: Tema
     description: Tilpas udseendet af WHPH

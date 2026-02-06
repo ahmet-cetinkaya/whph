@@ -1,5 +1,6 @@
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 
@@ -40,6 +41,14 @@ class ImportDataMigrationService implements IImportDataMigrationService {
       toVersion: '0.16.0',
       description: 'Migrate task isCompleted to completedAt and add habit time tracking fields',
       migrationFunction: _migrate0_15_0to0_16_0,
+    );
+
+    // Migration from 0.16.0 to 0.20.0: Add habit status, task recurrence, tag type and order
+    _migrationRegistry.registerMigration(
+      fromVersion: '0.16.0',
+      toVersion: '0.20.0',
+      description: 'Add habit status, task recurrence, tag type and order',
+      migrationFunction: _migrate0_16_0to0_20_0,
     );
   }
 
@@ -84,7 +93,27 @@ class ImportDataMigrationService implements IImportDataMigrationService {
     Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
 
     for (final step in migrationSteps) {
-      migratedData = await step.migrationFunction(migratedData);
+      try {
+        migratedData = await step.migrationFunction(migratedData);
+      } on BusinessException catch (e, stackTrace) {
+        // Business exceptions are expected and should be logged as warnings
+        Logger.warning(
+          'Migration validation failed in step (${step.fromVersion} -> ${step.toVersion}): ${step.description}. '
+          'Error: ${e.message}',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        rethrow;
+      } catch (e, stackTrace) {
+        // Unexpected errors indicate bugs and should be logged as errors with full context
+        Logger.error(
+          'Unexpected error in migration step (${step.fromVersion} -> ${step.toVersion}): ${step.description}. '
+          'Error: $e',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        rethrow;
+      }
     }
 
     // Update the app version in the migrated data
@@ -119,9 +148,17 @@ class ImportDataMigrationService implements IImportDataMigrationService {
       // If no specific migrations are defined, no migration is needed
       // The version will be updated during import without requiring migration steps
       return false;
-    } catch (e) {
-      // Invalid version format
-      return false;
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Invalid version format when checking if migration is needed: $sourceVersion',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw BusinessException(
+        'Invalid version format in backup data: $sourceVersion',
+        SettingsTranslationKeys.backupInvalidFormatError,
+        args: {'version': sourceVersion},
+      );
     }
   }
 
@@ -270,6 +307,77 @@ class ImportDataMigrationService implements IImportDataMigrationService {
           // Ensure occurredAt field exists (fallback to createdDate if missing)
           if (!record.containsKey('occurredAt') && record.containsKey('createdDate')) {
             record['occurredAt'] = record['createdDate'];
+          }
+        }
+      }
+    }
+
+    return migratedData;
+  }
+
+  /// Migration from 0.16.0 to 0.20.0
+  ///
+  /// This migration handles schema changes introduced in v0.20.0 (Schemas 30-33):
+  /// - HabitRecord: Add status (default 0)
+  /// - Task: Add recurrenceConfiguration (default null)
+  /// - Tag: Add type (default 0 - Label)
+  /// - Relations: Add tagOrder (default 0)
+  Future<Map<String, dynamic>> _migrate0_16_0to0_20_0(Map<String, dynamic> data) async {
+    Map<String, dynamic> migratedData = Map<String, dynamic>.from(data);
+
+    // 1. Migrate HabitRecord entities: Add status
+    if (migratedData['habitRecords'] != null) {
+      final habitRecords = migratedData['habitRecords'] as List;
+      for (var record in habitRecords) {
+        if (record is Map<String, dynamic>) {
+          if (!record.containsKey('status')) {
+            record['status'] = 0; // Default status: Pending/Skipped (0)
+          }
+        }
+      }
+    }
+
+    // 2. Migrate Task entities: Add recurrenceConfiguration
+    if (migratedData['tasks'] != null) {
+      final tasks = migratedData['tasks'] as List;
+      for (var task in tasks) {
+        if (task is Map<String, dynamic>) {
+          if (!task.containsKey('recurrenceConfiguration')) {
+            task['recurrenceConfiguration'] = null;
+          }
+          if (!task.containsKey('plannedDateReminderCustomOffset')) {
+            task['plannedDateReminderCustomOffset'] = null;
+          }
+          if (!task.containsKey('deadlineDateReminderCustomOffset')) {
+            task['deadlineDateReminderCustomOffset'] = null;
+          }
+        }
+      }
+    }
+
+    // 3. Migrate Tag entities: Add type
+    if (migratedData['tags'] != null) {
+      final tags = migratedData['tags'] as List;
+      for (var tag in tags) {
+        if (tag is Map<String, dynamic>) {
+          if (!tag.containsKey('type')) {
+            tag['type'] = 0; // Default type: Label (0)
+          }
+        }
+      }
+    }
+
+    // 4. Migrate Relations: Add tagOrder
+    final relationTables = ['taskTags', 'noteTags', 'habitTags', 'appUsageTags'];
+    for (final tableName in relationTables) {
+      if (migratedData[tableName] != null) {
+        final relations = migratedData[tableName] as List;
+        for (var relation in relations) {
+          if (relation is Map<String, dynamic>) {
+            // Only add tagOrder for tables that need it (strictly relations)
+            if (!relation.containsKey('tagOrder')) {
+              relation['tagOrder'] = 0;
+            }
           }
         }
       }

@@ -42,6 +42,9 @@ settings:
     title: Імпорт
     unsupported_version: Непідтримувана версія
     version_mismatch: Версію не знайдено
+    version_parse_error: Не вдалося проаналізувати версію з файлу резервної копії
+    integrity_check_error: Не вдалося перевірити цілісність резервної копії
+    data_integrity_error: Перевірка цілісності даних не вдалася
   import_export:
     description:
       Експортуйте свої дані в різних форматах або імпортуйте дані з файлів
@@ -259,6 +262,7 @@ settings:
     export_description:
       Створіть стиснений файл резервної копії, що містить усі ваші
       дані
+    create_error: Не вдалося створити резервну копію
   theme:
     title: Тема
     description: Налаштуйте зовнішній вигляд WHPH

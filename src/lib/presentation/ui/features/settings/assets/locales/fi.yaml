@@ -40,6 +40,9 @@ settings:
     title: Tuonti
     unsupported_version: Ei tuettua versiota
     version_mismatch: Versiota ei löytynyt
+    version_parse_error: Version jäsentäminen varmuustiedostosta epäonnistui
+    integrity_check_error: Varmuuskopion eheyden tarkistus epäonnistui
+    data_integrity_error: Tietojen eheystarkistus epäonnistui
   import_export:
     description: Vie tietosi eri muodoissa tai tuo tietoja varmuuskopiointitiedostoista
     select_action: Valitse tuo/vie-toiminto
@@ -251,6 +254,7 @@ settings:
     invalid_format_error: Virheellinen varmuuskopiotiedoston muoto
     corrupted: Varmuuskopiotiedosto on vioittunut tai vahingoittunut
     export_description: Luo pakattu varmuuskopiotiedosto, joka sisältää kaikki tietosi
+    create_error: Varmuuskopion luominen epäonnistui
   theme:
     title: Teema
     description: Muokkaa WHPH:n ulkoasua

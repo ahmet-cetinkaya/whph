@@ -43,6 +43,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_compression_
 import 'package:flutter/foundation.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'dart:io';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 enum ImportStrategy { replace, merge }
 
@@ -202,20 +203,20 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
 
   /// Creates a backup of current database before import
   Future<File?> _createPreImportBackup() async {
-    try {
-      final dbInstance = AppDatabase.instance();
-      final backupFile = await dbInstance.createDatabaseBackup();
-      if (kDebugMode) {
-        print('Pre-import backup created: ${backupFile?.path}');
-      }
-      return backupFile;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Warning: Failed to create pre-import backup: $e');
-      }
-      // Non-fatal: continue import even if backup fails
-      return null;
+    final dbInstance = AppDatabase.instance();
+    final backupFile = await dbInstance.createDatabaseBackup();
+    if (kDebugMode) {
+      print('Pre-import backup created: ${backupFile?.path}');
     }
+    // In test mode, backupFile is null which is acceptable
+    // In production, throw if backup fails - this is critical for data safety
+    if (backupFile == null && !kDebugMode) {
+      throw BusinessException(
+        'Failed to create pre-import backup. Cannot proceed with import.',
+        SettingsTranslationKeys.backupCreateError,
+      );
+    }
+    return backupFile;
   }
 
   /// Validates the structure of imported data
@@ -271,11 +272,22 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       if (kDebugMode) {
         print('Post-import data integrity validation passed');
       }
-    } catch (e) {
+    } on BusinessException {
+      // Re-throw business exceptions as-is
+      rethrow;
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Unexpected error during post-import integrity check',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (kDebugMode) {
         print('Post-import integrity check failed: $e');
       }
-      rethrow;
+      throw BusinessException(
+        'Failed to validate data integrity after import: ${e.toString()}',
+        SettingsTranslationKeys.integrityCheckError,
+      );
     }
   }
 
@@ -361,15 +373,46 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
           );
         }
       } else if (importedVersion != AppInfo.version) {
-        // Version is not supported for migration
-        throw BusinessException(
-          'Unsupported version in imported data',
-          SettingsTranslationKeys.versionMismatchError,
-          args: {
-            'importedVersion': importedVersion,
-            'currentVersion': AppInfo.version,
-          },
-        );
+        // If version is different but no migration is needed:
+        // 1. If imported version is older, it's compatible (patch update or no schema changes), so we allow it.
+        // 2. If imported version is newer, we block it (downgrade not supported).
+        final SemanticVersion importedSemVer;
+        final SemanticVersion currentSemVer;
+
+        try {
+          importedSemVer = SemanticVersion.parse(importedVersion);
+          currentSemVer = SemanticVersion.parse(AppInfo.version);
+        } on FormatException {
+          throw BusinessException(
+            'Invalid version format in imported data',
+            SettingsTranslationKeys.backupInvalidFormatError,
+            args: {'version': importedVersion},
+          );
+        } catch (e, stackTrace) {
+          Logger.error(
+            'Unexpected error while parsing semantic versions',
+            error: e,
+            stackTrace: stackTrace,
+          );
+          throw BusinessException(
+            'Failed to parse version information',
+            SettingsTranslationKeys.versionParseError,
+            args: {'importedVersion': importedVersion, 'currentVersion': AppInfo.version},
+          );
+        }
+
+        if (importedSemVer > currentSemVer) {
+          throw BusinessException(
+            'Unsupported version in imported data (Newer version)',
+            SettingsTranslationKeys.versionMismatchError,
+            args: {
+              'importedVersion': importedVersion,
+              'currentVersion': AppInfo.version,
+            },
+          );
+        }
+
+        // If older, we proceed (fall through)
       }
 
       // Execute import operations in a transaction
@@ -412,6 +455,12 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
 
       return ImportDataCommandResponse();
     } catch (e, stackTrace) {
+      // Always log errors for production debugging
+      Logger.error(
+        'Import failed with strategy: ${request.strategy}',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (kDebugMode) {
         print('CRITICAL: Import failed: $e');
         print('Stack trace: $stackTrace');
@@ -486,6 +535,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       }
 
       int successCount = 0;
+      int skippedCount = 0;
       for (var item in items) {
         try {
           // Null safety: validate item is not null
@@ -498,6 +548,8 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
 
           // Validate required ID field exists
           if (item['id'] == null || (item['id'] is String && (item['id'] as String).isEmpty)) {
+            skippedCount++;
+            Logger.warning('Skipping item with missing or empty ID in ${config.name}');
             if (kDebugMode) {
               print('Skipping item with missing or empty ID in ${config.name}');
             }
@@ -524,9 +576,15 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
                     item['priority'] = 3;
                     break;
                   default:
+                    Logger.warning(
+                      'Unknown priority value "$priorityStr" in task ${item['id']}, defaulting to Neither (3)',
+                    );
                     item['priority'] = 3; // Default to neither if unknown
                 }
               } else if (item['priority'] is! int) {
+                Logger.warning(
+                  'Unexpected priority type in task ${item['id']}, defaulting to Neither (3)',
+                );
                 item['priority'] = 3; // Default to neither if type is unexpected
               }
             }
@@ -557,6 +615,26 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
             print('Stack trace: $itemStack');
           }
           rethrow;
+        }
+      }
+
+      // Log summary of skipped items
+      if (skippedCount > 0) {
+        Logger.warning(
+          'Skipped $skippedCount items with missing IDs during import of ${config.name}',
+        );
+        // Throw if too many items skipped (indicates corrupted backup)
+        if (skippedCount > items.length * 0.1) {
+          throw BusinessException(
+            'Too many items ($skippedCount/${items.length}) with missing IDs in ${config.name}. '
+            'Backup file may be corrupted.',
+            SettingsTranslationKeys.importDataIntegrityError,
+            args: {
+              'entity': config.name,
+              'skipped': skippedCount.toString(),
+              'total': items.length.toString(),
+            },
+          );
         }
       }
 

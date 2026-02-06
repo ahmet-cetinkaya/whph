@@ -40,6 +40,9 @@ settings:
     title: Uvoz
     unsupported_version: Nepodprana različica
     version_mismatch: Različica ni bila najdena
+    version_parse_error: Razčlenitev različice iz varnostne kopije ni uspela
+    integrity_check_error: Ni bilo mogoče preveriti integritete varnostne kopije
+    data_integrity_error: Preverjanje integritete podatkov ni uspelo
   import_export:
     description:
       Izvozite svoje podatke v različnih formatih ali uvozite podatke iz
@@ -259,6 +262,7 @@ settings:
     export_description:
       Ustvarite stisnjeno datoteko varnostne kopije, ki vsebuje
       vse vaše podatke
+    create_error: Ni bilo mogoče ustvariti varnostne kopije
   theme:
     title: Tema
     description: Prilagajanje videza WHPH
