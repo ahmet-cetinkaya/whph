@@ -1,7 +1,7 @@
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 
 class MobileSystemTrayService implements ISystemTrayService {
   // Constants
@@ -39,7 +39,8 @@ class MobileSystemTrayService implements ISystemTrayService {
     await _createNotificationChannel();
 
     _isInitialized = true;
-    await _showPersistentNotification();
+    // NOTE: intentionally NOT automatically showing the notification here.
+    // We only want it to appear when triggered (e.g. by timer).
   }
 
   @override
