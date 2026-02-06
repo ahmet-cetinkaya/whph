@@ -117,7 +117,7 @@ class DesktopNotificationService implements INotificationService {
     required String body,
     String? payload,
     int? id,
-    String? actionButtonText, // Unused on desktop platforms
+    NotificationOptions? options,
   }) async {
     if (!await isEnabled()) return;
 
@@ -129,14 +129,14 @@ class DesktopNotificationService implements INotificationService {
         // For Linux - add action button for task completion
         linux: LinuxNotificationDetails(
           urgency: LinuxNotificationUrgency.critical,
-          actions: isTaskNotification
+          actions: isTaskNotification && options?.actionButtonText != null
               ? [
                   LinuxNotificationAction(
                     key: 'complete_task',
-                    label: 'Complete',
+                    label: options!.actionButtonText!,
                   ),
                 ]
-              : const [],
+              : [],
         ),
         // For Windows - add action button for task completion
         windows: WindowsNotificationDetails(),

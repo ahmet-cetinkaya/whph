@@ -11,12 +11,13 @@ abstract class INotificationService {
   /// [body] - Body text of the notification
   /// [payload] - Optional data to pass with the notification
   /// [id] - Optional unique identifier for the notification
+  /// [options] - Optional platform specific options
   Future<void> show({
     required String title,
     required String body,
     String? payload,
     int? id,
-    String? actionButtonText,
+    NotificationOptions? options,
   });
 
   /// Clear all active notifications
@@ -45,4 +46,14 @@ abstract class INotificationService {
   /// Mobile platforms (Android/iOS) should implement this to process habit completions
   /// Desktop platforms provide a no-op implementation
   Future<void> handleNotificationHabitCompletion(String habitId);
+}
+
+class NotificationOptions {
+  final String? actionButtonText;
+  final String? channelId;
+
+  const NotificationOptions({
+    this.actionButtonText,
+    this.channelId,
+  });
 }
