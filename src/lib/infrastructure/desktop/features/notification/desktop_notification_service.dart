@@ -105,8 +105,12 @@ class DesktopNotificationService implements INotificationService {
       final taskIdRegex = RegExp(r'"taskId"\s*:\s*"([^"]+)"');
       final match = taskIdRegex.firstMatch(payload);
       return match?.group(1);
-    } catch (e) {
-      Logger.error('Error extracting task ID from payload: $e');
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[payload_extraction_failed] DesktopNotificationService: Failed to extract task ID from notification payload',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -117,7 +121,7 @@ class DesktopNotificationService implements INotificationService {
     required String body,
     String? payload,
     int? id,
-    String? actionButtonText, // Unused on desktop platforms
+    NotificationOptions? options,
   }) async {
     if (!await isEnabled()) return;
 
@@ -129,14 +133,14 @@ class DesktopNotificationService implements INotificationService {
         // For Linux - add action button for task completion
         linux: LinuxNotificationDetails(
           urgency: LinuxNotificationUrgency.critical,
-          actions: isTaskNotification
+          actions: isTaskNotification && options?.actionButtonText != null
               ? [
                   LinuxNotificationAction(
                     key: 'complete_task',
-                    label: 'Complete',
+                    label: options!.actionButtonText!,
                   ),
                 ]
-              : const [],
+              : [],
         ),
         // For Windows - add action button for task completion
         windows: WindowsNotificationDetails(),
@@ -156,8 +160,12 @@ class DesktopNotificationService implements INotificationService {
         notificationDetails,
         payload: payload,
       );
-    } catch (e) {
-      Logger.error('Error showing notification: $e');
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[notification_show_failed] DesktopNotificationService: Failed to show notification',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -185,14 +193,21 @@ class DesktopNotificationService implements INotificationService {
       final setting = await _mediatr.send<GetSettingQuery, GetSettingQueryResponse?>(query);
 
       if (setting == null) {
+        Logger.warning(
+          'DesktopNotificationService: Notification setting not found, defaulting to enabled',
+        );
         return true; // Default to true if no setting
       }
 
       final isEnabled = setting.value == 'false' ? false : true;
       return isEnabled;
-    } catch (e) {
-      Logger.error('Error checking if notifications are enabled: $e');
-      return true; // Default to true if there's an error
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[notification_check_failed] DesktopNotificationService: Failed to check if notifications are enabled, defaulting to disabled',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return false; // Default to FALSE on error - safer to disable than to silently fail
     }
   }
 
@@ -218,10 +233,24 @@ class DesktopNotificationService implements INotificationService {
         final macOSImplementation =
             _flutterLocalNotifications.resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>();
 
-        final settings = await macOSImplementation?.checkPermissions();
-        return settings?.isAlertEnabled == true || settings?.isBadgeEnabled == true || settings?.isSoundEnabled == true;
-      } catch (e) {
-        Logger.error('Error checking macOS permission: $e');
+        if (macOSImplementation == null) {
+          Logger.warning(
+            'DesktopNotificationService: macOS notification implementation not available',
+          );
+          return false; // Safer default
+        }
+
+        final settings = await macOSImplementation.checkPermissions();
+        final hasPermission =
+            settings?.isAlertEnabled == true || settings?.isBadgeEnabled == true || settings?.isSoundEnabled == true;
+        return hasPermission;
+      } catch (e, stackTrace) {
+        Logger.error(
+          '[permission_check_failed] DesktopNotificationService: Failed to check macOS notification permission',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        return false; // Safer to assume no permission on error
       }
     }
 
@@ -247,8 +276,12 @@ class DesktopNotificationService implements INotificationService {
         );
 
         permissionGranted = settings ?? false;
-      } catch (e) {
-        Logger.error('Error requesting macOS permission: $e');
+      } catch (e, stackTrace) {
+        Logger.error(
+          '[permission_request_failed] DesktopNotificationService: Failed to request macOS notification permission',
+          error: e,
+          stackTrace: stackTrace,
+        );
         permissionGranted = false;
       }
     } else {

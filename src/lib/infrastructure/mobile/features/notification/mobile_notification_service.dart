@@ -6,21 +6,29 @@ import 'package:whph/core/application/features/settings/commands/save_setting_co
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart' as shared;
 import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
+import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 
 class MobileNotificationService implements INotificationService {
   final Mediator _mediator;
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
+  final bool _isAndroid;
+  final bool _isIOS;
 
   MobileNotificationService(
-    this._mediator,
-  ) : _flutterLocalNotifications = FlutterLocalNotificationsPlugin();
+    this._mediator, {
+    FlutterLocalNotificationsPlugin? flutterLocalNotifications,
+    bool? isAndroid,
+    bool? isIOS,
+  })  : _flutterLocalNotifications = flutterLocalNotifications ?? FlutterLocalNotificationsPlugin(),
+        _isAndroid = isAndroid ?? Platform.isAndroid,
+        _isIOS = isIOS ?? Platform.isIOS;
 
   @override
   Future<void> init() async {
@@ -30,6 +38,63 @@ class MobileNotificationService implements INotificationService {
         iOS: DarwinInitializationSettings(),
       ),
     );
+    await _createNotificationChannels();
+  }
+
+  Future<void> _createNotificationChannels() async {
+    if (!_isAndroid) return;
+
+    try {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+      if (androidImplementation == null) {
+        Logger.error(
+          '[notification_channel_init_failed] MobileNotificationService: Android notification implementation not available',
+        );
+        return;
+      }
+
+      final List<AndroidNotificationChannel> channels = [
+        AndroidNotificationChannel(
+          AndroidAppConstants.notificationChannels.taskChannelId,
+          AndroidAppConstants.notificationChannels.taskChannelName,
+          importance: Importance.max,
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+        ),
+        AndroidNotificationChannel(
+          AndroidAppConstants.notificationChannels.habitChannelId,
+          AndroidAppConstants.notificationChannels.habitChannelName,
+          importance: Importance.max,
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+        ),
+      ];
+
+      for (final channel in channels) {
+        try {
+          await androidImplementation.createNotificationChannel(channel);
+          Logger.info(
+            'MobileNotificationService: Created notification channel ${channel.id}',
+          );
+        } catch (e, stackTrace) {
+          Logger.error(
+            '[notification_channel_creation_failed] MobileNotificationService: Failed to create notification channel ${channel.id}',
+            error: e,
+            stackTrace: stackTrace,
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[notification_channel_init_failed] MobileNotificationService: Failed to initialize notification channels',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   @override
@@ -79,21 +144,27 @@ class MobileNotificationService implements INotificationService {
     required String body,
     String? payload,
     int? id,
-    String? actionButtonText,
+    NotificationOptions? options,
   }) async {
     if (!await isEnabled()) return;
 
     final bool? permissionGranted = await _checkPermission();
     if (permissionGranted != true) return;
 
-    await _flutterLocalNotifications.show(
-      id ?? shared.KeyHelper.generateNumericId(),
-      title,
-      body,
-      NotificationDetails(
+    // Platform-specific notification details
+    NotificationDetails notificationDetails;
+
+    if (_isAndroid) {
+      // Use task channel as default if none provided
+      final String effectiveChannelId = options?.channelId ?? AndroidAppConstants.notificationChannels.taskChannelId;
+      final String effectiveChannelName = effectiveChannelId == AndroidAppConstants.notificationChannels.habitChannelId
+          ? AndroidAppConstants.notificationChannels.habitChannelName
+          : AndroidAppConstants.notificationChannels.taskChannelName;
+
+      notificationDetails = NotificationDetails(
         android: AndroidNotificationDetails(
-          AppInfo.name,
-          AppInfo.name,
+          effectiveChannelId,
+          effectiveChannelName,
           importance: Importance.max,
           priority: Priority.high,
           channelShowBadge: true,
@@ -106,20 +177,36 @@ class MobileNotificationService implements INotificationService {
           presentBadge: true,
           presentSound: true,
         ),
-      ),
+      );
+    } else {
+      // iOS or other platforms
+      notificationDetails = const NotificationDetails(
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      );
+    }
+
+    await _flutterLocalNotifications.show(
+      id ?? shared.KeyHelper.generateNumericId(),
+      title,
+      body,
+      notificationDetails,
       payload: payload,
     );
   }
 
   Future<bool?> _checkPermission() async {
-    if (Platform.isAndroid) {
+    if (_isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
           _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
       return await androidImplementation?.requestNotificationsPermission();
     }
 
-    if (Platform.isIOS) {
+    if (_isIOS) {
       return await _flutterLocalNotifications
           .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
@@ -149,12 +236,20 @@ class MobileNotificationService implements INotificationService {
       final setting = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(query);
 
       if (setting == null) {
+        Logger.warning(
+          'MobileNotificationService: Notification setting not found, defaulting to enabled',
+        );
         return true; // Default to true if setting not found
       }
 
       return setting.value == 'false' ? false : true;
-    } catch (e) {
-      return true; // Default to true if error occurs
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[notification_check_failed] MobileNotificationService: Failed to check if notifications are enabled, defaulting to disabled',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return false; // Default to FALSE on error - safer to disable than to silently fail
     }
   }
 
@@ -175,11 +270,12 @@ class MobileNotificationService implements INotificationService {
 
   @override
   Future<bool> checkPermissionStatus() async {
-    if (!PlatformUtils.isMobile) {
+    // Override platform check if flags are forced (testing)
+    if (!_isAndroid && !_isIOS) {
       return true; // Always return true for non-mobile platforms
     }
 
-    if (Platform.isAndroid) {
+    if (_isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
           _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
@@ -187,24 +283,34 @@ class MobileNotificationService implements INotificationService {
       return areNotificationsEnabled ?? false;
     }
 
+    if (_isIOS) {
+      final IOSFlutterLocalNotificationsPlugin? iosImplementation =
+          _flutterLocalNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+      final permissions = await iosImplementation?.checkPermissions();
+      // iOS notifications are enabled if alert, badge, or sound is enabled
+      return permissions?.isEnabled ?? false;
+    }
+
     return false;
   }
 
   @override
   Future<bool> requestPermission() async {
-    if (!PlatformUtils.isMobile && !Platform.isIOS) {
+    // Override platform check if flags are forced (testing)
+    if (!_isAndroid && !_isIOS) {
       return true; // Non-mobile platforms don't need explicit permission
     }
 
     bool permissionGranted = false;
 
     try {
-      if (PlatformUtils.isMobile) {
+      if (_isAndroid) {
         final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
             _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
         permissionGranted = await androidImplementation?.requestNotificationsPermission() ?? false;
-      } else if (Platform.isIOS) {
+      } else if (_isIOS) {
         final IOSFlutterLocalNotificationsPlugin? iosImplementation =
             _flutterLocalNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
@@ -222,8 +328,12 @@ class MobileNotificationService implements INotificationService {
       }
 
       return permissionGranted;
-    } catch (e) {
-      Logger.error('Error requesting notification permission: $e');
+    } catch (e, stackTrace) {
+      Logger.error(
+        '[permission_request_failed] MobileNotificationService: Failed to request notification permission',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
