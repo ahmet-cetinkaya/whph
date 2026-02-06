@@ -42,7 +42,7 @@ void main() {
                 onDidReceiveNotificationResponse: anyNamed('onDidReceiveNotificationResponse')))
             .thenAnswer((_) async => true);
 
-        when(mockAndroidFlutterLocalNotificationsPlugin.createNotificationChannel(any)).thenAnswer((_) async => null);
+        when(mockAndroidFlutterLocalNotificationsPlugin.createNotificationChannel(any)).thenAnswer((_) async {});
 
         service = MobileNotificationService(
           mockMediator,
@@ -94,7 +94,7 @@ void main() {
         when(mockAndroidFlutterLocalNotificationsPlugin.requestNotificationsPermission()).thenAnswer((_) async => true);
 
         when(mockFlutterLocalNotificationsPlugin.show(any, any, any, any, payload: anyNamed('payload')))
-            .thenAnswer((_) async => null);
+            .thenAnswer((_) async {});
       });
 
       test('should use task channel by default when no channelId provided', () async {
