@@ -391,10 +391,20 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
       onSuccess: (result) {
         if (mounted) {
           setState(() {
+            // Clear 'None' option state when creating a tag
+            if (_hasExplicitlySelectedNone) {
+              _hasExplicitlySelectedNone = false;
+            }
+            // In single-select mode, clear previous selections
+            if (!widget.isMultiSelect) {
+              _tempSelectedTags.clear();
+            }
             _tempSelectedTags.add(result.id);
             _searchController.clear();
             _tags = null; // Refresh list to include new tag
           });
+        }
+        if (mounted) {
           _getTags(pageIndex: 0);
         }
       },
