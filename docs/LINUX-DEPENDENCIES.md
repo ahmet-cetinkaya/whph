@@ -17,22 +17,10 @@ WHPH is a productivity application that helps you manage tasks, develop habits, 
 
 ### Arch Linux (Recommended for KDE users)
 
+Package can be installed from [AUR](https://aur.archlinux.org/packages/whph-bin)
+
 ```bash
-# Update system
-sudo pacman -Syu
-
-# Install essential runtime libraries
-sudo pacman -S gtk3 gstreamer gst-plugins-base gst-plugins-good
-
-# Install system integration
-sudo pacman -S libayatana-appindicator libnotify zenity
-
-# Install window management tools (for app usage tracking)
-sudo pacman -S xorg-xprop wmctrl xdotool  # For X11 systems
-sudo pacman -S jq                         # For Sway/wlroots compositors
-
-# SQLite is usually pre-installed, but if needed:
-sudo pacman -S sqlite
+yay -Sy whph-bin
 ```
 
 ### Ubuntu/Debian
