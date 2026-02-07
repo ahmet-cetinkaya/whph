@@ -7,6 +7,7 @@ tags:
     hide_archived: Nascondi tag archiviati
     show_archived: Mostra tag archiviati
     unarchive: Desarchivia tag
+    create_button: Crea tag "{name}"
   categories:
     all: Tutti
     app_usage: Utilizzo app
@@ -34,6 +35,7 @@ tags:
     tag_tag_already_exists: Questa relazione tag esiste già
     tag_tag_not_found: Relazione tag non trovata
     toggling_archive: Impossibile cambiare stato archivio
+    create_tag: Impossibile creare tag
   filter:
     all_categories: Tutte le categorie
     select_category: Seleziona categoria

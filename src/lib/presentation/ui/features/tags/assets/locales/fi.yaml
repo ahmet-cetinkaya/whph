@@ -7,6 +7,7 @@ tags:
     hide_archived: Piilota arkistoidut tunnisteet
     show_archived: Näytä arkistoidut tunnisteet
     unarchive: Poista arkistointi tunnisteelta
+    create_button: Luo "{name}"-tagi
   categories:
     all: Kaikki
     app_usage: Sovelluksen käyttö
@@ -35,6 +36,7 @@ tags:
     tag_tag_already_exists: Tämä tunnistesuhde on jo olemassa
     tag_tag_not_found: Tunnistesuhdetta ei löytynyt
     toggling_archive: Arkistointitilan vaihtaminen epäonnistui
+    create_tag: Tunnisteen luominen epäonnistui
   filter:
     all_categories: Kaikki kategoriat
     select_category: Valitse kategoria

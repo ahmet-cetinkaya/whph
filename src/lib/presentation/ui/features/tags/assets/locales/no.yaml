@@ -7,6 +7,7 @@ tags:
     hide_archived: Skjul arkiverte merker
     show_archived: Vis arkiverte merker
     unarchive: Fjern arkivering av merke
+    create_button: Opprett "{name}"-tag
   categories:
     all: Alle
     app_usage: App-bruk
@@ -35,6 +36,7 @@ tags:
     tag_tag_already_exists: Denne merkerelasjonen eksisterer allerede
     tag_tag_not_found: Merkerelasjon ikke funnet
     toggling_archive: Kunne ikke bytte arkivstatus
+    create_tag: Klarte ikke å lage merke
   filter:
     all_categories: Alle kategorier
     select_category: Velg kategori

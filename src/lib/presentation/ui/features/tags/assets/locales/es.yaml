@@ -7,6 +7,7 @@ tags:
     hide_archived: Ocultar etiquetas archivadas
     show_archived: Mostrar etiquetas archivadas
     unarchive: Desarchivar etiqueta
+    create_button: Crear etiqueta "{name}"
   categories:
     all: Todas
     app_usage: Uso de apps
@@ -35,6 +36,7 @@ tags:
     tag_tag_already_exists: Esta relación de etiqueta ya existe
     tag_tag_not_found: Relación de etiqueta no encontrada
     toggling_archive: No se pudo cambiar el estado de archivo
+    create_tag: Error al crear etiqueta
   filter:
     all_categories: Todas las categorías
     select_category: Seleccionar categoría

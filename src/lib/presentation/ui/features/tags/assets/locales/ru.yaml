@@ -7,6 +7,7 @@ tags:
     hide_archived: Скрыть архивированные теги
     show_archived: Показать архивированные теги
     unarchive: Разархивировать тег
+    create_button: Создать тег "{name}"
   categories:
     all: Все
     app_usage: Использование приложений
@@ -34,6 +35,7 @@ tags:
     tag_tag_already_exists: Эта связь тегов уже существует
     tag_tag_not_found: Связь тегов не найдена
     toggling_archive: Не удалось переключить статус архива
+    create_tag: Не удалось создать тег
   filter:
     all_categories: Все категории
     select_category: Выбрать категорию

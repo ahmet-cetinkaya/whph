@@ -7,6 +7,7 @@ tags:
     hide_archived: Skrýt archivované štítky
     show_archived: Zobrazit archivované štítky
     unarchive: Zrušit archivaci štítku
+    create_button: Vytvořit štítek "{name}"
   categories:
     all: Vše
     app_usage: Použití aplikace
@@ -35,6 +36,7 @@ tags:
     tag_tag_already_exists: Tento vztah štítku již existuje
     tag_tag_not_found: Vztah štítku nenalezen
     toggling_archive: Selhání přepnutí stavu archivu
+    create_tag: Nepodařilo se vytvořit štítek
   filter:
     all_categories: Všechny kategorie
     select_category: Vybrat kategorii

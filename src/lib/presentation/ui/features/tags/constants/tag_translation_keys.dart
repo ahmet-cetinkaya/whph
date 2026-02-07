@@ -22,6 +22,7 @@ class TagTranslationKeys extends application.TagTranslationKeys {
   static const String errorSaving = 'tags.errors.saving';
   static const String errorDeleting = 'tags.errors.deleting';
   static const String errorCreating = 'tags.errors.creating';
+  static const String createTagError = 'tags.errors.create_tag';
   static const String errorLoadingArchiveStatus = 'tags.errors.loading_archive_status';
   static const String errorTogglingArchive = 'tags.errors.toggling_archive';
   static const String tagNotFoundError = 'tags.errors.tag_not_found';
@@ -64,6 +65,7 @@ class TagTranslationKeys extends application.TagTranslationKeys {
 
   // Selection
   static const String doneButton = 'tags.selection.done';
+  static const String createTagButton = 'tags.actions.create_button';
 
   // Time Chart
   static const String timeChartNoData = 'tags.time_chart.no_data';

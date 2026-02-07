@@ -16,6 +16,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/language_dropdown.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
@@ -27,10 +28,12 @@ class OnboardingDialog extends StatefulWidget {
   State<OnboardingDialog> createState() => _OnboardingDialogState();
 }
 
-class _OnboardingDialogState extends State<OnboardingDialog> {
+class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBindingObserver {
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
   final _mediator = container.resolve<Mediator>();
+  final _notificationService = container.resolve<INotificationService>();
+
   final PageController _pageController = PageController();
   int _currentPage = 0;
   String? _selectedLanguageCode;
@@ -40,7 +43,38 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkPermissions();
     _steps = _buildSteps();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkPermissions();
+    }
+  }
+
+  Future<void> _checkPermissions() async {
+    // Only check on mobile to avoid unnecessary calls on desktop
+    if (!PlatformUtils.isMobile) return;
+
+    final hasPermission = await _notificationService.checkPermissionStatus();
+    if (hasPermission != _permissionsReviewed) {
+      if (mounted) {
+        setState(() {
+          _permissionsReviewed = hasPermission;
+          _steps = _buildSteps();
+        });
+      }
+    }
   }
 
   List<_OnboardingStep> _buildSteps() {
@@ -75,6 +109,12 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
             onPressed: () => _showPermissionsPage(context),
             icon: Icon(_permissionsReviewed ? Icons.check : Icons.lock_open),
             label: Text(_translationService.translate(AboutTranslationKeys.onboardingPermissionsButton)),
+            style: _permissionsReviewed
+                ? OutlinedButton.styleFrom(
+                    foregroundColor: AppTheme.successColor,
+                    side: const BorderSide(color: AppTheme.successColor),
+                  )
+                : null,
           ),
         ),
       );
@@ -141,12 +181,8 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
       child: const PermissionsPage(),
       size: DialogSize.xLarge,
     );
-    if (mounted) {
-      setState(() {
-        _permissionsReviewed = true;
-        _steps = _buildSteps(); // Rebuild steps to update UI
-      });
-    }
+    // Refresh permissions after dialog closes
+    await _checkPermissions();
   }
 
   Future<void> _onLanguageChanged(String languageCode) async {
@@ -157,7 +193,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: _currentPage == 0,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         if (_currentPage > 0) {
@@ -174,7 +210,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: 400,
+                height: MediaQuery.sizeOf(context).height * 0.6 > 400 ? 400 : MediaQuery.sizeOf(context).height * 0.6,
                 child: PageView.builder(
                   controller: _pageController,
                   physics: const NeverScrollableScrollPhysics(),
@@ -311,12 +347,6 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 }
 

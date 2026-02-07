@@ -7,6 +7,7 @@ tags:
     hide_archived: Hide archived tags
     show_archived: Show archived tags
     unarchive: Unarchive Tag
+    create_button: Create "{name}" tag
   categories:
     all: All
     app_usage: App Usage
@@ -24,6 +25,7 @@ tags:
     select_tag: Select tag
     tasks_label: Tasks
   errors:
+    create_tag: Failed to create tag
     creating: Failed to create tag
     deleting: Failed to delete tag
     get_tags: Error occurred while fetching tags
