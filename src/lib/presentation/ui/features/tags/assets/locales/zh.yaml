@@ -7,6 +7,7 @@ tags:
     hide_archived: 隐藏已归档标签
     show_archived: 显示已归档标签
     unarchive: 取消归档标签
+    create_button: 创建"{name}"标签
   categories:
     all: 全部
     app_usage: 应用使用情况

@@ -7,6 +7,7 @@ tags:
     hide_archived: Скрыть архивированные теги
     show_archived: Показать архивированные теги
     unarchive: Разархивировать тег
+    create_button: Создать тег "{name}"
   categories:
     all: Все
     app_usage: Использование приложений

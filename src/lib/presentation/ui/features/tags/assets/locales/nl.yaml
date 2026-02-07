@@ -7,6 +7,7 @@ tags:
     hide_archived: Gearchiveerde tags verbergen
     show_archived: Gearchiveerde tags tonen
     unarchive: Tag de-archiveren
+    create_button: Maak "{name}"-tag
   categories:
     all: Alle
     app_usage: App-gebruik

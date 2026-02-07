@@ -7,6 +7,7 @@ tags:
     hide_archived: Dölj arkiverade taggar
     show_archived: Visa arkiverade taggar
     unarchive: Avarkivera tagg
+    create_button: Skapa "{name}"-tagg
   categories:
     all: Alla
     app_usage: App-användning

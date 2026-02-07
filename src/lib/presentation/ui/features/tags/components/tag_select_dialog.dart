@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
@@ -230,42 +231,52 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
                 child: ListView.builder(
                   controller: _scrollController,
                   keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  itemCount: (_tags?.items.length ?? 0) + (widget.showNoneOption ? 2 : 0) + 1,
+                  itemCount: (_tags?.items.length ?? 0) +
+                      (widget.showNoneOption ? 2 : 0) +
+                      (_shouldShowCreateOption ? 1 : 0) +
+                      1,
                   itemBuilder: (context, index) {
-                    if (widget.showNoneOption && index == 0) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Text(
-                          _translationService.translate(SharedTranslationKeys.specialFiltersLabel),
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                color: Colors.grey,
-                              ),
-                        ),
-                      );
+                    int currentIndex = 0;
+
+                    // 1. None Option Header and Item
+                    if (widget.showNoneOption) {
+                      if (index == currentIndex) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                          child: Text(
+                            _translationService.translate(SharedTranslationKeys.specialFiltersLabel),
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  color: Colors.grey,
+                                ),
+                          ),
+                        );
+                      }
+                      currentIndex++;
+                      if (index == currentIndex) {
+                        return CheckboxListTile(
+                          title: Text(
+                            _translationService.translate(SharedTranslationKeys.noneOption),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          value: _hasExplicitlySelectedNone,
+                          onChanged: (bool? value) {
+                            if (!mounted) return;
+                            setState(() {
+                              if (value == true) {
+                                _tempSelectedTags.clear();
+                                _hasExplicitlySelectedNone = true;
+                              } else {
+                                _hasExplicitlySelectedNone = false;
+                              }
+                            });
+                          },
+                        );
+                      }
+                      currentIndex++;
                     }
 
-                    if (widget.showNoneOption && index == 1) {
-                      return CheckboxListTile(
-                        title: Text(
-                          _translationService.translate(SharedTranslationKeys.noneOption),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        value: _hasExplicitlySelectedNone,
-                        onChanged: (bool? value) {
-                          if (!mounted) return;
-                          setState(() {
-                            if (value == true) {
-                              _tempSelectedTags.clear();
-                              _hasExplicitlySelectedNone = true;
-                            } else {
-                              _hasExplicitlySelectedNone = false;
-                            }
-                          });
-                        },
-                      );
-                    }
-
-                    if (widget.showNoneOption ? index == 2 : index == 0) {
+                    // 2. Tags Header
+                    if (index == currentIndex) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                         child: Text(
@@ -276,8 +287,28 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
                         ),
                       );
                     }
+                    currentIndex++;
 
-                    final actualIndex = widget.showNoneOption ? index - 3 : index - 1;
+                    // 3. Create Tag Option
+                    if (_shouldShowCreateOption) {
+                      if (index == currentIndex) {
+                        return ListTile(
+                          leading: const Icon(Icons.add, color: AppTheme.successColor),
+                          title: Text(
+                            _translationService.translate(
+                              TagTranslationKeys.createTagButton,
+                              namedArgs: {'name': _searchController.text.trim()},
+                            ),
+                            style: const TextStyle(color: AppTheme.successColor, fontWeight: FontWeight.bold),
+                          ),
+                          onTap: _createAndSelectTag,
+                        );
+                      }
+                      currentIndex++;
+                    }
+
+                    // 4. Tag Items
+                    final actualIndex = index - currentIndex;
 
                     if (_tags == null || actualIndex < 0 || actualIndex >= _tags!.items.length) {
                       return const SizedBox.shrink();
@@ -333,6 +364,40 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
           ),
         ),
       ),
+    );
+  }
+
+  bool get _shouldShowCreateOption {
+    final searchText = _searchController.text.trim();
+    if (searchText.isEmpty) return false;
+
+    if (_tags == null) return true;
+
+    // Check if any tag exactly matches the search text
+    return !_tags!.items.any((tag) => tag.name.toLowerCase() == searchText.toLowerCase());
+  }
+
+  Future<void> _createAndSelectTag() async {
+    final searchText = _searchController.text.trim();
+    if (searchText.isEmpty) return;
+
+    await AsyncErrorHandler.execute<SaveTagCommandResponse>(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+      operation: () async {
+        final command = SaveTagCommand(name: searchText);
+        return await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
+      },
+      onSuccess: (result) {
+        if (mounted) {
+          setState(() {
+            _tempSelectedTags.add(result.id);
+            _searchController.clear();
+            _tags = null; // Refresh list to include new tag
+          });
+          _getTags(pageIndex: 0);
+        }
+      },
     );
   }
 }

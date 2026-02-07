@@ -7,6 +7,7 @@ tags:
     hide_archived: Piilota arkistoidut tunnisteet
     show_archived: Näytä arkistoidut tunnisteet
     unarchive: Poista arkistointi tunnisteelta
+    create_button: Luo "{name}"-tagi
   categories:
     all: Kaikki
     app_usage: Sovelluksen käyttö

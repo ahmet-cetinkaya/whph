@@ -7,6 +7,7 @@ tags:
     hide_archived: アーカイブされたタグを非表示
     show_archived: アーカイブされたタグを表示
     unarchive: タグのアーカイブを解除
+    create_button: '"{name}"タグを作成'
   categories:
     all: すべて
     app_usage: アプリ使用状況

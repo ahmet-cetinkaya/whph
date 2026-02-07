@@ -7,6 +7,7 @@ tags:
     hide_archived: Skjul arkiverte merker
     show_archived: Vis arkiverte merker
     unarchive: Fjern arkivering av merke
+    create_button: Opprett "{name}"-tag
   categories:
     all: Alle
     app_usage: App-bruk

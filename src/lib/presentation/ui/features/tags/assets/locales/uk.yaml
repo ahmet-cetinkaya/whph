@@ -7,6 +7,7 @@ tags:
     hide_archived: Сховати архівовані теги
     show_archived: Показати архівовані теги
     unarchive: Відновити тег з архіву
+    create_button: Створити тег "{name}"
   categories:
     all: Всі
     app_usage: Використання додатків

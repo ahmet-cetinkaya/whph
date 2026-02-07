@@ -7,6 +7,7 @@ tags:
     hide_archived: Hide archived tags
     show_archived: Show archived tags
     unarchive: Unarchive Tag
+    create_button: Create "{name}" tag
   categories:
     all: All
     app_usage: App Usage

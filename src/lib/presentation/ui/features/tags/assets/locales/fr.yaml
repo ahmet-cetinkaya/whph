@@ -7,6 +7,7 @@ tags:
     hide_archived: Masquer les tags archivés
     show_archived: Afficher les tags archivés
     unarchive: Désarchiver le tag
+    create_button: Créer l'étiquette "{name}"
   categories:
     all: Tous
     app_usage: Utilisation d'apps

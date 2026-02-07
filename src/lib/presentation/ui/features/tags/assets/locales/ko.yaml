@@ -7,6 +7,7 @@ tags:
     hide_archived: 보관된 태그 숨기기
     show_archived: 보관된 태그 표시
     unarchive: 태그 보관 해제
+    create_button: '"{name}" 태그 만들기'
   categories:
     all: 전체
     app_usage: 앱 사용량

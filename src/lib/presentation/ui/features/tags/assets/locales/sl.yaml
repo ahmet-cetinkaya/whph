@@ -7,6 +7,7 @@ tags:
     hide_archived: Skrij arhivirane oznake
     show_archived: Pokaži arhivirane oznake
     unarchive: Razarhiviraj oznako
+    create_button: Ustvari oznako "{name}"
   categories:
     all: Vse
     app_usage: Uporaba aplikacije

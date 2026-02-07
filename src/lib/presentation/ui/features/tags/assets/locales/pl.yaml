@@ -7,6 +7,7 @@ tags:
     hide_archived: Ukryj zarchiwizowane tagi
     show_archived: Pokaż zarchiwizowane tagi
     unarchive: Przywróć tag z archiwum
+    create_button: Utwórz tag "{name}"
   categories:
     all: Wszystkie
     app_usage: Użycie aplikacji

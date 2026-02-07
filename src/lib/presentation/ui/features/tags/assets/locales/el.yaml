@@ -7,6 +7,7 @@ tags:
     hide_archived: Απόκρυψη αρχειοθετημένων ετικετών
     show_archived: Εμφάνιση αρχειοθετημένων ετικετών
     unarchive: Αναίρεση αρχειοθέτησης ετικέτας
+    create_button: Δημιουργία ετικέτας "{name}"
   categories:
     all: Όλα
     app_usage: Χρήση εφαρμογής

@@ -64,6 +64,7 @@ class TagTranslationKeys extends application.TagTranslationKeys {
 
   // Selection
   static const String doneButton = 'tags.selection.done';
+  static const String createTagButton = 'tags.actions.create_button';
 
   // Time Chart
   static const String timeChartNoData = 'tags.time_chart.no_data';
