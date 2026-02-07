@@ -174,7 +174,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: 400,
+                height: MediaQuery.sizeOf(context).height * 0.6 > 400 ? 400 : MediaQuery.sizeOf(context).height * 0.6,
                 child: PageView.builder(
                   controller: _pageController,
                   physics: const NeverScrollableScrollPhysics(),
