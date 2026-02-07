@@ -36,6 +36,7 @@ tags:
     tag_tag_already_exists: Denna taggrelation finns redan
     tag_tag_not_found: Taggrelation hittades inte
     toggling_archive: Misslyckades att växla arkivstatus
+    create_tag: Kunde inte skapa tagg
   filter:
     all_categories: Alla kategorier
     select_category: Välj kategori

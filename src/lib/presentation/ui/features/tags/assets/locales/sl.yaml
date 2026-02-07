@@ -36,6 +36,7 @@ tags:
     tag_tag_already_exists: Ta odnos oznake že obstaja
     tag_tag_not_found: Odnos oznake ni najden
     toggling_archive: Napaka pri preklopu statusa arhiva
+    create_tag: Ni bilo mogoče ustvariti oznake
   filter:
     all_categories: Vse kategorije
     select_category: Izberi kategorijo

@@ -36,6 +36,7 @@ tags:
     tag_tag_already_exists: Denne mærkerelation allerede eksisterer
     tag_tag_not_found: Mærkerelation ikke fundet
     toggling_archive: Kunne ikke skifte arkivstatus
+    create_tag: Kunne ikke oprette tag
   filter:
     all_categories: Alle kategorier
     select_category: Vælg kategori

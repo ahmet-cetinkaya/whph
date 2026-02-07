@@ -36,6 +36,7 @@ tags:
     tag_tag_already_exists: Deze tagrelatie bestaat al
     tag_tag_not_found: Tagrelatie niet gevonden
     toggling_archive: Mislukt om archiefstatus te wisselen
+    create_tag: Tag kon niet worden gemaakt
   filter:
     all_categories: Alle categorieën
     select_category: Categorie selecteren

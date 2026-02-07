@@ -36,6 +36,7 @@ tags:
     tag_tag_already_exists: Această relație de etichetă există deja
     tag_tag_not_found: Relație de etichetă negăsită
     toggling_archive: Eșec la comutarea stării de arhivare
+    create_tag: Nu s-a putut crea eticheta
   filter:
     all_categories: Toate Categoriile
     select_category: Selectare Categorie

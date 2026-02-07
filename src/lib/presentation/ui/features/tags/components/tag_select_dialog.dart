@@ -383,7 +383,7 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
 
     await AsyncErrorHandler.execute<SaveTagCommandResponse>(
       context: context,
-      errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+      errorMessage: _translationService.translate(TagTranslationKeys.createTagError),
       operation: () async {
         final command = SaveTagCommand(name: searchText);
         return await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);

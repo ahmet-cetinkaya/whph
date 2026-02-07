@@ -35,6 +35,7 @@ tags:
     tag_tag_already_exists: このタグ関係は既に存在します
     tag_tag_not_found: タグ関係が見つかりません
     toggling_archive: アーカイブ状況の切り替えに失敗しました
+    create_tag: タグの作成に失敗しました
   filter:
     all_categories: すべてのカテゴリ
     select_category: カテゴリを選択
