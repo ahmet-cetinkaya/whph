@@ -99,6 +99,9 @@ class PlatformInitializationService {
       await _initializeAndroidServerMode(container);
     }
 
+    // Initialize system tray (required for creating notification channels on Android)
+    await _initializeSystemTray(container);
+
     Logger.info('PlatformInitializationService: Mobile initialization completed on $platformName');
   }
 
