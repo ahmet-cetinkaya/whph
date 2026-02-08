@@ -210,6 +210,64 @@ class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBinding
     }
   }
 
+  Widget _buildOnboardingPage(_OnboardingStep step) {
+    return Center(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (step.imageAsset != null)
+                Image.asset(
+                  step.imageAsset!,
+                  width: 80,
+                  height: 80,
+                )
+              else
+                Icon(
+                  step.icon,
+                  size: 80,
+                  color: _themeService.primaryColor,
+                ),
+              const SizedBox(height: 32),
+              Text(
+                _translationService.translate(
+                  step.titleKey,
+                  namedArgs: step.titleKey == AboutTranslationKeys.onboardingTitle1 ? {'appName': AppInfo.name} : null,
+                ),
+                style: AppTheme.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                _translationService.translate(
+                  step.descriptionKey,
+                  namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
+                      ? {'appName': AppInfo.name}
+                      : null,
+                ),
+                style: AppTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              if (step.extraWidget != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 300),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: step.extraWidget!(context),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.sizeOf(context).width < 600;
@@ -247,66 +305,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBinding
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _steps.length,
                       onPageChanged: (page) => setState(() => _currentPage = page),
-                      itemBuilder: (context, index) {
-                        final step = _steps[index];
-                        return Center(
-                          child: SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 16.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  if (step.imageAsset != null)
-                                    Image.asset(
-                                      step.imageAsset!,
-                                      width: 80,
-                                      height: 80,
-                                    )
-                                  else
-                                    Icon(
-                                      step.icon,
-                                      size: 80,
-                                      color: _themeService.primaryColor,
-                                    ),
-                                  const SizedBox(height: 32),
-                                  Text(
-                                    _translationService.translate(
-                                      step.titleKey,
-                                      namedArgs: step.titleKey == AboutTranslationKeys.onboardingTitle1
-                                          ? {'appName': AppInfo.name}
-                                          : null,
-                                    ),
-                                    style: AppTheme.headlineMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    _translationService.translate(
-                                      step.descriptionKey,
-                                      namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
-                                          ? {'appName': AppInfo.name}
-                                          : null,
-                                    ),
-                                    style: AppTheme.bodyMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  if (step.extraWidget != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
-                                      child: ConstrainedBox(
-                                        constraints: const BoxConstraints(maxWidth: 300),
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: step.extraWidget!(context),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                      itemBuilder: (context, index) => _buildOnboardingPage(_steps[index]),
                     ),
                   )
                 else
@@ -317,66 +316,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBinding
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _steps.length,
                       onPageChanged: (page) => setState(() => _currentPage = page),
-                      itemBuilder: (context, index) {
-                        final step = _steps[index];
-                        return Center(
-                          child: SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 16.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  if (step.imageAsset != null)
-                                    Image.asset(
-                                      step.imageAsset!,
-                                      width: 80,
-                                      height: 80,
-                                    )
-                                  else
-                                    Icon(
-                                      step.icon,
-                                      size: 80,
-                                      color: _themeService.primaryColor,
-                                    ),
-                                  const SizedBox(height: 32),
-                                  Text(
-                                    _translationService.translate(
-                                      step.titleKey,
-                                      namedArgs: step.titleKey == AboutTranslationKeys.onboardingTitle1
-                                          ? {'appName': AppInfo.name}
-                                          : null,
-                                    ),
-                                    style: AppTheme.headlineMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    _translationService.translate(
-                                      step.descriptionKey,
-                                      namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
-                                          ? {'appName': AppInfo.name}
-                                          : null,
-                                    ),
-                                    style: AppTheme.bodyMedium,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  if (step.extraWidget != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
-                                      child: ConstrainedBox(
-                                        constraints: const BoxConstraints(maxWidth: 300),
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: step.extraWidget!(context),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                      itemBuilder: (context, index) => _buildOnboardingPage(_steps[index]),
                     ),
                   ),
                 const SizedBox(height: 16),
