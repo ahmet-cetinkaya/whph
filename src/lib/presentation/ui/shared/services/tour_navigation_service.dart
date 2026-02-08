@@ -3,6 +3,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_view_page.dart';
 import 'package:whph/presentation/ui/features/calendar/pages/today_page.dart';
@@ -11,6 +12,8 @@ import 'package:whph/presentation/ui/features/notes/pages/notes_page.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tags_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/tasks_page.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:acore/utils/responsive_dialog_helper.dart';
+import 'package:whph/presentation/ui/features/about/components/tour_completion_dialog.dart';
 
 /// Service for managing multi-page tour navigation
 class TourNavigationService {
@@ -45,10 +48,12 @@ class TourNavigationService {
   }
 
   /// Start the multi-page tour from the beginning
-  static Future<void> startMultiPageTour(BuildContext context) async {
-    final isAlreadyDone = await isTourCompletedOrSkipped();
-    if (isAlreadyDone) {
-      return;
+  static Future<void> startMultiPageTour(BuildContext context, {bool force = false}) async {
+    if (!force) {
+      final isAlreadyDone = await isTourCompletedOrSkipped();
+      if (isAlreadyDone) {
+        return;
+      }
     }
 
     _currentTourIndex = 0;
@@ -77,10 +82,20 @@ class TourNavigationService {
 
       // Navigate to Today page after tour completion
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(
           TodayPage.route,
           (route) => false,
         );
+
+        // Show completion dialog on TodayPage
+        final context = navigatorKey.currentContext;
+        if (context != null) {
+          ResponsiveDialogHelper.showResponsiveDialog(
+            context: context,
+            child: const TourCompletionDialog(),
+            size: DialogSize.min,
+          );
+        }
       });
     }
   }
@@ -140,7 +155,11 @@ class TourNavigationService {
     if (_currentTourIndex >= _tourPageOrder.length) return;
 
     final nextRoute = _tourPageOrder[_currentTourIndex];
-    Navigator.of(context).pushReplacementNamed(nextRoute);
+    if (_currentTourIndex == 0) {
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(nextRoute, (route) => false);
+    } else {
+      navigatorKey.currentState?.pushReplacementNamed(nextRoute);
+    }
   }
 
   /// Navigate to the current page in the tour sequence
@@ -148,7 +167,7 @@ class TourNavigationService {
     if (_currentTourIndex >= _tourPageOrder.length) return;
 
     final currentRoute = _tourPageOrder[_currentTourIndex];
-    Navigator.of(context).pushReplacementNamed(currentRoute);
+    navigatorKey.currentState?.pushReplacementNamed(currentRoute);
   }
 
   /// Get the current tour page index

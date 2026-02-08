@@ -424,3 +424,5 @@ shared:
     1_2_hours: 1 - 2시간
     more_than_2_hours: 2시간 이상
   configure: 구성
+  tour_finish_title: 투어 완료
+  tour_finish_body: 모든 준비가 완료되었습니다! 생산성 마스터로 가는 여정에 행운을 빕니다. 열심히 일하고 즐기세요!

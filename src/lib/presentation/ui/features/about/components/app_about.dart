@@ -11,6 +11,8 @@ import 'package:whph/presentation/ui/features/settings/components/settings_menu_
 import 'dart:io' show Platform;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 
 class AppAbout extends StatelessWidget {
   AppAbout({super.key});
@@ -100,6 +102,13 @@ class AppAbout extends StatelessWidget {
                   isActive: true,
                 ),
               ],
+              const SizedBox(height: AppTheme.sizeSmall),
+              SettingsMenuTile(
+                icon: Icons.explore,
+                title: _translationService.translate(SharedTranslationKeys.startTour),
+                onTap: () => TourNavigationService.startMultiPageTour(context, force: true),
+                isActive: true,
+              ),
             ],
           ),
         ),

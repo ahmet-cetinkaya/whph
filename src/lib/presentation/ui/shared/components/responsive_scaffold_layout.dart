@@ -11,6 +11,7 @@ import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 /// Configuration options for route rendering
 class RouteOptions {
@@ -181,14 +182,17 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
-        leading: widget.appBarLeading ??
-            (widget.showBackButton
-                ? IconButton(
-                    icon: const Icon(Icons.arrow_back, size: AppTheme.fontSizeXLarge),
-                    padding: const EdgeInsets.all(AppTheme.sizeMedium),
-                    onPressed: _goBack,
-                  )
-                : null),
+        automaticallyImplyLeading: !TourNavigationService.isMultiPageTourActive,
+        leading: TourNavigationService.isMultiPageTourActive
+            ? null
+            : (widget.appBarLeading ??
+                (widget.showBackButton
+                    ? IconButton(
+                        icon: const Icon(Icons.arrow_back, size: AppTheme.fontSizeXLarge),
+                        padding: const EdgeInsets.all(AppTheme.sizeMedium),
+                        onPressed: _goBack,
+                      )
+                    : null)),
         title: widget.appBarTitle ??
             Row(
               mainAxisSize: MainAxisSize.min,

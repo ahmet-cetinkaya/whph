@@ -88,14 +88,22 @@ shared:
     cannot_select_date_before_min_date: Kan geen datum voor {date} selecteren
     cannot_select_time_after_max_date: Kan geen tijd na {time} selecteren
     cannot_select_time_before_min_date: Kan geen tijd voor {time} selecteren
-    deadline_cannot_be_before_planned_date: De deadline moet op of na de geplande datum liggen
+    deadline_cannot_be_before_planned_date:
+      De deadline moet op of na de geplande
+      datum liggen
     end_date_cannot_be_after_max_date: De einddatum kan niet na {date} zijn
     end_date_must_be_at_or_before: De einddatum moet op of voor {date} zijn
     select_date_range_title: Selecteer datumbereik
     select_date_time_title: Selecteer datum en tijd
-    selected_date_must_be_at_or_after: De geselecteerde datum moet op of na {date} zijn
-    selected_date_must_be_at_or_before: De geselecteerde datum moet op of voor {date} zijn
-    selected_date_time_must_be_after: De geselecteerde datum en tijd moeten na {dateTime} zijn
+    selected_date_must_be_at_or_after:
+      De geselecteerde datum moet op of na {date}
+      zijn
+    selected_date_must_be_at_or_before:
+      De geselecteerde datum moet op of voor {date}
+      zijn
+    selected_date_time_must_be_after:
+      De geselecteerde datum en tijd moeten na {dateTime}
+      zijn
     start_date_cannot_be_after_end_date: Startdatum kan niet na einddatum liggen
     start_date_cannot_be_before_min_date: De startdatum kan niet voor {date} zijn
     start_date_must_be_at_or_after: De startdatum moet op of na {date} zijn
@@ -152,7 +160,8 @@ shared:
     loading: Fout bij het laden van gegevens
     report_subject: "{appName} App: Onverwacht foutrapport"
     report_template:
-      "Hallo, ik kwam een onverwachte fout tegen tijdens het gebruik van de {appName} app.
+      "Hallo, ik kwam een onverwachte fout tegen tijdens het gebruik
+      van de {appName} app.
 
 
       Hier is informatie die kan helpen bij het diagnosticeren van het probleem:
@@ -191,7 +200,9 @@ shared:
   startup_error:
     copied_to_clipboard: Foutdetails gekopieerd naar klembord
     copy_button: Kopieer foutdetails
-    description: Er is iets misgegaan tijdens de app-start. Dit kan te wijten zijn aan een systeemplatform of incompatibele configuratie.
+    description:
+      Er is iets misgegaan tijdens de app-start. Dit kan te wijten zijn
+      aan een systeemplatform of incompatibele configuratie.
     details_title: Foutdetails
     report_button: Probleem melden
     title: App Startfout
@@ -266,7 +277,9 @@ shared:
     average_daily_label: Gemiddeld per dag
     peak_hour_label: Piekuur
     select_date_range_message: Selecteer datumbereik om statistieken te filteren
-    select_date_range_description: Kies een aangepast datumbereik om gebruiksstatistieken te bekijken
+    select_date_range_description:
+      Kies een aangepast datumbereik om gebruiksstatistieken
+      te bekijken
   time:
     not_set: Niet ingesteld
     minutes: minuten
@@ -363,8 +376,12 @@ shared:
     cannot_select_time_after_max_date: Kan geen tijd selecteren na {time}
     time_must_be_at_or_after: De tijd moet op of na {time} zijn
     time_must_be_at_or_before: De tijd moet op of voor {time} zijn
-    selected_date_must_be_at_or_after: De geselecteerde datum moet op of na {date} zijn
-    selected_date_must_be_at_or_before: De geselecteerde datum moet op of voor {date} zijn
+    selected_date_must_be_at_or_after:
+      De geselecteerde datum moet op of na {date}
+      zijn
+    selected_date_must_be_at_or_before:
+      De geselecteerde datum moet op of voor {date}
+      zijn
     start_date_cannot_be_after_end_date: Startdatum kan niet na einddatum liggen
     start_date_must_be_at_or_after: Startdatum moet op of na {date} zijn
     end_date_must_be_at_or_before: Einddatum moet op of voor {date} zijn
@@ -372,7 +389,9 @@ shared:
     cannot_select_date_after_max_date: Kan geen datum selecteren na {date}
     start_date_cannot_be_before_min_date: Startdatum kan niet voor {date} zijn
     end_date_cannot_be_after_max_date: Einddatum kan niet na {date} zijn
-    selected_date_time_must_be_after: De geselecteerde datum en tijd moeten na {dateTime} zijn
+    selected_date_time_must_be_after:
+      De geselecteerde datum en tijd moeten na {dateTime}
+      zijn
     select_date_time_title: Selecteer datum en tijd
     select_date_range_title: Selecteer datumbereik
     refresh_description: Geselecteerd datumbereik automatisch vernieuwen
@@ -423,3 +442,7 @@ shared:
     1_2_hours: 1 - 2 uur
     more_than_2_hours: 2+ uur
   configure: Configureren
+  tour_finish_title: Rondleiding voltooid
+  tour_finish_body:
+    Alles is klaar! Veel succes op je reis naar productiviteitsmeesterschap.
+    Blijf hard werken en genieten!

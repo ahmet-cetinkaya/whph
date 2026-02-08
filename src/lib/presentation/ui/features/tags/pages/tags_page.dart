@@ -64,9 +64,6 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   void _checkAndStartTour() async {
-    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
-    if (tourAlreadyDone) return;
-
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 3) {
       // Delay to ensure the page is fully built and laid out
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -76,7 +73,11 @@ class _TagsPageState extends State<TagsPage> {
           }
         });
       });
+      return;
     }
+
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
   }
 
   DateFilterSetting? _dateFilterSetting;
@@ -267,6 +268,7 @@ class _TagsPageState extends State<TagsPage> {
 
                       // Tag Time Title
                       SectionHeader(
+                        key: _timeChartSectionKey,
                         title: _translationService.translate(TagTranslationKeys.timeDistribution),
                         expandTrailing: true,
                         trailing: TagTimeChartOptions(
@@ -300,6 +302,7 @@ class _TagsPageState extends State<TagsPage> {
 
                       // List Options
                       SectionHeader(
+                        key: _listOptionsKey,
                         title: _translationService.translate(TagTranslationKeys.listSectionTitle),
                         expandTrailing: true,
                         trailing: TagListOptions(
@@ -391,22 +394,22 @@ class _TagsPageState extends State<TagsPage> {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder: (context) => TourOverlay(
+      builder: (overlayContext) => TourOverlay(
         steps: tourSteps,
         onComplete: () {
-          Navigator.of(context).pop();
+          Navigator.of(overlayContext).pop();
           if (isMultiPageTour) {
-            TourNavigationService.onPageTourCompleted(context);
+            TourNavigationService.onPageTourCompleted(overlayContext);
           }
         },
         onSkip: () async {
           if (isMultiPageTour) {
             await TourNavigationService.skipMultiPageTour();
           }
-          if (context.mounted) Navigator.of(context).pop();
+          if (overlayContext.mounted) Navigator.of(overlayContext).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack
-            ? () => TourNavigationService.navigateBackInTour(context)
+            ? () => TourNavigationService.navigateBackInTour(overlayContext)
             : null,
         showBackButton: isMultiPageTour,
         isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final

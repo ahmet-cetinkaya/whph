@@ -422,4 +422,6 @@ shared:
     at_minimum_value: At minimum value
     at_maximum_value: At maximum value
   skip_tour: Skip Tour
+  tour_finish_title: Tour Finished
+  tour_finish_body: You're all set! Good luck on your journey to mastering productivity. Keep working hard and playing hard!
   tap_to_resume: Tap to return to content

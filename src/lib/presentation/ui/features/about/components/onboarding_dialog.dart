@@ -11,6 +11,7 @@ import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/about/constants/about_translation_keys.dart';
 import 'package:whph/presentation/ui/features/settings/pages/permissions_page.dart';
+import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:acore/utils/dialog_size.dart';
@@ -18,7 +19,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
-import 'package:whph/presentation/ui/shared/components/language_dropdown.dart';
+import 'package:whph/presentation/ui/shared/components/language_select_dialog.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 
 class OnboardingDialog extends StatefulWidget {
@@ -84,10 +85,12 @@ class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBinding
         icon: Icons.waving_hand,
         titleKey: AboutTranslationKeys.onboardingTitle1,
         descriptionKey: AboutTranslationKeys.onboardingDescription1,
-        extraWidget: (context) => LanguageDropdown(
-          initialLanguageCode: _selectedLanguageCode,
-          onLanguageChanged: _onLanguageChanged,
-          showPlaceholder: true,
+        extraWidget: (context) => OutlinedButton.icon(
+          onPressed: () => _onShowLanguageDialog(context),
+          icon: const Icon(Icons.language),
+          label: Text(
+            _translationService.translate(SettingsTranslationKeys.languageTitle),
+          ),
         ),
       ),
       // Work Hard Play Hard Motto
@@ -185,15 +188,35 @@ class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBinding
     await _checkPermissions();
   }
 
+  Future<void> _onShowLanguageDialog(BuildContext context) async {
+    await ResponsiveDialogHelper.showResponsiveDialog(
+      context: context,
+      child: LanguageSelectDialog(
+        onLanguageChanged: (languageCode) {
+          _onLanguageChanged(languageCode);
+          Navigator.pop(context);
+        },
+      ),
+      size: DialogSize.max,
+    );
+  }
+
   Future<void> _onLanguageChanged(String languageCode) async {
     _selectedLanguageCode = languageCode;
     await _translationService.changeLanguageWithoutNavigation(context, languageCode);
+    if (mounted) {
+      setState(() {
+        _steps = _buildSteps();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = MediaQuery.sizeOf(context).width < 600;
+
     return PopScope(
-      canPop: _currentPage == 0,
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         if (_currentPage > 0) {
@@ -202,147 +225,229 @@ class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBinding
       },
       child: Dialog(
         backgroundColor: AppTheme.surface1,
-        child: Container(
-          width: MediaQuery.sizeOf(context).width * 0.8,
-          constraints: const BoxConstraints(maxWidth: 400),
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.6 > 400 ? 400 : MediaQuery.sizeOf(context).height * 0.6,
-                child: PageView.builder(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _steps.length,
-                  onPageChanged: (page) => setState(() => _currentPage = page),
-                  itemBuilder: (context, index) {
-                    final step = _steps[index];
-                    return SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (step.imageAsset != null)
-                              Image.asset(
-                                step.imageAsset!,
-                                width: 80,
-                                height: 80,
-                              )
-                            else
-                              Icon(
-                                step.icon,
-                                size: 80,
-                                color: _themeService.primaryColor,
-                              ),
-                            const SizedBox(height: 32),
-                            Text(
-                              _translationService.translate(
-                                step.titleKey,
-                                namedArgs: step.titleKey == AboutTranslationKeys.onboardingTitle1
-                                    ? {'appName': AppInfo.name}
-                                    : null,
-                              ),
-                              style: AppTheme.headlineMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              _translationService.translate(
-                                step.descriptionKey,
-                                namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
-                                    ? {'appName': AppInfo.name}
-                                    : null,
-                              ),
-                              style: AppTheme.bodyMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                            if (step.extraWidget != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
-                                child: ConstrainedBox(
-                                  constraints: const BoxConstraints(maxWidth: 300),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: step.extraWidget!(context),
+        insetPadding: isSmallScreen ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+        shape: isSmallScreen ? const RoundedRectangleBorder() : null,
+        child: SafeArea(
+          left: isSmallScreen,
+          top: isSmallScreen,
+          right: isSmallScreen,
+          bottom: isSmallScreen,
+          child: Container(
+            width: isSmallScreen ? double.infinity : MediaQuery.sizeOf(context).width * 0.8,
+            height: isSmallScreen ? double.infinity : null,
+            constraints: isSmallScreen ? null : const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: isSmallScreen ? MainAxisSize.max : MainAxisSize.min,
+              mainAxisAlignment: isSmallScreen ? MainAxisAlignment.center : MainAxisAlignment.start,
+              children: [
+                if (isSmallScreen)
+                  Flexible(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _steps.length,
+                      onPageChanged: (page) => setState(() => _currentPage = page),
+                      itemBuilder: (context, index) {
+                        final step = _steps[index];
+                        return Center(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (step.imageAsset != null)
+                                    Image.asset(
+                                      step.imageAsset!,
+                                      width: 80,
+                                      height: 80,
+                                    )
+                                  else
+                                    Icon(
+                                      step.icon,
+                                      size: 80,
+                                      color: _themeService.primaryColor,
+                                    ),
+                                  const SizedBox(height: 32),
+                                  Text(
+                                    _translationService.translate(
+                                      step.titleKey,
+                                      namedArgs: step.titleKey == AboutTranslationKeys.onboardingTitle1
+                                          ? {'appName': AppInfo.name}
+                                          : null,
+                                    ),
+                                    style: AppTheme.headlineMedium,
+                                    textAlign: TextAlign.center,
                                   ),
-                                ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    _translationService.translate(
+                                      step.descriptionKey,
+                                      namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
+                                          ? {'appName': AppInfo.name}
+                                          : null,
+                                    ),
+                                    style: AppTheme.bodyMedium,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  if (step.extraWidget != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
+                                      child: ConstrainedBox(
+                                        constraints: const BoxConstraints(maxWidth: 300),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          child: step.extraWidget!(context),
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
-                          ],
-                        ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                else
+                  SizedBox(
+                    height: 400,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _steps.length,
+                      onPageChanged: (page) => setState(() => _currentPage = page),
+                      itemBuilder: (context, index) {
+                        final step = _steps[index];
+                        return Center(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (step.imageAsset != null)
+                                    Image.asset(
+                                      step.imageAsset!,
+                                      width: 80,
+                                      height: 80,
+                                    )
+                                  else
+                                    Icon(
+                                      step.icon,
+                                      size: 80,
+                                      color: _themeService.primaryColor,
+                                    ),
+                                  const SizedBox(height: 32),
+                                  Text(
+                                    _translationService.translate(
+                                      step.titleKey,
+                                      namedArgs: step.titleKey == AboutTranslationKeys.onboardingTitle1
+                                          ? {'appName': AppInfo.name}
+                                          : null,
+                                    ),
+                                    style: AppTheme.headlineMedium,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    _translationService.translate(
+                                      step.descriptionKey,
+                                      namedArgs: step.descriptionKey == AboutTranslationKeys.onboardingDescription7
+                                          ? {'appName': AppInfo.name}
+                                          : null,
+                                    ),
+                                    style: AppTheme.bodyMedium,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  if (step.extraWidget != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: AppTheme.size2XLarge),
+                                      child: ConstrainedBox(
+                                        constraints: const BoxConstraints(maxWidth: 300),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          child: step.extraWidget!(context),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                // Progress indicators
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    _steps.length,
+                    (index) => Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _currentPage == index
+                            ? _themeService.primaryColor
+                            : _themeService.primaryColor.withValues(alpha: 0.2),
                       ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Progress indicators
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  _steps.length,
-                  (index) => Container(
-                    width: 8,
-                    height: 8,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _currentPage == index
-                          ? _themeService.primaryColor
-                          : _themeService.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              // Different button layout for the last step
-              if (_currentPage == _steps.length - 1)
-                Row(
-                  children: [
-                    // Skip Tour button
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: _skipTour,
-                        child: Text(_translationService.translate(SharedTranslationKeys.skipTour)),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    // Start Tour button
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: _startTour,
-                        child: Text(_translationService.translate(SharedTranslationKeys.startTour)),
-                      ),
-                    ),
-                  ],
-                )
-              else
-                Row(
-                  children: [
-                    // Back button
-                    if (_currentPage > 0)
+                const SizedBox(height: 24),
+                // Different button layout for the last step
+                if (_currentPage == _steps.length - 1)
+                  Row(
+                    children: [
+                      // Skip Tour button
                       Expanded(
-                        child: TextButton(
-                          onPressed: _previousPage,
-                          child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonBack)),
+                        child: OutlinedButton(
+                          onPressed: _skipTour,
+                          child: Text(_translationService.translate(SharedTranslationKeys.skipTour)),
                         ),
-                      )
-                    else
-                      const Spacer(),
-
-                    const SizedBox(width: 8),
-
-                    // Next button
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: _nextPage,
-                        child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonNext)),
                       ),
-                    ),
-                  ],
-                ),
-            ],
+                      const SizedBox(width: 8),
+                      // Start Tour button
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: _startTour,
+                          child: Text(_translationService.translate(SharedTranslationKeys.startTour)),
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  Row(
+                    children: [
+                      // Back button
+                      if (_currentPage > 0)
+                        Expanded(
+                          child: TextButton(
+                            onPressed: _previousPage,
+                            child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonBack)),
+                          ),
+                        )
+                      else
+                        const Spacer(),
+
+                      const SizedBox(width: 8),
+
+                      // Next button
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: _nextPage,
+                          child: Text(_translationService.translate(AboutTranslationKeys.onboardingButtonNext)),
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
       ),

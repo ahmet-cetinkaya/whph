@@ -423,3 +423,5 @@ shared:
     1_2_hours: 1 - 2時間
     more_than_2_hours: 2時間以上
   configure: 設定
+  tour_finish_title: ツアー完了
+  tour_finish_body: 準備完了です！生産性のマスターへの道の幸運を祈っています。ハードワークを続け、楽しみましょう！

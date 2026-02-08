@@ -369,6 +369,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String help = "shared.help";
   static const String startTour = "shared.start_tour";
   static const String skipTour = "shared.skip_tour";
+  static const String tourFinishTitle = "shared.tour_finish_title";
+  static const String tourFinishBody = "shared.tour_finish_body";
   static const String previousButton = "shared.buttons.previous";
   static const String tapToResume = "shared.tap_to_resume";
 

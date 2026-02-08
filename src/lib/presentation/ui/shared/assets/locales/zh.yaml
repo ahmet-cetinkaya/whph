@@ -422,3 +422,5 @@ shared:
     1_2_hours: 1 - 2小时
     more_than_2_hours: 2+小时
   configure: 配置
+  tour_finish_title: 游览完成
+  tour_finish_body: 一切准备就绪！祝你在生产力掌握之路上好运。继续努力工作，享受生活！
