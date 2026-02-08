@@ -17,7 +17,7 @@ class FakeContainer implements IContainer {
   }
 
   @override
-  T resolve<T>({String? name}) {
+  T resolve<T>() {
     if (_services.containsKey(T)) {
       return _services[T] as T;
     }
@@ -25,12 +25,10 @@ class FakeContainer implements IContainer {
   }
 
   @override
-  bool isRegistered<T>({String? name}) => _services.containsKey(T);
+  bool isRegistered<T>() => _services.containsKey(T);
 
-  @override
-  void unregister<T>({String? name}) => _services.remove(T);
+  void unregister<T>() => _services.remove(T);
 
-  @override
   void dispose() {}
 
   @override
