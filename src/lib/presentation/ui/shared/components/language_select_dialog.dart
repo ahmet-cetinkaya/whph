@@ -126,28 +126,30 @@ class LanguageSelectDialog extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: ListView(
-        children: [
-          const SizedBox(height: AppTheme.sizeSmall),
-          Padding(
-            padding: const EdgeInsets.all(AppTheme.sizeMedium),
-            child: _LanguageInfoCard(
-              text: _translationService.translate(
-                SettingsTranslationKeys.languageDialogInfo,
-                namedArgs: {
-                  'count': _languageSections.fold<int>(0, (sum, section) => sum + section.languages.length).toString()
-                },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: AppTheme.sizeSmall),
+            Padding(
+              padding: const EdgeInsets.all(AppTheme.sizeMedium),
+              child: _LanguageInfoCard(
+                text: _translationService.translate(
+                  SettingsTranslationKeys.languageDialogInfo,
+                  namedArgs: {
+                    'count': _languageSections.fold<int>(0, (sum, section) => sum + section.languages.length).toString()
+                  },
+                ),
               ),
             ),
-          ),
-          for (final section in _languageSections) ...[
-            SectionHeader(
-              title: section.title,
-            ),
-            for (final language in section.languages) _buildLanguageTile(context, language),
+            for (final section in _languageSections) ...[
+              SectionHeader(
+                title: section.title,
+              ),
+              for (final language in section.languages) _buildLanguageTile(context, language),
+            ],
+            const SizedBox(height: AppTheme.sizeLarge),
           ],
-          const SizedBox(height: AppTheme.sizeLarge),
-        ],
+        ),
       ),
     );
   }

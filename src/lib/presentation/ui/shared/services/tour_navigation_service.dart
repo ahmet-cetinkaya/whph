@@ -14,6 +14,7 @@ import 'package:whph/presentation/ui/features/tasks/pages/tasks_page.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/about/components/tour_completion_dialog.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_tour_navigation_service.dart';
 
 /// Static bridge for TourNavigationService to support legacy calls and convenience
@@ -71,6 +72,7 @@ class TourNavigationServiceImpl implements ITourNavigationService {
       ) as GetSettingQueryResponse?;
       return skippedSetting?.value == 'true';
     } catch (e) {
+      Logger.error('TourNavigationService: Error checking if tour is completed/skipped: $e');
       return false;
     }
   }
@@ -171,7 +173,7 @@ class TourNavigationServiceImpl implements ITourNavigationService {
         valueType: SettingValueType.bool,
       ));
     } catch (e) {
-      // Silently fail to not interrupt user experience
+      Logger.error('TourNavigationService: Error marking tour as completed: $e');
     }
   }
 
@@ -184,7 +186,7 @@ class TourNavigationServiceImpl implements ITourNavigationService {
         valueType: SettingValueType.bool,
       ));
     } catch (e) {
-      // Silently fail to not interrupt user experience
+      Logger.error('TourNavigationService: Error marking tour as skipped: $e');
     }
   }
 

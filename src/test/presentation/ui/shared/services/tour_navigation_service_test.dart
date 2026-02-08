@@ -260,5 +260,62 @@ void main() {
       // Verify we are at TodayPage.
       expect(find.text('Today Page'), findsOneWidget);
     });
+
+    testWidgets('navigateBackInTour navigates to previous page', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pumpAndSettle();
+
+      testMediator.register<GetSettingQuery, GetSettingQueryResponse?>((q) async => null);
+
+      // Start tour
+      final homeContext = tester.element(find.text('Home'));
+      await TourNavigationService.startMultiPageTour(homeContext, force: true);
+      await tester.pumpAndSettle();
+
+      // At TasksPage (index 0)
+      expect(find.text('Tasks Page'), findsOneWidget);
+
+      // Move to HabitsPage (index 1)
+      final tasksPageContext = tester.element(find.text('Tasks Page'));
+      await TourNavigationService.onPageTourCompleted(tasksPageContext);
+      await tester.pumpAndSettle();
+      expect(find.text('Habits Page'), findsOneWidget);
+
+      // Navigate back to TasksPage
+      final habitsPageContext = tester.element(find.text('Habits Page'));
+      TourNavigationService.navigateBackInTour(habitsPageContext);
+      await tester.pumpAndSettle();
+
+      // Should be back at TasksPage
+      expect(find.text('Tasks Page'), findsOneWidget);
+    });
+
+    testWidgets('skipMultiPageTour marks tour as skipped and resets state', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pumpAndSettle();
+
+      testMediator.register<GetSettingQuery, GetSettingQueryResponse?>((q) async => null);
+
+      bool skippedCalled = false;
+      testMediator.register<SaveSettingCommand, SaveSettingCommandResponse>((c) async {
+        if (c.key == SettingKeys.tourSkipped && c.value == 'true') {
+          skippedCalled = true;
+        }
+        return SaveSettingCommandResponse(id: '1', createdDate: DateTime.now());
+      });
+
+      // Start tour
+      final homeContext = tester.element(find.text('Home'));
+      await TourNavigationService.startMultiPageTour(homeContext, force: true);
+      await tester.pumpAndSettle();
+      expect(TourNavigationService.isMultiPageTourActive, isTrue);
+
+      // Skip tour
+      await TourNavigationService.skipMultiPageTour();
+
+      // Assert state reset
+      expect(TourNavigationService.isMultiPageTourActive, isFalse);
+      expect(skippedCalled, isTrue);
+    });
   });
 }
