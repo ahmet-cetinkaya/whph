@@ -49,7 +49,7 @@ settings:
     title: Tuonti/Vienti
   language:
     choose_title: Valitse kieli
-    dialog_info: '{count} kieltä saatavilla.'
+    dialog_info: "{count} kieltä saatavilla."
     title: Kieli
   notifications:
     disable_error: Ilmoitusten poistaminen käytöstä epäonnistui

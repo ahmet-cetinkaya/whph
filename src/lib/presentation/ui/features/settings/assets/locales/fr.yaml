@@ -53,7 +53,7 @@ settings:
     title: Import/Export
   language:
     choose_title: Choisissez votre langue
-    dialog_info: '{count} langues disponibles.'
+    dialog_info: "{count} langues disponibles."
     title: Langue
   notifications:
     disable_error: Impossible de désactiver les notifications
