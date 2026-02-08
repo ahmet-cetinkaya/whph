@@ -37,7 +37,7 @@ class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBinding
 
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  String? _selectedLanguageCode;
+
   bool _permissionsReviewed = false;
   late List<_OnboardingStep> _steps;
 
@@ -202,7 +202,6 @@ class _OnboardingDialogState extends State<OnboardingDialog> with WidgetsBinding
   }
 
   Future<void> _onLanguageChanged(String languageCode) async {
-    _selectedLanguageCode = languageCode;
     await _translationService.changeLanguageWithoutNavigation(context, languageCode);
     if (mounted) {
       setState(() {
