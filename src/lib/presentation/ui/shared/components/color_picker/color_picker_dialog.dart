@@ -3,6 +3,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/components/color_picker/color_picker.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 class ColorPickerDialog extends StatefulWidget {
   final Color initialColor;
@@ -53,14 +54,22 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
                 minWidth: constraints.maxWidth,
                 maxWidth: constraints.maxWidth,
               ),
-              child: ColorPicker(
-                pickerColor: _selectedColor,
-                onChangeColor: (color) {
-                  setState(() {
-                    _selectedColor = color;
-                  });
-                },
-                translationService: _translationService,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  AppTheme.sizeSmall,
+                  AppTheme.sizeSmall,
+                  AppTheme.sizeSmall,
+                  0,
+                ),
+                child: ColorPicker(
+                  pickerColor: _selectedColor,
+                  onChangeColor: (color) {
+                    setState(() {
+                      _selectedColor = color;
+                    });
+                  },
+                  translationService: _translationService,
+                ),
               ),
             ),
           );
