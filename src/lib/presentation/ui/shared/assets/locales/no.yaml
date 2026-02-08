@@ -88,7 +88,9 @@ shared:
     cannot_select_date_before_min_date: Kan ikke velge dato før {date}
     cannot_select_time_after_max_date: Kan ikke velge tidspunkt etter {time}
     cannot_select_time_before_min_date: Kan ikke velge tidspunkt før {time}
-    deadline_cannot_be_before_planned_date: Fristen må være på eller etter den planlagte datoen
+    deadline_cannot_be_before_planned_date:
+      Fristen må være på eller etter den planlagte
+      datoen
     end_date_cannot_be_after_max_date: Sluttdato kan ikke være etter {date}
     end_date_must_be_at_or_before: Sluttdato må være på eller før {date}
     select_date_range_title: Velg datoperiode
@@ -152,7 +154,8 @@ shared:
     loading: Feil oppstod under lasting av data
     report_subject: "{appName} App: Uventet feilrapport"
     report_template:
-      "Hei, jeg støtte på en uventet feil mens jeg brukte {appName} appen.
+      "Hei, jeg støtte på en uventet feil mens jeg brukte {appName}
+      appen.
 
 
       Her er informasjon som kan hjelpe deg med å diagnostisere problemet:
@@ -191,7 +194,9 @@ shared:
   startup_error:
     copied_to_clipboard: Feildetaljer kopiert til utklippstavle
     copy_button: Kopier feildetaljer
-    description: Noe gikk galt under app-start. Dette kan skyldes et systemproblem eller inkompatibel konfigurasjon.
+    description:
+      Noe gikk galt under app-start. Dette kan skyldes et systemproblem
+      eller inkompatibel konfigurasjon.
     details_title: Feildetaljer
     report_button: Rapporter problem
     title: App-startfeil
@@ -423,3 +428,7 @@ shared:
     1_2_hours: 1 - 2 timer
     more_than_2_hours: 2+ timer
   configure: Konfigurer
+  tour_finish_title: Rundvisning avsluttet
+  tour_finish_body:
+    Alt er klart! Lykke til på reisen mot produktivitetsmestring.
+    Fortsett å jobbe hardt og ha det gøy!

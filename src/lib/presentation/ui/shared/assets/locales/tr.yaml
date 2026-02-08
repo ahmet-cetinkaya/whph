@@ -407,6 +407,8 @@ shared:
     at_minimum_value: Minimum değerde
     at_maximum_value: Maksimum değerde
   skip_tour: Turu Atla
+  tour_finish_title: Tur Tamamlandı
+  tour_finish_body: Her şey hazır! Üretkenlik yolculuğunda başarılar dileriz. Çok çalışmaya ve çok eğlenmeye devam et!
   tap_to_resume: İçeriğe dönmek için dokunun
   none: Yok
   date_group:

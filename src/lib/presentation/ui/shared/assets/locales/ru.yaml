@@ -88,7 +88,9 @@ shared:
     cannot_select_date_before_min_date: Нельзя выбрать дату раньше {date}
     cannot_select_time_after_max_date: Нельзя выбрать время позже {time}
     cannot_select_time_before_min_date: Нельзя выбрать время раньше {time}
-    deadline_cannot_be_before_planned_date: Срок должен быть в день запланированной даты или позже
+    deadline_cannot_be_before_planned_date:
+      Срок должен быть в день запланированной
+      даты или позже
     end_date_cannot_be_after_max_date: Дата окончания не может быть позже {date}
     end_date_must_be_at_or_before: Дата окончания должна быть не позже {date}
     select_date_range_title: Выберите диапазон дат
@@ -152,7 +154,8 @@ shared:
     loading: Ошибка при загрузке данных
     report_subject: "Приложение {appName}: Отчёт о неожиданной ошибке"
     report_template:
-      "Привет, я столкнулся с неожиданной ошибкой при использовании приложения {appName}.
+      "Привет, я столкнулся с неожиданной ошибкой при использовании
+      приложения {appName}.
 
 
       Вот информация, которая может помочь вам диагностировать проблему:
@@ -191,7 +194,9 @@ shared:
   startup_error:
     copied_to_clipboard: Детали ошибки скопированы в буфер обмена
     copy_button: Копировать детали ошибки
-    description: Что-то пошло не так при запуске приложения. Это может быть вызвано проблемой системы или несовместимой конфигурацией.
+    description:
+      Что-то пошло не так при запуске приложения. Это может быть вызвано
+      проблемой системы или несовместимой конфигурацией.
     details_title: Детали Ошибки
     report_button: Сообщить о Проблеме
     title: Ошибка Запуска Приложения
@@ -266,7 +271,9 @@ shared:
     average_daily_label: Среднее ежедневное
     peak_hour_label: Час пик
     select_date_range_message: Выберите диапазон дат для фильтрации статистики
-    select_date_range_description: Выбрать пользовательский диапазон дат для просмотра статистики использования
+    select_date_range_description:
+      Выбрать пользовательский диапазон дат для просмотра
+      статистики использования
   time:
     not_set: Не установлено
     minutes: минуты
@@ -423,3 +430,7 @@ shared:
     1_2_hours: 1 - 2 часа
     more_than_2_hours: 2+ часов
   configure: Настроить
+  tour_finish_title: Экскурсия завершена
+  tour_finish_body:
+    Всё готово! Удачи в вашем пути к мастерству продуктивности. Продолжайте
+    усердно работать и наслаждайтесь!

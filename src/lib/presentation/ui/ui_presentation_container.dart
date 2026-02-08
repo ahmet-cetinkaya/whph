@@ -19,6 +19,8 @@ import 'package:whph/presentation/ui/shared/services/json_notification_payload_h
 import 'package:whph/presentation/ui/shared/services/sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/theme_service/theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/translation_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_tour_navigation_service.dart';
+import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'dart:io';
 import 'package:whph/presentation/ui/shared/utils/audio_player_sound_player.dart';
 import 'package:whph/infrastructure/windows/features/audio/windows_audio_player.dart';
@@ -82,5 +84,8 @@ void registerUIPresentation(IContainer container) {
       ));
   container.registerSingleton<INotificationPayloadHandler>(
     (_) => JsonNotificationPayloadHandler(navigatorKey),
+  );
+  container.registerSingleton<ITourNavigationService>(
+    (c) => TourNavigationServiceImpl(c.resolve<Mediator>()),
   );
 }

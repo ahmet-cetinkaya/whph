@@ -56,7 +56,8 @@ class _TourOverlayState extends State<TourOverlay> {
 
   void _showTourStep() {
     final step = widget.steps[_currentStepIndex];
-    final renderBox = step.targetKey?.currentContext?.findRenderObject() as RenderBox?;
+    final renderObject = step.targetKey?.currentContext?.findRenderObject();
+    final renderBox = renderObject is RenderBox ? renderObject : null;
     final position = renderBox?.localToGlobal(Offset.zero);
     final size = renderBox?.size;
 
@@ -154,7 +155,8 @@ class _TourOverlayContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final step = steps[currentStepIndex];
-    final renderBox = step.targetKey?.currentContext?.findRenderObject() as RenderBox?;
+    final renderObject = step.targetKey?.currentContext?.findRenderObject();
+    final renderBox = renderObject is RenderBox ? renderObject : null;
     final position = renderBox?.localToGlobal(Offset.zero);
     final size = renderBox?.size;
 

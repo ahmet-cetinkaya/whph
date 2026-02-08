@@ -4,6 +4,7 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   // Language Settings
   static const String languageTitle = 'settings.language.title';
   static const String languageChooseTitle = 'settings.language.choose_title';
+  static const String languageDialogInfo = 'settings.language.dialog_info';
 
   // Notifications
   static const String notificationsTitle = 'settings.notifications.title';

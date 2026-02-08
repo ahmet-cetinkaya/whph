@@ -53,6 +53,7 @@ settings:
     title: Import/Export
   language:
     choose_title: Wählen Sie Ihre Sprache
+    dialog_info: "{count} Sprachen verfügbar."
     title: Sprache
   notifications:
     disable_error: Benachrichtigungen konnten nicht deaktiviert werden

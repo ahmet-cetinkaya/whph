@@ -134,9 +134,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   }
 
   void _checkAndStartTour() async {
-    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
-    if (tourAlreadyDone) return;
-
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 2) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await _pageReadyCompleter.future;
@@ -144,7 +141,11 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
           _startTour(isMultiPageTour: true);
         }
       });
+      return;
     }
+
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
   }
 
   void _componentLoaded() {
@@ -429,8 +430,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
             if (_mainListOptionSettingsLoaded) ...[
               // Habits Header
               SliverToBoxAdapter(
-                key: _habitsSectionKey,
                 child: Column(
+                  key: _habitsSectionKey,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SectionHeader(
@@ -495,8 +496,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
               // Tasks Header
               SliverToBoxAdapter(
-                key: _tasksSectionKey,
                 child: Column(
+                  key: _tasksSectionKey,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SectionHeader(
@@ -589,8 +590,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
               // Time Chart
               SliverToBoxAdapter(
-                key: _timeChartSectionKey,
                 child: Column(
+                  key: _timeChartSectionKey,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SectionHeader(
@@ -679,22 +680,22 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder: (context) => TourOverlay(
+      builder: (overlayContext) => TourOverlay(
         steps: tourSteps,
         onComplete: () {
-          Navigator.of(context).pop();
+          Navigator.of(overlayContext).pop();
           if (isMultiPageTour) {
-            TourNavigationService.onPageTourCompleted(context);
+            TourNavigationService.onPageTourCompleted(overlayContext);
           }
         },
         onSkip: () async {
           if (isMultiPageTour) {
             await TourNavigationService.skipMultiPageTour();
           }
-          if (context.mounted) Navigator.of(context).pop();
+          if (overlayContext.mounted) Navigator.of(overlayContext).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack
-            ? () => TourNavigationService.navigateBackInTour(context)
+            ? () => TourNavigationService.navigateBackInTour(overlayContext)
             : null,
         showBackButton: isMultiPageTour,
         isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final

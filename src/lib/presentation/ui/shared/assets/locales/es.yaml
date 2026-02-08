@@ -84,20 +84,40 @@ shared:
   date_format:
     hint: DD/MM/AAAA
   datepicker:
-    cannot_select_date_after_max_date: No se puede seleccionar una fecha posterior a {date}
-    cannot_select_date_before_min_date: No se puede seleccionar una fecha anterior a {date}
-    cannot_select_time_after_max_date: No se puede seleccionar una hora posterior a {time}
-    cannot_select_time_before_min_date: No se puede seleccionar una hora anterior a {time}
-    deadline_cannot_be_before_planned_date: La fecha límite debe ser igual o posterior a la fecha planificada
+    cannot_select_date_after_max_date:
+      No se puede seleccionar una fecha posterior
+      a {date}
+    cannot_select_date_before_min_date:
+      No se puede seleccionar una fecha anterior
+      a {date}
+    cannot_select_time_after_max_date:
+      No se puede seleccionar una hora posterior
+      a {time}
+    cannot_select_time_before_min_date:
+      No se puede seleccionar una hora anterior
+      a {time}
+    deadline_cannot_be_before_planned_date:
+      La fecha límite debe ser igual o posterior
+      a la fecha planificada
     end_date_cannot_be_after_max_date: La fecha de fin no puede ser posterior a {date}
     end_date_must_be_at_or_before: La fecha de fin debe ser el {date} o antes
     select_date_range_title: Seleccionar rango de fechas
     select_date_time_title: Seleccionar fecha y hora
-    selected_date_must_be_at_or_after: La fecha seleccionada debe ser el {date} o después
-    selected_date_must_be_at_or_before: La fecha seleccionada debe ser el {date} o antes
-    selected_date_time_must_be_after: La fecha y hora seleccionadas deben ser posteriores a {dateTime}
-    start_date_cannot_be_after_end_date: La fecha de inicio no puede ser posterior a la fecha de fin
-    start_date_cannot_be_before_min_date: La fecha de inicio no puede ser anterior a {date}
+    selected_date_must_be_at_or_after:
+      La fecha seleccionada debe ser el {date} o
+      después
+    selected_date_must_be_at_or_before:
+      La fecha seleccionada debe ser el {date} o
+      antes
+    selected_date_time_must_be_after:
+      La fecha y hora seleccionadas deben ser posteriores
+      a {dateTime}
+    start_date_cannot_be_after_end_date:
+      La fecha de inicio no puede ser posterior
+      a la fecha de fin
+    start_date_cannot_be_before_min_date:
+      La fecha de inicio no puede ser anterior
+      a {date}
     start_date_must_be_at_or_after: La fecha de inicio debe ser el {date} o después
     time_must_be_at_or_after: La hora debe ser {time} o después
     time_must_be_at_or_before: La hora debe ser {time} o antes
@@ -152,7 +172,8 @@ shared:
     loading: Error al cargar los datos
     report_subject: "App {appName}: Reporte de error inesperado"
     report_template:
-      "Hola, he encontrado un error inesperado mientras usaba la aplicación {appName}.
+      "Hola, he encontrado un error inesperado mientras usaba la aplicación
+      {appName}.
 
 
       Aquí está la información que podría ayudarte a diagnosticar el problema:
@@ -191,7 +212,9 @@ shared:
   startup_error:
     copied_to_clipboard: Detalles del error copiados al portapapeles
     copy_button: Copiar detalles del error
-    description: Algo salió mal durante el inicio de la aplicación. Esto podría deberse a un problema del sistema o a una configuración incompatible.
+    description:
+      Algo salió mal durante el inicio de la aplicación. Esto podría deberse
+      a un problema del sistema o a una configuración incompatible.
     details_title: Detalles del Error
     report_button: Reportar Problema
     title: Error de Inicio de Aplicación
@@ -266,7 +289,9 @@ shared:
     average_daily_label: Promedio diario
     peak_hour_label: Hora pico
     select_date_range_message: Seleccionar rango de fechas para filtrar estadísticas
-    select_date_range_description: Elegir un rango de fechas personalizado para ver estadísticas de uso
+    select_date_range_description:
+      Elegir un rango de fechas personalizado para ver
+      estadísticas de uso
   time:
     not_set: No establecido
     minutes: minutos
@@ -359,20 +384,34 @@ shared:
     select_end_date: Seleccionar fecha de fin
     no_dates_selected: Ninguna fecha seleccionada
     refresh: Actualizar
-    cannot_select_time_before_min_date: No se puede seleccionar una hora antes de {time}
-    cannot_select_time_after_max_date: No se puede seleccionar una hora después de {time}
+    cannot_select_time_before_min_date:
+      No se puede seleccionar una hora antes de
+      {time}
+    cannot_select_time_after_max_date:
+      No se puede seleccionar una hora después de
+      {time}
     time_must_be_at_or_after: La hora debe ser {time} o posterior
     time_must_be_at_or_before: La hora debe ser {time} o anterior
     selected_date_must_be_at_or_after: La fecha seleccionada debe ser {date} o posterior
     selected_date_must_be_at_or_before: La fecha seleccionada debe ser {date} o anterior
-    start_date_cannot_be_after_end_date: La fecha de inicio no puede ser posterior a la fecha de fin
+    start_date_cannot_be_after_end_date:
+      La fecha de inicio no puede ser posterior
+      a la fecha de fin
     start_date_must_be_at_or_after: La fecha de inicio debe ser {date} o posterior
     end_date_must_be_at_or_before: La fecha de fin debe ser {date} o anterior
-    cannot_select_date_before_min_date: No se puede seleccionar una fecha antes de {date}
-    cannot_select_date_after_max_date: No se puede seleccionar una fecha después de {date}
-    start_date_cannot_be_before_min_date: La fecha de inicio no puede ser antes de {date}
+    cannot_select_date_before_min_date:
+      No se puede seleccionar una fecha antes de
+      {date}
+    cannot_select_date_after_max_date:
+      No se puede seleccionar una fecha después de
+      {date}
+    start_date_cannot_be_before_min_date:
+      La fecha de inicio no puede ser antes de
+      {date}
     end_date_cannot_be_after_max_date: La fecha de fin no puede ser después de {date}
-    selected_date_time_must_be_after: La fecha y hora seleccionadas deben ser posteriores a {dateTime}
+    selected_date_time_must_be_after:
+      La fecha y hora seleccionadas deben ser posteriores
+      a {dateTime}
     select_date_time_title: Seleccionar fecha y hora
     select_date_range_title: Seleccionar rango de fechas
     refresh_description: Actualizar automáticamente el rango de fechas seleccionado
@@ -423,3 +462,7 @@ shared:
     1_2_hours: 1 - 2 horas
     more_than_2_hours: 2+ horas
   configure: Configurar
+  tour_finish_title: Tour finalizada
+  tour_finish_body:
+    ¡Todo listo! ¡Buena suerte en tu camino hacia el dominio de la
+    productividad. ¡Sigue trabajando duro y disfrutando!

@@ -49,6 +49,7 @@ settings:
     title: Importa/Esporta
   language:
     choose_title: Scegli la tua lingua
+    dialog_info: "{count} lingue disponibili."
     title: Lingua
   notifications:
     disable_error: Impossibile disabilitare le notifiche

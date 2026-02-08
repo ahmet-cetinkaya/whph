@@ -73,9 +73,6 @@ class _HabitsPageState extends State<HabitsPage> {
   }
 
   void _checkAndStartTour() async {
-    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
-    if (tourAlreadyDone) return;
-
     if (TourNavigationService.isMultiPageTourActive && TourNavigationService.currentTourIndex == 1) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await _pageReadyCompleter.future;
@@ -83,7 +80,11 @@ class _HabitsPageState extends State<HabitsPage> {
           _startTour(isMultiPageTour: true);
         }
       });
+      return;
     }
+
+    final tourAlreadyDone = await TourNavigationService.isTourCompletedOrSkipped();
+    if (tourAlreadyDone) return;
   }
 
   void _componentLoaded() {
@@ -481,22 +482,22 @@ class _HabitsPageState extends State<HabitsPage> {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder: (context) => TourOverlay(
+      builder: (overlayContext) => TourOverlay(
         steps: tourSteps,
         onComplete: () {
-          Navigator.of(context).pop();
+          Navigator.of(overlayContext).pop();
           if (isMultiPageTour) {
-            TourNavigationService.onPageTourCompleted(context);
+            TourNavigationService.onPageTourCompleted(overlayContext);
           }
         },
         onSkip: () async {
           if (isMultiPageTour) {
             await TourNavigationService.skipMultiPageTour();
           }
-          if (context.mounted) Navigator.of(context).pop();
+          if (overlayContext.mounted) Navigator.of(overlayContext).pop();
         },
         onBack: isMultiPageTour && TourNavigationService.canNavigateBack
-            ? () => TourNavigationService.navigateBackInTour(context)
+            ? () => TourNavigationService.navigateBackInTour(overlayContext)
             : null,
         showBackButton: isMultiPageTour,
         isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
