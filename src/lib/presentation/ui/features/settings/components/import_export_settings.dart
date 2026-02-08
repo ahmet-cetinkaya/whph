@@ -61,38 +61,20 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   final _translationService = container.resolve<ITranslationService>();
   final _fileService = container.resolve<IFileService>();
   final _themeService = container.resolve<IThemeService>();
-  final PageController _pageController = PageController();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
   String? _selectedFilePath;
   String? _selectedTaskFilePath;
   TaskImportType _taskImportType = TaskImportType.generic;
   ExportDataFileOptions? _selectedExportOption;
   bool _isProcessing = false;
 
-  void _goToPage(int page) {
-    if (!_pageController.hasClients) return;
-    _pageController.animateToPage(
-      page,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  void _goBack() {
-    if (!_pageController.hasClients) return;
-    final currentPage = _pageController.page?.round() ?? 0;
-    if (currentPage == 0) {
-      Navigator.of(context).pop();
-    } else if (currentPage == 2 || currentPage == 3) {
-      _goToPage(1);
-    } else {
-      _goToPage(0);
+  Future<bool> _onWillPop() async {
+    if (_navigatorKey.currentState?.canPop() ?? false) {
+      _navigatorKey.currentState?.pop();
+      return false;
     }
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+    return true;
   }
 
   @override
@@ -102,29 +84,83 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
       builder: (context, snapshot) {
         return Theme(
           data: _themeService.themeData,
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(
-                _translationService.translate(SettingsTranslationKeys.importExportTitle),
-                style: AppTheme.headlineSmall,
+          child: PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (bool didPop, dynamic result) async {
+              if (didPop) return;
+              if (await _onWillPop()) {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  _translationService.translate(SettingsTranslationKeys.importExportTitle),
+                  style: AppTheme.headlineSmall,
+                ),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () async {
+                    if (await _onWillPop()) {
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    }
+                  },
+                ),
+                elevation: 0,
               ),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: _goBack,
-              ),
-              elevation: 0,
-            ),
-            body: SafeArea(
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _buildMainPage(context),
-                  _buildImportSourceSelectionPage(context),
-                  _buildImportStrategyPage(context),
-                  _buildExternalImportPage(context),
-                  _buildExportOptionsPage(context),
-                ],
+              body: SafeArea(
+                child: Navigator(
+                  key: _navigatorKey,
+                  onGenerateRoute: (settings) {
+                    Widget page;
+                    switch (settings.name) {
+                      case '/':
+                        page = _buildMainPage(context);
+                        break;
+                      case '/import_source':
+                        page = _buildImportSourceSelectionPage(context);
+                        break;
+                      case '/import_strategy':
+                        page = _buildImportStrategyPage(context);
+                        break;
+                      case '/external_import':
+                        page = _buildExternalImportPage(context);
+                        break;
+                      case '/export':
+                        page = _buildExportOptionsPage(context);
+                        break;
+                      default:
+                        page = _buildMainPage(context);
+                    }
+                    return PageRouteBuilder(
+                      settings: settings,
+                      pageBuilder: (context, animation, secondaryAnimation) => page,
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        final slideIn = Tween<Offset>(
+                          begin: const Offset(1.0, 0.0),
+                          end: Offset.zero,
+                        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut));
+
+                        final slideOut = Tween<Offset>(
+                          begin: Offset.zero,
+                          end: const Offset(-1.0, 0.0),
+                        ).animate(CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeInOut));
+
+                        return SlideTransition(
+                          position: slideIn,
+                          child: SlideTransition(
+                            position: slideOut,
+                            child: child,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -158,7 +194,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           _ImportExportActionTile(
             icon: Icons.upload,
             titleKey: SettingsTranslationKeys.exportTitle,
-            onTap: () => _goToPage(4),
+            onTap: () => _navigatorKey.currentState?.pushNamed('/export'),
             isDisabled: _isProcessing,
           ),
         ],
@@ -189,12 +225,12 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
             icon: Icons.apps,
             titleKey: SettingsTranslationKeys.importSourceExternalAppsTitle,
             descriptionKey: SettingsTranslationKeys.importSourceExternalAppsDescription,
-            onSelect: () => _goToPage(3),
+            onSelect: () => _navigatorKey.currentState?.pushNamed('/external_import'),
             isDisabled: _isProcessing,
           ),
           const SizedBox(height: AppTheme.sizeXLarge),
           TextButton.icon(
-            onPressed: () => _goToPage(0),
+            onPressed: () => _navigatorKey.currentState?.pop(),
             icon: const Icon(Icons.arrow_back),
             label: Text(_translationService.translate(SharedTranslationKeys.backButton)),
           ),
@@ -257,7 +293,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           Row(
             children: [
               TextButton.icon(
-                onPressed: () => _goToPage(1),
+                onPressed: () => _navigatorKey.currentState?.pop(),
                 icon: const Icon(Icons.arrow_back),
                 label: Text(_translationService.translate(SharedTranslationKeys.backButton)),
               ),
@@ -327,7 +363,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
                       setState(() {
                         _selectedFilePath = null;
                       });
-                      _goToPage(1);
+                      _navigatorKey.currentState?.pop();
                     },
               icon: const Icon(Icons.arrow_back),
               label: Text(
@@ -392,7 +428,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
-              onPressed: () => _goToPage(0),
+              onPressed: () => _navigatorKey.currentState?.pop(),
               icon: const Icon(Icons.arrow_back),
               label: Text(
                 _translationService.translate(SharedTranslationKeys.backButton),
@@ -405,7 +441,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   }
 
   void _handleImport(BuildContext context) {
-    _goToPage(1);
+    _navigatorKey.currentState?.pushNamed('/import_source');
   }
 
   Future<void> _handleBackupImport(BuildContext context) async {
@@ -433,7 +469,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           setState(() {
             _selectedFilePath = filePath;
           });
-          _goToPage(2);
+          _navigatorKey.currentState?.pushNamed('/import_strategy');
         }
       },
     );
@@ -583,9 +619,8 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
             _selectedFilePath = null;
           });
 
-          // Navigate back to main page instead of closing modal
-          // Navigate back to source selection page instead of closing modal
-          _goToPage(1);
+          // Navigate back to import source selection
+          _navigatorKey.currentState?.pop();
         }
       },
     );
@@ -798,76 +833,7 @@ class _ImportStrategyOption extends StatelessWidget {
   }
 }
 
-class _ExportOptionTile extends StatelessWidget {
-  final IconData icon;
-  final String? title;
-  final String? titleKey;
-  final String descriptionKey;
-  final ExportDataFileOptions fileOption;
-  final VoidCallback onSelect;
-  final bool isDisabled;
-
-  const _ExportOptionTile({
-    required this.icon,
-    this.title,
-    this.titleKey,
-    required this.descriptionKey,
-    required this.fileOption,
-    required this.onSelect,
-    this.isDisabled = false,
-  }) : assert(title != null || titleKey != null, 'Either title or titleKey must be provided');
-
-  @override
-  Widget build(BuildContext context) {
-    final translationService = container.resolve<ITranslationService>();
-    final theme = Theme.of(context);
-    final displayTitle = titleKey != null ? translationService.translate(titleKey!) : title!;
-
-    return Card(
-      elevation: 0,
-      color: AppTheme.surface1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(AppTheme.sizeMedium),
-        leading: StyledIcon(
-          icon,
-          isActive: !isDisabled,
-        ),
-        title: Text(
-          displayTitle,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(
-            translationService.translate(descriptionKey),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
-          ),
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.5),
-        ),
-        onTap: !isDisabled ? onSelect : null,
-        enabled: !isDisabled,
-      ),
-    );
-  }
-}
-
 class _ImportOptionTile extends StatelessWidget {
-  final IconData icon;
-  final String titleKey;
-  final String descriptionKey;
-  final VoidCallback onSelect;
-  final bool isDisabled;
-
   const _ImportOptionTile({
     required this.icon,
     required this.titleKey,
@@ -875,6 +841,12 @@ class _ImportOptionTile extends StatelessWidget {
     required this.onSelect,
     this.isDisabled = false,
   });
+
+  final IconData icon;
+  final String titleKey;
+  final String descriptionKey;
+  final VoidCallback onSelect;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
@@ -898,21 +870,69 @@ class _ImportOptionTile extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(
-            translationService.translate(descriptionKey),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
+        subtitle: Text(
+          translationService.translate(descriptionKey),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
           ),
         ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+        onTap: isDisabled ? null : onSelect,
+        enabled: !isDisabled,
+      ),
+    );
+  }
+}
+
+class _ExportOptionTile extends StatelessWidget {
+  const _ExportOptionTile({
+    required this.icon,
+    this.titleKey,
+    this.title,
+    required this.descriptionKey,
+    required this.fileOption,
+    required this.onSelect,
+    this.isDisabled = false,
+  });
+
+  final IconData icon;
+  final String? titleKey;
+  final String? title;
+  final String descriptionKey;
+  final ExportDataFileOptions fileOption;
+  final VoidCallback onSelect;
+  final bool isDisabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final translationService = container.resolve<ITranslationService>();
+    final theme = Theme.of(context);
+
+    final displayTitle = title ?? (titleKey != null ? translationService.translate(titleKey!) : '');
+
+    return Card(
+      elevation: 0,
+      color: AppTheme.surface1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(AppTheme.sizeMedium),
+        leading: StyledIcon(
+          icon,
+          isActive: !isDisabled,
         ),
-        onTap: !isDisabled ? onSelect : null,
+        title: Text(
+          displayTitle,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          translationService.translate(descriptionKey),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isDisabled ? theme.disabledColor : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
+        onTap: isDisabled ? null : onSelect,
         enabled: !isDisabled,
       ),
     );
