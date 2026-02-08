@@ -134,7 +134,9 @@ class LanguageSelectDialog extends StatelessWidget {
             child: InformationCard.themed(
               context: context,
               icon: Icons.info_outline,
-              text: '22 languages available',
+              text: _translationService.translate(
+                SettingsTranslationKeys.languageDialogInfo,
+              ),
             ),
           ),
           for (final section in _languageSections) ...[
@@ -166,14 +168,14 @@ class _StyledLanguageCode extends StatelessWidget {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: isActive ? theme.colorScheme.primary.withAlpha((255 * 0.1).toInt()) : AppTheme.surface2,
+        color: isActive ? theme.colorScheme.primary.withValues(alpha: 0.1) : AppTheme.surface2,
         shape: BoxShape.circle,
       ),
       alignment: Alignment.center,
       child: Text(
         languageCode.toUpperCase(),
         style: AppTheme.labelLarge.copyWith(
-          color: isActive ? theme.colorScheme.primary : AppTheme.textColor.withAlpha((255 * 0.5).toInt()),
+          color: isActive ? theme.colorScheme.primary : AppTheme.textColor.withValues(alpha: 0.5),
           fontWeight: FontWeight.bold,
         ),
       ),

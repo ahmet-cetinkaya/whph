@@ -45,6 +45,7 @@ settings:
     title: 导入/导出
   language:
     choose_title: 选择您的语言
+    dialog_info: You can change the app language here.
     title: 语言
   notifications:
     disable_error: 禁用通知失败

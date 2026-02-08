@@ -47,6 +47,7 @@ settings:
     title: Import/Eksport
   language:
     choose_title: Velg språket ditt
+    dialog_info: You can change the app language here.
     title: Språk
   notifications:
     disable_error: Kunne ikke deaktivere varsler

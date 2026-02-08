@@ -51,6 +51,7 @@ settings:
     title: İçe/Dışa Aktar
   language:
     choose_title: Dilini seç
+    dialog_info: You can change the app language here.
     title: Dil
   notifications:
     disable_error: Bildirimler devre dışı bırakılamadı

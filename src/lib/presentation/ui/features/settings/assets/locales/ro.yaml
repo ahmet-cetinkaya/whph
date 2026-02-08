@@ -53,6 +53,7 @@ settings:
     title: Import/Export
   language:
     choose_title: Alegeți limba
+    dialog_info: You can change the app language here.
     title: Limbă
   notifications:
     disable_error: Eșec la dezactivarea notificărilor

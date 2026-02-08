@@ -51,6 +51,7 @@ settings:
     title: Importar/Exportar
   language:
     choose_title: Elige tu idioma
+    dialog_info: You can change the app language here.
     title: Idioma
   notifications:
     disable_error: No se pudieron desactivar las notificaciones
