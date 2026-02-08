@@ -52,7 +52,7 @@ settings:
     external_apps_description: Import tasks from other applications via CSV file
   language:
     choose_title: Choose your language
-    dialog_info: You can change the app language here.
+    dialog_info: '{count} languages available.'
     title: Language
   notifications:
     disable_error: Failed to disable notifications

@@ -49,7 +49,7 @@ settings:
     title: Import/Eksport
   language:
     choose_title: Vælg dit sprog
-    dialog_info: You can change the app language here.
+    dialog_info: '{count} sprog tilgængelige.'
     title: Sprog
   notifications:
     disable_error: Kunne ikke deaktivere notifikationer

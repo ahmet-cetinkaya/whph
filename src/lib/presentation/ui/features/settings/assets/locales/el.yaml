@@ -53,7 +53,7 @@ settings:
     title: Εισαγωγή/Εξαγωγή
   language:
     choose_title: Επιλέξτε τη γλώσσα σας
-    dialog_info: You can change the app language here.
+    dialog_info: '{count} γλώσσες διαθέσιμες.'
     title: Γλώσσα
   notifications:
     disable_error: Αποτυχία απενεργοποίησης ειδοποιήσεων

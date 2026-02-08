@@ -51,7 +51,7 @@ settings:
     title: Import/Export
   language:
     choose_title: Vyberte svůj jazyk
-    dialog_info: You can change the app language here.
+    dialog_info: '{count} jazyků dostupných.'
     title: Jazyk
   notifications:
     disable_error: Selhání vypnutí notifikací

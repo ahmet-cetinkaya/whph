@@ -51,7 +51,7 @@ settings:
     title: Uvoz/Izvoz
   language:
     choose_title: Izberite jezik
-    dialog_info: You can change the app language here.
+    dialog_info: '{count} jezikov na voljo.'
     title: Jezik
   notifications:
     disable_error: Spodletelo je pri onemogočanju obvestil

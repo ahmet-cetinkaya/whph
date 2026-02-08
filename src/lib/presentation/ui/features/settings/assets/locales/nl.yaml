@@ -53,7 +53,7 @@ settings:
     title: Import/Export
   language:
     choose_title: Kies uw taal
-    dialog_info: You can change the app language here.
+    dialog_info: '{count} talen beschikbaar.'
     title: Taal
   notifications:
     disable_error: Notificaties uitschakelen mislukt

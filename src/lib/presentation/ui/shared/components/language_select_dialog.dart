@@ -132,9 +132,11 @@ class LanguageSelectDialog extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(AppTheme.sizeMedium),
             child: _LanguageInfoCard(
-              totalLanguages: _languageSections.fold<int>(
-                0,
-                (sum, section) => sum + section.languages.length,
+              text: _translationService.translate(
+                SettingsTranslationKeys.languageDialogInfo,
+                namedArgs: {
+                  'count': _languageSections.fold<int>(0, (sum, section) => sum + section.languages.length).toString()
+                },
               ),
             ),
           ),
@@ -205,10 +207,10 @@ class _LanguageSection {
 }
 
 class _LanguageInfoCard extends StatelessWidget {
-  final int totalLanguages;
+  final String text;
 
   const _LanguageInfoCard({
-    required this.totalLanguages,
+    required this.text,
   });
 
   @override
@@ -225,7 +227,6 @@ class _LanguageInfoCard extends StatelessWidget {
         border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.info_outline,
@@ -234,7 +235,7 @@ class _LanguageInfoCard extends StatelessWidget {
           ),
           const SizedBox(width: AppTheme.sizeSmall),
           Text(
-            '$totalLanguages languages available',
+            text,
             style: theme.textTheme.bodySmall?.copyWith(color: textColor),
           ),
         ],

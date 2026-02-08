@@ -45,7 +45,7 @@ settings:
     title: インポート/エクスポート
   language:
     choose_title: 言語を選択
-    dialog_info: You can change the app language here.
+    dialog_info: '{count}言語利用可能。'
     title: 言語
   notifications:
     disable_error: 通知の無効化に失敗しました

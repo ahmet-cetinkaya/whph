@@ -45,7 +45,7 @@ settings:
     title: 가져오기/내보내기
   language:
     choose_title: 언어 선택
-    dialog_info: You can change the app language here.
+    dialog_info: '{count}개 언어 사용 가능.'
     title: 언어
   notifications:
     disable_error: 알림 비활성화에 실패했습니다

@@ -51,7 +51,7 @@ settings:
     title: Импорт/Экспорт
   language:
     choose_title: Выберите свой язык
-    dialog_info: You can change the app language here.
+    dialog_info: '{count} языков доступно.'
     title: Язык
   notifications:
     disable_error: Не удалось отключить уведомления
