@@ -247,7 +247,7 @@ class TaskCard extends StatelessWidget {
   }
 
   String _formatDate(DateTime date, BuildContext context) {
-    return DateFormatService.formatForDisplay(date, context, type: DateFormatType.dateTime);
+    return DateFormatService.formatForDisplay(date, context, type: DateFormatType.dateTime, useShortFormat: true);
   }
 
   Color _getDateColor(DateTime date) {
