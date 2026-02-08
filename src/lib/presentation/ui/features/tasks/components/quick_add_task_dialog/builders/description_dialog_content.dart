@@ -46,7 +46,6 @@ class _DescriptionDialogContentState extends State<DescriptionDialogContent> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: widget.theme.cardColor,
         title: Text(
           TaskTranslationKeys.descriptionLabel.tr(),
         ),

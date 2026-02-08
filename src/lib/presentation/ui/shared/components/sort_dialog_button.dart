@@ -253,7 +253,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
             ),
           ],
           elevation: 0,
-          backgroundColor: Colors.transparent, // Important for dialogs
         ),
 
         // Body

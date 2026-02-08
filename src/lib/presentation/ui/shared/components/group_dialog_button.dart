@@ -244,7 +244,6 @@ class _GroupDialogState<T> extends State<_GroupDialog<T>> {
             ),
           ],
           elevation: 0,
-          backgroundColor: Colors.transparent,
         ),
 
         // Body

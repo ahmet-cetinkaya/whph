@@ -55,10 +55,8 @@ class _TagOrderSelectorDialogState extends State<TagOrderSelectorDialog> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(widget.translationService.translate(SharedTranslationKeys.sortCustomTitle)),
-        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
