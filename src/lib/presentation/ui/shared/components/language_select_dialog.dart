@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:acore/acore.dart' show ColorContrastHelper;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
-import 'package:whph/presentation/ui/shared/components/information_card.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
 
 class LanguageSelectDialog extends StatelessWidget {
@@ -131,11 +131,10 @@ class LanguageSelectDialog extends StatelessWidget {
           const SizedBox(height: AppTheme.sizeSmall),
           Padding(
             padding: const EdgeInsets.all(AppTheme.sizeMedium),
-            child: InformationCard.themed(
-              context: context,
-              icon: Icons.info_outline,
-              text: _translationService.translate(
-                SettingsTranslationKeys.languageDialogInfo,
+            child: _LanguageInfoCard(
+              totalLanguages: _languageSections.fold<int>(
+                0,
+                (sum, section) => sum + section.languages.length,
               ),
             ),
           ),
@@ -203,4 +202,43 @@ class _LanguageSection {
     required this.title,
     required this.languages,
   });
+}
+
+class _LanguageInfoCard extends StatelessWidget {
+  final int totalLanguages;
+
+  const _LanguageInfoCard({
+    required this.totalLanguages,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final backgroundColor = theme.colorScheme.surfaceContainerHighest;
+    final textColor = ColorContrastHelper.getContrastingTextColor(backgroundColor);
+
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.sizeSmall),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.info_outline,
+            size: 20,
+            color: textColor,
+          ),
+          const SizedBox(width: AppTheme.sizeSmall),
+          Text(
+            '$totalLanguages languages available',
+            style: theme.textTheme.bodySmall?.copyWith(color: textColor),
+          ),
+        ],
+      ),
+    );
+  }
 }
