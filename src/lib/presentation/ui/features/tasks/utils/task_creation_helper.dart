@@ -12,6 +12,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/ui/features/tasks/services/abstraction/i_default_task_settings_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -34,6 +35,7 @@ class TaskCreationHelper {
     final mediator = container.resolve<Mediator>();
     final translationService = container.resolve<ITranslationService>();
     final tasksService = container.resolve<TasksService>();
+    final defaultSettingsService = container.resolve<IDefaultTaskSettingsService>();
 
     // Check setting
     bool skipQuickAdd = TaskConstants.defaultSkipQuickAdd;
@@ -61,6 +63,7 @@ class TaskCreationHelper {
         mediator: mediator,
         translationService: translationService,
         tasksService: tasksService,
+        defaultSettingsService: defaultSettingsService,
         initialTagIds: initialTagIds,
         initialPlannedDate: initialPlannedDate,
         initialDeadlineDate: initialDeadlineDate,
@@ -93,6 +96,7 @@ class TaskCreationHelper {
     required Mediator mediator,
     required ITranslationService translationService,
     required TasksService tasksService,
+    required IDefaultTaskSettingsService defaultSettingsService,
     List<String>? initialTagIds,
     DateTime? initialPlannedDate,
     DateTime? initialDeadlineDate,
@@ -104,55 +108,11 @@ class TaskCreationHelper {
     Function(String taskId, TaskData taskData)? onTaskCreated,
   }) async {
     // Load defaults if not provided
-    int? estimatedTime = initialEstimatedTime;
-    if (estimatedTime == null) {
-      try {
-        final setting = await mediator.send<GetSettingQuery, Setting?>(
-          GetSettingQuery(key: SettingKeys.taskDefaultEstimatedTime),
-        );
-        if (setting != null) {
-          final value = setting.getValue<int?>();
-          if (value != null && value > 0) estimatedTime = value;
-        }
-      } catch (e, stackTrace) {
-        Logger.error(
-          'Failed to load default estimated time setting',
-          error: e,
-          stackTrace: stackTrace,
-        );
-      }
-    }
+    final estimatedTime = initialEstimatedTime ?? await defaultSettingsService.getDefaultEstimatedTime();
 
-    ReminderTime plannedDateReminderTime = ReminderTime.none;
-    int? plannedDateReminderCustomOffset;
-
-    try {
-      final setting = await mediator.send<GetSettingQuery, Setting?>(
-        GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminder),
-      );
-      if (setting != null) {
-        final value = setting.getValue<String>();
-        plannedDateReminderTime = ReminderTimeExtension.fromString(value);
-
-        if (plannedDateReminderTime == ReminderTime.custom) {
-          final offsetSetting = await mediator.send<GetSettingQuery, Setting?>(
-            GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminderCustomOffset),
-          );
-          if (offsetSetting != null) {
-            plannedDateReminderCustomOffset = offsetSetting.getValue<int?>();
-          }
-        }
-      } else {
-        plannedDateReminderTime = TaskConstants.defaultReminderTime;
-      }
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to load default planned date reminder setting',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      plannedDateReminderTime = TaskConstants.defaultReminderTime;
-    }
+    final (reminderTime, customOffset) = await defaultSettingsService.getDefaultPlannedDateReminder();
+    ReminderTime plannedDateReminderTime = reminderTime;
+    int? plannedDateReminderCustomOffset = customOffset;
 
     // Only apply default reminder if scheduled date is set (manually or initially)
     // If no initialPlannedDate is provided, the reminder setting is irrelevant for creation
@@ -184,45 +144,157 @@ class TaskCreationHelper {
         );
         return await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
       },
-      onSuccess: (response) {
-        tasksService.notifyTaskCreated(response.id);
-
-        if (initialTitle != null && initialTitle.isNotEmpty) {
-          OverlayNotificationHelper.showSuccess(
-            context: context,
-            message: translationService.translate(
-              TaskTranslationKeys.taskAddedSuccessfully,
-              namedArgs: {'title': initialTitle},
-            ),
-          );
-        }
-
-        if (onTaskCreated != null) {
-          final taskData = TaskData(
-            title: initialTitle ?? '',
-            priority: initialPriority,
-            estimatedTime: estimatedTime,
-            plannedDate: initialPlannedDate?.toUtc(),
-            deadlineDate: initialDeadlineDate?.toUtc(),
-            tags: [], // Tags handling would require fetching, skipping for now as UI usually refreshes
-            isCompleted: initialCompleted ?? false,
-            parentTaskId: initialParentTaskId,
-            createdDate: DateTime.now().toUtc(),
-          );
-          onTaskCreated(response.id, taskData);
-        }
-
-        if (context.mounted) {
-          ResponsiveDialogHelper.showResponsiveDialog(
-            context: context,
-            child: TaskDetailsPage(
-              taskId: response.id,
-              hideSidebar: true,
-            ),
-            size: DialogSize.max,
-          );
-        }
-      },
+      onSuccess: (response) => _handleTaskCreationSuccess(
+        context: context,
+        response: response,
+        initialTitle: initialTitle,
+        initialPriority: initialPriority,
+        estimatedTime: estimatedTime,
+        initialPlannedDate: initialPlannedDate,
+        initialDeadlineDate: initialDeadlineDate,
+        initialCompleted: initialCompleted,
+        initialParentTaskId: initialParentTaskId,
+        initialTagIds: initialTagIds,
+        translationService: translationService,
+        tasksService: tasksService,
+        onTaskCreated: onTaskCreated,
+      ),
     );
+  }
+
+  static void _handleTaskCreationSuccess({
+    required BuildContext context,
+    required SaveTaskCommandResponse response,
+    required String? initialTitle,
+    required EisenhowerPriority? initialPriority,
+    required int? estimatedTime,
+    required DateTime? initialPlannedDate,
+    required DateTime? initialDeadlineDate,
+    required bool? initialCompleted,
+    required String? initialParentTaskId,
+    required List<String>? initialTagIds,
+    required ITranslationService translationService,
+    required TasksService tasksService,
+    required Function(String taskId, TaskData taskData)? onTaskCreated,
+  }) {
+    try {
+      _notifyTaskCreated(tasksService, response.id);
+      _showSuccessMessage(context, translationService, initialTitle);
+      _invokeOnTaskCreatedCallback(
+        onTaskCreated,
+        response.id,
+        initialTitle,
+        initialPriority,
+        estimatedTime,
+        initialPlannedDate,
+        initialDeadlineDate,
+        initialCompleted,
+        initialParentTaskId,
+        initialTagIds,
+      );
+      _navigateToTaskDetails(context, response.id);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Error handling task creation success',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  static void _notifyTaskCreated(TasksService tasksService, String taskId) {
+    try {
+      tasksService.notifyTaskCreated(taskId);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to notify task created',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  static void _showSuccessMessage(
+    BuildContext context,
+    ITranslationService translationService,
+    String? initialTitle,
+  ) {
+    if (!context.mounted) return;
+
+    try {
+      if (initialTitle != null && initialTitle.isNotEmpty) {
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: translationService.translate(
+            TaskTranslationKeys.taskAddedSuccessfully,
+            namedArgs: {'title': initialTitle},
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to show success message',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  static void _invokeOnTaskCreatedCallback(
+    Function(String taskId, TaskData taskData)? onTaskCreated,
+    String taskId,
+    String? initialTitle,
+    EisenhowerPriority? initialPriority,
+    int? estimatedTime,
+    DateTime? initialPlannedDate,
+    DateTime? initialDeadlineDate,
+    bool? initialCompleted,
+    String? initialParentTaskId,
+    List<String>? initialTagIds,
+  ) {
+    if (onTaskCreated == null) return;
+
+    try {
+      final taskData = TaskData(
+        title: initialTitle ?? '',
+        priority: initialPriority,
+        estimatedTime: estimatedTime,
+        plannedDate: initialPlannedDate?.toUtc(),
+        deadlineDate: initialDeadlineDate?.toUtc(),
+        tags: [],
+        tagIds: initialTagIds ?? [],
+        isCompleted: initialCompleted ?? false,
+        parentTaskId: initialParentTaskId,
+        createdDate: DateTime.now().toUtc(),
+      );
+      onTaskCreated(taskId, taskData);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to invoke onTaskCreated callback',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  static void _navigateToTaskDetails(BuildContext context, String taskId) {
+    if (!context.mounted) return;
+
+    try {
+      ResponsiveDialogHelper.showResponsiveDialog(
+        context: context,
+        child: TaskDetailsPage(
+          taskId: taskId,
+          hideSidebar: true,
+        ),
+        size: DialogSize.max,
+      );
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to navigate to task details',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 }

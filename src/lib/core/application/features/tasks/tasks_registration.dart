@@ -24,6 +24,8 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_remi
 import 'package:whph/core/application/features/tasks/services/reminder_calculation_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/ui/features/tasks/services/default_task_settings_service.dart';
+import 'package:whph/presentation/ui/features/tasks/services/abstraction/i_default_task_settings_service.dart';
 
 void registerTasksFeature(
   IContainer container,
@@ -45,6 +47,14 @@ void registerTasksFeature(
   // Register the reminder calculation service
   container.registerSingleton<IReminderCalculationService>(
     (container) => ReminderCalculationService(container.resolve<ITaskRecurrenceService>()),
+  );
+
+  // Register the default task settings service
+  container.registerSingleton<IDefaultTaskSettingsService>(
+    (container) => DefaultTaskSettingsService(
+      mediator,
+      container.resolve<ILogger>(),
+    ),
   );
 
   // Register the CompleteTaskCommandHandler

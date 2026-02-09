@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
-import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/services/abstraction/i_default_task_settings_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -30,6 +27,7 @@ class QuickAddTaskController extends ChangeNotifier {
   final TasksService _tasksService;
   final ITranslationService _translationService;
   final IThemeService _themeService;
+  final IDefaultTaskSettingsService _defaultSettingsService;
 
   // Initial values (stored for reset)
   final List<String>? _initialTagIds;
@@ -102,6 +100,7 @@ class QuickAddTaskController extends ChangeNotifier {
     TasksService? tasksService,
     ITranslationService? translationService,
     IThemeService? themeService,
+    IDefaultTaskSettingsService? defaultSettingsService,
     List<String>? initialTagIds,
     DateTime? initialPlannedDate,
     DateTime? initialDeadlineDate,
@@ -117,6 +116,7 @@ class QuickAddTaskController extends ChangeNotifier {
         _tasksService = tasksService ?? container.resolve<TasksService>(),
         _translationService = translationService ?? container.resolve<ITranslationService>(),
         _themeService = themeService ?? container.resolve<IThemeService>(),
+        _defaultSettingsService = defaultSettingsService ?? container.resolve<IDefaultTaskSettingsService>(),
         _initialTagIds = initialTagIds,
         _initialPlannedDate = initialPlannedDate,
         _initialDeadlineDate = initialDeadlineDate,
@@ -152,61 +152,19 @@ class QuickAddTaskController extends ChangeNotifier {
 
   /// Load default estimated time from settings
   Future<void> _loadDefaultEstimatedTime() async {
-    try {
-      final setting = await _mediator.send<GetSettingQuery, Setting?>(
-        GetSettingQuery(key: SettingKeys.taskDefaultEstimatedTime),
-      );
-
-      if (setting != null) {
-        final value = setting.getValue<int?>();
-        if (value != null && value > 0) {
-          _estimatedTime = value;
-          notifyListeners();
-        }
-      }
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to load default estimated time setting',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      _estimatedTime = TaskConstants.defaultEstimatedTime;
+    final defaultTime = await _defaultSettingsService.getDefaultEstimatedTime();
+    if (defaultTime != null) {
+      _estimatedTime = defaultTime;
       notifyListeners();
     }
   }
 
   /// Load default planned date reminder from settings
   Future<void> _loadDefaultPlannedDateReminder() async {
-    try {
-      final setting = await _mediator.send<GetSettingQuery, Setting?>(
-        GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminder),
-      );
-
-      if (setting != null) {
-        final value = setting.getValue<String>();
-        _plannedDateReminderTime = ReminderTimeExtension.fromString(value);
-
-        if (_plannedDateReminderTime == ReminderTime.custom) {
-          final offsetSetting = await _mediator.send<GetSettingQuery, Setting?>(
-            GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminderCustomOffset),
-          );
-          if (offsetSetting != null) {
-            _plannedDateReminderCustomOffset = offsetSetting.getValue<int?>();
-          }
-        }
-      } else {
-        _plannedDateReminderTime = TaskConstants.defaultReminderTime;
-      }
-      notifyListeners();
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to load default planned date reminder setting',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      _plannedDateReminderTime = TaskConstants.defaultReminderTime;
-      notifyListeners();
-    }
+    final (reminderTime, customOffset) = await _defaultSettingsService.getDefaultPlannedDateReminder();
+    _plannedDateReminderTime = reminderTime;
+    _plannedDateReminderCustomOffset = customOffset;
+    notifyListeners();
   }
 
   /// Load initial tags and get their names
