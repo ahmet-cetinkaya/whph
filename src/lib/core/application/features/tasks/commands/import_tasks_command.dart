@@ -477,20 +477,21 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     final priorityIdx = idx['PRIORITY'];
     if (priorityIdx != null && priorityIdx >= 0 && priorityIdx < row.length) {
       final val = row[priorityIdx];
-      if (val is int) {
-        if (val >= 0 && val < EisenhowerPriority.values.length) {
-          priority = EisenhowerPriority.values[val];
-        }
+      final valStr = val.toString().trim();
+
+      // Attempt robust numeric parsing first
+      int? pVal;
+      if (val is num) {
+        pVal = val.toInt();
       } else {
-        final valStr = val.toString().trim();
-        // Try parsing int from string
-        final pVal = int.tryParse(valStr);
-        if (pVal != null && pVal >= 0 && pVal < EisenhowerPriority.values.length) {
-          priority = EisenhowerPriority.values[pVal];
-        } else {
-          // Try parsing string text
-          priority = _parsePriorityString(valStr);
-        }
+        pVal = int.tryParse(valStr);
+      }
+
+      if (pVal != null && pVal >= 0 && pVal < EisenhowerPriority.values.length) {
+        priority = EisenhowerPriority.values[pVal];
+      } else {
+        // Fallback to string text parsing
+        priority = _parsePriorityString(valStr);
       }
     }
 
@@ -599,16 +600,17 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
   }
 
   DateTime? _parseDate(String dateStr) {
-    if (dateStr.isEmpty) return null;
+    final cleanedDateStr = dateStr.trim();
+    if (cleanedDateStr.isEmpty) return null;
     try {
       // Try standard ISO format first
-      return DateTime.parse(dateStr);
+      return DateTime.parse(cleanedDateStr);
     } on FormatException {
       try {
         // Try replacing slashes with dashes and dots with dashes
         // e.g. 2023/01/01 -> 2023-01-01
         // e.g. 2023.01.01 -> 2023-01-01
-        final normalized = dateStr.replaceAll('/', '-').replaceAll('.', '-');
+        final normalized = cleanedDateStr.replaceAll('/', '-').replaceAll('.', '-');
         return DateTime.parse(normalized);
       } catch (e, stackTrace) {
         Logger.warning(

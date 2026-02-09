@@ -536,12 +536,13 @@ void main() {
     test('Issue #232: Should import string priorities and common date formats', () async {
       reset(mockMediator);
       final file = File('${tempDir.path}/issue_232.csv');
-      // Simulate user input with string priorities and slash-formatted dates
+      // Simulate user input with string priorities, slash-formatted dates, double priorities, and whitespace
       await file.writeAsString(
         'TITLE,DESCRIPTION,PRIORITY,PLANNED_DATE,DEADLINE_DATE\n'
         'Task String Priority,Desc 1,Urgent,2023-10-01,2023-10-02\n'
-        'Task Slash Date,Desc 2,1,2023/10/01,2023/10/02\n'
-        'Task Both Issues,Desc 3,Important,2023/10/01,2023/10/02\n',
+        'Task Slash Date,Desc 2,1,2023/10/01 , 2023/10/02\n'
+        'Task Both Issues,Desc 3,Important,2023/10/01,2023/10/02\n'
+        'Task Double Priority,Desc 4,2.0,2023-10-01,2023-10-02\n',
       );
 
       when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
@@ -553,7 +554,7 @@ void main() {
         importType: TaskImportType.generic,
       ));
 
-      expect(response.successCount, 3);
+      expect(response.successCount, 4);
 
       // Verify Task 1: String Priority "Urgent" -> EisenhowerPriority.urgentNotImportant
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) {
@@ -562,7 +563,7 @@ void main() {
         return cmd.priority == EisenhowerPriority.urgentNotImportant;
       })))).called(1);
 
-      // Verify Task 2: Slash Date "2023/10/01" -> DateTime(2023, 10, 1)
+      // Verify Task 2: Slash Date "2023/10/01 " (with space) -> DateTime(2023, 10, 1)
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) {
         if (cmd.title != 'Task Slash Date') return false;
         return cmd.plannedDate == DateTime(2023, 10, 1).toUtc() && cmd.deadlineDate == DateTime(2023, 10, 2).toUtc();
@@ -573,6 +574,12 @@ void main() {
         if (cmd.title != 'Task Both Issues') return false;
         return cmd.priority == EisenhowerPriority.notUrgentImportant && // "Important" -> 2
             cmd.plannedDate == DateTime(2023, 10, 1).toUtc();
+      })))).called(1);
+
+      // Verify Task 4: Double Priority "2.0" -> EisenhowerPriority.notUrgentImportant (2)
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) {
+        if (cmd.title != 'Task Double Priority') return false;
+        return cmd.priority == EisenhowerPriority.notUrgentImportant;
       })))).called(1);
     });
   });
