@@ -27,6 +27,25 @@ class AppTheme {
     _themeService = null;
   }
 
+  static const List<String> fontFamilyFallback = [
+    // Windows
+    'Microsoft YaHei',
+    'SimHei',
+    'KaiTi',
+    'FangSong',
+    'Malgun Gothic',
+    'Meiryo',
+    // Linux
+    'Noto Sans CJK SC',
+    'Noto Sans CJK TC',
+    'Noto Sans CJK JP',
+    'Noto Sans CJK KR',
+    'WenQuanYi Micro Hei',
+    'Droid Sans Fallback',
+    // General
+    'sans-serif',
+  ];
+
   // Dynamic Colors (get from theme service)
   static Color get primaryColor => _service.primaryColor;
   static Color get surface0 => _service.surface0;
