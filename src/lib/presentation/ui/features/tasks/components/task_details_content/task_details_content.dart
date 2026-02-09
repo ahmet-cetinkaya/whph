@@ -388,9 +388,10 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                   focusNode: _titleFocusNode,
                   maxLines: null,
                   onChanged: _onTitleChanged,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    hintText: _controller.translationService.translate(TaskTranslationKeys.titleLabel),
                   ),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),

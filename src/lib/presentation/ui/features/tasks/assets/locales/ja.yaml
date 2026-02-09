@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: 新しいタスクを追加
+    create_and_open_tooltip: 作成してタスク詳細を開く
   all_tasks_done: すべてのタスクが完了しました！
   card:
     schedule:
@@ -368,6 +369,9 @@ tasks:
       estimated_time_not_set: "予想時間: 未設定"
       planned_date: "予定: {date}"
       planned_date_not_set: "予定: 未設定"
+      lock: ロック
+      unlock: ロック解除
+    new_task_default_title: 新しいタスク
   recurrence:
     count: 発生回数
     custom: カスタム

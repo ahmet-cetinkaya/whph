@@ -385,6 +385,9 @@ settings:
       description: Angi automatisk en påminnelse når en planlagt dato velges.
       save_error: Feil ved lagring av standardinnstilling for påminnelse
       load_error: Feil ved lasting av standardinnstilling for påminnelse
+    skip_quick_add:
+      title: Hopp over Hurtig legge til-dialog
+      description: Hopp over Hurtig legge til-dialog og gå direkte til oppgavedetaljer
   section:
     general: Generelt
     appearance: Utseende

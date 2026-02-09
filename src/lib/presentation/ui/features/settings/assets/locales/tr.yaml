@@ -395,6 +395,11 @@ settings:
         ayarlayın.
       save_error: Varsayılan hatırlatıcı ayarı kaydedilirken hata oluştu
       load_error: Varsayılan hatırlatıcı ayarı yüklenirken hata oluştu
+    skip_quick_add:
+      title: Hızlı Ekle İletişim Kutusunu Atla
+      description:
+        Hızlı Ekle iletişim kutusunu atlayın ve doğrudan görev ayrıntıları
+        sayfasına gidin
   section:
     general: Genel
     appearance: Görünüm

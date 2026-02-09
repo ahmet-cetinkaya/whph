@@ -83,6 +83,8 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
       'settings.task.default_planned_date_reminder.save_error';
   static const String taskDefaultPlannedDateReminderLoadError =
       'settings.task.default_planned_date_reminder.load_error';
+  static const String taskSkipQuickAddTitle = 'settings.task.skip_quick_add.title';
+  static const String taskSkipQuickAddDescription = 'settings.task.skip_quick_add.description';
 
   // Habit Settings
   static const String habitSettingsTitle = 'settings.habit.title';

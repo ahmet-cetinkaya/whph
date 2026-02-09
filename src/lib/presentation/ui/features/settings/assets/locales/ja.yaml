@@ -311,6 +311,9 @@ settings:
       description: 予定日を選択したときに自動的にリマインダーを設定します。
       save_error: デフォルトのリマインダー設定の保存中にエラーが発生しました
       load_error: デフォルトのリマインダー設定の読み込み中にエラーが発生しました
+    skip_quick_add:
+      title: クイック追加ダイアログをスキップ
+      description: クイック追加ダイアログをスキップして、タスク詳細ページに直接移動します
   section:
     general: 一般
     appearance: 外観

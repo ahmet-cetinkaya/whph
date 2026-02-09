@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Legg til ny oppgave
+    create_and_open_tooltip: Opprett og åpne oppgavedetaljer
   all_tasks_done: Alle oppgaver fullført!
   card:
     schedule:
@@ -328,6 +329,9 @@ tasks:
       estimated_time_not_set: "Estimert Tid: Ikke satt"
       planned_date: "Planlagt: {date}"
       planned_date_not_set: "Planlagt: Ikke satt"
+      lock: Lås
+      unlock: Lås opp
+    new_task_default_title: Ny oppgave
   recurrence:
     count: Antall forekomster
     custom: Tilpasset

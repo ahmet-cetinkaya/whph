@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: 새 작업 추가
+    create_and_open_tooltip: 만들고 작업 세부 정보 열기
   all_tasks_done: 모든 작업이 완료되었습니다!
   card:
     schedule:
@@ -375,6 +376,9 @@ tasks:
       estimated_time_not_set: "예상 시간: 설정되지 않음"
       planned_date: "계획일: {date}"
       planned_date_not_set: "계획일: 설정되지 않음"
+      lock: 잠금
+      unlock: 잠금 해제
+    new_task_default_title: 새 작업
   recurrence:
     count: 발생 횟수
     custom: 사용자 정의

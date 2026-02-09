@@ -16,6 +16,7 @@ class PrioritySelectionDialog extends StatelessWidget {
   final ValueChanged<EisenhowerPriority?> onPrioritySelected;
   final ITranslationService translationService;
   final ThemeData theme;
+  final Widget? headerAction;
 
   const PrioritySelectionDialog({
     super.key,
@@ -23,6 +24,7 @@ class PrioritySelectionDialog extends StatelessWidget {
     required this.onPrioritySelected,
     required this.translationService,
     required this.theme,
+    this.headerAction,
   });
 
   @override
@@ -33,6 +35,7 @@ class PrioritySelectionDialog extends StatelessWidget {
         title: Text(translationService.translate(TaskTranslationKeys.priorityLabel)),
         automaticallyImplyLeading: true,
         actions: [
+          if (headerAction != null) headerAction!,
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(translationService.translate(SharedTranslationKeys.doneButton)),

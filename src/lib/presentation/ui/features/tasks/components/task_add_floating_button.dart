@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog/quick_add_task_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:acore/acore.dart';
@@ -86,7 +86,7 @@ class TaskAddFloatingButton extends StatelessWidget {
 
   /// Shows the task creation dialog as bottom sheet on mobile, dialog on desktop
   Future<void> _showTaskCreationDialog(BuildContext context) async {
-    await QuickAddTaskDialog.show(
+    await TaskCreationHelper.createTask(
       context: context,
       initialTagIds: initialTagIds,
       initialPlannedDate: initialPlannedDate,

@@ -404,6 +404,11 @@ settings:
         wordt geselecteerd.
       save_error: Fout bij opslaan van standaardherinneringinstelling
       load_error: Fout bij laden van standaardherinneringinstelling
+    skip_quick_add:
+      title: Snel toevoegen-dialoogvenster overslaan
+      description:
+        Snel toevoegen-dialoogvenster overslaan en direct naar de taakdetailpagina
+        gaan
   section:
     general: Algemeen
     appearance: Weergave

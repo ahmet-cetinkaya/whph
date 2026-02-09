@@ -16,6 +16,7 @@ class EstimatedTimeDialogContent extends StatelessWidget {
   final VoidCallback? onConfirm;
   final ITranslationService translationService;
   final ThemeData theme;
+  final Widget? headerAction;
 
   const EstimatedTimeDialogContent({
     super.key,
@@ -24,6 +25,7 @@ class EstimatedTimeDialogContent extends StatelessWidget {
     this.onConfirm,
     required this.translationService,
     required this.theme,
+    this.headerAction,
   });
 
   @override
@@ -37,6 +39,7 @@ class EstimatedTimeDialogContent extends StatelessWidget {
         ),
         automaticallyImplyLeading: true,
         actions: [
+          if (headerAction != null) headerAction!,
           TextButton(
             onPressed: () {
               onConfirm?.call();

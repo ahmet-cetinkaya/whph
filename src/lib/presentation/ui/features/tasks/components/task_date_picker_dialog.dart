@@ -28,6 +28,7 @@ class TaskDatePickerConfig {
   final DialogSize dialogSize;
   final acore.DateFormatType formatType;
   final BuildContext? context; // Add context parameter
+  final List<Widget>? headerActions;
 
   const TaskDatePickerConfig({
     this.initialDate,
@@ -45,6 +46,7 @@ class TaskDatePickerConfig {
     this.dialogSize = DialogSize.xLarge,
     this.formatType = acore.DateFormatType.dateTime,
     this.context, // Add context parameter
+    this.headerActions,
   });
 
   /// Creates a copy of this TaskDatePickerConfig with the given fields replaced
@@ -64,6 +66,7 @@ class TaskDatePickerConfig {
     DialogSize? dialogSize,
     acore.DateFormatType? formatType,
     BuildContext? context,
+    List<Widget>? headerActions,
   }) {
     return TaskDatePickerConfig(
       initialDate: initialDate ?? this.initialDate,
@@ -81,6 +84,7 @@ class TaskDatePickerConfig {
       dialogSize: dialogSize ?? this.dialogSize,
       formatType: formatType ?? this.formatType,
       context: context ?? this.context,
+      headerActions: headerActions ?? this.headerActions,
     );
   }
 }
@@ -211,6 +215,7 @@ class TaskDatePickerDialog {
           : null,
       formatType: config.formatType,
       translations: _buildTranslations(translationService),
+      headerActions: config.headerActions, // Pass header actions
     );
   }
 

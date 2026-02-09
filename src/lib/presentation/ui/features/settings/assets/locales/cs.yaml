@@ -391,6 +391,11 @@ settings:
       description: Automaticky nastavit připomínku po výběru plánovaného data.
       save_error: Chyba při ukládání nastavení výchozí připomínky
       load_error: Chyba při načítání nastavení výchozí připomínky
+    skip_quick_add:
+      title: Přeskočit dialog rychlého přidání
+      description:
+        Přeskočit dialog rychlého přidání a přejít přímo na stránku s podrobnostmi
+        úkolu
   section:
     general: Obecné
     appearance: Vzhled

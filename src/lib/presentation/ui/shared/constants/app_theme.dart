@@ -168,6 +168,8 @@ class AppTheme {
   static const double size3XLarge = 36.0;
   static const double size4XLarge = 48.0;
 
+  static const double dialogMaxWidthMedium = 720.0;
+
   // Button Sizes
   static const double buttonSize2XSmall = 20.0;
   static const double buttonSizeXSmall = 24.0;

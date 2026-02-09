@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Lisää uusi tehtävä
+    create_and_open_tooltip: Luo tehtävä ja avaa tiedot
   all_tasks_done: Kaikki tehtävät valmiiksi!
   card:
     schedule:
@@ -325,6 +326,9 @@ tasks:
       estimated_time_not_set: "Arvioitu Aika: Ei asetettu"
       planned_date: "Suunniteltu: {date}"
       planned_date_not_set: "Suunniteltu: Ei asetettu"
+      lock: Lukitse
+      unlock: Avaa lukitus
+    new_task_default_title: Uusi tehtävä
   recurrence:
     count: Toistojen Määrä
     custom: Mukautettu

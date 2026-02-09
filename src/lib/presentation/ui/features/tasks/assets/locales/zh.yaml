@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: 添加新任务
+    create_and_open_tooltip: 创建并打开任务详情
   all_tasks_done: 所有任务已完成！
   card:
     schedule:
@@ -366,6 +367,9 @@ tasks:
       estimated_time_not_set: 预计时间：未设置
       planned_date: 计划日期：{date}
       planned_date_not_set: 计划日期：未设置
+      lock: 锁定
+      unlock: 解锁
+    new_task_default_title: 新任务
   recurrence:
     count: 发生次数
     custom: 自定义

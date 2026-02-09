@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Lägg till ny uppgift
+    create_and_open_tooltip: Skapa och öppna uppgiftsdetaljer
   all_tasks_done: Alla uppgifter klara!
   card:
     schedule:
@@ -326,6 +327,9 @@ tasks:
       estimated_time_not_set: "Uppskattad Tid: Inte inställd"
       planned_date: "Planerad: {date}"
       planned_date_not_set: "Planerad: Inte inställd"
+      lock: Lås
+      unlock: Lås upp
+    new_task_default_title: Ny uppgift
   recurrence:
     count: Antal förekomster
     custom: Anpassad

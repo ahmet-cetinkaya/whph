@@ -19,7 +19,6 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
-import '../models/lock_settings_state.dart';
 
 /// Controller for QuickAddTaskDialog business logic.
 /// Separates data management and operations from UI concerns.
@@ -89,7 +88,6 @@ class QuickAddTaskController extends ChangeNotifier {
   bool get lockDeadlineDate => _lockDeadlineDate;
   bool get showEstimatedTimeSection => _showEstimatedTimeSection;
   bool get showDescriptionSection => _showDescriptionSection;
-  bool get hasAnyLocks => _lockTags || _lockPriority || _lockEstimatedTime || _lockPlannedDate || _lockDeadlineDate;
   String? get initialTitle => _initialTitle;
   String? get initialDescription => _initialDescription;
   bool? get initialCompleted => _initialCompleted;
@@ -279,23 +277,28 @@ class QuickAddTaskController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Lock state management
-  LockSettingsState getLockState() {
-    return LockSettingsState(
-      lockTags: _lockTags,
-      lockPriority: _lockPriority,
-      lockEstimatedTime: _lockEstimatedTime,
-      lockPlannedDate: _lockPlannedDate,
-      lockDeadlineDate: _lockDeadlineDate,
-    );
+  void toggleTagsLock() {
+    _lockTags = !_lockTags;
+    notifyListeners();
   }
 
-  void setLockState(LockSettingsState lockState) {
-    _lockTags = lockState.lockTags;
-    _lockPriority = lockState.lockPriority;
-    _lockEstimatedTime = lockState.lockEstimatedTime;
-    _lockPlannedDate = lockState.lockPlannedDate;
-    _lockDeadlineDate = lockState.lockDeadlineDate;
+  void togglePriorityLock() {
+    _lockPriority = !_lockPriority;
+    notifyListeners();
+  }
+
+  void toggleEstimatedTimeLock() {
+    _lockEstimatedTime = !_lockEstimatedTime;
+    notifyListeners();
+  }
+
+  void togglePlannedDateLock() {
+    _lockPlannedDate = !_lockPlannedDate;
+    notifyListeners();
+  }
+
+  void toggleDeadlineDateLock() {
+    _lockDeadlineDate = !_lockDeadlineDate;
     notifyListeners();
   }
 
@@ -360,6 +363,7 @@ class QuickAddTaskController extends ChangeNotifier {
     required FocusNode focusNode,
     required VoidCallback onClearFields,
     required bool isMobile,
+    Function(String taskId)? onSuccess,
   }) async {
     if (_isLoading || title.isEmpty) return;
 
@@ -416,11 +420,17 @@ class QuickAddTaskController extends ChangeNotifier {
           onTaskCreated!(response.id, taskData);
         }
 
+        if (onSuccess != null) {
+          onSuccess(response.id);
+        }
+
         onClearFields();
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          focusNode.requestFocus();
-        });
+        if (onSuccess == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            focusNode.requestFocus();
+          });
+        }
       },
       finallyAction: () {
         _isLoading = false;

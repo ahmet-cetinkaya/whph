@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Προσθήκη νέας εργασίας
+    create_and_open_tooltip: Δημιουργία και άνοιγμα λεπτομερειών εργασίας
   all_tasks_done: Όλες οι εργασίες ολοκληρώθηκαν!
   card:
     schedule:
@@ -338,6 +339,9 @@ tasks:
       estimated_time_not_set: "Εκτιμώμενος Χρόνος: Δεν ορίστηκε"
       planned_date: "Προγραμματισμένο: {date}"
       planned_date_not_set: "Προγραμματισμένο: Δεν ορίστηκε"
+      lock: Κλείδωμα
+      unlock: Ξεκλείδωμα
+    new_task_default_title: Νέα εργασία
   recurrence:
     count: Αριθμός επαναλήψεων
     custom: Προσαρμοσμένο

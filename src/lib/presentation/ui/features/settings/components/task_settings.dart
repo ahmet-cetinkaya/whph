@@ -11,6 +11,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/features/settings/components/task_settings/default_estimated_time_setting.dart';
 import 'package:whph/presentation/ui/features/settings/components/task_settings/default_reminder_setting.dart';
+import 'package:whph/presentation/ui/features/settings/components/task_settings/skip_quick_add_setting.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -125,6 +126,8 @@ class _TaskSettingsState extends State<TaskSettings> {
                 initialValue: _defaultPlannedDateReminder,
                 initialCustomOffset: _defaultPlannedDateReminderCustomOffset,
               ),
+              const SizedBox(height: AppTheme.sizeMedium),
+              const SkipQuickAddSetting(),
             ],
           ),
         ),

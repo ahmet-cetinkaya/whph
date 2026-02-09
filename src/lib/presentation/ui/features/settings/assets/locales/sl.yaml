@@ -402,6 +402,11 @@ settings:
       description: Samodejno nastavi opomnik, ko je izbran načrtovani datum.
       save_error: Napaka pri shranjevanju nastavitve privzetega opomnika
       load_error: Napaka pri nalaganju nastavitve privzetega opomnika
+    skip_quick_add:
+      title: Preskoči pogovorno okno za hitro dodajanje
+      description:
+        Preskoči pogovorno okno za hitro dodajanje in pojdi neposredno
+        na stran s podrobnostmi opravila
   section:
     general: Splošno
     appearance: Videz

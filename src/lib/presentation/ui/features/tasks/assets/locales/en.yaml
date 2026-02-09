@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Add new task
+    create_and_open_tooltip: Create and open task details
   all_tasks_done: All tasks completed!
   card:
     schedule:
@@ -300,6 +301,7 @@ tasks:
       urgent_important: Urgent & Important
       urgent_not_important: Urgent but Not Important
   quick_task:
+    new_task_default_title: New Task
     create_error: Error creating task
     lock_description:
       Lock properties to retain their values when creating multiple
@@ -321,6 +323,8 @@ tasks:
       estimated_time_not_set: "Estimated Time: Not set"
       planned_date: "Planned: {date}"
       planned_date_not_set: "Planned: Not set"
+      lock: Lock
+      unlock: Unlock
   recurrence:
     count: Number of occurrences
     custom: Custom

@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Adaugă sarcină nouă
+    create_and_open_tooltip: Creare și deschidere detalii sarcină
   all_tasks_done: Toate sarcinile finalizate!
   card:
     schedule:
@@ -334,6 +335,9 @@ tasks:
       estimated_time_not_set: "Timp Estimat: Nu setat"
       planned_date: "Planificat: {date}"
       planned_date_not_set: "Planificat: Nu setat"
+      lock: Blocare
+      unlock: Deblocare
+    new_task_default_title: Sarcină nouă
   recurrence:
     count: Număr de apariții
     custom: Personalizat

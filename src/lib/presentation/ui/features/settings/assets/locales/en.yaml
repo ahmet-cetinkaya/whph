@@ -377,6 +377,9 @@ settings:
       description: Automatically set a reminder when a planned date is selected.
       save_error: Error saving default reminder setting
       load_error: Error loading default reminder setting
+    skip_quick_add:
+      title: Skip Quick Add Dialog
+      description: Skip the Quick Add dialog and go directly to the task details page
   habit:
     title: Habit Settings
     description: Customize habit tracking behavior and preferences

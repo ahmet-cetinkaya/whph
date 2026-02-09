@@ -388,6 +388,9 @@ settings:
       description: Aseta automaattisesti muistutus, kun suunniteltu päivämäärä valitaan.
       save_error: Virhe tallennettaessa oletusmuistutuksen asetusta
       load_error: Virhe ladattaessa oletusmuistutuksen asetusta
+    skip_quick_add:
+      title: Ohita pikalisäysikkuna
+      description: Ohita pikalisäysikkuna ja siirry suoraan tehtävän tietoihin
   section:
     general: Yleinen
     appearance: Ulkoasu

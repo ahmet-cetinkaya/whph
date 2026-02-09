@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Додати нове завдання
+    create_and_open_tooltip: Створити та відкрити деталі завдання
   all_tasks_done: Всі завдання виконані!
   card:
     schedule:
@@ -409,6 +410,9 @@ tasks:
       estimated_time_not_set: "Орієнтовний час: Не встановлено"
       planned_date: "Заплановано: {date}"
       planned_date_not_set: "Заплановано: Не встановлено"
+      lock: Заблокувати
+      unlock: Розблокувати
+    new_task_default_title: Нове завдання
   recurrence:
     count: Кількість повторень
     custom: Користувацький

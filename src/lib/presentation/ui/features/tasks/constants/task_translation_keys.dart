@@ -39,6 +39,8 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String quickTaskLockSettings = 'tasks.quick_task.lock_settings';
   static const String quickTaskLockDescription = 'tasks.quick_task.lock_description';
   static const String taskAddedSuccessfully = 'tasks.quick_task.task_added_successfully';
+  static const String quickTaskLock = 'tasks.quick_task.tooltips.lock';
+  static const String quickTaskUnlock = 'tasks.quick_task.tooltips.unlock';
 
   // Estimated Time Dialog
   static const String estimatedTimeDescription = 'tasks.estimated_time.description';
@@ -58,9 +60,11 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   // Quick Task Reset Confirmation
   static const String quickTaskResetConfirmTitle = 'tasks.quick_task.reset_confirm.title';
   static const String quickTaskResetConfirmMessage = 'tasks.quick_task.reset_confirm.message';
+  static const String newTaskDefaultTitle = 'tasks.quick_task.new_task_default_title';
 
   // Task Add Button
   static const String addTaskButtonTooltip = 'tasks.add_button.tooltip';
+  static const String createAndOpenTaskTooltip = 'tasks.add_button.create_and_open_tooltip';
 
   // Task Card
   static const String taskScheduleTooltip = 'tasks.card.tooltips.schedule';
