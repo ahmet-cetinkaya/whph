@@ -476,9 +476,22 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     EisenhowerPriority? priority;
     final priorityIdx = idx['PRIORITY'];
     if (priorityIdx != null && priorityIdx >= 0 && priorityIdx < row.length) {
-      final pVal = int.tryParse(row[priorityIdx].toString());
+      final val = row[priorityIdx];
+      final valStr = val.toString().trim();
+
+      // Attempt robust numeric parsing first
+      int? pVal;
+      if (val is num) {
+        pVal = val.toInt();
+      } else {
+        pVal = int.tryParse(valStr);
+      }
+
       if (pVal != null && pVal >= 0 && pVal < EisenhowerPriority.values.length) {
         priority = EisenhowerPriority.values[pVal];
+      } else {
+        // Fallback to string text parsing
+        priority = _parsePriorityString(valStr);
       }
     }
 
@@ -554,17 +567,59 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     return tagIds;
   }
 
+  EisenhowerPriority? _parsePriorityString(String priorityStr) {
+    switch (priorityStr.toLowerCase()) {
+      case 'urgentimportant':
+      case 'urgent_important':
+      case 'urgent important':
+      case 'p1':
+      case 'critical':
+        return EisenhowerPriority.urgentImportant;
+      case 'urgent':
+      case 'urgentnotimportant':
+      case 'urgent_not_important':
+      case 'urgent not important':
+      case 'p2':
+        return EisenhowerPriority.urgentNotImportant;
+      case 'important':
+      case 'noturgentimportant':
+      case 'not_urgent_important':
+      case 'not urgent important':
+      case 'p3':
+        return EisenhowerPriority.notUrgentImportant;
+      case 'neither':
+      case 'noturgentnotimportant':
+      case 'not_urgent_not_important':
+      case 'not urgent not important':
+      case 'p4':
+      case 'low':
+        return EisenhowerPriority.notUrgentNotImportant;
+      default:
+        return null;
+    }
+  }
+
   DateTime? _parseDate(String dateStr) {
-    if (dateStr.isEmpty) return null;
+    final cleanedDateStr = dateStr.trim();
+    if (cleanedDateStr.isEmpty) return null;
     try {
-      return DateTime.parse(dateStr);
-    } on FormatException catch (e, stackTrace) {
-      Logger.warning(
-        '[${ImportErrorIds.dateParseError}] Failed to parse date: "$dateStr" - ${e.message}',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      return null;
+      // Try standard ISO format first
+      return DateTime.parse(cleanedDateStr);
+    } on FormatException {
+      try {
+        // Try replacing slashes with dashes and dots with dashes
+        // e.g. 2023/01/01 -> 2023-01-01
+        // e.g. 2023.01.01 -> 2023-01-01
+        final normalized = cleanedDateStr.replaceAll('/', '-').replaceAll('.', '-');
+        return DateTime.parse(normalized);
+      } catch (e, stackTrace) {
+        Logger.warning(
+          '[${ImportErrorIds.dateParseError}] Failed to parse date: "$dateStr" - $e',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        return null;
+      }
     }
   }
 }
