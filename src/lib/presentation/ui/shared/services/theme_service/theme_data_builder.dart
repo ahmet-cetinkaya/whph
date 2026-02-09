@@ -40,6 +40,7 @@ class ThemeDataBuilder {
       brightness: isDark ? Brightness.dark : Brightness.light,
       colorScheme: colorScheme,
       primaryColor: primaryColor,
+      fontFamilyFallback: AppTheme.fontFamilyFallback,
       scaffoldBackgroundColor: surface0,
       canvasColor: surface0,
       cardColor: surface2,
