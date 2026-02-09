@@ -531,4 +531,49 @@ void main() {
       }
     });
   });
+
+  group('ImportTasksCommandHandler Bug Fixes', () {
+    test('Issue #232: Should import string priorities and common date formats', () async {
+      reset(mockMediator);
+      final file = File('${tempDir.path}/issue_232.csv');
+      // Simulate user input with string priorities and slash-formatted dates
+      await file.writeAsString(
+        'TITLE,DESCRIPTION,PRIORITY,PLANNED_DATE,DEADLINE_DATE\n'
+        'Task String Priority,Desc 1,Urgent,2023-10-01,2023-10-02\n'
+        'Task Slash Date,Desc 2,1,2023/10/01,2023/10/02\n'
+        'Task Both Issues,Desc 3,Important,2023/10/01,2023/10/02\n',
+      );
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.generic,
+      ));
+
+      expect(response.successCount, 3);
+
+      // Verify Task 1: String Priority "Urgent" -> EisenhowerPriority.urgentNotImportant
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) {
+        if (cmd.title != 'Task String Priority') return false;
+        // "Urgent" should map to 1 (UrgentNotImportant)
+        return cmd.priority == EisenhowerPriority.urgentNotImportant;
+      })))).called(1);
+
+      // Verify Task 2: Slash Date "2023/10/01" -> DateTime(2023, 10, 1)
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) {
+        if (cmd.title != 'Task Slash Date') return false;
+        return cmd.plannedDate == DateTime(2023, 10, 1).toUtc() && cmd.deadlineDate == DateTime(2023, 10, 2).toUtc();
+      })))).called(1);
+
+      // Verify Task 3: Both
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) {
+        if (cmd.title != 'Task Both Issues') return false;
+        return cmd.priority == EisenhowerPriority.notUrgentImportant && // "Important" -> 2
+            cmd.plannedDate == DateTime(2023, 10, 1).toUtc();
+      })))).called(1);
+    });
+  });
 }
