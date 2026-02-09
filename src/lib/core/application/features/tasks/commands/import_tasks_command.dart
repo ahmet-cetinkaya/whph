@@ -93,6 +93,10 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
 
   ImportTasksCommandHandler(this._mediator);
 
+  /// Cache for resolved tag IDs during a single import run
+  /// Key: normalized tag name (lowercase), Value: tag ID
+  final Map<String, String> _tagIdCache = {};
+
   @override
   Future<ImportTasksCommandResponse> call(ImportTasksCommand request) async {
     // Validate file path
@@ -427,8 +431,12 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
   }
 
   List<String> _extractTodoistTags(String content) {
-    final tagRegex = RegExp(r'@(\S+)');
-    return tagRegex.allMatches(content).map((m) => m.group(1)!).toList();
+    // Match @tags but exclude trailing punctuation (comma, period, semicolon, colon, etc.)
+    // Use word boundary and trailing punctuation strip
+    final tagRegex = RegExp(r'@(\w+)');
+    final tags = tagRegex.allMatches(content).map((m) => m.group(1)!).toList();
+    // Strip any trailing punctuation that might have been captured
+    return tags.map((t) => t.replaceAll(RegExp(r'[.,;:!?\)\]\}]+$'), '')).toList();
   }
 
   String _cleanTodoistTitle(String content) {
@@ -500,11 +508,18 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     if (tagsString == null || tagsString.trim().isEmpty) return null;
 
     final tags = tagsString.split(',').map((t) => t.trim()).where((t) => t.isNotEmpty).toList();
-    Logger.info('DEBUG: tags=$tags');
     if (tags.isEmpty) return null;
 
     final List<String> tagIds = [];
     for (final tagName in tags) {
+      final normalizedTagName = tagName.toLowerCase();
+
+      // Check cache first for existing tag ID
+      if (_tagIdCache.containsKey(normalizedTagName)) {
+        tagIds.add(_tagIdCache[normalizedTagName]!);
+        continue;
+      }
+
       // Search for existing tag
       final query = GetListTagsQuery(
         pageIndex: 0,
@@ -513,26 +528,27 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       );
       final response = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
-      // Exact match check
-      final existingTag = response.items.isEmpty
-          ? null
-          : response.items.firstWhere(
-              (t) => t.name.toLowerCase() == tagName.toLowerCase(),
-              orElse: () => response.items.first, // Fallback to first if only one result and it's close?
-              // Actually firstWhere with orElse is safer.
-            );
+      // Find exact match using simplified logic
+      final existingTag = response.items.cast<TagListItem?>().firstWhere(
+            (t) => t!.name.toLowerCase() == normalizedTagName,
+            orElse: () => null,
+          );
 
-      // Re-verify if the name matches exactly (case-insensitive)
-      if (existingTag != null && existingTag.name.toLowerCase() == tagName.toLowerCase()) {
-        tagIds.add(existingTag.id);
+      String? tagId;
+      if (existingTag != null) {
+        tagId = existingTag.id;
       } else {
         // Create new tag
         final saveResponse = await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(SaveTagCommand(
           name: tagName,
           type: TagType.label,
         ));
-        tagIds.add(saveResponse.id);
+        tagId = saveResponse.id;
       }
+
+      // Cache the resolved tag ID
+      _tagIdCache[normalizedTagName] = tagId;
+      tagIds.add(tagId);
     }
 
     return tagIds;
