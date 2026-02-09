@@ -533,7 +533,7 @@ void main() {
   });
 
   group('ImportTasksCommandHandler Bug Fixes', () {
-    test('Issue #232: Should import string priorities and common date formats', () async {
+    test('Should import string priorities and common date formats', () async {
       reset(mockMediator);
       final file = File('${tempDir.path}/issue_232.csv');
       // Simulate user input with string priorities, slash-formatted dates, double priorities, and whitespace
