@@ -35,6 +35,13 @@ class AppTheme {
     'FangSong',
     'Malgun Gothic',
     'Meiryo',
+
+    // macOS
+    'PingFang SC',
+    'PingFang TC',
+    'Hiragino Sans GB',
+    'Heiti SC',
+
     // Linux
     'Noto Sans CJK SC',
     'Noto Sans CJK TC',
@@ -42,6 +49,7 @@ class AppTheme {
     'Noto Sans CJK KR',
     'WenQuanYi Micro Hei',
     'Droid Sans Fallback',
+
     // General
     'sans-serif',
   ];

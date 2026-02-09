@@ -4,7 +4,7 @@ import 'package:whph/presentation/ui/shared/services/theme_service/theme_data_bu
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 void main() {
-  test('ThemeDataBuilder includes fontFamilyFallback', () {
+  test('ThemeDataBuilder applies fontFamilyFallback to TextTheme', () {
     const builder = ThemeDataBuilder(
       isDark: false,
       primaryColor: Colors.blue,
@@ -21,9 +21,13 @@ void main() {
     );
 
     final themeData = builder.build(const ColorScheme.light());
+    final fallback = themeData.textTheme.bodyLarge?.fontFamilyFallback;
 
-    expect(themeData.textTheme.bodyLarge?.fontFamilyFallback, AppTheme.fontFamilyFallback);
-    expect(themeData.textTheme.bodyLarge?.fontFamilyFallback, contains('Microsoft YaHei'));
-    expect(themeData.textTheme.bodyLarge?.fontFamilyFallback, contains('Noto Sans CJK SC'));
+    expect(fallback, AppTheme.fontFamilyFallback);
+
+    // Check key fonts for each platform
+    expect(fallback, contains('Microsoft YaHei')); // Windows
+    expect(fallback, contains('PingFang SC')); // macOS
+    expect(fallback, contains('Noto Sans CJK SC')); // Linux
   });
 }
