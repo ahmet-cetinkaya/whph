@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/settings/queries/get_setting_quer
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
@@ -163,8 +164,12 @@ class QuickAddTaskController extends ChangeNotifier {
           notifyListeners();
         }
       }
-    } catch (_) {
-      // Setting not found or error - silently use default
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to load default estimated time setting',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _estimatedTime = TaskConstants.defaultEstimatedTime;
       notifyListeners();
     }
@@ -193,8 +198,12 @@ class QuickAddTaskController extends ChangeNotifier {
         _plannedDateReminderTime = TaskConstants.defaultReminderTime;
       }
       notifyListeners();
-    } catch (_) {
-      // Setting not found or error - silently use default
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to load default planned date reminder setting',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _plannedDateReminderTime = TaskConstants.defaultReminderTime;
       notifyListeners();
     }
@@ -217,7 +226,12 @@ class QuickAddTaskController extends ChangeNotifier {
       }
       _selectedTags = tagOptions;
       notifyListeners();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to load initial tags',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _selectedTags = _initialTagIds.map((id) => DropdownOption(label: '', value: id)).toList();
       notifyListeners();
     }

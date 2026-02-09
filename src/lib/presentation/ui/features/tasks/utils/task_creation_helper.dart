@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/tasks/commands/save_task_command.
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog/quick_add_task_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
@@ -43,8 +44,12 @@ class TaskCreationHelper {
       if (setting != null) {
         skipQuickAdd = setting.getValue<bool>();
       }
-    } catch (_) {
-      // Ignore error, use default
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to load skip quick add setting, using default',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
 
     if (!context.mounted) return;
@@ -109,7 +114,13 @@ class TaskCreationHelper {
           final value = setting.getValue<int?>();
           if (value != null && value > 0) estimatedTime = value;
         }
-      } catch (_) {}
+      } catch (e, stackTrace) {
+        Logger.error(
+          'Failed to load default estimated time setting',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
     }
 
     ReminderTime plannedDateReminderTime = ReminderTime.none;
@@ -134,7 +145,12 @@ class TaskCreationHelper {
       } else {
         plannedDateReminderTime = TaskConstants.defaultReminderTime;
       }
-    } catch (_) {
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to load default planned date reminder setting',
+        error: e,
+        stackTrace: stackTrace,
+      );
       plannedDateReminderTime = TaskConstants.defaultReminderTime;
     }
 
@@ -151,7 +167,7 @@ class TaskCreationHelper {
       context: context,
       errorMessage: translationService.translate(TaskTranslationKeys.saveTaskError),
       operation: () async {
-        final finalTitle = initialTitle ?? ''; // Empty title by default
+        final finalTitle = initialTitle ?? translationService.translate(TaskTranslationKeys.newTaskDefaultTitle);
 
         final command = SaveTaskCommand(
           title: finalTitle,
