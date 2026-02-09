@@ -314,6 +314,8 @@ settings:
     skip_quick_add:
       title: クイック追加ダイアログをスキップ
       description: クイック追加ダイアログをスキップして、タスク詳細ページに直接移動します
+      save_error: クイック追加をスキップ設定の保存中にエラーが発生しました
+      load_error: クイック追加をスキップ設定の読み込み中にエラーが発生しました
   section:
     general: 一般
     appearance: 外観

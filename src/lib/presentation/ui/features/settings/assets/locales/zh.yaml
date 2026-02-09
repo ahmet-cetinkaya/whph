@@ -310,6 +310,8 @@ settings:
     skip_quick_add:
       title: 跳过快速添加对话框
       description: 跳过快速添加对话框，直接进入任务详情页面
+      save_error: 保存跳过快速添加设置时出错
+      load_error: 加载跳过快速添加设置时出错
   section:
     general: 常规
     appearance: 外观

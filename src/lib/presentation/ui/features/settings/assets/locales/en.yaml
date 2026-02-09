@@ -380,6 +380,8 @@ settings:
     skip_quick_add:
       title: Skip Quick Add Dialog
       description: Skip the Quick Add dialog and go directly to the task details page
+      save_error: Error saving skip quick add setting
+      load_error: Error loading skip quick add setting
   habit:
     title: Habit Settings
     description: Customize habit tracking behavior and preferences

@@ -396,6 +396,8 @@ settings:
       description:
         Přeskočit dialog rychlého přidání a přejít přímo na stránku s podrobnostmi
         úkolu
+      save_error: Chyba při ukládání nastavení přeskakování rychlého přidání
+      load_error: Chyba při načítání nastavení přeskakování rychlého přidání
   section:
     general: Obecné
     appearance: Vzhled

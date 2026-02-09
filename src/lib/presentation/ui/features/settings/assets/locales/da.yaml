@@ -384,6 +384,10 @@ settings:
     skip_quick_add:
       title: Spring Hurtig Tilføj dialog over
       description: Spring Hurtig Tilføj dialog over og gå direkte til opgavedetaljer
+      save_error: Fejl under gemning af indstilling for spring hurtig tilføjelse over
+      load_error:
+        Fejl under indlæsning af indstilling for spring hurtig tilføjelse
+        over
   section:
     general: Generelt
     appearance: Udseende

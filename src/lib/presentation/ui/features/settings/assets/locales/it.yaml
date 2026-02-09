@@ -413,6 +413,8 @@ settings:
       description:
         Salta la finestra di aggiunta rapida e vai direttamente alla pagina
         dei dettagli dell'attività
+      save_error: Errore nel salvataggio dell'impostazione Salta aggiunta rapida
+      load_error: Errore nel caricamento dell'impostazione Salta aggiunta rapida
   section:
     general: Generale
     appearance: Aspetto

@@ -391,6 +391,8 @@ settings:
     skip_quick_add:
       title: Ohita pikalisäysikkuna
       description: Ohita pikalisäysikkuna ja siirry suoraan tehtävän tietoihin
+      save_error: Virhe tallennettaessa ohita pikalisäys -asetusta
+      load_error: Virhe ladattaessa ohita pikalisäys -asetusta
   section:
     general: Yleinen
     appearance: Ulkoasu

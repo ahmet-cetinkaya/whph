@@ -408,6 +408,8 @@ settings:
       description:
         Ignorar o diálogo de adição rápida e ir diretamente para a página
         de detalhes da tarefa
+      save_error: Erro ao salvar configuração de pular adição rápida
+      load_error: Erro ao carregar configuração de pular adição rápida
   section:
     general: Geral
     appearance: Aparência

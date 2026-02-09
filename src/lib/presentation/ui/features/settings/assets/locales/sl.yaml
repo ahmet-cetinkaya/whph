@@ -407,6 +407,8 @@ settings:
       description:
         Preskoči pogovorno okno za hitro dodajanje in pojdi neposredno
         na stran s podrobnostmi opravila
+      save_error: Napaka pri shranjevanju nastavitve preskoči hitro dodajanje
+      load_error: Napaka pri nalaganju nastavitve preskoči hitro dodajanje
   section:
     general: Splošno
     appearance: Videz

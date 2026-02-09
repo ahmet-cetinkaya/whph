@@ -438,6 +438,8 @@ settings:
       description:
         Ignorer la boîte de dialogue d'ajout rapide et aller directement
         à la page des détails de la tâche
+      save_error: Erreur lors de l'enregistrement du paramètre d'ajout rapide
+      load_error: Erreur lors du chargement du paramètre d'ajout rapide
   section:
     general: Général
     appearance: Apparence

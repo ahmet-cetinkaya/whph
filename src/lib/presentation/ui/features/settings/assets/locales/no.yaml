@@ -388,6 +388,8 @@ settings:
     skip_quick_add:
       title: Hopp over Hurtig legge til-dialog
       description: Hopp over Hurtig legge til-dialog og gå direkte til oppgavedetaljer
+      save_error: Feil under lagring av innstilling for å hoppe over rask tillegg
+      load_error: Feil under lasting av innstilling for å hoppe over rask tillegg
   section:
     general: Generelt
     appearance: Utseende

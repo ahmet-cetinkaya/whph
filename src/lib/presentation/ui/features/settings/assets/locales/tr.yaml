@@ -400,6 +400,8 @@ settings:
       description:
         Hızlı Ekle iletişim kutusunu atlayın ve doğrudan görev ayrıntıları
         sayfasına gidin
+      save_error: Hızlı ekle atlama ayarı kaydedilirken hata oluştu
+      load_error: Hızlı ekle atlama ayarı yüklenirken hata oluştu
   section:
     general: Genel
     appearance: Görünüm

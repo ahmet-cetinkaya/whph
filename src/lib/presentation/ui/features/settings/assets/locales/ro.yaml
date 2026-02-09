@@ -410,6 +410,8 @@ settings:
       description:
         Ignorare dialog de adăugare rapidă și mergere direct la pagina
         cu detalii sarcină
+      save_error: Eroare la salvarea setării de omitere adăugare rapidă
+      load_error: Eroare la încărcarea setării de omitere adăugare rapidă
   section:
     general: General
     appearance: Aspect

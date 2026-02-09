@@ -409,6 +409,8 @@ settings:
       description:
         Snel toevoegen-dialoogvenster overslaan en direct naar de taakdetailpagina
         gaan
+      save_error: Fout bij opslaan van instelling Snel toevoegen overslaan
+      load_error: Fout bij laden van instelling Snel toevoegen overslaan
   section:
     general: Algemeen
     appearance: Weergave

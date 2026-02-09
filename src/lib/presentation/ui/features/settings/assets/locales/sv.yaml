@@ -394,6 +394,8 @@ settings:
       description:
         Hopp över snabbadditioneringsdialogen och gå direkt till sidan
         med uppgiftsdetaljer
+      save_error: Fel vid sparning av inställning för hoppa över snabbtillägg
+      load_error: Fel vid inläsning av inställning för hoppa över snabbtillägg
   section:
     general: Allmänt
     appearance: Utseende

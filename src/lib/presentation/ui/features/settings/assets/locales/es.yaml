@@ -428,6 +428,8 @@ settings:
       description:
         Saltar el diálogo de agregar rápido e ir directamente a la página
         de detalles de la tarea
+      save_error: Error al guardar la configuración de omitir adición rápida
+      load_error: Error al cargar la configuración de omitir adición rápida
   section:
     general: General
     appearance: Apariencia

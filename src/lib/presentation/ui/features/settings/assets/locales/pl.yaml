@@ -412,6 +412,8 @@ settings:
       description:
         Pomiń okno szybkiego dodawania i przejdź bezpośrednio do strony
         szczegółów zadania
+      save_error: Błąd podczas zapisywania ustawienia pomijania szybkiego dodawania
+      load_error: Błąd podczas ładowania ustawienia pomijania szybkiego dodawania
   section:
     general: Ogólne
     appearance: Wygląd
