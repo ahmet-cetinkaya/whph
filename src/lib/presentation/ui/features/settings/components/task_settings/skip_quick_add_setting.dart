@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/settings/commands/save_setting_co
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
@@ -53,7 +54,12 @@ class _SkipQuickAddSettingState extends State<SkipQuickAddSetting> {
           _isLoading = false;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      Logger.error(
+        _translationService.translate(SettingsTranslationKeys.taskSkipQuickAddLoadError),
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (mounted) {
         setState(() {
           _isEnabled = TaskConstants.defaultSkipQuickAdd;
@@ -70,9 +76,8 @@ class _SkipQuickAddSettingState extends State<SkipQuickAddSetting> {
 
     await AsyncErrorHandler.executeWithLoading(
       context: context,
-      setLoading: (_) {}, // No loading overlay for switch toggle
-      errorMessage: _translationService
-          .translate('settings.task.skip_quick_add.save_error'), // Fallback error message if key doesn't exist
+      setLoading: (_) {},
+      errorMessage: _translationService.translate(SettingsTranslationKeys.taskSkipQuickAddSaveError),
       operation: () async {
         await _mediator.send<SaveSettingCommand, SaveSettingCommandResponse>(
           SaveSettingCommand(
