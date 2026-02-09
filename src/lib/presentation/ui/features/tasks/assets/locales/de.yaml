@@ -329,8 +329,24 @@ tasks:
 
       - **Spalte 5**: Fälligkeitsdatum (YYYY-MM-DD, Optional)
 
+      - **Spalte 6**: Tags (Optional, durch Kommas getrennt)
 
       Hinweis: Die erste Zeile wird als Kopfzeile behandelt und übersprungen."
+    todoist_info_title: Todoist CSV-Export
+    todoist_info_description: "Exportieren Sie Ihr Projekt als CSV-Datei:
+
+
+
+      1. Melden Sie sich unter https://todoist.com bei Todoist an
+
+
+      2. Öffnen Sie ein bestehendes Projekt
+
+
+      3. Klicken Sie auf das Dreipunkt-Symbol oben rechts
+
+
+      4. Wählen Sie **Als CSV exportieren**"
   page:
     completed_tasks_title: Erledigte Aufgaben
     title: Aufgaben

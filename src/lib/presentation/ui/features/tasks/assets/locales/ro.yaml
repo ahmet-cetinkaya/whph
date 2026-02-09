@@ -251,8 +251,24 @@ tasks:
 
       - **Coloana 5**: Data limită (YYYY-MM-DD, Opțional)
 
+      - **Coloana 6**: Etichete (Opțional, separate prin virgule)
 
       Notă: Primul rând este tratat ca antet și va fi sărit."
+    todoist_info_title: Export CSV Todoist
+    todoist_info_description: "Exportați proiectul dvs. ca fișier CSV:
+
+
+
+      1. Conectați-vă la Todoist la https://todoist.com
+
+
+      2. Deschideți un proiect existent
+
+
+      3. Faceți clic pe pictograma cu trei puncte din colțul din dreapta sus
+
+
+      4. Selectați **Exportați ca CSV**"
   page:
     completed_tasks_title: Sarcini finalizate
     title: Sarcini

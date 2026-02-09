@@ -240,9 +240,20 @@ tasks:
       - **Column 4**: Planned Date (YYYY-MM-DD, Optional)
 
       - **Column 5**: Deadline Date (YYYY-MM-DD, Optional)
-
+      - **Column 6**: Tags (Optional, comma-separated)
 
       Note: The first row is treated as a header and will be skipped."
+    todoist_info_title: Todoist CSV Export
+    todoist_info_description: "Export your project as a CSV file:
+
+
+      1. Log in to Todoist at https://todoist.com
+
+      2. Open an existing project
+
+      3. Click the three dots icon at the top-right
+
+      4. Select **Export as CSV**"
   page:
     completed_tasks_title: Completed tasks
     title: Tasks

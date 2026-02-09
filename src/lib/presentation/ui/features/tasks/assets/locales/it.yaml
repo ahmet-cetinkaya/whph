@@ -329,8 +329,24 @@ tasks:
 
       - **Colonna 5**: Data di scadenza (YYYY-MM-DD, Facoltativo)
 
+      - **Colonna 6**: Tag (Opzionale, separati da virgole)
 
       Nota: La prima riga viene trattata come intestazione e verrà saltata."
+    todoist_info_title: Esporta CSV da Todoist
+    todoist_info_description: "Esporta il tuo progetto come file CSV:
+
+
+
+      1. Accedi a Todoist su https://todoist.com
+
+
+      2. Apri un progetto esistente
+
+
+      3. Fai clic sull'icona dei tre puntini in alto a destra
+
+
+      4. Seleziona **Esporta come CSV**"
   page:
     completed_tasks_title: Attività completate
     title: Attività

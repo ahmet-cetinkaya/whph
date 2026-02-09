@@ -328,8 +328,24 @@ tasks:
 
       - **Columna 5**: Fecha límite (YYYY-MM-DD, Opcional)
 
+      - **Columna 6**: Etiquetas (Opcional, separadas por comas)
 
       Nota: La primera fila se trata como encabezado y se omitirá."
+    todoist_info_title: Exportar CSV de Todoist
+    todoist_info_description: "Exporta tu proyecto como un archivo CSV:
+
+
+
+      1. Inicia sesión en Todoist en https://todoist.com
+
+
+      2. Abre un proyecto existente
+
+
+      3. Haz clic en el icono de tres puntos en la esquina superior derecha
+
+
+      4. Selecciona **Exportar como CSV**"
   page:
     completed_tasks_title: Tareas completadas
     title: Tareas

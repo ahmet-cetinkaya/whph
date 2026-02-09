@@ -333,8 +333,24 @@ tasks:
 
       - **Colonne 5** : Date limite (AAAA-MM-JJ, Facultatif)
 
+      - **Colonne 6** : Étiquettes (Optionnel, séparées par des virgules)
 
       Remarque : La première ligne est traitée comme un en-tête et sera ignorée."
+    todoist_info_title: Export CSV Todoist
+    todoist_info_description: "Exportez votre projet au format CSV :
+
+
+
+      1. Connectez-vous à Todoist sur https://todoist.com
+
+
+      2. Ouvrez un projet existant
+
+
+      3. Cliquez sur l'icône à trois points en haut à droite
+
+
+      4. Sélectionnez **Exporter en CSV**"
   page:
     completed_tasks_title: Tâches terminées
     title: Tâches

@@ -246,8 +246,24 @@ tasks:
 
       - **Kolonne 5**: Fristdato (YYYY-MM-DD, Valgfritt)
 
+      - **Kolonne 6**: Merker (Valgfritt, kommaseparert)
 
       Merk: Første rad behandles som en overskrift og vil bli hoppet over."
+    todoist_info_title: Todoist CSV-eksport
+    todoist_info_description: "Eksporter prosjektet ditt som en CSV-fil:
+
+
+
+      1. Logg inn på Todoist på https://todoist.com
+
+
+      2. Åpne et eksisterende prosjekt
+
+
+      3. Klikk på ikonet med tre prikker i øvre høyre hjørne
+
+
+      4. Velg **Eksporter som CSV**"
   page:
     completed_tasks_title: Fullførte oppgaver
     title: Oppgaver

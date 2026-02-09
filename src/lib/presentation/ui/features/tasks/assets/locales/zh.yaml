@@ -290,8 +290,24 @@ tasks:
 
       - **第 5 列**：截止日期（YYYY-MM-DD，可选）
 
+      - **第 6 列**：标签（可选，逗号分隔）
 
       注意：第一行将被视为标题并跳过。"
+    todoist_info_title: Todoist CSV 导出
+    todoist_info_description: "将您的项目导出为 CSV 文件:
+
+
+
+      1. 在 https://todoist.com 登录 Todoist
+
+
+      2. 打开现有项目
+
+
+      3. 点击右上角的三点图标
+
+
+      4. 选择 **导出为 CSV**"
   page:
     completed_tasks_title: 已完成任务
     title: 任务

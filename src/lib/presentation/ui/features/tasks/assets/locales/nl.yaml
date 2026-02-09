@@ -247,8 +247,24 @@ tasks:
 
       - **Kolom 5**: Uiterste datum (YYYY-MM-DD, Optioneel)
 
+      - **Kolom 6**: Tags (Optioneel, door komma's gescheiden)
 
       Opmerking: De eerste rij wordt behandeld als koptekst en wordt overgeslagen."
+    todoist_info_title: Todoist CSV-export
+    todoist_info_description: "Exporteer je project als een CSV-bestand:
+
+
+
+      1. Log in bij Todoist op https://todoist.com
+
+
+      2. Open een bestaand project
+
+
+      3. Klik op het pictogram met drie stippen rechtsboven
+
+
+      4. Selecteer **Exporteren als CSV**"
   page:
     completed_tasks_title: Voltooide taken
     title: Taken

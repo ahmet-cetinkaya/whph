@@ -323,8 +323,24 @@ tasks:
 
       - **Sloupec 5**: Datum termínu (YYYY-MM-DD, Volitelné)
 
+      - **Sloupec 6**: Štítky (Volitelné, oddělené čárkou)
 
       Poznámka: První řádek je považován za záhlaví a bude přeskočen."
+    todoist_info_title: Export CSV z Todoist
+    todoist_info_description: "Exportujte svůj projekt jako soubor CSV:
+
+
+
+      1. Přihlaste se k Todoist na https://todoist.com
+
+
+      2. Otevřete existující projekt
+
+
+      3. Klikněte na ikonu tří teček v pravém horním rohu
+
+
+      4. Vyberte **Exportovat jako CSV**"
   page:
     completed_tasks_title: Dokončené úkoly
     title: Úkoly

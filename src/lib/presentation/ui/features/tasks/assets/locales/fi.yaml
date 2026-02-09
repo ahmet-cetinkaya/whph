@@ -243,8 +243,24 @@ tasks:
 
       - **Sarake 5**: Määräpäivä (VVVV-KK-PP, Valinnainen)
 
+      - **Sarake 6**: Tunnisteet (Valinnainen, pilkuilla erotettu)
 
       Huom: Ensimmäinen rivi käsitellään otsikkona ja ohitetaan."
+    todoist_info_title: Todoist CSV-vienti
+    todoist_info_description: "Vie projektisi CSV-tiedostona:
+
+
+
+      1. Kirjaudu Todoist-tilille osoitteessa https://todoist.com
+
+
+      2. Avaa olemassa oleva projekti
+
+
+      3. Napsauta kolmen pisteen kuvaketta oikeassa yläkulmassa
+
+
+      4. Valitse **Vie CSV-nä**"
   page:
     completed_tasks_title: Valmistuneet tehtävät
     title: Tehtävät
