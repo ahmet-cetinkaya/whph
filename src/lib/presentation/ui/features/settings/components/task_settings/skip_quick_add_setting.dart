@@ -26,6 +26,7 @@ class _SkipQuickAddSettingState extends State<SkipQuickAddSetting> {
   final _translationService = container.resolve<ITranslationService>();
   bool? _isEnabled;
   bool _isLoading = true;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -70,13 +71,22 @@ class _SkipQuickAddSettingState extends State<SkipQuickAddSetting> {
   }
 
   Future<void> _onChanged(bool value) async {
+    // Optimistic UI update
+    final previousValue = _isEnabled;
     setState(() {
       _isEnabled = value;
+      _isSaving = true;
     });
 
     await AsyncErrorHandler.executeWithLoading(
       context: context,
-      setLoading: (_) {},
+      setLoading: (isLoading) {
+        if (mounted) {
+          setState(() {
+            _isSaving = isLoading;
+          });
+        }
+      },
       errorMessage: _translationService.translate(SettingsTranslationKeys.taskSkipQuickAddSaveError),
       operation: () async {
         await _mediator.send<SaveSettingCommand, SaveSettingCommandResponse>(
@@ -90,9 +100,11 @@ class _SkipQuickAddSettingState extends State<SkipQuickAddSetting> {
       },
       onError: (_) {
         // Revert on error
-        setState(() {
-          _isEnabled = !value;
-        });
+        if (mounted) {
+          setState(() {
+            _isEnabled = previousValue;
+          });
+        }
       },
     );
   }
@@ -112,10 +124,10 @@ class _SkipQuickAddSettingState extends State<SkipQuickAddSetting> {
       isActive: _isEnabled ?? TaskConstants.defaultSkipQuickAdd,
       trailing: Switch(
         value: _isEnabled ?? TaskConstants.defaultSkipQuickAdd,
-        onChanged: _onChanged,
+        onChanged: _isSaving ? null : _onChanged,
         activeColor: theme.colorScheme.primary,
       ),
-      onTap: () => _onChanged(!(_isEnabled ?? TaskConstants.defaultSkipQuickAdd)),
+      onTap: _isSaving ? () {} : () => _onChanged(!(_isEnabled ?? TaskConstants.defaultSkipQuickAdd)),
     );
   }
 }
