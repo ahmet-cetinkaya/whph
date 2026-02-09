@@ -291,9 +291,20 @@ tasks:
       - **Sütun 4**: Planlanan Tarih (YYYY-MM-DD, İsteğe Bağlı)
 
       - **Sütun 5**: Son Tarih (YYYY-MM-DD, İsteğe Bağlı)
-
+      - **Sütun 6**: Etiketler (İsteğe Bağlı, virgülle ayrılmış)
 
       Not: İlk satır başlık olarak kabul edilir ve atlanır."
+    todoist_info_title: Todoist CSV Dışa Aktarımı
+    todoist_info_description: "Projenizi CSV dosyası olarak dışa aktarın:
+
+
+      1. https://todoist.com adresinden Todoist'e giriş yapın
+
+      2. Mevcut bir projeyi açın
+
+      3. Sağ üstteki üç nokta simgesine tıklayın
+
+      4. **CSV olarak dışa aktar**'ı seçin"
   page:
     completed_tasks_title: Tamamlanan görevler
     title: Görevler

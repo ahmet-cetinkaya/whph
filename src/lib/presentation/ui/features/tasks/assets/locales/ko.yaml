@@ -297,8 +297,24 @@ tasks:
 
       - **열 5**: 마감 날짜(YYYY-MM-DD, 선택 사항)
 
+      - **열 6**: 태그 (선택 사항, 쉼표로 구분)
 
       참고: 첫 번째 행은 헤더로 처리되며 건너뜁니다."
+    todoist_info_title: Todoist CSV 내보내기
+    todoist_info_description: "프로젝트를 CSV 파일로 내보내세요:
+
+
+
+      1. https://todoist.com에서 Todoist에 로그인하세요
+
+
+      2. 기존 프로젝트를 엽니다
+
+
+      3. 오른쪽 상단의 점 3개 아이콘을 클릭하세요
+
+
+      4. **CSV로 내보내기**를 선택하세요"
   page:
     completed_tasks_title: 완료된 작업
     title: 작업

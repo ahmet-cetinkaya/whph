@@ -243,8 +243,24 @@ tasks:
 
       - **Stolpec 5**: Rok (YYYY-MM-DD, Izbirno)
 
+      - **Stolpec 6**: Oznake (Izbirno, ločene z vejicami)
 
       Opomba: Prva vrstica se obravnava kot naslov in bo preskočena."
+    todoist_info_title: Todoist CSV izvoz
+    todoist_info_description: "Izvozite svoj projekt kot datoteko CSV:
+
+
+
+      1. Prijavite se v Todoist na https://todoist.com
+
+
+      2. Odprite obstoječi projekt
+
+
+      3. Kliknite na ikono s tremi točkami v zgornjem desnem kotu
+
+
+      4. Izberite **Izvozi kot CSV**"
   page:
     completed_tasks_title: Zaključene naloge
     title: Naloge

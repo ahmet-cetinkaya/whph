@@ -244,8 +244,24 @@ tasks:
 
       - **Kolumn 5**: Förfallodatum (YYYY-MM-DD, Valfritt)
 
+      - **Kolumn 6**: Taggar (Valfritt, kommaseparerad)
 
       Obs: Första raden behandlas som en rubrik och kommer att hoppas över."
+    todoist_info_title: Todoist CSV-export
+    todoist_info_description: "Exportera ditt projekt som en CSV-fil:
+
+
+
+      1. Logga in på Todoist på https://todoist.com
+
+
+      2. Öppna ett befintligt projekt
+
+
+      3. Klicka på ikonen med tre punkter i övre högra hörnet
+
+
+      4. Välj **Exportera som CSV**"
   page:
     completed_tasks_title: Slutförda uppgifter
     title: Uppgifter

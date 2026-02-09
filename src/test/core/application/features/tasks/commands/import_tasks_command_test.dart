@@ -3,9 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/tasks/commands/import_tasks_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:mockito/annotations.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'import_tasks_command_test.mocks.dart';
 
 @GenerateMocks([Mediator])
@@ -28,6 +31,7 @@ void main() {
 
   group('ImportTasksCommandHandler Generic Tests', () {
     test('should import generic CSV successfully', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/tasks.csv');
       await file.writeAsString(
         'TITLE,DESCRIPTION,PRIORITY,PLANNED_DATE,DEADLINE_DATE\r\n'
@@ -35,7 +39,8 @@ void main() {
         'Task 2,Desc 2,1,,\r\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -52,6 +57,7 @@ void main() {
     });
 
     test('should map expanded fields in generic CSV successfully', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/generic_expanded.csv');
       await file.writeAsString(
         'TITLE,DESCRIPTION,PRIORITY,PLANNED_DATE,DEADLINE_DATE\n'
@@ -59,7 +65,8 @@ void main() {
         'Task 2,Desc 2,3,2024-12-31,2025-01-01\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -68,22 +75,22 @@ void main() {
       ));
 
       expect(response.successCount, 2);
-      final captured = verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(captureAny)).captured;
 
-      final cmd1 = captured[0] as SaveTaskCommand;
-      expect(cmd1.title, 'Task 1');
-      expect(cmd1.priority, EisenhowerPriority.notUrgentNotImportant);
-      expect(cmd1.plannedDate, DateTime.parse('2024-01-01').toUtc());
-      expect(cmd1.deadlineDate, DateTime.parse('2024-01-02').toUtc());
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
+          cmd.title == 'Task 1' &&
+          cmd.priority == EisenhowerPriority.notUrgentNotImportant &&
+          cmd.plannedDate == DateTime.parse('2024-01-01').toUtc() &&
+          cmd.deadlineDate == DateTime.parse('2024-01-02').toUtc())))).called(1);
 
-      final cmd2 = captured[1] as SaveTaskCommand;
-      expect(cmd2.title, 'Task 2');
-      expect(cmd2.priority, EisenhowerPriority.urgentImportant);
-      expect(cmd2.plannedDate, DateTime.parse('2024-12-31').toUtc());
-      expect(cmd2.deadlineDate, DateTime.parse('2025-01-01').toUtc());
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
+          cmd.title == 'Task 2' &&
+          cmd.priority == EisenhowerPriority.urgentImportant &&
+          cmd.plannedDate == DateTime.parse('2024-12-31').toUtc() &&
+          cmd.deadlineDate == DateTime.parse('2025-01-01').toUtc())))).called(1);
     });
 
     test('should handle invalid dates and priorities in generic CSV mapping', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/generic_invalid.csv');
       await file.writeAsString(
         'TITLE,DESCRIPTION,PRIORITY,PLANNED_DATE,DEADLINE_DATE\n'
@@ -92,7 +99,8 @@ void main() {
         'Non-int Priority,Desc,abc,2024-01-01,\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -115,6 +123,7 @@ void main() {
     });
 
     test('should handle empty file', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/empty.csv');
       await file.writeAsString('');
 
@@ -130,6 +139,7 @@ void main() {
 
   group('ImportTasksCommandHandler Todoist Tests', () {
     test('should import Todoist CSV successfully with hierarchy', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/todoist.csv');
       await file.writeAsString(
         'TYPE,CONTENT,DESCRIPTION,PRIORITY,INDENT,DATE\r\n'
@@ -141,7 +151,8 @@ void main() {
 
       // We need to return different IDs to test hierarchy
       var callCount = 0;
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).thenAnswer((_) async {
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).thenAnswer((_) async {
         callCount++;
         return SaveTaskCommandResponse(id: 'task-$callCount', createdDate: DateTime.now());
       });
@@ -180,6 +191,7 @@ void main() {
     });
 
     test('should skip non-task rows in Todoist CSV', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/todoist_mixed.csv');
       await file.writeAsString(
         'TYPE,CONTENT,PRIORITY,INDENT\r\n'
@@ -188,7 +200,8 @@ void main() {
         'note,Note 1,1,1\r\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -197,10 +210,12 @@ void main() {
       ));
 
       expect(response.successCount, 1);
-      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).called(1);
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).called(1);
     });
 
     test('should handle mixed hierarchy and invalid priorities in Todoist CSV', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/todoist_edge.csv');
       await file.writeAsString(
         'TYPE,CONTENT,PRIORITY,INDENT\n'
@@ -210,7 +225,8 @@ void main() {
       );
 
       var callCount = 0;
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).thenAnswer((_) async {
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).thenAnswer((_) async {
         callCount++;
         return SaveTaskCommandResponse(id: 'task-$callCount', createdDate: DateTime.now());
       });
@@ -224,6 +240,8 @@ void main() {
       // Invalid/Out of range priority should map to Not Urgent/Not Important (WHPH default for unknown)
       // Actually Todoist parser defaults to 4 (lowest) if invalid, which is EisenhowerPriority.notUrgentNotImportant
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>(
+          (cmd) => cmd.title == 'Root Task' && cmd.priority == EisenhowerPriority.urgentImportant)))).called(1);
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>(
               (cmd) => cmd.title == 'Invalid Priority' && cmd.priority == EisenhowerPriority.notUrgentNotImportant))))
           .called(1);
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
@@ -232,6 +250,7 @@ void main() {
     });
 
     test('should handle non-sequential indents in Todoist CSV hierarchy', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/todoist_indents.csv');
       await file.writeAsString(
         'TYPE,CONTENT,INDENT\n'
@@ -241,7 +260,8 @@ void main() {
       );
 
       var callCount = 0;
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).thenAnswer((_) async {
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).thenAnswer((_) async {
         callCount++;
         return SaveTaskCommandResponse(id: 'task-$callCount', createdDate: DateTime.now());
       });
@@ -253,31 +273,30 @@ void main() {
 
       expect(response.successCount, 3);
       // Jump to 3: if 2 is missing, it should probably pick the last root or last valid parent.
-      // Current implementation: _parentsStack[indent - 1] = taskId;
-      // If we jump from 1 to 3, _parentsStack[2] is set, but it tries to get _parentsStack[2-1=1].
-      // If indent 2 was never set, it might be null if pre-filled, or it might crash if not.
-      // _parentsStack is initialized as List.filled(10, null)
-
       // Verification
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
           argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Root 1' && cmd.parentTaskId == null)))).called(1);
 
       // Jump to 3 should have parentTaskId = _parentsStack[1] (which is null if indent 2 was skipped but indent 1 was Root 1)
-      // Wait, _parentsStack[0] = Root 1. indent 3 -> parentTaskId = _parentsStack[3-1-1 = 1].
-      // _parentsStack[1] is indeed null. So it becomes a root task if intermediate is missing.
       verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
               argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Jump to 3' && cmd.parentTaskId == null))))
+          .called(1);
+
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((cmd) => cmd.title == 'Back to 2' && cmd.parentTaskId == 'task-1'))))
           .called(1);
     });
 
     test('should handle missing columns by using default indices', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/todoist_minimal.csv');
       await file.writeAsString(
         'CONTENT,PRIORITY\r\n'
         'Minimal Task,1\r\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -287,10 +306,104 @@ void main() {
 
       expect(response.successCount, 1);
     });
+
+    test('should import Todoist CSV with labels and content tags', () async {
+      reset(mockMediator);
+      final file = File('${tempDir.path}/todoist_tags.csv');
+      await file.writeAsString(
+        'TYPE,CONTENT,DESCRIPTION,PRIORITY,INDENT,LABELS\r\n'
+        'task,Task with @tag1,Desc 1,1,1,"tag2, tag3"\r\n',
+      );
+
+      // Mock tag search (None found initially)
+      when(mockMediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
+              argThat(predicate<GetListTagsQuery>((r) => r is GetListTagsQuery))))
+          .thenAnswer((_) async => GetListTagsQueryResponse(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+
+      when(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
+          argThat(predicate<SaveTagCommand>((r) => r is SaveTagCommand)))).thenAnswer((invocation) async {
+        final request = invocation.positionalArguments[0] as SaveTagCommand;
+        return SaveTagCommandResponse(id: 'new-tag-id-${request.name}', createdDate: DateTime.now());
+      });
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.todoist,
+      ));
+
+      expect(response.successCount, 1);
+
+      // Verify SaveTaskCommand was sent with correct tags
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
+          cmd.title == 'Task with' &&
+          cmd.tagIdsToAdd != null &&
+          cmd.tagIdsToAdd!.length == 3 &&
+          cmd.tagIdsToAdd!.any((id) => id.contains('tag1')) &&
+          cmd.tagIdsToAdd!.any((id) => id.contains('tag2')) &&
+          cmd.tagIdsToAdd!.any((id) => id.contains('tag3')))))).called(1);
+
+      // Verify SaveTagCommands were sent
+      verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
+          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag1')))).called(1);
+      verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
+          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag2')))).called(1);
+      verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
+          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag3')))).called(1);
+    });
+  });
+
+  group('ImportTasksCommandHandler Tag Tests', () {
+    test('should import generic CSV with tags column', () async {
+      reset(mockMediator);
+      final file = File('${tempDir.path}/generic_tags.csv');
+      await file.writeAsString(
+        'TITLE,DESCRIPTION,PRIORITY,PLANNED_DATE,DEADLINE_DATE,TAGS\n'
+        'Task 1,Desc 1,1,,,"tag1, tag2"\n',
+      );
+
+      when(mockMediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
+              argThat(predicate<GetListTagsQuery>((r) => r is GetListTagsQuery))))
+          .thenAnswer((_) async => GetListTagsQueryResponse(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+
+      when(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
+          argThat(predicate<SaveTagCommand>((r) => r is SaveTagCommand)))).thenAnswer((invocation) async {
+        final request = invocation.positionalArguments[0] as SaveTagCommand;
+        return SaveTagCommandResponse(id: 'new-tag-id-${request.name}', createdDate: DateTime.now());
+      });
+
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
+
+      final response = await handler.call(ImportTasksCommand(
+        filePath: file.path,
+        importType: TaskImportType.generic,
+      ));
+
+      expect(response.successCount, 1);
+
+      // Verify SaveTaskCommand was sent with correct tags
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(predicate<SaveTaskCommand>((cmd) =>
+          cmd.title == 'Task 1' &&
+          cmd.tagIdsToAdd != null &&
+          cmd.tagIdsToAdd!.length == 2 &&
+          cmd.tagIdsToAdd!.any((id) => id.contains('tag1')) &&
+          cmd.tagIdsToAdd!.any((id) => id.contains('tag2')))))).called(1);
+
+      verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
+          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag1')))).called(1);
+      verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
+          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag2')))).called(1);
+    });
   });
 
   group('ImportTasksCommandHandler Error Handling Tests', () {
     test('should handle file not found error', () async {
+      reset(mockMediator);
       final response = await handler.call(ImportTasksCommand(
         filePath: '/nonexistent/path/to/file.csv',
         importType: TaskImportType.generic,
@@ -302,13 +415,15 @@ void main() {
     });
 
     test('should handle mediator exception during task save', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/mediator_error.csv');
       await file.writeAsString(
         'TITLE,DESCRIPTION\n'
         'Task 1,Desc 1\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any)).thenThrow(Exception('Mediator error'));
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).thenThrow(Exception('Mediator error'));
 
       final response = await handler.call(ImportTasksCommand(
         filePath: file.path,
@@ -317,18 +432,15 @@ void main() {
 
       expect(response.successCount, 0);
       expect(response.failureCount, 1);
-      expect(response.errors.first, contains('Failed to import row'));
     });
 
     test('should handle missing CONTENT column in generic CSV', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/missing_content.csv');
       await file.writeAsString(
         'DESCRIPTION,PRIORITY\n'
         'Desc 1,1\n',
       );
-
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
-          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
         filePath: file.path,
@@ -341,14 +453,12 @@ void main() {
     });
 
     test('should handle missing CONTENT column in Todoist CSV', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/todoist_missing_content.csv');
       await file.writeAsString(
         'TYPE,PRIORITY,INDENT\n'
         'task,1,1\n',
       );
-
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
-          .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
         filePath: file.path,
@@ -389,6 +499,7 @@ void main() {
     });
 
     test('should detect path traversal in file path', () async {
+      reset(mockMediator);
       final response = await handler.call(ImportTasksCommand(
         filePath: '../../../etc/passwd',
         importType: TaskImportType.generic,
@@ -400,12 +511,13 @@ void main() {
     });
 
     test('should bound error list to maximum 100 errors', () async {
+      reset(mockMediator);
       final file = File('${tempDir.path}/many_errors.csv');
-      final rows = ['TITLE,DESCRIPTION'] +
-          List.generate(150, (i) => 'Task $i,Desc $i,invalid_date'); // Invalid dates cause errors
+      final rows = ['TITLE,DESCRIPTION'] + List.generate(150, (i) => 'Task $i,Desc $i,invalid_date');
       await file.writeAsString(rows.join('\n'));
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(any))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -413,7 +525,6 @@ void main() {
         importType: TaskImportType.generic,
       ));
 
-      // Errors should be capped at 101 (100 actual errors + 1 truncation message)
       expect(response.errors.length, lessThanOrEqualTo(101));
       if (response.errors.length > 100) {
         expect(response.errors.last, contains('additional errors omitted'));

@@ -292,8 +292,25 @@ tasks:
 
       - **列5**: 期限日（YYYY-MM-DD、オプション）
 
+      - **列6**: タグ（オプション、カンマ区切り）
 
       注：最初の行はヘッダーとして扱われ、スキップされます。"
+    todoist_info_title: Todoist CSVエクスポート
+    todoist_info_description:
+      "プロジェクトをCSVファイルとしてエクスポートします:
+
+
+
+      1. https://todoist.com でTodoistにログインします
+
+
+      2. 既存のプロジェクトを開きます
+
+
+      3. 右上の3点アイコンをクリックします
+
+
+      4. **CSVとしてエクスポート**を選択します"
   page:
     completed_tasks_title: 完了したタスク
     title: タスク

@@ -64,8 +64,6 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   String? _selectedFilePath;
-  String? _selectedTaskFilePath;
-  TaskImportType _taskImportType = TaskImportType.generic;
   ExportDataFileOptions? _selectedExportOption;
   bool _isProcessing = false;
 
@@ -240,80 +238,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
   }
 
   Widget _buildExternalImportPage(BuildContext context) {
-    final theme = Theme.of(context);
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.sizeLarge),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _translationService.translate(TaskTranslationKeys.importTasksTitle),
-            style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: AppTheme.sizeLarge),
-          DropdownButtonFormField<TaskImportType>(
-            value: _taskImportType,
-            decoration: InputDecoration(
-              labelText: _translationService.translate(TaskTranslationKeys.importFormatLabel),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-            ),
-            items: [
-              DropdownMenuItem(
-                value: TaskImportType.generic,
-                child: Text(_translationService.translate(TaskTranslationKeys.importFormatsGeneric)),
-              ),
-              DropdownMenuItem(
-                value: TaskImportType.todoist,
-                child: Text(_translationService.translate(TaskTranslationKeys.importFormatsTodoist)),
-              ),
-            ],
-            onChanged: (value) {
-              if (value != null) setState(() => _taskImportType = value);
-            },
-          ),
-          if (_taskImportType == TaskImportType.generic) ...[
-            const SizedBox(height: AppTheme.sizeLarge),
-            InformationCard.themed(
-              context: context,
-              icon: Icons.info_outline,
-              text: _translationService.translate(TaskTranslationKeys.importGenericInfoDescription),
-              isMarkdown: true,
-            ),
-          ],
-          const SizedBox(height: AppTheme.sizeLarge),
-          _ImportExportActionTile(
-            icon: Icons.file_present,
-            titleKey: _selectedTaskFilePath != null
-                ? _selectedTaskFilePath!.split('/').last
-                : TaskTranslationKeys.importSelectFile,
-            onTap: () => _handleTaskFilePick(context),
-            isDisabled: _isProcessing,
-          ),
-          const SizedBox(height: AppTheme.sizeXLarge),
-          Row(
-            children: [
-              TextButton.icon(
-                onPressed: () => _navigatorKey.currentState?.pop(),
-                icon: const Icon(Icons.arrow_back),
-                label: Text(_translationService.translate(SharedTranslationKeys.backButton)),
-              ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: _selectedTaskFilePath != null && !_isProcessing
-                    ? () => _handleExternalImportExecute(context)
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primary,
-                  foregroundColor: theme.colorScheme.onPrimary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-                ),
-                child: Text(_translationService.translate(TaskTranslationKeys.importButton)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    return const _ExternalImportPage();
   }
 
   Widget _buildImportStrategyPage(BuildContext context) {
@@ -475,82 +400,6 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
     );
   }
 
-  Future<void> _handleTaskFilePick(BuildContext context) async {
-    try {
-      final filePath = await _fileService.pickFile(
-        allowedExtensions: ['csv'],
-        dialogTitle: _translationService.translate(TaskTranslationKeys.importSelectFile),
-      );
-
-      if (filePath != null && mounted) {
-        setState(() {
-          _selectedTaskFilePath = filePath;
-        });
-      }
-    } on Exception catch (e, stackTrace) {
-      Logger.error(
-        'Failed to pick CSV file: $e',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      if (context.mounted) {
-        OverlayNotificationHelper.showError(
-          context: context,
-          message: '${_translationService.translate(TaskTranslationKeys.importError)}: $e',
-          duration: const Duration(seconds: 4),
-        );
-      }
-    }
-  }
-
-  Future<void> _handleExternalImportExecute(BuildContext context) async {
-    if (_selectedTaskFilePath == null || _isProcessing) return;
-
-    setState(() => _isProcessing = true);
-    OverlayNotificationHelper.showLoading(
-      context: context,
-      message: _translationService.translate(SettingsTranslationKeys.importInProgress),
-      duration: const Duration(minutes: 2),
-    );
-
-    try {
-      final response = await AsyncErrorHandler.execute<ImportTasksCommandResponse>(
-        context: context,
-        errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
-        operation: () async {
-          final mediator = container.resolve<Mediator>();
-          return await mediator.send<ImportTasksCommand, ImportTasksCommandResponse>(
-            ImportTasksCommand(
-              filePath: _selectedTaskFilePath!,
-              importType: _taskImportType,
-            ),
-          );
-        },
-      );
-
-      // Success case
-      if (context.mounted && response != null) {
-        OverlayNotificationHelper.hideNotification();
-        final message = response.failureCount == 0
-            ? _translationService
-                .translate(TaskTranslationKeys.importSuccess, namedArgs: {'count': response.successCount.toString()})
-            : _translationService.translate(TaskTranslationKeys.importPartialSuccess,
-                namedArgs: {'success': response.successCount.toString(), 'failure': response.failureCount.toString()});
-
-        OverlayNotificationHelper.showSuccess(
-          context: context,
-          message: message,
-          duration: const Duration(seconds: 4),
-        );
-        Navigator.of(context).pop();
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isProcessing = false);
-      }
-    }
-  }
-
   Future<void> _handleStrategySelect(ImportStrategy strategy, BuildContext context) async {
     if (_selectedFilePath == null || _isProcessing) return;
 
@@ -590,7 +439,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
             duration: const Duration(seconds: 4),
           );
 
-          // Close dialog
+          // Close dialog on success
           Navigator.of(context).pop();
         }
       },
@@ -734,6 +583,184 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         _isProcessing = false;
       });
     }
+  }
+}
+
+class _ExternalImportPage extends StatefulWidget {
+  const _ExternalImportPage();
+
+  @override
+  State<_ExternalImportPage> createState() => _ExternalImportPageState();
+}
+
+class _ExternalImportPageState extends State<_ExternalImportPage> {
+  final _translationService = container.resolve<ITranslationService>();
+  final _fileService = container.resolve<IFileService>();
+
+  String? _selectedTaskFilePath;
+  TaskImportType _taskImportType = TaskImportType.generic;
+  bool _isProcessing = false;
+
+  Future<void> _handleTaskFilePick(BuildContext context) async {
+    try {
+      final filePath = await _fileService.pickFile(
+        allowedExtensions: ['csv'],
+        dialogTitle: _translationService.translate(TaskTranslationKeys.importSelectFile),
+      );
+
+      if (filePath != null && mounted) {
+        setState(() {
+          _selectedTaskFilePath = filePath;
+        });
+      }
+    } on Exception catch (e, stackTrace) {
+      Logger.error(
+        'Failed to pick CSV file: $e',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      if (context.mounted) {
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: '${_translationService.translate(TaskTranslationKeys.importError)}: $e',
+          duration: const Duration(seconds: 4),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleExternalImportExecute(BuildContext context) async {
+    if (_selectedTaskFilePath == null || _isProcessing) return;
+
+    setState(() => _isProcessing = true);
+    OverlayNotificationHelper.showLoading(
+      context: context,
+      message: _translationService.translate(SettingsTranslationKeys.importInProgress),
+      duration: const Duration(minutes: 2),
+    );
+
+    try {
+      final response = await AsyncErrorHandler.execute<ImportTasksCommandResponse>(
+        context: context,
+        errorMessage: _translationService.translate(SettingsTranslationKeys.importError),
+        operation: () async {
+          final mediator = container.resolve<Mediator>();
+          return await mediator.send<ImportTasksCommand, ImportTasksCommandResponse>(
+            ImportTasksCommand(
+              filePath: _selectedTaskFilePath!,
+              importType: _taskImportType,
+            ),
+          );
+        },
+      );
+
+      // Success case
+      if (context.mounted && response != null) {
+        OverlayNotificationHelper.hideNotification();
+        final message = response.failureCount == 0
+            ? _translationService
+                .translate(TaskTranslationKeys.importSuccess, namedArgs: {'count': response.successCount.toString()})
+            : _translationService.translate(TaskTranslationKeys.importPartialSuccess,
+                namedArgs: {'success': response.successCount.toString(), 'failure': response.failureCount.toString()});
+
+        OverlayNotificationHelper.showSuccess(
+          context: context,
+          message: message,
+          duration: const Duration(seconds: 4),
+        );
+        Navigator.of(context).pop();
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.sizeLarge),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _translationService.translate(TaskTranslationKeys.importTasksTitle),
+            style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: AppTheme.sizeLarge),
+          DropdownButtonFormField<TaskImportType>(
+            value: _taskImportType,
+            decoration: InputDecoration(
+              labelText: _translationService.translate(TaskTranslationKeys.importFormatLabel),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+            ),
+            items: [
+              DropdownMenuItem(
+                value: TaskImportType.generic,
+                child: Text(_translationService.translate(TaskTranslationKeys.importFormatsGeneric)),
+              ),
+              DropdownMenuItem(
+                value: TaskImportType.todoist,
+                child: Text(_translationService.translate(TaskTranslationKeys.importFormatsTodoist)),
+              ),
+            ],
+            onChanged: (value) {
+              if (value != null) setState(() => _taskImportType = value);
+            },
+          ),
+          if (_taskImportType == TaskImportType.generic) ...[
+            const SizedBox(height: AppTheme.sizeLarge),
+            InformationCard.themed(
+              context: context,
+              icon: Icons.info_outline,
+              text: _translationService.translate(TaskTranslationKeys.importGenericInfoDescription),
+              isMarkdown: true,
+            ),
+          ] else if (_taskImportType == TaskImportType.todoist) ...[
+            const SizedBox(height: AppTheme.sizeLarge),
+            InformationCard.themed(
+              context: context,
+              icon: Icons.info_outline,
+              text: _translationService.translate(TaskTranslationKeys.importTodoistInfoDescription),
+              isMarkdown: true,
+            ),
+          ],
+          const SizedBox(height: AppTheme.sizeLarge),
+          _ImportExportActionTile(
+            icon: Icons.file_present,
+            titleKey: _selectedTaskFilePath != null
+                ? _selectedTaskFilePath!.split('/').last
+                : TaskTranslationKeys.importSelectFile,
+            onTap: () => _handleTaskFilePick(context),
+            isDisabled: _isProcessing,
+          ),
+          const SizedBox(height: AppTheme.sizeXLarge),
+          Row(
+            children: [
+              TextButton.icon(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+                label: Text(_translationService.translate(SharedTranslationKeys.backButton)),
+              ),
+              const Spacer(),
+              ElevatedButton(
+                onPressed: _selectedTaskFilePath != null && !_isProcessing
+                    ? () => _handleExternalImportExecute(context)
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                ),
+                child: Text(_translationService.translate(TaskTranslationKeys.importButton)),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
