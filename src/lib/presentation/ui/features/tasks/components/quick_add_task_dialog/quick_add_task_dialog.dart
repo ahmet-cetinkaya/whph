@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:acore/utils/dialog_size.dart';
 
@@ -19,6 +20,14 @@ import 'components/quick_action_buttons_bar.dart';
 
 import '../task_date_picker_dialog.dart';
 import '../../pages/task_details_page.dart';
+
+enum LockType {
+  priority,
+  estimatedTime,
+  plannedDate,
+  deadlineDate,
+  tags,
+}
 
 class QuickAddTaskDialog extends StatefulWidget {
   final List<String>? initialTagIds;
@@ -114,17 +123,32 @@ class QuickAddTaskDialog extends StatefulWidget {
     return showDialogFuture.then((result) async {
       if (result is String && result.isNotEmpty) {
         if (context.mounted) {
-          await acore.ResponsiveDialogHelper.showResponsiveDialog(
-            context: context,
-            child: TaskDetailsPage(
-              taskId: result,
-              hideSidebar: true,
-            ),
-            size: DialogSize.max,
-          );
+          try {
+            await acore.ResponsiveDialogHelper.showResponsiveDialog(
+              context: context,
+              child: TaskDetailsPage(
+                taskId: result,
+                hideSidebar: true,
+              ),
+              size: DialogSize.max,
+            );
+          } catch (e, stackTrace) {
+            Logger.error(
+              'Failed to navigate to task details after dialog result',
+              error: e,
+              stackTrace: stackTrace,
+            );
+          }
         }
       }
       return result;
+    }).catchError((error, stackTrace) {
+      Logger.error(
+        'Error in dialog result handling',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return null;
     });
   }
 
@@ -191,17 +215,23 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     }
   }
 
-  void _toggleLock(String lockType) {
-    if (lockType == 'priority') {
-      _controller.togglePriorityLock();
-    } else if (lockType == 'estimatedTime') {
-      _controller.toggleEstimatedTimeLock();
-    } else if (lockType == 'plannedDate') {
-      _controller.togglePlannedDateLock();
-    } else if (lockType == 'deadlineDate') {
-      _controller.toggleDeadlineDateLock();
-    } else if (lockType == 'tags') {
-      _controller.toggleTagsLock();
+  void _toggleLock(LockType lockType) {
+    switch (lockType) {
+      case LockType.priority:
+        _controller.togglePriorityLock();
+        break;
+      case LockType.estimatedTime:
+        _controller.toggleEstimatedTimeLock();
+        break;
+      case LockType.plannedDate:
+        _controller.togglePlannedDateLock();
+        break;
+      case LockType.deadlineDate:
+        _controller.toggleDeadlineDateLock();
+        break;
+      case LockType.tags:
+        _controller.toggleTagsLock();
+        break;
     }
     setState(() {});
   }
@@ -255,7 +285,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         headerActions: [
           _buildLockAction(
             () => _controller.lockPlannedDate,
-            () => _toggleLock('plannedDate'),
+            () => _toggleLock(LockType.plannedDate),
           ),
         ],
       ),
@@ -291,7 +321,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         headerActions: [
           _buildLockAction(
             () => _controller.lockDeadlineDate,
-            () => _toggleLock('deadlineDate'),
+            () => _toggleLock(LockType.deadlineDate),
           ),
         ],
       ),
@@ -328,7 +358,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             theme: Theme.of(context),
             headerAction: _buildLockAction(
               () => _controller.lockPriority,
-              () => _toggleLock('priority'),
+              () => _toggleLock(LockType.priority),
             ),
           );
         },
@@ -360,7 +390,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
             theme: Theme.of(context),
             headerAction: _buildLockAction(
               () => _controller.lockEstimatedTime,
-              () => _toggleLock('estimatedTime'),
+              () => _toggleLock(LockType.estimatedTime),
             ),
           );
         },
@@ -489,7 +519,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
                     onSelectPlannedDate: _selectPlannedDate,
                     onSelectDeadlineDate: _selectDeadlineDate,
                     onClearAllFields: _onClearAllFields,
-                    tagLockAction: _buildLockAction(() => _controller.lockTags, () => _toggleLock('tags')),
+                    tagLockAction: _buildLockAction(() => _controller.lockTags, () => _toggleLock(LockType.tags)),
                     isMobile: isMobile,
                   ),
                 ),
