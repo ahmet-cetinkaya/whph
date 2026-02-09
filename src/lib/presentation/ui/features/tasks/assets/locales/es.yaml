@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Añadir nueva tarea
+    create_and_open_tooltip: Crear y abrir detalles de la tarea
   all_tasks_done: ¡Todas las tareas completadas!
   card:
     schedule:
@@ -411,6 +412,9 @@ tasks:
       estimated_time_not_set: "Tiempo estimado: No establecido"
       planned_date: "Planificado: {date}"
       planned_date_not_set: "Planificado: No establecido"
+      lock: Bloquear
+      unlock: Desbloquear
+    new_task_default_title: Nueva tarea
   recurrence:
     count: Número de ocurrencias
     custom: Personalizado

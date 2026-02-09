@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Yeni görev ekle
+    create_and_open_tooltip: Görevi oluştur ve detayları aç
   all_tasks_done: Tüm görevler tamamlandı!
   card:
     schedule:
@@ -351,6 +352,7 @@ tasks:
       urgent_important: Acil ve Önemli
       urgent_not_important: Acil ama Önemli Değil
   quick_task:
+    new_task_default_title: Yeni Görev
     create_error: Görev oluşturulurken hata oluştu
     lock_description:
       Benzer görevler oluştururken değerlerini korumak için özellikleri
@@ -372,6 +374,8 @@ tasks:
       estimated_time_not_set: "Tahmini Süre: Ayarlanmadı"
       planned_date: "Planlanan: {date}"
       planned_date_not_set: "Planlanan: Ayarlanmadı"
+      lock: Kilitle
+      unlock: Kilidi Aç
   recurrence:
     count: Tekrarlama sayısı
     custom: Özel

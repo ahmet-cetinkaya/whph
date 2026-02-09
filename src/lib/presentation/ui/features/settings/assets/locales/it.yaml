@@ -408,6 +408,13 @@ settings:
         una data pianificata.
       save_error: Errore nel salvataggio dell'impostazione del promemoria predefinito
       load_error: Errore nel caricamento dell'impostazione del promemoria predefinito
+    skip_quick_add:
+      title: Salta finestra di aggiunta rapida
+      description:
+        Salta la finestra di aggiunta rapida e vai direttamente alla pagina
+        dei dettagli dell'attività
+      save_error: Errore nel salvataggio dell'impostazione Salta aggiunta rapida
+      load_error: Errore nel caricamento dell'impostazione Salta aggiunta rapida
   section:
     general: Generale
     appearance: Aspetto

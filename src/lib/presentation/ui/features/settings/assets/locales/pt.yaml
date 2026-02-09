@@ -403,6 +403,13 @@ settings:
         selecionada.
       save_error: Erro ao salvar configuração de lembrete padrão
       load_error: Erro ao carregar configuração de lembrete padrão
+    skip_quick_add:
+      title: Ignorar diálogo de adição rápida
+      description:
+        Ignorar o diálogo de adição rápida e ir diretamente para a página
+        de detalhes da tarefa
+      save_error: Erro ao salvar configuração de pular adição rápida
+      load_error: Erro ao carregar configuração de pular adição rápida
   section:
     general: Geral
     appearance: Aparência

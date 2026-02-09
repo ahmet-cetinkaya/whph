@@ -433,6 +433,13 @@ settings:
         sélectionnée.
       save_error: Erreur lors de l'enregistrement du paramètre de rappel par défaut
       load_error: Erreur lors du chargement du paramètre de rappel par défaut
+    skip_quick_add:
+      title: Ignorer la boîte de dialogue d'ajout rapide
+      description:
+        Ignorer la boîte de dialogue d'ajout rapide et aller directement
+        à la page des détails de la tâche
+      save_error: Erreur lors de l'enregistrement du paramètre d'ajout rapide
+      load_error: Erreur lors du chargement du paramètre d'ajout rapide
   section:
     general: Général
     appearance: Apparence

@@ -34,6 +34,7 @@ class TagSelectDropdown extends StatefulWidget {
   final bool initialNoneSelected;
   final bool initialShowNoTagsFilter;
   final Function(List<DropdownOption<String>>, bool isNoneSelected) onTagsSelected;
+  final Widget? headerAction;
   final ButtonStyle? buttonStyle;
 
   const TagSelectDropdown({
@@ -54,6 +55,7 @@ class TagSelectDropdown extends StatefulWidget {
     this.showNoneOption = false,
     this.initialNoneSelected = false,
     this.initialShowNoTagsFilter = false,
+    this.headerAction,
     this.buttonStyle,
   });
 
@@ -217,6 +219,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         initialShowNoTagsFilter: widget.initialShowNoTagsFilter,
         limit: widget.limit,
         showArchived: widget.showArchived,
+        headerAction: widget.headerAction,
       ),
     );
 

@@ -25,6 +25,7 @@ class TagSelectDialog extends StatefulWidget {
   final bool initialShowNoTagsFilter;
   final int? limit;
   final bool showArchived;
+  final Widget? headerAction;
 
   const TagSelectDialog({
     super.key,
@@ -36,6 +37,7 @@ class TagSelectDialog extends StatefulWidget {
     this.initialShowNoTagsFilter = false,
     this.limit,
     this.showArchived = false,
+    this.headerAction,
   });
 
   @override
@@ -167,6 +169,7 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
         title: Text(_translationService.translate(TagTranslationKeys.selectTooltip)),
         automaticallyImplyLeading: true,
         actions: [
+          if (widget.headerAction != null) widget.headerAction!,
           if (_tempSelectedTags.isNotEmpty || _hasExplicitlySelectedNone)
             IconButton(
               onPressed: () {

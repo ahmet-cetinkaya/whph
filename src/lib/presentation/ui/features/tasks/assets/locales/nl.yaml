@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Nieuwe taak toevoegen
+    create_and_open_tooltip: Taak maken en details openen
   all_tasks_done: Alle taken voltooid!
   card:
     schedule:
@@ -330,6 +331,9 @@ tasks:
       estimated_time_not_set: "Geschatte Tijd: Niet ingesteld"
       planned_date: "Gepland: {date}"
       planned_date_not_set: "Gepland: Niet ingesteld"
+      lock: Vergrendelen
+      unlock: Ontgrendelen
+    new_task_default_title: Nieuwe taak
   recurrence:
     count: Aantal herhalingen
     custom: Aangepast

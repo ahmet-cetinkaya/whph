@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Přidat nový úkol
+    create_and_open_tooltip: Vytvořit a otevřít podrobnosti úkolu
   all_tasks_done: Všechny úkoly dokončeny!
   card:
     schedule:
@@ -408,6 +409,9 @@ tasks:
       estimated_time_not_set: "Odhadovaný čas: Není nastaveno"
       planned_date: "Plánováno: {date}"
       planned_date_not_set: "Plánováno: Není nastaveno"
+      lock: Uzamknout
+      unlock: Odemknout
+    new_task_default_title: Nový úkol
   recurrence:
     count: Počet výskytů
     custom: Vlastní

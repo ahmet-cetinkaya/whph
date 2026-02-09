@@ -389,6 +389,13 @@ settings:
       description: Ställ in en påminnelse automatiskt när ett planerat datum väljs.
       save_error: Fel vid sparande av standardinställning för påminnelse
       load_error: Fel vid inläsning av standardinställning för påminnelse
+    skip_quick_add:
+      title: Hopp över snabbadditioneringsdialog
+      description:
+        Hopp över snabbadditioneringsdialogen och gå direkt till sidan
+        med uppgiftsdetaljer
+      save_error: Fel vid sparning av inställning för hoppa över snabbtillägg
+      load_error: Fel vid inläsning av inställning för hoppa över snabbtillägg
   section:
     general: Allmänt
     appearance: Utseende

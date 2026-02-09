@@ -319,6 +319,11 @@ settings:
       description: 계획된 날짜를 선택할 때 자동으로 알림을 설정합니다.
       save_error: 기본 알림 설정 저장 오류
       load_error: 기본 알림 설정 로드 오류
+    skip_quick_add:
+      title: 빠른 추가 대화상자 건너뛰기
+      description: 빠른 추가 대화상자를 건너뛰고 작업 세부 정보 페이지로 바로 이동
+      save_error: 빠른 추가 건너뛰기 설정 저장 오류
+      load_error: 빠른 추가 건너뛰기 설정 로드 오류
   section:
     general: 일반
     appearance: 모양

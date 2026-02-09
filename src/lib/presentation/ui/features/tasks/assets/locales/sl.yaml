@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Dodaj novo nalogo
+    create_and_open_tooltip: Ustvari in odpri podrobnosti opravila
   all_tasks_done: Vse naloge končane!
   card:
     schedule:
@@ -326,6 +327,9 @@ tasks:
       estimated_time_not_set: "Predviden Čas: Ni nastavljen"
       planned_date: "Načrtovano: {date}"
       planned_date_not_set: "Načrtovano: Ni nastavljen"
+      lock: Zakleni
+      unlock: Odkleni
+    new_task_default_title: Novo opravilo
   recurrence:
     count: Število pojavitev
     custom: Po meri

@@ -381,6 +381,13 @@ settings:
       description: Angiv automatisk en påmindelse, når en planlagt dato vælges.
       save_error: Fejl ved gemning af standardindstilling for påmindelse
       load_error: Fejl ved indlæsning af standardindstilling for påmindelse
+    skip_quick_add:
+      title: Spring Hurtig Tilføj dialog over
+      description: Spring Hurtig Tilføj dialog over og gå direkte til opgavedetaljer
+      save_error: Fejl under gemning af indstilling for spring hurtig tilføjelse over
+      load_error:
+        Fejl under indlæsning af indstilling for spring hurtig tilføjelse
+        over
   section:
     general: Generelt
     appearance: Udseende

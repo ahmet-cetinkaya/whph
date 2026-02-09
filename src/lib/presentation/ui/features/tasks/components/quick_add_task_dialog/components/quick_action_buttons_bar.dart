@@ -12,26 +12,26 @@ import 'estimated_time_indicator.dart';
 class QuickActionButtonsBar extends StatelessWidget {
   final QuickAddTaskController controller;
   final TextEditingController descriptionController;
-  final VoidCallback onShowLockSettings;
   final VoidCallback onShowPriorityDialog;
   final VoidCallback onShowEstimatedTimeDialog;
   final VoidCallback onShowDescriptionDialog;
   final VoidCallback onSelectPlannedDate;
   final VoidCallback onSelectDeadlineDate;
   final VoidCallback onClearAllFields;
+  final Widget? tagLockAction;
   final bool isMobile;
 
   const QuickActionButtonsBar({
     super.key,
     required this.controller,
     required this.descriptionController,
-    required this.onShowLockSettings,
     required this.onShowPriorityDialog,
     required this.onShowEstimatedTimeDialog,
     required this.onShowDescriptionDialog,
     required this.onSelectPlannedDate,
     required this.onSelectDeadlineDate,
     required this.onClearAllFields,
+    this.tagLockAction,
     required this.isMobile,
   });
 
@@ -46,8 +46,6 @@ class QuickActionButtonsBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildLockButton(theme, iconSize),
-        SizedBox(width: buttonGap),
         _buildTagsButton(theme, iconSize, buttonStyle),
         SizedBox(width: buttonGap),
         _buildPriorityButton(theme, iconSize),
@@ -65,16 +63,6 @@ class QuickActionButtonsBar extends StatelessWidget {
     );
   }
 
-  Widget _buildLockButton(ThemeData theme, double iconSize) {
-    return QuickActionIconButton(
-      icon: Icons.lock_outline,
-      color: controller.hasAnyLocks ? theme.colorScheme.primary : null,
-      onPressed: onShowLockSettings,
-      tooltip: controller.translationService.translate(TaskTranslationKeys.quickTaskLockSettings),
-      iconSize: iconSize,
-    );
-  }
-
   Widget _buildTagsButton(ThemeData theme, double iconSize, ButtonStyle buttonStyle) {
     return LockableActionButton(
       isLocked: controller.lockTags,
@@ -87,6 +75,7 @@ class QuickActionButtonsBar extends StatelessWidget {
         color: controller.selectedTags.isEmpty
             ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
             : controller.getTagColor(),
+        headerAction: tagLockAction,
         buttonStyle: buttonStyle,
       ),
     );

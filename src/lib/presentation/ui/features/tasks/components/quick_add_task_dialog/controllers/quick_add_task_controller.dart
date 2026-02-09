@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
-import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/services/abstraction/i_default_task_settings_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -19,7 +17,6 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
-import '../models/lock_settings_state.dart';
 
 /// Controller for QuickAddTaskDialog business logic.
 /// Separates data management and operations from UI concerns.
@@ -30,6 +27,7 @@ class QuickAddTaskController extends ChangeNotifier {
   final TasksService _tasksService;
   final ITranslationService _translationService;
   final IThemeService _themeService;
+  final IDefaultTaskSettingsService _defaultSettingsService;
 
   // Initial values (stored for reset)
   final List<String>? _initialTagIds;
@@ -89,7 +87,6 @@ class QuickAddTaskController extends ChangeNotifier {
   bool get lockDeadlineDate => _lockDeadlineDate;
   bool get showEstimatedTimeSection => _showEstimatedTimeSection;
   bool get showDescriptionSection => _showDescriptionSection;
-  bool get hasAnyLocks => _lockTags || _lockPriority || _lockEstimatedTime || _lockPlannedDate || _lockDeadlineDate;
   String? get initialTitle => _initialTitle;
   String? get initialDescription => _initialDescription;
   bool? get initialCompleted => _initialCompleted;
@@ -103,6 +100,7 @@ class QuickAddTaskController extends ChangeNotifier {
     TasksService? tasksService,
     ITranslationService? translationService,
     IThemeService? themeService,
+    IDefaultTaskSettingsService? defaultSettingsService,
     List<String>? initialTagIds,
     DateTime? initialPlannedDate,
     DateTime? initialDeadlineDate,
@@ -118,6 +116,7 @@ class QuickAddTaskController extends ChangeNotifier {
         _tasksService = tasksService ?? container.resolve<TasksService>(),
         _translationService = translationService ?? container.resolve<ITranslationService>(),
         _themeService = themeService ?? container.resolve<IThemeService>(),
+        _defaultSettingsService = defaultSettingsService ?? container.resolve<IDefaultTaskSettingsService>(),
         _initialTagIds = initialTagIds,
         _initialPlannedDate = initialPlannedDate,
         _initialDeadlineDate = initialDeadlineDate,
@@ -153,53 +152,19 @@ class QuickAddTaskController extends ChangeNotifier {
 
   /// Load default estimated time from settings
   Future<void> _loadDefaultEstimatedTime() async {
-    try {
-      final setting = await _mediator.send<GetSettingQuery, Setting?>(
-        GetSettingQuery(key: SettingKeys.taskDefaultEstimatedTime),
-      );
-
-      if (setting != null) {
-        final value = setting.getValue<int?>();
-        if (value != null && value > 0) {
-          _estimatedTime = value;
-          notifyListeners();
-        }
-      }
-    } catch (_) {
-      // Setting not found or error - silently use default
-      _estimatedTime = TaskConstants.defaultEstimatedTime;
+    final defaultTime = await _defaultSettingsService.getDefaultEstimatedTime();
+    if (defaultTime != null) {
+      _estimatedTime = defaultTime;
       notifyListeners();
     }
   }
 
   /// Load default planned date reminder from settings
   Future<void> _loadDefaultPlannedDateReminder() async {
-    try {
-      final setting = await _mediator.send<GetSettingQuery, Setting?>(
-        GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminder),
-      );
-
-      if (setting != null) {
-        final value = setting.getValue<String>();
-        _plannedDateReminderTime = ReminderTimeExtension.fromString(value);
-
-        if (_plannedDateReminderTime == ReminderTime.custom) {
-          final offsetSetting = await _mediator.send<GetSettingQuery, Setting?>(
-            GetSettingQuery(key: SettingKeys.taskDefaultPlannedDateReminderCustomOffset),
-          );
-          if (offsetSetting != null) {
-            _plannedDateReminderCustomOffset = offsetSetting.getValue<int?>();
-          }
-        }
-      } else {
-        _plannedDateReminderTime = TaskConstants.defaultReminderTime;
-      }
-      notifyListeners();
-    } catch (_) {
-      // Setting not found or error - silently use default
-      _plannedDateReminderTime = TaskConstants.defaultReminderTime;
-      notifyListeners();
-    }
+    final (reminderTime, customOffset) = await _defaultSettingsService.getDefaultPlannedDateReminder();
+    _plannedDateReminderTime = reminderTime;
+    _plannedDateReminderCustomOffset = customOffset;
+    notifyListeners();
   }
 
   /// Load initial tags and get their names
@@ -219,7 +184,12 @@ class QuickAddTaskController extends ChangeNotifier {
       }
       _selectedTags = tagOptions;
       notifyListeners();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to load initial tags',
+        error: e,
+        stackTrace: stackTrace,
+      );
       _selectedTags = _initialTagIds.map((id) => DropdownOption(label: '', value: id)).toList();
       notifyListeners();
     }
@@ -279,23 +249,28 @@ class QuickAddTaskController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Lock state management
-  LockSettingsState getLockState() {
-    return LockSettingsState(
-      lockTags: _lockTags,
-      lockPriority: _lockPriority,
-      lockEstimatedTime: _lockEstimatedTime,
-      lockPlannedDate: _lockPlannedDate,
-      lockDeadlineDate: _lockDeadlineDate,
-    );
+  void toggleTagsLock() {
+    _lockTags = !_lockTags;
+    notifyListeners();
   }
 
-  void setLockState(LockSettingsState lockState) {
-    _lockTags = lockState.lockTags;
-    _lockPriority = lockState.lockPriority;
-    _lockEstimatedTime = lockState.lockEstimatedTime;
-    _lockPlannedDate = lockState.lockPlannedDate;
-    _lockDeadlineDate = lockState.lockDeadlineDate;
+  void togglePriorityLock() {
+    _lockPriority = !_lockPriority;
+    notifyListeners();
+  }
+
+  void toggleEstimatedTimeLock() {
+    _lockEstimatedTime = !_lockEstimatedTime;
+    notifyListeners();
+  }
+
+  void togglePlannedDateLock() {
+    _lockPlannedDate = !_lockPlannedDate;
+    notifyListeners();
+  }
+
+  void toggleDeadlineDateLock() {
+    _lockDeadlineDate = !_lockDeadlineDate;
     notifyListeners();
   }
 
@@ -360,6 +335,7 @@ class QuickAddTaskController extends ChangeNotifier {
     required FocusNode focusNode,
     required VoidCallback onClearFields,
     required bool isMobile,
+    Function(String taskId)? onSuccess,
   }) async {
     if (_isLoading || title.isEmpty) return;
 
@@ -416,11 +392,17 @@ class QuickAddTaskController extends ChangeNotifier {
           onTaskCreated!(response.id, taskData);
         }
 
+        if (onSuccess != null) {
+          onSuccess(response.id);
+        }
+
         onClearFields();
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          focusNode.requestFocus();
-        });
+        if (onSuccess == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            focusNode.requestFocus();
+          });
+        }
       },
       finallyAction: () {
         _isLoading = false;

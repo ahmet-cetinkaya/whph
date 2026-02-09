@@ -9,23 +9,25 @@ class TaskData {
   final DateTime? plannedDate;
   final DateTime? deadlineDate;
   final List<TaskDataTag> tags;
+  final List<String> tagIds;
   final bool isCompleted;
   final String? parentTaskId;
   final double order;
   final DateTime createdDate;
 
-  TaskData(
-      {required this.title,
-      this.priority,
-      this.estimatedTime,
-      this.plannedDate,
-      this.deadlineDate,
-      this.tags = const [],
-      this.isCompleted = false,
-      this.parentTaskId,
-      this.order = 0.0,
-      DateTime? createdDate})
-      : createdDate = createdDate ?? DateTime.now().toUtc();
+  TaskData({
+    required this.title,
+    this.priority,
+    this.estimatedTime,
+    this.plannedDate,
+    this.deadlineDate,
+    this.tags = const [],
+    this.tagIds = const [],
+    this.isCompleted = false,
+    this.parentTaskId,
+    this.order = 0.0,
+    DateTime? createdDate,
+  }) : createdDate = createdDate ?? DateTime.now().toUtc();
 
   factory TaskData.fromMap(Map<String, dynamic> map) => TaskData(
         title: map['title'] as String,
@@ -36,6 +38,7 @@ class TaskData {
         tags:
             (map['tags'] as List<dynamic>?)?.map((tag) => TaskDataTag.fromMap(tag as Map<String, dynamic>)).toList() ??
                 [],
+        tagIds: (map['tagIds'] as List<dynamic>?)?.cast<String>() ?? [],
         isCompleted: map['isCompleted'] as bool? ?? false,
         parentTaskId: map['parentTaskId'] as String?,
         order: (map['order'] as num?)?.toDouble() ?? 0.0,
@@ -49,23 +52,26 @@ class TaskData {
         'plannedDate': plannedDate,
         'deadlineDate': deadlineDate,
         'tags': tags.map((tag) => tag.toMap()).toList(),
+        'tagIds': tagIds,
         'isCompleted': isCompleted,
         'parentTaskId': parentTaskId,
         'order': order,
         'createdDate': createdDate,
       };
 
-  TaskData copyWith(
-          {String? title,
-          EisenhowerPriority? priority,
-          int? estimatedTime,
-          DateTime? plannedDate,
-          DateTime? deadlineDate,
-          List<TaskDataTag>? tags,
-          bool? isCompleted,
-          String? parentTaskId,
-          double? order,
-          DateTime? createdDate}) =>
+  TaskData copyWith({
+    String? title,
+    EisenhowerPriority? priority,
+    int? estimatedTime,
+    DateTime? plannedDate,
+    DateTime? deadlineDate,
+    List<TaskDataTag>? tags,
+    List<String>? tagIds,
+    bool? isCompleted,
+    String? parentTaskId,
+    double? order,
+    DateTime? createdDate,
+  }) =>
       TaskData(
         title: title ?? this.title,
         priority: priority ?? this.priority,
@@ -73,6 +79,7 @@ class TaskData {
         plannedDate: plannedDate ?? this.plannedDate,
         deadlineDate: deadlineDate ?? this.deadlineDate,
         tags: tags ?? this.tags,
+        tagIds: tagIds ?? this.tagIds,
         isCompleted: isCompleted ?? this.isCompleted,
         parentTaskId: parentTaskId ?? this.parentTaskId,
         order: order ?? this.order,

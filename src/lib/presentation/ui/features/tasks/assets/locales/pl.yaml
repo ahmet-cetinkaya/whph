@@ -1,6 +1,7 @@
 tasks:
   add_button:
     tooltip: Dodaj nowe zadanie
+    create_and_open_tooltip: Utwórz i otwórz szczegóły zadania
   all_tasks_done: Wszystkie zadania ukończone!
   card:
     schedule:
@@ -408,6 +409,9 @@ tasks:
       estimated_time_not_set: "Szacowany czas: Nie ustawiono"
       planned_date: "Planowane: {date}"
       planned_date_not_set: "Planowane: Nie ustawiono"
+      lock: Zablokuj
+      unlock: Odblokuj
+    new_task_default_title: Nowe zadanie
   recurrence:
     count: Liczba wystąpień
     custom: Niestandardowe

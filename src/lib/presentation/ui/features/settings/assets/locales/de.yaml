@@ -421,6 +421,13 @@ settings:
         ausgewählt wird.
       save_error: Fehler beim Speichern der Standarderinnerungseinstellung
       load_error: Fehler beim Laden der Standarderinnerungseinstellung
+    skip_quick_add:
+      title: Schnell-hinzufügen-Dialog überspringen
+      description:
+        Schnell-hinzufügen-Dialog überspringen und direkt zur Aufgabendetailseite
+        wechseln
+      save_error: Fehler beim Speichern der Einstellung zum Überspringen des Schnell-hinzufügen-Dialogs
+      load_error: Fehler beim Laden der Einstellung zum Überspringen des Schnell-hinzufügen-Dialogs
   section:
     general: Allgemein
     appearance: Erscheinungsbild
