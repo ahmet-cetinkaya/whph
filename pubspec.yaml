@@ -21,11 +21,11 @@ documentation: https://github.com/ahmet-cetinkaya/whph/blob/main/README.md
 # Run commands from project root: rps <command>
 scripts:
   # Development
-  pub:get: cd src && fvm flutter pub get
-  run: cd src && fvm flutter run
-  run:demo: cd src && fvm flutter run --dart-define=DEMO_MODE=true
-  clean: bash src/scripts/clean.sh
-  clean:db: bash src/scripts/clean_db.sh
+  pub:get: cd src/presentation/app && fvm flutter pub get
+  run: cd src/presentation/app && fvm flutter run
+  run:demo: cd src/presentation/app && fvm flutter run --dart-define=DEMO_MODE=true
+  clean: bash src/presentation/app/scripts/clean.sh
+  clean:db: bash src/presentation/app/scripts/clean_db.sh
   format: bash scripts/format.sh
   lint: ./scripts/lint.sh
   check: rps format && rps lint && rps test
@@ -38,20 +38,20 @@ scripts:
 
   # Screenshots
   # Usage: rps gen:screenshots:device [locale] (e.g., rps gen:screenshots:device tr)
-  gen:screenshots: cd src && bash scripts/generate_screenshots.sh ${1:---all} --
+  gen:screenshots: cd src/presentation/app && bash scripts/generate_screenshots.sh ${1:---all} --
   gen:feature-graphics: cd scripts/feature_graphics_generator && bun run generate
 
   # Code Generation
-  gen: cd src && bash scripts/generate_gen_files.sh
-  gen:icons: cd src && fvm flutter pub run icons_launcher:create
-  gen:migrate: cd src && fvm flutter pub run drift_dev make-migrations
+  gen: cd src/presentation/app && bash scripts/generate_gen_files.sh
+  gen:icons: cd src/presentation/app && fvm flutter pub run icons_launcher:create
+  gen:migrate: cd src/presentation/app && fvm flutter pub run drift_dev make-migrations
 
   # Build Releases
-  release:linux: cd src && fvm flutter build linux --release
-  release:windows: cd src && fvm flutter build windows --release
-  release:windows:setup: cd src && fvm flutter build windows --release && ISCC.exe windows\\setup-wizard\\installer.iss
-  release:android: cd src && fvm flutter build apk --release
-  release:android:bundle: cd src && fvm flutter build appbundle --release
+  release:linux: cd src/presentation/app && fvm flutter build linux --release
+  release:windows: cd src/presentation/app && fvm flutter build windows --release
+  release:windows:setup: cd src/presentation/app && fvm flutter build windows --release && ISCC.exe windows\\setup-wizard\\installer.iss
+  release:android: cd src/presentation/app && fvm flutter build apk --release
+  release:android:bundle: cd src/presentation/app && fvm flutter build appbundle --release
 
   # Version Management
   version:major: bash scripts/version_bump.sh major

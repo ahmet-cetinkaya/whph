@@ -1,0 +1,137 @@
+name: whph
+description: A comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
+publish_to: "none"
+version: 0.21.0+75
+
+environment:
+  sdk: ^3.5.3
+  flutter: "3.32.0"
+
+scripts:
+  # This section defines custom commands you can run using the rps package.
+  # To install rps globally: `dart pub global activate rps`
+  # To run commands: `rps <command>`
+  # For example, to run the `clean` command: `rps clean`
+  clean: bash scripts/clean.sh
+  format: ../../../scripts/format.sh
+  gen: ./scripts/generate_gen_files.sh
+  gen-icons: fvm flutter pub run icons_launcher:create
+  gen:migrate: fvm flutter pub run drift_dev make-migrations
+  gen:changelog: bash ../../../scripts/create_changelog.sh --auto
+  gen:changelog:all: bash ../../../scripts/create_changelog.sh --all-versions --auto
+  release:linux: fvm flutter build linux --release
+  release:windows: fvm flutter build windows --release
+  release:windows:setup: fvm flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
+  release:android: fvm flutter build apk --release
+  release:android:bundle: fvm flutter build appbundle --release
+  lint: ../../../scripts/lint.sh
+  test: bash scripts/run_tests.sh
+  test:locale: fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
+  test:ci: cd ../../../ && act -j build
+  test:ci:android: cd ../../../ && act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
+  test:ci:fdroid: bash ../../../scripts/test_ci_fdroid.sh
+  test:ci:linux: cd ../../../ && act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
+  test:ci:windows: cd ../../../ && act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
+  run: fvm flutter run
+  run:demo: fvm flutter run --dart-define=DEMO_MODE=true
+  version:major: bash ../../../scripts/version_bump.sh major
+  version:minor: bash ../../../scripts/version_bump.sh minor
+  version:patch: bash ../../../scripts/version_bump.sh patch
+  version:push: cd ../../../ && git push && git push --tags
+
+dependencies:
+  flutter:
+    sdk: flutter
+  test: ^1.25.8
+
+  # Core Packages
+  acore:
+    path: ../../../packages/acore-flutter
+  # Data
+  drift: ^2.21.0
+  nanoid2: ^2.0.1
+  sqflite: ^2.4.0
+  sqlite3_flutter_libs: ^0.5.40
+  # Utils
+  archive: ^4.0.5
+  audioplayers: ^6.5.1
+  csv: ^6.0.0
+  dart_json_mapper: ^2.2.16
+  reflectable: ^4.0.2
+  collection: ^1.19.0
+  device_info_plus: ^11.4.0
+  file_picker: ^10.3.3
+  flutter_local_notifications: ^19.4.2
+  http: ^1.5.0
+  intl: ^0.20.2
+  kiwi: ^5.0.1
+  mediatr: ^0.2.1
+  meta: ^1.15.0
+  network_info_plus: ^6.1.3
+  path: ^1.8.3
+  path_provider: ^2.1.1
+  timezone: ^0.10.0
+  tray_manager: ^0.5.1
+  url_launcher: ^6.3.2
+  wakelock_plus: ^1.4.0
+  web_socket_channel: ^3.0.1
+  window_manager: ^0.4.3
+  equatable: ^2.0.7
+  yaml: ^3.1.3
+  # UI
+  calendar_date_picker2: ^2.0.0
+  cupertino_icons: ^1.0.8
+  dynamic_color: ^1.8.1
+  easy_localization: ^3.0.8
+  easy_localization_multi: ^0.2.0
+  easy_localization_yaml: ^0.1.2
+  fl_chart: ^1.1.1
+  flutter_colorpicker: ^1.1.0
+  flutter_confetti: ^0.5.1
+  flutter_markdown: ^0.7.2
+  markdown_toolbar: ^0.5.0
+  # Desktop
+  launch_at_startup: ^0.5.1
+  qr_flutter: ^4.1.0
+  # Mobile
+  qr_code_scanner_plus: ^2.0.12
+  # Android
+  android_intent_plus: ^5.3.0
+  permission_handler: ^12.0.1
+  modal_bottom_sheet: ^3.0.0
+  home_widget: ^0.6.0
+  share_plus: ^12.0.1
+  file_saver: 0.2.14
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  mockito: ^5.4.5
+  build_runner: ^2.4.13
+  rps: ^0.7.0
+  drift_dev: ^2.26.0
+  icons_launcher: ^3.0.3
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/core/domain/shared/assets/images/
+    - lib/presentation/ui/shared/assets/sounds/
+    - lib/presentation/ui/shared/assets/locales/
+    - lib/presentation/ui/features/about/assets/locales/
+    - lib/presentation/ui/features/app_usages/assets/locales/
+    - lib/presentation/ui/features/calendar/assets/locales/
+    - lib/presentation/ui/features/habits/assets/locales/
+    - lib/presentation/ui/features/settings/assets/locales/
+    - lib/presentation/ui/features/tags/assets/locales/
+    - lib/presentation/ui/features/sync/assets/locales/
+    - lib/presentation/ui/features/tasks/assets/locales/
+    - lib/presentation/ui/features/tasks/assets/sounds/
+    - lib/presentation/ui/features/notes/assets/locales/
+
+dependency_overrides:
+  vector_math: ^2.2.0
