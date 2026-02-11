@@ -1,5 +1,5 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 
 @jsonSerializable
 class TaskWithTotalDuration extends Task {

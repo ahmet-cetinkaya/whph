@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 
 class TaskConstants {
   // Default values

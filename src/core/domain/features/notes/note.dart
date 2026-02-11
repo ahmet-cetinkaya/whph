@@ -1,6 +1,6 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/notes/note_tag.dart';
+import 'package:domain/features/notes/note_tag.dart';
 
 @jsonSerializable
 class Note extends BaseEntity<String> {

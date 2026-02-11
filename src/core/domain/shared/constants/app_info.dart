@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:domain/shared/constants/app_assets.dart';
 
 /// Centralized app information constants.
 ///
