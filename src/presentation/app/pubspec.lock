@@ -37,6 +37,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.3.1"
+  application:
+    dependency: "direct main"
+    description:
+      path: "../../core/application"
+      relative: true
+    source: path
+    version: "1.0.0"
   archive:
     dependency: "direct main"
     description:

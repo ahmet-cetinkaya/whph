@@ -1,0 +1,146 @@
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:acore/acore.dart';
+import 'package:domain/features/habits/habit.dart';
+import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
+import 'package:domain/features/habits/habit_constants.dart';
+
+class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
+  final String? id;
+  final String name;
+  final String description;
+  final int? estimatedTime;
+  final DateTime? archivedDate;
+  final bool? hasReminder;
+  final String? reminderTime;
+  final List<int>? reminderDays;
+  final bool? hasGoal;
+  final int? targetFrequency;
+  final int? periodDays;
+  final int? dailyTarget;
+
+  SaveHabitCommand({
+    this.id,
+    required this.name,
+    required this.description,
+    this.estimatedTime,
+    DateTime? archivedDate,
+    this.hasReminder,
+    this.reminderTime,
+    this.reminderDays,
+    this.hasGoal,
+    this.targetFrequency,
+    this.periodDays,
+    this.dailyTarget,
+  }) : archivedDate = archivedDate != null ? DateTimeHelper.toUtcDateTime(archivedDate) : null;
+}
+
+class SaveHabitCommandResponse {
+  final String id;
+  final DateTime createdDate;
+  final DateTime? modifiedDate;
+
+  SaveHabitCommandResponse({
+    required this.id,
+    required this.createdDate,
+    this.modifiedDate,
+  });
+}
+
+class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveHabitCommandResponse> {
+  final IHabitRepository _habitRepository;
+
+  SaveHabitCommandHandler({required IHabitRepository habitRepository}) : _habitRepository = habitRepository;
+
+  @override
+  Future<SaveHabitCommandResponse> call(SaveHabitCommand request) async {
+    Habit? habit;
+
+    if (request.id != null) {
+      habit = await _habitRepository.getById(request.id!);
+      if (habit == null) {
+        throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
+      }
+
+      // Get the actual reminderDays from the database to ensure we have the latest value
+      final reminderDaysFromDb = await _habitRepository.getReminderDaysById(request.id!);
+      habit.reminderDays = reminderDaysFromDb;
+
+      habit.name = request.name;
+      habit.description = request.description;
+      habit.estimatedTime = request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null;
+      habit.archivedDate = request.archivedDate;
+
+      // Update reminder settings if provided
+      if (request.hasReminder != null) {
+        habit.hasReminder = request.hasReminder!;
+      }
+      if (request.reminderTime != null) {
+        habit.reminderTime = request.reminderTime;
+      }
+      if (request.reminderDays != null) {
+        habit.setReminderDaysFromList(request.reminderDays!);
+      }
+
+      // Update goal settings if provided
+      if (request.hasGoal != null) {
+        habit.hasGoal = request.hasGoal!;
+      }
+      if (request.targetFrequency != null) {
+        habit.targetFrequency = request.targetFrequency!;
+      }
+      if (request.periodDays != null) {
+        habit.periodDays = request.periodDays!;
+      }
+      if (request.dailyTarget != null) {
+        habit.dailyTarget = request.dailyTarget!;
+      }
+
+      await _habitRepository.update(habit);
+    } else {
+      // Get the last habit to determine the order
+      final lastHabits = await _habitRepository.getList(
+        0,
+        1,
+        customWhereFilter: CustomWhereFilter("deleted_date IS NULL", []),
+        customOrder: [CustomOrder(field: "order", direction: SortDirection.desc)],
+      );
+
+      final lastOrder = lastHabits.items.isNotEmpty ? lastHabits.items.first.order : 0;
+      final newOrder = (lastOrder + OrderRank.initialStep).toDouble();
+
+      // Create habit with default values
+      habit = Habit(
+        id: KeyHelper.generateStringId(),
+        createdDate: DateTime.now().toUtc(),
+        name: request.name,
+        description: request.description,
+        estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0
+            ? request.estimatedTime
+            : HabitConstants.defaultEstimatedTime,
+        hasReminder: request.hasReminder ?? false,
+        reminderTime: request.reminderTime,
+        hasGoal: request.hasGoal ?? false,
+        targetFrequency: request.targetFrequency ?? 1,
+        periodDays: request.periodDays ?? 1,
+        dailyTarget: request.dailyTarget ?? 1,
+        archivedDate: request.archivedDate,
+        order: newOrder, // Set the calculated order
+      );
+
+      // Set reminder days using the helper method
+      if (request.reminderDays != null) {
+        habit.setReminderDaysFromList(request.reminderDays!);
+      }
+
+      await _habitRepository.add(habit);
+    }
+
+    return SaveHabitCommandResponse(
+      id: habit.id,
+      createdDate: habit.createdDate,
+      modifiedDate: habit.modifiedDate,
+    );
+  }
+}

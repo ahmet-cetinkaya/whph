@@ -49,6 +49,8 @@ dependencies:
     path: ../../../packages/acore-flutter
   domain:
     path: ../../core/domain
+  application:
+    path: ../../core/application
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1
