@@ -37,7 +37,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_log_export_s
 import 'package:whph/core/application/shared/services/abstraction/i_transaction_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
 import 'package:whph/core/application/shared/services/compression_service.dart';
-import 'package:whph/infrastructure/persistence/shared/services/transaction_service.dart';
+import 'package:infrastructure_persistence/shared/services/transaction_service.dart';
 
 void registerApplication(IContainer container) {
   container.registerSingleton<IMapper>((_) => CoreMapper());

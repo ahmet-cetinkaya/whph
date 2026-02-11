@@ -1,0 +1,34 @@
+name: infrastructure_linux
+description: Linux-specific implementations for WHPH infrastructure layer.
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ^3.5.3
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Core dependencies
+  application:
+    path: ../../core/application
+  domain:
+    path: ../../core/domain
+  infrastructure_shared:
+    path: ../shared
+  acore:
+    path: ../../../packages/acore-flutter
+
+  # Linux-specific dependencies
+  path_provider: ^2.1.1
+  process_run: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: false

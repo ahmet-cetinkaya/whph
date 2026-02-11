@@ -1,0 +1,33 @@
+name: infrastructure_mobile
+description: Mobile-specific implementations for WHPH infrastructure layer.
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ^3.5.3
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Core dependencies
+  application:
+    path: ../../core/application
+  domain:
+    path: ../../core/domain
+  infrastructure_shared:
+    path: ../shared
+  acore:
+    path: ../../../packages/acore-flutter
+
+  # Mobile-specific dependencies
+  flutter_local_notifications: ^19.4.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: false

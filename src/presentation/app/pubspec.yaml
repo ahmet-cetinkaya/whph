@@ -51,6 +51,21 @@ dependencies:
     path: ../../core/domain
   application:
     path: ../../core/application
+  # Infrastructure Packages
+  infrastructure_android:
+    path: ../../infrastructure/android
+  infrastructure_desktop:
+    path: ../../infrastructure/desktop
+  infrastructure_linux:
+    path: ../../infrastructure/linux
+  infrastructure_mobile:
+    path: ../../infrastructure/mobile
+  infrastructure_persistence:
+    path: ../../infrastructure/persistence
+  infrastructure_shared:
+    path: ../../infrastructure/shared
+  infrastructure_windows:
+    path: ../../infrastructure/windows
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1

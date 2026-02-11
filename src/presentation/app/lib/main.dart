@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
-import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
-import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
+import 'package:infrastructure_shared/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:infrastructure_shared/services/desktop_startup_service.dart';
 import 'package:whph/presentation/ui/app.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/app_bootstrap_service.dart';
@@ -14,12 +14,12 @@ import 'package:whph/presentation/ui/shared/services/platform_initialization_ser
 import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
 import 'package:whph/core/application/features/widget/services/widget_service/widget_service.dart';
 import 'package:whph/core/application/features/widget/services/widget_update_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
+import 'package:application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
-import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
-import 'package:whph/infrastructure/android/features/share/share_to_create_service.dart';
+import 'package:infrastructure_android/features/share/android_share_service.dart';
+import 'package:infrastructure_android/features/share/share_to_create_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Global navigator key for accessing context throughout the application
@@ -176,11 +176,11 @@ Future<void> main(List<String> args) async {
     AndroidShareService.setupShareListener(
       onSharedText: (text, subject) async {
         try {
-          Logger.debug('ShareService: Received shared text: text="$text", subject="$subject"');
+          DomainLogger.debug('ShareService: Received shared text: text="$text", subject="$subject"');
 
           final context = await _waitForContext();
           if (context == null || !context.mounted) {
-            Logger.warning('ShareService: No valid context available');
+            DomainLogger.warning('ShareService: No valid context available');
             return;
           }
 
@@ -194,7 +194,7 @@ Future<void> main(List<String> args) async {
             translationService: translationService,
           );
         } catch (e, stackTrace) {
-          Logger.error('ShareService: Error in share handler: $e', stackTrace: stackTrace);
+          DomainLogger.error('ShareService: Error in share handler: $e', stackTrace: stackTrace);
         }
       },
     );

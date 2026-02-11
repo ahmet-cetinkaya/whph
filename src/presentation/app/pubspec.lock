@@ -673,6 +673,55 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.4"
+  infrastructure_android:
+    dependency: "direct main"
+    description:
+      path: "../../infrastructure/android"
+      relative: true
+    source: path
+    version: "1.0.0"
+  infrastructure_desktop:
+    dependency: "direct main"
+    description:
+      path: "../../infrastructure/desktop"
+      relative: true
+    source: path
+    version: "1.0.0"
+  infrastructure_linux:
+    dependency: "direct main"
+    description:
+      path: "../../infrastructure/linux"
+      relative: true
+    source: path
+    version: "1.0.0"
+  infrastructure_mobile:
+    dependency: "direct main"
+    description:
+      path: "../../infrastructure/mobile"
+      relative: true
+    source: path
+    version: "1.0.0"
+  infrastructure_persistence:
+    dependency: "direct main"
+    description:
+      path: "../../infrastructure/persistence"
+      relative: true
+    source: path
+    version: "1.0.0"
+  infrastructure_shared:
+    dependency: "direct main"
+    description:
+      path: "../../infrastructure/shared"
+      relative: true
+    source: path
+    version: "1.0.0"
+  infrastructure_windows:
+    dependency: "direct main"
+    description:
+      path: "../../infrastructure/windows"
+      relative: true
+    source: path
+    version: "1.0.0"
   integration_test:
     dependency: "direct dev"
     description: flutter
@@ -1070,6 +1119,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.3"
+  process_run:
+    dependency: transitive
+    description:
+      name: process_run
+      sha256: "6ec839cdd3e6de4685318e7686cd4abb523c3d3a55af0e8d32a12ae19bc66622"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.4"
   pub_semver:
     dependency: transitive
     description:

@@ -1,0 +1,37 @@
+name: infrastructure_persistence
+description: Persistence layer for WHPH using Drift ORM with SQLite.
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ^3.5.3
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Core dependencies
+  application:
+    path: ../../core/application
+  domain:
+    path: ../../core/domain
+  acore:
+    path: ../../../packages/acore-flutter
+
+  # Persistence dependencies
+  drift: ^2.21.0
+  sqflite: ^2.4.0
+  sqlite3_flutter_libs: ^0.5.40
+  path: ^1.8.3
+  path_provider: ^2.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.13
+  drift_dev: ^2.26.0
+
+flutter:
+  uses-material-design: false
