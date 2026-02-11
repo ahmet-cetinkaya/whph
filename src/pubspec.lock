@@ -17,7 +17,7 @@ packages:
   acore:
     dependency: "direct main"
     description:
-      path: "lib/corePackages/acore"
+      path: "../packages/acore-flutter"
       relative: true
     source: path
     version: "1.0.0"

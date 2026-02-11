@@ -46,7 +46,7 @@ dependencies:
 
   # Core Packages
   acore:
-    path: lib/corePackages/acore
+    path: ../packages/acore-flutter
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1

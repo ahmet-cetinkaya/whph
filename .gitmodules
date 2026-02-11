@@ -6,3 +6,6 @@
 	path = src/lib/corePackages/acore
 	url = https://github.com/ahmet-cetinkaya/acore-flutter.git
 	branch = main
+[submodule "packages/acore-flutter"]
+	path = packages/acore-flutter
+	url = https://github.com/ahmet-cetinkaya/acore-flutter.git
