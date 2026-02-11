@@ -31,10 +31,11 @@ scripts:
   check: rps format && rps lint && rps test
 
   # Testing
-  test: bash src/scripts/run_tests.sh
-  test:all: bash src/scripts/run_tests.sh
-  test:locale: cd src && fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
-  test:migrate: cd src && fvm flutter test test/drift/app_database/migration_test.dart
+  test: bash src/presentation/app/scripts/run_tests.sh
+  test:all: bash src/presentation/app/scripts/run_tests.sh
+  test:locale: cd src/presentation/app && fvm flutter test ../../../tests/unit_tests/presentation/ui/shared/services/translation_analysis_test.dart
+  test:migrate: cd src/presentation/app && fvm flutter test ../../../tests/unit_tests/core/application/features/settings/services/import_data_migration_service_test.dart
+  test:migrate:db: cd src/presentation/app && fvm flutter test ../../../tests/unit_tests/infrastructure/persistence/shared/contexts/drift/migration_test.dart
 
   # Screenshots
   # Usage: rps gen:screenshots:device [locale] (e.g., rps gen:screenshots:device tr)

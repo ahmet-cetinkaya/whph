@@ -35,7 +35,9 @@ if [ "$SKIP_FLUTTER" = false ]; then
     if command -v fvm &>/dev/null; then
         print_section "🔷 Running Flutter Tests"
         cd "$FLUTTER_PROJECT_ROOT"
-        fvm flutter test "$PROJECT_ROOT/tests/unit_tests" || {
+        # Run unit tests and host-safe integration tests
+        # We exclude today_page_performance_test.dart as it requires a real device/emulator
+        fvm flutter test "$PROJECT_ROOT/tests/unit_tests" $(find "$PROJECT_ROOT/tests/integration_tests" -name "*_test.dart" ! -name "today_page_performance_test.dart") || {
             print_error "Flutter tests failed"
             exit 1
         }
@@ -44,7 +46,7 @@ if [ "$SKIP_FLUTTER" = false ]; then
     elif command -v flutter &>/dev/null; then
         print_section "🔷 Running Flutter Tests"
         cd "$FLUTTER_PROJECT_ROOT"
-        flutter test "$PROJECT_ROOT/tests/unit_tests" || {
+        flutter test "$PROJECT_ROOT/tests/unit_tests" $(find "$PROJECT_ROOT/tests/integration_tests" -name "*_test.dart" ! -name "today_page_performance_test.dart") || {
             print_error "Flutter tests failed"
             exit 1
         }
@@ -60,8 +62,8 @@ if [ "$SKIP_CPP" = false ]; then
     print_section "🟦 Running Linux C++ Tests"
     INCLUDE_DIR="$FLUTTER_PROJECT_ROOT/linux"
     
-    # Find all C++ test files
-    TEST_FILES=$(find "$PROJECT_ROOT/tests/unit_tests" -name "*_test.cpp")
+    # Find all C++ test files in the entire tests directory
+    TEST_FILES=$(find "$PROJECT_ROOT/tests" -name "*_test.cpp")
 
     if [ -z "$TEST_FILES" ]; then
         print_warning "No C++ test files found."

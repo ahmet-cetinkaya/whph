@@ -1,0 +1,100 @@
+import 'dart:io';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:acore/acore.dart';
+
+/// Test implementation of IApplicationDirectoryService for testing
+class TestApplicationDirectoryService implements IApplicationDirectoryService {
+  Directory? _tempDir;
+
+  @override
+  Future<Directory> getApplicationDirectory() async {
+    // Create a temporary directory for testing if not already created
+    _tempDir ??= Directory.systemTemp.createTempSync('whph_test_');
+    return _tempDir!;
+  }
+
+  /// Clean up the temporary directory
+  Future<void> cleanup() async {
+    if (_tempDir != null && await _tempDir!.exists()) {
+      await _tempDir!.delete(recursive: true);
+    }
+    _tempDir = null;
+  }
+}
+
+/// Integration test for sync crash prevention
+///
+/// This test verifies that the database integrity validation works correctly
+/// and prevents the crashes described in GitHub issue #124.
+void main() {
+  group('Sync Crash Prevention Integration Test', () {
+    late AppDatabase database;
+    late DatabaseIntegrityService integrityService;
+    late TestApplicationDirectoryService directoryService;
+
+    setUpAll(() async {
+      TestWidgetsFlutterBinding.ensureInitialized();
+
+      // Reset the singleton instance to ensure test isolation
+      AppDatabase.resetInstance();
+
+      // Create a test container with the required IApplicationDirectoryService registration
+      final testContainer = Container();
+
+      // Create and register the test implementation of IApplicationDirectoryService
+      directoryService = TestApplicationDirectoryService();
+      testContainer.registerSingleton<IApplicationDirectoryService>((_) => directoryService);
+
+      // Initialize database for testing with the container
+      database = AppDatabase.instance(testContainer);
+
+      // Initialize integrity service with real database
+      integrityService = DatabaseIntegrityService(database);
+    });
+
+    tearDownAll(() async {
+      // Clean up test resources
+      await directoryService.cleanup();
+      // Clean up database instance to ensure test isolation
+      AppDatabase.resetInstance();
+    });
+
+    test('should validate database integrity without crashing', () async {
+      // This is the core test for issue #124 crash prevention
+      // If this test completes without throwing, the crash prevention is working
+
+      final report = await integrityService.validateIntegrity();
+
+      // Verify the report was generated successfully
+      expect(report, isNotNull);
+      expect(report, isA<DatabaseIntegrityReport>());
+    });
+
+    test('should handle integrity fixes without crashing', () async {
+      // Test the automatic fix functionality
+
+      // This should not throw even if there are issues
+      await integrityService.fixCriticalIntegrityIssues();
+
+      // If we reach this point, the fix mechanism worked without crashing
+      expect(true, isTrue);
+    });
+
+    test('should handle multiple integrity validations without issues', () async {
+      // Test repeated validations to ensure stability
+
+      for (int i = 0; i < 3; i++) {
+        final report = await integrityService.validateIntegrity();
+        expect(report, isNotNull);
+
+        await integrityService.fixCriticalIntegrityIssues();
+      }
+
+      // All iterations should complete successfully
+      expect(true, isTrue);
+    });
+  });
+}
