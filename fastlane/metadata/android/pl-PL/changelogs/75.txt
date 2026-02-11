@@ -1,0 +1,7 @@
+• Importuj zadania Todoist z tagami i priorytetami
+• Pomiń szybki dialog dla szybszego tworzenia
+• Twórz nowe tagi bezpośrednio z dialogu
+• Poprawiono czcionki dla chińskiego, japońskiego, koreańskiego
+• Szybsze importy CSV z lepszymi błędami
+• Ulepszone powiadomienia Android
+• Poprawiono import zadań z przeszłymi datami

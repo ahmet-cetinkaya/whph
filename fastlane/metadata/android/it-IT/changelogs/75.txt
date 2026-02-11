@@ -1,0 +1,7 @@
+• Importa attività Todoist con tag e priorità
+• Salta dialogo rapido per creazione più veloce
+• Crea nuovi tag direttamente dal dialogo
+• Font corrette per cinese, giapponese, coreano
+• Importi CSV più veloci con errori migliori
+• Notifiche Android migliorate
+• Import attività con date passate corretto

@@ -1,0 +1,7 @@
+• Aufgaben aus Todoist mit Tags und Prioritäten importieren
+• Schnell-Dialog überspringen für schnellere Erstellung
+• Neue Tags direkt aus Dialog erstellen
+• Schrift für Chinesisch, Japanisch, Koreanisch korrigiert
+• Schnellere CSV-Importe mit besseren Fehlern
+• Verbesserte Android-Benachrichtigungen
+• Aufgaben-Import mit vergangenen Daten korrigiert

@@ -1,0 +1,7 @@
+• Taken importeren uit Todoist met tags en prioriteiten
+• Sneltoevoegingsdialoog overslaan
+• Nieuwe tags direct maken in dialoogvenster
+• Lettertypen voor Chinees, Japans, Koreaans gecorrigeerd
+• Snellere CSV-importen met betere fouten
+• Android-notificaties verbeterd
+• Import taken met verleden data gecorrigeerd

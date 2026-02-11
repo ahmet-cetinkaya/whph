@@ -1,0 +1,7 @@
+• Importați sarcini Todoist cu etichete și priorități
+• Omiteți dialog rapid pentru creare mai rapidă
+• Creați etichete noi direct din dialog
+• Corectate fonturi pentru chineză, japoneză, coreeană
+• Importuri CSV mai rapide cu erori mai bune
+• Notificări Android îmbunătățite
+• Corectată importul sarcinilor cu date trecute

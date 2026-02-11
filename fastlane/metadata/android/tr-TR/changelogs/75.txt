@@ -1,0 +1,7 @@
+• Todoist'tan etiket ve önceliklerle görevleri içe aktar
+• Hızlı ekleme atlayıp daha hızlı oluşturun
+• Etiket seçiminden doğrudan yeni etiket oluşturun
+• Çince, Japonca, Korece yazı tipleri düzeltildi
+• Daha hızlı CSV içe aktarımları
+• Android bildirimleri iyileştirildi
+• Geçmiş tarihli görev içe aktarması düzeltildi

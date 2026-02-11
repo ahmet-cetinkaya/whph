@@ -1,0 +1,7 @@
+• Importer opgaver Todoist med tags og prioriteter
+• Spring over hurtigtilføj for hurtigere oprettelse
+• Opret nye tags direkte i valgvinduet
+• Skrifttyper for kinesisk, japansk, koreansk rettet
+• Hurtigere CSV-import med bedre fejlmeddelelser
+• Android-notifikationer forbedret
+• Import af opgaver med tidligere datoer rettet

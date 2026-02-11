@@ -1,0 +1,7 @@
+• Importer oppgaver Todoist med koder og prioriteter
+• Hopp over hurtigtillegg for raskere opprettelse
+• Opprett koder direkte i valgvinduet
+• Skrifttyper for kinesisk, japansk, koreansk korrigert
+• Raskere CSV-importer med bedre feilmeldinger
+• Android-notifikasjoner forbedret
+• Import av oppgaver med tidligere datoer korrigert

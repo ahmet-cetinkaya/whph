@@ -1,0 +1,7 @@
+• Import tasks from Todoist with tags and custom priorities
+• Skip quick-add dialog for faster task creation
+• Create new tags directly from selection dialog
+• Fixed font rendering for Chinese, Japanese, Korean
+• Faster CSV imports with better errors
+• Improved Android notifications
+• Fixed task import with past recurrence dates

@@ -1,0 +1,7 @@
+• Tuo tehtäviä Todoistista tunnisteilla ja prioriteeteillä
+• Ohita pikalisäysikkuna nopeampaan luomiseen
+• Luo uusia tunnisteita suoraan valintaikkunasta
+• Kirjasimet korjattu kiinalle, japanille, korealaisille
+• Nopeammat CSV-tuonnit paremmilla virheillä
+• Android-ilmoitukset parannettu
+• Tuonti tehtävistä vanhoilla päivämäärillä korjattu

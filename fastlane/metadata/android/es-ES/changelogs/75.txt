@@ -1,0 +1,7 @@
+• Importar tareas de Todoist con etiquetas y prioridades
+• Saltar diálogo rápido para crear tareas más rápido
+• Crear etiquetas nuevas directamente desde el diálogo
+• Corregido fuentes para chino, japonés, coreano
+• Importes CSV más rápidos con mejores errores
+• Mejoradas notificaciones Android
+• Corregido import de tareas con fechas pasadas

@@ -1,0 +1,7 @@
+• Import úkolů Todoist se štítky a prioritami
+• Přeskočit dialog rychlého přidání pro rychlejší vytváření
+• Vytvářet nová štítka přímo z dialogu
+• Opraveny písma pro čínštinu, japonštinu, korejštinu
+• Rychlejší importy CSV s lepšími chybami
+• Vylepšena upozornění Android
+• Opraven import úkolů s dřívějšími daty

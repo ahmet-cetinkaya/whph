@@ -1,0 +1,7 @@
+• Uvozi oprav iz Todoista z oznakami in prioritetami
+• Preskoči pogovorno okno za hitrejše ustvarjanje
+• Ustvari nove oznake neposredno iz pogovornega okna
+• Popravljena pisava za kitajske, japonske in korejske
+• Hitrejši uvozi CSV z boljšimi napakami
+• Android obvestila izboljšana
+• Popravljeno uvoz oprav z preteklimi datumi

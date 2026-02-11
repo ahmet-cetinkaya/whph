@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-02-11
+
+### Added
+- **Enhanced CSV Import**: Import tasks from Todoist and other apps with support for tags, custom priorities, and flexible date formats
+- **Skip Quick Add Dialog**: Option to bypass the quick-add dialog and create tasks directly from the main interface
+- **Language Dialog Improvements**: Better scrolling, dynamic language count display, and fully localized descriptions
+- **Tag Creation from Selection**: Create new tags directly from the tag selection dialog without leaving the current flow
+- **Polished Onboarding**: Improved tour completion dialog with smoother navigation and better mobile responsiveness
+
+### Fixed
+- **Asian Language Support**: Fixed font rendering for Chinese, Japanese, and Korean characters on all platforms
+- **CSV Import Performance**: Faster imports with tag caching and better error messages
+- **Notification System**: Improved notification channel management and permission handling on Android
+- **Data Import Validation**: Better error messages and version compatibility when importing data from different app versions
+- **Task Recurrence**: Fixed an issue where tasks with past recurrence end dates would fail to import (#220)
+- **Language Dialogs**: Corrected Greek translation issues and improved mobile responsiveness
+- **Error Handling**: Better error messages throughout task creation and tag management flows
+
 ## [0.20.4] - 2026-01-25
 
 ### Fixed

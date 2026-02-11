@@ -1,0 +1,7 @@
+• Importera uppgifter Todoist med taggar och prioriteter
+• Hoppa över snabbtillägg för snabbare skapande
+• Skapa nya taggar direkt i valvyn
+• Teckensnitt för kinesiska, japanska, koreanska rättat
+• Snabbare CSV-import med bättre felmeddelanden
+• Android-notifikationer förbättrade
+• Import av uppgifter med tidigare datum rättat
