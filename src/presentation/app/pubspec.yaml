@@ -16,7 +16,7 @@ scripts:
   format: ../../../scripts/format.sh
   gen: ./scripts/generate_gen_files.sh
   gen-icons: fvm flutter pub run icons_launcher:create
-  gen:migrate: fvm flutter pub run drift_dev make-migrations
+  gen:migrate: bash scripts/make_migrations.sh
   gen:changelog: bash ../../../scripts/create_changelog.sh --auto
   gen:changelog:all: bash ../../../scripts/create_changelog.sh --all-versions --auto
   release:linux: fvm flutter build linux --release

@@ -34,6 +34,7 @@ EXCLUDES=(
     -not -path "*/.dart_tool/*"
     -not -path "*/build/*"
     -not -path "*/coverage/*"
+    -not -path "*/generated/*"
 )
 
 # Create temp files for storing file lists
@@ -53,7 +54,7 @@ trap cleanup EXIT
 # Single pass to collect all files - much faster than multiple find calls
 print_section "🔍 Scanning for files to format..."
 find . \( \
-    \( -name "*.dart" -not -name "*.g.dart" -not -name "*.mocks.dart" -not -name "*.log" \) \
+    \( -name "*.dart" -not -name "*.g.dart" -not -name "*.mocks.dart" -not -name "*.steps.dart" -not -name "*.drift.dart" -not -name "*.log" \) \
     -o \( -name "*.json" \) \
     -o \( -name "*.yaml" -o -name "*.yml" \) \
     -o \( -name "*.md" \) \
