@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:domain/features/tags/tag.dart';
 
 class TagUiConstants {
   // Icons

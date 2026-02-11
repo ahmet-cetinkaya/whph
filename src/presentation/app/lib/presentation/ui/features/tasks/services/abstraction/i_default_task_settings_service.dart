@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 
 /// Service interface for loading default task settings from persistent storage.
 /// Provides centralized access to default estimated time and reminder settings

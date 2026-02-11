@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
 
 /// Enum representing the type of item to create from shared text
 enum ShareItemType {

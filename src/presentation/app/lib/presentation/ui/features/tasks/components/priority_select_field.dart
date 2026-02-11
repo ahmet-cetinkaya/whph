@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';

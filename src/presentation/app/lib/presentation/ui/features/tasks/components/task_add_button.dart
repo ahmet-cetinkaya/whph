@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
@@ -109,7 +109,7 @@ class _TaskAddButtonState extends State<TaskAddButton> {
             taskResponse.priority, // Use initial priority if provided, otherwise parent's priority
       );
     } catch (e) {
-      Logger.error('Error loading parent task data: $e');
+      DomainLogger.error('Error loading parent task data: $e');
       return _ParentTaskData(
         tagIds: widget.initialTagIds ?? [],
         priority: widget.initialPriority,

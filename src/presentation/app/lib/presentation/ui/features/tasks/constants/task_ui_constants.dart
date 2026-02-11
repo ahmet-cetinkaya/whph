@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart' as application;
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';

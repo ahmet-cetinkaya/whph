@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart';
+import 'package:application/shared/services/abstraction/i_logger_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';

@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
+import 'package:infrastructure_android/constants/android_app_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_card.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';

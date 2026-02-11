@@ -24,7 +24,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
@@ -144,7 +144,7 @@ class _HabitsPageState extends State<HabitsPage> {
         });
       }
     } catch (e, stackTrace) {
-      Logger.error("Failed to load habit settings in HabitsPage", error: e, stackTrace: stackTrace);
+      DomainLogger.error("Failed to load habit settings in HabitsPage", error: e, stackTrace: stackTrace);
     }
   }
 

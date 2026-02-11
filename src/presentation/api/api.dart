@@ -1,17 +1,17 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/main.dart';
+import 'package:application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
+import 'package:application/shared/models/websocket_request.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:application/features/sync/models/sync_status.dart';
+import 'package:domain/shared/utils/logger.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
-import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:application/features/sync/queries/get_sync_query.dart';
+import 'package:application/features/sync/commands/save_sync_command.dart';
+import 'package:application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 
 const int webSocketPort = 44040;
@@ -22,7 +22,7 @@ Stream<Map<String, dynamic>> get serverEvents => streamController.stream;
 
 void startWebSocketServer() async {
   try {
-    Logger.info('Attempting to start WebSocket server on port $webSocketPort...');
+    DomainLogger.info('Attempting to start WebSocket server on port $webSocketPort...');
 
     final server = await HttpServer.bind(
       InternetAddress.anyIPv4,
@@ -30,29 +30,29 @@ void startWebSocketServer() async {
       shared: true,
     );
 
-    Logger.info('WebSocket Server successfully started on port $webSocketPort');
-    Logger.info('WebSocket Server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
-    Logger.info('Ready to receive sync requests from other devices');
+    DomainLogger.info('WebSocket Server successfully started on port $webSocketPort');
+    DomainLogger.info('WebSocket Server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
+    DomainLogger.info('Ready to receive sync requests from other devices');
 
     // Handle incoming connections
     await for (HttpRequest req in server) {
       try {
         if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
           final ws = await WebSocketTransformer.upgrade(req);
-          Logger.info(
+          DomainLogger.info(
               'WebSocket connection established from ${req.connectionInfo?.remoteAddress}:${req.connectionInfo?.remotePort}');
 
           ws.listen(
             (data) async {
-              Logger.debug('Received message: $data');
+              DomainLogger.debug('Received message: $data');
               await _handleWebSocketMessage(data.toString(), ws);
             },
             onError: (e) {
-              Logger.error('Connection error: $e');
+              DomainLogger.error('Connection error: $e');
               ws.close();
             },
             onDone: () {
-              Logger.debug('Connection closed normally');
+              DomainLogger.debug('Connection closed normally');
             },
             cancelOnError: true,
           );
@@ -65,13 +65,13 @@ void startWebSocketServer() async {
             ..close();
         }
       } catch (e) {
-        Logger.error('Request handling error: $e');
+        DomainLogger.error('Request handling error: $e');
         req.response.statusCode = HttpStatus.internalServerError;
         await req.response.close();
       }
     }
   } catch (e) {
-    Logger.error('💥 WebSocket server failed to start on port $webSocketPort: $e');
+    DomainLogger.error('💥 WebSocket server failed to start on port $webSocketPort: $e');
     rethrow;
   }
 }
@@ -80,7 +80,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
   ISyncService? syncService;
 
   try {
-    Logger.debug('Received message: $message');
+    DomainLogger.debug('Received message: $message');
 
     WebSocketMessage? parsedMessage = JsonMapper.deserialize<WebSocketMessage>(message);
     if (parsedMessage == null) {
@@ -101,7 +101,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
 
       case 'device_info':
         // Send device information for handshake
-        Logger.info('Processing device info request...');
+        DomainLogger.info('Processing device info request...');
         try {
           final deviceIdService = container.resolve<IDeviceIdService>();
           final deviceId = await deviceIdService.getDeviceId();
@@ -129,7 +129,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             },
           )));
         } catch (e) {
-          Logger.error('Failed to get device info: $e');
+          DomainLogger.error('Failed to get device info: $e');
           socket.add(JsonMapper.serialize(WebSocketMessage(
             type: 'device_info_response',
             data: {
@@ -153,7 +153,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
 
       case 'paginated_sync':
-        Logger.info('Processing paginated sync request...');
+        DomainLogger.info('Processing paginated sync request...');
 
         // Notify sync service that sync has started (for UI feedback)
         try {
@@ -164,7 +164,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             lastSyncTime: DateTime.now(),
           ));
         } catch (e) {
-          Logger.debug('Could not update sync status (server may not have sync service): $e');
+          DomainLogger.debug('Could not update sync status (server may not have sync service): $e');
         }
 
         final paginatedSyncData = parsedMessage.data;
@@ -172,20 +172,20 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           throw FormatException('Paginated sync message missing data');
         }
 
-        Logger.debug(
+        DomainLogger.debug(
             'Paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
 
         try {
           final mediator = container.resolve<Mediator>();
           final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
           final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
-          Logger.info('Paginated sync processing completed successfully');
+          DomainLogger.info('Paginated sync processing completed successfully');
 
           // Update lastSyncDate for the sync device on server-side completion
           try {
             await _updateServerSideLastSyncDate(paginatedSyncData);
           } catch (e) {
-            Logger.debug('Could not update server-side lastSyncDate: $e');
+            DomainLogger.debug('Could not update server-side lastSyncDate: $e');
           }
 
           WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
@@ -195,7 +195,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             'timestamp': DateTime.now().toIso8601String()
           });
           socket.add(JsonMapper.serialize(responseMessage));
-          Logger.info('Paginated sync response sent to client');
+          DomainLogger.info('Paginated sync response sent to client');
 
           // CRITICAL FIX: Add proper delay to ensure response is fully transmitted before close
           await Future.delayed(const Duration(milliseconds: 1000));
@@ -212,12 +212,12 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
                 ));
               });
             } catch (e) {
-              Logger.debug('Could not update sync status on completion: $e');
+              DomainLogger.debug('Could not update sync status on completion: $e');
             }
           }
         } catch (e, stackTrace) {
-          Logger.error('Paginated sync processing failed: $e');
-          Logger.error('Stack trace: $stackTrace');
+          DomainLogger.error('Paginated sync processing failed: $e');
+          DomainLogger.error('Stack trace: $stackTrace');
 
           // Enhanced error response with debugging information (excluding stack trace for security)
           final errorData = <String, dynamic>{
@@ -299,7 +299,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
                 ));
               });
             } catch (statusUpdateError) {
-              Logger.debug('Could not update sync status on error: $statusUpdateError');
+              DomainLogger.debug('Could not update sync status on error: $statusUpdateError');
             }
           }
         }
@@ -311,7 +311,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
     }
   } catch (e) {
-    Logger.error('Error processing WebSocket message: $e');
+    DomainLogger.error('Error processing WebSocket message: $e');
     socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
     await socket.close();
 
@@ -325,7 +325,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           ));
         });
       } catch (e) {
-        Logger.debug('Could not reset sync status on error: $e');
+        DomainLogger.debug('Could not reset sync status on error: $e');
       }
     }
     rethrow;
@@ -338,13 +338,13 @@ Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncDat
     // Extract syncDevice from client data to get the same lastSyncDate
     final syncDeviceData = paginatedSyncData['syncDevice'] as Map<String, dynamic>?;
     if (syncDeviceData == null) {
-      Logger.debug('Cannot update lastSyncDate: missing syncDevice information');
+      DomainLogger.debug('Cannot update lastSyncDate: missing syncDevice information');
       return;
     }
 
     final clientLastSyncDate = syncDeviceData['lastSyncDate'] as String?;
     if (clientLastSyncDate == null) {
-      Logger.debug('Cannot update lastSyncDate: missing lastSyncDate from client');
+      DomainLogger.debug('Cannot update lastSyncDate: missing lastSyncDate from client');
       return;
     }
 
@@ -358,7 +358,7 @@ Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncDat
     final serverIp = syncDeviceData['toIp'] as String?;
 
     if (clientIp == null || serverIp == null) {
-      Logger.debug('Cannot update lastSyncDate: missing IP information in syncDevice');
+      DomainLogger.debug('Cannot update lastSyncDate: missing IP information in syncDevice');
       return;
     }
 
@@ -383,11 +383,11 @@ Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncDat
       );
 
       await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(updateCommand);
-      Logger.debug('Server-side lastSyncDate updated with client timestamp: $clientSyncTimestamp');
+      DomainLogger.debug('Server-side lastSyncDate updated with client timestamp: $clientSyncTimestamp');
     } else {
-      Logger.debug('Sync device not found for IP pair: $clientIp -> $serverIp');
+      DomainLogger.debug('Sync device not found for IP pair: $clientIp -> $serverIp');
     }
   } catch (e) {
-    Logger.error('Failed to update server-side lastSyncDate: $e');
+    DomainLogger.error('Failed to update server-side lastSyncDate: $e');
   }
 }

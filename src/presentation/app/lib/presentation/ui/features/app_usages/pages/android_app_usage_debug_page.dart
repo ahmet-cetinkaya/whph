@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/android/features/app_usage/android_app_usage_service.dart';
+import 'package:infrastructure_android/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
@@ -176,7 +176,7 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
       // Print compact results to console
       _printCompactResults(results);
     } catch (e) {
-      Logger.error('Error running usage test: $e');
+      DomainLogger.error('Error running usage test: $e');
     } finally {
       setState(() {
         _isLoading = false;
@@ -282,14 +282,14 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
   /// Prints compact test results to console for easy analysis
   void _printCompactResults(Map<String, dynamic> results) {
     if (results.containsKey('error')) {
-      Logger.error('=== DEBUG TEST ERROR ===');
-      Logger.error('Error: ${results['error']}');
+      DomainLogger.error('=== DEBUG TEST ERROR ===');
+      DomainLogger.error('Error: ${results['error']}');
       return;
     }
 
     final timeRange = results['timeRange'] as Map<String, dynamic>?;
     if (timeRange == null) {
-      Logger.error('No time range data available');
+      DomainLogger.error('No time range data available');
       return;
     }
 
@@ -297,19 +297,19 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
     final Map<String, dynamic> newMethod =
         (results['newMethod'] ?? results['eventBasedMethod'] ?? <String, dynamic>{}) as Map<String, dynamic>;
 
-    Logger.info('');
-    Logger.info('=== USAGE DEBUG RESULTS ===');
-    Logger.info('Range: ${_timeRanges[_selectedTimeRange]}');
-    Logger.info('From: ${timeRange['start']}');
-    Logger.info('To: ${timeRange['end']}');
-    Logger.info('Duration: ${timeRange['durationHours']} hours');
-    Logger.info('');
+    DomainLogger.info('');
+    DomainLogger.info('=== USAGE DEBUG RESULTS ===');
+    DomainLogger.info('Range: ${_timeRanges[_selectedTimeRange]}');
+    DomainLogger.info('From: ${timeRange['start']}');
+    DomainLogger.info('To: ${timeRange['end']}');
+    DomainLogger.info('Duration: ${timeRange['durationHours']} hours');
+    DomainLogger.info('');
 
-    Logger.info('--- SUMMARY ---');
-    Logger.info('Event-based Method: ${newMethod.length} apps');
-    Logger.info('');
+    DomainLogger.info('--- SUMMARY ---');
+    DomainLogger.info('Event-based Method: ${newMethod.length} apps');
+    DomainLogger.info('');
 
-    Logger.info('--- EVENT-BASED METHOD (accurate foreground) ---');
+    DomainLogger.info('--- EVENT-BASED METHOD (accurate foreground) ---');
     final newSorted = newMethod.entries.toList()
       ..sort((a, b) {
         final aSeconds = (a.value as Map<String, dynamic>)['usageTimeSeconds'] as int;
@@ -322,14 +322,14 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
       final appName = appData['appName'] as String;
       final seconds = appData['usageTimeSeconds'] as int;
       final minutes = (seconds / 60).toStringAsFixed(1);
-      Logger.info('- $appName: ${minutes}m (${seconds}s)');
+      DomainLogger.info('- $appName: ${minutes}m (${seconds}s)');
     }
     if (newSorted.length > 10) {
-      Logger.info('- ... and ${newSorted.length - 10} more apps');
+      DomainLogger.info('- ... and ${newSorted.length - 10} more apps');
     }
-    Logger.info('');
+    DomainLogger.info('');
 
-    Logger.info('=== END DEBUG RESULTS ===');
-    Logger.info('');
+    DomainLogger.info('=== END DEBUG RESULTS ===');
+    DomainLogger.info('');
   }
 }

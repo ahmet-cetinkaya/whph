@@ -1,9 +1,9 @@
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:domain/features/settings/setting.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/services/abstraction/i_default_task_settings_service.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';

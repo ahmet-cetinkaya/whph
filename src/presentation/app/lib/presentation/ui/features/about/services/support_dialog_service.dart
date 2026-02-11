@@ -5,7 +5,7 @@ import 'package:whph/core/application/features/app_usages/queries/get_list_by_to
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/features/about/components/support_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:acore/utils/dialog_size.dart';

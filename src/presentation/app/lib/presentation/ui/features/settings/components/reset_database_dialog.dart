@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:acore/acore.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/restart_screen.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
@@ -53,7 +53,7 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
     final translationService = container.resolve<ITranslationService>();
 
     // Log the actual error for debugging
-    Logger.error('Database reset failed: ${error.toString()}');
+    DomainLogger.error('Database reset failed: ${error.toString()}');
 
     if (error is FileSystemException) {
       if (error.osError?.errorCode == 13 || error.message.contains('Permission denied')) {

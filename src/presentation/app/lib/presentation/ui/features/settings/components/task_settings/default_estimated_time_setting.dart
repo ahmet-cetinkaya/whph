@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:domain/features/settings/setting.dart';
+import 'package:domain/features/tasks/task_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:acore/components/numeric_input/numeric_input.dart';
@@ -72,7 +72,7 @@ class _DefaultEstimatedTimeSettingState extends State<DefaultEstimatedTimeSettin
       widget.onSettingsChanged?.call();
     } catch (error, stackTrace) {
       if (mounted) {
-        Logger.error('Failed to save default estimated time setting: $error\n$stackTrace');
+        DomainLogger.error('Failed to save default estimated time setting: $error\n$stackTrace');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_translationService.translate(SettingsTranslationKeys.taskDefaultEstimatedTimeSaveError)),

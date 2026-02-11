@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 
 /// Model class for task data used when creating or updating tasks

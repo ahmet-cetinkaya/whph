@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:domain/features/settings/setting.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task_constants.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog/quick_add_task_dialog.dart';
@@ -47,7 +47,7 @@ class TaskCreationHelper {
         skipQuickAdd = setting.getValue<bool>();
       }
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Failed to load skip quick add setting, using default',
         error: e,
         stackTrace: stackTrace,
@@ -194,7 +194,7 @@ class TaskCreationHelper {
       );
       _navigateToTaskDetails(context, response.id);
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Error handling task creation success',
         error: e,
         stackTrace: stackTrace,
@@ -206,7 +206,7 @@ class TaskCreationHelper {
     try {
       tasksService.notifyTaskCreated(taskId);
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Failed to notify task created',
         error: e,
         stackTrace: stackTrace,
@@ -232,7 +232,7 @@ class TaskCreationHelper {
         );
       }
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Failed to show success message',
         error: e,
         stackTrace: stackTrace,
@@ -269,7 +269,7 @@ class TaskCreationHelper {
       );
       onTaskCreated(taskId, taskData);
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Failed to invoke onTaskCreated callback',
         error: e,
         stackTrace: stackTrace,
@@ -290,7 +290,7 @@ class TaskCreationHelper {
         size: DialogSize.max,
       );
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Failed to navigate to task details',
         error: e,
         stackTrace: stackTrace,

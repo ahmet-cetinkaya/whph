@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
@@ -168,7 +168,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         }
       }
     } catch (e, stackTrace) {
-      Logger.error("Failed to load habit settings in TodayPage", error: e, stackTrace: stackTrace);
+      DomainLogger.error("Failed to load habit settings in TodayPage", error: e, stackTrace: stackTrace);
     }
   }
 
@@ -319,7 +319,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       // When a task is completed, check if this was the last remaining item
       _checkIfLastItemCompleted();
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         '[$TaskErrorIds.swipeGestureFailed] Failed to complete task from today page',
         error: e,
         stackTrace: stackTrace,

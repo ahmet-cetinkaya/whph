@@ -48,8 +48,8 @@ class AsyncErrorHandler {
         onError(e);
       }
     } catch (e, stackTrace) {
-      Logger.error('$e');
-      Logger.error('Stack trace: $stackTrace');
+      DomainLogger.error('$e');
+      DomainLogger.error('Stack trace: $stackTrace');
 
       if (!checkMounted || context.mounted) {
         ErrorHelper.showUnexpectedError(
@@ -110,8 +110,8 @@ class AsyncErrorHandler {
         onError(e);
       }
     } catch (e, stackTrace) {
-      Logger.error('$e');
-      Logger.error('Stack trace: $stackTrace');
+      DomainLogger.error('$e');
+      DomainLogger.error('Stack trace: $stackTrace');
 
       if (!checkMounted || context.mounted) {
         ErrorHelper.showUnexpectedError(
@@ -177,8 +177,8 @@ class AsyncErrorHandler {
         onError(e);
       }
     } catch (e, stackTrace) {
-      Logger.error('$e');
-      Logger.error('Stack trace: $stackTrace');
+      DomainLogger.error('$e');
+      DomainLogger.error('Stack trace: $stackTrace');
 
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(

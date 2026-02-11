@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:application/shared/utils/key_helper.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -65,7 +65,7 @@ class _NotificationSettingsState extends State<NotificationSettings> {
         widget.onLoaded?.call();
       },
       onError: (e) {
-        Logger.error('Error loading notification settings: $e');
+        DomainLogger.error('Error loading notification settings: $e');
         widget.onLoaded?.call();
       },
     );

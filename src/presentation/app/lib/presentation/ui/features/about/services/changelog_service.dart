@@ -61,7 +61,7 @@ class ChangelogService implements IChangelogService {
 
     // Check cache first
     if (_cache.containsKey(cacheKey)) {
-      Logger.debug('Using cached changelog for $fastlaneLocale v$buildNumber');
+      DomainLogger.debug('Using cached changelog for $fastlaneLocale v$buildNumber');
       final cachedContent = _cache[cacheKey];
       if (cachedContent != null) {
         return ChangelogEntry(
@@ -70,7 +70,7 @@ class ChangelogService implements IChangelogService {
         );
       }
       // If cached content is null, it means we already tried and failed
-      Logger.debug('Changelog not found (cached) for build $buildNumber');
+      DomainLogger.debug('Changelog not found (cached) for build $buildNumber');
       return null;
     }
 
@@ -79,7 +79,7 @@ class ChangelogService implements IChangelogService {
 
     // Fallback to English if not found
     if (content == null && fastlaneLocale != _fallbackLocale) {
-      Logger.debug('Changelog not found for $fastlaneLocale, falling back to $_fallbackLocale');
+      DomainLogger.debug('Changelog not found for $fastlaneLocale, falling back to $_fallbackLocale');
       content = await _fetchChangelogFromGitHub(_fallbackLocale, buildNumber);
     }
 
@@ -87,7 +87,7 @@ class ChangelogService implements IChangelogService {
     _cache[cacheKey] = content;
 
     if (content == null) {
-      Logger.debug('No changelog found for build $buildNumber');
+      DomainLogger.debug('No changelog found for build $buildNumber');
       return null;
     }
 
@@ -108,16 +108,16 @@ class ChangelogService implements IChangelogService {
       ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode != 200) {
-        Logger.debug('Failed to fetch changelog from $url: HTTP ${response.statusCode}');
+        DomainLogger.debug('Failed to fetch changelog from $url: HTTP ${response.statusCode}');
         return null;
       }
 
-      Logger.debug('Loaded changelog from $url');
+      DomainLogger.debug('Loaded changelog from $url');
       // Replace • with - for markdown syntax, ensuring each list item is properly formatted
       // First replace '• ' (bullet with space) then handle edge case of bullet without space
       return response.body.trim().replaceAll('• ', '- ').replaceAll('•', '- ');
     } catch (e) {
-      Logger.warning('Failed to fetch changelog from $url: $e');
+      DomainLogger.warning('Failed to fetch changelog from $url: $e');
       return null;
     }
   }

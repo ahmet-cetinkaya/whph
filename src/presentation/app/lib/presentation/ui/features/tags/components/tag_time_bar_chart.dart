@@ -92,7 +92,7 @@ class TagTimeBarChartState extends State<TagTimeBarChart> {
         });
       }
     } catch (e) {
-      Logger.error('Error loading element time data: $e');
+      DomainLogger.error('Error loading element time data: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;

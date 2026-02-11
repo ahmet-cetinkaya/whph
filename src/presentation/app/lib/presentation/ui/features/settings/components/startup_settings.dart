@@ -53,7 +53,7 @@ class _StartupSettingsState extends State<StartupSettings> {
         widget.onLoaded?.call();
       },
       onError: (e) {
-        Logger.error('Error loading startup setting: $e');
+        DomainLogger.error('Error loading startup setting: $e');
         widget.onLoaded?.call();
       },
     );

@@ -3,10 +3,10 @@ import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
+import 'package:domain/features/settings/setting.dart';
+import 'package:domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:infrastructure_desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
@@ -76,7 +76,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
         });
       }
     } catch (e) {
-      Logger.error('Failed to load desktop sync mode preference: $e');
+      DomainLogger.error('Failed to load desktop sync mode preference: $e');
     }
   }
 
@@ -87,7 +87,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
     try {
       if (_desktopSyncMode == DesktopSyncMode.client) {
         // Stop client mode - switch back to server mode (default)
-        Logger.info('Stopping desktop client mode...');
+        DomainLogger.info('Stopping desktop client mode...');
 
         await desktopSyncService!.switchToMode(DesktopSyncMode.server);
 
@@ -108,7 +108,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
         }
       } else {
         // Start client mode - try to connect to saved server or default
-        Logger.info('Starting desktop client mode...');
+        DomainLogger.info('Starting desktop client mode...');
 
         if (mounted) {
           OverlayNotificationHelper.showLoading(
@@ -131,13 +131,13 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
             serverPort = int.tryParse(portSetting.value) ?? 44040;
           }
         } catch (e) {
-          Logger.warning('Could not load saved server settings: $e');
+          DomainLogger.warning('Could not load saved server settings: $e');
         }
 
         // If no saved server settings, we still switch to client mode
         // The user can configure the server connection later or via auto-discovery
         if (serverAddress == null || serverAddress.isEmpty) {
-          Logger.info('No saved server settings found - proceeding to client mode anyway');
+          DomainLogger.info('No saved server settings found - proceeding to client mode anyway');
         }
 
         await desktopSyncService!.switchToMode(DesktopSyncMode.client);
@@ -160,7 +160,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
         }
       }
     } catch (e) {
-      Logger.error('Error toggling desktop sync mode: $e');
+      DomainLogger.error('Error toggling desktop sync mode: $e');
       if (mounted) {
         OverlayNotificationHelper.showError(
           context: context,
@@ -198,7 +198,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
         ));
       }
     } catch (e) {
-      Logger.error('Failed to save desktop sync mode preference: $e');
+      DomainLogger.error('Failed to save desktop sync mode preference: $e');
     }
   }
 }

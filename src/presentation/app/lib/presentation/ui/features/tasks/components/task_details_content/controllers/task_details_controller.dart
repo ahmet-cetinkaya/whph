@@ -12,8 +12,8 @@ import 'package:whph/core/application/features/tasks/commands/update_task_tags_o
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';

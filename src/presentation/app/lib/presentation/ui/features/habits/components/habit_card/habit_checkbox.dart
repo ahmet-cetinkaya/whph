@@ -7,7 +7,7 @@ import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dar
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:domain/features/habits/habit_record_status.dart';
 
 class HabitCheckbox extends StatelessWidget {
   final HabitListItem habit;

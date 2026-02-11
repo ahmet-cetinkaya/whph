@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:infrastructure_android/features/sync/android_server_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
@@ -32,26 +32,26 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
     try {
       // Check if server is already running (started by platform initialization)
       final isServerRunning = serverSyncService!.isServerMode;
-      Logger.info('Android server mode check: isServerRunning=$isServerRunning');
+      DomainLogger.info('Android server mode check: isServerRunning=$isServerRunning');
 
       if (isServerRunning && mounted) {
         setState(() {
           _isServerMode = true;
         });
-        Logger.info('Server mode already running from platform initialization - UI updated to server mode');
+        DomainLogger.info('Server mode already running from platform initialization - UI updated to server mode');
       } else {
         // Fallback: check preference and start if needed
         final setting = await settingRepository.getByKey(serverModeSettingKey);
         final shouldStartServer = setting?.getValue<bool>() ?? false;
-        Logger.info('Server mode preference check: shouldStartServer=$shouldStartServer');
+        DomainLogger.info('Server mode preference check: shouldStartServer=$shouldStartServer');
 
         if (shouldStartServer) {
-          Logger.info('Auto-starting server mode from saved preference');
+          DomainLogger.info('Auto-starting server mode from saved preference');
           await startServerModeFromPreference();
         }
       }
     } catch (e) {
-      Logger.error('Failed to load server mode preference: $e');
+      DomainLogger.error('Failed to load server mode preference: $e');
     }
   }
 
@@ -66,12 +66,12 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
         setState(() {
           _isServerMode = true;
         });
-        Logger.info('Server mode auto-started successfully');
+        DomainLogger.info('Server mode auto-started successfully');
       } else {
-        Logger.warning('Failed to auto-start server mode');
+        DomainLogger.warning('Failed to auto-start server mode');
       }
     } catch (e) {
-      Logger.error('Error auto-starting server mode: $e');
+      DomainLogger.error('Error auto-starting server mode: $e');
     }
   }
 
@@ -82,7 +82,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
     try {
       if (_isServerMode) {
         // Stop server mode
-        Logger.info('Stopping mobile sync server mode...');
+        DomainLogger.info('Stopping mobile sync server mode...');
         await serverSyncService!.stopServer();
 
         // Save preference: server mode disabled
@@ -101,7 +101,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
         }
       } else {
         // Start server mode
-        Logger.info('Starting mobile sync server mode...');
+        DomainLogger.info('Starting mobile sync server mode...');
 
         if (mounted) {
           OverlayNotificationHelper.showLoading(
@@ -141,7 +141,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
         }
       }
     } catch (e) {
-      Logger.error('Error toggling server mode: $e');
+      DomainLogger.error('Error toggling server mode: $e');
       if (mounted) {
         OverlayNotificationHelper.hideNotification();
         OverlayNotificationHelper.showError(
@@ -163,9 +163,9 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
       );
 
       await mediator.send<SaveSettingCommand, SaveSettingCommandResponse>(command);
-      Logger.debug('Server mode preference saved: $enabled');
+      DomainLogger.debug('Server mode preference saved: $enabled');
     } catch (e) {
-      Logger.error('Failed to save server mode preference: $e');
+      DomainLogger.error('Failed to save server mode preference: $e');
     }
   }
 }

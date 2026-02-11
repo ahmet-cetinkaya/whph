@@ -8,10 +8,10 @@ import 'package:whph/core/application/features/sync/queries/get_list_syncs_query
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
+import 'package:domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:infrastructure_android/features/sync/android_server_sync_service.dart';
+import 'package:infrastructure_desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -99,16 +99,16 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   void _initializeServices() {
     // CRITICAL: Use the same sync service instance from container
     _syncService = container.resolve<ISyncService>();
-    Logger.info('SyncDevicesPage: Resolved sync service: ${_syncService.runtimeType}');
+    DomainLogger.info('SyncDevicesPage: Resolved sync service: ${_syncService.runtimeType}');
 
     if (Platform.isAndroid) {
       _serverSyncService = container.resolve<AndroidServerSyncService>();
-      Logger.info('SyncDevicesPage: Resolved server sync service: ${_serverSyncService.runtimeType}');
+      DomainLogger.info('SyncDevicesPage: Resolved server sync service: ${_serverSyncService.runtimeType}');
 
       if (_syncService == _serverSyncService) {
-        Logger.info('SyncDevicesPage: Same instance - sync status will work');
+        DomainLogger.info('SyncDevicesPage: Same instance - sync status will work');
       } else {
-        Logger.warning('SyncDevicesPage: Different instances - sync status may not work!');
+        DomainLogger.warning('SyncDevicesPage: Different instances - sync status may not work!');
       }
     }
 
@@ -117,9 +117,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       _desktopSyncService = _syncService as DesktopSyncService;
       desktopSyncMode = _desktopSyncService!.currentMode;
       isServerMode = desktopSyncMode == DesktopSyncMode.server;
-      Logger.info('Desktop sync mode initialized: $desktopSyncMode, serverMode: $isServerMode');
+      DomainLogger.info('Desktop sync mode initialized: $desktopSyncMode, serverMode: $isServerMode');
     } else if (Platform.isAndroid) {
-      Logger.info('Android platform detected - will check server mode in loadServerModePreference');
+      DomainLogger.info('Android platform detected - will check server mode in loadServerModePreference');
     }
   }
 
@@ -172,7 +172,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   Future<void> _sync() async {
     // Only allow sync in client mode
     if (isServerMode) {
-      Logger.warning('Sync cannot be initiated in server mode');
+      DomainLogger.warning('Sync cannot be initiated in server mode');
       return;
     }
 
@@ -182,7 +182,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       _simulateDeviceSpecificSync();
       await _syncService.runSync(isManual: true);
     } catch (e) {
-      Logger.error('Manual sync failed: $e');
+      DomainLogger.error('Manual sync failed: $e');
     }
   }
 
@@ -245,7 +245,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       size: DialogSize.max,
       child: AddSyncDevicePage(
         onDeviceAdded: () {
-          Logger.info('Device added from AddSyncDevicePage - refreshing device list');
+          DomainLogger.info('Device added from AddSyncDevicePage - refreshing device list');
           if (mounted) {
             refresh();
           }
@@ -254,13 +254,13 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     );
 
     if (result == true && mounted) {
-      Logger.info('AddSyncDevicePage completed successfully - performing final refresh');
+      DomainLogger.info('AddSyncDevicePage completed successfully - performing final refresh');
       await refresh();
     }
   }
 
   void _onFirewallPermissionChanged() {
-    Logger.debug('Firewall permission status changed');
+    DomainLogger.debug('Firewall permission status changed');
   }
 
   Widget _buildSyncStatusIndicator() {

@@ -94,7 +94,7 @@ class _NotificationPermissionState extends State<NotificationPermission> {
       await Future.delayed(const Duration(seconds: 3));
       await _checkPermission();
     } catch (e) {
-      Logger.error('Error requesting notification permission: $e');
+      DomainLogger.error('Error requesting notification permission: $e');
     } finally {
       if (mounted) {
         setState(() {

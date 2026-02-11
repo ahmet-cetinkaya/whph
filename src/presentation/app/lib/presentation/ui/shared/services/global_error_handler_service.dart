@@ -13,7 +13,7 @@ class GlobalErrorHandlerService {
   ///
   /// Configures custom error widgets and zone error handling
   static void setupErrorHandling(GlobalKey<NavigatorState> navigatorKey) {
-    Logger.debug('GlobalErrorHandlerService: Setting up global error handling...');
+    DomainLogger.debug('GlobalErrorHandlerService: Setting up global error handling...');
 
     // Store original builder if not already stored (to allow multiple calls)
     _originalErrorWidgetBuilder ??= ErrorWidget.builder;
@@ -21,7 +21,7 @@ class GlobalErrorHandlerService {
     // Configure custom error widget for Flutter rendering errors
     ErrorWidget.builder = _buildErrorWidget;
 
-    Logger.debug('GlobalErrorHandlerService: Error handling setup completed');
+    DomainLogger.debug('GlobalErrorHandlerService: Error handling setup completed');
   }
 
   /// Resets the global error handling state (useful for tests)
@@ -34,7 +34,7 @@ class GlobalErrorHandlerService {
 
   /// Handles uncaught exceptions in the application zone
   static void handleZoneError(Object error, StackTrace stack, GlobalKey<NavigatorState> navigatorKey) {
-    Logger.error('GlobalErrorHandlerService: Handling zone error: $error');
+    DomainLogger.error('GlobalErrorHandlerService: Handling zone error: $error');
 
     if (navigatorKey.currentContext != null) {
       try {
@@ -89,9 +89,9 @@ class GlobalErrorHandlerService {
 
   /// Logs errors for debugging purposes
   static void _logError(String message, Object error, StackTrace? stack) {
-    Logger.error('GlobalErrorHandlerService: $message: $error');
+    DomainLogger.error('GlobalErrorHandlerService: $message: $error');
     if (stack != null) {
-      Logger.error('Stack trace: $stack');
+      DomainLogger.error('Stack trace: $stack');
     }
   }
 }

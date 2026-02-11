@@ -6,7 +6,7 @@ import 'package:acore/utils/dialog_size.dart';
 import 'package:acore/utils/platform_utils.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
+import 'package:application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/presentation/ui/features/about/components/onboarding_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
@@ -60,10 +60,10 @@ class AppInitializationService {
       }
 
       final hasCompletedOnboarding = setting.value == 'true';
-      Logger.info("Onboarding completed setting: $hasCompletedOnboarding");
+      DomainLogger.info("Onboarding completed setting: $hasCompletedOnboarding");
       return !hasCompletedOnboarding;
     } catch (e) {
-      Logger.info('Onboarding setting not found, showing onboarding dialog. Error: $e');
+      DomainLogger.info('Onboarding setting not found, showing onboarding dialog. Error: $e');
       return true;
     }
   }
@@ -78,7 +78,7 @@ class AppInitializationService {
         size: DialogSize.min,
       );
     } else {
-      Logger.warning("Context not available for onboarding dialog");
+      DomainLogger.warning("Context not available for onboarding dialog");
     }
   }
 
@@ -90,14 +90,14 @@ class AppInitializationService {
         await _changelogDialogService.checkAndShowChangelogDialog(context);
       }
     } catch (e) {
-      Logger.error('Error checking changelog dialog: $e');
+      DomainLogger.error('Error checking changelog dialog: $e');
     }
   }
 
   /// Check and show support dialog if conditions are met
   Future<void> _checkAndShowSupportDialog(GlobalKey<NavigatorState> navigatorKey) async {
     if (kDebugMode) {
-      Logger.info("Skipping support dialog in debug mode.");
+      DomainLogger.info("Skipping support dialog in debug mode.");
       return;
     }
 
@@ -107,7 +107,7 @@ class AppInitializationService {
         await _supportDialogService.checkAndShowSupportDialog(context);
       }
     } catch (e) {
-      Logger.error('Error checking support dialog: $e', component: 'AppInitializationService');
+      DomainLogger.error('Error checking support dialog: $e', component: 'AppInitializationService');
     }
   }
 
@@ -124,7 +124,7 @@ class AppInitializationService {
         }
       });
     } catch (e) {
-      Logger.error('Error checking for updates: $e', component: 'AppInitializationService');
+      DomainLogger.error('Error checking for updates: $e', component: 'AppInitializationService');
       _hasCheckedForUpdates = true; // Mark as checked even if failed to avoid repeated attempts
     }
   }

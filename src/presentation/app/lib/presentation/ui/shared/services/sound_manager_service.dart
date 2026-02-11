@@ -61,7 +61,7 @@ class SoundManagerService implements ISoundManagerService {
       final setting = await _settingRepository.getByKey(key);
       return setting?.getValue<bool>() ?? defaultValue;
     } catch (e) {
-      Logger.error('Failed to get setting "$key": $e');
+      DomainLogger.error('Failed to get setting "$key": $e');
       // If there's an error accessing the setting, return the default value
       return defaultValue;
     }
@@ -74,7 +74,7 @@ class SoundManagerService implements ISoundManagerService {
       final volume = setting?.getValue<int>() ?? 50; // Default to 50%
       return volume / 100.0; // Convert to 0.0-1.0 range
     } catch (e) {
-      Logger.error('Failed to get ticking volume setting: $e');
+      DomainLogger.error('Failed to get ticking volume setting: $e');
       return 0.5; // Default to 50% if there's an error
     }
   }

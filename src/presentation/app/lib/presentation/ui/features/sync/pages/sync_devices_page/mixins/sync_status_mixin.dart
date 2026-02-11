@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:infrastructure_android/features/sync/android_server_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/utils/sync_error_handler.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -53,33 +53,33 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
   }
 
   void _setupSyncStatusListener() {
-    Logger.debug('Setting up sync status listener for ${isServerMode ? "server" : "client"} mode');
+    DomainLogger.debug('Setting up sync status listener for ${isServerMode ? "server" : "client"} mode');
 
     _syncStatusSubscription = syncService.syncStatusStream.listen((status) {
       if (mounted) {
         currentSyncStatus = status;
-        Logger.info(
+        DomainLogger.info(
             'Sync status received: ${status.state} (manual: ${status.isManual}) - serverMode: $isServerMode, syncActive: $_isServerSyncActive');
 
         // Update last sync activity time ONLY for actual sync events in server mode
         if (isServerMode && status.state == SyncState.syncing) {
           _lastSyncActivityTime = DateTime.now();
-          Logger.info('Server sync event (${status.state}) - resetting inactivity timer');
+          DomainLogger.info('Server sync event (${status.state}) - resetting inactivity timer');
         } else if (isServerMode && status.state == SyncState.idle) {
-          Logger.info('Server idle event received - sync activity ended');
+          DomainLogger.info('Server idle event received - sync activity ended');
         }
 
         if (isServerMode) {
-          Logger.info('Processing in SERVER MODE - calling debounce handler');
+          DomainLogger.info('Processing in SERVER MODE - calling debounce handler');
           _handleServerModeSyncStatusWithDebounce(status);
         } else {
-          Logger.info('Processing in CLIENT MODE - updating UI directly');
+          DomainLogger.info('Processing in CLIENT MODE - updating UI directly');
           // For client mode, always update UI for any sync status change
           setState(() {});
           _handleSyncStatusChange(status);
         }
       } else {
-        Logger.warning('Sync status received but widget not mounted - ignoring');
+        DomainLogger.warning('Sync status received but widget not mounted - ignoring');
       }
     });
 
@@ -88,21 +88,21 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
       _setupServerSyncMonitoring();
     }
 
-    Logger.debug('Sync status listener setup completed');
+    DomainLogger.debug('Sync status listener setup completed');
   }
 
   void _setupServerSyncStatusListener() {
     if (!Platform.isAndroid || serverSyncService == null) return;
 
-    Logger.info('Setting up additional Android server sync status listener');
+    DomainLogger.info('Setting up additional Android server sync status listener');
 
     // Listen to server sync service's own sync status stream if it's different from main service
     if (serverSyncService != syncService) {
-      Logger.info('Server sync service is different from main sync service - setting up additional listener');
+      DomainLogger.info('Server sync service is different from main sync service - setting up additional listener');
 
       _serverSyncEventSubscription = serverSyncService!.syncStatusStream.listen((status) {
         if (mounted) {
-          Logger.info(
+          DomainLogger.info(
               'Server sync status received from AndroidServerSyncService: ${status.state} (manual: ${status.isManual})');
 
           // Forward to main sync service to ensure UI gets updated
@@ -110,7 +110,7 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
         }
       });
     } else {
-      Logger.info('Server sync service is same as main sync service - no additional listener needed');
+      DomainLogger.info('Server sync service is same as main sync service - no additional listener needed');
     }
   }
 
@@ -118,20 +118,20 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
     // Cancel any existing debounce timer
     _syncStatusDebounceTimer?.cancel();
 
-    Logger.info(
+    DomainLogger.info(
         'Server mode sync status update: ${status.state} (manual: ${status.isManual}, serverMode: $isServerMode, active: $_isServerSyncActive)');
 
     // Handle syncing state immediately - this is the critical path for starting animation
     if (status.state == SyncState.syncing) {
-      Logger.info('SYNCING state detected in server mode');
+      DomainLogger.info('SYNCING state detected in server mode');
       if (!_isServerSyncActive) {
-        Logger.info('Starting server sync animation - was not active before');
+        DomainLogger.info('Starting server sync animation - was not active before');
         _isServerSyncActive = true;
         syncIconAnimationController.repeat();
         setState(() {});
-        Logger.info('Server sync animation started - real sync activity detected');
+        DomainLogger.info('Server sync animation started - real sync activity detected');
       } else {
-        Logger.info('Server sync animation already active - continuing');
+        DomainLogger.info('Server sync animation already active - continuing');
       }
       // Reset inactivity timer only on actual sync events
       _lastSyncActivityTime = DateTime.now();
@@ -148,14 +148,14 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
 
     // For non-syncing states, use debouncing to prevent UI flicker
     if (status.state != _lastProcessedState) {
-      Logger.info('Non-syncing state (${status.state}) - scheduling debounced processing');
+      DomainLogger.info('Non-syncing state (${status.state}) - scheduling debounced processing');
       _syncStatusDebounceTimer = Timer(const Duration(milliseconds: 500), () {
         if (mounted) {
           _processServerSyncStatusChange(status);
         }
       });
     } else {
-      Logger.info('Same state as last processed (${status.state}) - ignoring');
+      DomainLogger.info('Same state as last processed (${status.state}) - ignoring');
     }
   }
 
@@ -163,7 +163,7 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
     final previousState = _lastProcessedState;
     _lastProcessedState = status.state;
 
-    Logger.info(
+    DomainLogger.info(
         'Processing server sync status change: $previousState → ${status.state} (serverMode: $isServerMode, active: $_isServerSyncActive)');
 
     switch (status.state) {
@@ -177,7 +177,7 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
           syncIconAnimationController.stop();
           syncIconAnimationController.reset();
           setState(() {});
-          Logger.info('Server sync animation stopped - sync activity ended ($previousState → ${status.state})');
+          DomainLogger.info('Server sync animation stopped - sync activity ended ($previousState → ${status.state})');
           onRefresh(); // Refresh device list
         }
         break;
@@ -192,10 +192,10 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
           setState(() {});
 
           if (status.state == SyncState.completed) {
-            Logger.info('Server sync completed successfully ($previousState → ${status.state})');
+            DomainLogger.info('Server sync completed successfully ($previousState → ${status.state})');
             onRefresh(); // Refresh device list
           } else {
-            Logger.info('Server sync error occurred ($previousState → ${status.state})');
+            DomainLogger.info('Server sync error occurred ($previousState → ${status.state})');
           }
         }
         break;
@@ -204,14 +204,14 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
 
   void _handleSyncStatusChange(SyncStatus status) {
     // Client mode handling - handle ALL sync types for UI consistency
-    Logger.debug('Client sync status change: ${status.state} (manual: ${status.isManual})');
+    DomainLogger.debug('Client sync status change: ${status.state} (manual: ${status.isManual})');
 
     switch (status.state) {
       case SyncState.syncing:
         // Start sync button animation for ANY sync (manual, background, pairing, etc.)
         if (!syncButtonAnimationController.isAnimating) {
           syncButtonAnimationController.repeat();
-          Logger.debug('Client sync button animation started (manual: ${status.isManual})');
+          DomainLogger.debug('Client sync button animation started (manual: ${status.isManual})');
         }
 
         // Show overlay notification ONLY for manual syncs in client mode
@@ -231,7 +231,7 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
         if (syncButtonAnimationController.isAnimating) {
           syncButtonAnimationController.stop();
           syncButtonAnimationController.reset();
-          Logger.debug('Client sync button animation stopped (${status.state}, manual: ${status.isManual})');
+          DomainLogger.debug('Client sync button animation stopped (${status.state}, manual: ${status.isManual})');
         }
 
         if (status.isManual) {
@@ -270,7 +270,7 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
   void _setupServerSyncMonitoring() {
     if (serverSyncService == null) return;
 
-    Logger.info('Setting up Android server sync monitoring - animation only on real sync activity');
+    DomainLogger.info('Setting up Android server sync monitoring - animation only on real sync activity');
 
     // Monitor server status and sync activity timeout
     Timer.periodic(const Duration(seconds: 2), (timer) {
@@ -290,24 +290,25 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
 
             // Check for full inactivity timeout (30s after last sync activity)
             if (now.difference(_lastSyncActivityTime!) > inactivityTimeout) {
-              Logger.info('Server sync timeout - no activity for ${inactivityTimeout.inSeconds}s, stopping animation');
+              DomainLogger.info(
+                  'Server sync timeout - no activity for ${inactivityTimeout.inSeconds}s, stopping animation');
               handleServerSyncStop();
             }
           }
         } else {
           // Server not running or not in server mode - stop animation
           if (_isServerSyncActive) {
-            Logger.info('Stopping server sync animation - server not active');
+            DomainLogger.info('Stopping server sync animation - server not active');
             handleServerSyncStop();
           }
         }
       } catch (e) {
-        Logger.debug('Server monitoring error: $e');
+        DomainLogger.debug('Server monitoring error: $e');
       }
     });
 
     // Don't start animation automatically when server starts - wait for actual sync activity
-    Logger.info('Android server sync monitoring active - animation starts only on real sync events');
+    DomainLogger.info('Android server sync monitoring active - animation starts only on real sync events');
   }
 
   /// Handle server sync stop - can be called externally
@@ -331,6 +332,6 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
     // Emit idle status
     syncService.updateSyncStatus(const SyncStatus(state: SyncState.idle, isManual: false));
 
-    Logger.info('Server sync animation stopped - sync activity ended');
+    DomainLogger.info('Server sync animation stopped - sync activity ended');
   }
 }

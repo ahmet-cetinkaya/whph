@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart'; // For HabitRecordListItem
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:domain/features/habits/habit_record_status.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view/habit_calendar_color_helper.dart';

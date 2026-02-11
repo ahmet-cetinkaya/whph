@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show DateFormatService, DateFormatType;
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_dates_section.dart';

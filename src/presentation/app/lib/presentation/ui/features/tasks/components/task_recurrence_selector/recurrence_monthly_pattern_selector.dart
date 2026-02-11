@@ -3,7 +3,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 class RecurrenceMonthlyPatternSelector extends StatefulWidget {

@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
-import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
+import 'package:infrastructure_android/constants/android_app_constants.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
-import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:infrastructure_shared/features/notification/abstractions/i_notification_payload_handler.dart';
 
 /// Callback type for handling task completion from notification
 typedef TaskCompletionCallback = Future<void> Function(String taskId);
@@ -34,11 +34,11 @@ class NotificationPayloadService {
     HabitCompletionCallback? onHabitCompletion,
   }) {
     if (!Platform.isAndroid && !forceAndroid) {
-      Logger.debug('NotificationPayloadService: Not Android platform, skipping notification listener setup');
+      DomainLogger.debug('NotificationPayloadService: Not Android platform, skipping notification listener setup');
       return;
     }
 
-    Logger.debug('NotificationPayloadService: Setting up Android notification listener...');
+    DomainLogger.debug('NotificationPayloadService: Setting up Android notification listener...');
 
     final platform = MethodChannel(AndroidAppConstants.channels.notification);
     platform.setMethodCallHandler((call) async {
@@ -65,12 +65,12 @@ class NotificationPayloadService {
       return null;
     });
 
-    Logger.debug('NotificationPayloadService: Android notification listener setup completed');
+    DomainLogger.debug('NotificationPayloadService: Android notification listener setup completed');
   }
 
   /// Handles the initial notification payload when the app is launched from a notification
   static Future<void> handleInitialNotificationPayload(INotificationPayloadHandler payloadHandler) async {
-    Logger.debug('NotificationPayloadService: Checking for initial notification payload...');
+    DomainLogger.debug('NotificationPayloadService: Checking for initial notification payload...');
 
     // Track if we've already handled a notification payload
     bool hasHandledPayload = false;
@@ -98,19 +98,19 @@ class NotificationPayloadService {
           await _acknowledgePayload(notificationPayload);
 
           hasHandledPayload = true;
-          Logger.debug('NotificationPayloadService: Initial notification payload handled successfully');
+          DomainLogger.debug('NotificationPayloadService: Initial notification payload handled successfully');
           break; // Exit the retry loop if successful
         }
 
         // If no payload found, wait before trying again
         await Future.delayed(_retryDelay);
       } catch (e) {
-        Logger.error('NotificationPayloadService: Error handling initial notification payload: $e');
+        DomainLogger.error('NotificationPayloadService: Error handling initial notification payload: $e');
         await Future.delayed(_retryDelay);
       }
     }
 
-    Logger.debug('NotificationPayloadService: Initial notification payload check completed');
+    DomainLogger.debug('NotificationPayloadService: Initial notification payload check completed');
   }
 
   /// Handles a notification payload from the platform channel
@@ -120,7 +120,7 @@ class NotificationPayloadService {
     MethodChannel platform,
   ) async {
     try {
-      Logger.debug('NotificationPayloadService: Handling notification payload: $payload');
+      DomainLogger.debug('NotificationPayloadService: Handling notification payload: $payload');
 
       // Delay to ensure the app is fully initialized before handling the payload
       await Future.delayed(_platformHandlerDelay);
@@ -129,9 +129,9 @@ class NotificationPayloadService {
       // Acknowledge receipt of payload to native side
       await platform.invokeMethod('acknowledgePayload', payload);
 
-      Logger.debug('NotificationPayloadService: Notification payload handled and acknowledged');
+      DomainLogger.debug('NotificationPayloadService: Notification payload handled and acknowledged');
     } catch (e) {
-      Logger.error('NotificationPayloadService: Error handling notification payload: $e');
+      DomainLogger.error('NotificationPayloadService: Error handling notification payload: $e');
     }
   }
 
@@ -145,7 +145,7 @@ class NotificationPayloadService {
         return payload;
       }
     } catch (e) {
-      Logger.error('NotificationPayloadService: Error getting initial notification payload: $e');
+      DomainLogger.error('NotificationPayloadService: Error getting initial notification payload: $e');
     }
     return null;
   }
@@ -158,7 +158,7 @@ class NotificationPayloadService {
         await platform.invokeMethod('acknowledgePayload', payload);
       }
     } catch (e) {
-      Logger.error('NotificationPayloadService: Error acknowledging payload: $e');
+      DomainLogger.error('NotificationPayloadService: Error acknowledging payload: $e');
     }
   }
 
@@ -170,17 +170,17 @@ class NotificationPayloadService {
     }
 
     try {
-      Logger.debug('NotificationPayloadService: Checking for pending task completions...');
+      DomainLogger.debug('NotificationPayloadService: Checking for pending task completions...');
 
       final platform = MethodChannel(AndroidAppConstants.channels.notification);
       final pendingTaskIds = await platform.invokeMethod<List<dynamic>>('getPendingTaskCompletions');
 
       if (pendingTaskIds == null || pendingTaskIds.isEmpty) {
-        Logger.debug('NotificationPayloadService: No pending task completions found');
+        DomainLogger.debug('NotificationPayloadService: No pending task completions found');
         return;
       }
 
-      Logger.debug('NotificationPayloadService: Found ${pendingTaskIds.length} pending task completions');
+      DomainLogger.debug('NotificationPayloadService: Found ${pendingTaskIds.length} pending task completions');
 
       // Process each pending task completion
       for (final taskId in pendingTaskIds) {
@@ -198,7 +198,7 @@ class NotificationPayloadService {
         }
       }
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         '[$TaskErrorIds.pendingTaskProcessingFailed] NotificationPayloadService: Critical error processing pending task completions',
         error: e,
         stackTrace: stackTrace,
@@ -214,17 +214,17 @@ class NotificationPayloadService {
     }
 
     try {
-      Logger.debug('NotificationPayloadService: Checking for pending habit completions...');
+      DomainLogger.debug('NotificationPayloadService: Checking for pending habit completions...');
 
       final platform = MethodChannel(AndroidAppConstants.channels.notification);
       final pendingHabitIds = await platform.invokeMethod<List<dynamic>>('getPendingHabitCompletions');
 
       if (pendingHabitIds == null || pendingHabitIds.isEmpty) {
-        Logger.debug('NotificationPayloadService: No pending habit completions found');
+        DomainLogger.debug('NotificationPayloadService: No pending habit completions found');
         return;
       }
 
-      Logger.debug('NotificationPayloadService: Found ${pendingHabitIds.length} pending habit completions');
+      DomainLogger.debug('NotificationPayloadService: Found ${pendingHabitIds.length} pending habit completions');
 
       // Process each pending habit completion
       for (final habitId in pendingHabitIds) {
@@ -242,7 +242,7 @@ class NotificationPayloadService {
         }
       }
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         '[$TaskErrorIds.pendingHabitProcessingFailed] NotificationPayloadService: Critical error processing pending habit completions',
         error: e,
         stackTrace: stackTrace,
@@ -268,7 +268,7 @@ class NotificationPayloadService {
 
     // Check if max retries exceeded
     if (currentRetryCount >= _maxPendingRetries) {
-      Logger.error(
+      DomainLogger.error(
         '[$maxRetriesErrorId] NotificationPayloadService: Max retries ($_maxPendingRetries) exceeded for $entityName $entityId, clearing pending entry',
       );
       // Clear both the pending entry and the retry count
@@ -285,13 +285,13 @@ class NotificationPayloadService {
       await platform.invokeMethod(clearMethod, entityId);
       await _clearRetryCount(platform, retryCountKey);
 
-      Logger.debug('NotificationPayloadService: Processed pending $entityName completion: $entityId');
+      DomainLogger.debug('NotificationPayloadService: Processed pending $entityName completion: $entityId');
     } catch (e, stackTrace) {
       // Increment retry count
       final newRetryCount = currentRetryCount + 1;
       await _setRetryCount(platform, retryCountKey, newRetryCount);
 
-      Logger.error(
+      DomainLogger.error(
         '[$processingErrorId] NotificationPayloadService: Failed to process pending $entityName $entityId (attempt $newRetryCount/$_maxPendingRetries) - will retry on next startup',
         error: e,
         stackTrace: stackTrace,
@@ -305,7 +305,7 @@ class NotificationPayloadService {
       final result = await platform.invokeMethod<int>('getRetryCount', key);
       return result ?? 0;
     } catch (e) {
-      Logger.warning('NotificationPayloadService: Failed to get retry count for $key, assuming 0: $e');
+      DomainLogger.warning('NotificationPayloadService: Failed to get retry count for $key, assuming 0: $e');
       return 0;
     }
   }
@@ -315,7 +315,7 @@ class NotificationPayloadService {
     try {
       await platform.invokeMethod('setRetryCount', {'key': key, 'count': count});
     } catch (e) {
-      Logger.error('NotificationPayloadService: Failed to set retry count for $key: $e');
+      DomainLogger.error('NotificationPayloadService: Failed to set retry count for $key: $e');
     }
   }
 
@@ -324,7 +324,7 @@ class NotificationPayloadService {
     try {
       await platform.invokeMethod('clearRetryCount', key);
     } catch (e) {
-      Logger.warning('NotificationPayloadService: Failed to clear retry count for $key: $e');
+      DomainLogger.warning('NotificationPayloadService: Failed to clear retry count for $key: $e');
     }
   }
 }

@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/about/components/changelog_dialog.dart';
@@ -32,14 +32,14 @@ class ChangelogDialogService implements IChangelogDialogService {
 
       // Don't show if this version was already shown
       if (getCoreVersion(lastShownVersion) == getCoreVersion(currentVersion)) {
-        Logger.debug('Changelog already shown for version $currentVersion');
+        DomainLogger.debug('Changelog already shown for version $currentVersion');
         return;
       }
 
       // For first-time users (no version stored), skip showing changelog
       // They will see onboarding instead
       if (lastShownVersion == null) {
-        Logger.debug('First time user, skipping changelog and storing current version');
+        DomainLogger.debug('First time user, skipping changelog and storing current version');
         await _saveLastShownVersion(currentVersion);
         return;
       }
@@ -47,7 +47,7 @@ class ChangelogDialogService implements IChangelogDialogService {
       // Fetch changelog for current locale
       final changelogEntry = await _changelogService.fetchChangelog(localeCode);
       if (changelogEntry == null) {
-        Logger.debug('No changelog found for version $currentVersion');
+        DomainLogger.debug('No changelog found for version $currentVersion');
         await _saveLastShownVersion(currentVersion);
         return;
       }
@@ -67,12 +67,12 @@ class ChangelogDialogService implements IChangelogDialogService {
       // Store the current version as shown
       await _saveLastShownVersion(currentVersion);
     } catch (e) {
-      Logger.error('Error showing changelog dialog: $e');
+      DomainLogger.error('Error showing changelog dialog: $e');
       // Still try to save the version to avoid showing broken dialog repeatedly
       try {
         await _saveLastShownVersion(AppInfo.version);
       } catch (e) {
-        Logger.error('Failed to save last shown changelog version after error: $e');
+        DomainLogger.error('Failed to save last shown changelog version after error: $e');
       }
     }
   }
@@ -85,7 +85,7 @@ class ChangelogDialogService implements IChangelogDialogService {
       if (response == null) return null;
       return response.getValue<String>();
     } catch (e) {
-      Logger.error('Failed to get last shown changelog version: $e');
+      DomainLogger.error('Failed to get last shown changelog version: $e');
       return null;
     }
   }

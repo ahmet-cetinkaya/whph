@@ -28,22 +28,22 @@ class NotificationTranslationService {
       // If main service failed, try background service
       final backgroundTranslation = _backgroundService.translate(key, namedArgs: namedArgs);
       if (backgroundTranslation != key) {
-        Logger.debug('NotificationTranslationService: Used background translation for key: $key');
+        DomainLogger.debug('NotificationTranslationService: Used background translation for key: $key');
         return backgroundTranslation;
       }
 
       // Both failed, log and return key
-      Logger.warning('NotificationTranslationService: No translation found for key: $key');
+      DomainLogger.warning('NotificationTranslationService: No translation found for key: $key');
       return key;
     } catch (e) {
       // If there's any error, try background service as final fallback
-      Logger.error('NotificationTranslationService: Error in main translation, using background fallback: $e');
+      DomainLogger.error('NotificationTranslationService: Error in main translation, using background fallback: $e');
 
       try {
         final backgroundTranslation = _backgroundService.translate(key, namedArgs: namedArgs);
         return backgroundTranslation != key ? backgroundTranslation : key;
       } catch (e2) {
-        Logger.error('NotificationTranslationService: Background translation also failed: $e2');
+        DomainLogger.error('NotificationTranslationService: Background translation also failed: $e2');
         return key;
       }
     }

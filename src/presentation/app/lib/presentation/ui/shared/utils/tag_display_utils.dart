@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:domain/features/tags/tag.dart';
 
 class TagDisplayItem {
   final String name;

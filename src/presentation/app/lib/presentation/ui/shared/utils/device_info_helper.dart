@@ -20,7 +20,7 @@ class DeviceInfoHelper {
             deviceName += ' (Work)';
           }
         } catch (e) {
-          Logger.error('Failed to check work profile status: $e');
+          DomainLogger.error('Failed to check work profile status: $e');
           // Continue without work profile detection if it fails
         }
 
@@ -34,7 +34,7 @@ class DeviceInfoHelper {
           final linuxInfo = await _deviceInfo.linuxInfo;
           return userName != null ? '${linuxInfo.prettyName} ($userName)' : linuxInfo.prettyName;
         } catch (e) {
-          Logger.error('Failed to get Linux device info: $e');
+          DomainLogger.error('Failed to get Linux device info: $e');
           return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
         }
       }
@@ -44,7 +44,7 @@ class DeviceInfoHelper {
           final windowsInfo = await _deviceInfo.windowsInfo;
           return userName != null ? '${windowsInfo.computerName} ($userName)' : windowsInfo.computerName;
         } catch (e) {
-          Logger.error('Failed to get Windows device info: $e');
+          DomainLogger.error('Failed to get Windows device info: $e');
           return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
         }
       }
@@ -54,7 +54,7 @@ class DeviceInfoHelper {
           final macOsInfo = await _deviceInfo.macOsInfo;
           return userName != null ? '${macOsInfo.computerName} ($userName)' : macOsInfo.computerName;
         } catch (e) {
-          Logger.error('Failed to get macOS device info: $e');
+          DomainLogger.error('Failed to get macOS device info: $e');
           return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
         }
       }
@@ -64,7 +64,7 @@ class DeviceInfoHelper {
           final iosInfo = await _deviceInfo.iosInfo;
           return iosInfo.name;
         } catch (e) {
-          Logger.error('Failed to get iOS device info: $e');
+          DomainLogger.error('Failed to get iOS device info: $e');
           return Platform.localHostname;
         }
       }
@@ -76,12 +76,12 @@ class DeviceInfoHelper {
           return '${webInfo.browserName} on ${webInfo.platform}';
         }
       } catch (e) {
-        Logger.error('Failed to get web browser info: $e');
+        DomainLogger.error('Failed to get web browser info: $e');
       }
 
       return Platform.localHostname;
     } catch (e) {
-      Logger.error('Failed to get device name: $e');
+      DomainLogger.error('Failed to get device name: $e');
       return 'Unknown Device';
     }
   }

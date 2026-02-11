@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
@@ -185,7 +185,7 @@ class QuickAddTaskController extends ChangeNotifier {
       _selectedTags = tagOptions;
       notifyListeners();
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Failed to load initial tags',
         error: e,
         stackTrace: stackTrace,

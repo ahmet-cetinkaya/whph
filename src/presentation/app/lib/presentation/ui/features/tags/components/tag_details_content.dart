@@ -20,7 +20,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/color_picker/color_field.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:domain/features/tags/tag.dart';
 
 class TagDetailsContent extends StatefulWidget {
   final String tagId;

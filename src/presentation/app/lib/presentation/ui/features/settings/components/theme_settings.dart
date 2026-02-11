@@ -79,7 +79,7 @@ class _ThemeSettingsState extends State<ThemeSettings> {
         widget.onLoaded?.call();
       },
       onError: (e) {
-        Logger.error('Error loading theme settings: $e');
+        DomainLogger.error('Error loading theme settings: $e');
         widget.onLoaded?.call();
       },
     );

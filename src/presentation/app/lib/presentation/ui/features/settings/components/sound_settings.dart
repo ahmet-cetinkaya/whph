@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
@@ -107,7 +107,7 @@ class _SoundSettingsState extends State<SoundSettings> {
         widget.onLoaded?.call();
       },
       onError: (e) {
-        Logger.error('Error loading sound settings: $e');
+        DomainLogger.error('Error loading sound settings: $e');
         widget.onLoaded?.call();
       },
     );
@@ -177,7 +177,7 @@ class _SoundSettingsState extends State<SoundSettings> {
         // Clear sound manager cache when settings change
         _soundManagerService.clearSettingsCache();
       } catch (e) {
-        Logger.error('Error saving sound settings in background: $e');
+        DomainLogger.error('Error saving sound settings in background: $e');
       } finally {
         _isSaving = false;
       }

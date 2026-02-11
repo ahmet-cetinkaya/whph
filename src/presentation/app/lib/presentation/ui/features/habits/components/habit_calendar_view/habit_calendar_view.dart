@@ -9,7 +9,7 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constant
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view/habit_calendar_color_helper.dart';
 
 class HabitCalendarView extends StatefulWidget {

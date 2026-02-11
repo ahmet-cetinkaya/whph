@@ -1,4 +1,4 @@
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as application;
+import 'package:application/shared/constants/shared_translation_keys.dart' as application;
 import 'package:acore/acore.dart' show DateTimePickerTranslationKey;
 import 'package:acore/components/numeric_input/numeric_input_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';

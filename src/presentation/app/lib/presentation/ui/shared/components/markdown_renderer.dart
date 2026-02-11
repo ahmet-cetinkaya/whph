@@ -103,7 +103,7 @@ class MarkdownRenderer extends StatelessWidget {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       // Handle error - could show a snackbar or log the error
-      Logger.error('Could not launch $url');
+      DomainLogger.error('Could not launch $url');
     }
   }
 }

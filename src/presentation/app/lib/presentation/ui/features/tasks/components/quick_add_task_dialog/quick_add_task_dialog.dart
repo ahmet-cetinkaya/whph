@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:acore/utils/dialog_size.dart';
@@ -133,7 +133,7 @@ class QuickAddTaskDialog extends StatefulWidget {
               size: DialogSize.max,
             );
           } catch (e, stackTrace) {
-            Logger.error(
+            DomainLogger.error(
               'Failed to navigate to task details after dialog result',
               error: e,
               stackTrace: stackTrace,
@@ -143,7 +143,7 @@ class QuickAddTaskDialog extends StatefulWidget {
       }
       return result;
     }).catchError((error, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Error in dialog result handling',
         error: error,
         stackTrace: stackTrace,

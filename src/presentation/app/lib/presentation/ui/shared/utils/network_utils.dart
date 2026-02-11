@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
+import 'package:application/shared/models/websocket_request.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 
@@ -23,14 +23,14 @@ class NetworkUtils {
       final networkService = container.resolve<INetworkInterfaceService>();
       return await networkService.getLocalIPAddresses();
     } catch (e) {
-      Logger.error('Failed to get local IP addresses via service: $e');
+      DomainLogger.error('Failed to get local IP addresses via service: $e');
       return [];
     }
   }
 
   static Future<bool> testWebSocketConnection(String host, {Duration? timeout}) async {
     try {
-      Logger.debug('Testing WebSocket connectivity to $host:$webSocketPort...');
+      DomainLogger.debug('Testing WebSocket connectivity to $host:$webSocketPort...');
       final wsUrl = 'ws://$host:$webSocketPort';
       final ws = await WebSocket.connect(wsUrl).timeout(const Duration(seconds: 5));
 
@@ -48,15 +48,15 @@ class NetworkUtils {
               onTimeout: (_) => throw TimeoutException('No response received'),
             )
             .first;
-        Logger.debug('WebSocket connectivity test passed for $host:$webSocketPort');
+        DomainLogger.debug('WebSocket connectivity test passed for $host:$webSocketPort');
       } catch (e) {
-        Logger.debug('Test message failed: $e');
+        DomainLogger.debug('Test message failed: $e');
       }
 
       await ws.close();
       return true;
     } catch (e) {
-      Logger.debug('WebSocket connection failed to $host:$webSocketPort: $e');
+      DomainLogger.debug('WebSocket connection failed to $host:$webSocketPort: $e');
       return false;
     }
   }
@@ -64,13 +64,13 @@ class NetworkUtils {
   /// Test network connectivity with simple socket connection
   static Future<bool> testPortConnectivity(String host, {int port = webSocketPort}) async {
     try {
-      Logger.debug('Testing port connectivity to $host:$port...');
+      DomainLogger.debug('Testing port connectivity to $host:$port...');
       final socket = await Socket.connect(host, port, timeout: const Duration(seconds: 3));
       await socket.close();
-      Logger.debug('Port connectivity test passed for $host:$port');
+      DomainLogger.debug('Port connectivity test passed for $host:$port');
       return true;
     } catch (e) {
-      Logger.debug('Port connectivity failed to $host:$port: $e');
+      DomainLogger.debug('Port connectivity failed to $host:$port: $e');
       return false;
     }
   }

@@ -6,7 +6,7 @@ import 'package:whph/presentation/ui/app/services/app_lifecycle_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_routes.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
+import 'package:application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';

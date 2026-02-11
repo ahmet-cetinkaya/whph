@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:acore/time/week_days.dart';
 import 'package:whph/core/application/features/tasks/utils/date_helper.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';

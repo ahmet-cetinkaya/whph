@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_view_page.dart';
@@ -72,7 +72,7 @@ class TourNavigationServiceImpl implements ITourNavigationService {
       ) as GetSettingQueryResponse?;
       return skippedSetting?.value == 'true';
     } catch (e) {
-      Logger.error('TourNavigationService: Error checking if tour is completed/skipped: $e');
+      DomainLogger.error('TourNavigationService: Error checking if tour is completed/skipped: $e');
       return false;
     }
   }
@@ -173,7 +173,7 @@ class TourNavigationServiceImpl implements ITourNavigationService {
         valueType: SettingValueType.bool,
       ));
     } catch (e) {
-      Logger.error('TourNavigationService: Error marking tour as completed: $e');
+      DomainLogger.error('TourNavigationService: Error marking tour as completed: $e');
     }
   }
 
@@ -186,7 +186,7 @@ class TourNavigationServiceImpl implements ITourNavigationService {
         valueType: SettingValueType.bool,
       ));
     } catch (e) {
-      Logger.error('TourNavigationService: Error marking tour as skipped: $e');
+      DomainLogger.error('TourNavigationService: Error marking tour as skipped: $e');
     }
   }
 

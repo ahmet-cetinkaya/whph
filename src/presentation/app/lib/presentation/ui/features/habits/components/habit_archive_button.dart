@@ -130,7 +130,7 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
             widget.onArchiveSuccess?.call();
 
             if (kDebugMode) {
-              Logger.debug(
+              DomainLogger.debug(
                 ' HabitArchiveButton: Habit ${newStatus ? "archived" : "unarchived"} successfully: ${widget.habitId}',
               );
             }

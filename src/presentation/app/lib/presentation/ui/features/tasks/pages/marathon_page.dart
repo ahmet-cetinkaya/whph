@@ -124,7 +124,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         _onTasksChanged();
       });
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         '[$TaskErrorIds.swipeGestureFailed] Failed to complete task in marathon mode',
         error: e,
         stackTrace: stackTrace,

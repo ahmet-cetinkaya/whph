@@ -258,7 +258,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         CompleteTaskCommand(id: taskId),
       );
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         '[$TaskErrorIds.swipeGestureFailed] Failed to complete task from swipe',
         error: e,
         stackTrace: stackTrace,

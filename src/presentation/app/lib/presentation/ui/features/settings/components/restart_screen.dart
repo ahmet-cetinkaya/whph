@@ -50,7 +50,7 @@ class _RestartScreenState extends State<RestartScreen> {
       final executable = Platform.resolvedExecutable;
       final args = Platform.executableArguments;
 
-      Logger.info('Restarting application: $executable $args');
+      DomainLogger.info('Restarting application: $executable $args');
 
       if (Platform.isWindows) {
         await _restartWindows(executable, args);
@@ -64,7 +64,7 @@ class _RestartScreenState extends State<RestartScreen> {
       await Future.delayed(const Duration(milliseconds: 500));
       exit(0);
     } catch (e, stackTrace) {
-      Logger.error('Unexpected error during restart: $e\nStack trace: $stackTrace');
+      DomainLogger.error('Unexpected error during restart: $e\nStack trace: $stackTrace');
       _showManualRestartFallback();
       exit(1);
     }
@@ -90,7 +90,7 @@ class _RestartScreenState extends State<RestartScreen> {
       await Future.delayed(const Duration(milliseconds: 1000));
       return true;
     } catch (e) {
-      Logger.warning('PowerShell restart failed, trying cmd method: $e');
+      DomainLogger.warning('PowerShell restart failed, trying cmd method: $e');
 
       try {
         // Fallback to cmd method
@@ -105,7 +105,7 @@ class _RestartScreenState extends State<RestartScreen> {
 
         return true; // Assume success if no immediate exception
       } catch (e2) {
-        Logger.error('Both restart methods failed: $e2');
+        DomainLogger.error('Both restart methods failed: $e2');
         return false;
       }
     }
@@ -125,7 +125,7 @@ class _RestartScreenState extends State<RestartScreen> {
       await Future.delayed(const Duration(milliseconds: 500));
       return true;
     } catch (e) {
-      Logger.warning('nohup restart failed, trying shell method: $e');
+      DomainLogger.warning('nohup restart failed, trying shell method: $e');
 
       try {
         // Fallback method
@@ -137,7 +137,7 @@ class _RestartScreenState extends State<RestartScreen> {
 
         return true; // Assume success if no immediate exception
       } catch (e2) {
-        Logger.error('Both Linux restart methods failed: $e2');
+        DomainLogger.error('Both Linux restart methods failed: $e2');
         return false;
       }
     }
@@ -156,7 +156,7 @@ class _RestartScreenState extends State<RestartScreen> {
       await Future.delayed(const Duration(milliseconds: 1000));
       return true;
     } catch (e) {
-      Logger.warning('open command failed, trying shell method: $e');
+      DomainLogger.warning('open command failed, trying shell method: $e');
 
       try {
         // Fallback method
@@ -168,7 +168,7 @@ class _RestartScreenState extends State<RestartScreen> {
 
         return true; // Assume success if no immediate exception
       } catch (e2) {
-        Logger.error('Both macOS restart methods failed: $e2');
+        DomainLogger.error('Both macOS restart methods failed: $e2');
         return false;
       }
     }
@@ -177,7 +177,7 @@ class _RestartScreenState extends State<RestartScreen> {
   void _showManualRestartFallback() {
     // This method would show a manual restart instruction
     // For now, it just logs the instruction since we're in a terminal state
-    Logger.warning('Please restart the application manually');
+    DomainLogger.warning('Please restart the application manually');
   }
 
   @override

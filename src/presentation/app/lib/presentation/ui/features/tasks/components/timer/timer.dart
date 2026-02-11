@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
+import 'package:infrastructure_shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer_controller.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer_sound_helper.dart';

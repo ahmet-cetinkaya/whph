@@ -193,7 +193,7 @@ class AddSyncDeviceController extends ChangeNotifier {
       }
     } catch (e) {
       // Log connection failures during discovery for debugging purposes
-      Logger.debug('Device check failed for $ipAddress: $e');
+      DomainLogger.debug('Device check failed for $ipAddress: $e');
     }
   }
 
@@ -295,7 +295,7 @@ class AddSyncDeviceController extends ChangeNotifier {
             );
           } else {
             // Device exists but is soft-deleted - reactivate it
-            Logger.info('Reactivating soft-deleted sync device ${existingDevice!.id}');
+            DomainLogger.info('Reactivating soft-deleted sync device ${existingDevice!.id}');
             final reactivateCommand = SaveSyncDeviceCommand(
               id: existingDevice.id,
               fromIP: device.ipAddress,
@@ -339,9 +339,9 @@ class AddSyncDeviceController extends ChangeNotifier {
       try {
         // Mark as manual sync so UI updates properly
         await syncService.runSync(isManual: true);
-        Logger.info('Background sync completed successfully after device pairing');
+        DomainLogger.info('Background sync completed successfully after device pairing');
       } catch (e) {
-        Logger.error('Background sync failed after device pairing: $e');
+        DomainLogger.error('Background sync failed after device pairing: $e');
         // Sync errors will be handled by the sync service and shown in the main sync UI
       }
     }();

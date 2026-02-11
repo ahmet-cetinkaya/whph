@@ -13,7 +13,7 @@ import 'package:whph/presentation/ui/features/sync/models/sync_connection_string
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
-import 'package:whph/presentation/api/api.dart';
+import '../../../../../../../../../../api/api.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
 
@@ -84,7 +84,7 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
         platform: _platform!,
       );
 
-      Logger.debug('Sync QR Code Message: ${syncQrCodeMessage.toCsv()}');
+      DomainLogger.debug('Sync QR Code Message: ${syncQrCodeMessage.toCsv()}');
       _qrData = syncQrCodeMessage.toCsv();
 
       // Create connection string

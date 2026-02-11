@@ -5,7 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';

@@ -2,7 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
-import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:infrastructure_shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/features/notes/services/notes_service.dart';
@@ -23,7 +23,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_tour_navigati
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'dart:io';
 import 'package:whph/presentation/ui/shared/utils/audio_player_sound_player.dart';
-import 'package:whph/infrastructure/windows/features/audio/windows_audio_player.dart';
+import 'package:infrastructure_windows/features/audio/windows_audio_player.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/support_dialog_service.dart';

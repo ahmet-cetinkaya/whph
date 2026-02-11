@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:application/shared/services/abstraction/i_setup_service.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/api/api.dart';
+import '../../../../../../../../../../../api/api.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card/helpers/firewall_platform_helper.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -58,25 +58,25 @@ class FirewallPermissionController extends ChangeNotifier {
 
   /// Initialize the controller with setup service and load initial state
   Future<void> initialize() async {
-    Logger.info('[PERMISSION_CONTROLLER] initialize() starting...');
+    DomainLogger.info('[PERMISSION_CONTROLLER] initialize() starting...');
     _initializeSetupService();
     await _loadManualConfirmation();
     await checkFirewallPermission();
-    Logger.info('[PERMISSION_CONTROLLER] initialize() completed');
+    DomainLogger.info('[PERMISSION_CONTROLLER] initialize() completed');
   }
 
   void _initializeSetupService() {
-    Logger.debug('[PERMISSION_CONTROLLER] _initializeSetupService() called');
+    DomainLogger.debug('[PERMISSION_CONTROLLER] _initializeSetupService() called');
     if (!PlatformUtils.isDesktop) {
-      Logger.debug('[PERMISSION_CONTROLLER] Not a desktop platform - skipping');
+      DomainLogger.debug('[PERMISSION_CONTROLLER] Not a desktop platform - skipping');
       return;
     }
 
     try {
       _setupService = container.resolve<ISetupService>();
-      Logger.info('[PERMISSION_CONTROLLER] Setup service initialized: ${_setupService.runtimeType}');
+      DomainLogger.info('[PERMISSION_CONTROLLER] Setup service initialized: ${_setupService.runtimeType}');
     } catch (e) {
-      Logger.warning('[PERMISSION_CONTROLLER] Setup service not available: $e');
+      DomainLogger.warning('[PERMISSION_CONTROLLER] Setup service not available: $e');
     }
   }
 
@@ -106,9 +106,9 @@ class FirewallPermissionController extends ChangeNotifier {
         await checkFirewallPermission();
       }
 
-      Logger.debug('[PERMISSION_CONTROLLER] Loaded manual confirmation: $_isManuallyConfirmed');
+      DomainLogger.debug('[PERMISSION_CONTROLLER] Loaded manual confirmation: $_isManuallyConfirmed');
     } catch (e) {
-      Logger.debug('[PERMISSION_CONTROLLER] Manual confirmation setting not found, defaulting to false');
+      DomainLogger.debug('[PERMISSION_CONTROLLER] Manual confirmation setting not found, defaulting to false');
       _isManuallyConfirmed = false;
       notifyListeners();
     }
@@ -145,9 +145,9 @@ class FirewallPermissionController extends ChangeNotifier {
       }
       notifyListeners();
 
-      Logger.debug('[PERMISSION_CONTROLLER] Saved manual confirmation: $confirmed');
+      DomainLogger.debug('[PERMISSION_CONTROLLER] Saved manual confirmation: $confirmed');
     } catch (e) {
-      Logger.error('[PERMISSION_CONTROLLER] Failed to save manual confirmation: $e');
+      DomainLogger.error('[PERMISSION_CONTROLLER] Failed to save manual confirmation: $e');
       if (context.mounted) {
         OverlayNotificationHelper.showError(
           context: context,
@@ -164,10 +164,10 @@ class FirewallPermissionController extends ChangeNotifier {
 
   /// Check if firewall rules are properly configured
   Future<void> checkFirewallPermission() async {
-    Logger.debug('[PERMISSION_CONTROLLER] checkFirewallPermission() called');
+    DomainLogger.debug('[PERMISSION_CONTROLLER] checkFirewallPermission() called');
 
     if (!PlatformUtils.isDesktop || _setupService == null) {
-      Logger.debug('[PERMISSION_CONTROLLER] Skipping - not desktop or no setup service');
+      DomainLogger.debug('[PERMISSION_CONTROLLER] Skipping - not desktop or no setup service');
       return;
     }
 
@@ -175,13 +175,13 @@ class FirewallPermissionController extends ChangeNotifier {
     _isVerifyingPermission = false;
     notifyListeners();
 
-    Logger.info('[PERMISSION_CONTROLLER] Starting firewall permission check...');
+    DomainLogger.info('[PERMISSION_CONTROLLER] Starting firewall permission check...');
 
     try {
       final inboundRuleName = _platformHelper.getInboundRuleName();
       final outboundRuleName = _platformHelper.getOutboundRuleName();
 
-      Logger.debug('[PERMISSION_CONTROLLER] Checking rules: $inboundRuleName, $outboundRuleName');
+      DomainLogger.debug('[PERMISSION_CONTROLLER] Checking rules: $inboundRuleName, $outboundRuleName');
 
       final inboundRuleExists = await _setupService!.checkFirewallRule(ruleName: inboundRuleName);
       final outboundRuleExists = await _setupService!.checkFirewallRule(ruleName: outboundRuleName);
@@ -192,17 +192,17 @@ class FirewallPermissionController extends ChangeNotifier {
 
       if (bothRulesExist) {
         _shouldHideCard = true;
-        Logger.info('[PERMISSION_CONTROLLER] Firewall rules detected - HIDING CARD');
+        DomainLogger.info('[PERMISSION_CONTROLLER] Firewall rules detected - HIDING CARD');
       } else {
-        Logger.info('[PERMISSION_CONTROLLER] Firewall rules NOT complete - SHOWING CARD');
+        DomainLogger.info('[PERMISSION_CONTROLLER] Firewall rules NOT complete - SHOWING CARD');
       }
 
       notifyListeners();
 
-      Logger.info(
+      DomainLogger.info(
           '[PERMISSION_CONTROLLER] Check completed: granted=$_isFirewallPermissionGranted, hideCard=$_shouldHideCard');
     } catch (e) {
-      Logger.error('[PERMISSION_CONTROLLER] Failed to check firewall permission: $e');
+      DomainLogger.error('[PERMISSION_CONTROLLER] Failed to check firewall permission: $e');
       _isFirewallPermissionGranted = _isManuallyConfirmed;
       _isCheckingFirewallPermission = false;
       notifyListeners();
@@ -211,15 +211,15 @@ class FirewallPermissionController extends ChangeNotifier {
 
   /// Add Windows firewall rules automatically
   Future<bool> addWindowsFirewallRules(BuildContext context) async {
-    Logger.info('[PERMISSION_CONTROLLER] addWindowsFirewallRules() called');
+    DomainLogger.info('[PERMISSION_CONTROLLER] addWindowsFirewallRules() called');
 
     if (!Platform.isWindows || _setupService == null) {
-      Logger.warning('[PERMISSION_CONTROLLER] Skipping - not Windows or no setup service');
+      DomainLogger.warning('[PERMISSION_CONTROLLER] Skipping - not Windows or no setup service');
       return false;
     }
 
     try {
-      Logger.info('[PERMISSION_CONTROLLER] Adding firewall rules...');
+      DomainLogger.info('[PERMISSION_CONTROLLER] Adding firewall rules...');
 
       await _setupService!.addFirewallRules(
         ruleNamePrefix: 'WHPH Sync Port $webSocketPort',
@@ -228,7 +228,7 @@ class FirewallPermissionController extends ChangeNotifier {
         protocol: 'TCP',
       );
 
-      Logger.info('[PERMISSION_CONTROLLER] Firewall rules added, initiating verification...');
+      DomainLogger.info('[PERMISSION_CONTROLLER] Firewall rules added, initiating verification...');
       await _initiatePermissionVerification();
 
       if (context.mounted) {
@@ -240,7 +240,7 @@ class FirewallPermissionController extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      Logger.error('[PERMISSION_CONTROLLER] Failed to add firewall rules: $e');
+      DomainLogger.error('[PERMISSION_CONTROLLER] Failed to add firewall rules: $e');
 
       if (context.mounted) {
         OverlayNotificationHelper.showError(
@@ -254,7 +254,7 @@ class FirewallPermissionController extends ChangeNotifier {
   }
 
   Future<void> _initiatePermissionVerification() async {
-    Logger.debug('[PERMISSION_CONTROLLER] Initiating permission verification');
+    DomainLogger.debug('[PERMISSION_CONTROLLER] Initiating permission verification');
 
     _isVerifyingPermission = true;
     _isCheckingFirewallPermission = false;
@@ -262,9 +262,9 @@ class FirewallPermissionController extends ChangeNotifier {
 
     try {
       await _validateFirewallConfiguration();
-      Logger.info('[PERMISSION_CONTROLLER] Permission verification completed');
+      DomainLogger.info('[PERMISSION_CONTROLLER] Permission verification completed');
     } catch (e) {
-      Logger.error('[PERMISSION_CONTROLLER] Permission verification failed: $e');
+      DomainLogger.error('[PERMISSION_CONTROLLER] Permission verification failed: $e');
     } finally {
       _isVerifyingPermission = false;
       notifyListeners();
@@ -272,7 +272,7 @@ class FirewallPermissionController extends ChangeNotifier {
   }
 
   Future<void> _validateFirewallConfiguration() async {
-    Logger.info('[PERMISSION_CONTROLLER] _validateFirewallConfiguration() starting...');
+    DomainLogger.info('[PERMISSION_CONTROLLER] _validateFirewallConfiguration() starting...');
 
     if (!PlatformUtils.isDesktop || _setupService == null) return;
 
@@ -286,21 +286,21 @@ class FirewallPermissionController extends ChangeNotifier {
     const maxAttempts = 5;
     const delayBetweenAttempts = Duration(milliseconds: 500);
 
-    Logger.info('[PERMISSION_CONTROLLER] Starting validation loop (max $maxAttempts attempts)...');
+    DomainLogger.info('[PERMISSION_CONTROLLER] Starting validation loop (max $maxAttempts attempts)...');
 
     while (attempts < maxAttempts) {
       attempts++;
-      Logger.debug('[PERMISSION_CONTROLLER] Validation attempt $attempts/$maxAttempts');
+      DomainLogger.debug('[PERMISSION_CONTROLLER] Validation attempt $attempts/$maxAttempts');
 
       inboundRuleExists = await _setupService!.checkFirewallRule(ruleName: inboundRuleName);
       outboundRuleExists = await _setupService!.checkFirewallRule(ruleName: outboundRuleName);
       bothRulesExist = inboundRuleExists && outboundRuleExists;
 
-      Logger.info(
+      DomainLogger.info(
           '[PERMISSION_CONTROLLER] Attempt $attempts: inbound=$inboundRuleExists, outbound=$outboundRuleExists');
 
       if (bothRulesExist) {
-        Logger.info('[PERMISSION_CONTROLLER] Both rules found - validation successful!');
+        DomainLogger.info('[PERMISSION_CONTROLLER] Both rules found - validation successful!');
         break;
       } else if (attempts < maxAttempts) {
         await Future.delayed(delayBetweenAttempts);
@@ -310,18 +310,18 @@ class FirewallPermissionController extends ChangeNotifier {
     _isFirewallPermissionGranted = bothRulesExist || _isManuallyConfirmed;
 
     if (_isFirewallPermissionGranted && !bothRulesExist && _isManuallyConfirmed) {
-      Logger.info('[PERMISSION_CONTROLLER] Permission granted by manual confirmation - scheduling hide');
+      DomainLogger.info('[PERMISSION_CONTROLLER] Permission granted by manual confirmation - scheduling hide');
       Future.delayed(const Duration(seconds: 5), () {
         _shouldHideCard = true;
         notifyListeners();
       });
     } else if (_isFirewallPermissionGranted && bothRulesExist) {
       _shouldHideCard = true;
-      Logger.info('[PERMISSION_CONTROLLER] Hiding card immediately (both rules detected)');
+      DomainLogger.info('[PERMISSION_CONTROLLER] Hiding card immediately (both rules detected)');
     }
 
     notifyListeners();
 
-    Logger.info('[PERMISSION_CONTROLLER] Validation completed after $attempts attempts');
+    DomainLogger.info('[PERMISSION_CONTROLLER] Validation completed after $attempts attempts');
   }
 }

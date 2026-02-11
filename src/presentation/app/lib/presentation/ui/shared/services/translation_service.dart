@@ -56,7 +56,7 @@ class TranslationService implements ITranslationService {
       }
 
       if (kDebugMode) {
-        Logger.error('[Error] [TranslationService] Translation not found for key: $key');
+        DomainLogger.error('[Error] [TranslationService] Translation not found for key: $key');
       }
     }
 
@@ -75,7 +75,7 @@ class TranslationService implements ITranslationService {
       final reminderService = container.resolve<ReminderService>();
       await reminderService.refreshAllRemindersForLanguageChange();
     } catch (e) {
-      Logger.error('TranslationService: Failed to refresh reminders for language change: $e');
+      DomainLogger.error('TranslationService: Failed to refresh reminders for language change: $e');
     }
 
     if (context.mounted) Navigator.of(context).pushReplacementNamed(SettingsPage.route);
@@ -93,7 +93,7 @@ class TranslationService implements ITranslationService {
       final reminderService = container.resolve<ReminderService>();
       await reminderService.refreshAllRemindersForLanguageChange();
     } catch (e) {
-      Logger.error('TranslationService: Failed to refresh reminders for language change: $e');
+      DomainLogger.error('TranslationService: Failed to refresh reminders for language change: $e');
     }
   }
 

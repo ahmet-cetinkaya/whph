@@ -100,7 +100,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         });
       }
     } catch (e) {
-      Logger.error('Error loading task details: $e');
+      DomainLogger.error('Error loading task details: $e');
     }
   }
 
@@ -200,7 +200,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
       // TasksList will auto-refresh, just update completion percentage
       _loadTaskDetails();
     } catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         '[$TaskErrorIds.swipeGestureFailed] Failed to complete subtask',
         error: e,
         stackTrace: stackTrace,

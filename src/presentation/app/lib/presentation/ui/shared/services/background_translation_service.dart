@@ -4,7 +4,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
@@ -39,7 +39,7 @@ class BackgroundTranslationService {
       _currentLocale = response.value.isNotEmpty ? response.value : 'en'; // Default to English
     } catch (e) {
       _currentLocale = 'en'; // Fallback to English
-      Logger.error('BackgroundTranslationService: Failed to load locale, using default: $e');
+      DomainLogger.error('BackgroundTranslationService: Failed to load locale, using default: $e');
     }
   }
 
@@ -59,7 +59,7 @@ class BackgroundTranslationService {
       // Reload translations for new locale
       await _loadTranslations();
     } catch (e) {
-      Logger.error('BackgroundTranslationService: Failed to save locale: $e');
+      DomainLogger.error('BackgroundTranslationService: Failed to save locale: $e');
     }
   }
 
@@ -97,9 +97,9 @@ class BackgroundTranslationService {
         }
       }
 
-      Logger.debug('BackgroundTranslationService: Loaded translations for locale: $_currentLocale');
+      DomainLogger.debug('BackgroundTranslationService: Loaded translations for locale: $_currentLocale');
     } catch (e) {
-      Logger.error('BackgroundTranslationService: Failed to load translations: $e');
+      DomainLogger.error('BackgroundTranslationService: Failed to load translations: $e');
     }
   }
 
@@ -120,7 +120,7 @@ class BackgroundTranslationService {
     } catch (e) {
       // File might not exist for this locale, continue silently
       if (kDebugMode) {
-        Logger.debug('BackgroundTranslationService: Could not load $path/$locale.yaml: $e');
+        DomainLogger.debug('BackgroundTranslationService: Could not load $path/$locale.yaml: $e');
       }
     }
   }
@@ -231,7 +231,7 @@ class BackgroundTranslationService {
       }
 
       if (translation == null) {
-        Logger.warning('BackgroundTranslationService: Translation not found for key: $key');
+        DomainLogger.warning('BackgroundTranslationService: Translation not found for key: $key');
         return key;
       }
     }

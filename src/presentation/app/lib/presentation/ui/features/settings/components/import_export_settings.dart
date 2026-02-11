@@ -444,7 +444,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         }
       },
       onError: (e) {
-        Logger.error("Import failed: $e");
+        DomainLogger.error("Import failed: $e");
 
         if (context.mounted) {
           // Hide loading overlay
@@ -558,7 +558,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
         }
       },
       onError: (e) {
-        Logger.error('Export failed: $e');
+        DomainLogger.error('Export failed: $e');
 
         // Show error overlay notification
         if (context.mounted) {
@@ -614,7 +614,7 @@ class _ExternalImportPageState extends State<_ExternalImportPage> {
         });
       }
     } on Exception catch (e, stackTrace) {
-      Logger.error(
+      DomainLogger.error(
         'Failed to pick CSV file: $e',
         error: e,
         stackTrace: stackTrace,

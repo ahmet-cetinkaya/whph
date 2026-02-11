@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:domain/features/habits/habit_record_status.dart';
 
 /// Helper class for calculating colors and badge properties in habit calendar view.
 /// Extracts complex color logic based on goal types and completion status.
