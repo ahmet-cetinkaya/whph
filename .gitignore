@@ -30,3 +30,4 @@ PROJECT_INDEX.md
 *.log
 .temp/
 core.[0-9]*
+**/.flutter-plugins-dependencies
