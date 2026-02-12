@@ -2,7 +2,6 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
 trap 'acore_log_error "F-Droid CI failed!"; exit 1' ERR

@@ -71,7 +71,8 @@ sed -i "s/AppVersion=.*/AppVersion=$NEW_VERSION/" "$INSTALLER_FILE"
 
 acore_log_section "Generating changelog"
 cd "$PROJECT_ROOT"
-bash packages/acore-scripts/src/generate_changelog.sh -y
+bash packages/acore-scripts/src/generate_changelog.sh "$NEW_VERSION" -y
+bash scripts/create_fastlane_changelog.sh "$NEW_BUILD" --auto
 
 acore_log_info "Files have been updated and changelog generated."
 acore_log_info "The following git operations will be performed:"
@@ -89,9 +90,7 @@ fi
 acore_log_section "Git operations"
 acore_log_info "Staging main repository changes..."
 git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "CHANGELOG.md"
-for d in fastlane/metadata/android/*/; do
-    git add "${d}changelogs"
-done
+git add "fastlane/metadata/android/*/changelogs/*.txt"
 git commit -m "chore: update app version to $NEW_VERSION"
 
 git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION"
