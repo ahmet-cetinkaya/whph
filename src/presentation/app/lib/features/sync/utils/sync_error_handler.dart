@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:whph/shared/utils/overlay_notification_helper.dart';
+import 'package:whph/shared/services/abstraction/i_translation_service.dart';
+
+class SyncErrorHandler {
+  static void showSyncError({
+    required BuildContext context,
+    required ITranslationService translationService,
+    required String errorKey,
+    Map<String, String>? errorParams,
+    Duration duration = const Duration(seconds: 5),
+  }) {
+    final translatedMessage = translationService.translate(errorKey, namedArgs: errorParams);
+
+    OverlayNotificationHelper.showError(
+      context: context,
+      message: translatedMessage,
+      duration: duration,
+    );
+  }
+
+  static void showMultipleSyncErrors({
+    required BuildContext context,
+    required ITranslationService translationService,
+    required List<String> errorKeys,
+    Duration duration = const Duration(seconds: 6),
+  }) {
+    if (errorKeys.isEmpty) return;
+
+    final firstErrorMessage = translationService.translate(errorKeys.first);
+    final message = errorKeys.length > 1 ? '$firstErrorMessage (+${errorKeys.length - 1} more)' : firstErrorMessage;
+
+    OverlayNotificationHelper.showError(
+      context: context,
+      message: message,
+      duration: duration,
+    );
+  }
+
+  static void showSyncSuccess({
+    required BuildContext context,
+    required ITranslationService translationService,
+    required String messageKey,
+    Duration duration = const Duration(seconds: 3),
+  }) {
+    final translatedMessage = translationService.translate(messageKey);
+
+    OverlayNotificationHelper.showSuccess(
+      context: context,
+      message: translatedMessage,
+      duration: duration,
+    );
+  }
+}

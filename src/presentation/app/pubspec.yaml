@@ -66,6 +66,8 @@ dependencies:
     path: ../../infrastructure/shared
   infrastructure_windows:
     path: ../../infrastructure/windows
+  presentation_api:
+    path: ../../presentation/api
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1
@@ -138,18 +140,18 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - lib/presentation/ui/shared/assets/sounds/
-    - lib/presentation/ui/shared/assets/locales/
-    - lib/presentation/ui/features/about/assets/locales/
-    - lib/presentation/ui/features/app_usages/assets/locales/
-    - lib/presentation/ui/features/calendar/assets/locales/
-    - lib/presentation/ui/features/habits/assets/locales/
-    - lib/presentation/ui/features/settings/assets/locales/
-    - lib/presentation/ui/features/tags/assets/locales/
-    - lib/presentation/ui/features/sync/assets/locales/
-    - lib/presentation/ui/features/tasks/assets/locales/
-    - lib/presentation/ui/features/tasks/assets/sounds/
-    - lib/presentation/ui/features/notes/assets/locales/
+    - lib/shared/assets/sounds/
+    - lib/shared/assets/locales/
+    - lib/features/about/assets/locales/
+    - lib/features/app_usages/assets/locales/
+    - lib/features/calendar/assets/locales/
+    - lib/features/habits/assets/locales/
+    - lib/features/settings/assets/locales/
+    - lib/features/tags/assets/locales/
+    - lib/features/sync/assets/locales/
+    - lib/features/tasks/assets/locales/
+    - lib/features/tasks/assets/sounds/
+    - lib/features/notes/assets/locales/
 
 dependency_overrides:
   vector_math: ^2.2.0

@@ -1111,6 +1111,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.3"
+  presentation_api:
+    dependency: "direct main"
+    description:
+      path: "../api"
+      relative: true
+    source: path
+    version: "1.0.0"
   process:
     dependency: transitive
     description:

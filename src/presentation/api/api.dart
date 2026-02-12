@@ -12,7 +12,7 @@ import 'package:application/features/sync/queries/get_sync_query.dart';
 import 'package:application/features/sync/commands/save_sync_command.dart';
 import 'package:application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
+import 'package:whph/shared/utils/device_info_helper.dart';
 
 const int webSocketPort = 44040;
 
