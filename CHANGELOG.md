@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.1] - 2026-02-13
+
+### Added
+- **Better Mobile Touch Targets**: Buttons in the quick-add task dialog are now easier to tap on mobile devices
+
 ## [0.21.0] - 2026-02-11
 
 ### Added
@@ -1467,3 +1472,91 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add time to task filter by planned end date in today page
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
+
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.21.1...HEAD
+[0.21.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.21.1
+[0.21.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.21.0
+[0.20.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.20.4
+[0.20.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.20.3
+[0.20.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.20.2
+[0.20.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.20.1
+[0.20.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.20.0
+[0.19.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.19.3
+[0.19.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.19.2
+[0.19.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.19.1
+[0.19.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.19.0
+[0.18.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.18.0
+[0.17.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.17.1
+[0.17.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.17.0
+[0.16.5]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.16.5
+[0.16.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.16.4
+[0.16.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.16.3
+[0.16.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.16.2
+[0.16.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.16.1
+[0.16.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.16.0
+[0.15.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.15.0
+[0.14.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.14.1
+[0.14.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.14.0
+[0.13.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.13.2
+[0.13.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.13.1
+[0.13.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.13.0
+[0.12.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.12.0
+[0.11.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.11.1
+[0.11.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.11.0
+[0.10.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.10.1
+[0.10.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.10.0
+[0.9.8]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.8
+[0.9.7]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.7
+[0.9.6]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.6
+[0.9.5]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.5
+[0.9.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.4
+[0.9.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.3
+[0.9.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.2
+[0.9.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.1
+[0.9.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.9.0
+[0.8.7]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.8.7
+[0.8.6]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.8.6
+[0.8.5]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.8.5
+[0.8.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.8.4
+[0.8.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.8.3
+[0.8.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.8.2
+[0.8.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.8.1
+[0.8.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.8.0
+[0.7.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.7.1
+[0.7.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.7.0
+[0.6.11]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.11
+[0.6.10]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.10
+[0.6.9]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.9
+[0.6.8]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.8
+[0.6.7]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.7
+[0.6.6]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.6
+[0.6.5]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.5
+[0.6.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.4
+[0.6.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.3
+[0.6.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.2
+[0.6.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.1
+[0.6.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.6.0
+[0.5.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.5.1
+[0.5.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.5.0
+[0.4.6]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.4.6
+[0.4.5]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.4.5
+[0.4.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.4.4
+[0.4.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.4.3
+[0.4.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.4.2
+[0.4.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.4.1
+[0.4.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.4.0
+[0.3.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.3.2
+[0.3.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.3.1
+[0.3.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.3.0
+[0.2.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.2.1
+[0.2.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.2.0
+[0.1.7]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.1.7
+[0.1.6]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.1.6
+[0.1.5]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.1.5
+[0.1.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.1.4
+[0.1.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.1.3
+[0.1.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.1.2
+[0.1.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.1.1
+[0.1.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.1.0
+[0.0.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.0.2
+[0.0.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.0.1

@@ -1,0 +1,2 @@
+• Better touch targets for quick task addition on mobile
+• Under the hood improvements
