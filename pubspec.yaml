@@ -20,39 +20,41 @@ documentation: https://github.com/ahmet-cetinkaya/whph/blob/main/README.md
 # RPS (Runner Package Script) commands - install with: dart pub global activate rps
 # Run commands from project root: rps <command>
 scripts:
+  # App Commands (delegated to src/presentation/app)
+  app:pub:get: cd src/presentation/app && rps pub:get
+  app:run: cd src/presentation/app && rps run
+  app:run:demo: cd src/presentation/app && rps run:demo
+  app:clean: cd src/presentation/app && rps clean
+  app:clean:db: cd src/presentation/app && rps clean:db
+  app:gen: cd src/presentation/app && rps gen
+  app:gen:icons: cd src/presentation/app && rps gen:icons
+  app:gen:migrate: cd src/presentation/app && rps gen:migrate
+  app:test: cd src/presentation/app && rps test
+  app:test:locale: cd src/presentation/app && rps test:locale
+  app:release:linux: cd src/presentation/app && rps release:linux
+  app:release:windows: cd src/presentation/app && rps release:windows
+  app:release:windows:setup: cd src/presentation/app && rps release:windows:setup
+  app:release:android: cd src/presentation/app && rps release:android
+  app:release:android:bundle: cd src/presentation/app && rps release:android:bundle
+
   # Development
-  pub:get: cd src/presentation/app && fvm flutter pub get
-  run: cd src/presentation/app && fvm flutter run
-  run:demo: cd src/presentation/app && fvm flutter run --dart-define=DEMO_MODE=true
-  clean: bash src/presentation/app/scripts/clean.sh
-  clean:db: bash src/presentation/app/scripts/clean_db.sh
   format: bash scripts/format.sh
-  lint: ./scripts/lint.sh
-  check: rps format && rps lint && rps test
+  lint: bash scripts/lint.sh
+  check: rps format && rps lint && rps app:test
 
   # Testing
-  test: bash src/presentation/app/scripts/run_tests.sh
-  test:all: bash src/presentation/app/scripts/run_tests.sh
-  test:locale: cd src/presentation/app && fvm flutter test ../../../tests/unit_tests/presentation/ui/shared/services/translation_analysis_test.dart
-  test:migrate: cd src/presentation/app && fvm flutter test ../../../tests/unit_tests/core/application/features/settings/services/import_data_migration_service_test.dart
-  test:migrate:db: cd src/presentation/app && fvm flutter test ../../../tests/unit_tests/infrastructure/persistence/shared/contexts/drift/migration_test.dart
+  test: rps app:test
+  test:all: rps app:test
+  test:ci: act -j build
+  test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
+  test:ci:linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
+  test:ci:windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
+  test:ci:fdroid: bash scripts/test_ci_fdroid.sh
 
   # Screenshots
   # Usage: rps gen:screenshots:device [locale] (e.g., rps gen:screenshots:device tr)
-  gen:screenshots: cd src/presentation/app && bash scripts/generate_screenshots.sh ${1:---all} --
-  gen:feature-graphics: cd scripts/feature_graphics_generator && bun run generate
-
-  # Code Generation
-  gen: cd src/presentation/app && bash scripts/generate_gen_files.sh
-  gen:icons: cd src/presentation/app && fvm flutter pub run icons_launcher:create
-  gen:migrate: cd src/presentation/app && bash scripts/make_migrations.sh
-
-  # Build Releases
-  release:linux: cd src/presentation/app && fvm flutter build linux --release
-  release:windows: cd src/presentation/app && fvm flutter build windows --release
-  release:windows:setup: cd src/presentation/app && fvm flutter build windows --release && ISCC.exe windows\\setup-wizard\\installer.iss
-  release:android: cd src/presentation/app && fvm flutter build apk --release
-  release:android:bundle: cd src/presentation/app && fvm flutter build appbundle --release
+  gen-screenshots: cd src/presentation/app && bash scripts/generate_screenshots.sh ${1:---all} --
+  gen-feature-graphics: cd scripts/feature_graphics_generator && bun run generate
 
   # Version Management
   version:major: bash scripts/version_bump.sh major
@@ -61,15 +63,8 @@ scripts:
   version:push: git push && git push --tags
 
   # Changelog
-  gen:changelog: bash scripts/create_changelog.sh --auto
-  gen:changelog:all: bash scripts/create_changelog.sh --all-versions --auto
-
-  # CI/CD
-  test:ci: act -j build
-  test:ci:android: act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
-  test:ci:linux: act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
-  test:ci:windows: act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
-  test:ci:fdroid: bash scripts/test_ci_fdroid.sh
+  changelog: bash scripts/create_changelog.sh --auto
+  changelog:all: bash scripts/create_changelog.sh --all-versions --auto
 
   # Utilities
   install:linux: bash scripts/install-linux.sh
