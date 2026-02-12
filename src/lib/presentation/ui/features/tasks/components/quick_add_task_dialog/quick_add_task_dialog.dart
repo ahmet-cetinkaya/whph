@@ -585,66 +585,47 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   Widget _buildSendButton(ThemeData theme, bool isMobile) {
     final isEnabled = _titleController.text.trim().isNotEmpty && !_controller.isLoading;
-    if (isMobile) {
-      return SizedBox(
-        width: AppTheme.iconSizeLarge - 4.0,
-        height: AppTheme.iconSizeLarge - 4.0,
-        child: IconButton(
-          icon: Icon(
-            _controller.isLoading ? Icons.hourglass_empty : Icons.send,
-            color: isEnabled ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.38),
-          ),
-          onPressed: isEnabled ? _createTask : null,
-          iconSize: AppTheme.iconSizeMedium,
-          padding: EdgeInsets.zero,
-          constraints: BoxConstraints(
-            minWidth: AppTheme.iconSizeLarge - 4.0,
-            minHeight: AppTheme.iconSizeLarge - 4.0,
-          ),
+    return SizedBox(
+      width: AppTheme.buttonSizeLarge,
+      height: AppTheme.buttonSizeLarge,
+      child: IconButton(
+        icon: Icon(
+          _controller.isLoading ? Icons.hourglass_empty : Icons.send,
+          color: isEnabled ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.38),
         ),
-      );
-    }
-    return IconButton(
-      icon: Icon(
-        _controller.isLoading ? Icons.hourglass_empty : Icons.send,
-        color: isEnabled ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.38),
+        onPressed: isEnabled ? _createTask : null,
+        iconSize: AppTheme.iconSizeMedium + 4.0,
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(
+          minWidth: AppTheme.buttonSizeLarge,
+          minHeight: AppTheme.buttonSizeLarge,
+        ),
+        tooltip: _controller.translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
       ),
-      onPressed: isEnabled ? _createTask : null,
-      tooltip: _controller.translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
     );
   }
 
   Widget _buildOpenTaskButton(ThemeData theme, bool isMobile) {
     final isEnabled = _titleController.text.trim().isNotEmpty && !_controller.isLoading;
-    if (isMobile) {
-      return SizedBox(
-        width: AppTheme.iconSizeLarge - 4.0,
-        height: AppTheme.iconSizeLarge - 4.0,
-        child: IconButton(
-          icon: Icon(
-            Icons.open_in_new,
-            color: isEnabled
-                ? theme.colorScheme.onSurfaceVariant
-                : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.38),
-          ),
-          onPressed: isEnabled ? _createAndOpenTask : null,
-          iconSize: AppTheme.iconSizeMedium,
-          padding: EdgeInsets.zero,
-          constraints: BoxConstraints(
-            minWidth: AppTheme.iconSizeLarge - 4.0,
-            minHeight: AppTheme.iconSizeLarge - 4.0,
-          ),
+    return SizedBox(
+      width: AppTheme.buttonSizeLarge,
+      height: AppTheme.buttonSizeLarge,
+      child: IconButton(
+        icon: Icon(
+          Icons.open_in_new,
+          color: isEnabled
+              ? theme.colorScheme.onSurfaceVariant
+              : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.38),
         ),
-      );
-    }
-    return IconButton(
-      icon: Icon(
-        Icons.open_in_new,
-        color:
-            isEnabled ? theme.colorScheme.onSurfaceVariant : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.38),
+        onPressed: isEnabled ? _createAndOpenTask : null,
+        iconSize: AppTheme.iconSizeMedium + 4.0,
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(
+          minWidth: AppTheme.buttonSizeLarge,
+          minHeight: AppTheme.buttonSizeLarge,
+        ),
+        tooltip: _controller.translationService.translate(TaskTranslationKeys.createAndOpenTaskTooltip),
       ),
-      onPressed: isEnabled ? _createAndOpenTask : null,
-      tooltip: _controller.translationService.translate(TaskTranslationKeys.createAndOpenTaskTooltip),
     );
   }
 }

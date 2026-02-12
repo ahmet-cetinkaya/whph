@@ -23,11 +23,12 @@ class QuickActionIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return IconButton(
       icon: iconWidget ?? Icon(icon, color: color ?? theme.colorScheme.onSurface.withValues(alpha: 0.7)),
       onPressed: onPressed,
       tooltip: tooltip,
-      iconSize: iconSize,
+      iconSize: iconSize + 4.0,
       style: getQuickActionButtonStyle(theme),
     );
   }
@@ -42,7 +43,7 @@ class QuickActionIconButton extends StatelessWidget {
         side: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.2), width: 0.5),
       ),
       padding: EdgeInsets.zero,
-      minimumSize: const Size(32, 32),
+      minimumSize: const Size(40, 40),
     );
   }
 }
