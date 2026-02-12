@@ -5,13 +5,12 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 METADATA_DIR="$PROJECT_ROOT/fastlane/metadata/android"
 ERRORS=0
 WARNINGS=0
 
-echo "🔍 Fastlane Metadata Validation for F-Droid Compliance"
-echo "======================================================="
-echo
+acore_log_header "Fastlane Metadata Validation for F-Droid Compliance"
 
 # Function to check file exists and is not empty
 check_file() {
@@ -20,13 +19,13 @@ check_file() {
     local lang="$3"
 
     if [ ! -f "$file_path" ]; then
-        echo "❌ ERROR: Missing $file_type for $lang"
+        acore_log_error "ERROR: Missing $file_type for $lang"
         ERRORS=$((ERRORS + 1))
         return 1
     fi
 
     if [ ! -s "$file_path" ]; then
-        echo "⚠️  WARNING: Empty $file_type for $lang"
+        acore_log_warning "WARNING: Empty $file_type for $lang"
         WARNINGS=$((WARNINGS + 1))
         return 1
     fi
@@ -45,7 +44,7 @@ validate_description_length() {
         local length
         length=$(head -1 "$file_path" | wc -c)
         if [ "$length" -gt "$max_length" ]; then
-            echo "❌ ERROR: $desc_type too long for $lang ($length > $max_length chars)"
+            acore_log_error "$desc_type too long for $lang ($length > $max_length chars)"
             ERRORS=$((ERRORS + 1))
         fi
     fi
@@ -61,7 +60,7 @@ validate_changelog_length() {
         local byte_size
         byte_size=$(wc -c <"$file_path")
         if [ "$byte_size" -gt 500 ]; then
-            echo "⚠️  WARNING: Changelog $version.txt too long for $lang ($byte_size > 500 bytes)"
+            acore_log_warning "Changelog $version.txt too long for $lang ($byte_size > 500 bytes)"
             WARNINGS=$((WARNINGS + 1))
         fi
     fi
@@ -69,7 +68,7 @@ validate_changelog_length() {
 
 # Check if metadata directory exists
 if [ ! -d "$METADATA_DIR" ]; then
-    echo "❌ FATAL: Metadata directory not found: $METADATA_DIR"
+    acore_log_error "FATAL: Metadata directory not found: $METADATA_DIR"
     exit 1
 fi
 
@@ -78,12 +77,11 @@ fi
 LANGUAGES=$(find "$METADATA_DIR" -maxdepth 1 -type d ! -name "$METADATA_DIR" -exec basename {} \; | grep -E '^[a-z]{2}(-[A-Z]{2})?$' | sort)
 
 if [ -z "$LANGUAGES" ]; then
-    echo "❌ FATAL: No language directories found in $METADATA_DIR"
+    acore_log_error "FATAL: No language directories found in $METADATA_DIR"
     exit 1
 fi
 
-echo "📁 Found $(echo "$LANGUAGES" | wc -l) language directories"
-echo
+acore_log_info "Found $(echo "$LANGUAGES" | wc -l) language directories"
 
 # Validate each language directory
 for lang in $LANGUAGES; do
@@ -91,12 +89,11 @@ for lang in $LANGUAGES; do
 
     # Skip incomplete directories (no title.txt means not a valid locale)
     if [ ! -f "$lang_dir/title.txt" ]; then
-        echo "⏭️  Skipping $lang (no title.txt - incomplete locale)"
-        echo
+        acore_log_warning "Skipping $lang (no title.txt - incomplete locale)"
         continue
     fi
 
-    echo "🌍 Validating $lang..."
+    acore_log_info "Validating $lang..."
 
     # Check required files
     check_file "$lang_dir/title.txt" "title.txt" "$lang"
@@ -110,26 +107,26 @@ for lang in $LANGUAGES; do
 
     # Check images directory
     if [ ! -d "$lang_dir/images" ]; then
-        echo "⚠️  WARNING: Missing images directory for $lang"
+        acore_log_warning "Missing images directory for $lang"
         WARNINGS=$((WARNINGS + 1))
     else
         # Check icon
         if [ ! -f "$lang_dir/images/icon.png" ]; then
-            echo "⚠️  WARNING: Missing icon.png for $lang"
+            acore_log_warning "Missing icon.png for $lang"
             WARNINGS=$((WARNINGS + 1))
         fi
 
         # Check screenshots
         if [ ! -d "$lang_dir/images/phoneScreenshots" ]; then
-            echo "⚠️  WARNING: Missing phoneScreenshots directory for $lang"
+            acore_log_warning "Missing phoneScreenshots directory for $lang"
             WARNINGS=$((WARNINGS + 1))
         else
             screenshot_count=$(find "$lang_dir/images/phoneScreenshots" -name "*.png" -type f 2>/dev/null | wc -l)
             if [ "$screenshot_count" -eq 0 ]; then
-                echo "⚠️  WARNING: No screenshots found for $lang"
+                acore_log_warning "No screenshots found for $lang"
                 WARNINGS=$((WARNINGS + 1))
             elif [ "$screenshot_count" -lt 2 ]; then
-                echo "⚠️  WARNING: Only $screenshot_count screenshot(s) for $lang (minimum 2 recommended)"
+                acore_log_warning "Only $screenshot_count screenshot(s) for $lang (minimum 2 recommended)"
                 WARNINGS=$((WARNINGS + 1))
             fi
         fi
@@ -137,12 +134,12 @@ for lang in $LANGUAGES; do
 
     # Check changelogs
     if [ ! -d "$lang_dir/changelogs" ]; then
-        echo "⚠️  WARNING: Missing changelogs directory for $lang"
+        acore_log_warning "Missing changelogs directory for $lang"
         WARNINGS=$((WARNINGS + 1))
     else
         changelog_count=$(find "$lang_dir/changelogs" -name "*.txt" -type f 2>/dev/null | wc -l)
         if [ "$changelog_count" -eq 0 ]; then
-            echo "⚠️  WARNING: No changelogs found for $lang"
+            acore_log_warning "No changelogs found for $lang"
             WARNINGS=$((WARNINGS + 1))
         else
             # Validate latest changelog exists
@@ -154,22 +151,19 @@ for lang in $LANGUAGES; do
         fi
     fi
 
-    echo "   ✅ $lang validation complete"
-    echo
+    acore_log_success "$lang validation complete"
 done
 
 # Summary
-echo "📊 Validation Summary"
-echo "===================="
-echo "Languages validated: $(echo "$LANGUAGES" | wc -l)"
-echo "Errors: $ERRORS"
-echo "Warnings: $WARNINGS"
-echo
+acore_log_section "Validation Summary"
+acore_log_info "Languages validated: $(echo "$LANGUAGES" | wc -l)"
+acore_log_info "Errors: $ERRORS"
+acore_log_info "Warnings: $WARNINGS"
 
 if [ $ERRORS -eq 0 ]; then
-    echo "🎉 All validations passed! Metadata is F-Droid compliant."
+    acore_log_success "All validations passed! Metadata is F-Droid compliant."
     exit 0
 else
-    echo "💥 Validation failed with $ERRORS error(s). Please fix before publishing."
+    acore_log_error "Validation failed with $ERRORS error(s). Please fix before publishing."
     exit 1
 fi

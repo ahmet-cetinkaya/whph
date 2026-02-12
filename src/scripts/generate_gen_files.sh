@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-echo "🧹 Cleaning build_runner cache..."
+# Source acore logger
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../../packages/acore-scripts/src/logger.sh"
+
+acore_log_info "Cleaning build_runner cache..."
 fvm flutter pub run build_runner clean
 
-echo "🔨 Running generated files..."
+acore_log_info "Running generated files..."
 fvm flutter pub run build_runner build --delete-conflicting-outputs
 
-echo "🔨 Generating drift schema helper files for testing..."
+acore_log_info "Generating drift schema helper files for testing..."
 fvm dart run drift_dev schema generate lib/infrastructure/persistence/shared/contexts/drift/schemas/app_database/ test/drift/app_database/generated
 
-echo "✅ Code generation completed successfully!"
+acore_log_success "Code generation completed successfully!"

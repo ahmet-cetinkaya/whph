@@ -1,41 +1,39 @@
 #!/usr/bin/env bash
 set -e
 
-trap 'echo "> ❌ F-Droid CI failed!"; exit 1' ERR
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
-# F-Droid CI test script for whph
-# Usage: bash scripts/test_ci_fdroid.sh
+trap 'acore_log_error "F-Droid CI failed!"; exit 1' ERR
+
+acore_log_header "F-Droid CI Test"
 
 cd src/android/fdroid
 
-echo "> ⚙️ Setting up F-Droid environment..."
+acore_log_info "Setting up F-Droid environment..."
 python -m venv .fdroid-venv
 source .fdroid-venv/bin/activate
 pip install --upgrade pip
 pip install fdroidserver androguard
-echo "> ✅ F-Droid environment setup complete"
+acore_log_success "F-Droid environment setup complete"
 
-# Read metadata to check for syntax errors
-echo "> 🔍 Checking metadata syntax..."
+acore_log_section "Checking metadata syntax"
 fdroid readmeta
-echo "> ✅ fdroid readmeta passed"
+acore_log_success "fdroid readmeta passed"
 
-# Clean up metadata file
-echo "> 🧹 Cleaning up metadata..."
+acore_log_section "Cleaning up metadata"
 fdroid rewritemeta me.ahmetcetinkaya.whph
-echo "> ✅ fdroid rewritemeta passed"
+acore_log_success "fdroid rewritemeta passed"
 
-# Fill automated fields like Auto Name and Current Version
-echo "> 🔧 Filling automated fields..."
+acore_log_section "Filling automated fields"
 fdroid checkupdates me.ahmetcetinkaya.whph
-echo "> ✅ fdroid checkupdates passed"
+acore_log_success "fdroid checkupdates passed"
 
-# Lint check for warnings
-echo "> 🔍 Running F-Droid lint..."
+acore_log_section "Running F-Droid lint"
 fdroid lint me.ahmetcetinkaya.whph
-echo "> ✅ fdroid lint passed"
+acore_log_success "fdroid lint passed"
 
-# Test build recipe with verbose and logging
-echo "> 🔨 Building F-Droid repository..."
+acore_log_section "Building F-Droid repository"
 fdroid build -v -l me.ahmetcetinkaya.whph
-echo "> ✅ fdroid build passed"
+acore_log_success "fdroid build passed"

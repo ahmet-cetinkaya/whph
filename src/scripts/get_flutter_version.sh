@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+# Source acore logger
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../../packages/acore-scripts/src/logger.sh"
+
 # Get the directory of the script and navigate to src directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC_DIR="$(dirname "$SCRIPT_DIR")"
