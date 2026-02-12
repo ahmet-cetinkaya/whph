@@ -1,0 +1,22 @@
+# Dart tool
+.dart_tool/
+
+# Flutter/Dart/Pub related
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+
+# IDE related
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Miscellaneous
+*.log
+.DS_Store
+
+# FVM Version Cache
+.fvm/

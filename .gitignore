@@ -20,9 +20,6 @@ docs/.tasks/
 PROJECT_INDEX.json
 PROJECT_INDEX.md
 
-# FVM Version Cache
-.fvm/
-
 # Dart tool
 .dart_tool/
 
