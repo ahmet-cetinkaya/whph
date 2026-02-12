@@ -9,3 +9,6 @@
 [submodule "packages/acore-flutter"]
 	path = packages/acore-flutter
 	url = https://github.com/ahmet-cetinkaya/acore-flutter.git
+[submodule "packages/acore-scripts"]
+	path = packages/acore-scripts
+	url = https://github.com/ahmet-cetinkaya/acore-scripts

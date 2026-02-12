@@ -6,65 +6,26 @@
 
 set -e
 
-# Source common functions
+# Source universal logger from acore-scripts submodule
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-COMMON_FILE="$SCRIPT_DIR/_common.sh"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+LOGGER_FILE="$PROJECT_ROOT/packages/acore-scripts/src/logger.sh"
 
-# Check if _common.sh exists, otherwise define fallback functions
-if [[ -f "$COMMON_FILE" ]]; then
-    # shellcheck source=./_common.sh
-    source "$COMMON_FILE"
-else
-    # Fallback color definitions and functions if _common.sh is not available
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    NC='\033[0m' # No Color
-
-    print_info() {
-        echo -e "${BLUE}[INFO]${NC} $1"
-    }
-
-    print_success() {
-        echo -e "${GREEN}[SUCCESS]${NC} $1"
-    }
-
-    print_warning() {
-        echo -e "${YELLOW}[WARNING]${NC} $1"
-    }
-
-    print_error() {
-        echo -e "${RED}[ERROR]${NC} $1"
-    }
-
-    print_header() {
-        echo
-        echo "=================================================================="
-        echo "$1"
-        echo "=================================================================="
-        echo
-    }
-
-    print_section() {
-        echo
-        echo "--- $1 ---"
-        echo
-    }
-fi
+# shellcheck source=../packages/acore-scripts/src/logger.sh
+source "$LOGGER_FILE"
 
 # Get project root and src directory
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 SRC_DIR="$PROJECT_ROOT/src"
 
-print_header "WHPH PROJECT LINTER"
+acore_log_header "WHPH PROJECT LINTER"
 
 # Change to src directory if it exists
 if [[ -d "$SRC_DIR" ]]; then
     cd "$SRC_DIR"
-    print_info "Working in: $(pwd)"
+    acore_log_info "Working in: $(pwd)"
 else
-    print_error "src directory not found"
+    acore_log_error "src directory not found"
     exit 1
 fi
 
@@ -77,20 +38,20 @@ run_linter() {
     local linter_command="$2"
     local working_dir="$3"
 
-    print_section "🔍 Running $linter_name..."
+    acore_log_section "🔍 Running $linter_name..."
 
     if [[ -n "$working_dir" ]]; then
         cd "$working_dir"
     fi
 
     if eval "$linter_command"; then
-        print_success "✅ $linter_name passed"
+        acore_log_success "✅ $linter_name passed"
         if [[ -n "$working_dir" ]]; then
             cd "$SRC_DIR"
         fi
         return 0
     else
-        print_error "❌ $linter_name failed"
+        acore_log_error "❌ $linter_name failed"
         if [[ -n "$working_dir" ]]; then
             cd "$SRC_DIR"
         fi
@@ -103,12 +64,12 @@ run_linter() {
 # Note: Use --no-fatal-infos to avoid info messages about super parameters
 # Use --no-fatal-warnings to ignore dead_code warnings (non-critical)
 # We only fail if exit code is non-zero (actual errors, not warnings)
-print_section "🔍 Running Flutter Analyze..."
+acore_log_section "🔍 Running Flutter Analyze..."
 cd "$SRC_DIR"
 if eval "fvm flutter analyze --no-fatal-infos --no-fatal-warnings"; then
-    print_success "✅ Flutter Analyze passed"
+    acore_log_success "✅ Flutter Analyze passed"
 else
-    print_error "❌ Flutter Analyze failed with exit code $?"
+    acore_log_error "❌ Flutter Analyze failed with exit code $?"
     OVERALL_SUCCESS=false
 fi
 
@@ -116,21 +77,21 @@ fi
 if command -v dart_unused_files &>/dev/null; then
     run_linter "Dart Unused Files" "dart_unused_files scan" "" || true
 else
-    print_warning "⚠️ dart_unused_files not found, skipping unused files analysis"
-    print_info "Install with: dart pub global activate dart_unused_files"
+    acore_log_warning "⚠️ dart_unused_files not found, skipping unused files analysis"
+    acore_log_info "Install with: dart pub global activate dart_unused_files"
 fi
 
 # 3. markdownlint-cli2 (run from project root to catch all markdown files)
 if command -v markdownlint-cli2 &>/dev/null; then
     run_linter "Markdown Lint" "markdownlint-cli2 --fix \"**/*.md\"" "$PROJECT_ROOT" || true
 else
-    print_warning "⚠️ markdownlint-cli2 not found, skipping markdown linting"
-    print_info "Install with: npm install -g markdownlint-cli2"
+    acore_log_warning "⚠️ markdownlint-cli2 not found, skipping markdown linting"
+    acore_log_info "Install with: npm install -g markdownlint-cli2"
 fi
 
 # 4. Shell script linting (run from project root)
 if command -v shellcheck &>/dev/null; then
-    print_section "🐚 Running Shellcheck on shell scripts..."
+    acore_log_section "🐚 Running Shellcheck on shell scripts..."
     cd "$PROJECT_ROOT"
 
     # Find and check shell scripts in one command
@@ -142,50 +103,50 @@ if command -v shellcheck &>/dev/null; then
         -not -path "*/build/*" \
         -not -path "*/coverage/*" \
         -exec shellcheck -x -e SC1091 {} + 2>/dev/null; then
-        print_success "✅ Shellcheck passed"
+        acore_log_success "✅ Shellcheck passed"
     else
-        print_error "❌ Shellcheck failed"
+        acore_log_error "❌ Shellcheck failed"
         OVERALL_SUCCESS=false
     fi
 
     cd "$SRC_DIR"
 else
-    print_warning "⚠️ shellcheck not found, skipping shell script linting"
-    print_info "Install from https://github.com/koalaman/shellcheck?tab=readme-ov-file#installing"
+    acore_log_warning "⚠️ shellcheck not found, skipping shell script linting"
+    acore_log_info "Install from https://github.com/koalaman/shellcheck?tab=readme-ov-file#installing"
 fi
 
 # 5. Kotlin ktlint (run from project root for Android Kotlin files)
 # Note: ktfmt handles formatting via 'rps format' pre-commit hook
 # ktlint checks code quality issues and respects .editorconfig settings
 if command -v ktlint &>/dev/null; then
-    print_section "🔍 Running ktlint on Kotlin files..."
+    acore_log_section "🔍 Running ktlint on Kotlin files..."
     cd "$PROJECT_ROOT"
 
     # Run ktlint to check code quality
     # .editorconfig disables property-naming rule for uppercase TAG constants
     if ktlint "src/android/app/src/main/kotlin/**/*.kt"; then
-        print_success "✅ ktlint passed"
+        acore_log_success "✅ ktlint passed"
     else
-        print_error "❌ ktlint failed"
-        print_info "Note: This project uses ktfmt for formatting. ktlint checks code quality only."
+        acore_log_error "❌ ktlint failed"
+        acore_log_info "Note: This project uses ktfmt for formatting. ktlint checks code quality only."
         OVERALL_SUCCESS=false
     fi
 
     cd "$SRC_DIR"
 else
-    print_warning "⚠️ ktlint not found, skipping Kotlin linting"
-    print_info "Install with: brew install ktlint (macOS) or see https://pinterest.github.io/ktlint/install/"
+    acore_log_warning "⚠️ ktlint not found, skipping Kotlin linting"
+    acore_log_info "Install with: brew install ktlint (macOS) or see https://pinterest.github.io/ktlint/install/"
 fi
 
 # Final result
 echo
 echo "=================================================================="
 if $OVERALL_SUCCESS; then
-    print_success "✅ ALL LINTERS PASSED!"
+    acore_log_success "✅ ALL LINTERS PASSED!"
     echo "=================================================================="
     exit 0
 else
-    print_error "❌ SOME LINTERS FAILED!"
+    acore_log_error "❌ SOME LINTERS FAILED!"
     echo "=================================================================="
     exit 1
 fi

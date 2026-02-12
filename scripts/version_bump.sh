@@ -5,9 +5,17 @@
 
 set -e
 
+# Source universal logger from acore-scripts submodule
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+LOGGER_FILE="$PROJECT_ROOT/packages/acore-scripts/src/logger.sh"
+
+# shellcheck source=../packages/acore-scripts/src/logger.sh
+source "$LOGGER_FILE"
+
 # Check if argument is provided
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 [major|minor|patch]"
+    acore_log_error "Usage: $0 [major|minor|patch]"
     exit 1
 fi
 
@@ -15,7 +23,7 @@ BUMP_TYPE=$1
 
 # Validate bump type
 if [[ "$BUMP_TYPE" != "major" && "$BUMP_TYPE" != "minor" && "$BUMP_TYPE" != "patch" ]]; then
-    echo "Error: Invalid bump type. Use 'major', 'minor', or 'patch'"
+    print_error "Invalid bump type. Use 'major', 'minor', or 'patch'"
     exit 1
 fi
 
@@ -38,7 +46,7 @@ MAJOR=${VERSION_PARTS[0]}
 MINOR=${VERSION_PARTS[1]}
 PATCH=${VERSION_PARTS[2]}
 
-echo "Current: $MAJOR.$MINOR.$PATCH"
+acore_log_info "Current: $MAJOR.$MINOR.$PATCH"
 
 # Bump version based on type
 case $BUMP_TYPE in
@@ -57,14 +65,14 @@ case $BUMP_TYPE in
 esac
 
 NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-echo "New version: $NEW_VERSION"
+acore_log_info "New version: $NEW_VERSION"
 
 # Get current build number from pubspec.yaml
 CURRENT_BUILD=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/.*+//')
 NEW_BUILD=$((CURRENT_BUILD + 1))
 
 # Update pubspec.yaml
-echo "Updating $PUBSPEC_FILE..."
+acore_log_info "Updating $PUBSPEC_FILE..."
 sed -i "s/^version:.*/version: $NEW_VERSION+$NEW_BUILD/" "$PUBSPEC_FILE"
 
 # Update app_info.dart
@@ -78,7 +86,7 @@ echo "Updating $INSTALLER_FILE..."
 sed -i "s/AppVersion=.*/AppVersion=$NEW_VERSION/" "$INSTALLER_FILE"
 
 # Generate changelog
-echo "Generating changelog..."
+acore_log_info "Generating changelog..."
 cd "$PROJECT_ROOT"
 bash scripts/create_changelog.sh "$NEW_BUILD" --auto
 

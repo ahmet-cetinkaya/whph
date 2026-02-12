@@ -5,13 +5,13 @@ set -euo pipefail
 unset IFS
 PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 
-# Logging and error handling (defined early to avoid SC2218)
-log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
-error() {
-    echo "[$(date +'%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
-    exit 1
-}
-warn() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] WARNING: $*"; }
+# Source universal logger from acore-scripts submodule
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+LOGGER_FILE="$PROJECT_ROOT/packages/acore-scripts/src/logger.sh"
+
+# shellcheck source=../packages/acore-scripts/src/logger.sh
+source "$LOGGER_FILE"
 
 # Input validation functions
 validate_input() {
@@ -22,7 +22,7 @@ validate_input() {
     "path")
         # Check for path traversal attempts
         if [[ "$input" =~ \.\./|\.\. ]]; then
-            error "Path traversal detected in: $input"
+            acore_log_and_exit 1 "Path traversal detected in: $input"
         fi
         # Check for null bytes
         if [[ "$input" =~ $'\0' ]]; then
@@ -114,7 +114,7 @@ if [[ -z "$WHPH_VERSION" ]]; then
     if [[ -z "$WHPH_VERSION" ]]; then
         error "Could not determine WHPH version. Please specify with WHPH_VERSION environment variable."
     fi
-    log "Detected WHPH version: $WHPH_VERSION"
+    acore_log_info "Detected WHPH version: $WHPH_VERSION"
 fi
 
 # Validate environment variables
@@ -123,7 +123,7 @@ validate_input "$WHPH_VERSION" "version"
 
 # System requirements validation
 validate_system() {
-    log "Validating system requirements..."
+    acore_log_info "Validating system requirements..."
 
     # Check distribution
     if [[ ! -f /etc/os-release ]]; then
