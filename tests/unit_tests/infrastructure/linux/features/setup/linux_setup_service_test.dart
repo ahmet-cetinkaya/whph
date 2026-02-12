@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/infrastructure/linux/features/setup/linux_setup_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_firewall_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_desktop_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_kde_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_update_service.dart';
-import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
+import 'package:infrastructure_linux/features/setup/linux_setup_service.dart';
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_firewall_service.dart';
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_desktop_service.dart';
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_kde_service.dart';
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_update_service.dart';
+import 'package:infrastructure_shared/features/setup/services/abstraction/base_setup_service.dart';
 
 import 'linux_setup_service_test.mocks.dart';
 

@@ -1,10 +1,10 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/app_usages/app_usage.dart';
-import 'package:whph/core/application/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:application/features/app_usages/constants/app_usage_translation_keys.dart';
 
 class DeleteAppUsageCommand implements IRequest<DeleteAppUsageCommandResponse> {
   final String id;

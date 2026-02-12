@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
+import 'package:application/features/notes/services/abstraction/i_note_tag_repository.dart';
 
 class UpdateNoteTagsOrderCommand implements IRequest<void> {
   final String noteId;

@@ -1,8 +1,8 @@
-import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
+import 'package:application/features/settings/services/abstraction/i_import_data_migration_service.dart';
 import 'package:domain/shared/constants/app_info.dart';
 import 'package:domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
+import 'package:application/features/settings/constants/settings_translation_keys.dart';
 
 /// Concrete implementation of import data migration service.
 ///

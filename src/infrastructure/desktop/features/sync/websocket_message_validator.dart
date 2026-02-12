@@ -1,5 +1,5 @@
 import 'package:application/shared/models/websocket_request.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 
 const int maxMessageSizeBytes = 1024 * 1024;
 

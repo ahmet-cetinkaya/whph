@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
+import 'package:application/features/tags/models/tag_time_category.dart';
 
 class TagTimeData {
   final String tagId;

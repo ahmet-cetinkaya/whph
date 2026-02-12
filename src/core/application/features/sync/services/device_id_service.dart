@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:application/shared/utils/key_helper.dart';
 
 class DeviceIdService implements IDeviceIdService {
   static const String deviceIdFileName = 'device_id';

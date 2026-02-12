@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 Future<void> migrateV29ToV30(AppDatabase db, Migrator m, Schema30 schema) async {
   try {

@@ -4,10 +4,10 @@ import 'package:mockito/mockito.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:application/features/habits/queries/get_list_habits_query.dart';
+import 'package:application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:application/features/tasks/models/task_list_item.dart';
 import 'package:whph/main.dart' as app_main;
 import 'package:acore/acore.dart' hide Container;
 import 'package:mediatr/mediatr.dart';
@@ -18,9 +18,9 @@ import 'package:whph/presentation/ui/features/tags/services/time_data_service.da
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
-import 'package:whph/core/domain/shared/constants/app_theme.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/shared/constants/app_theme.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:domain/features/tasks/task.dart';
 
 // Mocks
 class MockSoundManagerService extends Mock implements ISoundManagerService {}

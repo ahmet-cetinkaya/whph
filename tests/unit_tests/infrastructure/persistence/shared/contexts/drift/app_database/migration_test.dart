@@ -5,7 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart' hide test, expect, setUpAll, group, tearDownAll;
 import 'package:test/test.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 import 'generated/schema.dart';
 
 void main() {

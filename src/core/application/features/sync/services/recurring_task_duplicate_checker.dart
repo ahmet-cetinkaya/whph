@@ -1,10 +1,10 @@
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart';
 import 'package:domain/features/tasks/task.dart';
 import 'package:domain/shared/utils/logger.dart';
 
-import 'package:whph/core/application/features/sync/services/abstraction/i_recurring_task_duplicate_checker.dart';
+import 'package:application/features/sync/services/abstraction/i_recurring_task_duplicate_checker.dart';
 
 /// Utility for checking and handling recurring task duplicates during sync.
 ///

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/models/recurrence_configuration.dart';
 
 void main() {
   group('Task Enum Parsing Tests', () {

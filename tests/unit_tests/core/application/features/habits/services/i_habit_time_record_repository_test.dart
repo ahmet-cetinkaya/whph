@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
-import 'package:whph/core/domain/features/habits/habit_time_record.dart';
+import 'package:application/features/habits/services/i_habit_time_record_repository.dart';
+import 'package:domain/features/habits/habit_time_record.dart';
 
 void main() {
   group('IHabitTimeRecordRepository Interface Tests', () {

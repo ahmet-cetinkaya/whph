@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:application/shared/utils/key_helper.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 /// Migration v7 -> v8: Create AppUsageIgnoreRule table, migrate settings
 Future<void> migrateV7ToV8(AppDatabase db, Migrator m, Schema8 schema) async {

@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_transaction_service.dart';
+import 'package:application/shared/services/abstraction/i_transaction_service.dart';
 import 'package:domain/shared/utils/logger.dart';
 
 class DatabaseIntegrityService {

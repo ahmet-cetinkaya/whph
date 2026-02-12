@@ -7,9 +7,9 @@ import 'dart:async' as _i5;
 
 import 'package:acore/acore.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+import 'package:application/features/sync/models/paginated_sync_data.dart'
     as _i3;
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
+import 'package:application/shared/services/abstraction/i_repository.dart'
     as _i4;
 
 // ignore_for_file: type=lint

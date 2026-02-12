@@ -1,15 +1,15 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_repository.dart';
+import 'package:application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:application/features/habits/services/i_habit_record_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/application/shared/utils/validation_utils.dart';
+import 'package:application/features/tags/queries/get_list_tags_query.dart';
+import 'package:application/shared/utils/validation_utils.dart';
 
-import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
-import 'package:whph/core/application/features/habits/utils/habit_grouping_helper.dart';
-import 'package:whph/core/application/features/habits/models/habit_list_item.dart';
-export 'package:whph/core/application/features/habits/models/habit_list_item.dart';
+import 'package:application/features/habits/models/habit_sort_fields.dart';
+import 'package:application/features/habits/utils/habit_grouping_helper.dart';
+import 'package:application/features/habits/models/habit_list_item.dart';
+export 'package:application/features/habits/models/habit_list_item.dart';
 
 class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
   late int pageIndex;

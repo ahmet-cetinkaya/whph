@@ -14,9 +14,9 @@ import 'package:mediatr/src/internals/i_request_handler.dart' as _i10;
 import 'package:mediatr/src/internals/pipeline.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i9;
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart'
+import 'package:application/features/settings/queries/get_setting_query.dart'
     as _i13;
-import 'package:whph/core/domain/features/settings/setting.dart' as _i14;
+import 'package:domain/features/settings/setting.dart' as _i14;
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart'
     as _i11;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart'

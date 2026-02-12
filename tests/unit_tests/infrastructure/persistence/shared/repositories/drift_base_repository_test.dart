@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 
 void main() {
   group('DriftBaseRepository Fix Tests', () {

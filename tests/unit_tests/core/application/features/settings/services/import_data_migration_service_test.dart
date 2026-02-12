@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/settings/services/import_data_migration_service.dart';
+import 'package:application/features/settings/services/import_data_migration_service.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
+import 'package:domain/shared/constants/app_info.dart';
+import 'package:application/features/settings/constants/settings_translation_keys.dart';
 
 void main() {
   group('ImportDataMigrationService', () {

@@ -1,6 +1,6 @@
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:application/shared/services/abstraction/i_repository.dart' as app;
 import 'package:domain/features/habits/habit.dart';
-import 'package:whph/core/application/features/habits/models/habit_list_item.dart';
+import 'package:application/features/habits/models/habit_list_item.dart';
 import 'package:acore/acore.dart' as acore;
 
 abstract class IHabitRepository extends app.IRepository<Habit, String> {

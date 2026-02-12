@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 
 class UpdateTaskTagsOrderCommand implements IRequest<void> {
   final String taskId;

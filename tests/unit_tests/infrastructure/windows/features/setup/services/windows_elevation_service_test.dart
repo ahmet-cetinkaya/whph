@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/windows_elevation_service.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
+import 'package:infrastructure_windows/features/setup/services/windows_elevation_service.dart';
 
 @GenerateMocks([])
 void main() {

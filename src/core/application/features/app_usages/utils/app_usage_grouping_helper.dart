@@ -1,7 +1,7 @@
-import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
-import 'package:whph/core/application/shared/utils/grouping_utils.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:application/features/app_usages/models/app_usage_list_item.dart';
+import 'package:application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:application/shared/utils/grouping_utils.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
 
 enum AppUsageGroupType { unknownDevice }
 

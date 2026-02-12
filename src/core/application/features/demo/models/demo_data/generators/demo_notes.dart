@@ -1,6 +1,6 @@
 import 'package:domain/features/notes/note.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/application/features/demo/constants/demo_translation_keys.dart';
+import 'package:application/shared/utils/key_helper.dart';
+import 'package:application/features/demo/constants/demo_translation_keys.dart';
 
 /// Demo note data generator
 class DemoNotes {

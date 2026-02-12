@@ -5,28 +5,28 @@ import 'package:acore/acore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
-import 'package:whph/core/application/features/settings/commands/import_data_command.dart';
-import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_repository.dart';
+import 'package:application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:application/features/notes/services/abstraction/i_note_tag_repository.dart';
+import 'package:application/features/settings/commands/import_data_command.dart';
+import 'package:application/features/settings/constants/settings_translation_keys.dart';
+import 'package:application/features/settings/services/abstraction/i_import_data_migration_service.dart';
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:application/features/tags/services/abstraction/i_tag_tag_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:application/shared/services/abstraction/i_compression_service.dart';
+import 'package:domain/shared/constants/app_info.dart';
 
 import 'import_data_command_test.mocks.dart';
 
@@ -51,7 +51,7 @@ import 'import_data_command_test.mocks.dart';
   MockSpec<IImportDataMigrationService>(),
   MockSpec<ICompressionService>(),
 ])
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 
 void main() {
   late ImportDataCommandHandler handler;

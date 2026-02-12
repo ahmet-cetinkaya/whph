@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_progress.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
+import 'package:domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/main.dart' as app_main;
 import 'package:acore/acore.dart' as acore;
 import 'package:mockito/mockito.dart';

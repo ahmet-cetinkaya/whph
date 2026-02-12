@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 import 'package:domain/shared/utils/logger.dart';
 
 /// Tracks and manages sync progress state and notifications

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:application/features/sync/services/database_integrity_service.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 
 void main() {

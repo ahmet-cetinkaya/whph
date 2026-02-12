@@ -3,18 +3,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_constants.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
+import 'package:application/features/tasks/commands/save_task_command.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task_constants.dart';
+import 'package:domain/features/settings/setting.dart';
+import 'package:application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:domain/features/tasks/models/recurrence_configuration.dart';
 
 import 'save_task_command_test.mocks.dart';
 

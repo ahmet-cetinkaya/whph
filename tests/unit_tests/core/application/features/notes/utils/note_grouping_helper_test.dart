@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/notes/models/note_list_item.dart';
-import 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
-import 'package:whph/core/application/features/notes/utils/note_grouping_helper.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:application/features/notes/models/note_list_item.dart';
+import 'package:application/features/notes/models/note_sort_fields.dart';
+import 'package:application/features/notes/utils/note_grouping_helper.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
 
 void main() {
   group('NoteGroupingHelper', () {

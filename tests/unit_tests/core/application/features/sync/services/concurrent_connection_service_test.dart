@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/sync/services/concurrent_connection_service.dart';
+import 'package:application/features/sync/services/concurrent_connection_service.dart';
 
 void main() {
   group('ConcurrentConnectionService', () {

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:domain/features/habits/habit_record.dart';
+import 'package:domain/features/habits/habit_record_status.dart';
 
 void main() {
   group('HabitRecord.fromJson', () {

@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:domain/features/habits/habit_time_record.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
-import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habits_repository.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:infrastructure_persistence/features/habits/repositories/drift_habits_repository.dart';
 
 @UseRowClass(HabitTimeRecord)
 class HabitTimeRecordTable extends Table {

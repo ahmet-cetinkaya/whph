@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command/services/sync_device_coordinator.dart';
-import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_pagination_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_validation_service.dart';
+import 'package:application/features/sync/commands/paginated_sync_command/services/sync_device_coordinator.dart';
+import 'package:application/features/sync/constants/sync_translation_keys.dart';
 import 'package:domain/features/sync/sync_device.dart';
 import 'package:domain/shared/utils/logger.dart';
 

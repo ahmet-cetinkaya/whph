@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:acore/acore.dart';
 
 class GetAppUsageStatisticsQuery implements IRequest<GetAppUsageStatisticsResponse> {

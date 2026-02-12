@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:domain/shared/constants/app_assets.dart';
 
 class DesktopSystemTrayService extends TrayListener with WindowListener implements ISystemTrayService {
   final List<TrayMenuItem> _menuItems = [];

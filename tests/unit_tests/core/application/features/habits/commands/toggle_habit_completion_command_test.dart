@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
+import 'package:application/features/habits/commands/toggle_habit_completion_command.dart';
 
 void main() {
   group('ToggleHabitCompletionCommand Tests', () {

@@ -1,11 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:domain/features/tasks/task.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:domain/features/tasks/models/recurrence_configuration.dart';
 import 'dart:convert';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:domain/shared/constants/domain_log_components.dart';
+import 'package:domain/shared/constants/task_error_ids.dart';
 
 /// Handles conversion between database rows and Task entities.
 class TaskDataMapper {

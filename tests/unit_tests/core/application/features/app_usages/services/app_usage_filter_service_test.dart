@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/app_usage_filter_service.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:application/features/app_usages/services/app_usage_filter_service.dart';
+import 'package:domain/features/app_usages/app_usage_ignore_rule.dart';
 
 import 'app_usage_filter_service_test.mocks.dart';
 

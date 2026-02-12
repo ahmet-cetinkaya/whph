@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:application/shared/utils/key_helper.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/app_args.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';

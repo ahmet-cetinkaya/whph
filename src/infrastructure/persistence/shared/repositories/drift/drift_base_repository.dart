@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:application/features/sync/models/sync_data.dart';
 import 'package:application/features/sync/models/paginated_sync_data.dart';
 import 'package:acore/acore.dart' as acore;
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 
 abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {

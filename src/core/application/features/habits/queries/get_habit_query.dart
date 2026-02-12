@@ -1,13 +1,13 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
+import 'package:application/features/habits/services/i_habit_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/habits/habit.dart';
 import 'package:domain/features/habits/habit_record.dart';
 import 'package:domain/features/habits/habit_record_status.dart';
-import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
+import 'package:application/features/habits/constants/habit_translation_keys.dart';
 
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 
 class GetHabitQuery implements IRequest<GetHabitQueryResponse> {

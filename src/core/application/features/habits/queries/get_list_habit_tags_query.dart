@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/habits/habit_tag.dart';
 import 'package:domain/features/tags/tag.dart';

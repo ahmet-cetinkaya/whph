@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:application/features/notes/services/abstraction/i_note_repository.dart';
 
 class UpdateNoteOrderCommand implements IRequest<UpdateNoteOrderCommandResponse> {
   final List<String> noteIds;

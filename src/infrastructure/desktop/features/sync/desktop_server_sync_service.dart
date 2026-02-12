@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/utils/network_utils.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/network_utils.dart';
 import 'package:application/features/sync/services/sync_service.dart';
 import 'package:application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:application/shared/models/websocket_request.dart';
 import 'package:application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:domain/shared/constants/app_info.dart';
 import 'package:domain/features/sync/sync_device.dart';
-import 'package:whph/infrastructure/desktop/features/sync/websocket_connection_manager.dart';
-import 'package:whph/infrastructure/desktop/features/sync/websocket_message_validator.dart';
+import 'package:infrastructure_desktop/features/sync/websocket_connection_manager.dart';
+import 'package:infrastructure_desktop/features/sync/websocket_message_validator.dart';
 import 'package:flutter/foundation.dart';
 
 const int webSocketPort = 44040;

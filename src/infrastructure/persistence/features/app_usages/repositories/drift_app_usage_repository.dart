@@ -2,8 +2,8 @@ import 'package:drift/drift.dart';
 import 'package:application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/app_usages/app_usage.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/repositories/drift/drift_base_repository.dart';
 
 @UseRowClass(AppUsage)
 class AppUsageTable extends Table {

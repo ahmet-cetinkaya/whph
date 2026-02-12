@@ -1,10 +1,10 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:application/features/app_usages/models/app_usage_list_item.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
-import 'package:whph/core/application/features/app_usages/utils/app_usage_grouping_helper.dart';
+import 'package:application/features/app_usages/utils/app_usage_grouping_helper.dart';
 
 class GetListByTopAppUsagesQuery implements IRequest<GetListByTopAppUsagesQueryResponse> {
   late int pageIndex;

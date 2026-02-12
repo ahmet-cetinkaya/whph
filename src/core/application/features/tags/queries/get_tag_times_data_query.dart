@@ -1,13 +1,13 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_repository.dart';
+import 'package:application/features/habits/services/i_habit_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:acore/acore.dart';
 
 class GetTagTimesDataQuery implements IRequest<GetTagTimesDataQueryResponse> {

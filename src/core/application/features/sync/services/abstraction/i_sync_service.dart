@@ -1,6 +1,6 @@
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_transaction_service.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/sync_status.dart';
+import 'package:application/shared/services/abstraction/i_transaction_service.dart';
 
 abstract class ISyncService {
   void startSync();

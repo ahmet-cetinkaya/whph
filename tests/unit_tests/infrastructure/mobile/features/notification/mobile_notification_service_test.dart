@@ -2,11 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
-import 'package:whph/infrastructure/mobile/features/notification/mobile_notification_service.dart';
+import 'package:application/features/tasks/commands/complete_task_command.dart';
+import 'package:infrastructure_mobile/features/notification/mobile_notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:application/features/settings/queries/get_setting_query.dart';
+import 'package:domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 

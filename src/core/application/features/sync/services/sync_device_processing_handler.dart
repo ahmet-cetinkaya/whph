@@ -1,5 +1,5 @@
-import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:application/features/sync/services/sync_conflict_resolution_service.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart';
 import 'package:domain/features/sync/sync_device.dart';
 import 'package:domain/shared/utils/logger.dart';
 

@@ -1,9 +1,9 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
+import 'package:application/features/habits/services/i_habit_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_repository.dart';
+import 'package:application/features/habits/services/i_habit_time_record_repository.dart';
+import 'package:application/shared/utils/key_helper.dart';
+import 'package:application/features/habits/services/habit_time_record_service.dart';
 import 'package:domain/features/habits/habit_record.dart';
 import 'package:acore/acore.dart';
 

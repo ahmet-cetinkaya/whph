@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_communication_service/helpers/sync_dto_serializer.dart';
-import 'package:whph/core/application/features/sync/services/sync_communication_service/helpers/sync_message_serializer.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_communication_service.dart';
+import 'package:application/features/sync/services/sync_communication_service/helpers/sync_dto_serializer.dart';
+import 'package:application/features/sync/services/sync_communication_service/helpers/sync_message_serializer.dart';
+import 'package:application/shared/models/websocket_request.dart';
 import 'package:domain/shared/utils/logger.dart';
 
 /// Implementation of sync communication service for WebSocket-based sync operations

@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:infrastructure_android/features/sync/android_server_sync_service.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
+import 'package:application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:application/shared/models/websocket_request.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:domain/features/sync/sync_device.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;
 import 'dart:io';
 

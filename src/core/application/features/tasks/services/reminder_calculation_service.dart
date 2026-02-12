@@ -1,5 +1,5 @@
-import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:domain/features/tasks/task.dart';
 import 'package:domain/shared/utils/logger.dart';
 import 'package:domain/shared/constants/task_error_ids.dart';

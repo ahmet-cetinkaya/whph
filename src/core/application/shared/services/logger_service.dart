@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:path/path.dart' as path;
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart';
+import 'package:application/features/settings/queries/get_setting_query.dart';
+import 'package:application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:application/shared/services/abstraction/i_logger_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/application/shared/services/stream_logger.dart';
+import 'package:application/shared/services/stream_logger.dart';
 
 /// Default implementation of ILoggerService that manages dynamic logger configuration
 class LoggerService implements ILoggerService {

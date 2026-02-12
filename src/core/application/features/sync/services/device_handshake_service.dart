@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
+import 'package:application/shared/models/websocket_request.dart';
 import 'package:domain/shared/utils/logger.dart';
 
 /// Service for performing device handshake to get device information

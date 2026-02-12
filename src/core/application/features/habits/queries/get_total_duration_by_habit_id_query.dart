@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_time_record_repository.dart';
 
 class GetTotalDurationByHabitIdQuery implements IRequest<GetTotalDurationByHabitIdQueryResponse> {
   final String habitId;

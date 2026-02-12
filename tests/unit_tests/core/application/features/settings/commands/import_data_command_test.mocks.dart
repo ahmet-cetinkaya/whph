@@ -9,84 +9,84 @@ import 'dart:typed_data' as _i52;
 import 'package:acore/acore.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i18;
-import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart'
+import 'package:application/features/app_usages/models/app_usage_sort_fields.dart'
     as _i14;
-import 'package:whph/core/application/features/app_usages/models/app_usage_time_record_with_details.dart'
+import 'package:application/features/app_usages/models/app_usage_time_record_with_details.dart'
     as _i12;
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart'
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart'
     as _i44;
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart'
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_repository.dart'
     as _i4;
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart'
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart'
     as _i7;
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart'
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart'
     as _i15;
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart'
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart'
     as _i10;
-import 'package:whph/core/application/features/habits/models/habit_list_item.dart'
+import 'package:application/features/habits/models/habit_list_item.dart'
     as _i20;
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart'
+import 'package:application/features/habits/services/i_habit_record_repository.dart'
     as _i21;
-import 'package:whph/core/application/features/habits/services/i_habit_repository.dart'
+import 'package:application/features/habits/services/i_habit_repository.dart'
     as _i17;
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart'
+import 'package:application/features/habits/services/i_habit_tags_repository.dart'
     as _i24;
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart'
+import 'package:application/features/notes/services/abstraction/i_note_repository.dart'
     as _i46;
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart'
+import 'package:application/features/notes/services/abstraction/i_note_tag_repository.dart'
     as _i48;
-import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart'
+import 'package:application/features/settings/services/abstraction/i_import_data_migration_service.dart'
     as _i50;
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart'
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart'
     as _i40;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+import 'package:application/features/sync/models/paginated_sync_data.dart'
     as _i3;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart'
     as _i42;
-import 'package:whph/core/application/features/tags/models/tag_time_data.dart'
+import 'package:application/features/tags/models/tag_time_data.dart'
     as _i9;
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart'
+import 'package:application/features/tags/queries/get_list_tags_query.dart'
     as _i26;
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart'
+import 'package:application/features/tags/services/abstraction/i_tag_repository.dart'
     as _i27;
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart'
+import 'package:application/features/tags/services/abstraction/i_tag_tag_repository.dart'
     as _i29;
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart'
+import 'package:application/features/tasks/models/task_list_item.dart'
     as _i34;
-import 'package:whph/core/application/features/tasks/models/task_query_filter.dart'
+import 'package:application/features/tasks/models/task_query_filter.dart'
     as _i33;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart'
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart'
     as _i31;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart'
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart'
     as _i36;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart'
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart'
     as _i38;
-import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart'
+import 'package:application/shared/services/abstraction/i_compression_service.dart'
     as _i51;
-import 'package:whph/core/domain/features/app_usages/app_usage.dart' as _i6;
-import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart'
+import 'package:domain/features/app_usages/app_usage.dart' as _i6;
+import 'package:domain/features/app_usages/app_usage_ignore_rule.dart'
     as _i45;
-import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart' as _i8;
-import 'package:whph/core/domain/features/app_usages/app_usage_tag_rule.dart'
+import 'package:domain/features/app_usages/app_usage_tag.dart' as _i8;
+import 'package:domain/features/app_usages/app_usage_tag_rule.dart'
     as _i16;
-import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart'
+import 'package:domain/features/app_usages/app_usage_time_record.dart'
     as _i11;
-import 'package:whph/core/domain/features/habits/habit.dart' as _i19;
-import 'package:whph/core/domain/features/habits/habit_record.dart' as _i22;
-import 'package:whph/core/domain/features/habits/habit_record_status.dart'
+import 'package:domain/features/habits/habit.dart' as _i19;
+import 'package:domain/features/habits/habit_record.dart' as _i22;
+import 'package:domain/features/habits/habit_record_status.dart'
     as _i23;
-import 'package:whph/core/domain/features/habits/habit_tag.dart' as _i25;
-import 'package:whph/core/domain/features/notes/note.dart' as _i47;
-import 'package:whph/core/domain/features/notes/note_tag.dart' as _i49;
-import 'package:whph/core/domain/features/settings/setting.dart' as _i41;
-import 'package:whph/core/domain/features/sync/sync_device.dart' as _i43;
-import 'package:whph/core/domain/features/tags/tag.dart' as _i28;
-import 'package:whph/core/domain/features/tags/tag_tag.dart' as _i30;
-import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart'
+import 'package:domain/features/habits/habit_tag.dart' as _i25;
+import 'package:domain/features/notes/note.dart' as _i47;
+import 'package:domain/features/notes/note_tag.dart' as _i49;
+import 'package:domain/features/settings/setting.dart' as _i41;
+import 'package:domain/features/sync/sync_device.dart' as _i43;
+import 'package:domain/features/tags/tag.dart' as _i28;
+import 'package:domain/features/tags/tag_tag.dart' as _i30;
+import 'package:domain/features/tasks/models/task_with_total_duration.dart'
     as _i32;
-import 'package:whph/core/domain/features/tasks/task.dart' as _i35;
-import 'package:whph/core/domain/features/tasks/task_tag.dart' as _i37;
-import 'package:whph/core/domain/features/tasks/task_time_record.dart' as _i39;
+import 'package:domain/features/tasks/task.dart' as _i35;
+import 'package:domain/features/tasks/task_tag.dart' as _i37;
+import 'package:domain/features/tasks/task_time_record.dart' as _i39;
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart'
     as _i13;
 

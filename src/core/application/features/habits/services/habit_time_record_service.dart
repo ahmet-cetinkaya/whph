@@ -1,6 +1,6 @@
 import 'package:domain/features/habits/habit_time_record.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:application/features/habits/services/i_habit_time_record_repository.dart';
+import 'package:application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 
 /// Service for managing habit time records with hour-based bucketing

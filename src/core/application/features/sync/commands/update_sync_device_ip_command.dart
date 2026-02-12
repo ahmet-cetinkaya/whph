@@ -1,8 +1,8 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
+import 'package:application/features/sync/constants/sync_translation_keys.dart';
 
 class UpdateSyncDeviceIpCommand implements IRequest<UpdateSyncDeviceIpCommandResponse> {
   final String deviceId;

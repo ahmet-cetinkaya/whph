@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/infrastructure/windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
+import 'package:infrastructure_windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
 
 void main() {
   group('WindowsFirewallRuleException', () {

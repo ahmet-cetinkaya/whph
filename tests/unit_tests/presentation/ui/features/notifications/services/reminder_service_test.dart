@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:whph/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:infrastructure_shared/features/notification/abstractions/i_notification_payload_handler.dart';
 
 import 'reminder_service_test.mocks.dart';
 

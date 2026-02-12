@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:whph/infrastructure/windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_firewall_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/windows_firewall_service.dart';
+import 'package:infrastructure_windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_firewall_service.dart';
+import 'package:infrastructure_windows/features/setup/services/windows_firewall_service.dart';
 
 import 'windows_firewall_service_test.mocks.dart';
 

@@ -17,9 +17,9 @@ import 'package:mediatr/src/internals/i_request_handler.dart' as _i11;
 import 'package:mediatr/src/internals/pipeline.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart'
+import 'package:application/features/tasks/services/abstraction/i_task_recurrence_service.dart'
     as _i15;
-import 'package:whph/core/domain/features/tasks/task.dart' as _i16;
+import 'package:domain/features/tasks/task.dart' as _i16;
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart'
     as _i18;
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart'

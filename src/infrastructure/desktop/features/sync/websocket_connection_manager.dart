@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 
 const int maxConcurrentConnections = 10;
 const int maxConnectionsPerIP = 5;

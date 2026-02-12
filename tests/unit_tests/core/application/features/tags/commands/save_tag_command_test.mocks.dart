@@ -7,11 +7,11 @@ import 'dart:async' as _i5;
 
 import 'package:acore/acore.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+import 'package:application/features/sync/models/paginated_sync_data.dart'
     as _i3;
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart'
+import 'package:application/features/tags/services/abstraction/i_tag_repository.dart'
     as _i4;
-import 'package:whph/core/domain/features/tags/tag.dart' as _i6;
+import 'package:domain/features/tags/tag.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

@@ -8,7 +8,7 @@ import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.da
 import 'package:whph/presentation/ui/shared/utils/context_manager.dart';
 import 'package:whph/presentation/ui/shared/components/share_disambiguation_dialog.dart';
 import 'package:application/shared/constants/shared_translation_keys.dart';
-import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
+import 'package:infrastructure_android/features/share/android_share_service.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart' hide Container;

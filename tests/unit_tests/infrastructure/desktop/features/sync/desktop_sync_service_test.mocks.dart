@@ -13,7 +13,7 @@ import 'package:mediatr/src/internals/i_request_handler.dart' as _i10;
 import 'package:mediatr/src/internals/pipeline.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i5;
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart'
+import 'package:application/features/sync/services/abstraction/i_device_id_service.dart'
     as _i4;
 
 // ignore_for_file: type=lint

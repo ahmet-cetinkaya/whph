@@ -13,7 +13,8 @@ scripts:
   # Development
   clean: bash scripts/clean.sh
   clean:db: bash scripts/clean_db.sh
-  pub:get: fvm flutter pub get
+  pub:get: fvm flutter pub get && rps fix:package:config
+  fix:package:config: python3 ../../../scripts/fix_package_config.py .dart_tool/package_config.json
 
   # Code Generation
   gen: bash scripts/generate_gen_files.sh

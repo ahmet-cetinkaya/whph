@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/windows/features/setup/constants/windows_script_templates.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_shortcut_service.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:infrastructure_windows/features/setup/constants/windows_script_templates.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_shortcut_service.dart';
 
 /// Implementation of Windows shortcut management service
 class WindowsShortcutService implements IWindowsShortcutService {

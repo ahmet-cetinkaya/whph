@@ -1,5 +1,5 @@
 import 'package:domain/features/tasks/task.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:application/features/tags/queries/get_list_tags_query.dart';
 
 class TaskListItem {
   String id;

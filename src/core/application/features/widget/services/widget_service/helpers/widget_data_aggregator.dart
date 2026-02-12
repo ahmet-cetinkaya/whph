@@ -1,20 +1,20 @@
 import 'dart:developer' as developer;
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:application/features/habits/queries/get_list_habits_query.dart';
+import 'package:application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/calendar/models/today_page_list_option_settings.dart';
-import 'package:whph/core/application/features/widget/models/widget_data.dart';
+import 'package:application/features/widget/models/widget_data.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_list_option_settings.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_option_settings.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
-import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:application/features/tasks/models/task_sort_fields.dart';
+import 'package:application/features/habits/models/habit_sort_fields.dart';
 
 /// Aggregates widget data (tasks and habits) for the home widget display.
 class WidgetDataAggregator {

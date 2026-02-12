@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
+import 'package:application/features/habits/commands/add_habit_time_record_command.dart';
 
 void main() {
   group('AddHabitTimeRecordCommand Tests', () {

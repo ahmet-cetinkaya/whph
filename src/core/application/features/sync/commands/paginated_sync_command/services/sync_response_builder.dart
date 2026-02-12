@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:domain/features/app_usages/app_usage.dart';
 import 'package:domain/features/app_usages/app_usage_tag.dart';
 import 'package:domain/features/app_usages/app_usage_time_record.dart';

@@ -1,7 +1,7 @@
 import 'package:domain/features/tasks/task.dart';
 import 'package:domain/features/tasks/task_time_record.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/application/features/demo/constants/demo_translation_keys.dart';
+import 'package:application/shared/utils/key_helper.dart';
+import 'package:application/features/demo/constants/demo_translation_keys.dart';
 
 /// Demo task data generator
 class DemoTasks {

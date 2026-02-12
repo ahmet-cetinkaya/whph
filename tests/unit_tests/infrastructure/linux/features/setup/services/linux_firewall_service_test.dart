@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/infrastructure/linux/features/setup/exceptions/linux_firewall_rule_exception.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_firewall_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/linux_firewall_service.dart';
+import 'package:infrastructure_linux/features/setup/exceptions/linux_firewall_rule_exception.dart';
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_firewall_service.dart';
+import 'package:infrastructure_linux/features/setup/services/linux_firewall_service.dart';
 
 void main() {
   group('LinuxFirewallService', () {

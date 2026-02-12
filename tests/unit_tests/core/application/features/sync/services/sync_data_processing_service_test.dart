@@ -2,14 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
-import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_data_processing_service.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:application/features/sync/models/sync_data.dart';
+import 'package:application/features/sync/services/sync_conflict_resolution_service.dart';
+import 'package:application/features/sync/services/sync_data_processing_service.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart';
+import 'package:domain/features/habits/habit_record.dart';
+import 'package:domain/features/sync/sync_device.dart';
+import 'package:domain/features/tasks/task.dart';
 
 import 'sync_data_processing_service_test.mocks.dart';
 

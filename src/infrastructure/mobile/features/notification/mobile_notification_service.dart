@@ -9,10 +9,10 @@ import 'package:domain/features/settings/setting.dart';
 import 'package:application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:domain/shared/constants/task_error_ids.dart';
 import 'package:application/features/habits/commands/toggle_habit_completion_command.dart';
-import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
+import 'package:infrastructure_android/constants/android_app_constants.dart';
 
 class MobileNotificationService implements INotificationService {
   final Mediator _mediator;

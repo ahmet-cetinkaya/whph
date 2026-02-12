@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 /// Migration v25 -> v26: Restructure habit tables with proper PKs and FKs
 Future<void> migrateV25ToV26(AppDatabase db, Migrator m, Schema26 schema) async {

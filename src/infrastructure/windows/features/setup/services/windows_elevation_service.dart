@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
 
 /// Implementation of Windows UAC elevation service
 ///

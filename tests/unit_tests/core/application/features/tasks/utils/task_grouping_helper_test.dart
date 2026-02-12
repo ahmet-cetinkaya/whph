@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
-import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
-import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:application/features/tasks/models/task_sort_fields.dart';
+import 'package:application/features/tasks/utils/task_grouping_helper.dart';
+import 'package:application/features/tasks/models/task_list_item.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
+import 'package:application/features/tasks/constants/task_translation_keys.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:application/features/tags/queries/get_list_tags_query.dart';
 
 void main() {
   group('TaskGroupingHelper', () {

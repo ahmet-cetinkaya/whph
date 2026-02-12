@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 /// Migration v4 -> v5: Create AppUsageTagRule table
 Future<void> migrateV4ToV5(AppDatabase db, Migrator m, Schema5 schema) async {

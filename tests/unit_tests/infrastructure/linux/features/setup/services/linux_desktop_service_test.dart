@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_desktop_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/linux_desktop_service.dart';
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_desktop_service.dart';
+import 'package:infrastructure_linux/features/setup/services/linux_desktop_service.dart';
 
 void main() {
   group('LinuxDesktopService', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
+import 'package:infrastructure_android/features/share/android_share_service.dart';
 
 void main() {
   group('AndroidShareService', () {

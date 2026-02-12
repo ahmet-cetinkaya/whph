@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/application/features/tasks/services/task_recurrence_service.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:application/features/tasks/commands/save_task_command.dart';
+import 'package:application/features/tasks/queries/get_list_task_tags_query.dart';
+import 'package:application/features/tasks/queries/get_task_query.dart';
+import 'package:application/features/tasks/services/task_recurrence_service.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
 
 void main() {
   group('TaskRecurrenceService Error Handling Tests', () {

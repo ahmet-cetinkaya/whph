@@ -1,15 +1,15 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/notes/commands/add_note_tag_command.dart';
-import 'package:whph/core/application/features/notes/commands/delete_note_command.dart';
-import 'package:whph/core/application/features/notes/commands/remove_note_tag_command.dart';
-import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
-import 'package:whph/core/application/features/notes/commands/update_note_order_command.dart';
-import 'package:whph/core/application/features/notes/commands/update_note_tags_order_command.dart';
-import 'package:whph/core/application/features/notes/queries/get_note_query.dart';
-import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:application/features/notes/commands/add_note_tag_command.dart';
+import 'package:application/features/notes/commands/delete_note_command.dart';
+import 'package:application/features/notes/commands/remove_note_tag_command.dart';
+import 'package:application/features/notes/commands/save_note_command.dart';
+import 'package:application/features/notes/commands/update_note_order_command.dart';
+import 'package:application/features/notes/commands/update_note_tags_order_command.dart';
+import 'package:application/features/notes/queries/get_note_query.dart';
+import 'package:application/features/notes/queries/get_list_notes_query.dart';
+import 'package:application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:application/features/notes/services/abstraction/i_note_tag_repository.dart';
+import 'package:application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
 
 void registerNotesFeature(

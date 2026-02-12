@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:domain/features/sync/sync_device.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/repositories/drift/drift_base_repository.dart';
 
 @UseRowClass(SyncDevice)
 class SyncDeviceTable extends Table {

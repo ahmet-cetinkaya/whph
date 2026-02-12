@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/shared/services/stream_logger.dart';
+import 'package:application/shared/services/stream_logger.dart';
 
 void main() {
   group('StreamLogger', () {

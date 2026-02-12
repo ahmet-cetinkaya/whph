@@ -1,9 +1,9 @@
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:application/shared/services/abstraction/i_repository.dart' as app;
 import 'package:acore/acore.dart' hide IRepository;
 import 'package:domain/features/tasks/task.dart';
 import 'package:domain/features/tasks/models/task_with_total_duration.dart';
-import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:application/features/tasks/models/task_query_filter.dart';
+import 'package:application/features/tasks/models/task_list_item.dart';
 
 abstract class ITaskRepository extends app.IRepository<Task, String> {
   Future<PaginatedList<TaskWithTotalDuration>> getListWithTotalDuration(

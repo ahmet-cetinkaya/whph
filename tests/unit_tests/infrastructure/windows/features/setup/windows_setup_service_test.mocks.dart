@@ -6,11 +6,11 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_firewall_service.dart'
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_firewall_service.dart'
     as _i2;
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_shortcut_service.dart'
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_shortcut_service.dart'
     as _i4;
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_update_service.dart'
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_update_service.dart'
     as _i5;
 
 // ignore_for_file: type=lint

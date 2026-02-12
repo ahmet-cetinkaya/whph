@@ -1,5 +1,5 @@
 import 'package:domain/features/tasks/task_time_record.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:application/shared/services/abstraction/i_repository.dart' as app;
 
 abstract class ITaskTimeRecordRepository extends app.IRepository<TaskTimeRecord, String> {
   Future<int> getTotalDurationByTaskId(

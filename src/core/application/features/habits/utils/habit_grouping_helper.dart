@@ -1,6 +1,6 @@
-import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:whph/core/application/shared/utils/grouping_utils.dart';
+import 'package:application/features/habits/models/habit_sort_fields.dart';
+import 'package:application/features/habits/queries/get_list_habits_query.dart';
+import 'package:application/shared/utils/grouping_utils.dart';
 
 class HabitGroupingHelper {
   static String? getGroupName(HabitListItem habit, HabitSortFields? sortField, {DateTime? now}) {

@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/tasks/commands/delete_task_command.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/core/domain/features/tasks/task_time_record.dart';
+import 'package:application/features/tasks/commands/delete_task_command.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task_tag.dart';
+import 'package:domain/features/tasks/task_time_record.dart';
 import 'package:acore/acore.dart';
 
 import 'delete_task_command_test.mocks.dart';

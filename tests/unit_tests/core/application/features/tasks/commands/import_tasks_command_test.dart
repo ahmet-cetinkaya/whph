@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/tasks/commands/import_tasks_command.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:application/features/tasks/commands/import_tasks_command.dart';
+import 'package:application/features/tasks/commands/save_task_command.dart';
+import 'package:application/features/tags/commands/save_tag_command.dart';
+import 'package:application/features/tags/queries/get_list_tags_query.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:mockito/annotations.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 import 'import_tasks_command_test.mocks.dart';
 
 @GenerateMocks([Mediator])

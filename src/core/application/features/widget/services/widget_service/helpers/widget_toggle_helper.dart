@@ -1,11 +1,11 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:domain/shared/utils/logger.dart';
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
-import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
-import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
+import 'package:application/features/tasks/queries/get_task_query.dart';
+import 'package:application/features/tasks/commands/save_task_command.dart';
+import 'package:application/features/habits/queries/get_habit_query.dart';
+import 'package:application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:application/features/habits/commands/toggle_habit_completion_command.dart';
+import 'package:application/features/habits/commands/delete_habit_record_command.dart';
 
 /// Helper class for toggling task and habit completion states in the foreground.
 class WidgetToggleHelper {

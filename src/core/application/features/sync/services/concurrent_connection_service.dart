@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
+import 'package:application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
+import 'package:application/shared/models/websocket_request.dart';
 import 'package:domain/shared/utils/logger.dart';
 
 /// Service for establishing concurrent connections to multiple IP addresses

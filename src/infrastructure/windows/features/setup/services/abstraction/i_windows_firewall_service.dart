@@ -1,4 +1,4 @@
-import 'package:whph/infrastructure/windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
+import 'package:infrastructure_windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
 
 /// Service for managing Windows Firewall rules through netsh commands
 abstract class IWindowsFirewallService {

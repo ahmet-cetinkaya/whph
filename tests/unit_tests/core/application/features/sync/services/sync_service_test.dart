@@ -4,13 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_service.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/sync_status.dart';
+import 'package:application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:application/features/sync/services/sync_service.dart';
+import 'package:infrastructure_desktop/features/sync/desktop_sync_service.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 
 import 'sync_service_test.mocks.dart';
 

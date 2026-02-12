@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
-import 'package:whph/core/application/features/app_usages/utils/app_usage_grouping_helper.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:application/features/app_usages/models/app_usage_list_item.dart';
+import 'package:application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:application/features/app_usages/utils/app_usage_grouping_helper.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
 
 void main() {
   group('AppUsageGroupingHelper', () {

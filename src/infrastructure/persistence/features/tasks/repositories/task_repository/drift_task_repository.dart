@@ -7,18 +7,18 @@ import 'package:application/features/tasks/models/task_list_item.dart';
 import 'package:application/features/tasks/models/task_sort_fields.dart';
 import 'package:application/features/tags/queries/get_list_tags_query.dart';
 import 'package:application/features/tasks/utils/task_grouping_helper.dart';
-import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
+import 'package:infrastructure_persistence/shared/utils/persistence_utils.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/tasks/task.dart';
 import 'package:domain/features/tasks/models/task_with_total_duration.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:domain/shared/constants/domain_log_components.dart';
+import 'package:domain/shared/constants/task_error_ids.dart';
 import 'package:domain/features/tasks/models/recurrence_configuration.dart';
-import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/task_data_mapper.dart';
-import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/task_query_builder.dart';
+import 'package:infrastructure_persistence/features/tasks/repositories/task_repository/task_data_mapper.dart';
+import 'package:infrastructure_persistence/features/tasks/repositories/task_repository/task_query_builder.dart';
 
 @UseRowClass(Task)
 class TaskTable extends Table {

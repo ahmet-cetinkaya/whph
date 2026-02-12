@@ -1,6 +1,6 @@
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 
 class MobileSystemTrayService implements ISystemTrayService {

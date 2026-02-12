@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 
 class GetTotalDurationByTaskIdQuery implements IRequest<GetTotalDurationByTaskIdQueryResponse> {
   final String taskId;

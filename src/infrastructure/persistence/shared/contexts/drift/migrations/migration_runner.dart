@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 import 'migration_v1_to_v2.dart';
 import 'migration_v2_to_v3.dart';

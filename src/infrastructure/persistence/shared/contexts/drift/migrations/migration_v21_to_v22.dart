@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 /// Migration v21 -> v22: Add order column to habit table
 Future<void> migrateV21ToV22(AppDatabase db, Migrator m, Schema22 schema) async {

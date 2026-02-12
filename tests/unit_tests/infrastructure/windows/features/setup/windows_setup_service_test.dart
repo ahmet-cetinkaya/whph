@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_firewall_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_shortcut_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_update_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/windows_setup_service.dart';
+import 'package:infrastructure_shared/features/setup/services/abstraction/base_setup_service.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_firewall_service.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_shortcut_service.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_update_service.dart';
+import 'package:infrastructure_windows/features/setup/windows_setup_service.dart';
 
 import 'windows_setup_service_test.mocks.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/tasks/utils/task_recurrence_validator.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:application/features/tasks/utils/task_recurrence_validator.dart';
+import 'package:domain/features/tasks/task.dart';
 
 void main() {
   group('TaskRecurrenceValidator Tests', () {

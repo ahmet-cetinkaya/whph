@@ -1,6 +1,6 @@
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:application/features/sync/models/sync_data.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart';
 
 /// Service responsible for processing sync data with conflict resolution and deduplication
 abstract class ISyncDataProcessingService {

@@ -2,7 +2,7 @@ import 'package:acore/acore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/reset_database_settings.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';

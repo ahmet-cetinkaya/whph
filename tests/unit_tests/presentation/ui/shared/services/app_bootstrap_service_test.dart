@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/infrastructure/persistence/persistence_container.dart';
+import 'package:infrastructure_persistence/persistence_container.dart';
 import 'package:whph/infrastructure/infrastructure_container.dart';
-import 'package:whph/core/application/application_container.dart';
+import 'package:application/application_container.dart';
 import 'package:whph/presentation/ui/ui_presentation_container.dart';
 import 'package:acore/acore.dart';
 

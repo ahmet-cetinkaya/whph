@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/settings/setting.dart';
 

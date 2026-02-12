@@ -1,4 +1,4 @@
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
 
 class GroupingUtils {
   static String getTitleGroup(String? title) {

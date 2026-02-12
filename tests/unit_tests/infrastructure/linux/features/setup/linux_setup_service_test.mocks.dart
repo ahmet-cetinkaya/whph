@@ -7,13 +7,13 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_desktop_service.dart'
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_desktop_service.dart'
     as _i4;
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_firewall_service.dart'
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_firewall_service.dart'
     as _i2;
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_kde_service.dart'
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_kde_service.dart'
     as _i5;
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_update_service.dart'
+import 'package:infrastructure_linux/features/setup/services/abstraction/i_linux_update_service.dart'
     as _i6;
 
 // ignore_for_file: type=lint

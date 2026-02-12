@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:application/features/tasks/commands/save_task_command.dart';
+import 'package:application/features/tags/commands/save_tag_command.dart';
+import 'package:application/features/tags/queries/get_list_tags_query.dart';
 import 'package:domain/features/tasks/task.dart';
 import 'package:domain/features/tags/tag.dart';
 import 'package:domain/shared/utils/logger.dart';

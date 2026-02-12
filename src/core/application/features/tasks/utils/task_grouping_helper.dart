@@ -1,9 +1,9 @@
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
-import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
+import 'package:application/features/tasks/models/task_sort_fields.dart';
+import 'package:application/features/tasks/models/task_list_item.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
+import 'package:application/features/tasks/constants/task_translation_keys.dart';
 import 'package:domain/features/tasks/task.dart';
-import 'package:whph/core/application/shared/utils/grouping_utils.dart';
+import 'package:application/shared/utils/grouping_utils.dart';
 
 class TaskGroupingHelper {
   static String? getGroupName(TaskListItem task, TaskSortFields? sortField, {DateTime? now}) {

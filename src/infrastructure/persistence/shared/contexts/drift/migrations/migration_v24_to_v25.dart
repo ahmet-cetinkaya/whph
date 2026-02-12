@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 /// Migration v24 -> v25: Add occurredAt column to habit_time_record_table
 Future<void> migrateV24ToV25(AppDatabase db, Migrator m, Schema25 schema) async {

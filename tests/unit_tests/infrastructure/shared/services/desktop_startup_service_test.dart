@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
+import 'package:infrastructure_shared/services/desktop_startup_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_args.dart';
 
 void main() {

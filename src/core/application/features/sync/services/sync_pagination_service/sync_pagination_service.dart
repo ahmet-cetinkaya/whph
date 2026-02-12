@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_pagination_service/helpers/server_pagination_handler.dart';
-import 'package:whph/core/application/features/sync/services/sync_pagination_service/helpers/sync_dto_builder.dart';
-import 'package:whph/core/application/features/sync/services/sync_pagination_service/helpers/sync_progress_tracker.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_communication_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_configuration_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_pagination_service.dart';
+import 'package:application/features/sync/services/sync_pagination_service/helpers/server_pagination_handler.dart';
+import 'package:application/features/sync/services/sync_pagination_service/helpers/sync_dto_builder.dart';
+import 'package:application/features/sync/services/sync_pagination_service/helpers/sync_progress_tracker.dart';
 import 'package:domain/features/sync/sync_device.dart';
 import 'package:domain/shared/utils/logger.dart';
 

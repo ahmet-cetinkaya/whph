@@ -7,11 +7,11 @@ import 'dart:async' as _i5;
 
 import 'package:acore/acore.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart'
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart'
     as _i4;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+import 'package:application/features/sync/models/paginated_sync_data.dart'
     as _i3;
-import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart'
+import 'package:domain/features/app_usages/app_usage_ignore_rule.dart'
     as _i6;
 
 // ignore_for_file: type=lint

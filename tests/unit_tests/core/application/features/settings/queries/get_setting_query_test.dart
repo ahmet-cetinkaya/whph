@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:application/features/settings/queries/get_setting_query.dart';
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:domain/features/settings/setting.dart';
 
 class MockSettingRepository extends Mock implements ISettingRepository {
   @override

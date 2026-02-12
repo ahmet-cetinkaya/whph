@@ -1,5 +1,5 @@
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart';
 
 /// Interface for checking and handling recurring task duplicates during sync.
 abstract class IRecurringTaskDuplicateChecker {

@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
+import 'package:application/features/habits/constants/habit_translation_keys.dart';
 
 import 'package:domain/features/habits/habit_tag.dart';
 

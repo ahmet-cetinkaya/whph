@@ -1,9 +1,9 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:application/shared/utils/key_helper.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/tasks/task_tag.dart';
-import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
+import 'package:application/features/tasks/constants/task_translation_keys.dart';
 
 class AddTaskTagCommand implements IRequest<AddTaskTagCommandResponse> {
   String taskId;

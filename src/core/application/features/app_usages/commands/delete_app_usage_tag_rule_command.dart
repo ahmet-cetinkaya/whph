@@ -1,8 +1,8 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/app_usages/app_usage_tag_rule.dart';
-import 'package:whph/core/application/features/app_usages/constants/app_usage_translation_keys.dart';
+import 'package:application/features/app_usages/constants/app_usage_translation_keys.dart';
 
 class DeleteAppUsageTagRuleCommand implements IRequest<DeleteAppUsageTagRuleCommandResponse> {
   final String id;

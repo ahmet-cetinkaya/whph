@@ -15,10 +15,10 @@ import 'package:mediatr/src/internals/i_request_handler.dart' as _i11;
 import 'package:mediatr/src/internals/pipeline.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart'
+import 'package:application/features/tasks/services/abstraction/i_reminder_calculation_service.dart'
     as _i17;
-import 'package:whph/core/domain/features/tasks/task.dart' as _i18;
-import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart'
+import 'package:domain/features/tasks/task.dart' as _i18;
+import 'package:infrastructure_shared/features/notification/abstractions/i_notification_payload_handler.dart'
     as _i16;
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart'
     as _i14;

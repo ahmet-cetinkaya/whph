@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/notes/constants/note_translation_keys.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
+import 'package:application/features/notes/constants/note_translation_keys.dart';
+import 'package:application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:acore/acore.dart';
 
 class DeleteNoteCommand implements IRequest<DeleteNoteCommandResponse> {

@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.steps.dart';
 
 /// Migration v20 -> v21: Add usage_date column
 Future<void> migrateV20ToV21(AppDatabase db, Migrator m, Schema21 schema) async {

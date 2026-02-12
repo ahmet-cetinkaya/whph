@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
-import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
+import 'package:infrastructure_shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 
 /// Configuration for a recurring reminder
 class _RecurringReminderConfig {

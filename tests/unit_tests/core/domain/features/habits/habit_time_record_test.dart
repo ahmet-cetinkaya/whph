@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/domain/features/habits/habit_time_record.dart';
+import 'package:domain/features/habits/habit_time_record.dart';
 
 void main() {
   group('HabitTimeRecord Domain Entity Tests', () {

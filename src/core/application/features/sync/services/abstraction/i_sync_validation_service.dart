@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:domain/features/sync/sync_device.dart';
 
 /// Service responsible for validating sync prerequisites and data integrity

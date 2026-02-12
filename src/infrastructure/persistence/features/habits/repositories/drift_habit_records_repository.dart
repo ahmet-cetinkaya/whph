@@ -3,8 +3,8 @@ import 'package:application/features/habits/services/i_habit_record_repository.d
 import 'package:acore/acore.dart';
 import 'package:domain/features/habits/habit_record.dart';
 import 'package:domain/features/habits/habit_record_status.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/repositories/drift/drift_base_repository.dart';
 
 @UseRowClass(HabitRecord)
 class HabitRecordTable extends Table {

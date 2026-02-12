@@ -14,12 +14,12 @@ import 'package:mediatr/src/internals/i_request_handler.dart' as _i11;
 import 'package:mediatr/src/internals/pipeline.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart'
+import 'package:application/features/habits/services/i_habit_record_repository.dart'
     as _i13;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+import 'package:application/features/sync/models/paginated_sync_data.dart'
     as _i5;
-import 'package:whph/core/domain/features/habits/habit_record.dart' as _i14;
-import 'package:whph/core/domain/features/habits/habit_record_status.dart'
+import 'package:domain/features/habits/habit_record.dart' as _i14;
+import 'package:domain/features/habits/habit_record_status.dart'
     as _i15;
 import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dart'
     as _i12;

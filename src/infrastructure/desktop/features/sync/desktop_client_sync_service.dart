@@ -8,7 +8,7 @@ import 'package:application/features/sync/models/sync_status.dart';
 import 'package:application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 
 /// Desktop client sync service that connects to WHPH servers
 class DesktopClientSyncService extends SyncService {

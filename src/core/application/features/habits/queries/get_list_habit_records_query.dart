@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/habits/habit_record.dart';
 import 'package:domain/features/habits/habit_record_status.dart';

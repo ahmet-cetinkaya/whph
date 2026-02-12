@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
+import 'package:application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/presentation/ui/shared/services/theme_service/theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:acore/acore.dart';

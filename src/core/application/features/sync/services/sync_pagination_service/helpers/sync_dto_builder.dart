@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:domain/features/habits/habit.dart';
 import 'package:domain/features/sync/sync_device.dart';
 import 'package:domain/features/tasks/task.dart';

@@ -1,8 +1,8 @@
 import 'package:domain/features/habits/habit_tag.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:application/shared/services/abstraction/i_repository.dart' as app;
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:application/features/tags/models/tag_time_data.dart';
+import 'package:application/features/tags/queries/get_list_tags_query.dart';
 
 abstract class IHabitTagsRepository extends app.IRepository<HabitTag, String> {
   Future<bool> anyByHabitIdAndTagId(String habitId, String tagId);

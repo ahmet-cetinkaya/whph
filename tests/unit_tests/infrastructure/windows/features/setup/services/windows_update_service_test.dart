@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_update_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/windows_update_service.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_update_service.dart';
+import 'package:infrastructure_windows/features/setup/services/windows_update_service.dart';
 
 void main() {
   group('WindowsUpdateService', () {

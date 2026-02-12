@@ -1,5 +1,5 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
 import 'package:domain/features/app_usages/app_usage.dart';
 import 'package:domain/features/app_usages/app_usage_tag.dart';
 import 'package:domain/features/app_usages/app_usage_tag_rule.dart';

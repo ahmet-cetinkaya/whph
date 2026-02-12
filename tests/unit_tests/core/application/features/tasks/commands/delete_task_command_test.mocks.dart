@@ -7,25 +7,25 @@ import 'dart:async' as _i5;
 
 import 'package:acore/acore.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+import 'package:application/features/sync/models/paginated_sync_data.dart'
     as _i3;
-import 'package:whph/core/application/features/tags/models/tag_time_data.dart'
+import 'package:application/features/tags/models/tag_time_data.dart'
     as _i12;
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart'
+import 'package:application/features/tasks/models/task_list_item.dart'
     as _i8;
-import 'package:whph/core/application/features/tasks/models/task_query_filter.dart'
+import 'package:application/features/tasks/models/task_query_filter.dart'
     as _i7;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart'
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart'
     as _i4;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart'
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart'
     as _i10;
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart'
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart'
     as _i13;
-import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart'
+import 'package:domain/features/tasks/models/task_with_total_duration.dart'
     as _i6;
-import 'package:whph/core/domain/features/tasks/task.dart' as _i9;
-import 'package:whph/core/domain/features/tasks/task_tag.dart' as _i11;
-import 'package:whph/core/domain/features/tasks/task_time_record.dart' as _i14;
+import 'package:domain/features/tasks/task.dart' as _i9;
+import 'package:domain/features/tasks/task_tag.dart' as _i11;
+import 'package:domain/features/tasks/task_time_record.dart' as _i14;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/sync/services/network_interface_service.dart';
+import 'package:application/features/sync/services/network_interface_service.dart';
 
 void main() {
   group('NetworkInterfaceService', () {

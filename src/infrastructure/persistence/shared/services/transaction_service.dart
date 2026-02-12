@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:application/shared/services/abstraction/i_transaction_service.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 
 /// Drift-based implementation of ITransactionService.
 /// Wraps AppDatabase.instance() transaction method.

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
+import 'package:application/shared/models/websocket_request.dart';
 import 'package:domain/shared/utils/logger.dart';
 
 /// Handles WebSocket message serialization and deserialization

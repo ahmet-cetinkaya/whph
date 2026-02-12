@@ -1,5 +1,5 @@
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/shared/models/websocket_request.dart';
 
 /// Response from sending paginated sync data
 class SyncCommunicationResponse {

@@ -1,7 +1,7 @@
-import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
+import 'package:application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 
 // Re-export the tag list item for convenience
-export 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart'
+export 'package:application/features/app_usages/queries/get_list_app_usage_tags_query.dart'
     show AppUsageTagListItem;
 
 class AppUsageListItem {

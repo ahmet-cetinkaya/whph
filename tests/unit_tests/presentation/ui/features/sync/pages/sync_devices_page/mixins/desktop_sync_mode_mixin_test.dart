@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:domain/features/sync/models/desktop_sync_mode.dart';
+import 'package:infrastructure_desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/desktop_sync_mode_mixin.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 // Mocks
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:domain/features/settings/setting.dart';
 
 // Mocks & Fakes
 class MockMediator extends Mock implements Mediator {}

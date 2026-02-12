@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:acore/acore.dart';
 
 class GetListAppUsageIgnoreRulesQuery implements IRequest<GetListAppUsageIgnoreRulesQueryResponse> {

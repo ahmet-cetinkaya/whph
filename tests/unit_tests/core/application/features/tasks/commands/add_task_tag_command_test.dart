@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
+import 'package:application/features/tasks/commands/add_task_tag_command.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:domain/features/tasks/task_tag.dart';
 import 'package:acore/acore.dart';
 
 import 'add_task_tag_command_test.mocks.dart';

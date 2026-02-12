@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/tasks/utils/date_helper.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:application/features/tasks/utils/date_helper.dart';
+import 'package:domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:acore/acore.dart';
 
 void main() {

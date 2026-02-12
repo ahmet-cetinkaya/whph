@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 import 'abstraction/i_linux_kde_service.dart';
 
 /// Implementation of KDE Plasma-specific integration.

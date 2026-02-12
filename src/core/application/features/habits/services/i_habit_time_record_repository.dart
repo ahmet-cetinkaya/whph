@@ -1,4 +1,4 @@
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:application/shared/services/abstraction/i_repository.dart' as app;
 import 'package:domain/features/habits/habit_time_record.dart';
 
 abstract class IHabitTimeRecordRepository extends app.IRepository<HabitTimeRecord, String> {

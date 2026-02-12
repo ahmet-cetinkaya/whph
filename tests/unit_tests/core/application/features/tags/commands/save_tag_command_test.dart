@@ -3,9 +3,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:application/features/tags/commands/save_tag_command.dart';
+import 'package:application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:domain/features/tags/tag.dart';
 import 'package:acore/acore.dart';
 
 import 'save_tag_command_test.mocks.dart';

@@ -4,10 +4,10 @@ import 'package:application/features/app_usages/queries/get_list_app_usage_tags_
 import 'package:application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/app_usages/app_usage_time_record.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
-import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:infrastructure_persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:domain/features/tags/tag.dart';
 
 @UseRowClass(AppUsageTimeRecord)

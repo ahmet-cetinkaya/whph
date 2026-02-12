@@ -1,8 +1,8 @@
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/sync_data.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_configuration_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_communication_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:domain/features/sync/sync_device.dart';
 import 'package:domain/shared/utils/logger.dart';
 

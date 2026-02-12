@@ -1,0 +1,18 @@
+Analyzing app...                                                
+
+  error • Target of URI doesn't exist: 'package:infrastructure_android/constants/android_app_constants.dart' • lib/features/settings/components/battery_optimization.dart:7:8 • uri_does_not_exist
+  error • Undefined name 'AndroidAppConstants' • lib/features/settings/components/battery_optimization.dart:66:40 • undefined_identifier
+  error • Undefined name 'AndroidAppConstants' • lib/features/settings/components/battery_optimization.dart:78:32 • undefined_identifier
+  error • Undefined name 'AndroidAppConstants' • lib/features/settings/components/battery_optimization.dart:152:30 • undefined_identifier
+  error • Undefined name 'AndroidAppConstants' • lib/features/settings/components/battery_optimization.dart:167:34 • undefined_identifier
+  error • Undefined name 'AndroidAppConstants' • lib/features/settings/components/battery_optimization.dart:180:57 • undefined_identifier
+  error • Target of URI doesn't exist: 'package:infrastructure_android/constants/android_app_constants.dart' • lib/features/settings/components/exact_alarm_permission.dart:6:8 • uri_does_not_exist
+  error • Undefined name 'AndroidAppConstants' • lib/features/settings/components/exact_alarm_permission.dart:21:41 • undefined_identifier
+  error • Target of URI doesn't exist: 'package:infrastructure_android/constants/android_app_constants.dart' • lib/shared/services/notification_payload_service.dart:4:8 • uri_does_not_exist
+  error • Undefined name 'AndroidAppConstants' • lib/shared/services/notification_payload_service.dart:43:36 • undefined_identifier
+  error • Undefined name 'AndroidAppConstants' • lib/shared/services/notification_payload_service.dart:143:40 • undefined_identifier
+  error • Undefined name 'AndroidAppConstants' • lib/shared/services/notification_payload_service.dart:157:40 • undefined_identifier
+  error • Undefined name 'AndroidAppConstants' • lib/shared/services/notification_payload_service.dart:175:38 • undefined_identifier
+  error • Undefined name 'AndroidAppConstants' • lib/shared/services/notification_payload_service.dart:219:38 • undefined_identifier
+
+14 issues found. (ran in 2.3s)

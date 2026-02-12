@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:whph/core/application/features/habits/utils/habit_grouping_helper.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:application/features/habits/models/habit_sort_fields.dart';
+import 'package:application/features/habits/queries/get_list_habits_query.dart';
+import 'package:application/features/habits/utils/habit_grouping_helper.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
 
 void main() {
   group('HabitGroupingHelper', () {

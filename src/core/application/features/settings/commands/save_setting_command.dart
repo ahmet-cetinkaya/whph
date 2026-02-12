@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:application/features/settings/constants/settings_translation_keys.dart';
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:domain/features/settings/setting.dart';
 

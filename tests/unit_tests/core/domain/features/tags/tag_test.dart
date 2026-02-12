@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:domain/features/tags/tag.dart';
 
 void main() {
   group('TagType Enum Tests', () {

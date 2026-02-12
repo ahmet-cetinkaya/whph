@@ -3,17 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
-import 'package:whph/core/application/features/sync/models/bidirectional_sync_progress.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_data_processing_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as whph_repo;
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
+import 'package:application/features/sync/models/bidirectional_sync_progress.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_configuration_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_validation_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_communication_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_data_processing_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_pagination_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart' as whph_repo;
+import 'package:domain/features/sync/sync_device.dart';
 
 import 'paginated_sync_command_bidirectional_progress_test.mocks.dart';
 

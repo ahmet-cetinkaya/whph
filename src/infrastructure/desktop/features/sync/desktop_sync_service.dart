@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 import 'package:application/features/sync/services/sync_service.dart';
 import 'package:application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:application/shared/services/abstraction/i_transaction_service.dart';
 import 'package:domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:domain/features/sync/models/desktop_sync_settings.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_server_sync_service.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_client_sync_service.dart';
+import 'package:infrastructure_desktop/features/sync/desktop_server_sync_service.dart';
+import 'package:infrastructure_desktop/features/sync/desktop_client_sync_service.dart';
 
 /// Enhanced desktop sync service with mode switching capabilities
 class DesktopSyncService extends SyncService {

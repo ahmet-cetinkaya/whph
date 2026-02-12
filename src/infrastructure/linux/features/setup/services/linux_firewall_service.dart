@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 import '../exceptions/linux_firewall_rule_exception.dart';
 import 'abstraction/i_linux_firewall_service.dart';
 

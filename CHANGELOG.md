@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.21.0] - 2026-02-11
 
 ### Added
+
 - **Enhanced CSV Import**: Import tasks from Todoist and other apps with support for tags, custom priorities, and flexible date formats
 - **Skip Quick Add Dialog**: Option to bypass the quick-add dialog and create tasks directly from the main interface
 - **Language Dialog Improvements**: Better scrolling, dynamic language count display, and fully localized descriptions
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Polished Onboarding**: Improved tour completion dialog with smoother navigation and better mobile responsiveness
 
 ### Fixed
+
 - **Asian Language Support**: Fixed font rendering for Chinese, Japanese, and Korean characters on all platforms
 - **CSV Import Performance**: Faster imports with tag caching and better error messages
 - **Notification System**: Improved notification channel management and permission handling on Android
@@ -28,21 +30,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.20.4] - 2026-01-25
 
 ### Fixed
+
 - Enhance color picker component with tabbed interface and full alpha support
 - Improve window class setting and icon path handling
 
 ## [0.20.3] - 2026-01-22
 
 ### Fixed
+
 - **Linux Icons**: App icon now displays correctly on more Linux distributions by adding a fallback path for Flutter assets
 
 ## [0.20.2] - 2026-01-22
 
 ### Changed
+
 - **Custom Reminder Dialog**: Redesigned reminder settings with a clearer table layout for selecting time units
 - **Linux Icons**: Improved app icon loading to display correctly across different Linux distributions
 
 ### Fixed
+
 - **Desktop Sync**: Resolved service lifecycle issues on desktop platforms for more reliable synchronization
 - **Button Styling**: Enhanced interaction feedback on sorting and grouping buttons throughout the app
 

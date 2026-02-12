@@ -1,7 +1,7 @@
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart';
 
 /// Configuration for a specific entity type in paginated sync operations
 class PaginatedSyncConfig<T extends BaseEntity<String>> {

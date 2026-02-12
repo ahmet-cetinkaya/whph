@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:domain/features/sync/models/desktop_sync_mode.dart';
+import 'package:infrastructure_desktop/features/sync/desktop_sync_service.dart';
 
 import 'desktop_sync_service_test.mocks.dart';
 

@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:application/features/habits/services/i_habit_tags_repository.dart';
 
 class UpdateHabitTagsOrderCommand implements IRequest<void> {
   final String habitId;

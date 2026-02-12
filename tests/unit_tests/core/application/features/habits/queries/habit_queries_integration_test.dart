@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habits_repository.dart';
-import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_tags_repository.dart';
-import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_records_repository.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:application/features/habits/queries/get_list_habits_query.dart';
+import 'package:infrastructure_persistence/features/habits/repositories/drift_habits_repository.dart';
+import 'package:infrastructure_persistence/features/habits/repositories/drift_habit_tags_repository.dart';
+import 'package:infrastructure_persistence/features/habits/repositories/drift_habit_records_repository.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:domain/features/habits/habit.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:application/features/habits/models/habit_sort_fields.dart';
 
 void main() {
   group('Habit Queries Integration Tests', () {

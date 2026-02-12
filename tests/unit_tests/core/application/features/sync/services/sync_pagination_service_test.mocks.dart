@@ -8,13 +8,13 @@ import 'dart:async' as _i3;
 import 'package:acore/acore.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart'
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart'
     as _i4;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_communication_service.dart'
     as _i2;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_configuration_service.dart'
     as _i7;
-import 'package:whph/core/application/shared/models/websocket_request.dart'
+import 'package:application/shared/models/websocket_request.dart'
     as _i5;
 
 // ignore_for_file: type=lint

@@ -1,6 +1,6 @@
 import 'package:domain/features/tasks/task_time_record.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 
 /// Service for managing task time records with hour-based bucketing

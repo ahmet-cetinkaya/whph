@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
+import 'package:domain/features/habits/habit_record.dart';
+import 'package:domain/features/tasks/task.dart';
+import 'package:application/features/sync/services/sync_conflict_resolution_service.dart';
 
 void main() {
   group('SyncConflictResolutionService Tests', () {

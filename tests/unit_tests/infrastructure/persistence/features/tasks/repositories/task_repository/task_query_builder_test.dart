@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/task_query_builder.dart';
+import 'package:infrastructure_persistence/features/tasks/repositories/task_repository/task_query_builder.dart';
 import 'package:acore/acore.dart';
 
 void main() {

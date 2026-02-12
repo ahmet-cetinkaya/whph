@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:domain/features/notes/note_tag.dart';
-import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:application/features/notes/services/abstraction/i_note_tag_repository.dart';
 
 @UseRowClass(NoteTag)

@@ -1,14 +1,14 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
-import 'package:whph/core/application/features/notes/models/note_list_item.dart';
-import 'package:whph/core/application/features/notes/utils/note_grouping_helper.dart';
+import 'package:application/features/notes/models/note_sort_fields.dart';
+import 'package:application/features/notes/models/note_list_item.dart';
+import 'package:application/features/notes/utils/note_grouping_helper.dart';
 import 'package:domain/features/tags/tag.dart';
-import 'package:whph/core/application/shared/utils/validation_utils.dart';
+import 'package:application/shared/utils/validation_utils.dart';
 
-export 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
-export 'package:whph/core/application/features/notes/models/note_list_item.dart';
+export 'package:application/features/notes/models/note_sort_fields.dart';
+export 'package:application/features/notes/models/note_list_item.dart';
 
 class GetListNotesQuery implements IRequest<GetListNotesQueryResponse> {
   final int pageIndex;

@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:domain/features/app_usages/app_usage_tag_rule.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:infrastructure_persistence/shared/repositories/drift/drift_base_repository.dart';
 
 @UseRowClass(AppUsageTagRule)
 class AppUsageTagRuleTable extends Table {

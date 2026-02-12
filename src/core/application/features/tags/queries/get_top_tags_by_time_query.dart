@@ -1,9 +1,9 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:application/features/tags/models/tag_time_category.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:application/features/tags/models/tag_time_data.dart';
 import 'package:acore/acore.dart';
 
 class GetTopTagsByTimeQuery implements IRequest<GetTopTagsByTimeQueryResponse> {

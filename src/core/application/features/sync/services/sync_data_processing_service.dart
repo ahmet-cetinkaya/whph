@@ -1,10 +1,10 @@
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_data_processing_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_device_processing_handler.dart';
-import 'package:whph/core/application/features/sync/services/recurring_task_duplicate_checker.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:application/features/sync/models/sync_data.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_data_processing_service.dart';
+import 'package:application/features/sync/services/sync_conflict_resolution_service.dart';
+import 'package:application/features/sync/services/sync_device_processing_handler.dart';
+import 'package:application/features/sync/services/recurring_task_duplicate_checker.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart';
 import 'package:domain/features/habits/habit_record.dart';
 import 'package:domain/features/sync/sync_device.dart';
 import 'package:domain/shared/utils/logger.dart';

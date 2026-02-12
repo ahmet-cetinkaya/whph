@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
-import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_firewall_service.dart';
+import 'package:domain/shared/utils/logger.dart';
+import 'package:infrastructure_windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
+import 'package:infrastructure_windows/features/setup/services/abstraction/i_windows_firewall_service.dart';
 
 /// Implementation of Windows Firewall management service
 class WindowsFirewallService implements IWindowsFirewallService {

@@ -1,20 +1,20 @@
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
-import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
+import 'package:application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:application/features/habits/services/i_habit_record_repository.dart';
+import 'package:application/features/habits/services/i_habit_repository.dart';
+import 'package:application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:application/features/tags/services/abstraction/i_tag_tag_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_tag_repository.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:application/shared/services/abstraction/i_repository.dart';
 import 'package:domain/features/app_usages/app_usage.dart';
 import 'package:domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:domain/features/app_usages/app_usage_tag.dart';
@@ -32,7 +32,7 @@ import 'package:domain/features/tasks/task_tag.dart';
 import 'package:domain/features/tasks/task_time_record.dart';
 import 'package:domain/features/notes/note.dart';
 import 'package:domain/features/notes/note_tag.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 
 /// Implementation of sync configuration service that manages entity configurations
 class SyncConfigurationService implements ISyncConfigurationService {

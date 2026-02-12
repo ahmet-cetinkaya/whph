@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart' as wm;
 import 'abstractions/i_window_manager.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 
 // Import Linux-specific constants
-import 'package:whph/infrastructure/linux/constants/linux_app_constants.dart';
+import 'package:infrastructure_linux/constants/linux_app_constants.dart';
 
 /// Base implementation of WindowManagerInterface using window_manager package
 class WindowManager implements IWindowManager {

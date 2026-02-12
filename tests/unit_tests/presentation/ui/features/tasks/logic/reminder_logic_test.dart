@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:domain/features/tasks/task.dart';
 
 // Logic copied from ReminderService for isolation testing
 DateTime calculateTaskReminderTime(DateTime taskDate, ReminderTime reminderTime, [int? customOffset]) {

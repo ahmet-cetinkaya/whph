@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
-import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
-import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:application/features/tasks/queries/get_task_query.dart';
+import 'package:application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:infrastructure_persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
+import 'package:infrastructure_persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
+import 'package:application/features/tasks/models/task_sort_fields.dart';
 
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:infrastructure_persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
 
 void main() {

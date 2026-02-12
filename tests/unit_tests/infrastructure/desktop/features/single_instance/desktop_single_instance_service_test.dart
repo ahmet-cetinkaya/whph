@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-import 'package:whph/infrastructure/desktop/features/single_instance/desktop_single_instance_service.dart';
+import 'package:infrastructure_desktop/features/single_instance/desktop_single_instance_service.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 // Mock PathProvider

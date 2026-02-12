@@ -8,29 +8,29 @@ import 'dart:async' as _i6;
 import 'package:acore/acore.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
 import 'package:mockito/src/dummies.dart' as _i12;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart'
+import 'package:application/features/sync/models/paginated_sync_data.dart'
     as _i3;
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart'
+import 'package:application/features/sync/models/paginated_sync_data_dto.dart'
     as _i10;
-import 'package:whph/core/application/features/sync/models/sync_data.dart'
+import 'package:application/features/sync/models/sync_data.dart'
     as _i14;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_communication_service.dart'
     as _i4;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_configuration_service.dart'
     as _i8;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_data_processing_service.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_data_processing_service.dart'
     as _i13;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_device_repository.dart'
     as _i5;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_pagination_service.dart'
     as _i16;
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart'
+import 'package:application/features/sync/services/abstraction/i_sync_validation_service.dart'
     as _i9;
-import 'package:whph/core/application/shared/models/websocket_request.dart'
+import 'package:application/shared/models/websocket_request.dart'
     as _i11;
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
+import 'package:application/shared/services/abstraction/i_repository.dart'
     as _i15;
-import 'package:whph/core/domain/features/sync/sync_device.dart' as _i7;
+import 'package:domain/features/sync/sync_device.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:application/features/tasks/models/task_sort_fields.dart';
 
 void main() {
   group('SortConfig', () {

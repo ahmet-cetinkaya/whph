@@ -1,7 +1,7 @@
-import 'package:whph/core/application/features/notes/models/note_list_item.dart';
-import 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
-import 'package:whph/core/application/shared/utils/grouping_utils.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:application/features/notes/models/note_list_item.dart';
+import 'package:application/features/notes/models/note_sort_fields.dart';
+import 'package:application/shared/utils/grouping_utils.dart';
+import 'package:application/shared/constants/shared_translation_keys.dart';
 
 class NoteGroupInfo {
   final String name;

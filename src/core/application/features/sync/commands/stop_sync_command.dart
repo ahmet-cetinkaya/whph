@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:application/features/sync/services/abstraction/i_sync_service.dart';
 
 class StopSyncCommand implements IRequest<StopSyncCommandResponse> {}
 

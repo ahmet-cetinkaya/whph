@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/settings/services/import_data_migration_service.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:application/features/settings/services/import_data_migration_service.dart';
+import 'package:domain/shared/constants/app_info.dart';
 
 void main() {
   group('ImportDataMigrationService Verification', () {

@@ -1,10 +1,10 @@
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:application/features/tasks/models/task_list_item.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:application/features/tasks/models/task_query_filter.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:acore/acore.dart';
 
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:application/features/tasks/models/task_sort_fields.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;

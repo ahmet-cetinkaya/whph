@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
+import 'package:application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 
 class AppUsageTimeRecordWithDetails {
   final String id;

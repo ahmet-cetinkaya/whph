@@ -1,4 +1,4 @@
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:application/shared/services/abstraction/i_repository.dart' as app;
 import 'package:acore/acore.dart' hide IRepository;
 import 'package:domain/features/notes/note.dart';
 

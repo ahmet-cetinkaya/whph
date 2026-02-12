@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
-import 'package:whph/core/domain/features/tasks/task_time_record.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:application/features/tasks/services/task_time_record_service.dart';
+import 'package:domain/features/tasks/task_time_record.dart';
+import 'package:application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
+import 'package:application/shared/utils/key_helper.dart';
+import 'package:application/features/sync/models/paginated_sync_data.dart';
+import 'package:application/features/sync/models/sync_data.dart';
 
 // Mock repository implementation for testing
 class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {

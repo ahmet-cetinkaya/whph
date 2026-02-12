@@ -1,15 +1,15 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:domain/shared/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:application/shared/services/abstraction/i_setup_service.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:domain/shared/constants/app_info.dart';
 import 'package:path/path.dart' as path;
 import 'package:whph/main.dart';
-import 'package:whph/infrastructure/shared/features/setup/models/update_info.dart';
+import 'package:infrastructure_shared/features/setup/models/update_info.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
