@@ -13,10 +13,10 @@ runs:
         git submodule sync || echo "Submodule sync not needed"
 
         # Initialize the acore submodule with explicit handling for Windows
-        if git submodule update --init --recursive src/lib/corePackages/acore; then
-          echo "✅ ACore Flutter submodule initialized successfully"
+        if git submodule update --init --recursive packages/acore-flutter packages/acore-scripts; then
+          echo "✅ ACore submodules initialized successfully"
         else
-          echo "❌ Failed to initialize acore submodule"
+          echo "❌ Failed to initialize acore submodules"
           echo "🔍 Debugging submodule status:"
           git submodule status || echo "Could not get submodule status"
           git ls-files --stage | grep 160000 || echo "No submodules found in index"
@@ -24,20 +24,28 @@ runs:
           # Try alternative initialization for Windows
           echo "🔄 Trying alternative initialization..."
           git submodule init
-          git submodule update --recursive src/lib/corePackages/acore || {
+          git submodule update --recursive packages/acore-flutter packages/acore-scripts || {
             echo "❌ Alternative initialization also failed"
             exit 1
           }
         fi
 
         # Verify the submodule was initialized correctly
-        if [[ -d "src/lib/corePackages/acore" && -f "src/lib/corePackages/acore/pubspec.yaml" ]]; then
-          echo "✅ Submodule verification passed"
-          echo "📁 Submodule directory: src/lib/corePackages/acore"
-          echo "📄 pubspec.yaml found: $(ls -la src/lib/corePackages/acore/pubspec.yaml)"
+        if [[ -d "packages/acore-flutter" && -f "packages/acore-flutter/pubspec.yaml" ]]; then
+          echo "✅ acore-flutter verification passed"
+          echo "📁 Submodule directory: packages/acore-flutter"
+          echo "📄 pubspec.yaml found: $(ls -la packages/acore-flutter/pubspec.yaml)"
         else
-          echo "❌ Submodule verification failed"
+          echo "❌ acore-flutter verification failed"
           echo "📁 Submodule directory contents:"
-          ls -la src/lib/corePackages/acore/ 2>/dev/null || echo "Directory not found"
+          ls -la packages/acore-flutter/ 2>/dev/null || echo "Directory not found"
           exit 1
+        fi
+
+        if [[ -d "packages/acore-scripts" ]]; then
+          echo "✅ acore-scripts verification passed"
+          echo "📁 Submodule directory: packages/acore-scripts"
+        else
+           echo "❌ acore-scripts verification failed"
+           exit 1
         fi
