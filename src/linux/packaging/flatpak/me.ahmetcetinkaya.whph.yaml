@@ -1,6 +1,6 @@
 app-id: me.ahmetcetinkaya.whph
 runtime: org.freedesktop.Platform
-runtime-version: "24.08"
+runtime-version: "25.08"
 sdk: org.freedesktop.Sdk
 command: whph
 separate-locales: false
@@ -14,15 +14,8 @@ finish-args:
   - --socket=wayland
   - --socket=pulseaudio
   - --device=dri
-  - --share=network
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=org.freedesktop.Notifications
-  - --talk-name=org.freedesktop.portal.Desktop
-  - --talk-name=org.freedesktop.portal.Documents
-  - --talk-name=org.freedesktop.portal.Settings
-  - --filesystem=xdg-config/gtk-3.0:ro
-  - --filesystem=xdg-config/gtk-4.0:ro
-  - --filesystem=xdg-config/fontconfig:ro
   - --filesystem=xdg-config/kdeglobals:ro
   - --env=GSETTINGS_BACKEND=dconf
   - --talk-name=org.freedesktop.Settings
@@ -140,10 +133,15 @@ modules:
       - install -D data/icudtl.dat /app/bin/data/icudtl.dat
       - install -D share/applications/whph.desktop /app/share/applications/me.ahmetcetinkaya.whph.desktop
       - install -D share/icons/hicolor/512x512/apps/whph.png /app/share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.png
+      - install -D share/icons/hicolor/128x128/apps/whph.png /app/share/icons/hicolor/128x128/apps/me.ahmetcetinkaya.whph.png
+      - install -D share/icons/hicolor/64x64/apps/whph.png /app/share/icons/hicolor/64x64/apps/me.ahmetcetinkaya.whph.png
       - install -D share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.play.png /app/share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.play.png
       - install -D share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.pause.png /app/share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.pause.png
       - install -D share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.default.png /app/share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.default.png
       - install -D share/dbus-1/services/whph.service /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service
+      - install -D me.ahmetcetinkaya.whph.metainfo.xml /app/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml
     sources:
       - type: dir
         path: ../../../../src/build/linux/x64/release/bundle
+      - type: file
+        path: me.ahmetcetinkaya.whph.metainfo.xml

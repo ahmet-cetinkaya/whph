@@ -49,15 +49,32 @@ BUNDLE_DIR="$SRC_DIR/build/linux/x64/release/bundle"
 DESKTOP_FILE="$BUNDLE_DIR/share/applications/whph.desktop"
 ICON_FILE="$BUNDLE_DIR/share/icons/hicolor/512x512/apps/whph.png"
 
-# Resize icon to 512x512 if it exists and is larger
+# Resize icon to standard Flathub sizes (64, 128, 512)
 if [[ -f "$ICON_FILE" ]]; then
-    acore_log_info "Check/Resizing icon to 512x512..."
+    acore_log_info "Generating standard icon sizes (64, 128, 512)..."
+    
+    # Define sizes
+    SIZES=(64 128 512)
+    
+    # Determine resize tool
+    RESIZE_CMD=""
     if command -v magick &>/dev/null; then
-        magick "$ICON_FILE" -resize 512x512! "$ICON_FILE" || acore_log_warning "Failed to resize icon."
+        RESIZE_CMD="magick"
     elif command -v convert &>/dev/null; then
-        convert "$ICON_FILE" -resize 512x512! "$ICON_FILE" || acore_log_warning "Failed to resize icon."
+        RESIZE_CMD="convert"
     else
         acore_log_warning "ImageMagick not found. Skipping icon resizing."
+    fi
+
+    if [[ -n "$RESIZE_CMD" ]]; then
+        for size in "${SIZES[@]}"; do
+            SIZE_DIR="$BUNDLE_DIR/share/icons/hicolor/${size}x${size}/apps"
+            mkdir -p "$SIZE_DIR"
+            TARGET_FILE="$SIZE_DIR/whph.png"
+            
+            acore_log_info "Generating ${size}x${size} icon..."
+            "$RESIZE_CMD" "$ICON_FILE" -resize "${size}x${size}!" "$TARGET_FILE" || acore_log_warning "Failed to resize icon to ${size}x${size}."
+        done
     fi
 fi
 
@@ -97,7 +114,10 @@ if [[ -d "$TRAY_ICON_SRC" ]]; then
 fi
 
 # Patch Service File
-    sed -i 's|^Exec=.*|Exec=/app/bin/whph|' "$SERVICE_FILE"
+    SERVICE_FILE="$BUNDLE_DIR/share/dbus-1/services/whph.service"
+    if [[ -f "$SERVICE_FILE" ]]; then
+        acore_log_info "Patching service file for Flatpak..."
+        sed -i 's|^Exec=.*|Exec=/app/bin/whph|' "$SERVICE_FILE"
 fi
 
 # 2. Build Flatpak
