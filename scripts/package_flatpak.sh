@@ -15,6 +15,16 @@ SRC_DIR="$PROJECT_ROOT/src"
 
 acore_log_header "FLATPAK PACKAGING"
 
+SKIP_BUILD=false
+for arg in "$@"; do
+    case $arg in
+        --skip-build)
+            SKIP_BUILD=true
+            shift
+            ;;
+    esac
+done
+
 # Check dependencies
 # Check dependencies
 for cmd in flatpak-builder flatpak; do
@@ -25,9 +35,13 @@ for cmd in flatpak-builder flatpak; do
 done
 
 # 1. Build Flutter Linux Release
-acore_log_section "🏗️  Building Flutter Linux Release..."
-cd "$SRC_DIR"
-fvm flutter build linux --release
+if [[ "$SKIP_BUILD" == "false" ]]; then
+    acore_log_section "🏗️  Building Flutter Linux Release..."
+    cd "$SRC_DIR"
+    fvm flutter build linux --release
+else
+    acore_log_section "⏭️  Skipping Flutter Build (--skip-build)..."
+fi
 
 # 1.5 Post-process Build Artifacts
 acore_log_section "🔧  Post-processing Build Artifacts..."
@@ -83,15 +97,16 @@ if [[ -d "$TRAY_ICON_SRC" ]]; then
 fi
 
 # Patch Service File
-SERVICE_FILE="$BUNDLE_DIR/share/dbus-1/services/whph.service"
-if [[ -f "$SERVICE_FILE" ]]; then
-    acore_log_info "Patching D-Bus service file for Flatpak..."
     sed -i 's|^Exec=.*|Exec=/app/bin/whph|' "$SERVICE_FILE"
 fi
 
 # 2. Build Flatpak
 acore_log_section "📦  Building Flatpak..."
 cd "$PROJECT_ROOT"
+
+# Ensure Flathub remote exists (needed for runtime/sdk)
+acore_log_info "Ensuring Flathub remote exists..."
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || acore_log_warning "Failed to add flathub remote (might already exist or network issue)."
 
 MANIFEST_PATH="src/linux/packaging/flatpak/me.ahmetcetinkaya.whph.yaml"
 BUILD_DIR="build-dir"
@@ -108,7 +123,8 @@ mkdir -p "$BUILD_DIR"
 # --force-clean: Clean the build directory before building
 # --user: Install to the user installation
 # --install: Install the application after building
-flatpak-builder --force-clean --user --install --repo="$REPO_DIR" "$BUILD_DIR" "$MANIFEST_PATH"
+# --install-deps-from=flathub: Automatically install missing runtime/sdk from flathub
+flatpak-builder --force-clean --user --install --install-deps-from=flathub --repo="$REPO_DIR" "$BUILD_DIR" "$MANIFEST_PATH"
 
 # 3. Create Bundle
 acore_log_section "🎁  Creating Flatpak Bundle..."
