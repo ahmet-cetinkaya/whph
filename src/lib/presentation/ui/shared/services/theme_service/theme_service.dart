@@ -419,53 +419,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   Future<Brightness> _getSystemBrightness() async {
     try {
       if (Platform.isLinux) {
-        // 1. Try GNOME (gsettings)
-        try {
-          final result = await Process.run(
-            'gsettings',
-            ['get', 'org.gnome.desktop.interface', 'color-scheme'],
-          );
-          if (result.exitCode == 0) {
-            final output = result.stdout.toString().trim();
-            if (output.contains('prefer-dark')) {
-              return Brightness.dark;
-            } else if (output.contains('default') || output.contains('prefer-light')) {
-              return Brightness.light;
-            }
-          }
-        } catch (e) {
-          _logger.debug('Failed to detect GNOME theme: $e');
-        }
-
-        // 2. Try KDE (kreadconfig)
-        try {
-          // Check kdeglobals for [Colors:Window] BackgroundNormal
-          // Or simpler: check [General] ColorScheme
-          // kreadconfig5 or kreadconfig6
-          for (final cmd in ['kreadconfig6', 'kreadconfig5']) {
-            final result = await Process.run(
-              cmd,
-              ['--group', 'General', '--key', 'ColorScheme'],
-            );
-            if (result.exitCode == 0) {
-              final output = result.stdout.toString().trim().toLowerCase();
-              if (output.isNotEmpty) {
-                // Common dark themes often have "Dark" or "Black" in the name
-                if (output.contains('dark') || output.contains('black')) {
-                  return Brightness.dark;
-                }
-                // If we found a scheme but it's not obviously dark, assume light?
-                // Or maybe we should check BackgroundNormal color...
-                // Let's try a safer check if possible, but for now this is a reasonable heuristic
-                return Brightness.light;
-              }
-            }
-          }
-        } catch (e) {
-          _logger.debug('Failed to detect KDE theme: $e');
-        }
-
-        // 3. Try Freedesktop Portal (DBus) - Universal
+        // 1. Try Freedesktop Portal (DBus) - Universal & Flatpak-friendly
         try {
           // dbus-send --session --print-reply=literal --dest=org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read string:'org.freedesktop.appearance' string:'color-scheme'
           // Returns: variant       uint32 1 (1 = Dark, 0 = Light, 2 = No preference)
@@ -492,6 +446,52 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
           }
         } catch (e) {
           _logger.debug('Failed to detect Freedesktop Portal theme: $e');
+        }
+
+        // 2. Try GNOME (gsettings) - Fallback for non-portal environments
+        try {
+          final result = await Process.run(
+            'gsettings',
+            ['get', 'org.gnome.desktop.interface', 'color-scheme'],
+          );
+          if (result.exitCode == 0) {
+            final output = result.stdout.toString().trim();
+            if (output.contains('prefer-dark')) {
+              return Brightness.dark;
+            } else if (output.contains('default') || output.contains('prefer-light')) {
+              return Brightness.light;
+            }
+          }
+        } catch (e) {
+          _logger.debug('Failed to detect GNOME theme: $e');
+        }
+
+        // 3. Try KDE (kreadconfig) - Fallback for non-portal environments
+        try {
+          // Check kdeglobals for [Colors:Window] BackgroundNormal
+          // Or simpler: check [General] ColorScheme
+          // kreadconfig5 or kreadconfig6
+          for (final cmd in ['kreadconfig6', 'kreadconfig5']) {
+            final result = await Process.run(
+              cmd,
+              ['--group', 'General', '--key', 'ColorScheme'],
+            );
+            if (result.exitCode == 0) {
+              final output = result.stdout.toString().trim().toLowerCase();
+              if (output.isNotEmpty) {
+                // Common dark themes often have "Dark" or "Black" in the name
+                if (output.contains('dark') || output.contains('black')) {
+                  return Brightness.dark;
+                }
+                // If we found a scheme but it's not obviously dark, assume light?
+                // Or maybe we should check BackgroundNormal color...
+                // Let's try a safer check if possible, but for now this is a reasonable heuristic
+                return Brightness.light;
+              }
+            }
+          }
+        } catch (e) {
+          _logger.debug('Failed to detect KDE theme: $e');
         }
       }
 
