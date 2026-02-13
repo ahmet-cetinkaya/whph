@@ -15,7 +15,7 @@ WHPH is a productivity application that helps you manage tasks, develop habits, 
 
 ## Required Runtime Dependencies
 
-### Arch Linux (Recommended for KDE users)
+### Arch Linux
 
 Package can be installed from [AUR](https://aur.archlinux.org/packages/whph-bin)
 
@@ -126,7 +126,7 @@ chmod +x whph
 
 ## Desktop Environment Specific Notes
 
-### KDE Plasma (Recommended for Arch Linux users)
+### KDE Plasma
 
 - System tray integration works out of the box
 - Window detection uses native KDE tools
