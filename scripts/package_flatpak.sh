@@ -16,12 +16,12 @@ SRC_DIR="$PROJECT_ROOT/src"
 acore_log_header "FLATPAK PACKAGING"
 
 # Check dependencies
-if ! command -v flatpak-builder &> /dev/null; then
+if ! command -v flatpak-builder &>/dev/null; then
     acore_log_error "flatpak-builder is not installed. Please install it first."
     exit 1
 fi
 
-if ! command -v flatpak &> /dev/null; then
+if ! command -v flatpak &>/dev/null; then
     acore_log_error "flatpak is not installed. Please install it first."
     exit 1
 fi
@@ -40,9 +40,9 @@ ICON_FILE="$BUNDLE_DIR/share/icons/hicolor/512x512/apps/whph.png"
 # Resize icon to 512x512 if it exists and is larger
 if [[ -f "$ICON_FILE" ]]; then
     acore_log_info "Check/Resizing icon to 512x512..."
-    if command -v magick &> /dev/null; then
+    if command -v magick &>/dev/null; then
         magick "$ICON_FILE" -resize 512x512! "$ICON_FILE" || acore_log_warning "Failed to resize icon."
-    elif command -v convert &> /dev/null; then
+    elif command -v convert &>/dev/null; then
         convert "$ICON_FILE" -resize 512x512! "$ICON_FILE" || acore_log_warning "Failed to resize icon."
     else
         acore_log_warning "ImageMagick not found. Skipping icon resizing."
@@ -60,6 +60,29 @@ if [[ -f "$DESKTOP_FILE" ]]; then
     sed -i 's|^Version=.*|Version=1.0|' "$DESKTOP_FILE"
     # Fix Categories to standard ones (remove non-standard ones that cause validation errors)
     sed -i 's|^Categories=.*|Categories=Utility;Office;|' "$DESKTOP_FILE"
+fi
+
+# Resize and Rename Dynamic Tray Icons
+TRAY_ICON_SRC="$SRC_DIR/lib/core/domain/shared/assets/images"
+TARGET_ICON_DIR="$BUNDLE_DIR/share/icons/hicolor/512x512/apps"
+
+if [[ -d "$TRAY_ICON_SRC" ]]; then
+    acore_log_info "Processing dynamic tray icons..."
+
+    # Process Play Icon
+    if [[ -f "$TRAY_ICON_SRC/whph_logo_fg_play.png" ]]; then
+        cp "$TRAY_ICON_SRC/whph_logo_fg_play.png" "$TARGET_ICON_DIR/me.ahmetcetinkaya.whph.play.png"
+    fi
+
+    # Process Pause Icon
+    if [[ -f "$TRAY_ICON_SRC/whph_logo_fg_pause.png" ]]; then
+        cp "$TRAY_ICON_SRC/whph_logo_fg_pause.png" "$TARGET_ICON_DIR/me.ahmetcetinkaya.whph.pause.png"
+    fi
+
+    # Process Default Adaptive Icon
+    if [[ -f "$TRAY_ICON_SRC/whph_logo_fg.png" ]]; then
+        cp "$TRAY_ICON_SRC/whph_logo_fg.png" "$TARGET_ICON_DIR/me.ahmetcetinkaya.whph.default.png"
+    fi
 fi
 
 # Patch Service File

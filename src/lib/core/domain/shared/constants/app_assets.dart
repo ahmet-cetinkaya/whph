@@ -7,7 +7,7 @@ class AppAssets {
   static const String logoAdaptiveRound = 'lib/core/domain/shared/assets/images/whph_logo_adaptive_round.png';
 
   // Tray Icons
-  static const String trayIconDefault = 'lib/core/domain/shared/assets/images/whph_logo_adaptive_fg';
+  static const String trayIconDefault = 'lib/core/domain/shared/assets/images/whph_logo_fg';
   static const String trayIconPlay = 'lib/core/domain/shared/assets/images/whph_logo_fg_play';
   static const String trayIconPause = 'lib/core/domain/shared/assets/images/whph_logo_fg_pause';
 
