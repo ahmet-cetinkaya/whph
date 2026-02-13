@@ -16,15 +16,13 @@ SRC_DIR="$PROJECT_ROOT/src"
 acore_log_header "FLATPAK PACKAGING"
 
 # Check dependencies
-if ! command -v flatpak-builder &>/dev/null; then
-    acore_log_error "flatpak-builder is not installed. Please install it first."
-    exit 1
-fi
-
-if ! command -v flatpak &>/dev/null; then
-    acore_log_error "flatpak is not installed. Please install it first."
-    exit 1
-fi
+# Check dependencies
+for cmd in flatpak-builder flatpak; do
+    if ! command -v "$cmd" &>/dev/null; then
+        acore_log_error "\"$cmd\" is not installed. Please install it first."
+        exit 1
+    fi
+done
 
 # 1. Build Flutter Linux Release
 acore_log_section "🏗️  Building Flutter Linux Release..."
@@ -52,14 +50,13 @@ fi
 # Patch Desktop File
 if [[ -f "$DESKTOP_FILE" ]]; then
     acore_log_info "Patching desktop file for Flatpak..."
-    # Fix Exec path to just the command name
-    sed -i 's|^Exec=.*|Exec=whph %U|' "$DESKTOP_FILE"
-    # Fix Icon name to match App ID
-    sed -i 's|^Icon=.*|Icon=me.ahmetcetinkaya.whph|' "$DESKTOP_FILE"
-    # Fix Version to 1.0 (Desktop Entry Spec version)
-    sed -i 's|^Version=.*|Version=1.0|' "$DESKTOP_FILE"
-    # Fix Categories to standard ones (remove non-standard ones that cause validation errors)
-    sed -i 's|^Categories=.*|Categories=Utility;Office;|' "$DESKTOP_FILE"
+    # Fix Exec path, Icon name, Version, and Categories in one go
+    sed -i \
+        -e 's|^Exec=.*|Exec=whph %U|' \
+        -e 's|^Icon=.*|Icon=me.ahmetcetinkaya.whph|' \
+        -e 's|^Version=.*|Version=1.0|' \
+        -e 's|^Categories=.*|Categories=Utility;Office;|' \
+        "$DESKTOP_FILE"
 fi
 
 # Resize and Rename Dynamic Tray Icons
