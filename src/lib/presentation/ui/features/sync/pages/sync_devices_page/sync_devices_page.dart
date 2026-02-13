@@ -302,7 +302,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
             ),
 
             // Server Mode Toggle (Android only)
-            if (Platform.isAndroid)
+            if (Platform.isAndroid) ...[
               SliverToBoxAdapter(
                 child: ServerModeToggle(
                   isServerMode: isServerMode,
@@ -313,6 +313,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                       : _translationService.translate(SyncTranslationKeys.serverModeInactive),
                 ),
               ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: AppTheme.sizeLarge),
+              ),
+            ],
 
             // Device List
             if (_list == null || _list!.items.isEmpty)
