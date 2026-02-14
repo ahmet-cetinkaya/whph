@@ -50,6 +50,8 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
 
   GetListTagsQueryResponse? _tags;
   late List<String> _tempSelectedTags;
+  final List<_TagListItem> _displayList = [];
+  final Set<String> _collapsedGroups = {};
 
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -102,6 +104,11 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
           pageSize: 10,
           search: search,
           showArchived: widget.showArchived,
+          enableGrouping: true,
+          groupBy: SortOption(
+            field: TagSortFields.type,
+            direction: SortDirection.asc,
+          ),
           sortBy: [
             SortOption(
               field: TagSortFields.name,
@@ -124,10 +131,76 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
               _tags!.items.addAll(result.items);
               _tags!.pageIndex = result.pageIndex;
             }
+            _buildDisplayList();
           });
         }
       },
     );
+  }
+
+  void _buildDisplayList() {
+    _displayList.clear();
+
+    // 1. None Option
+    if (widget.showNoneOption) {
+      const specialFiltersKey = SharedTranslationKeys.specialFiltersLabel;
+      final isCollapsed = _collapsedGroups.contains(specialFiltersKey);
+
+      _displayList.add(_TagListItem.header(
+        _translationService.translate(specialFiltersKey),
+        id: specialFiltersKey,
+        isCollapsed: isCollapsed,
+      ));
+
+      if (!isCollapsed) {
+        _displayList.add(_TagListItem.noneOption());
+      }
+    }
+
+    // 2. Create Tag Option
+    if (_shouldShowCreateOption) {
+      _displayList.add(_TagListItem.createOption());
+    }
+
+    // 3. Tags Grouped
+    if (_tags != null && _tags!.items.isNotEmpty) {
+      String? currentGroup;
+
+      for (var tag in _tags!.items) {
+        if (tag.groupName != currentGroup) {
+          currentGroup = tag.groupName;
+          final groupKey = currentGroup ?? TagTranslationKeys.otherCategory;
+          final isCollapsed = _collapsedGroups.contains(groupKey);
+
+          final groupName = tag.isGroupNameTranslatable && currentGroup != null
+              ? _translationService.translate(currentGroup)
+              : currentGroup ?? _translationService.translate(TagTranslationKeys.otherCategory);
+
+          _displayList.add(_TagListItem.header(
+            groupName,
+            id: groupKey,
+            isCollapsed: isCollapsed,
+          ));
+        }
+
+        // Add tag only if its group is not collapsed
+        final groupKey = currentGroup ?? TagTranslationKeys.otherCategory;
+        if (!_collapsedGroups.contains(groupKey)) {
+          _displayList.add(_TagListItem.tag(tag));
+        }
+      }
+    }
+  }
+
+  void _toggleGroupCollapse(String groupId) {
+    setState(() {
+      if (_collapsedGroups.contains(groupId)) {
+        _collapsedGroups.remove(groupId);
+      } else {
+        _collapsedGroups.add(groupId);
+      }
+      _buildDisplayList();
+    });
   }
 
   void _scrollListener() {
@@ -212,6 +285,7 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
 
                     setState(() {
                       _tags = null;
+                      _displayList.clear();
                     });
 
                     if (value.isEmpty) {
@@ -234,132 +308,119 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
                 child: ListView.builder(
                   controller: _scrollController,
                   keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  itemCount: (_tags?.items.length ?? 0) +
-                      (widget.showNoneOption ? 2 : 0) +
-                      (_shouldShowCreateOption ? 1 : 0) +
-                      1,
+                  itemCount: _displayList.length,
                   itemBuilder: (context, index) {
-                    int currentIndex = 0;
+                    final item = _displayList[index];
 
-                    // 1. None Option Header and Item
-                    if (widget.showNoneOption) {
-                      if (index == currentIndex) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                          child: Text(
-                            _translationService.translate(SharedTranslationKeys.specialFiltersLabel),
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                  color: Colors.grey,
+                    if (item.isHeader) {
+                      return InkWell(
+                        onTap: () => _toggleGroupCollapse(item.id!),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  item.headerText!,
+                                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                 ),
-                          ),
-                        );
-                      }
-                      currentIndex++;
-                      if (index == currentIndex) {
-                        return CheckboxListTile(
-                          title: Text(
-                            _translationService.translate(SharedTranslationKeys.noneOption),
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          value: _hasExplicitlySelectedNone,
-                          onChanged: (bool? value) {
-                            if (!mounted) return;
-                            setState(() {
-                              if (value == true) {
-                                _tempSelectedTags.clear();
-                                _hasExplicitlySelectedNone = true;
-                              } else {
-                                _hasExplicitlySelectedNone = false;
-                              }
-                            });
-                          },
-                        );
-                      }
-                      currentIndex++;
-                    }
-
-                    // 2. Tags Header
-                    if (index == currentIndex) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Text(
-                          _translationService.translate(TagTranslationKeys.tagsLabel),
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                color: Colors.grey,
                               ),
+                              Icon(
+                                item.isCollapsed ? Icons.expand_more : Icons.expand_less,
+                                color: Colors.grey,
+                                size: 20,
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }
-                    currentIndex++;
 
-                    // 3. Create Tag Option
-                    if (_shouldShowCreateOption) {
-                      if (index == currentIndex) {
-                        return ListTile(
-                          leading: const Icon(Icons.add, color: AppTheme.successColor),
-                          title: Text(
-                            _translationService.translate(
-                              TagTranslationKeys.createTagButton,
-                              namedArgs: {'name': _searchController.text.trim()},
-                            ),
-                            style: const TextStyle(color: AppTheme.successColor, fontWeight: FontWeight.bold),
-                          ),
-                          onTap: _createAndSelectTag,
-                        );
-                      }
-                      currentIndex++;
-                    }
-
-                    // 4. Tag Items
-                    final actualIndex = index - currentIndex;
-
-                    if (_tags == null || actualIndex < 0 || actualIndex >= _tags!.items.length) {
-                      return const SizedBox.shrink();
-                    }
-
-                    final tag = _tags!.items[actualIndex];
-                    return CheckboxListTile(
-                      title: Row(
-                        children: [
-                          Icon(
-                            TagUiConstants.getTagTypeIcon(tag.type),
-                            size: AppTheme.iconSizeSmall,
-                            color: TagUiConstants.getTagColor(tag.color),
-                          ),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(tag.name.isNotEmpty
-                                ? tag.name
-                                : _translationService.translate(SharedTranslationKeys.untitled)),
-                          ),
-                        ],
-                      ),
-                      value: _tempSelectedTags.contains(tag.id),
-                      onChanged: (bool? value) {
-                        if (!mounted) return;
-                        setState(() {
-                          if (value == true && _hasExplicitlySelectedNone) {
-                            _hasExplicitlySelectedNone = false;
-                          }
-
-                          if (widget.isMultiSelect) {
+                    if (item.isNoneOption) {
+                      return CheckboxListTile(
+                        title: Text(
+                          _translationService.translate(SharedTranslationKeys.noneOption),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        value: _hasExplicitlySelectedNone,
+                        onChanged: (bool? value) {
+                          if (!mounted) return;
+                          setState(() {
                             if (value == true) {
-                              if (widget.limit != null && _tempSelectedTags.length >= widget.limit!) {
-                                _tempSelectedTags.removeAt(0);
-                              }
-                              _tempSelectedTags.add(tag.id);
+                              _tempSelectedTags.clear();
+                              _hasExplicitlySelectedNone = true;
                             } else {
-                              _tempSelectedTags.remove(tag.id);
+                              _hasExplicitlySelectedNone = false;
                             }
-                          } else {
-                            _tempSelectedTags.clear();
-                            if (value == true) {
-                              _tempSelectedTags.add(tag.id);
+                          });
+                        },
+                      );
+                    }
+
+                    if (item.isCreateOption) {
+                      return ListTile(
+                        leading: const Icon(Icons.add, color: AppTheme.successColor),
+                        title: Text(
+                          _translationService.translate(
+                            TagTranslationKeys.createTagButton,
+                            namedArgs: {'name': _searchController.text.trim()},
+                          ),
+                          style: const TextStyle(color: AppTheme.successColor, fontWeight: FontWeight.bold),
+                        ),
+                        onTap: _createAndSelectTag,
+                      );
+                    }
+
+                    if (item.tag != null) {
+                      final tag = item.tag!;
+                      return CheckboxListTile(
+                        title: Row(
+                          children: [
+                            Icon(
+                              TagUiConstants.getTagTypeIcon(tag.type),
+                              size: AppTheme.iconSizeSmall,
+                              color: TagUiConstants.getTagColor(tag.color),
+                            ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(tag.name.isNotEmpty
+                                  ? tag.name
+                                  : _translationService.translate(SharedTranslationKeys.untitled)),
+                            ),
+                          ],
+                        ),
+                        value: _tempSelectedTags.contains(tag.id),
+                        onChanged: (bool? value) {
+                          if (!mounted) return;
+                          setState(() {
+                            if (value == true && _hasExplicitlySelectedNone) {
+                              _hasExplicitlySelectedNone = false;
                             }
-                          }
-                        });
-                      },
-                    );
+
+                            if (widget.isMultiSelect) {
+                              if (value == true) {
+                                if (widget.limit != null && _tempSelectedTags.length >= widget.limit!) {
+                                  _tempSelectedTags.removeAt(0);
+                                }
+                                _tempSelectedTags.add(tag.id);
+                              } else {
+                                _tempSelectedTags.remove(tag.id);
+                              }
+                            } else {
+                              _tempSelectedTags.clear();
+                              if (value == true) {
+                                _tempSelectedTags.add(tag.id);
+                              }
+                            }
+                          });
+                        },
+                      );
+                    }
+
+                    return const SizedBox.shrink();
                   },
                 ),
               ),
@@ -405,6 +466,7 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
             _tempSelectedTags.add(result.id);
             _searchController.clear();
             _tags = null; // Refresh list to include new tag
+            _displayList.clear();
           });
         }
         if (mounted) {
@@ -412,5 +474,41 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
         }
       },
     );
+  }
+}
+
+class _TagListItem {
+  final TagListItem? tag;
+  final String? headerText;
+  final String? id; // Group ID for headers
+  final bool isHeader;
+  final bool isNoneOption;
+  final bool isCreateOption;
+  final bool isCollapsed;
+
+  _TagListItem._({
+    this.tag,
+    this.headerText,
+    this.id,
+    this.isHeader = false,
+    this.isNoneOption = false,
+    this.isCreateOption = false,
+    this.isCollapsed = false,
+  });
+
+  factory _TagListItem.tag(TagListItem tag) {
+    return _TagListItem._(tag: tag);
+  }
+
+  factory _TagListItem.header(String text, {required String id, bool isCollapsed = false}) {
+    return _TagListItem._(headerText: text, id: id, isHeader: true, isCollapsed: isCollapsed);
+  }
+
+  factory _TagListItem.noneOption() {
+    return _TagListItem._(isNoneOption: true);
+  }
+
+  factory _TagListItem.createOption() {
+    return _TagListItem._(isCreateOption: true);
   }
 }
