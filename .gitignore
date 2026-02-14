@@ -31,3 +31,9 @@ PROJECT_INDEX.md
 .temp/
 core.[0-9]*
 **/.flutter-plugins-dependencies
+
+# Flatpak
+.flatpak-builder/
+build-dir/
+*.flatpak
+repo/

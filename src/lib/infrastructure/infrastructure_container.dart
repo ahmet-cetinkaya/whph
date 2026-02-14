@@ -57,6 +57,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_serv
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/infrastructure/desktop/features/system_tray/desktop_system_tray_service.dart';
+import 'package:whph/infrastructure/linux/features/system_tray/flatpak_system_tray_service.dart';
 import 'package:whph/infrastructure/mobile/features/notification/mobile_notification_service.dart';
 import 'package:whph/infrastructure/android/features/setup/android_setup_service.dart';
 import 'package:whph/infrastructure/android/features/file_system/android_file_service.dart';
@@ -106,8 +107,18 @@ void registerInfrastructure(IContainer container) {
     return WindowManager();
   });
 
-  container.registerSingleton<ISystemTrayService>(
-      (_) => (PlatformUtils.isMobile) ? MobileSystemTrayService() : DesktopSystemTrayService());
+  container.registerSingleton<ISystemTrayService>((_) {
+    if (PlatformUtils.isMobile) {
+      return MobileSystemTrayService();
+    }
+
+    // Check for Flatpak environment on Linux
+    if (Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID')) {
+      return FlatpakSystemTrayService();
+    }
+
+    return DesktopSystemTrayService();
+  });
 
   // Register single instance service (desktop only)
   if (PlatformUtils.isDesktop) {

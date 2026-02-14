@@ -8,7 +8,7 @@
 #include <flutter/method_channel.h>
 #include <flutter/standard_method_codec.h>
 
-FlutterWindow::FlutterWindow(const flutter::DartProject& project)
+FlutterWindow::FlutterWindow(const flutter::DartProject &project)
     : project_(project) {}
 
 FlutterWindow::~FlutterWindow() {}
@@ -33,10 +33,10 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
-  
+
   // Setup method channel for app usage
   SetupMethodChannel();
-  
+
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   if (start_minimized_) {
@@ -48,18 +48,17 @@ bool FlutterWindow::OnCreate() {
       if (hwnd) {
         // Set window state without showing it first
         // This avoids any brief flicker on startup
-        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, 
+        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-        
+
         // Use SW_SHOWMINNOACTIVE to minimize without activation
         // This ensures the window doesn't steal focus from other applications
         ShowWindow(hwnd, SW_SHOWMINNOACTIVE);
       }
     });
   } else {
-    flutter_controller_->engine()->SetNextFrameCallback([&]() {
-      this->Show();
-    });
+    flutter_controller_->engine()->SetNextFrameCallback(
+        [&]() { this->Show(); });
   }
 
   // Flutter can complete the first frame before the "show window" callback is
@@ -93,9 +92,9 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
   }
 
   switch (message) {
-    case WM_FONTCHANGE:
-      flutter_controller_->engine()->ReloadSystemFonts();
-      break;
+  case WM_FONTCHANGE:
+    flutter_controller_->engine()->ReloadSystemFonts();
+    break;
   }
 
   return Win32Window::MessageHandler(hwnd, message, wparam, lparam);
@@ -103,19 +102,22 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
 
 void FlutterWindow::SetupMethodChannel() {
   auto messenger = flutter_controller_->engine()->messenger();
-  
-  auto channel = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-      messenger, APP_USAGE_CHANNEL,
-      &flutter::StandardMethodCodec::GetInstance());
-      
-  channel->SetMethodCallHandler([](const flutter::MethodCall<flutter::EncodableValue>& call,
-                                 std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
-    if (call.method_name().compare("getActiveWindow") == 0) {
-      WindowInfo info = WindowsWindowDetector::GetActiveWindow();
-      std::string response = info.title + "," + info.application;
-      result->Success(flutter::EncodableValue(response));
-    } else {
-      result->NotImplemented();
-    }
-  });
+
+  auto channel =
+      std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+          messenger, APP_USAGE_CHANNEL,
+          &flutter::StandardMethodCodec::GetInstance());
+
+  channel->SetMethodCallHandler(
+      [](const flutter::MethodCall<flutter::EncodableValue> &call,
+         std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>
+             result) {
+        if (call.method_name().compare("getActiveWindow") == 0) {
+          WindowInfo info = WindowsWindowDetector::GetActiveWindow();
+          std::string response = info.title + "," + info.application;
+          result->Success(flutter::EncodableValue(response));
+        } else {
+          result->NotImplemented();
+        }
+      });
 }

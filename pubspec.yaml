@@ -48,6 +48,7 @@ scripts:
 
   # Build Releases
   release:linux: cd src && fvm flutter build linux --release
+  release:linux:flatpak: bash scripts/package_flatpak.sh
   release:windows: cd src && fvm flutter build windows --release
   release:windows:setup: cd src && fvm flutter build windows --release && ISCC.exe windows\\setup-wizard\\installer.iss
   release:android: cd src && fvm flutter build apk --release

@@ -490,4 +490,52 @@ class RecurrenceConfiguration {
       fromPolicy: _deserializeEnum(RecurrenceFromPolicy.values, json['fromPolicy'], RecurrenceFromPolicy.plannedDate),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RecurrenceConfiguration) return false;
+
+    bool listEquals<T>(List<T>? a, List<T>? b) {
+      if (a == null) return b == null;
+      if (b == null || a.length != b.length) return false;
+      for (int i = 0; i < a.length; i++) {
+        if (a[i] != b[i]) return false;
+      }
+      return true;
+    }
+
+    return other.frequency == frequency &&
+        other.interval == interval &&
+        listEquals(other.daysOfWeek, daysOfWeek) &&
+        listEquals(other.weeklySchedule, weeklySchedule) &&
+        other.monthlyPatternType == monthlyPatternType &&
+        other.dayOfMonth == dayOfMonth &&
+        other.weekOfMonth == weekOfMonth &&
+        other.dayOfWeek == dayOfWeek &&
+        other.monthOfYear == monthOfYear &&
+        other.endCondition == endCondition &&
+        other.endDate == endDate &&
+        other.occurrenceCount == occurrenceCount &&
+        other.fromPolicy == fromPolicy;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      frequency,
+      interval,
+      Object.hashAll(daysOfWeek ?? []),
+      Object.hashAll(weeklySchedule ?? []),
+      monthlyPatternType,
+      dayOfMonth,
+      weekOfMonth,
+      dayOfWeek,
+      monthOfYear,
+      endCondition,
+      endDate,
+      occurrenceCount,
+      fromPolicy,
+    );
+  }
 }
