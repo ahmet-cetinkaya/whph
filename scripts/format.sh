@@ -44,10 +44,11 @@ YAML_FILES_LIST=$(mktemp)
 MD_FILES_LIST=$(mktemp)
 SHELL_FILES_LIST=$(mktemp)
 KOTLIN_FILES_LIST=$(mktemp)
+CPP_FILES_LIST=$(mktemp)
 
 # Cleanup function
 cleanup() {
-    rm -f "$DART_FILES_LIST" "$JSON_FILES_LIST" "$YAML_FILES_LIST" "$MD_FILES_LIST" "$SHELL_FILES_LIST" "$KOTLIN_FILES_LIST"
+    rm -f "$DART_FILES_LIST" "$JSON_FILES_LIST" "$YAML_FILES_LIST" "$MD_FILES_LIST" "$SHELL_FILES_LIST" "$KOTLIN_FILES_LIST" "$CPP_FILES_LIST"
 }
 trap cleanup EXIT
 
@@ -59,6 +60,7 @@ find . \( \
     -o \( -name "*.yaml" -o -name "*.yml" \) \
     -o \( -name "*.md" \) \
     -o \( -name "*.kt" -o -name "*.kts" \) \
+    -o \( -name "*.cpp" -o -name "*.h" \) \
     \) "${EXCLUDES[@]}" | while IFS= read -r file; do
     case "$file" in
     *.dart) echo "$file" >>"$DART_FILES_LIST" ;;
@@ -66,6 +68,7 @@ find . \( \
     *.yaml | *.yml) echo "$file" >>"$YAML_FILES_LIST" ;;
     *.md) echo "$file" >>"$MD_FILES_LIST" ;;
     *.kt | *.kts) echo "$file" >>"$KOTLIN_FILES_LIST" ;;
+    *.cpp | *.h) echo "$file" >>"$CPP_FILES_LIST" ;;
     esac
 done
 
@@ -195,6 +198,27 @@ if [[ $KOTLIN_COUNT -gt 0 ]]; then
     fi
 else
     acore_log_info "No Kotlin files found to format"
+fi
+
+# 🛠️ C++ Formatting with clang-format
+acore_log_section "🛠️ Formatting C++ files with clang-format..."
+CPP_COUNT=$(wc -l <"$CPP_FILES_LIST" 2>/dev/null || echo "0")
+if [[ $CPP_COUNT -gt 0 ]]; then
+    acore_log_info "Found $CPP_COUNT C++ files to format"
+
+    if command -v clang-format >/dev/null 2>&1; then
+        acore_log_info "🔧 Using clang-format for C++ formatting..."
+        # Convert relative paths to absolute and run clang-format
+        sed "s|^\.|$SRC_DIR|" "$CPP_FILES_LIST" | xargs clang-format -i || {
+            acore_log_warning "⚠️ clang-format encountered some issues (continuing...)"
+        }
+        acore_log_success "✅ C++ files formatted"
+    else
+        acore_log_warning "⚠️ clang-format not found - skipping C++ formatting"
+        acore_log_warning "Install with: sudo apt install clang-format"
+    fi
+else
+    acore_log_info "No C++ files found to format"
 fi
 
 acore_log_success "✅ All files have been formatted successfully!"

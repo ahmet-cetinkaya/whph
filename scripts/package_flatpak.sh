@@ -18,10 +18,10 @@ acore_log_header "FLATPAK PACKAGING"
 SKIP_BUILD=false
 for arg in "$@"; do
     case $arg in
-        --skip-build)
-            SKIP_BUILD=true
-            shift
-            ;;
+    --skip-build)
+        SKIP_BUILD=true
+        shift
+        ;;
     esac
 done
 
@@ -52,10 +52,10 @@ ICON_FILE="$BUNDLE_DIR/share/icons/hicolor/512x512/apps/whph.png"
 # Resize icon to standard Flathub sizes (64, 128, 512)
 if [[ -f "$ICON_FILE" ]]; then
     acore_log_info "Generating standard icon sizes (64, 128, 512)..."
-    
+
     # Define sizes
     SIZES=(64 128 512)
-    
+
     # Determine resize tool
     RESIZE_CMD=""
     if command -v magick &>/dev/null; then
@@ -71,7 +71,7 @@ if [[ -f "$ICON_FILE" ]]; then
             SIZE_DIR="$BUNDLE_DIR/share/icons/hicolor/${size}x${size}/apps"
             mkdir -p "$SIZE_DIR"
             TARGET_FILE="$SIZE_DIR/whph.png"
-            
+
             acore_log_info "Generating ${size}x${size} icon..."
             "$RESIZE_CMD" "$ICON_FILE" -resize "${size}x${size}!" "$TARGET_FILE" || acore_log_warning "Failed to resize icon to ${size}x${size}."
         done
@@ -114,10 +114,10 @@ if [[ -d "$TRAY_ICON_SRC" ]]; then
 fi
 
 # Patch Service File
-    SERVICE_FILE="$BUNDLE_DIR/share/dbus-1/services/whph.service"
-    if [[ -f "$SERVICE_FILE" ]]; then
-        acore_log_info "Patching service file for Flatpak..."
-        sed -i 's|^Exec=.*|Exec=/app/bin/whph|' "$SERVICE_FILE"
+SERVICE_FILE="$BUNDLE_DIR/share/dbus-1/services/whph.service"
+if [[ -f "$SERVICE_FILE" ]]; then
+    acore_log_info "Patching service file for Flatpak..."
+    sed -i 's|^Exec=.*|Exec=/app/bin/whph|' "$SERVICE_FILE"
 fi
 
 # 2. Build Flatpak
