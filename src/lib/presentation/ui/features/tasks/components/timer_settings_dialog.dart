@@ -276,6 +276,18 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
           icon: const Icon(Icons.arrow_back),
         ),
         automaticallyImplyLeading: false,
+        actions: [
+          TextButton(
+            onPressed: _onClose,
+            child: Text(
+              _translationService.translate(SharedTranslationKeys.doneButton),
+              style: AppTheme.labelLarge.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
