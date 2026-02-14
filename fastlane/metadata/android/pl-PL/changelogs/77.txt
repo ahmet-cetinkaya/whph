@@ -1,0 +1,8 @@
+• Ikony Etykiet - Etykiety pokazują ikony
+• Zwijalne Grupowanie - Zwiń/rozwiń elementy
+• Przycisk Gotowe - Ustawienia mają przycisk gotowe
+• Zmiana Motywu Linux - Aplikacja dopasowuje
+• Obsługa Flatpak - Łatwiejsza instalacja
+• Ikona Zasobnika - Ikona w zasobniku
+• Powiadomienia Dźwiękowe - Dźwięk działa na Linux
+• Poprawki Błędów

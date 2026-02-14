@@ -1,0 +1,8 @@
+• Tag Icons - Tags show icons for quick identification
+• Collapsible Grouping - Collapse/expand items
+• Timer Dialog Done Button - Timer settings has done button
+• Linux Theme Auto-Switch - App matches your desktop theme
+• Linux Flatpak Support - Easier installation
+• System Tray Icon - App icon in system tray for access
+• Audio Notifications - Audio works on Linux
+• Bug Fixes

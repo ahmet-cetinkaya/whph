@@ -1,0 +1,8 @@
+• Ícones de Etiquetas - Etiquetas mostram ícones
+• Agrupamento Retrátil - Recolha/expanda itens
+• Botão Concluído - Configurações tem botão concluído
+• Alternância de Tema Linux - App corresponde ao tema
+• Suporte Flatpak - Instalação mais fácil
+• Ícone da Bandeja - Ícone para acesso rápido
+• Notificações de Áudio - Áudio funciona no Linux
+• Correções de Bugs

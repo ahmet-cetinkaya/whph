@@ -1,0 +1,8 @@
+• Ikonky Štítků - Štítky ukazují ikony
+• Sbalitelné Seskupení - Sbalte/rozbalte položky
+• Tlačítko Hotovo - Nastavení má tlačítko hotovo
+• Přepínání Motivu Linux - App odpovídá motivu
+• Podpora Flatpak - Snadnější instalace
+• Ikonka v Oznamovací Oblasti - Ikona pro rychlý přístup
+• Zvuková Oznámení - Zvuk funguje na Linuxu
+• Opravy Chyb

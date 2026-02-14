@@ -1,0 +1,8 @@
+• Taggikoner - Taggar visar ikoner
+• Sammanfällbar Gruppering - Fäll ihop/expandera objekt
+• Klar-knapp i Timerdialog - Har klar-knapp
+• Linux-temabyte - App matchar ditt tema
+• Flatpak-stöd - Enklare installation
+• Systemfältets ikon - Ikon för åtkomst
+• Ljudaviseringar - Ljud fungerar på Linux
+• Buggfixar

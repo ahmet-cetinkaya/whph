@@ -1,0 +1,8 @@
+• Tunnisteikonit - Tunnisteet näyttävät kuvakkeita
+• Laskostettava Ryhmittely - Listoissa kohteet laskost/laajenna
+• Valmis-painike - Aikavalintaikkunassa on Valmis-painike
+• Linux-teeman Vaihto - Sovellus sopii työpöytän teemaan
+• Linux Flatpak-tuki - Helpompi asennus
+• Ilmoitusalueen Kuvake - Kuvake ilmoitusalueella
+• Äänihuomautukset - Ääni toimii Linuxissa
+• Virhekorjaukset

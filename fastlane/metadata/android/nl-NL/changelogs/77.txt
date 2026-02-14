@@ -1,0 +1,8 @@
+• Tagsymbolen - Tags tonen symbolen
+• Inklapbare Groepering - Klappen items uit
+• Klaar-knop in Timerdialoog - Heeft klaar-knop
+• Linux-themawissel - App past aan thema
+• Flatpak-ondersteuning - Makkelijker installatie
+• Systeemlade-pictogram - Pictogram voor toegang
+• Audiomeldingen - Audio werkt op Linux
+• Bugfixes

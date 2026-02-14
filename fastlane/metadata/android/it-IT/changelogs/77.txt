@@ -1,0 +1,8 @@
+• Icone Etichette - Etichette mostrano icone
+• Raggruppamento - Comprimi/espandi elementi
+• Pulsante Fatto - Impostazioni hanno pulsante fatto
+• Cambio Tema Linux - App corrisponde al tema
+• Supporto Flatpak - Installazione più facile
+• Icona Cassetto - Icona per accesso rapido
+• Notifiche Audio - Audio funziona su Linux
+• Correzioni di Bug

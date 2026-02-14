@@ -1,0 +1,8 @@
+• Etiket İkonları - Etiketler ikonlarla hızlı tanıma
+• Daraltılabilir Gruplama - Listelerde öğeleri daralt/genişlet
+• Tamam Butonu - Zamanlayıcı ayarlarında tamam butonu
+• Linux Tema Değiştirme - Uygulama masaüstü temasına uyum
+• Linux Flatpak Desteği - Daha kolay kurulum
+• Sistem Tepsisi İkonu - Sistem tepsisinde hızlı erişim
+• Ses Bildirimleri - Ses Linux'ta çalışıyor
+• Hata Düzeltmeleri

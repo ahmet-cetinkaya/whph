@@ -1,0 +1,8 @@
+• Iconos de Etiquetas - Etiquetas muestran iconos
+• Agrupamiento Colapsable - Contrae/expande elementos
+• Botón Listo en Diálogo - Configuración tiene botón listo
+• Cambio de Tema Linux - App coincide con tema
+• Soporte Flatpak - Instalación más fácil
+• Icono en Bandeja - Icono para acceso rápido
+• Notificaciones de Audio - Audio funciona en Linux
+• Correcciones de Errores

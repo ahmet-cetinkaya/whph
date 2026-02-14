@@ -1,0 +1,8 @@
+• Merkeikoner - Merker viser ikoner
+• Sammenfoldbar Gruppering - Fold sammen/utvid elementer
+• Ferdig-knapp i Timerdialog - Har ferdig-knapp
+• Linux-temabytte - App matcher tema
+• Flatpak-støtte - Enklere installasjon
+• Systemkurv-ikon - Ikon for tilgang
+• Lydvarsler - Lyd fungerer på Linux
+• Feilrettinger

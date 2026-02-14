@@ -1,0 +1,8 @@
+• Etiketikoner - Etiketter viser ikoner
+• Sammenklappelig Gruppering - Sammenfold/udvid elementer
+• Færdig-knap i Timerdialog - Timer har færdig-knap
+• Temaskiftning på Linux - App matcher dit tema
+• Flatpak-understøttelse - Nemmere installation
+• Systembakkeikon - App-ikon i systembakken
+• Lydbeskeder - Lyd fungerer på Linux
+• Fejlrettelser

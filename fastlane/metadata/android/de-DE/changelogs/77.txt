@@ -1,0 +1,8 @@
+• Schlagwort-Symbole - Schlagwörter zeigen Symbole
+• Zusammenklappbare Gruppierung - Klappen Elemente zusammen
+• Fertig-Schaltfläche - Timer haben Fertig-Schaltfläche
+• Themenwechsel Linux - App passt Ihr Desktop-Thema an
+• Flatpak-Unterstützung - Einfachere Installation
+• Systemleisten-Symbol - App-Symbol für schnellen Zugriff
+• Audiobenachrichtigungen - Audio funktioniert unter Linux
+• Fehlerbehebungen

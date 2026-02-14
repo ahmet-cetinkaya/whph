@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-02-14
+
+### Added
+- **Tag Icons**: Tags now display with icons for easier visual identification and quicker scanning
+- **Collapsible Grouping**: Collapse and expand grouped items in lists and tag selection for better organization
+- **Timer Dialog Done Button**: Timer settings dialog now has a done button to confirm your changes
+- **Linux Theme Auto-Switch**: The app automatically matches your Linux desktop's light/dark theme
+- **Linux Flatpak Support**: Easier installation on Linux distributions with improved desktop integration
+- **System Tray Icon (Linux)**: App icon now appears in the system tray for quick access
+
+### Fixed
+- **Linux Audio Support**: Audio notifications now work properly on Linux
+- **Theme Detection (Linux)**: Better automatic theme switching when your desktop environment changes
+
 ## [0.21.1] - 2026-02-13
 
 ### Added
@@ -1473,7 +1487,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.21.1...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.22.0...HEAD
+[0.22.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.0
 [0.21.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.21.1
 [0.21.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.21.0
 [0.20.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.20.4

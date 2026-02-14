@@ -1,0 +1,8 @@
+• Icônes d'Étiquettes - Étiquettes montrent icônes
+• Regroupement Réductible - Réduisez/développez éléments
+• Bouton Terminé - Dialogue a bouton terminé
+• Changement de Thème Linux - App correspond au thème
+• Prise en Charge Flatpak - Installation plus facile
+• Icône de Zone de Notification - Icône pour accès rapide
+• Notifications Audio - Audio fonctionne sur Linux
+• Corrections de Bugs
