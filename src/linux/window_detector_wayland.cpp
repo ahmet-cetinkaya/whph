@@ -41,7 +41,7 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
   std::string title_cmd =
       "gdbus call --session --dest org.gnome.Shell --object-path "
       "/org/gnome/Shell --method org.gnome.Shell.Eval "
-      "\"global.display.focus_window?.get_title()\"";
+      "\"global.display.focus_window?.get_title()\" 2>/dev/null";
   std::string title_result = ExecuteCommand(title_cmd);
 
   // Get application ID
@@ -49,7 +49,7 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
       "gdbus call --session --dest org.gnome.Shell --object-path "
       "/org/gnome/Shell --method org.gnome.Shell.Eval "
       "\"global.display.focus_window?.get_gtk_application_id() || "
-      "global.display.focus_window?.get_wm_class()\"";
+      "global.display.focus_window?.get_wm_class()\" 2>/dev/null";
   std::string app_result = ExecuteCommand(app_cmd);
 
   WindowInfo parsed = ParseGnomeEval(title_result, app_result);
