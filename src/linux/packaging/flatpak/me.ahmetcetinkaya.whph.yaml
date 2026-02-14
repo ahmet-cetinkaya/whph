@@ -16,9 +16,13 @@ finish-args:
   - --device=dri
   - --talk-name=org.kde.StatusNotifierWatcher
   - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.gnome.Shell
+  - --talk-name=org.kde.KWin
+  - --talk-name=org.kde.kwin.Scripting
   - --filesystem=xdg-config/kdeglobals:ro
   - --env=GSETTINGS_BACKEND=dconf
   - --talk-name=org.freedesktop.Settings
+  - --talk-name=org.freedesktop.Flatpak
 modules:
   - name: perl-xml-parser
     buildsystem: simple
