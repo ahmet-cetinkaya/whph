@@ -72,6 +72,10 @@ add_executable(${BINARY_NAME}
   "main.cc"
   "my_application.cc"
   "window_detector.cpp"
+  "window_utils.cpp"
+  "window_detector_x11.cpp"
+  "window_detector_wayland.cpp"
+  "window_detector_fallback.cpp"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
 )
 

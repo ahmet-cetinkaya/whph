@@ -59,41 +59,51 @@ if [ "$SKIP_CPP" = false ]; then
     acore_log_section "Running Linux C++ Tests"
     INCLUDE_DIR="$PROJECT_ROOT/src/linux"
 
-    # Find all C++ test files
-    TEST_FILES=$(find "$PROJECT_ROOT/src/test" -name "*_test.cpp")
+    # Define common source files needed for linking
+    # We compile these once or include them in the g++ command
+    COMMON_SOURCES="$PROJECT_ROOT/src/linux/window_utils.cpp $PROJECT_ROOT/src/linux/window_detector.cpp $PROJECT_ROOT/src/linux/window_detector_x11.cpp $PROJECT_ROOT/src/linux/window_detector_wayland.cpp $PROJECT_ROOT/src/linux/window_detector_fallback.cpp"
+
+    # Find all C++ test files in src/test/linux
+    # If src/test/linux doesn't exist, try src/test for backward compatibility or general tests
+    TEST_DIR="$PROJECT_ROOT/src/test/linux"
+    if [ ! -d "$TEST_DIR" ]; then
+        TEST_DIR="$PROJECT_ROOT/src/test"
+    fi
+
+    TEST_FILES=$(find "$TEST_DIR" -name "*_test.cpp")
 
     if [ -z "$TEST_FILES" ]; then
-        acore_log_warning "No C++ test files found."
+        acore_log_warning "No C++ test files found in $TEST_DIR."
     else
         for SOURCE in $TEST_FILES; do
             TEST_NAME=$(basename "$SOURCE" .cpp)
             BINARY="${SOURCE%.*}"
-            BASE_NAME=$(basename "$SOURCE" _test.cpp)
 
-            # Attempt to find the corresponding source file in src/linux
-            NATIVE_SRC=$(find "$PROJECT_ROOT/src/linux" -name "${BASE_NAME}.cpp" | head -1)
+            acore_log_info "Running $TEST_NAME..."
+            acore_log_info "Compiling $BINARY..."
 
-            if [ -n "$NATIVE_SRC" ]; then
-                acore_log_info "Running $TEST_NAME..."
-                acore_log_info "Compiling $BINARY..."
-                # shellcheck disable=SC2046
-                g++ -o "$BINARY" \
-                    "$SOURCE" \
-                    "$NATIVE_SRC" \
-                    $(pkg-config --cflags --libs glib-2.0) \
-                    -I "$INCLUDE_DIR" || {
-                    acore_log_error "C++ compilation failed for $TEST_NAME"
-                    exit 1
-                }
+            # Compile with all sources to ensure symbols are resolved
+            # We use pkg-config for glib-2.0 which is used by window_utils/detector
+            # shellcheck disable=SC2046
+            if g++ -g -o "$BINARY" \
+                "$SOURCE" \
+                $COMMON_SOURCES \
+                $(pkg-config --cflags --libs glib-2.0) \
+                -I "$INCLUDE_DIR"; then
 
                 acore_log_info "Executing $BINARY..."
-                "$BINARY" || {
+                if "$BINARY"; then
+                    acore_log_success "$TEST_NAME passed"
+                else
                     acore_log_error "C++ tests failed for $TEST_NAME"
                     exit 1
-                }
-                acore_log_success "$TEST_NAME passed"
+                fi
+
+                # Cleanup binary
+                rm -f "$BINARY"
             else
-                acore_log_warning "Could not find source file for $SOURCE, skipping."
+                acore_log_error "C++ compilation failed for $TEST_NAME"
+                exit 1
             fi
         done
     fi
