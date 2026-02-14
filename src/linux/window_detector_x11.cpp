@@ -70,8 +70,6 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
     // If application name is still unknown (e.g. running in Flatpak where /proc
     // is hidden), try to get it from WM_CLASS
     if (info.application == "unknown" || info.application.empty()) {
-      std::cerr << "[DEBUG] App name unknown from /proc, trying WM_CLASS..."
-                << std::endl;
       Atom wm_class = XInternAtom(display, "WM_CLASS", False);
       if (XGetWindowProperty(display, active_window, wm_class, 0, 1024, False,
                              XA_STRING, &actual_type, &actual_format, &nitems,
@@ -93,9 +91,6 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
           res_class = std::string(str + len + 1);
         }
 
-        std::cerr << "[DEBUG] WM_CLASS found - Name: " << res_name
-                  << ", Class: " << res_class << std::endl;
-
         XFree(prop);
 
         // Prefer class name, fallback to instance name
@@ -104,12 +99,7 @@ WindowInfo X11WindowDetector::GetActiveWindow() {
         } else if (!res_name.empty()) {
           info.application = WindowDetector::ValidateUtf8(res_name);
         }
-      } else {
-        std::cerr << "[DEBUG] Failed to get WM_CLASS property" << std::endl;
       }
-    } else {
-      std::cerr << "[DEBUG] App name found from /proc: " << info.application
-                << std::endl;
     }
   }
 

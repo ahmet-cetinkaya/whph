@@ -12,25 +12,15 @@ std::unique_ptr<WindowDetector> WindowDetector::Create() {
   const char *xdg_session_type = getenv("XDG_SESSION_TYPE");
   const char *display = getenv("DISPLAY");
 
-  std::cerr << "[DEBUG] WindowDetector::Create - WAYLAND_DISPLAY: "
-            << (wayland_display ? wayland_display : "NULL") << std::endl;
-  std::cerr << "[DEBUG] WindowDetector::Create - XDG_SESSION_TYPE: "
-            << (xdg_session_type ? xdg_session_type : "NULL") << std::endl;
-  std::cerr << "[DEBUG] WindowDetector::Create - DISPLAY: "
-            << (display ? display : "NULL") << std::endl;
-
   if ((wayland_display && strlen(wayland_display) > 0) ||
       (xdg_session_type && strcmp(xdg_session_type, "wayland") == 0)) {
-    std::cerr << "[DEBUG] Using WaylandWindowDetector" << std::endl;
     return std::make_unique<WaylandWindowDetector>();
   } else if ((display && strlen(display) > 0) ||
              (xdg_session_type && strcmp(xdg_session_type, "x11") == 0)) {
-    std::cerr << "[DEBUG] Using X11WindowDetector" << std::endl;
     return std::make_unique<X11WindowDetector>();
   }
 
   // Fallback
-  std::cerr << "[DEBUG] Using FallbackWindowDetector" << std::endl;
   return std::make_unique<FallbackWindowDetector>();
 }
 

@@ -36,8 +36,6 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
 
   // In Flatpak, pgrep won't work. Just try to call GNOME Shell via D-Bus.
   // If it fails, we assume GNOME Shell is not running or not accessible.
-  std::cerr << "[DEBUG] TryGnomeWayland: Attempting to call org.gnome.Shell..."
-            << std::endl;
 
   // Get window title
   std::string title_cmd =
@@ -45,8 +43,6 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
       "/org/gnome/Shell --method org.gnome.Shell.Eval "
       "\"global.display.focus_window?.get_title()\"";
   std::string title_result = ExecuteCommand(title_cmd);
-  std::cerr << "[DEBUG] TryGnomeWayland: Title result: " << title_result
-            << std::endl;
 
   // Get application ID
   std::string app_cmd =
@@ -55,8 +51,6 @@ WindowInfo WaylandWindowDetector::TryGnomeWayland() {
       "\"global.display.focus_window?.get_gtk_application_id() || "
       "global.display.focus_window?.get_wm_class()\"";
   std::string app_result = ExecuteCommand(app_cmd);
-  std::cerr << "[DEBUG] TryGnomeWayland: App result: " << app_result
-            << std::endl;
 
   WindowInfo parsed = ParseGnomeEval(title_result, app_result);
   if (!parsed.title.empty())
@@ -73,12 +67,8 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
   // In Flatpak, pgrep won't work.
   // Check if swaymsg is available.
   if (ExecuteCommand("which swaymsg 2>/dev/null").empty()) {
-    std::cerr << "[DEBUG] TrySwayWayland: swaymsg not found." << std::endl;
     return info;
   }
-
-  std::cerr << "[DEBUG] TrySwayWayland: Attempting to query swaymsg..."
-            << std::endl;
 
   std::string cmd = "swaymsg -t get_tree 2>/dev/null | jq -r '.. | "
                     "select(.focused? == true)' 2>/dev/null";
@@ -111,12 +101,9 @@ WindowInfo WaylandWindowDetector::TrySwayWayland() {
 }
 
 WindowInfo WaylandWindowDetector::TryKdeWayland() {
-  std::cerr << "[DEBUG] TryKdeWayland: Entry" << std::endl;
   // Priority 1: KWin Scripting (Most robust for native Wayland)
   WindowInfo info = TryKdeWaylandScript();
   if (info.application != "unknown") {
-    std::cerr << "[DEBUG] TryKdeWayland: Script success: " << info.application
-              << std::endl;
     return info;
   }
 
@@ -138,9 +125,6 @@ WindowInfo WaylandWindowDetector::TryKdeWaylandScript() {
   // Check if we are inside Flatpak by looking for flatpak-spawn
   bool has_flatpak_spawn = (system("which flatpak-spawn >/dev/null 2>&1") == 0);
   std::string prefix = has_flatpak_spawn ? "flatpak-spawn --host " : "";
-
-  std::cerr << "[DEBUG] TryKdeWaylandScript: has_flatpak_spawn="
-            << has_flatpak_spawn << std::endl;
 
   // Unique delimiter to avoid parsing issues
   std::string delim = "WHPH_KWIN_da39a3ee";
