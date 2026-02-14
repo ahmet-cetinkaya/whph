@@ -19,6 +19,7 @@ import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
+import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
 
 class NotesList extends StatefulWidget implements IPaginatedWidget {
   final String? search;
@@ -49,7 +50,7 @@ class NotesList extends StatefulWidget implements IPaginatedWidget {
   State<NotesList> createState() => NotesListState();
 }
 
-class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
+class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, ListGroupCollapseMixin<NotesList> {
   final _notesService = container.resolve<NotesService>();
   final _translationService = container.resolve<ITranslationService>();
   final _mediator = container.resolve<Mediator>();
@@ -302,10 +303,17 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList> {
           key: ValueKey('header_${note.groupName}'),
           title: note.groupName!,
           shouldTranslate: note.isGroupNameTranslatable,
+          isExpanded: !collapsedGroups.contains(note.groupName),
+          onTap: () => toggleGroupCollapse(note.groupName!),
         ));
-      } else if (i > 0) {
-        // Add separator if it's not the first item and we didn't just add a header
+      } else if (i > 0 && !(showHeaders && currentGroup != null && collapsedGroups.contains(currentGroup))) {
+        // Add separator if it's not the first item, we didn't just add a header,
+        // AND we are not skipping the current item due to collapse
         listItems.add(const SizedBox(height: AppTheme.sizeSmall));
+      }
+
+      if (showHeaders && currentGroup != null && collapsedGroups.contains(currentGroup)) {
+        continue;
       }
 
       listItems.add(Padding(

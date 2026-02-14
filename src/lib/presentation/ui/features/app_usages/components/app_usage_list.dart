@@ -19,6 +19,7 @@ import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
+import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
 
 // Sealed class for lazy-loading list items
 sealed class _ListItem {}
@@ -27,7 +28,13 @@ class _HeaderItem extends _ListItem {
   final String title;
   final bool shouldTranslate;
   final int index;
-  _HeaderItem({required this.title, required this.shouldTranslate, required this.index});
+  final bool isExpanded;
+  _HeaderItem({
+    required this.title,
+    required this.shouldTranslate,
+    required this.index,
+    required this.isExpanded,
+  });
 }
 
 class _DataItem extends _ListItem {
@@ -104,7 +111,8 @@ class AppUsageList extends StatefulWidget implements IPaginatedWidget {
   AppUsageListState createState() => AppUsageListState();
 }
 
-class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsageList> {
+class AppUsageListState extends State<AppUsageList>
+    with PaginationMixin<AppUsageList>, ListGroupCollapseMixin<AppUsageList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
@@ -304,6 +312,11 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
   }
 
   @override
+  void onGroupCollapseChanged() {
+    _buildFlattenedItems();
+  }
+
+  @override
   Future<void> onLoadMore() async {
     if (_appUsageList?.hasNext == false) return;
 
@@ -358,12 +371,17 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
           title: appUsage.groupName!,
           shouldTranslate: appUsage.isGroupNameTranslatable,
           index: i,
+          isExpanded: !collapsedGroups.contains(appUsage.groupName),
         ));
-      } else if (i > 0) {
+      } else if (i > 0 && !(showHeaders && currentGroup != null && collapsedGroups.contains(currentGroup))) {
         items.add(_SeparatorItem(
           key: ValueKey('separator_item_${appUsage.id}'),
           height: AppTheme.sizeSmall,
         ));
+      }
+
+      if (showHeaders && currentGroup != null && collapsedGroups.contains(currentGroup)) {
+        continue;
       }
 
       items.add(_DataItem(appUsage: appUsage));
@@ -408,6 +426,8 @@ class AppUsageListState extends State<AppUsageList> with PaginationMixin<AppUsag
                 key: ValueKey('header_${item.title}_${item.index}'),
                 title: item.title,
                 shouldTranslate: item.shouldTranslate,
+                isExpanded: item.isExpanded,
+                onTap: () => toggleGroupCollapse(item.title),
               ),
             _DataItem() => Padding(
                 key: ValueKey('app_usage_${item.appUsage.id}'),

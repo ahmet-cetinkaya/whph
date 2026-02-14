@@ -19,6 +19,7 @@ import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
 import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
+import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
 
 class TagsList extends StatefulWidget implements IPaginatedWidget {
   final List<String>? filterByTags;
@@ -52,7 +53,7 @@ class TagsList extends StatefulWidget implements IPaginatedWidget {
   State<TagsList> createState() => TagsListState();
 }
 
-class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
+class TagsListState extends State<TagsList> with PaginationMixin<TagsList>, ListGroupCollapseMixin<TagsList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tagsService = container.resolve<TagsService>();
@@ -237,12 +238,20 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList> {
           key: ValueKey('header_${tag.groupName}_$i'),
           title: tag.groupName!,
           shouldTranslate: tag.isGroupNameTranslatable,
+          isExpanded: !collapsedGroups.contains(tag.groupName),
+          onTap: () => toggleGroupCollapse(tag.groupName!),
         ));
+      } else if (showHeaders && currentGroup != null && collapsedGroups.contains(currentGroup)) {
+        // Skip separator if group is collapsed
       } else if (i > 0) {
         listItems.add(SizedBox(
           key: ValueKey('separator_item_${tag.id}'),
           height: AppTheme.sizeSmall, // Consistent gap
         ));
+      }
+
+      if (showHeaders && currentGroup != null && collapsedGroups.contains(currentGroup)) {
+        continue;
       }
 
       listItems.add(Padding(

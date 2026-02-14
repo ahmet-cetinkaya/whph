@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:acore/acore.dart' show SortDirection, SortOption;
+import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
 
 class TagSelectDialog extends StatefulWidget {
   final List<String> initialSelectedTags;
@@ -313,29 +314,12 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
                     final item = _displayList[index];
 
                     if (item.isHeader) {
-                      return InkWell(
+                      return ListGroupHeader(
+                        key: ValueKey('header_${item.id}'),
+                        title: item.headerText!,
+                        shouldTranslate: false,
+                        isExpanded: !item.isCollapsed,
                         onTap: () => _toggleGroupCollapse(item.id!),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  item.headerText!,
-                                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
-                              ),
-                              Icon(
-                                item.isCollapsed ? Icons.expand_more : Icons.expand_less,
-                                color: Colors.grey,
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                        ),
                       );
                     }
 

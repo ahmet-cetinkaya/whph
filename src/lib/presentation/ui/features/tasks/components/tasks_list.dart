@@ -25,6 +25,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
+import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
 
 class TaskList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
@@ -110,7 +111,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   State<TaskList> createState() => TaskListState();
 }
 
-class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
+class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, ListGroupCollapseMixin<TaskList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksService = container.resolve<TasksService>();
@@ -692,6 +693,12 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
     }
   }
 
+  @override
+  void onGroupCollapseChanged() {
+    // Invalidate visual items cache as visibility changes affects the flattened list
+    _cachedVisualItems = null;
+  }
+
   // Building the scroll view directly with independent groups
   Widget _buildContent(BuildContext context) {
     final groupedTasks = _groupTasks();
@@ -738,101 +745,104 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
                     key: ValueKey('group_header_$groupName'),
                     title: groupName,
                     shouldTranslate: groupName.length > 1,
+                    isExpanded: !collapsedGroups.contains(groupName),
+                    onTap: () => toggleGroupCollapse(groupName),
                   ),
 
                 // Nested Independent List
-                if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout)
-                  ReorderableListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    buildDefaultDragHandles: false,
-                    itemCount: tasks.length,
-                    proxyDecorator: (child, index, animation) => Material(
-                      elevation: 2,
-                      child: child,
-                    ),
-                    onReorder: (oldIndex, newIndex) {
-                      if (oldIndex < newIndex) {
-                        newIndex -= 1;
-                      }
-                      _onReorderInGroup(oldIndex, newIndex, tasks);
-                    },
-                    itemBuilder: (context, i) {
-                      final task = tasks[i];
-                      final List<Widget> trailingButtons = [];
-                      if (widget.trailingButtons != null) {
-                        trailingButtons.addAll(widget.trailingButtons!(task));
-                      }
-                      if (widget.showSelectButton) {
-                        trailingButtons.add(IconButton(
-                          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
-                          onPressed: () => widget.onSelectTask?.call(task),
-                        ));
-                      }
-                      trailingButtons.add(ReorderableDragStartListener(
-                        index: i,
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
-                          child: Icon(Icons.drag_handle, color: Colors.grey),
-                        ),
-                      ));
-
-                      return Padding(
-                          key: ValueKey('task_padding_${task.id}'),
-                          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                          child: TaskCard(
-                            key: ValueKey('task_card_${task.id}'),
-                            taskItem: task,
-                            onOpenDetails: () => widget.onClickTask(task),
-                            onCompleted:
-                                widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
-                            onScheduled: (task.isCompleted || widget.onScheduleTask == null)
-                                ? null
-                                : () => widget.onScheduleTask!(task, DateTime.now()),
-                            transparent: widget.transparentCards,
-                            trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-                            showSubTasks: widget.includeSubTasks,
-                            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                if (!collapsedGroups.contains(groupName))
+                  if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout)
+                    ReorderableListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      buildDefaultDragHandles: false,
+                      itemCount: tasks.length,
+                      proxyDecorator: (child, index, animation) => Material(
+                        elevation: 2,
+                        child: child,
+                      ),
+                      onReorder: (oldIndex, newIndex) {
+                        if (oldIndex < newIndex) {
+                          newIndex -= 1;
+                        }
+                        _onReorderInGroup(oldIndex, newIndex, tasks);
+                      },
+                      itemBuilder: (context, i) {
+                        final task = tasks[i];
+                        final List<Widget> trailingButtons = [];
+                        if (widget.trailingButtons != null) {
+                          trailingButtons.addAll(widget.trailingButtons!(task));
+                        }
+                        if (widget.showSelectButton) {
+                          trailingButtons.add(IconButton(
+                            icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                            onPressed: () => widget.onSelectTask?.call(task),
                           ));
-                    },
-                  )
-                else
-                  // Non-reorderable simple list for this group
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: tasks.length,
-                    itemBuilder: (context, i) {
-                      final task = tasks[i];
-                      final List<Widget> trailingButtons = [];
-                      if (widget.trailingButtons != null) {
-                        trailingButtons.addAll(widget.trailingButtons!(task));
-                      }
-                      if (widget.showSelectButton) {
-                        trailingButtons.add(IconButton(
-                          icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
-                          onPressed: () => widget.onSelectTask?.call(task),
+                        }
+                        trailingButtons.add(ReorderableDragStartListener(
+                          index: i,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
+                            child: Icon(Icons.drag_handle, color: Colors.grey),
+                          ),
                         ));
-                      }
 
-                      return Padding(
-                          key: ValueKey('task_padding_${task.id}'),
-                          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                          child: TaskCard(
-                            key: ValueKey('task_card_${task.id}'),
-                            taskItem: task,
-                            onOpenDetails: () => widget.onClickTask(task),
-                            onCompleted: widget.onTaskCompleted,
-                            onScheduled: (task.isCompleted || widget.onScheduleTask == null)
-                                ? null
-                                : () => widget.onScheduleTask!(task, DateTime.now()),
-                            transparent: widget.transparentCards,
-                            trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-                            showSubTasks: widget.includeSubTasks,
-                            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                        return Padding(
+                            key: ValueKey('task_padding_${task.id}'),
+                            padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                            child: TaskCard(
+                              key: ValueKey('task_card_${task.id}'),
+                              taskItem: task,
+                              onOpenDetails: () => widget.onClickTask(task),
+                              onCompleted:
+                                  widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
+                              onScheduled: (task.isCompleted || widget.onScheduleTask == null)
+                                  ? null
+                                  : () => widget.onScheduleTask!(task, DateTime.now()),
+                              transparent: widget.transparentCards,
+                              trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
+                              showSubTasks: widget.includeSubTasks,
+                              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                            ));
+                      },
+                    )
+                  else if (!collapsedGroups.contains(groupName))
+                    // Non-reorderable simple list for this group
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: tasks.length,
+                      itemBuilder: (context, i) {
+                        final task = tasks[i];
+                        final List<Widget> trailingButtons = [];
+                        if (widget.trailingButtons != null) {
+                          trailingButtons.addAll(widget.trailingButtons!(task));
+                        }
+                        if (widget.showSelectButton) {
+                          trailingButtons.add(IconButton(
+                            icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
+                            onPressed: () => widget.onSelectTask?.call(task),
                           ));
-                    },
-                  )
+                        }
+
+                        return Padding(
+                            key: ValueKey('task_padding_${task.id}'),
+                            padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                            child: TaskCard(
+                              key: ValueKey('task_card_${task.id}'),
+                              taskItem: task,
+                              onOpenDetails: () => widget.onClickTask(task),
+                              onCompleted: widget.onTaskCompleted,
+                              onScheduled: (task.isCompleted || widget.onScheduleTask == null)
+                                  ? null
+                                  : () => widget.onScheduleTask!(task, DateTime.now()),
+                              transparent: widget.transparentCards,
+                              trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
+                              showSubTasks: widget.includeSubTasks,
+                              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                            ));
+                      },
+                    )
               ],
             );
           } else if (showLoadMore) {
@@ -885,9 +895,11 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
 
     if (item is VisualItemHeader<TaskListItem>) {
       return ListGroupHeader(
-        key: ValueKey('group_header_${item.title}'),
+        key: ValueKey('group_header_${item.title}_${!collapsedGroups.contains(item.title)}'),
         title: item.title,
         shouldTranslate: item.title.length > 1,
+        isExpanded: !collapsedGroups.contains(item.title),
+        onTap: () => toggleGroupCollapse(item.title),
       );
     } else if (item is VisualItemSingle<TaskListItem>) {
       final task = item.data;
@@ -942,7 +954,20 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList> {
       groupedItems: _cachedGroupedTasks!,
     );
 
-    final visualItems = _cachedVisualItems!.cast<VisualItem<TaskListItem>>();
+    final fullVisualItems = _cachedVisualItems!.cast<VisualItem<TaskListItem>>();
+
+    // Filter items based on collapsed groups
+    final visualItems = <VisualItem<TaskListItem>>[];
+    bool isSkipping = false;
+
+    for (var item in fullVisualItems) {
+      if (item is VisualItemHeader<TaskListItem>) {
+        isSkipping = collapsedGroups.contains(item.title);
+        visualItems.add(item);
+      } else if (!isSkipping) {
+        visualItems.add(item);
+      }
+    }
     final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;

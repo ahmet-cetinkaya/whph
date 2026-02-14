@@ -7,11 +7,17 @@ import 'package:whph/main.dart';
 class ListGroupHeader extends StatelessWidget {
   final String title;
   final bool shouldTranslate;
+  final Widget? actions;
+  final VoidCallback? onTap;
+  final bool isExpanded;
 
   const ListGroupHeader({
     super.key,
     required this.title,
     this.shouldTranslate = true,
+    this.actions,
+    this.onTap,
+    this.isExpanded = true,
   });
 
   @override
@@ -27,13 +33,42 @@ class ListGroupHeader extends StatelessWidget {
       }
     }
 
+    Widget header = SectionHeader(
+      title: displayTitle,
+      trailing: Row(
+        children: [
+          const Expanded(child: Divider()),
+          if (actions != null) ...[
+            const SizedBox(width: AppTheme.sizeSmall),
+            Flexible(child: actions!),
+          ],
+          if (onTap != null) ...[
+            const SizedBox(width: AppTheme.sizeSmall),
+            Icon(
+              isExpanded ? Icons.expand_less : Icons.expand_more,
+              size: 20,
+              color: Colors.grey,
+            ),
+          ],
+        ],
+      ),
+      expandTrailing: true,
+    );
+
+    if (onTap != null) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+          child: header,
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-      child: SectionHeader(
-        title: displayTitle,
-        trailing: const Divider(),
-        expandTrailing: true,
-      ),
+      child: header,
     );
   }
 }

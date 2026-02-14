@@ -26,6 +26,7 @@ import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 import 'package:whph/presentation/ui/shared/models/visual_item.dart';
 import 'package:whph/presentation/ui/shared/utils/visual_item_utils.dart';
+import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
 
 class HabitsList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
@@ -83,7 +84,7 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
   State<HabitsList> createState() => HabitsListState();
 }
 
-class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList> {
+class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>, ListGroupCollapseMixin<HabitsList> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
@@ -667,6 +668,12 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     }
   }
 
+  @override
+  void onGroupCollapseChanged() {
+    // Invalidate visual items cache as visibility changes affects the flattened list
+    _cachedVisualItems = null;
+  }
+
   Widget _buildColumnList() {
     final groupedHabits = _groupHabits();
     if (groupedHabits.isEmpty) return const SizedBox.shrink();
@@ -697,75 +704,80 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                     key: ValueKey('header_$groupName'),
                     title: groupName,
                     shouldTranslate: groupName.length > 1,
+                    isExpanded: !collapsedGroups.contains(groupName),
+                    onTap: () => toggleGroupCollapse(groupName),
                   ),
-                if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout)
-                  ReorderableListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    buildDefaultDragHandles: false,
-                    itemCount: habits.length,
-                    proxyDecorator: (child, index, animation) => Material(
-                      elevation: 2,
-                      child: child,
-                    ),
-                    onReorder: (oldIndex, newIndex) {
-                      if (oldIndex < newIndex) {
-                        newIndex -= 1;
-                      }
-                      _onReorderInGroup(oldIndex, newIndex, habits);
-                    },
-                    itemBuilder: (context, i) {
-                      final habit = habits[i];
-                      return Padding(
-                        key: ValueKey('list_${habit.id}_$_effectiveStyle'),
-                        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 100),
-                          child: HabitCard(
-                            key: ValueKey('habit_card_${habit.id}'),
-                            habit: habit,
-                            onOpenDetails: () => widget.onClickHabit(habit),
-                            style: _effectiveStyle,
-                            dateRange: widget.dateRange,
-                            isDateLabelShowing: false,
-                            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                            showDragHandle: true,
-                            dragIndex: !habit.isArchived ? i : null,
-                            isThreeStateEnabled: widget.isThreeStateEnabled,
-                            isReverseDayOrder: widget.isReverseDayOrder,
+                if (!collapsedGroups.contains(groupName))
+                  if (widget.enableReordering &&
+                      widget.sortConfig?.useCustomOrder == true &&
+                      !widget.forceOriginalLayout)
+                    ReorderableListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      buildDefaultDragHandles: false,
+                      itemCount: habits.length,
+                      proxyDecorator: (child, index, animation) => Material(
+                        elevation: 2,
+                        child: child,
+                      ),
+                      onReorder: (oldIndex, newIndex) {
+                        if (oldIndex < newIndex) {
+                          newIndex -= 1;
+                        }
+                        _onReorderInGroup(oldIndex, newIndex, habits);
+                      },
+                      itemBuilder: (context, i) {
+                        final habit = habits[i];
+                        return Padding(
+                          key: ValueKey('list_${habit.id}_$_effectiveStyle'),
+                          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 100),
+                            child: HabitCard(
+                              key: ValueKey('habit_card_${habit.id}'),
+                              habit: habit,
+                              onOpenDetails: () => widget.onClickHabit(habit),
+                              style: _effectiveStyle,
+                              dateRange: widget.dateRange,
+                              isDateLabelShowing: false,
+                              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                              showDragHandle: true,
+                              dragIndex: !habit.isArchived ? i : null,
+                              isThreeStateEnabled: widget.isThreeStateEnabled,
+                              isReverseDayOrder: widget.isReverseDayOrder,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  )
-                else
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: habits.length,
-                    itemBuilder: (context, i) {
-                      final habit = habits[i];
-                      return Padding(
-                        key: ValueKey('list_${habit.id}_$_effectiveStyle'),
-                        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 100),
-                          child: HabitCard(
-                            key: ValueKey('habit_card_${habit.id}'),
-                            habit: habit,
-                            onOpenDetails: () => widget.onClickHabit(habit),
-                            style: _effectiveStyle,
-                            dateRange: widget.dateRange,
-                            isDateLabelShowing: false,
-                            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                            showDragHandle: false,
-                            isThreeStateEnabled: widget.isThreeStateEnabled,
-                            isReverseDayOrder: widget.isReverseDayOrder,
+                        );
+                      },
+                    )
+                  else
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: habits.length,
+                      itemBuilder: (context, i) {
+                        final habit = habits[i];
+                        return Padding(
+                          key: ValueKey('list_${habit.id}_$_effectiveStyle'),
+                          padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 100),
+                            child: HabitCard(
+                              key: ValueKey('habit_card_${habit.id}'),
+                              habit: habit,
+                              onOpenDetails: () => widget.onClickHabit(habit),
+                              style: _effectiveStyle,
+                              dateRange: widget.dateRange,
+                              isDateLabelShowing: false,
+                              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                              showDragHandle: false,
+                              isThreeStateEnabled: widget.isThreeStateEnabled,
+                              isReverseDayOrder: widget.isReverseDayOrder,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  )
+                        );
+                      },
+                    )
               ],
             );
           } else if (showLoadMore) {
@@ -867,6 +879,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         key: ValueKey('header_${item.title}'),
         title: item.title,
         shouldTranslate: item.title.length > 1,
+        isExpanded: !collapsedGroups.contains(item.title),
+        onTap: () => toggleGroupCollapse(item.title),
       );
     } else if (item is VisualItemSingle<HabitListItem>) {
       final habit = item.data;
@@ -935,6 +949,19 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       visualItems = _cachedVisualItems!.cast<VisualItem<HabitListItem>>();
     }
 
+    // Filter items based on collapsed groups
+    final filteredVisualItems = <VisualItem<HabitListItem>>[];
+    bool isSkipping = false;
+
+    for (var item in visualItems) {
+      if (item is VisualItemHeader<HabitListItem>) {
+        isSkipping = collapsedGroups.contains(item.title);
+        filteredVisualItems.add(item);
+      } else if (!isSkipping) {
+        filteredVisualItems.add(item);
+      }
+    }
+
     final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
@@ -943,7 +970,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
       return SliverReorderableList(
         itemCount: totalCount,
-        onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, visualItems),
+        onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, filteredVisualItems),
         proxyDecorator: (child, index, animation) => Material(
           elevation: 2,
           color: Colors.transparent, // Use transparent to match design
@@ -952,7 +979,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         itemBuilder: (context, index) => _buildListItem(
           context,
           index,
-          visualItems,
+          filteredVisualItems,
           showLoadMore,
           showInfinityLoading,
           gridColumns,
@@ -965,7 +992,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         (context, index) => _buildListItem(
           context,
           index,
-          visualItems,
+          filteredVisualItems,
           showLoadMore,
           showInfinityLoading,
           gridColumns,
