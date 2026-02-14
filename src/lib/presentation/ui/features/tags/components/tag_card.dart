@@ -34,7 +34,6 @@ class _TagCardState extends State<TagCard> {
   Widget build(BuildContext context) {
     final spacing = widget.isDense ? AppTheme.size2XSmall : AppTheme.sizeSmall;
     final typeIcon = TagUiConstants.getTagTypeIcon(widget.tag.type);
-    final typePrefix = TagUiConstants.getTagTypePrefix(widget.tag.type);
 
     return ListTile(
       tileColor: widget.transparent ? Colors.transparent : AppTheme.surface1,
@@ -55,13 +54,6 @@ class _TagCardState extends State<TagCard> {
       ),
       title: Row(
         children: [
-          Text(
-            typePrefix,
-            style: AppTheme.bodySmall.copyWith(
-              color: AppTheme.secondaryTextColor,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
           const SizedBox(width: AppTheme.size2XSmall),
           Expanded(
             child: Text(

@@ -48,16 +48,4 @@ class TagUiConstants {
         return projectIcon;
     }
   }
-
-  /// Get prefix character for tag type (for display)
-  static String getTagTypePrefix(TagType type) {
-    switch (type) {
-      case TagType.label:
-        return '#';
-      case TagType.context:
-        return '@';
-      case TagType.project:
-        return '+';
-    }
-  }
 }

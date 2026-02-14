@@ -26,7 +26,6 @@ class TagListWidget extends StatelessWidget {
     // Build individual tag widgets with type-specific icons
     final List<Widget> tagWidgets = tagsToProcess.map((item) {
       final typeIcon = TagUiConstants.getTagTypeIcon(item.type);
-      final typePrefix = TagUiConstants.getTagTypePrefix(item.type);
 
       final displayName =
           item.name.length > maxTagNameLength ? '${item.name.substring(0, truncatedTagNameLength)}...' : item.name;
@@ -34,7 +33,6 @@ class TagListWidget extends StatelessWidget {
       return _buildSingleTag(
         context: context,
         icon: typeIcon,
-        prefix: typePrefix,
         name: displayName,
         color: item.color ?? Colors.grey,
       );
@@ -74,7 +72,6 @@ class TagListWidget extends StatelessWidget {
   Widget _buildSingleTag({
     required BuildContext context,
     required IconData icon,
-    required String prefix,
     required String name,
     required Color color,
   }) {
@@ -87,13 +84,24 @@ class TagListWidget extends StatelessWidget {
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(mini ? 4 : 6),
       ),
-      child: Text(
-        '$prefix$name',
-        style: AppTheme.bodySmall.copyWith(
-          color: color,
-          fontSize: mini ? AppTheme.fontSizeSmall : AppTheme.fontSizeMedium,
-          fontWeight: FontWeight.w500,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: mini ? AppTheme.fontSizeSmall : AppTheme.fontSizeMedium,
+            color: color,
+          ),
+          SizedBox(width: mini ? 2 : 4),
+          Text(
+            name,
+            style: AppTheme.bodySmall.copyWith(
+              color: color,
+              fontSize: mini ? AppTheme.fontSizeSmall : AppTheme.fontSizeMedium,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }
