@@ -13,16 +13,20 @@ class LinuxApplicationDirectoryService implements IApplicationDirectoryService {
 
   @override
   Future<Directory> getApplicationDirectory() async {
-    // Linux: Use ~/.local/share folder (XDG-compliant)
-    final home = Platform.environment['HOME'];
-    if (home == null || home.isEmpty) {
-      throw StateError('Unable to find Linux HOME directory');
+    // Linux: Use XDG_DATA_HOME or ~/.local/share folder
+    String? dataHome = Platform.environment['XDG_DATA_HOME'];
+
+    if (dataHome == null || dataHome.isEmpty) {
+      final home = Platform.environment['HOME'];
+      if (home == null || home.isEmpty) {
+        throw StateError('Unable to find Linux HOME directory');
+      }
+      dataHome = p.join(home, '.local', 'share');
     }
 
     // Use whph/ folder, with debug_whph/ subdirectory in debug mode
-    final newDir = kDebugMode
-        ? Directory(p.join(home, '.local', 'share', folderName, _folderName))
-        : Directory(p.join(home, '.local', 'share', folderName));
+    final newDir =
+        kDebugMode ? Directory(p.join(dataHome, folderName, _folderName)) : Directory(p.join(dataHome, folderName));
 
     // Check for migration from old Documents location
     await _migrateFromOldLocation(newDir);
