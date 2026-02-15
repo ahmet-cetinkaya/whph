@@ -105,12 +105,16 @@ Future<void> _backgroundToggleTask(Mediator mediator, IContainer container, Stri
         parentTaskId: taskResult.parentTaskId,
         order: taskResult.order,
         plannedDateReminderTime: taskResult.plannedDateReminderTime,
+        plannedDateReminderCustomOffset: taskResult.plannedDateReminderCustomOffset,
         deadlineDateReminderTime: taskResult.deadlineDateReminderTime,
+        deadlineDateReminderCustomOffset: taskResult.deadlineDateReminderCustomOffset,
         recurrenceType: taskResult.recurrenceType,
         recurrenceInterval: taskResult.recurrenceInterval,
         recurrenceStartDate: taskResult.recurrenceStartDate,
         recurrenceEndDate: taskResult.recurrenceEndDate,
         recurrenceCount: taskResult.recurrenceCount,
+        recurrenceParentId: taskResult.recurrenceParentId,
+        recurrenceConfiguration: taskResult.recurrenceConfiguration,
       ),
     );
 

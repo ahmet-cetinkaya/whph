@@ -19,6 +19,7 @@ import 'package:whph/presentation/ui/shared/utils/tag_display_utils.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/extensions/widget_extensions.dart';
 import 'package:whph/presentation/ui/features/tasks/components/schedule_button.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:flutter/widgets.dart' as widgets;
 
 /// Dismiss threshold as fraction of widget width (0.4 = 40% swipe required)
@@ -27,6 +28,7 @@ const double _kSwipeCompleteThreshold = 0.4;
 class TaskCard extends StatelessWidget {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _recurrenceService = container.resolve<ITaskRecurrenceService>();
 
   final TaskListItem taskItem;
 
@@ -72,6 +74,20 @@ class TaskCard extends StatelessWidget {
       estimatedTime: task.estimatedTime,
       completedAt: task.completedAt,
       description: task.description,
+      parentTaskId: task.parentTaskId,
+      order: task.order,
+      plannedDateReminderTime: task.plannedDateReminderTime,
+      plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
+      deadlineDateReminderTime: task.deadlineDateReminderTime,
+      deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
+      recurrenceType: task.recurrenceType,
+      recurrenceInterval: task.recurrenceInterval,
+      recurrenceDays: _recurrenceService.getRecurrenceDays(task),
+      recurrenceStartDate: task.recurrenceStartDate,
+      recurrenceEndDate: task.recurrenceEndDate,
+      recurrenceCount: task.recurrenceCount,
+      recurrenceParentId: task.recurrenceParentId,
+      recurrenceConfiguration: task.recurrenceConfiguration,
     );
 
     await _mediator.send(command);

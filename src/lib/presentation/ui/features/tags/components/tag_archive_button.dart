@@ -104,6 +104,8 @@ class _TagArchiveButtonState extends State<TagArchiveButton> {
               id: widget.tagId,
               name: tag.name,
               isArchived: newStatus,
+              color: tag.color,
+              type: tag.type,
             ));
           },
           onSuccess: () {

@@ -93,14 +93,20 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
           estimatedTime: task.estimatedTime,
           completedAt: !originalCompletedState ? DateTime.now().toUtc() : null,
+          parentTaskId: task.parentTaskId,
+          order: task.order,
           plannedDateReminderTime: task.plannedDateReminderTime,
+          plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
           deadlineDateReminderTime: task.deadlineDateReminderTime,
+          deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
           recurrenceType: task.recurrenceType,
           recurrenceInterval: task.recurrenceInterval,
           recurrenceDays: _recurrenceService.getRecurrenceDays(task),
           recurrenceStartDate: task.recurrenceStartDate,
           recurrenceEndDate: task.recurrenceEndDate,
           recurrenceCount: task.recurrenceCount,
+          recurrenceParentId: task.recurrenceParentId,
+          recurrenceConfiguration: task.recurrenceConfiguration,
         );
 
         // Perform the actual API call
