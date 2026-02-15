@@ -25,13 +25,13 @@ import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dar
 sealed class _ListItem {}
 
 class _HeaderItem extends _ListItem {
-  final String title;
-  final bool shouldTranslate;
+  final String id;
+  final String displayTitle;
   final int index;
   final bool isExpanded;
   _HeaderItem({
-    required this.title,
-    required this.shouldTranslate,
+    required this.id,
+    required this.displayTitle,
     required this.index,
     required this.isExpanded,
   });
@@ -368,8 +368,10 @@ class AppUsageListState extends State<AppUsageList>
           ));
         }
         items.add(_HeaderItem(
-          title: appUsage.groupName!,
-          shouldTranslate: appUsage.isGroupNameTranslatable,
+          id: appUsage.groupName!,
+          displayTitle: appUsage.isGroupNameTranslatable
+              ? _translationService.translate(appUsage.groupName!)
+              : appUsage.groupName!,
           index: i,
           isExpanded: !collapsedGroups.contains(appUsage.groupName),
         ));
@@ -423,11 +425,10 @@ class AppUsageListState extends State<AppUsageList>
           final item = _flattenedItems[index];
           return switch (item) {
             _HeaderItem() => ListGroupHeader(
-                key: ValueKey('header_${item.title}_${item.index}'),
-                title: item.title,
-                shouldTranslate: item.shouldTranslate,
+                key: ValueKey('header_${item.id}_${item.index}'),
+                title: item.displayTitle,
                 isExpanded: item.isExpanded,
-                onTap: () => toggleGroupCollapse(item.title),
+                onTap: () => toggleGroupCollapse(item.id),
               ),
             _DataItem() => Padding(
                 key: ValueKey('app_usage_${item.appUsage.id}'),

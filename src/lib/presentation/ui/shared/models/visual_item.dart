@@ -7,8 +7,9 @@ sealed class VisualItem<T> {
 /// A header visual item.
 class VisualItemHeader<T> extends VisualItem<T> {
   final String title;
+  final bool isTranslatable;
 
-  const VisualItemHeader(this.title);
+  const VisualItemHeader(this.title, {this.isTranslatable = false});
 }
 
 /// A single data item visual item.

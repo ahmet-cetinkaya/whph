@@ -558,6 +558,15 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     return groupedTasks;
   }
 
+  /// Returns a map of group name to whether it should be translated
+  Map<String, bool> _getGroupTranslatableMap() {
+    if (_cachedGroupedTasks == null) return {};
+    return {
+      for (final entry in _cachedGroupedTasks!.entries)
+        if (entry.key.isNotEmpty) entry.key: entry.value.isNotEmpty ? entry.value.first.isGroupNameTranslatable : false,
+    };
+  }
+
   Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<TaskListItem> groupTasks) async {
     if (!mounted) return;
     if (oldIndex < 0 || oldIndex >= groupTasks.length) return;
@@ -743,8 +752,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                 if (groupName.isNotEmpty)
                   ListGroupHeader(
                     key: ValueKey('group_header_$groupName'),
-                    title: groupName,
-                    shouldTranslate: groupName.length > 1,
+                    title: tasks.isNotEmpty && tasks.first.isGroupNameTranslatable
+                        ? _translationService.translate(groupName)
+                        : groupName,
                     isExpanded: !collapsedGroups.contains(groupName),
                     onTap: () => toggleGroupCollapse(groupName),
                   ),
@@ -896,8 +906,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     if (item is VisualItemHeader<TaskListItem>) {
       return ListGroupHeader(
         key: ValueKey('group_header_${item.title}_${!collapsedGroups.contains(item.title)}'),
-        title: item.title,
-        shouldTranslate: item.title.length > 1,
+        title: item.isTranslatable ? _translationService.translate(item.title) : item.title,
         isExpanded: !collapsedGroups.contains(item.title),
         onTap: () => toggleGroupCollapse(item.title),
       );
@@ -952,6 +961,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     // Ensure visual items are cached
     _cachedVisualItems ??= VisualItemUtils.getVisualItems<TaskListItem>(
       groupedItems: _cachedGroupedTasks!,
+      groupTranslatable: _getGroupTranslatableMap(),
     );
 
     final fullVisualItems = _cachedVisualItems!.cast<VisualItem<TaskListItem>>();

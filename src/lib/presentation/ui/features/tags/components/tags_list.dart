@@ -236,8 +236,7 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList>, List
         }
         listItems.add(ListGroupHeader(
           key: ValueKey('header_${tag.groupName}_$i'),
-          title: tag.groupName!,
-          shouldTranslate: tag.isGroupNameTranslatable,
+          title: tag.isGroupNameTranslatable ? _translationService.translate(tag.groupName!) : tag.groupName!,
           isExpanded: !collapsedGroups.contains(tag.groupName),
           onTap: () => toggleGroupCollapse(tag.groupName!),
         ));

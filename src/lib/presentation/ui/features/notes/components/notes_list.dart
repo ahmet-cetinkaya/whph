@@ -301,8 +301,7 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
         }
         listItems.add(ListGroupHeader(
           key: ValueKey('header_${note.groupName}'),
-          title: note.groupName!,
-          shouldTranslate: note.isGroupNameTranslatable,
+          title: note.isGroupNameTranslatable ? _translationService.translate(note.groupName!) : note.groupName!,
           isExpanded: !collapsedGroups.contains(note.groupName),
           onTap: () => toggleGroupCollapse(note.groupName!),
         ));

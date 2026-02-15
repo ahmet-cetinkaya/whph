@@ -404,6 +404,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             final visualItems = VisualItemUtils.getVisualItems<HabitListItem>(
               groupedItems: _cachedGroupedHabits!,
               gridColumns: gridColumns > 0 ? gridColumns : 1,
+              groupTranslatable: _getGroupTranslatableMap(),
             );
             return _buildSliverList(precalculatedItems: visualItems, gridColumns: gridColumns > 0 ? gridColumns : 1);
           },
@@ -538,6 +539,15 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       groupedHabits[groupName]!.add(habit);
     }
     return groupedHabits;
+  }
+
+  /// Returns a map of group name to whether it should be translated
+  Map<String, bool> _getGroupTranslatableMap() {
+    if (_cachedGroupedHabits == null) return {};
+    return {
+      for (final entry in _cachedGroupedHabits!.entries)
+        if (entry.key.isNotEmpty) entry.key: entry.value.isNotEmpty ? entry.value.first.isGroupNameTranslatable : false,
+    };
   }
 
   Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<HabitListItem> groupHabits) async {
@@ -702,8 +712,9 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                 if (groupName.isNotEmpty)
                   ListGroupHeader(
                     key: ValueKey('header_$groupName'),
-                    title: groupName,
-                    shouldTranslate: groupName.length > 1,
+                    title: habits.isNotEmpty && habits.first.isGroupNameTranslatable
+                        ? _translationService.translate(groupName)
+                        : groupName,
                     isExpanded: !collapsedGroups.contains(groupName),
                     onTap: () => toggleGroupCollapse(groupName),
                   ),
@@ -877,8 +888,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     if (item is VisualItemHeader<HabitListItem>) {
       return ListGroupHeader(
         key: ValueKey('header_${item.title}'),
-        title: item.title,
-        shouldTranslate: item.title.length > 1,
+        title: item.isTranslatable ? _translationService.translate(item.title) : item.title,
         isExpanded: !collapsedGroups.contains(item.title),
         onTap: () => toggleGroupCollapse(item.title),
       );
@@ -945,6 +955,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       _cachedVisualItems ??= VisualItemUtils.getVisualItems<HabitListItem>(
         groupedItems: _cachedGroupedHabits!,
         gridColumns: 1, // List mode is always 1 column
+        groupTranslatable: _getGroupTranslatableMap(),
       );
       visualItems = _cachedVisualItems!.cast<VisualItem<HabitListItem>>();
     }

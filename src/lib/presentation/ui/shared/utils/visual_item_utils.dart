@@ -4,9 +4,11 @@ class VisualItemUtils {
   /// Transforms a grouped map of items into a flattened list of [VisualItem]s.
   ///
   /// [gridColumns]: If > 1, single items within groups will be chunked into [VisualItemRow]s.
+  /// [groupTranslatable]: A map from group name to whether the group name should be translated.
   static List<VisualItem<T>> getVisualItems<T>({
     required Map<String, List<T>> groupedItems,
     int gridColumns = 1,
+    Map<String, bool>? groupTranslatable,
   }) {
     final List<VisualItem<T>> visualItems = [];
     if (groupedItems.isEmpty) return visualItems;
@@ -14,7 +16,8 @@ class VisualItemUtils {
     for (final entry in groupedItems.entries) {
       // Add header if group name is not empty
       if (entry.key.isNotEmpty) {
-        visualItems.add(VisualItemHeader<T>(entry.key));
+        final isTranslatable = groupTranslatable?[entry.key] ?? false;
+        visualItems.add(VisualItemHeader<T>(entry.key, isTranslatable: isTranslatable));
       }
 
       final items = entry.value;
