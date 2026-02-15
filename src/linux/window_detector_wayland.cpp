@@ -122,9 +122,10 @@ WindowInfo WaylandWindowDetector::TryKdeWaylandScript() {
   // 5. Grep journal for output.
   // 6. Unload script.
 
-  // Check if we are inside Flatpak by looking for flatpak-spawn
-  bool has_flatpak_spawn = (system("which flatpak-spawn >/dev/null 2>&1") == 0);
-  std::string prefix = has_flatpak_spawn ? "flatpak-spawn --host " : "";
+  // Check if we are inside Flatpak by checking for .flatpak-info
+  bool has_flatpak_spawn = (system("test -f /.flatpak-info") == 0);
+  std::string prefix =
+      has_flatpak_spawn ? "/usr/bin/flatpak-spawn --host " : "";
 
   // Unique delimiter to avoid parsing issues
   std::string delim = "WHPH_KWIN_da39a3ee";
@@ -163,9 +164,10 @@ WindowInfo WaylandWindowDetector::TryKdeWaylandScript() {
       // 5. Sleep
       "sleep 0.1; "
       // 6. Read Log
-      "journalctl --user --no-pager -n 50 | grep '" +
+      "if command -v journalctl >/dev/null 2>&1; then journalctl --user "
+      "--no-pager -n 50 | grep '" +
       delim +
-      "' | tail -1; "
+      "' | tail -1; fi; "
       // 7. Cleanup
       "gdbus call --session --dest org.kde.KWin --object-path /Scripting "
       "--method org.kde.kwin.Scripting.unloadScript 'whph_detector_v1' "
@@ -234,7 +236,7 @@ WindowInfo WaylandWindowDetector::TryKdeWaylandDebugInfo() {
   // dbus/flatpak buffer.
   std::string output;
 
-  bool has_flatpak_spawn = (system("which flatpak-spawn >/dev/null 2>&1") == 0);
+  bool has_flatpak_spawn = (system("test -f /.flatpak-info") == 0);
 
   if (has_flatpak_spawn) {
     // Construct command: qdbus ... | grep ...
