@@ -10,3 +10,7 @@
 	path = packages/acore-scripts
 	url = https://github.com/ahmet-cetinkaya/acore-scripts.git
 	branch = main
+[submodule "src/linux/packaging/flatpak"]
+	path = src/linux/packaging/flatpak
+	url = https://github.com/ahmet-cetinkaya/flathub.git
+	branch = me.ahmetcetinkaya.whph
