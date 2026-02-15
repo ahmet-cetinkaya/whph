@@ -560,34 +560,12 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
   /// Returns a map of group name to whether it should be translated
   Map<String, bool> _getGroupTranslatableMap() {
-    final primarySortField =
-        widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field;
-
-    bool isTranslatable = false;
-    if (primarySortField != null) {
-      switch (primarySortField) {
-        case TaskSortFields.priority:
-        case TaskSortFields.createdDate:
-        case TaskSortFields.deadlineDate:
-        case TaskSortFields.modifiedDate:
-        case TaskSortFields.plannedDate:
-        case TaskSortFields.estimatedTime:
-        case TaskSortFields.totalDuration:
-          isTranslatable = true;
-          break;
-        case TaskSortFields.title:
-        case TaskSortFields.tag:
-          isTranslatable = false;
-          break;
-      }
-    }
-
-    // Get all unique group names and set the same translatable flag for all
     if (_cachedGroupedTasks == null) return {};
     final groupTranslatable = <String, bool>{};
-    for (final key in _cachedGroupedTasks!.keys) {
-      if (key.isNotEmpty) {
-        groupTranslatable[key] = isTranslatable;
+    for (final entry in _cachedGroupedTasks!.entries) {
+      if (entry.key.isNotEmpty) {
+        // All items in a group share the same translatable property, so we can check the first one.
+        groupTranslatable[entry.key] = entry.value.isNotEmpty ? entry.value.first.isGroupNameTranslatable : false;
       }
     }
     return groupTranslatable;

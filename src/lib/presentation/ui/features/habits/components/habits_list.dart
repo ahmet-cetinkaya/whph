@@ -543,32 +543,12 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
   /// Returns a map of group name to whether it should be translated
   Map<String, bool> _getGroupTranslatableMap() {
-    final primarySortField =
-        widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field;
-
-    bool isTranslatable = false;
-    if (primarySortField != null) {
-      switch (primarySortField) {
-        case HabitSortFields.createdDate:
-        case HabitSortFields.modifiedDate:
-        case HabitSortFields.estimatedTime:
-        case HabitSortFields.actualTime:
-        case HabitSortFields.archivedDate:
-          isTranslatable = true;
-          break;
-        case HabitSortFields.name:
-        case HabitSortFields.tag:
-          isTranslatable = false;
-          break;
-      }
-    }
-
-    // Get all unique group names and set the same translatable flag for all
     if (_cachedGroupedHabits == null) return {};
     final groupTranslatable = <String, bool>{};
-    for (final key in _cachedGroupedHabits!.keys) {
-      if (key.isNotEmpty) {
-        groupTranslatable[key] = isTranslatable;
+    for (final entry in _cachedGroupedHabits!.entries) {
+      if (entry.key.isNotEmpty) {
+        // All items in a group share the same translatable property, so we can check the first one.
+        groupTranslatable[entry.key] = entry.value.isNotEmpty ? entry.value.first.isGroupNameTranslatable : false;
       }
     }
     return groupTranslatable;
