@@ -2,6 +2,7 @@ import 'package:whph/core/application/features/tasks/models/task_list_item.dart'
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
 import 'package:acore/acore.dart';
 
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
@@ -161,8 +162,22 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       ),
     );
 
+    // Determine if group names should be translated based on sort field
+    final groupField = request.enableGrouping
+        ? request.groupBy ?? (request.sortBy?.isNotEmpty == true ? request.sortBy!.first : null)
+        : null;
+    final isGroupTranslatable = TaskGroupingHelper.isGroupTranslatable(groupField?.field);
+
+    // Set isGroupNameTranslatable on each task
+    final itemsWithTranslatableFlag = tasks.items.map((task) {
+      if (task.groupName != null) {
+        return task.copyWith(isGroupNameTranslatable: isGroupTranslatable);
+      }
+      return task;
+    }).toList();
+
     return GetListTasksQueryResponse(
-      items: tasks.items,
+      items: itemsWithTranslatableFlag,
       totalItemCount: tasks.totalItemCount,
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,

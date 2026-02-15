@@ -20,6 +20,7 @@ class TaskListItem {
   final ReminderTime plannedDateReminderTime;
   final ReminderTime deadlineDateReminderTime;
   final String? groupName;
+  final bool isGroupNameTranslatable;
 
   TaskListItem({
     required this.id,
@@ -40,6 +41,7 @@ class TaskListItem {
     this.plannedDateReminderTime = ReminderTime.none,
     this.deadlineDateReminderTime = ReminderTime.none,
     this.groupName,
+    this.isGroupNameTranslatable = false,
   });
 
   TaskListItem copyWith({
@@ -61,6 +63,7 @@ class TaskListItem {
     ReminderTime? plannedDateReminderTime,
     ReminderTime? deadlineDateReminderTime,
     String? groupName,
+    bool? isGroupNameTranslatable,
   }) {
     return TaskListItem(
       id: id ?? this.id,
@@ -81,6 +84,7 @@ class TaskListItem {
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
       deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
       groupName: groupName ?? this.groupName,
+      isGroupNameTranslatable: isGroupNameTranslatable ?? this.isGroupNameTranslatable,
     );
   }
 }

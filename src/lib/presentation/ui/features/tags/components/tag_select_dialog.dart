@@ -317,7 +317,6 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
                       return ListGroupHeader(
                         key: ValueKey('header_${item.id}'),
                         title: item.headerText!,
-                        shouldTranslate: false,
                         isExpanded: !item.isCollapsed,
                         onTap: () => _toggleGroupCollapse(item.id!),
                       );

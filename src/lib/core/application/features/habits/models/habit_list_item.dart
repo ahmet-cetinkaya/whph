@@ -18,6 +18,7 @@ class HabitListItem {
   final int targetFrequency;
   final int periodDays;
   final String? groupName;
+  final bool isGroupNameTranslatable;
 
   const HabitListItem({
     required this.id,
@@ -37,6 +38,7 @@ class HabitListItem {
     this.targetFrequency = 1,
     this.periodDays = 1,
     this.groupName,
+    this.isGroupNameTranslatable = false,
   });
 
   bool get isArchived => archivedDate != null;
@@ -59,6 +61,7 @@ class HabitListItem {
     int? targetFrequency,
     int? periodDays,
     String? groupName,
+    bool? isGroupNameTranslatable,
   }) {
     return HabitListItem(
       id: id ?? this.id,
@@ -78,6 +81,7 @@ class HabitListItem {
       targetFrequency: targetFrequency ?? this.targetFrequency,
       periodDays: periodDays ?? this.periodDays,
       groupName: groupName ?? this.groupName,
+      isGroupNameTranslatable: isGroupNameTranslatable ?? this.isGroupNameTranslatable,
     );
   }
 }

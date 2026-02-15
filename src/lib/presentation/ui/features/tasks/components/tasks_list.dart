@@ -558,6 +558,41 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     return groupedTasks;
   }
 
+  /// Returns a map of group name to whether it should be translated
+  Map<String, bool> _getGroupTranslatableMap() {
+    final primarySortField =
+        widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field;
+
+    bool isTranslatable = false;
+    if (primarySortField != null) {
+      switch (primarySortField) {
+        case TaskSortFields.priority:
+        case TaskSortFields.createdDate:
+        case TaskSortFields.deadlineDate:
+        case TaskSortFields.modifiedDate:
+        case TaskSortFields.plannedDate:
+        case TaskSortFields.estimatedTime:
+        case TaskSortFields.totalDuration:
+          isTranslatable = true;
+          break;
+        case TaskSortFields.title:
+        case TaskSortFields.tag:
+          isTranslatable = false;
+          break;
+      }
+    }
+
+    // Get all unique group names and set the same translatable flag for all
+    if (_cachedGroupedTasks == null) return {};
+    final groupTranslatable = <String, bool>{};
+    for (final key in _cachedGroupedTasks!.keys) {
+      if (key.isNotEmpty) {
+        groupTranslatable[key] = isTranslatable;
+      }
+    }
+    return groupTranslatable;
+  }
+
   Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<TaskListItem> groupTasks) async {
     if (!mounted) return;
     if (oldIndex < 0 || oldIndex >= groupTasks.length) return;
@@ -743,8 +778,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                 if (groupName.isNotEmpty)
                   ListGroupHeader(
                     key: ValueKey('group_header_$groupName'),
-                    title: groupName,
-                    shouldTranslate: groupName.length > 1,
+                    title: tasks.isNotEmpty && tasks.first.isGroupNameTranslatable
+                        ? _translationService.translate(groupName)
+                        : groupName,
                     isExpanded: !collapsedGroups.contains(groupName),
                     onTap: () => toggleGroupCollapse(groupName),
                   ),
@@ -896,8 +932,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     if (item is VisualItemHeader<TaskListItem>) {
       return ListGroupHeader(
         key: ValueKey('group_header_${item.title}_${!collapsedGroups.contains(item.title)}'),
-        title: item.title,
-        shouldTranslate: item.title.length > 1,
+        title: item.isTranslatable ? _translationService.translate(item.title) : item.title,
         isExpanded: !collapsedGroups.contains(item.title),
         onTap: () => toggleGroupCollapse(item.title),
       );
@@ -952,6 +987,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     // Ensure visual items are cached
     _cachedVisualItems ??= VisualItemUtils.getVisualItems<TaskListItem>(
       groupedItems: _cachedGroupedTasks!,
+      groupTranslatable: _getGroupTranslatableMap(),
     );
 
     final fullVisualItems = _cachedVisualItems!.cast<VisualItem<TaskListItem>>();

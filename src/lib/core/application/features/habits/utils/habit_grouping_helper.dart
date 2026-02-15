@@ -2,25 +2,39 @@ import 'package:whph/core/application/features/habits/models/habit_sort_fields.d
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/shared/utils/grouping_utils.dart';
 
+class HabitGroupInfo {
+  final String? name;
+  final bool isTranslatable;
+
+  const HabitGroupInfo({this.name, this.isTranslatable = false});
+}
+
 class HabitGroupingHelper {
   static String? getGroupName(HabitListItem habit, HabitSortFields? sortField, {DateTime? now}) {
+    return getGroupInfo(habit, sortField, now: now)?.name;
+  }
+
+  static HabitGroupInfo? getGroupInfo(HabitListItem habit, HabitSortFields? sortField, {DateTime? now}) {
     if (sortField == null) return null;
 
     switch (sortField) {
       case HabitSortFields.name:
-        return GroupingUtils.getTitleGroup(habit.name);
+        return HabitGroupInfo(name: GroupingUtils.getTitleGroup(habit.name), isTranslatable: false);
       case HabitSortFields.createdDate:
-        return GroupingUtils.getBackwardDateGroup(habit.createdDate, now: now);
+        return HabitGroupInfo(
+            name: GroupingUtils.getBackwardDateGroup(habit.createdDate, now: now), isTranslatable: true);
       case HabitSortFields.modifiedDate:
-        return GroupingUtils.getBackwardDateGroup(habit.modifiedDate, now: now);
+        return HabitGroupInfo(
+            name: GroupingUtils.getBackwardDateGroup(habit.modifiedDate, now: now), isTranslatable: true);
       case HabitSortFields.estimatedTime:
-        return GroupingUtils.getDurationGroup(habit.estimatedTime);
+        return HabitGroupInfo(name: GroupingUtils.getDurationGroup(habit.estimatedTime), isTranslatable: true);
       case HabitSortFields.actualTime:
-        return GroupingUtils.getDurationGroup(habit.actualTime); // actualTime is in minutes
+        return HabitGroupInfo(name: GroupingUtils.getDurationGroup(habit.actualTime), isTranslatable: true);
       case HabitSortFields.archivedDate:
-        return GroupingUtils.getBackwardDateGroup(habit.archivedDate, now: now);
+        return HabitGroupInfo(
+            name: GroupingUtils.getBackwardDateGroup(habit.archivedDate, now: now), isTranslatable: true);
       case HabitSortFields.tag:
-        return GroupingUtils.getTagGroup(habit.tags);
+        return HabitGroupInfo(name: GroupingUtils.getTagGroup(habit.tags), isTranslatable: false);
     }
   }
 }

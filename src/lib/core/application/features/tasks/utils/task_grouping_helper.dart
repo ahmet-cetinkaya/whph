@@ -31,6 +31,25 @@ class TaskGroupingHelper {
     }
   }
 
+  /// Returns true if the group name should be translated based on the sort field
+  static bool isGroupTranslatable(TaskSortFields? sortField) {
+    if (sortField == null) return false;
+
+    switch (sortField) {
+      case TaskSortFields.priority:
+      case TaskSortFields.createdDate:
+      case TaskSortFields.deadlineDate:
+      case TaskSortFields.modifiedDate:
+      case TaskSortFields.plannedDate:
+      case TaskSortFields.estimatedTime:
+      case TaskSortFields.totalDuration:
+        return true;
+      case TaskSortFields.title:
+      case TaskSortFields.tag:
+        return false;
+    }
+  }
+
   static String _getPriorityGroup(EisenhowerPriority? priority) {
     if (priority == null) return SharedTranslationKeys.none;
 

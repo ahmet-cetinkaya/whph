@@ -123,11 +123,12 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       }
 
       // Assign group name
-      final groupName = HabitGroupingHelper.getGroupName(habitItem.copyWith(tags: tags), primarySortField);
+      final groupInfo = HabitGroupingHelper.getGroupInfo(habitItem.copyWith(tags: tags), primarySortField);
 
       return habitItem.copyWith(
         tags: tags,
-        groupName: groupName,
+        groupName: groupInfo?.name,
+        isGroupNameTranslatable: groupInfo?.isTranslatable ?? false,
       );
     }).toList();
 
