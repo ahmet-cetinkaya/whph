@@ -544,14 +544,10 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   /// Returns a map of group name to whether it should be translated
   Map<String, bool> _getGroupTranslatableMap() {
     if (_cachedGroupedHabits == null) return {};
-    final groupTranslatable = <String, bool>{};
-    for (final entry in _cachedGroupedHabits!.entries) {
-      if (entry.key.isNotEmpty) {
-        // All items in a group share the same translatable property, so we can check the first one.
-        groupTranslatable[entry.key] = entry.value.isNotEmpty ? entry.value.first.isGroupNameTranslatable : false;
-      }
-    }
-    return groupTranslatable;
+    return {
+      for (final entry in _cachedGroupedHabits!.entries)
+        if (entry.key.isNotEmpty) entry.key: entry.value.isNotEmpty ? entry.value.first.isGroupNameTranslatable : false,
+    };
   }
 
   Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<HabitListItem> groupHabits) async {

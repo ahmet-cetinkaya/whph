@@ -561,14 +561,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   /// Returns a map of group name to whether it should be translated
   Map<String, bool> _getGroupTranslatableMap() {
     if (_cachedGroupedTasks == null) return {};
-    final groupTranslatable = <String, bool>{};
-    for (final entry in _cachedGroupedTasks!.entries) {
-      if (entry.key.isNotEmpty) {
-        // All items in a group share the same translatable property, so we can check the first one.
-        groupTranslatable[entry.key] = entry.value.isNotEmpty ? entry.value.first.isGroupNameTranslatable : false;
-      }
-    }
-    return groupTranslatable;
+    return {
+      for (final entry in _cachedGroupedTasks!.entries)
+        if (entry.key.isNotEmpty) entry.key: entry.value.isNotEmpty ? entry.value.first.isGroupNameTranslatable : false,
+    };
   }
 
   Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<TaskListItem> groupTasks) async {

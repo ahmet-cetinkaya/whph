@@ -170,8 +170,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
     // Set isGroupNameTranslatable on each task
     final itemsWithTranslatableFlag = tasks.items.map((task) {
-      if (task.groupName != null) {
-        return task.copyWith(isGroupNameTranslatable: isGroupTranslatable);
+      if (task.groupName != null && isGroupTranslatable) {
+        return task.copyWith(isGroupNameTranslatable: true);
       }
       return task;
     }).toList();
