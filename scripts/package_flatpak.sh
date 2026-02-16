@@ -62,10 +62,25 @@ mv "$MANIFEST_NAME" "$FLATHUB_DIR/"
 rm -rf "$FLATHUB_DIR/generated"
 mv "generated" "$FLATHUB_DIR/"
 
+# Vendor Shared Modules
+acore_log_info "Vendoring shared modules..."
+SHARED_MODULES_SRC="$FLATPAK_DIR/flathub-shared-modules"
+SHARED_MODULES_DEST="$FLATHUB_DIR/generated/modules/shared-modules"
+mkdir -p "$SHARED_MODULES_DEST"
+# No need to rm here as generated/ was recreated above
+cp -r "$SHARED_MODULES_SRC/intltool" "$SHARED_MODULES_DEST/"
+cp -r "$SHARED_MODULES_SRC/libayatana-appindicator" "$SHARED_MODULES_DEST/"
+
 # 3. Build Flatpak
 acore_log_section "🏗️  Building Flatpak..."
 BUILD_DIR="$PROJECT_ROOT/build-dir"
 REPO_DIR="$PROJECT_ROOT/repo"
+
+# Ensure repo is valid (flatpak-builder fails if config is missing)
+if [[ -d "$REPO_DIR" && ! -f "$REPO_DIR/config" ]]; then
+    acore_log_warning "Repo directory exists but is missing config. Removing corrupted repo..."
+    rm -rf "$REPO_DIR"
+fi
 
 # Ensure Flathub remote exists for dependencies
 acore_log_info "Ensuring Flathub remote exists..."
