@@ -37,3 +37,4 @@ core.[0-9]*
 build-dir/
 *.flatpak
 repo/
+.venv/

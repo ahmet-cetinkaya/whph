@@ -8,11 +8,20 @@ source "$SCRIPT_DIR/../../packages/acore-scripts/src/logger.sh"
 trap 'acore_log_error "Clean failed!"; exit 1' ERR
 
 SRC_DIR="$(dirname "$SCRIPT_DIR")"
+PROJECT_ROOT="$(dirname "$SRC_DIR")"
 cd "$SRC_DIR"
 
 # Clean Flutter build artifacts
 acore_log_info "Cleaning Flutter build..."
 fvm flutter clean
+
+# Clean Flatpak build artifacts
+acore_log_info "Cleaning Flatpak build artifacts..."
+rm -rf "$PROJECT_ROOT/.flatpak-builder"
+rm -rf "$PROJECT_ROOT/packaging/flatpak/.flatpak-builder"
+rm -rf "$PROJECT_ROOT/build-dir"
+rm -rf "$PROJECT_ROOT/repo"
+rm -f "$PROJECT_ROOT/whph.flatpak"
 
 # Remove all contents of android/fdroid/build except extlib
 acore_log_info "Cleaning android/fdroid/build except extlib..."

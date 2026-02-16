@@ -10,7 +10,14 @@
 	path = packages/acore-scripts
 	url = https://github.com/ahmet-cetinkaya/acore-scripts.git
 	branch = main
-[submodule "src/linux/packaging/flatpak"]
-	path = src/linux/packaging/flatpak
+
+[submodule "packaging/flatpak/flatpak-flutter"]
+	path = packaging/flatpak/flatpak-flutter
+	url = https://github.com/TheAppgineer/flatpak-flutter.git
+[submodule "packaging/flatpak/flathub"]
+	path = packaging/flatpak/flathub
 	url = https://github.com/ahmet-cetinkaya/flathub.git
 	branch = me.ahmetcetinkaya.whph
+[submodule "packaging/flatpak/flathub-shared-modules"]
+	path = packaging/flatpak/flathub-shared-modules
+	url = https://github.com/flathub/shared-modules.git
