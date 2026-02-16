@@ -63,13 +63,7 @@ rm -rf "$FLATHUB_DIR/generated"
 mv "generated" "$FLATHUB_DIR/"
 
 # Vendor Shared Modules
-acore_log_info "Vendoring shared modules..."
-SHARED_MODULES_SRC="$FLATPAK_DIR/flathub-shared-modules"
-SHARED_MODULES_DEST="$FLATHUB_DIR/generated/modules/shared-modules"
-mkdir -p "$SHARED_MODULES_DEST"
-# No need to rm here as generated/ was recreated above
-cp -r "$SHARED_MODULES_SRC/intltool" "$SHARED_MODULES_DEST/"
-cp -r "$SHARED_MODULES_SRC/libayatana-appindicator" "$SHARED_MODULES_DEST/"
+
 
 # 3. Build Flatpak
 acore_log_section "🏗️  Building Flatpak..."

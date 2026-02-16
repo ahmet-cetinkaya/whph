@@ -18,6 +18,3 @@
 	path = packaging/flatpak/flathub
 	url = https://github.com/ahmet-cetinkaya/flathub.git
 	branch = me.ahmetcetinkaya.whph
-[submodule "packaging/flatpak/flathub-shared-modules"]
-	path = packaging/flatpak/flathub-shared-modules
-	url = https://github.com/flathub/shared-modules.git
