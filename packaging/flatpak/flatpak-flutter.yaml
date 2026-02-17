@@ -11,6 +11,9 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
 
+  # Network
+  - --share=network
+
   # Audio
   - --socket=pulseaudio
 

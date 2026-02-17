@@ -63,6 +63,12 @@ packaging/flatpak/
 | `--socket=fallback-x11` | **X11 Display Access**. Allows the app to run on X11 or XWayland. Required as a fallback if native Wayland is not available or has issues. |
 | `--socket=wayland`      | **Wayland Display Access**. Allows the app to run natively on Wayland compositors.                                                         |
 
+### Network
+
+| Permission        | Description & Justification                                                                 |
+| :---------------- | :------------------------------------------------------------------------------------------ |
+| `--share=network` | **Network Access**. Required for "Sync Device" functionality to discover and connect peers. |
+
 ### Audio
 
 | Permission            | Description & Justification                                                         |
