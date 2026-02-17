@@ -76,11 +76,17 @@ modules:
       - cd src && flutter build linux --release --no-pub
 
       # App Bundle Installation
-      - install -D $BUNDLE_PATH/whph /app/bin/whph
-      - cp -r $BUNDLE_PATH/lib /app/bin/lib
-      - mkdir -p /app/bin/data
-      - cp -r $BUNDLE_PATH/data/flutter_assets /app/bin/data/flutter_assets
-      - install -D $BUNDLE_PATH/data/icudtl.dat /app/bin/data/icudtl.dat
+      # Install to /app/lib/whph to keep relative paths for Flutter engine
+      - mkdir -p /app/lib/whph
+      - install -D $BUNDLE_PATH/whph /app/lib/whph/whph
+      - cp -r $BUNDLE_PATH/lib /app/lib/whph/
+      - mkdir -p /app/lib/whph/data
+      - cp -r $BUNDLE_PATH/data/flutter_assets /app/lib/whph/data/flutter_assets
+      - install -D $BUNDLE_PATH/data/icudtl.dat /app/lib/whph/data/icudtl.dat
+      
+      # Create symlink in /app/bin
+      - mkdir -p /app/bin
+      - ln -sf /app/lib/whph/whph /app/bin/whph
 
       # Desktop & D-Bus Integration
       - install -D $BUNDLE_PATH/share/applications/whph.desktop /app/share/applications/me.ahmetcetinkaya.whph.desktop
