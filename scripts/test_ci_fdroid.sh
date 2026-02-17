@@ -8,7 +8,7 @@ trap 'acore_log_error "F-Droid CI failed!"; exit 1' ERR
 
 acore_log_header "F-Droid CI Test"
 
-cd src/android/fdroid
+cd packaging/fdroid
 
 acore_log_info "Setting up F-Droid environment..."
 python -m venv .fdroid-venv
