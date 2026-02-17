@@ -1,1 +1,1 @@
-Productivity app for task management, habit tracking and time optimization
+A productivity app to manage tasks, develop new habits, and optimize your time.

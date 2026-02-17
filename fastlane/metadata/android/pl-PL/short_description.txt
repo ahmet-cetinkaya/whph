@@ -1,1 +1,1 @@
-Aplikacja do zarządzania zadaniami, śledzenia nawyków i optymalizacji czasu
+Aplikacja do zarządzania zadaniami, nawykami i optymalizacji czasu.

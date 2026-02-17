@@ -1,1 +1,1 @@
-App per gestire attività, monitorare abitudini e ottimizzare il tempo.
+App di produttività per gestire attività, abitudini e ottimizzare il tempo.

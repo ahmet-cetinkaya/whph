@@ -1,1 +1,1 @@
-Gestão de tarefas, hábitos e otimização de tempo
+App de produtividade para gerir tarefas, criar hábitos e otimizar o tempo.

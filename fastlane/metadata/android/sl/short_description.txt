@@ -1,1 +1,1 @@
-Aplikacija za upravljanje nalog, sledenje navad in optimizacijo časa.
+Aplikacija za upravljanje nalog, razvoj navad in optimizacijo časa.

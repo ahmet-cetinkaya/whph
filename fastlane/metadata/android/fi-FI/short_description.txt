@@ -1,1 +1,1 @@
-Sovellus tehtävien hallintaan, tapojen seurantaan ja ajan optimointiin.
+Tuottavuussovellus tehtävien hallintaan, tapoihin ja ajankäytön optimointiin.

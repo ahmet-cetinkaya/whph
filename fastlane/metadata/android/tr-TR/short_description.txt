@@ -1,1 +1,1 @@
-Görev yönetimi, alışkanlık takibi ve zaman optimizasyonu için uygulama.
+Görev, alışkanlık geliştirme ve zaman optimizasyonu için verimlilik uygulaması.

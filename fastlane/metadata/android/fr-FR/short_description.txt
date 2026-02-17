@@ -1,1 +1,1 @@
-App de productivité pour gérer les tâches, les habitudes et le temps.
+Une app de productivité pour gérer tâches, habitudes et optimiser votre temps.

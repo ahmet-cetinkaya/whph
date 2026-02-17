@@ -1,1 +1,1 @@
-Produktivitetsapp för uppgiftshantering, vanespårning och tidsoptimering
+Produktivitetsapp för uppgiftshantering, vanor och tidsoptimering.

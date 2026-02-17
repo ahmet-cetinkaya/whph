@@ -42,7 +42,7 @@ validate_description_length() {
 
     if [ -f "$file_path" ]; then
         local length
-        length=$(head -1 "$file_path" | wc -c)
+        length=$(head -1 "$file_path" | tr -d '\n' | wc -m)
         if [ "$length" -gt "$max_length" ]; then
             acore_log_error "$desc_type too long for $lang ($length > $max_length chars)"
             ERRORS=$((ERRORS + 1))
