@@ -21,7 +21,7 @@ scripts:
   gen:changelog:all: bash ../scripts/create_changelog.sh --all-versions --auto
   release:linux: fvm flutter build linux --release
   release:windows: fvm flutter build windows --release
-  release:windows:setup: fvm flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup-wizard\installer.iss
+  release:windows:setup: fvm flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" ..\packaging\inno-setup\installer.iss
   release:android: fvm flutter build apk --release
   release:android:bundle: fvm flutter build appbundle --release
   lint: ../scripts/lint.sh

@@ -22,7 +22,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
 APP_INFO_FILE="$PROJECT_ROOT/src/lib/core/domain/shared/constants/app_info.dart"
-INSTALLER_FILE="$PROJECT_ROOT/src/windows/setup-wizard/installer.iss"
+INSTALLER_FILE="$PROJECT_ROOT/packaging/inno-setup/installer.iss"
 
 CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed 's/+.*//')
 

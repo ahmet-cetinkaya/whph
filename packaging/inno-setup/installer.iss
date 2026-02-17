@@ -9,10 +9,10 @@ AppComments={cm:AppDescription}
 DefaultDirName={autopf}\WHPH
 DefaultGroupName=WHPH
 AllowNoIcons=yes
-LicenseFile=..\..\..\LICENSE
-OutputDir=..\..\build\windows\installer
+LicenseFile=..\..\LICENSE
+OutputDir=..\..\src\build\windows\installer
 OutputBaseFilename=whph-setup
-SetupIconFile=..\runner\resources\app_icon.ico
+SetupIconFile=..\..\src\windows\runner\resources\app_icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -42,7 +42,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopShortcut}"; GroupDescription
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchShortcut}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.1
 
 [Files]
-Source: "..\..\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\..\src\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

@@ -212,14 +212,14 @@ jobs:
           Write-Host "Absolute installer directory: $absoluteInstallerDir"
 
           # Create a copy of the installer script with dynamic paths
-          $issTemplate = Get-Content 'src/windows/setup-wizard/installer.iss' -Raw
+          $issTemplate = Get-Content 'packaging/inno-setup/installer.iss' -Raw
           $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
-          $issTemplate = $issTemplate -replace 'Source: "\.\.\\build\\windows\\x64\\runner\\Release\\\*"', "Source: `"..\build\windows\x64\runner\${{ env.BUILD_TYPE }}\*`""
+          $issTemplate = $issTemplate -replace 'Source: "\.\.\\\.\.\\src\\build\\windows\\x64\\runner\\Release\\\*"', "Source: `"..\..\src\build\windows\x64\runner\${{ env.BUILD_TYPE }}\*`""
           # Use absolute path for output directory to avoid confusion
-          $issTemplate = $issTemplate -replace 'OutputDir=build\\windows\\installer', "OutputDir=$absoluteInstallerDir"
+          $issTemplate = $issTemplate -replace 'OutputDir=\.\.\\\.\.\\src\\build\\windows\\installer', "OutputDir=$absoluteInstallerDir"
 
           # Write the modified script to a temporary file
-          $tempIssFile = "src/windows/setup-wizard/installer_temp.iss"
+          $tempIssFile = "packaging/inno-setup/installer_temp.iss"
           $issTemplate | Set-Content $tempIssFile
 
           Write-Host "Installer script configured for build type: ${{ env.BUILD_TYPE }}"
