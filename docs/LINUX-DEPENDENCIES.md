@@ -15,24 +15,12 @@ WHPH is a productivity application that helps you manage tasks, develop habits, 
 
 ## Required Runtime Dependencies
 
-### Arch Linux (Recommended for KDE users)
+### Arch Linux
+
+Package can be installed from [AUR](https://aur.archlinux.org/packages/whph-bin)
 
 ```bash
-# Update system
-sudo pacman -Syu
-
-# Install essential runtime libraries
-sudo pacman -S gtk3 gstreamer gst-plugins-base gst-plugins-good
-
-# Install system integration
-sudo pacman -S libayatana-appindicator libnotify zenity
-
-# Install window management tools (for app usage tracking)
-sudo pacman -S xorg-xprop wmctrl xdotool  # For X11 systems
-sudo pacman -S jq                         # For Sway/wlroots compositors
-
-# SQLite is usually pre-installed, but if needed:
-sudo pacman -S sqlite
+yay -S whph-bin
 ```
 
 ### Ubuntu/Debian
@@ -138,7 +126,7 @@ chmod +x whph
 
 ## Desktop Environment Specific Notes
 
-### KDE Plasma (Recommended for Arch Linux users)
+### KDE Plasma
 
 - System tray integration works out of the box
 - Window detection uses native KDE tools
