@@ -1,0 +1,3 @@
+• Bessere App-Beschreibungen in allen unterstützten Sprachen
+• Wiederholungs- und Erinnerungsfelder funktionieren jetzt zuverlässig
+• Übersetzungsprobleme behoben für bessere mehrsprachige Unterstützung

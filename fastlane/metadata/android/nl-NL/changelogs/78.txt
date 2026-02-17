@@ -1,0 +1,3 @@
+• Betere app-beschrijvingen in alle ondersteunde talen
+• Herhalings- en herinneringsvelden werken consistent
+• Vertalingsproblemen opgelost voor betere meertalige ondersteuning

@@ -1,0 +1,3 @@
+• Lepsze opisy aplikacji we wszystkich obsługiwanych językach
+• Pola cykliczności i przypomnień działają teraz spójnie
+• Naprawiono problemy z tłumaczeniami dla lepszej obsługi wielojęzycznej

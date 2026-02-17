@@ -1,0 +1,3 @@
+• Melhores descrições da aplicação em todos os idiomas suportados
+• Campos de recorrência e lembrete funcionam de forma consistente
+• Corrigidos problemas de tradução para melhor suporte multilíngue

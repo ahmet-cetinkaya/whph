@@ -1,0 +1,3 @@
+• Lepší popisy aplikace ve všech podporovaných jazycích
+• Pole opakování a připomínek nyní fungují konzistentně
+• Opraveny problémy s překlady pro lepší vícejazyčnou podporu

@@ -1,0 +1,3 @@
+• Tüm desteklenen dillerde daha iyi uygulama açıklamaları
+• Yineleme ve hatırlatıcı alanları artık tutarlı çalışıyor
+• Daha iyi çoklu dil desteği için çeviri sorunları düzeltildi

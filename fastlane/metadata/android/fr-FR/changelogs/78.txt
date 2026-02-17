@@ -1,0 +1,3 @@
+• De meilleures descriptions d'application dans toutes les langues prises en charge
+• Les champs de récurrence et de rappel fonctionnent de manière cohérente
+• Correction des problèmes de traduction pour un meilleur support multilingue

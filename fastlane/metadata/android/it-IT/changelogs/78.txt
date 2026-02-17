@@ -1,0 +1,3 @@
+• Migliori descrizioni dell'app in tutte le lingue supportate
+• I campi di ricorrenza e promemoria funzionano in modo coerente
+• Corretti i problemi di traduzione per un migliore supporto multilingue

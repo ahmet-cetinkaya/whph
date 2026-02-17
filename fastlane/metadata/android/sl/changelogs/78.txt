@@ -1,0 +1,3 @@
+• Boljši opisi aplikacije v vseh podprtih jezikih
+• Polja za ponavljanje in opomnike delujejo zdaj dosledno
+• Popravljene težave s prevodi za boljšo večjezično podporo

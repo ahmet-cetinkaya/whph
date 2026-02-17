@@ -1,0 +1,3 @@
+• Mejores descripciones de la aplicación en todos los idiomas admitidos
+• Los campos de periodicidad y recordatorios funcionan de manera coherente
+• Corregidos problemas de traducción para mejor soporte multilingüe

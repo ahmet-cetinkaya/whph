@@ -1,0 +1,3 @@
+• Descrieri mai bune ale aplicației în toate limbile acceptate
+• Câmpurile de recurență și memento funcționează acum consecvent
+• Corectate problemele de traducere pentru un suport multilingv mai bun

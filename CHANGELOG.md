@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.1] - 2026-02-18
+
+### Added
+- **Updated App Descriptions**: Better descriptions across all supported languages to help you understand what the app does
+
+### Changed
+- **Linux Theme Integration**: Theme switching now works more smoothly with your desktop environment
+
+### Fixed
+- **Flatpak Device Sync**: Sync functionality now works correctly in Flatpak version by enabling required network access
+- **Flatpak Compatibility**: Improved app detection and reliability when running as Flatpak
+- **Linux App Directory**: Now respects your custom directory settings (XDG_DATA_HOME) if configured
+- **Task Management**: Recurrence and reminder fields now work consistently throughout the app
+- **List Item Display**: Fixed translation issues with list items for better multilingual support
+- **Linux Desktop**: Reduced error messages during window detection on Wayland systems for cleaner operation
+
 ## [0.22.0] - 2026-02-14
 
 ### Added
@@ -1487,7 +1503,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.22.0...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.22.1...HEAD
+[0.22.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.1
 [0.22.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.0
 [0.21.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.21.1
 [0.21.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.21.0

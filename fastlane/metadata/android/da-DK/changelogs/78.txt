@@ -1,0 +1,3 @@
+• Bedre appbeskrivelser på alle understøttede sprog
+• Gentagelses- og påmindelsesfelter fungerer nu konsekvent
+• Rettede oversættelsesproblemer for bedre flersprogsstøtte

@@ -1,0 +1,3 @@
+• Paremmat sovelluskuvaustukset kaikilla tuetuilla kielillä
+• Toisto- ja muistinkentät toimivat johdonmukaisesti
+• Korjattu käännösongelmia parempaa monikielistä tukea varten
