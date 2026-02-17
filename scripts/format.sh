@@ -24,20 +24,31 @@ else
     exit 1
 fi
 
-# Pre-build exclude patterns for efficiency
-EXCLUDES=(
-    -not -path "*/.git/*"
-    -not -path "*/.vscode/*"
-    -not -path "*/.claude/*"
-    -not -path "*/.idea/*"
-    -not -path "*/node_modules/*"
-    -not -path "*/.dart_tool/*"
-    -not -path "*/build/*"
-    -not -path "*/coverage/*"
-    -not -path "*/packages/*"
-    -not -path "*/packaging/flatpak/flatpak-flutter/*"
-    -not -path "*/packaging/flatpak/flathub/*"
-    -not -path "*/packaging/flatpak/shared-modules/*"
+# Define paths to prune (skip entirely) - these MUST match directory names
+PRUNE_PATHS=(
+    -path "*/.git" -o
+    -path "*/.vscode" -o
+    -path "*/.claude" -o
+    -path "*/docs/.tasks" -o
+    -path "*/.pub-cache" -o
+    -path "*/android/.gradle" -o
+    -path "*/android/app/build" -o
+    -path "*/ios/Pods" -o
+    -path "*/macos/Pods" -o
+    -path "*/ephemeral" -o
+    -path "*/.idea" -o
+    -path "*/node_modules" -o
+    -path "*/.dart_tool" -o
+    -path "*/build" -o
+    -path "*/coverage" -o
+    -path "*/packages" -o
+    -path "*/packaging/flatpak/flatpak-flutter" -o
+    -path "*/packaging/flatpak/flathub" -o
+    -path "*/packaging/flatpak/shared-modules" -o
+    -path "*/repo" -o
+    -path "*/build-dir" -o
+    -path "*/.flatpak-builder" -o
+    -path "*/whph.flatpak" -o
 )
 
 # Dynamically exclude all Git submodules
@@ -46,12 +57,12 @@ if command -v git >/dev/null 2>&1; then
     acore_log_info "🔍 Detecting Git submodules..."
     while IFS= read -r submodule_path; do
         if [[ -n "$submodule_path" ]]; then
-            # Add submodule path to excludes (with both patterns: from root and from src)
-            EXCLUDES+=("-not" "-path" "*/$submodule_path/*")
+            # Add submodule path to prune list
+            PRUNE_PATHS+=("-path" "*/$submodule_path" "-o")
             # Also handle submodules that might be directly in src/
             if [[ "$submodule_path" == src/* ]]; then
                 relative_submodule="${submodule_path#src/}"
-                EXCLUDES+=("-not" "-path" "*/$relative_submodule/*")
+                PRUNE_PATHS+=("-path" "*/$relative_submodule" "-o")
             fi
         fi
     done < <(git submodule status 2>/dev/null | awk '{print $2}')
@@ -77,16 +88,16 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Single pass to collect all files - much faster than multiple find calls
+# Single pass to collect all files - using -prune for performance
 acore_log_section "🔍 Scanning for files to format..."
-find . \( \
+find . \( "${PRUNE_PATHS[@]}" -false \) -prune -o \( \
     \( -name "*.dart" -not -name "*.g.dart" -not -name "*.mocks.dart" -not -name "*.log" \) \
     -o \( -name "*.json" \) \
     -o \( -name "*.yaml" -o -name "*.yml" \) \
     -o \( -name "*.md" \) \
     -o \( -name "*.kt" -o -name "*.kts" \) \
     -o \( -name "*.cpp" -o -name "*.h" \) \
-    \) "${EXCLUDES[@]}" | while IFS= read -r file; do
+    \) -print | while IFS= read -r file; do
     case "$file" in
     *.dart) echo "$file" >>"$DART_FILES_LIST" ;;
     *.json) echo "$file" >>"$JSON_FILES_LIST" ;;
@@ -173,10 +184,10 @@ acore_log_section "🐚 Formatting shell scripts with shfmt..."
 if command -v shfmt >/dev/null 2>&1; then
     cd "$PROJECT_ROOT"
     # Find and format shell scripts in one pass
-    SHELL_FILES=$(find . -name "*.sh" "${EXCLUDES[@]}" 2>/dev/null | wc -l)
+    SHELL_FILES=$(find . \( "${PRUNE_PATHS[@]}" -false \) -prune -o -name "*.sh" -print 2>/dev/null | wc -l)
     if [[ $SHELL_FILES -gt 0 ]]; then
         acore_log_info "Found $SHELL_FILES shell scripts to format"
-        find . -name "*.sh" "${EXCLUDES[@]}" -print0 | xargs -0 shfmt -w -i 4 2>/dev/null || true
+        find . \( "${PRUNE_PATHS[@]}" -false \) -prune -o -name "*.sh" -print0 | xargs -0 shfmt -w -i 4 2>/dev/null || true
         acore_log_success "✅ Shell scripts formatted"
     else
         acore_log_warning "⚠️ No shell scripts found to format"
