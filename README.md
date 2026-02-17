@@ -31,7 +31,7 @@ Install WHPH on Android through these stores or download the APK directly:
 
 ### 🐧 Linux
 
-[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&logo=linux&logoColor=FCC624&style=flat)](https://github.com/ahmet-cetinkaya/whph/releases) [![AUR version](https://img.shields.io/aur/version/whph-bin?label=AUR&logo=arch-linux&style=flat)](https://aur.archlinux.org/packages/whph-bin)
+[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&logo=linux&logoColor=FCC624&style=flat)](https://github.com/ahmet-cetinkaya/whph/releases) [![AUR version](https://img.shields.io/aur/version/whph-bin?label=AUR&logo=arch-linux&style=flat)](https://aur.archlinux.org/packages/whph-bin) [![NixOS](https://img.shields.io/badge/NixOS-5277C3?logo=nixos&logoColor=white&style=flat)](docs/packaging/NIX_PACKAGING.md)
 
 <!-- prettier-ignore -->
 > [!TIP]

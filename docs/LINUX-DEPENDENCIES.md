@@ -86,6 +86,26 @@ sudo zypper install -y jq                   # For Sway/wlroots compositors
 sudo zypper install -y sqlite3
 ```
 
+### NixOS
+
+You can install WHPH using the provided flake:
+
+```nix
+# In your flake.nix
+inputs.whph.url = "github:ahmet-cetinkaya/whph?dir=packaging/nix";
+
+# In your system configuration
+environment.systemPackages = [
+  inputs.whph.packages.${pkgs.system}.default
+];
+```
+
+Or run it directly:
+
+```bash
+nix run github:ahmet-cetinkaya/whph?dir=packaging/nix
+```
+
 ## Verification Steps
 
 ### 1. Check Required Libraries
