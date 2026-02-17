@@ -64,9 +64,11 @@ mv "generated" "$FLATHUB_DIR/"
 
 # Vendor Shared Modules
 
-
 # 3. Build Flatpak
 acore_log_section "🏗️  Building Flatpak..."
+acore_log_info "Cleaning host build artifacts..."
+rm -rf "$PROJECT_ROOT/src/build"
+
 BUILD_DIR="$PROJECT_ROOT/build-dir"
 REPO_DIR="$PROJECT_ROOT/repo"
 

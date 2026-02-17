@@ -76,6 +76,8 @@ add_executable(${BINARY_NAME}
   "window_detector_x11.cpp"
   "window_detector_wayland.cpp"
   "window_detector_fallback.cpp"
+  "method_channels/app_usage_method_channel.cc"
+  "method_channels/window_management_method_channel.cc"
   "${FLUTTER_MANAGED_DIR}/generated_plugin_registrant.cc"
 )
 

@@ -8,6 +8,8 @@
 #include "flutter/generated_plugin_registrant.h"
 #include "app_constants.h"
 #include "window_detector.h"
+#include "method_channels/app_usage_method_channel.h"
+#include "method_channels/window_management_method_channel.h"
 
 struct _MyApplication {
   GtkApplication parent_instance;
@@ -37,96 +39,6 @@ std::string get_executable_dir() {
   return "";
 }
 
-// Method channel callback for getting active window and focusing windows
-static void get_active_window_method_call_cb(FlMethodChannel* channel,
-                                           FlMethodCall* method_call,
-                                           gpointer user_data) {
-  g_autoptr(FlMethodResponse) response = nullptr;
-
-  const gchar* method = fl_method_call_get_name(method_call);
-
-  if (strcmp(method, "getActiveWindow") == 0) {
-    auto detector = WindowDetector::Create();
-    WindowInfo info = detector->GetActiveWindow();
-
-    // Create result string in format: "title,application"
-    std::string result = info.title + "," + info.application;
-
-    g_autoptr(FlValue) flutter_result = fl_value_new_string(result.c_str());
-    response = FL_METHOD_RESPONSE(fl_method_success_response_new(flutter_result));
-  } else if (strcmp(method, "focusWindow") == 0) {
-    // Get the window title parameter
-    FlValue* args = fl_method_call_get_args(method_call);
-    const gchar* window_title = "whph"; // default
-
-    if (args && fl_value_get_type(args) == FL_VALUE_TYPE_STRING) {
-      window_title = fl_value_get_string(args);
-    }
-
-    auto detector = WindowDetector::Create();
-    bool success = detector->FocusWindow(window_title);
-
-    g_autoptr(FlValue) flutter_result = fl_value_new_bool(success);
-    response = FL_METHOD_RESPONSE(fl_method_success_response_new(flutter_result));
-  } else {
-    response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
-  }
-
-  fl_method_call_respond(method_call, response, nullptr);
-}
-
-// Method channel callback for window management
-static void window_management_method_call_cb(FlMethodChannel* channel,
-                                             FlMethodCall* method_call,
-                                             gpointer user_data) {
-  g_autoptr(FlMethodResponse) response = nullptr;
-
-  const gchar* method = fl_method_call_get_name(method_call);
-
-  if (strcmp(method, "setWindowClass") == 0) {
-    // Get the window class parameter
-    FlValue* args = fl_method_call_get_args(method_call);
-    const gchar* window_class = "me.ahmetcetinkaya.whph"; // default
-
-    if (args && fl_value_get_type(args) == FL_VALUE_TYPE_STRING) {
-      window_class = fl_value_get_string(args);
-    }
-
-    bool success = false;
-
-#ifdef GDK_WINDOWING_X11
-    if (main_window && GDK_IS_X11_WINDOW(gtk_widget_get_window(GTK_WIDGET(main_window)))) {
-      GdkWindow* gdk_window = gtk_widget_get_window(GTK_WIDGET(main_window));
-      if (GDK_IS_X11_WINDOW(gdk_window)) {
-        // Set the WM_CLASS property for X11 windows
-        gdk_window_set_role(gdk_window, window_class);
-
-        // Also set the class hint for better KDE integration
-        XClassHint* class_hint = XAllocClassHint();
-        if (class_hint) {
-          class_hint->res_name = const_cast<char*>(window_class);
-          class_hint->res_class = const_cast<char*>(window_class);
-
-          XSetClassHint(GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
-                        GDK_WINDOW_XID(gdk_window),
-                        class_hint);
-
-          XFree(class_hint);
-          success = true;
-        }
-      }
-    }
-#endif
-
-    g_autoptr(FlValue) flutter_result = fl_value_new_bool(success);
-    response = FL_METHOD_RESPONSE(fl_method_success_response_new(flutter_result));
-  } else {
-    response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
-  }
-
-  fl_method_call_respond(method_call, response, nullptr);
-}
-
 // Setup method channels
 static void setup_method_channels(FlView* view) {
   FlEngine* engine = fl_view_get_engine(view);
@@ -142,7 +54,7 @@ static void setup_method_channels(FlView* view) {
 
   fl_method_channel_set_method_call_handler(
     app_usage_channel,
-    get_active_window_method_call_cb,
+    app_usage_method_call_cb,
     nullptr,
     nullptr
   );
@@ -158,7 +70,7 @@ static void setup_method_channels(FlView* view) {
   fl_method_channel_set_method_call_handler(
     window_management_channel,
     window_management_method_call_cb,
-    nullptr,
+    main_window,
     nullptr
   );
 }

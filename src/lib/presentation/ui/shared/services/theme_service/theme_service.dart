@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
@@ -14,24 +15,37 @@ import 'package:whph/presentation/ui/shared/services/theme_service/theme_data_bu
 
 class ThemeService with WidgetsBindingObserver implements IThemeService {
   final Mediator _mediator;
-  final ILogger _logger;
+  @protected
+  final ILogger logger;
   final StreamController<void> _themeChangesController = StreamController<void>.broadcast();
 
   AppThemeMode _currentThemeMode = AppThemeMode.auto;
   AppThemeMode _storedThemeMode = AppThemeMode.auto;
   bool _isDynamicAccentColorEnabled = false;
+  @protected
+  AppThemeMode get storedThemeMode => _storedThemeMode;
+
+  @protected
+  set currentThemeMode(AppThemeMode value) => _currentThemeMode = value;
+
+  @protected
+  bool get isPollingLinuxTheme => _isPollingLinuxTheme;
+
+  @protected
+  @protected
+  set isPollingLinuxTheme(bool value) => _isPollingLinuxTheme = value;
+
+  bool _isPollingLinuxTheme = false;
   bool _isCustomAccentColorEnabled = false;
   Color? _customAccentColor;
   domain.UiDensity _currentUiDensity = domain.AppTheme.defaultUiDensity;
   Color _primaryColor = domain.AppTheme.primaryColor;
   ColorScheme? _dynamicLightColorScheme;
   ColorScheme? _dynamicDarkColorScheme;
-  Timer? _linuxThemePollingTimer;
-  bool _isPollingLinuxTheme = false;
 
   ThemeService({required Mediator mediator, required ILogger logger})
       : _mediator = mediator,
-        _logger = logger;
+        this.logger = logger;
 
   @override
   AppThemeMode get currentThemeMode => _storedThemeMode;
@@ -163,32 +177,12 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     if (_isDynamicAccentColorEnabled) {
       await _loadDynamicAccentColor();
     }
-
-    if (Platform.isLinux) {
-      // Poll for theme changes on Linux since WidgetsBindingObserver might not fire
-      _linuxThemePollingTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
-        if (_storedThemeMode == AppThemeMode.auto && !_isPollingLinuxTheme) {
-          _isPollingLinuxTheme = true;
-          try {
-            final newBrightness = await _getSystemBrightness();
-            final currentBrightness = _currentThemeMode == AppThemeMode.light ? Brightness.light : Brightness.dark;
-
-            if (currentBrightness != newBrightness) {
-              await _updateActualThemeMode();
-              _notifyThemeChanged();
-            }
-          } finally {
-            _isPollingLinuxTheme = false;
-          }
-        }
-      });
-    }
   }
 
   @override
   void didChangePlatformBrightness() {
     if (_storedThemeMode == AppThemeMode.auto) {
-      _updateActualThemeMode().then((_) => _notifyThemeChanged());
+      updateActualThemeMode().then((_) => notifyThemeChanged());
     }
   }
 
@@ -217,14 +211,14 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     ));
 
     // Update the actual theme mode based on user preference
-    await _updateActualThemeMode();
+    await updateActualThemeMode();
 
     // Update primary color if dynamic colors are enabled
     if (_isDynamicAccentColorEnabled) {
       await _loadDynamicAccentColor();
     }
 
-    _notifyThemeChanged();
+    notifyThemeChanged();
   }
 
   @override
@@ -244,7 +238,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       await _updatePrimaryColor();
     }
 
-    _notifyThemeChanged();
+    notifyThemeChanged();
   }
 
   @override
@@ -270,7 +264,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     }
 
     await _updatePrimaryColor();
-    _notifyThemeChanged();
+    notifyThemeChanged();
   }
 
   @override
@@ -285,7 +279,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       valueType: SettingValueType.string,
     ));
 
-    _notifyThemeChanged();
+    notifyThemeChanged();
   }
 
   @override
@@ -296,7 +290,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     } else {
       await _updatePrimaryColor();
     }
-    _notifyThemeChanged();
+    notifyThemeChanged();
   }
 
   Future<void> _loadThemeSettings() async {
@@ -328,7 +322,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     }
 
     // Update the actual theme mode based on user preference
-    await _updateActualThemeMode();
+    await updateActualThemeMode();
 
     // Load dynamic accent color
     try {
@@ -399,7 +393,8 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   }
 
   /// Updates the actual theme mode based on user preference and system settings
-  Future<void> _updateActualThemeMode() async {
+  @protected
+  Future<void> updateActualThemeMode() async {
     switch (_storedThemeMode) {
       case AppThemeMode.light:
         _currentThemeMode = AppThemeMode.light;
@@ -409,14 +404,15 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
         break;
       case AppThemeMode.auto:
         // Get system theme mode
-        final systemBrightness = await _getSystemBrightness();
+        final systemBrightness = await getSystemBrightness();
         _currentThemeMode = systemBrightness == Brightness.dark ? AppThemeMode.dark : AppThemeMode.light;
         break;
     }
   }
 
   /// Gets the system brightness/theme mode
-  Future<Brightness> _getSystemBrightness() async {
+  @protected
+  Future<Brightness> getSystemBrightness() async {
     try {
       if (Platform.isLinux) {
         // 1. Try Freedesktop Portal (DBus) - Universal & Flatpak-friendly
@@ -445,7 +441,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
             }
           }
         } catch (e) {
-          _logger.debug('Failed to detect Freedesktop Portal theme: $e');
+          logger.debug('Failed to detect Freedesktop Portal theme: $e');
         }
 
         // 2. Try GNOME (gsettings) - Fallback for non-portal environments
@@ -463,7 +459,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
             }
           }
         } catch (e) {
-          _logger.debug('Failed to detect GNOME theme: $e');
+          logger.debug('Failed to detect GNOME theme: $e');
         }
 
         // 3. Try KDE (kreadconfig) - Fallback for non-portal environments
@@ -491,7 +487,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
             }
           }
         } catch (e) {
-          _logger.debug('Failed to detect KDE theme: $e');
+          logger.debug('Failed to detect KDE theme: $e');
         }
       }
 
@@ -564,7 +560,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     return isDark
         ? ColorScheme.dark(
             primary: primaryColor,
-            onPrimary: ColorContrastHelper.getContrastingTextColor(primaryColor),
+            onPrimary: primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
             surface: surface1,
             onSurface: textColor,
             secondary: surface3,
@@ -581,7 +577,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
           )
         : ColorScheme.light(
             primary: primaryColor,
-            onPrimary: ColorContrastHelper.getContrastingTextColor(primaryColor),
+            onPrimary: primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white,
             surface: surface1,
             onSurface: textColor,
             secondary: surface3,
@@ -618,13 +614,14 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     _primaryColor = domain.AppTheme.primaryColor;
   }
 
-  void _notifyThemeChanged() {
+  @protected
+  void notifyThemeChanged() {
     _themeChangesController.add(null);
   }
 
+  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _linuxThemePollingTimer?.cancel();
     _themeChangesController.close();
   }
 }

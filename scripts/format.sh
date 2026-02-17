@@ -35,7 +35,32 @@ EXCLUDES=(
     -not -path "*/build/*"
     -not -path "*/coverage/*"
     -not -path "*/packages/*"
+    -not -path "*/packaging/flatpak/flatpak-flutter/*"
+    -not -path "*/packaging/flatpak/flathub/*"
+    -not -path "*/packaging/flatpak/shared-modules/*"
 )
+
+# Dynamically exclude all Git submodules
+cd "$PROJECT_ROOT"
+if command -v git >/dev/null 2>&1; then
+    acore_log_info "🔍 Detecting Git submodules..."
+    while IFS= read -r submodule_path; do
+        if [[ -n "$submodule_path" ]]; then
+            # Add submodule path to excludes (with both patterns: from root and from src)
+            EXCLUDES+=("-not" "-path" "*/$submodule_path/*")
+            # Also handle submodules that might be directly in src/
+            if [[ "$submodule_path" == src/* ]]; then
+                relative_submodule="${submodule_path#src/}"
+                EXCLUDES+=("-not" "-path" "*/$relative_submodule/*")
+            fi
+        fi
+    done < <(git submodule status 2>/dev/null | awk '{print $2}')
+else
+    acore_log_warning "⚠️ Git not found, cannot detect submodules automatically"
+fi
+
+# Change back to src directory for formatting
+cd "$SRC_DIR"
 
 # Create temp files for storing file lists
 DART_FILES_LIST=$(mktemp)

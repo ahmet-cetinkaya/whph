@@ -18,6 +18,7 @@ import 'package:whph/presentation/ui/shared/services/confetti_animation_service.
 import 'package:whph/presentation/ui/shared/services/json_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/shared/services/sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/theme_service/theme_service.dart';
+import 'package:whph/infrastructure/linux/features/theme/linux_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_tour_navigation_service.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
@@ -53,8 +54,13 @@ void registerUIPresentation(IContainer container) {
         settingRepository: container.resolve<ISettingRepository>(),
       ));
   container.registerSingleton<ITranslationService>((_) => TranslationService());
-  container.registerSingleton<IThemeService>(
-      (c) => ThemeService(mediator: c.resolve<Mediator>(), logger: c.resolve<ILogger>()));
+  if (Platform.isLinux) {
+    container.registerSingleton<IThemeService>(
+        (c) => LinuxThemeService(mediator: c.resolve<Mediator>(), logger: c.resolve<ILogger>()));
+  } else {
+    container.registerSingleton<IThemeService>(
+        (c) => ThemeService(mediator: c.resolve<Mediator>(), logger: c.resolve<ILogger>()));
+  }
   container.registerSingleton<IConfettiAnimationService>((_) => ConfettiAnimationService());
   container.registerSingleton<ISupportDialogService>(
     (_) {
