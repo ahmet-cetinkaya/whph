@@ -25,14 +25,16 @@ Install WHPH on Android through these stores or download the APK directly:
 [![F-Droid](https://img.shields.io/f-droid/v/me.ahmetcetinkaya.whph?logo=f-droid&label=F-Droid&color=1976D2&style=flat)](https://f-droid.org/packages/me.ahmetcetinkaya.whph)
 [![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=APK&logo=github&style=flat)](https://github.com/ahmet-cetinkaya/whph/releases)
 
-### 💻 Desktop (Windows & Linux)
+### 🪟 Windows
 
-Download the latest release for your desktop platform:
+[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&logo=windows&style=flat)](https://github.com/ahmet-cetinkaya/whph/releases)
 
-[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&logo=github&style=flat)](https://github.com/ahmet-cetinkaya/whph/releases)
+### 🐧 Linux
+
+[![GitHub Release](https://img.shields.io/github/v/release/ahmet-cetinkaya/whph?label=Latest%20Release&logo=linux&logoColor=FCC624&style=flat)](https://github.com/ahmet-cetinkaya/whph/releases) [![AUR version](https://img.shields.io/aur/version/whph-bin?label=AUR&logo=arch-linux&style=flat)](https://aur.archlinux.org/packages/whph-bin)
 
 <!-- prettier-ignore -->
-> [!TIP] Linux users
+> [!TIP]
 > Please check the [Linux Dependencies Guide](docs/LINUX-DEPENDENCIES.md)
 > to ensure you have all required system libraries installed before
 > running the application.

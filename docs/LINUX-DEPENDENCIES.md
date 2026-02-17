@@ -17,10 +17,14 @@ WHPH is a productivity application that helps you manage tasks, develop habits, 
 
 ### Arch Linux
 
-Package can be installed from [AUR](https://aur.archlinux.org/packages/whph-bin)
+Package can be installed from [AUR](https://aur.archlinux.org/packages/whph-bin) using an AUR helper:
 
 ```bash
+# Using yay
 yay -S whph-bin
+
+# Using paru
+paru -S whph-bin
 ```
 
 ### Ubuntu/Debian
