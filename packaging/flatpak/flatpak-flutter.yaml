@@ -66,36 +66,56 @@ modules:
       env:
         PUB_CACHE: /run/build/whph/.pub-cache
     build-commands:
+      # Build Process
       - cd src && flutter pub run build_runner build --delete-conflicting-outputs
       - cd src && flutter build linux --release --no-pub
+
+      # App Bundle Installation
       - install -D $BUNDLE_PATH/whph /app/bin/whph
       - cp -r $BUNDLE_PATH/lib /app/bin/lib
       - mkdir -p /app/bin/data
       - cp -r $BUNDLE_PATH/data/flutter_assets /app/bin/data/flutter_assets
       - install -D $BUNDLE_PATH/data/icudtl.dat /app/bin/data/icudtl.dat
 
-      # Integration
+      # Desktop & D-Bus Integration
       - install -D $BUNDLE_PATH/share/applications/whph.desktop /app/share/applications/me.ahmetcetinkaya.whph.desktop
       - sed -i 's/Icon=whph/Icon=me.ahmetcetinkaya.whph/g' /app/share/applications/me.ahmetcetinkaya.whph.desktop
       - sed -i 's/Version=@APP_VERSION@/Version=1.0/g' /app/share/applications/me.ahmetcetinkaya.whph.desktop
       - "sed -i 's|Exec=.*|Exec=/app/bin/whph %U|g' /app/share/applications/me.ahmetcetinkaya.whph.desktop"
       - "sed -i 's|Categories=.*|Categories=Utility;|g' /app/share/applications/me.ahmetcetinkaya.whph.desktop"
+      - echo "StartupWMClass=me.ahmetcetinkaya.whph" >> /app/share/applications/me.ahmetcetinkaya.whph.desktop
+      
       - install -D $BUNDLE_PATH/share/dbus-1/services/whph.service /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service
       - "sed -i 's|Exec=.*|Exec=/app/bin/whph|g' /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service"
 
-      # Icons
-      - install -D whph-512.png /app/share/icons/hicolor/512x512/apps/me.ahmetcetinkaya.whph.png
+      # Icons & Assets - Install to all sizes for compatibility
+      - |
+        for size in 16 22 24 32 48 64 128 256 512; do
+          install -D whph-512.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.png
+          install -D tray-default.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.default.png
+          install -D tray-play.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.play.png
+          install -D tray-pause.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.pause.png
+        done
+      - gtk-update-icon-cache -f -t /app/share/icons/hicolor
 
-      # Metainfo
+      # Metadata & Metainfo
       - install -D packaging/flatpak/flathub/me.ahmetcetinkaya.whph.metainfo.xml /app/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml
 
     sources:
-      - type: git
-        url: file:///home/ac/Code/ahmet-cetinkaya/whph
-        branch: main
+      - type: dir
+        path: /home/ac/Code/ahmet-cetinkaya/whph
       - type: file
         path: ../../../src/lib/core/domain/shared/assets/images/whph-512.png
         dest-filename: whph-512.png
+      - type: file
+        path: ../../../src/lib/core/domain/shared/assets/images/whph_logo_fg.png
+        dest-filename: tray-default.png
+      - type: file
+        path: ../../../src/lib/core/domain/shared/assets/images/whph_logo_fg_play.png
+        dest-filename: tray-play.png
+      - type: file
+        path: ../../../src/lib/core/domain/shared/assets/images/whph_logo_fg_pause.png
+        dest-filename: tray-pause.png
       - type: git
         url: https://github.com/flutter/flutter.git
         tag: 3.32.0

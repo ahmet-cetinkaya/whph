@@ -172,7 +172,10 @@ static void my_application_activate(GApplication* application) {
   // Store the main window reference for later access
   main_window = window;
 
-  // Set window icon
+  // Set icon name for theme lookup (primary method for installed apps)
+  gtk_window_set_icon_name(window, "me.ahmetcetinkaya.whph");
+
+  // Set window icon fallback
   GError *error = nullptr;
   GdkPixbuf* icon = nullptr;
   
