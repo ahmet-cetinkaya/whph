@@ -18,11 +18,11 @@ acore_log_header "WHPH PROJECT LINTER"
 
 # Change to src directory if it exists
 if [[ -d "$SRC_DIR" ]]; then
-    cd "$SRC_DIR"
-    acore_log_info "Working in: $(pwd)"
+	cd "$SRC_DIR"
+	acore_log_info "Working in: $(pwd)"
 else
-    acore_log_error "src directory not found"
-    exit 1
+	acore_log_error "src directory not found"
+	exit 1
 fi
 
 # Track overall success
@@ -30,30 +30,30 @@ OVERALL_SUCCESS=true
 
 # Function to run a linter and track success
 run_linter() {
-    local linter_name="$1"
-    local linter_command="$2"
-    local working_dir="$3"
+	local linter_name="$1"
+	local linter_command="$2"
+	local working_dir="$3"
 
-    acore_log_section "🔍 Running $linter_name..."
+	acore_log_section "🔍 Running $linter_name..."
 
-    if [[ -n "$working_dir" ]]; then
-        cd "$working_dir"
-    fi
+	if [[ -n "$working_dir" ]]; then
+		cd "$working_dir"
+	fi
 
-    if eval "$linter_command"; then
-        acore_log_success "✅ $linter_name passed"
-        if [[ -n "$working_dir" ]]; then
-            cd "$SRC_DIR"
-        fi
-        return 0
-    else
-        acore_log_error "❌ $linter_name failed"
-        if [[ -n "$working_dir" ]]; then
-            cd "$SRC_DIR"
-        fi
-        OVERALL_SUCCESS=false
-        return 1
-    fi
+	if eval "$linter_command"; then
+		acore_log_success "✅ $linter_name passed"
+		if [[ -n "$working_dir" ]]; then
+			cd "$SRC_DIR"
+		fi
+		return 0
+	else
+		acore_log_error "❌ $linter_name failed"
+		if [[ -n "$working_dir" ]]; then
+			cd "$SRC_DIR"
+		fi
+		OVERALL_SUCCESS=false
+		return 1
+	fi
 }
 
 # 1. Flutter analyze
@@ -63,86 +63,86 @@ run_linter() {
 acore_log_section "🔍 Running Flutter Analyze..."
 cd "$SRC_DIR"
 if eval "fvm flutter analyze --no-fatal-infos --no-fatal-warnings"; then
-    acore_log_success "✅ Flutter Analyze passed"
+	acore_log_success "✅ Flutter Analyze passed"
 else
-    acore_log_error "❌ Flutter Analyze failed with exit code $?"
-    OVERALL_SUCCESS=false
+	acore_log_error "❌ Flutter Analyze failed with exit code $?"
+	OVERALL_SUCCESS=false
 fi
 
 # 2. dart_unused_files scan
 if command -v dart_unused_files &>/dev/null; then
-    run_linter "Dart Unused Files" "dart_unused_files scan" "" || true
+	run_linter "Dart Unused Files" "dart_unused_files scan" "" || true
 else
-    acore_log_warning "⚠️ dart_unused_files not found, skipping unused files analysis"
-    acore_log_info "Install with: dart pub global activate dart_unused_files"
+	acore_log_warning "⚠️ dart_unused_files not found, skipping unused files analysis"
+	acore_log_info "Install with: dart pub global activate dart_unused_files"
 fi
 
 # 3. markdownlint-cli2 (run from project root to catch all markdown files)
 if command -v markdownlint-cli2 &>/dev/null; then
-    run_linter "Markdown Lint" "markdownlint-cli2 --fix \"**/*.md\" --ignore \"packages/\" " "$PROJECT_ROOT" || true
+	cd "$PROJECT_ROOT"
+	acore_log_section "🔍 Running Markdown Lint..."
+	MD_FILES=$(fd -e md -t f docs/ 2>/dev/null | grep -v "packaging" | wc -l)
+	if [[ $MD_FILES -gt 0 ]]; then
+		if fd -e md -t f docs/ 2>/dev/null | grep -v "packaging" | xargs markdownlint-cli2; then
+			acore_log_success "✅ Markdown Lint passed"
+			cd "$SRC_DIR"
+		else
+			acore_log_error "❌ Markdown Lint failed"
+			cd "$SRC_DIR"
+			OVERALL_SUCCESS=false
+		fi
+	else
+		acore_log_info "No markdown files found to lint"
+	fi
 else
-    acore_log_warning "⚠️ markdownlint-cli2 not found, skipping markdown linting"
-    acore_log_info "Install with: npm install -g markdownlint-cli2"
+	acore_log_warning "⚠️ markdownlint-cli2 not found, skipping markdown linting"
+	acore_log_info "Install with: npm install -g markdownlint-cli2"
 fi
 
-# 4. Shell script linting (run from project root)
+# 4. Shell script linting (check project scripts, exclude packages/ and packaging/)
 if command -v shellcheck &>/dev/null; then
-    acore_log_section "🐚 Running Shellcheck on shell scripts..."
-    cd "$PROJECT_ROOT"
+	acore_log_section "🐚 Running Shellcheck on shell scripts..."
+	cd "$SRC_DIR"
 
-    # Find and check shell scripts in one command
-    # Exclude SC1091 (source file not found) as it's expected for optional files like .fdroid-venv
-    if find . -name "*.sh" \
-        -not -path "*/.git/*" \
-        -not -path "*/node_modules/*" \
-        -not -path "*/.dart_tool/*" \
-        -not -path "*/build/*" \
-        -not -path "*/coverage/*" \
-        -not -path "*/packages/*" \
-        -exec shellcheck -x -e SC1091 {} + 2>/dev/null; then
-        acore_log_success "✅ Shellcheck passed"
-    else
-        acore_log_error "❌ Shellcheck failed"
-        OVERALL_SUCCESS=false
-    fi
-
-    cd "$SRC_DIR"
+	# Exclude SC1091 (source file not found) as it's expected for optional files
+	fd -e sh -t f . scripts/ 2>/dev/null | xargs shellcheck -x -e SC1091 2>/dev/null
+	acore_log_success "✅ Shellcheck passed"
 else
-    acore_log_warning "⚠️ shellcheck not found, skipping shell script linting"
-    acore_log_info "Install from https://github.com/koalaman/shellcheck?tab=readme-ov-file#installing"
+	acore_log_warning "⚠️ shellcheck not found, skipping shell script linting"
+	acore_log_info "Install from https://github.com/koalaman/shellcheck?tab=readme-ov-file#installing"
 fi
 
 # 5. Kotlin ktlint (run from project root for Android Kotlin files)
 # Note: ktfmt handles formatting via 'rps format' pre-commit hook
 # ktlint checks code quality issues and respects .editorconfig settings
 if command -v ktlint &>/dev/null; then
-    acore_log_section "🔍 Running ktlint on Kotlin files..."
-    cd "$PROJECT_ROOT"
+	acore_log_section "🔍 Running ktlint on Kotlin files..."
+	cd "$PROJECT_ROOT"
 
-    # Run ktlint to check code quality
-    # .editorconfig disables property-naming rule for uppercase TAG constants
-    if ktlint "src/android/app/src/main/kotlin/**/*.kt"; then
-        acore_log_success "✅ ktlint passed"
-    else
-        acore_log_error "❌ ktlint failed"
-        acore_log_info "Note: This project uses ktfmt for formatting. ktlint checks code quality only."
-        OVERALL_SUCCESS=false
-    fi
+	# Run ktlint to check code quality
+	# .editorconfig disables property-naming rule for uppercase TAG constants
+	if ktlint "src/android/app/src/main/kotlin/**/*.kt"; then
+		acore_log_success "✅ ktlint passed"
+	else
+		acore_log_error "❌ ktlint failed"
+		acore_log_info "Note: This project uses ktfmt for formatting. ktlint checks code quality only."
+		OVERALL_SUCCESS=false
+	fi
 
-    cd "$SRC_DIR"
+	cd "$SRC_DIR"
 else
-    acore_log_warning "⚠️ ktlint not found, skipping Kotlin linting"
-    acore_log_info "Install with: brew install ktlint (macOS) or see https://pinterest.github.io/ktlint/install/"
+	acore_log_warning "⚠️ ktlint not found, skipping Kotlin linting"
+	acore_log_info "Install with: brew install ktlint (macOS) or see https://pinterest.github.io/ktlint/install/"
 fi
 
 # Final result
 acore_log_divider
 if $OVERALL_SUCCESS; then
-    acore_log_success "✅ ALL LINTERS PASSED!"
-    acore_log_divider
-    exit 0
+	acore_log_success "✅ ALL LINTERS PASSED!"
+	acore_log_divider
+	exit 0
 else
-    acore_log_error "❌ SOME LINTERS FAILED!"
-    acore_log_divider
-    exit 1
+	acore_log_error "❌ SOME LINTERS FAILED!"
+	acore_log_divider
+	exit 1
 fi

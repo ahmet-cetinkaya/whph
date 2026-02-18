@@ -15,7 +15,6 @@
         "br"
       ] // Allow these HTML elements for specific use cases
     }
-  },
-  "customRules": [],
-  "gitignore": true
+  }
+  // "gitignore": true // Tool stucks in v0.21.0
 }

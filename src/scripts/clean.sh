@@ -26,36 +26,36 @@ rm -f "$PROJECT_ROOT/whph.flatpak"
 # Remove all contents of android/fdroid/build except extlib
 acore_log_info "Cleaning android/fdroid/build except extlib..."
 if [ -d "android/fdroid/build" ]; then
-    # Use a more robust approach to clean the directory
-    for item in android/fdroid/build/*; do
-        if [ -e "$item" ] && [ "$(basename "$item")" != "extlib" ]; then
-            acore_log_info "Removing: $(basename "$item")"
-            rm -rf "$item" 2>/dev/null || true
-        fi
-    done
+	# Use a more robust approach to clean the directory
+	for item in android/fdroid/build/*; do
+		if [ -e "$item" ] && [ "$(basename "$item")" != "extlib" ]; then
+			acore_log_info "Removing: $(basename "$item")"
+			rm -rf "$item" 2>/dev/null || true
+		fi
+	done
 fi
 
 # Remove generated files
 acore_log_info "Removing generated files (*.g.dart, *.mocks.dart)..."
-find . -type f -name "*.g.dart" -delete
-find . -type f -name "*.mocks.dart" -delete
+fd -e "g.dart" -t f . . 2>/dev/null | xargs rm -f
+fd -e "mocks.dart" -t f . . 2>/dev/null | xargs rm -f
 
 # Remove drift generated schema files
 acore_log_info "Removing drift generated schema files..."
 if [ -d "test/drift/app_database/generated" ]; then
-    rm -rf test/drift/app_database/generated/*
+	rm -rf test/drift/app_database/generated/*
 fi
 
 # Remove pub cache
 acore_log_info "Removing pub cache..."
 if [ -d ~/.pub-cache/hosted/pub.dev ]; then
-    rm -rf ~/.pub-cache/hosted/pub.dev/* 2>/dev/null || true
+	rm -rf ~/.pub-cache/hosted/pub.dev/* 2>/dev/null || true
 fi
 
 # Remove .dart_tool
 acore_log_info "Removing .dart_tool..."
 if [ -d .dart_tool ]; then
-    rm -rf .dart_tool
+	rm -rf .dart_tool
 fi
 
 # Repair and get pub packages
