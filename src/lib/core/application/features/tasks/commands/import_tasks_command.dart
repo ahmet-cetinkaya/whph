@@ -7,7 +7,6 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:csv/csv.dart';
-import 'package:acore/acore.dart';
 
 enum TaskImportType {
   generic,

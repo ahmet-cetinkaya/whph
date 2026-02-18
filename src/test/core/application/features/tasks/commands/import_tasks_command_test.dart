@@ -8,7 +8,7 @@ import 'package:whph/core/application/features/tags/queries/get_list_tags_query.
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:mockito/annotations.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+
 import 'import_tasks_command_test.mocks.dart';
 
 @GenerateMocks([Mediator])
@@ -39,8 +39,7 @@ void main() {
         'Task 2,Desc 2,1,,\r\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -65,8 +64,7 @@ void main() {
         'Task 2,Desc 2,3,2024-12-31,2025-01-01\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -99,8 +97,7 @@ void main() {
         'Non-int Priority,Desc,abc,2024-01-01,\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -151,8 +148,8 @@ void main() {
 
       // We need to return different IDs to test hierarchy
       var callCount = 0;
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).thenAnswer((_) async {
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
+          .thenAnswer((_) async {
         callCount++;
         return SaveTaskCommandResponse(id: 'task-$callCount', createdDate: DateTime.now());
       });
@@ -200,8 +197,7 @@ void main() {
         'note,Note 1,1,1\r\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -210,8 +206,7 @@ void main() {
       ));
 
       expect(response.successCount, 1);
-      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).called(1);
+      verify(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>()))).called(1);
     });
 
     test('should handle mixed hierarchy and invalid priorities in Todoist CSV', () async {
@@ -225,8 +220,8 @@ void main() {
       );
 
       var callCount = 0;
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).thenAnswer((_) async {
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
+          .thenAnswer((_) async {
         callCount++;
         return SaveTaskCommandResponse(id: 'task-$callCount', createdDate: DateTime.now());
       });
@@ -260,8 +255,8 @@ void main() {
       );
 
       var callCount = 0;
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).thenAnswer((_) async {
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
+          .thenAnswer((_) async {
         callCount++;
         return SaveTaskCommandResponse(id: 'task-$callCount', createdDate: DateTime.now());
       });
@@ -295,8 +290,7 @@ void main() {
         'Minimal Task,1\r\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -316,18 +310,16 @@ void main() {
       );
 
       // Mock tag search (None found initially)
-      when(mockMediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
-              argThat(predicate<GetListTagsQuery>((r) => r is GetListTagsQuery))))
+      when(mockMediator.send<GetListTagsQuery, GetListTagsQueryResponse>(argThat(isA<GetListTagsQuery>())))
           .thenAnswer((_) async => GetListTagsQueryResponse(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
-      when(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
-          argThat(predicate<SaveTagCommand>((r) => r is SaveTagCommand)))).thenAnswer((invocation) async {
+      when(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(argThat(isA<SaveTagCommand>())))
+          .thenAnswer((invocation) async {
         final request = invocation.positionalArguments[0] as SaveTagCommand;
         return SaveTagCommandResponse(id: 'new-tag-id-${request.name}', createdDate: DateTime.now());
       });
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -348,11 +340,11 @@ void main() {
 
       // Verify SaveTagCommands were sent
       verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
-          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag1')))).called(1);
+          argThat(predicate<SaveTagCommand>((c) => c.name == 'tag1')))).called(1);
       verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
-          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag2')))).called(1);
+          argThat(predicate<SaveTagCommand>((c) => c.name == 'tag2')))).called(1);
       verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
-          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag3')))).called(1);
+          argThat(predicate<SaveTagCommand>((c) => c.name == 'tag3')))).called(1);
     });
   });
 
@@ -365,18 +357,16 @@ void main() {
         'Task 1,Desc 1,1,,,"tag1, tag2"\n',
       );
 
-      when(mockMediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
-              argThat(predicate<GetListTagsQuery>((r) => r is GetListTagsQuery))))
+      when(mockMediator.send<GetListTagsQuery, GetListTagsQueryResponse>(argThat(isA<GetListTagsQuery>())))
           .thenAnswer((_) async => GetListTagsQueryResponse(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
-      when(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
-          argThat(predicate<SaveTagCommand>((r) => r is SaveTagCommand)))).thenAnswer((invocation) async {
+      when(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(argThat(isA<SaveTagCommand>())))
+          .thenAnswer((invocation) async {
         final request = invocation.positionalArguments[0] as SaveTagCommand;
         return SaveTagCommandResponse(id: 'new-tag-id-${request.name}', createdDate: DateTime.now());
       });
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -395,9 +385,9 @@ void main() {
           cmd.tagIdsToAdd!.any((id) => id.contains('tag2')))))).called(1);
 
       verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
-          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag1')))).called(1);
+          argThat(predicate<SaveTagCommand>((c) => c.name == 'tag1')))).called(1);
       verify(mockMediator.send<SaveTagCommand, SaveTagCommandResponse>(
-          argThat(predicate<SaveTagCommand>((SaveTagCommand c) => c.name == 'tag2')))).called(1);
+          argThat(predicate<SaveTagCommand>((c) => c.name == 'tag2')))).called(1);
     });
   });
 
@@ -422,8 +412,8 @@ void main() {
         'Task 1,Desc 1\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-          argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand)))).thenThrow(Exception('Mediator error'));
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
+          .thenThrow(Exception('Mediator error'));
 
       final response = await handler.call(ImportTasksCommand(
         filePath: file.path,
@@ -516,8 +506,7 @@ void main() {
       final rows = ['TITLE,DESCRIPTION'] + List.generate(150, (i) => 'Task $i,Desc $i,invalid_date');
       await file.writeAsString(rows.join('\n'));
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(
@@ -545,8 +534,7 @@ void main() {
         'Task Double Priority,Desc 4,2.0,2023-10-01,2023-10-02\n',
       );
 
-      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
-              argThat(predicate<SaveTaskCommand>((r) => r is SaveTaskCommand))))
+      when(mockMediator.send<SaveTaskCommand, SaveTaskCommandResponse>(argThat(isA<SaveTaskCommand>())))
           .thenAnswer((_) async => SaveTaskCommandResponse(id: 'task-id', createdDate: DateTime.now()));
 
       final response = await handler.call(ImportTasksCommand(

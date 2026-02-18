@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:mediatr/mediatr.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
@@ -43,9 +43,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   ColorScheme? _dynamicLightColorScheme;
   ColorScheme? _dynamicDarkColorScheme;
 
-  ThemeService({required Mediator mediator, required ILogger logger})
-      : _mediator = mediator,
-        this.logger = logger;
+  ThemeService({required Mediator mediator, required this.logger}) : _mediator = mediator;
 
   @override
   AppThemeMode get currentThemeMode => _storedThemeMode;
@@ -619,7 +617,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     _themeChangesController.add(null);
   }
 
-  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _themeChangesController.close();
