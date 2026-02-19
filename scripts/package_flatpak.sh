@@ -61,7 +61,7 @@ cd "$FLATPAK_DIR"
 
 # Run generator. This creates me.ahmetcetinkaya.whph.yaml and generated/ in CWD.
 # --app-pubspec is relative to the SOURCE root (the git repo), not the CWD.
-"$VENV_PYTHON" "$FLATPAK_FLUTTER_PY" --app-pubspec ../../src flatpak-flutter.yaml
+"$VENV_PYTHON" "$FLATPAK_FLUTTER_PY" --app-pubspec src flatpak-flutter.yaml
 
 # Move generation results to FLATHUB_DIR
 acore_log_info "Moving generated files to flathub submodule..."
