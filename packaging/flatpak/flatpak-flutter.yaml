@@ -115,16 +115,16 @@ modules:
       - type: dir
         path: ../../
       - type: file
-        path: ../../../src/lib/core/domain/shared/assets/images/whph-512.png
+        path: ../../src/lib/core/domain/shared/assets/images/whph-512.png
         dest-filename: whph-512.png
       - type: file
-        path: ../../../src/lib/core/domain/shared/assets/images/whph_logo_fg.png
+        path: ../../src/lib/core/domain/shared/assets/images/whph_logo_fg.png
         dest-filename: tray-default.png
       - type: file
-        path: ../../../src/lib/core/domain/shared/assets/images/whph_logo_fg_play.png
+        path: ../../src/lib/core/domain/shared/assets/images/whph_logo_fg_play.png
         dest-filename: tray-play.png
       - type: file
-        path: ../../../src/lib/core/domain/shared/assets/images/whph_logo_fg_pause.png
+        path: ../../src/lib/core/domain/shared/assets/images/whph_logo_fg_pause.png
         dest-filename: tray-pause.png
       - type: git
         url: https://github.com/flutter/flutter.git
