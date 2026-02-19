@@ -1,6 +1,12 @@
 name: "Initialize Submodules"
 description: "Initializes required submodules for the project"
 
+inputs:
+  include-flatpak:
+    description: "Whether to initialize Flatpak-related submodules"
+    required: false
+    default: "false"
+
 runs:
   using: "composite"
   steps:
@@ -12,40 +18,34 @@ runs:
         # Clean any potential submodule issues first
         git submodule sync || echo "Submodule sync not needed"
 
-        # Initialize the acore submodule with explicit handling for Windows
+        # Initialize the acore submodule
         if git submodule update --init --recursive packages/acore-flutter packages/acore-scripts; then
           echo "✅ ACore submodules initialized successfully"
         else
           echo "❌ Failed to initialize acore submodules"
-          echo "🔍 Debugging submodule status:"
-          git submodule status || echo "Could not get submodule status"
-          git ls-files --stage | grep 160000 || echo "No submodules found in index"
+          exit 1
+        fi
 
-          # Try alternative initialization for Windows
-          echo "🔄 Trying alternative initialization..."
-          git submodule init
-          git submodule update --recursive packages/acore-flutter packages/acore-scripts || {
-            echo "❌ Alternative initialization also failed"
+        # Initialize Flatpak submodules if requested
+        if [[ "${{ inputs.include-flatpak }}" == "true" ]]; then
+          echo "📦 Initializing Flatpak submodules..."
+          if git submodule update --init --recursive packaging/flatpak/flatpak-flutter packaging/flatpak/flathub packaging/flatpak/shared-modules; then
+            echo "✅ Flatpak submodules initialized successfully"
+          else
+            echo "❌ Failed to initialize Flatpak submodules"
             exit 1
-          }
+          fi
         fi
 
         # Verify the submodule was initialized correctly
         if [[ -d "packages/acore-flutter" && -f "packages/acore-flutter/pubspec.yaml" ]]; then
           echo "✅ acore-flutter verification passed"
-          echo "📁 Submodule directory: packages/acore-flutter"
-          echo "📄 pubspec.yaml found: $(ls -la packages/acore-flutter/pubspec.yaml)"
         else
           echo "❌ acore-flutter verification failed"
-          echo "📁 Submodule directory contents:"
-          ls -la packages/acore-flutter/ 2>/dev/null || echo "Directory not found"
           exit 1
         fi
 
-        if [[ -d "packages/acore-scripts" ]]; then
-          echo "✅ acore-scripts verification passed"
-          echo "📁 Submodule directory: packages/acore-scripts"
-        else
+        if [[ ! -d "packages/acore-scripts" ]]; then
            echo "❌ acore-scripts verification failed"
            exit 1
         fi

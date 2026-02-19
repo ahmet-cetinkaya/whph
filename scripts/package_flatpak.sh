@@ -39,8 +39,16 @@ acore_log_info "Icon found at $ICON_SRC"
 # 2. Regenerate Manifest
 acore_log_section "📝  Regenerating Flatpak Manifest..."
 if [[ ! -f "$VENV_PYTHON" ]]; then
-    acore_log_error "Virtual environment not found at $VENV_PYTHON. Please run setup first."
-    exit 1
+    acore_log_warning "Virtual environment not found at $VENV_PYTHON."
+    acore_log_info "Checking if system python3 has required packages..."
+    
+    if python3 -c "import yaml, tomlkit, packaging" 2>/dev/null; then
+        acore_log_success "✅ System python3 has required packages. Proceeding with system python3."
+        VENV_PYTHON="python3"
+    else
+        acore_log_error "Required Python packages (PyYAML, tomlkit, packaging) not found. Please run setup first or ensure they are installed in system python3."
+        exit 1
+    fi
 fi
 
 if [[ ! -f "$FLATPAK_FLUTTER_PY" ]]; then

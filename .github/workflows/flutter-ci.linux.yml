@@ -18,6 +18,19 @@ jobs:
 
       - name: Initialize Submodules
         uses: ./.github/actions/setup-repository
+        with:
+          include-flatpak: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Create Python Virtual Environment
+        run: |
+          python3 -m venv .venv
+          .venv/bin/python3 -m pip install --upgrade pip
+          .venv/bin/python3 -m pip install -r packaging/flatpak/flatpak-flutter/requirements.txt
 
       - name: Setup Flutter with FVM
         uses: ./.github/actions/setup-fvm
