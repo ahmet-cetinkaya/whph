@@ -58,7 +58,7 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
   Future<int> getTotalDurationByHabitId(String habitId, {DateTime? startDate, DateTime? endDate}) async {
     final query = database.customSelect(
       '''
-      SELECT COALESCE(SUM(duration), 0) as total_duration
+      SELECT COALESCE(TOTAL(duration), 0) as total_duration
       FROM habit_time_record_table
       WHERE habit_id = ?
         AND deleted_date IS NULL
@@ -74,7 +74,11 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
     );
 
     final result = await query.getSingleOrNull();
-    return result?.data['total_duration'] as int? ?? 0;
+    final totalDurationValue = result?.data['total_duration'];
+    if (totalDurationValue is num) {
+      return totalDurationValue.round();
+    }
+    return 0;
   }
 
   @override
@@ -101,7 +105,7 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
     final placeholders = habitIds.map((_) => '?').join(',');
     final query = database.customSelect(
       '''
-      SELECT habit_id, COALESCE(SUM(duration), 0) as total_duration
+      SELECT habit_id, COALESCE(TOTAL(duration), 0) as total_duration
       FROM habit_time_record_table
       WHERE habit_id IN ($placeholders)
         AND deleted_date IS NULL
@@ -122,7 +126,11 @@ class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord
 
     for (final result in results) {
       final habitId = result.data['habit_id'] as String;
-      final totalDuration = result.data['total_duration'] as int? ?? 0;
+      final totalDurationValue = result.data['total_duration'];
+      int totalDuration = 0;
+      if (totalDurationValue is num) {
+        totalDuration = totalDurationValue.round();
+      }
       map[habitId] = totalDuration;
     }
 
