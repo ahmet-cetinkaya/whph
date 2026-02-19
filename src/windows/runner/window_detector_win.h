@@ -1,9 +1,10 @@
 #ifndef WINDOW_DETECTOR_WIN_H_
 #define WINDOW_DETECTOR_WIN_H_
 
+#include <windows.h>
+// include windows.h before psapi.h
 #include <psapi.h>
 #include <string>
-#include <windows.h>
 
 struct WindowInfo {
   std::string title;
