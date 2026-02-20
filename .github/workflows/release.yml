@@ -269,7 +269,7 @@ jobs:
     container: archlinux:latest
     steps:
       - name: Install dependencies
-        run: pacman -Syu --noconfirm git base-devel pacman-contrib openssh
+        run: pacman -Syu --noconfirm git base-devel pacman-contrib openssh sudo
 
       - name: Fix git ownership
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -295,6 +295,8 @@ jobs:
   update-nix:
     needs: release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -358,8 +360,11 @@ jobs:
         run: |
           cd packaging/flatpak/flathub
           
+          # Unset the extraheader set by actions/checkout for this submodule so PAT can be used
+          git config --local --unset-all http.https://github.com/.extraheader || true
+          
           # Configure git to use PAT for authentication with the submodule remote
-          git remote set-url origin https://x-access-token:${{ secrets.FLATHUB_PAT }}@github.com/ahmet-cetinkaya/flathub.git
+          git remote set-url origin https://${{ secrets.FLATHUB_PAT }}@github.com/ahmet-cetinkaya/flathub.git
           
           cd "$GITHUB_WORKSPACE"
           ./scripts/update_flathub.sh

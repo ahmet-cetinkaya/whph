@@ -44,6 +44,12 @@ acore_log_info "Setting pkgver to $CURRENT_VERSION in PKGBUILD..."
 sed -i "s/^pkgver=.*/pkgver=$CURRENT_VERSION/" PKGBUILD
 sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
 
+acore_log_info "Setting up build user..."
+if ! id "builduser" &>/dev/null; then
+    useradd -m builduser
+fi
+chown -R builduser:builduser "$AUR_DIR"
+
 acore_log_info "Updating checksums..."
 if ! command -v updpkgsums &>/dev/null; then
     acore_log_error "'updpkgsums' not found. Please install pacman-contrib."
@@ -51,7 +57,7 @@ if ! command -v updpkgsums &>/dev/null; then
 fi
 
 # updpkgsums downloads the source and updates checksums
-if updpkgsums; then
+if sudo -u builduser updpkgsums; then
     acore_log_success "Checksums updated."
 else
     acore_log_error "Failed to update checksums. Is the release artifact available?"
@@ -63,7 +69,7 @@ if ! command -v makepkg &>/dev/null; then
     acore_log_error "'makepkg' not found. Please install pacman/base-devel."
     exit 1
 fi
-makepkg --printsrcinfo >.SRCINFO
+sudo -u builduser makepkg --printsrcinfo >.SRCINFO
 
 acore_log_section "Git Operations (AUR)"
 
