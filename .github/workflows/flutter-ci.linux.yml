@@ -84,3 +84,12 @@ jobs:
         with:
           name: whph-v${{ steps.app_version.outputs.version }}-flatpak
           path: whph.flatpak
+
+      - name: Upload Flathub manifest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: whph-v${{ steps.app_version.outputs.version }}-flathub-manifest
+          path: |
+            packaging/flatpak/flathub/me.ahmetcetinkaya.whph.yaml
+            packaging/flatpak/flathub/me.ahmetcetinkaya.whph.metainfo.xml
+            packaging/flatpak/flathub/generated/

@@ -252,16 +252,16 @@ jobs:
           prerelease: false
           generate_release_notes: true
           body: |
-            **📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes**
-
-            **🐧 Linux users: See [LINUX-DEPENDENCIES.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/LINUX-DEPENDENCIES.md) for system requirements and installation instructions**
-
             ### Downloads:
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk` - Android APK
-            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz` - Linux portable
-            - `whph-v${{ needs.check-workflows.outputs.tag-version }}.flatpak` - Flatpak bundle
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz` - Linux portable 
+              > 🐧 Linux portable users: See [LINUX-DEPENDENCIES.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/LINUX-DEPENDENCIES.md) for system requirements and installation instructions.
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}.flatpak` - Linux Flatpak bundle
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip` - Windows portable  
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe` - Windows installer
+
+            > [!NOTE]
+            > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes.
 
   update-aur:
     needs: release
@@ -313,3 +313,68 @@ jobs:
 
       - name: Update Nix Package
         run: ./scripts/update_nix.sh
+
+  update-flathub:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Download Flathub manifest artifact
+        run: |
+          TAG_NAME="${{ needs.release.outputs.tag-name }}"
+          APP_VERSION="${{ needs.release.outputs.app-version }}"
+          
+          # Find and download the flathub manifest artifact
+          RUN_ID=$(gh run list --workflow="Flutter CI - Linux" --limit=10 --json databaseId,headBranch,conclusion --jq ".[] | select(.headBranch == \"$TAG_NAME\" and .conclusion == \"success\") | .databaseId" | head -1)
+          
+          if [[ -n "$RUN_ID" ]]; then
+            echo "Found run ID: $RUN_ID"
+            gh run download "$RUN_ID" --dir flathub-artifact/ -n "whph-v${APP_VERSION}-flathub-manifest"
+            echo "Downloaded flathub manifest artifact"
+          else
+            echo "❌ No successful run found for Flutter CI - Linux with tag $TAG_NAME"
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy flathub manifest files
+        run: |
+          # Copy the manifest files to the submodule directory
+          cp flathub-artifact/me.ahmetcetinkaya.whph.yaml packaging/flatpak/flathub/
+          cp -r flathub-artifact/generated packaging/flatpak/flathub/
+          echo "Copied flathub manifest files to submodule"
+
+      - name: Update Flathub
+        run: |
+          cd packaging/flatpak/flathub
+          
+          # Configure git to use PAT for authentication with the submodule remote
+          git remote set-url origin https://x-access-token:${{ secrets.FLATHUB_PAT }}@github.com/ahmet-cetinkaya/flathub.git
+          
+          cd "$GITHUB_WORKSPACE"
+          ./scripts/update_flathub.sh
+
+      - name: Commit and push flathub submodule changes
+        run: |
+          TAG_NAME="${{ needs.release.outputs.tag-name }}"
+          cd packaging/flatpak/flathub
+
+          # Check if there are changes to commit
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add .
+            git commit -m "Update manifest for $TAG_NAME"
+            git push origin HEAD:me.ahmetcetinkaya.whph
+            echo "✅ Flathub submodule changes pushed successfully"
+          else
+            echo "ℹ️ No changes to commit in flathub submodule"
+          fi
