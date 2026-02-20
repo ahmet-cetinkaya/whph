@@ -267,12 +267,14 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     container: archlinux:latest
+    permissions:
+      contents: write
     steps:
       - name: Install dependencies
         run: pacman -Syu --noconfirm git base-devel pacman-contrib openssh sudo
 
       - name: Fix git ownership
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        run: git config --global --add safe.directory '*'
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -291,6 +293,21 @@ jobs:
 
       - name: Update AUR
         run: ./scripts/update_aur.sh
+
+      - name: Commit and push AUR submodule changes in parent repo
+        run: |
+          CURRENT_VERSION=$(grep "^version:" src/pubspec.yaml | sed 's/version: //' | sed 's/+.*//')
+          
+          # Add the submodule directory to stage the pointer change
+          git add packaging/aur
+          
+          if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
+            git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
+            git push
+            echo "✅ Parent repository submodule pointer updated for AUR"
+          else
+            echo "ℹ️ No submodule pointer change detected in parent repository for AUR"
+          fi
 
   update-nix:
     needs: release
@@ -319,6 +336,8 @@ jobs:
   update-flathub:
     needs: release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -364,17 +383,22 @@ jobs:
           git config --local --unset-all http.https://github.com/.extraheader || true
           
           # Configure git to use PAT for authentication with the submodule remote
-          git remote set-url origin https://${{ secrets.FLATHUB_PAT }}@github.com/ahmet-cetinkaya/flathub.git
+          git remote set-url origin https://${FLATHUB_PAT}@github.com/ahmet-cetinkaya/flathub.git
           
           cd "$GITHUB_WORKSPACE"
           ./scripts/update_flathub.sh
+        env:
+          FLATHUB_PAT: ${{ secrets.FLATHUB_PAT }}
 
       - name: Commit and push flathub submodule changes
         run: |
           TAG_NAME="${{ needs.release.outputs.tag-name }}"
           cd packaging/flatpak/flathub
 
-          # Check if there are changes to commit
+          # Unset the extraheader set by actions/checkout for this submodule so PAT can be used
+          git config --local --unset-all http.https://github.com/.extraheader || true
+
+          # Check if there are changes to commit in the submodule
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "Update manifest for $TAG_NAME"
@@ -383,3 +407,21 @@ jobs:
           else
             echo "ℹ️ No changes to commit in flathub submodule"
           fi
+
+          # Commit the submodule change in the parent repository
+          cd "$GITHUB_WORKSPACE"
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          
+          # Add the submodule directory to stage the pointer change
+          git add packaging/flatpak/flathub
+          
+          if [[ -n "$(git status --porcelain packaging/flatpak/flathub)" ]]; then
+            git commit -m "chore(flatpak): update flathub submodule pointer to $TAG_NAME"
+            git push
+            echo "✅ Parent repository submodule pointer updated"
+          else
+            echo "ℹ️ No submodule pointer change detected in parent repository"
+          fi
+        env:
+          FLATHUB_PAT: ${{ secrets.FLATHUB_PAT }}

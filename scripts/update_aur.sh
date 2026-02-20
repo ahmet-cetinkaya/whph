@@ -12,6 +12,9 @@ PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
 # Extract current version
 CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed 's/+.*//')
 
+# Avoid "dubious ownership" errors by marking the project as safe for all users
+git config --global --add safe.directory '*'
+
 acore_log_header "AUR Package Update"
 AUR_DIR="$PROJECT_ROOT/packaging/aur"
 
@@ -70,6 +73,11 @@ if ! command -v makepkg &>/dev/null; then
     exit 1
 fi
 sudo -u builduser makepkg --printsrcinfo >.SRCINFO
+
+# Restore ownership to root for Git operations
+chown -R root:root "$PROJECT_ROOT"
+# Ensure the project root is marked safe after restoring ownership
+git config --add safe.directory "$PROJECT_ROOT"
 
 acore_log_section "Git Operations (AUR)"
 
