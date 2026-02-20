@@ -2,10 +2,16 @@
 	path = packages/acore-flutter
 	url = https://github.com/ahmet-cetinkaya/acore-flutter.git
 	branch = main
+
 [submodule "packages/acore-scripts"]
 	path = packages/acore-scripts
 	url = https://github.com/ahmet-cetinkaya/acore-scripts.git
 	branch = main
+
+[submodule "packaging/fdroid"]
+	path = packaging/fdroid
+	url = https://gitlab.com/ahmet-cetinkaya/fdroid-data.git
+	branch = me.ahmetcetinkaya.whph
 
 [submodule "packaging/flatpak/flatpak-flutter"]
 	path = packaging/flatpak/flatpak-flutter
@@ -17,10 +23,7 @@
 [submodule "packaging/flatpak/shared-modules"]
 	path = packaging/flatpak/shared-modules
 	url = https://github.com/flathub/shared-modules.git
+
 [submodule "packaging/aur"]
 	path = packaging/aur
 	url = https://aur.archlinux.org/whph-bin.git
-[submodule "packaging/fdroid"]
-	path = packaging/fdroid
-	url = https://gitlab.com/ahmet-cetinkaya/fdroid-data.git
-	branch = me.ahmetcetinkaya.whph
