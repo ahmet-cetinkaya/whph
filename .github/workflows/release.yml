@@ -306,8 +306,8 @@ jobs:
           
           if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
             git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
-            git pull --rebase
-            git push
+            git pull --rebase --no-recurse-submodules
+            git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated for AUR"
           else
             echo "ℹ️ No submodule pointer change detected in parent repository for AUR"
@@ -386,7 +386,7 @@ jobs:
           # In the submodule: fetch, checkout, and hard reset to ensure absolute sync with the branch
           git fetch origin me.ahmetcetinkaya.whph
           git checkout -B me.ahmetcetinkaya.whph FETCH_HEAD
-          git reset --hard origin/me.ahmetcetinkaya.whph
+          git reset --hard FETCH_HEAD
           
           # Unset the extraheader set by actions/checkout for this submodule so PAT can be used
           git config --local --unset-all http.https://github.com/.extraheader || true
@@ -428,8 +428,8 @@ jobs:
           
           if [[ -n "$(git status --porcelain packaging/flatpak/flathub)" ]]; then
             git commit -m "chore(flatpak): update flathub submodule pointer to $TAG_NAME"
-            git pull --rebase
-            git push
+            git pull --rebase --no-recurse-submodules
+            git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated"
           else
             echo "ℹ️ No submodule pointer change detected in parent repository"
