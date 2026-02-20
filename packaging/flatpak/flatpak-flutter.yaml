@@ -102,7 +102,7 @@ modules:
           install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_play.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.play.png
           install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_pause.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.pause.png
         done
-      - gtk-update-icon-cache -f -t /app/share/icons/hicolor
+
       # Metadata & Metainfo
       - install -D packaging/flatpak/flathub/me.ahmetcetinkaya.whph.metainfo.xml /app/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml
 
