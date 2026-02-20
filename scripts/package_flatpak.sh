@@ -6,9 +6,12 @@
 set -e
 
 CI_MODE=false
+LOCAL_MODE=false
 for arg in "$@"; do
     if [[ "$arg" == "--ci" ]]; then
         CI_MODE=true
+    elif [[ "$arg" == "--local" ]]; then
+        LOCAL_MODE=true
     fi
 done
 
@@ -66,9 +69,15 @@ fi
 # Change to FLATPAK_DIR so .flatpak-builder ends up there
 cd "$FLATPAK_DIR"
 
+INPUT_MANIFEST="flatpak-flutter.yaml"
+if [[ "$LOCAL_MODE" == true ]]; then
+    acore_log_info "Local mode enabled. Using current directory as source."
+    acore_log_warning "Local mode builds locally but flathub files will use git source for submission."
+fi
+
 # Run generator. This creates me.ahmetcetinkaya.whph.yaml and generated/ in CWD.
 # --app-pubspec is relative to the SOURCE root (the git repo), not the CWD.
-"$VENV_PYTHON" "$FLATPAK_FLUTTER_PY" --app-pubspec src flatpak-flutter.yaml
+"$VENV_PYTHON" "$FLATPAK_FLUTTER_PY" --app-pubspec src "$INPUT_MANIFEST"
 
 # Move generation results to FLATHUB_DIR
 acore_log_info "Moving generated files to flathub submodule..."
@@ -76,6 +85,25 @@ MANIFEST_NAME="me.ahmetcetinkaya.whph.yaml"
 mv "$MANIFEST_NAME" "$FLATHUB_DIR/"
 rm -rf "$FLATHUB_DIR/generated"
 mv "generated" "$FLATHUB_DIR/"
+
+# Format output files with prettier for Flathub submission
+acore_log_info "Formatting output files with prettier..."
+
+cd "$PROJECT_ROOT"
+
+# Format YAML manifest
+if bunx prettier --write "$FLATHUB_DIR/$MANIFEST_NAME" 2>&1; then
+    acore_log_success "YAML manifest formatted."
+else
+    acore_log_warning "prettier not found. Please install it with: bun add -g prettier"
+fi
+
+# Format metainfo XML (prettier 3.0+ supports XML natively)
+if bunx prettier --write "$FLATHUB_DIR/me.ahmetcetinkaya.whph.metainfo.xml" 2>&1; then
+    acore_log_success "Metainfo XML formatted."
+else
+    acore_log_warning "Could not format XML. Ensure prettier is installed: bun add -g prettier"
+fi
 
 # Vendor Shared Modules
 
