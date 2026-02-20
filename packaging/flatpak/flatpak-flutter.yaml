@@ -83,18 +83,14 @@ modules:
       - mkdir -p /app/lib/whph/data
       - cp -r $BUNDLE_PATH/data/flutter_assets /app/lib/whph/data/flutter_assets
       - install -D $BUNDLE_PATH/data/icudtl.dat /app/lib/whph/data/icudtl.dat
-      
+
       # Create symlink in /app/bin
       - mkdir -p /app/bin
       - ln -sf /app/lib/whph/whph /app/bin/whph
 
       # Desktop & D-Bus Integration
       - install -D $BUNDLE_PATH/share/applications/whph.desktop /app/share/applications/me.ahmetcetinkaya.whph.desktop
-      - sed -i 's/Icon=whph/Icon=me.ahmetcetinkaya.whph/g' /app/share/applications/me.ahmetcetinkaya.whph.desktop
-      - sed -i 's/Version=@APP_VERSION@/Version=1.0/g' /app/share/applications/me.ahmetcetinkaya.whph.desktop
-      - "sed -i 's|Exec=.*|Exec=/app/bin/whph %U|g' /app/share/applications/me.ahmetcetinkaya.whph.desktop"
-      - "sed -i 's|Categories=.*|Categories=Utility;|g' /app/share/applications/me.ahmetcetinkaya.whph.desktop"
-      - "sed -i '/StartupWMClass/d' /app/share/applications/me.ahmetcetinkaya.whph.desktop"
+      - desktop-file-edit --set-icon=me.ahmetcetinkaya.whph --set-key=Exec --set-value='/app/bin/whph %U' --remove-key=Version --remove-category=Productivity --remove-category=TimeManagement /app/share/applications/me.ahmetcetinkaya.whph.desktop
       - install -D $BUNDLE_PATH/share/dbus-1/services/whph.service /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service
       - "sed -i 's|Exec=.*|Exec=/app/bin/whph|g' /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service"
 
@@ -107,7 +103,6 @@ modules:
           install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_pause.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.pause.png
         done
       - gtk-update-icon-cache -f -t /app/share/icons/hicolor
-
       # Metadata & Metainfo
       - install -D packaging/flatpak/flathub/me.ahmetcetinkaya.whph.metainfo.xml /app/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml
 
