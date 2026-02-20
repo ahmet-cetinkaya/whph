@@ -95,6 +95,14 @@ git commit -m "chore: bump version to v$CURRENT_VERSION"
 
 # Only push if we are essentially asked to (implicit in this script usually running in CI or manually for this purpose)
 acore_log_info "Pushing changes..."
+
+# Debug SSH connectivity
+acore_log_info "Debugging SSH connectivity to AUR..."
+ssh -v -o StrictHostKeyChecking=no aur@aur.archlinux.org || true
+
+# Use a custom SSH command to bypass host key checking and ensure agent usage
+export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+
 git pull --rebase
 git push
 

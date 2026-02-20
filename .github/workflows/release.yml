@@ -385,7 +385,7 @@ jobs:
           
           # In the submodule: fetch, checkout, and hard reset to ensure absolute sync with the branch
           git fetch origin me.ahmetcetinkaya.whph
-          git checkout me.ahmetcetinkaya.whph
+          git checkout -B me.ahmetcetinkaya.whph FETCH_HEAD
           git reset --hard origin/me.ahmetcetinkaya.whph
           
           # Unset the extraheader set by actions/checkout for this submodule so PAT can be used
