@@ -274,7 +274,7 @@ jobs:
         run: pacman -Syu --noconfirm git base-devel pacman-contrib openssh sudo
 
       - name: Fix git ownership
-        run: git config --global --add safe.directory '*'
+        run: git config --system --add safe.directory '*'
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -296,6 +296,9 @@ jobs:
 
       - name: Commit and push AUR submodule changes in parent repo
         run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          
           CURRENT_VERSION=$(grep "^version:" src/pubspec.yaml | sed 's/version: //' | sed 's/+.*//')
           
           # Add the submodule directory to stage the pointer change
@@ -303,6 +306,7 @@ jobs:
           
           if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
             git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
+            git pull --rebase
             git push
             echo "✅ Parent repository submodule pointer updated for AUR"
           else
@@ -379,6 +383,11 @@ jobs:
         run: |
           cd packaging/flatpak/flathub
           
+          # Ensure we are on the target branch and up to date
+          git fetch origin me.ahmetcetinkaya.whph
+          git checkout me.ahmetcetinkaya.whph
+          git pull --rebase origin me.ahmetcetinkaya.whph
+          
           # Unset the extraheader set by actions/checkout for this submodule so PAT can be used
           git config --local --unset-all http.https://github.com/.extraheader || true
           
@@ -402,6 +411,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "Update manifest for $TAG_NAME"
+            git pull --rebase origin me.ahmetcetinkaya.whph
             git push origin HEAD:me.ahmetcetinkaya.whph
             echo "✅ Flathub submodule changes pushed successfully"
           else
@@ -418,6 +428,7 @@ jobs:
           
           if [[ -n "$(git status --porcelain packaging/flatpak/flathub)" ]]; then
             git commit -m "chore(flatpak): update flathub submodule pointer to $TAG_NAME"
+            git pull --rebase
             git push
             echo "✅ Parent repository submodule pointer updated"
           else

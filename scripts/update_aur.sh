@@ -13,7 +13,7 @@ PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
 CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed 's/+.*//')
 
 # Avoid "dubious ownership" errors by marking the project as safe for all users
-git config --global --add safe.directory '*'
+git config --system --add safe.directory '*'
 
 acore_log_header "AUR Package Update"
 AUR_DIR="$PROJECT_ROOT/packaging/aur"
