@@ -84,6 +84,7 @@ if [[ -z $(git status -s "$FLAKE_FILE" "$NIX_DIR/flake.lock") ]]; then
 else
     acore_log_info "Committing and pushing..."
     git commit -m "chore(nix): bump version to v$CURRENT_VERSION"
+    git pull --rebase
     git push
 fi
 

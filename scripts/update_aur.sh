@@ -95,6 +95,7 @@ git commit -m "chore: bump version to v$CURRENT_VERSION"
 
 # Only push if we are essentially asked to (implicit in this script usually running in CI or manually for this purpose)
 acore_log_info "Pushing changes..."
+git pull --rebase
 git push
 
 acore_log_success "AUR package updated and pushed successfully."

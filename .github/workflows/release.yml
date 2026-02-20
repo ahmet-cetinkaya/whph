@@ -383,10 +383,10 @@ jobs:
         run: |
           cd packaging/flatpak/flathub
           
-          # Ensure we are on the target branch and up to date
+          # In the submodule: fetch, checkout, and hard reset to ensure absolute sync with the branch
           git fetch origin me.ahmetcetinkaya.whph
           git checkout me.ahmetcetinkaya.whph
-          git pull --rebase origin me.ahmetcetinkaya.whph
+          git reset --hard origin/me.ahmetcetinkaya.whph
           
           # Unset the extraheader set by actions/checkout for this submodule so PAT can be used
           git config --local --unset-all http.https://github.com/.extraheader || true
