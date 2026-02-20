@@ -5,6 +5,13 @@
 
 set -e
 
+CI_MODE=false
+for arg in "$@"; do
+    if [[ "$arg" == "--ci" ]]; then
+        CI_MODE=true
+    fi
+done
+
 # Source common functions
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
@@ -92,7 +99,14 @@ flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/fl
 
 # Build from the FLATPAK_DIR to keep .flatpak-builder there
 cd "$FLATPAK_DIR"
-flatpak-builder --force-clean --user --install --install-deps-from=flathub --repo="$REPO_DIR" "$BUILD_DIR" "flathub/$MANIFEST_NAME"
+
+BUILDER_ARGS=("--force-clean" "--user" "--install" "--install-deps-from=flathub" "--repo=$REPO_DIR")
+if [[ "$CI_MODE" == true || "$CI" == "true" ]]; then
+    acore_log_info "CI mode detected. Disabling rofiles-fuse..."
+    BUILDER_ARGS+=("--disable-rofiles-fuse")
+fi
+
+flatpak-builder "${BUILDER_ARGS[@]}" "$BUILD_DIR" "flathub/$MANIFEST_NAME"
 
 # 4. Create Bundle
 acore_log_section "🎁  Creating Flatpak Bundle..."
