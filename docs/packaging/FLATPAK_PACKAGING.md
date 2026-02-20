@@ -107,12 +107,25 @@ packaging/flatpak/
 | `--talk-name=org.kde.kwin.Scripting`  | **KWin Scripting Interface**. Additional interface for KWin scripting functionality used in active window detection on KDE.                                                                                                                                                                                                                                                                |
 | `--talk-name=org.freedesktop.Flatpak` | **Sandbox Escape (Host Access)**. **CRITICAL**: Allows the app to run commands on the host system via `flatpak-spawn --host`. <br> **Usage**: This is strictly used by the "Active Window Detection" feature to run tools like `ps`, `journalctl`, and `qdbus` to determine the currently focused window title and application name, which is not possible from within the strict sandbox. |
 
-## External Libraries (`modules`)
+## External Libraries and Build Dependencies (`modules`)
 
-| Module                                                                     | Purpose                                                                                                                                                                              |
-| :------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `shared-modules/intltool/intltool-0.51.json`                               | **Build Tool**. A set of tools to centralize translation of many different file formats. Required to build `libayatana-appindicator`. Imported via `shared-modules`.                 |
-| `shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json` | **System Tray Support**. A library that provides support for "AppIndicators" (system tray icons) on Linux, used by the Flutter `tray_manager` plugin. Imported via `shared-modules`. |
-| `perl-xml-parser`                                                          | **Build Dependency**. A Perl module required to build `intltool`. It is only used during the build process and is cleaned up afterwards.                                             |
-| `whph`                                                                     | **Main Application**. The WHPH application module that builds the Flutter application and bundles all required assets, icons, desktop entries, and metainfo files.                   |
-| `flutter`                                                                  | **Flutter SDK**. The Flutter framework source code downloaded and built as part of the Flatpak build process to ensure consistent and reproducible builds.                           |
+The Flatpak manifest (`flatpak-flutter.yaml`) defines a series of modules that
+are built in order. Some modules are prerequisite build tools for others.
+
+| Module / Dependency       | Category             | Purpose & Justification                                                                                                                                                                    |
+| :------------------------ | :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `perl-xml-parser`         | **Build Dependency** | A Perl module required to build `intltool`. It is used only during the build process and is cleaned up (`cleanup: ["*"]`) afterwards.                                                      |
+| `intltool`                | **Build Tool**       | A set of tools to centralize translation of many different file formats. It is a mandatory requirement for building `libayatana-appindicator`.                                             |
+| `libayatana-appindicator` | **Runtime Library**  | Provides support for **System Tray Icons** (AppIndicators) on Linux. This is required by the Flutter `tray_manager` plugin to show the app icon in the system tray.                        |
+| `flutter`                 | **Runtime SDK**      | Included as a source within the `whph` module. The Flutter SDK is downloaded and built during the process to ensure a consistent, reproducible environment independent of the host system. |
+| `whph`                    | **Application**      | The main application module. It uses the `flutter` SDK to compile the source code and bundles the resulting binary with its assets, desktop entries, and metadata.                         |
+
+### Module Dependency Chain
+
+To support system tray icons in the Flutter application, the following
+dependency chain is established in the manifest:
+
+1.  **`perl-xml-parser`** (Needed by `intltool`)
+2.  **`intltool`** (Needed by `libayatana-appindicator`)
+3.  **`libayatana-appindicator`** (Needed by Flutter's tray plugin)
+4.  **`whph`** (The final application, built using the `flutter` SDK source)
