@@ -37,11 +37,7 @@ finish-args:
   - --talk-name=org.kde.kwin.Scripting
   - --talk-name=org.freedesktop.Flatpak
 modules:
-  - name: prep-lib64
-    buildsystem: simple
-    build-commands:
-      - mkdir -p /app/lib
-      - ln -s lib /app/lib64
+
 
   - name: perl-xml-parser
     buildsystem: simple
@@ -120,7 +116,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/ahmet-cetinkaya/whph.git
-        tag: v0.22.1
+        branch: fix/flathub-review-fixes
       - type: git
         url: https://github.com/flutter/flutter.git
         tag: 3.32.0
