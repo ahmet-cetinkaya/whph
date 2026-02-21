@@ -86,21 +86,8 @@ modules:
       - mkdir -p /app/bin
       - ln -sf /app/lib/whph/whph /app/bin/whph
 
-      # Desktop & D-Bus Integration
-      - install -D $BUNDLE_PATH/share/applications/whph.desktop /app/share/applications/me.ahmetcetinkaya.whph.desktop
-      - install -D $BUNDLE_PATH/share/dbus-1/services/whph.service /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service
-
-      # Icons & Assets - Install pre-resized icons
-      - |
-        for size in 16 22 24 32 48 64 128 256 512; do
-          install -D src/lib/core/domain/shared/assets/images/whph-${size}.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.png
-          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg-${size}.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.default.png
-          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_play-${size}.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.play.png
-          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_pause-${size}.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.pause.png
-        done
-
-      # Metadata & Metainfo
-      - install -D $BUNDLE_PATH/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml /app/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml
+      # Desktop, D-Bus, Icons & Metainfo Integration
+      - cp -r $BUNDLE_PATH/share /app/
     sources:
       - type: git
         url: https://github.com/ahmet-cetinkaya/whph.git

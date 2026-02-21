@@ -187,6 +187,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/whph.desktop.in"
                "${CMAKE_BINARY_DIR}/whph.desktop" @ONLY)
 install(FILES "${CMAKE_BINARY_DIR}/whph.desktop"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications"
+    RENAME "${APPLICATION_ID}.desktop"
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
     COMPONENT Runtime
 )
@@ -196,6 +197,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/whph.service.in"
                "${CMAKE_BINARY_DIR}/whph.service" @ONLY)
 install(FILES "${CMAKE_BINARY_DIR}/whph.service"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/share/dbus-1/services"
+    RENAME "${APPLICATION_ID}.service"
     COMPONENT Runtime
 )
 
@@ -211,30 +213,30 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/share/metainfo/me.ahmetcetinkaya.whph
     COMPONENT Runtime
 )
 
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo.png"
-    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons"
-    RENAME "whph.png"
-)
+set(ICON_SIZES 16 22 24 32 48 64 128 256 512)
 
-# Create additional icon directories in bundle
-install(CODE "
-    file(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps\")
-    file(COPY \"${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo.png\"
-         DESTINATION \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps\"
-         FILES_MATCHING PATTERN \"whph_logo.png\"
-         )
-    file(RENAME 
-         \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps/whph_logo.png\"
-         \"${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps/whph.png\"
+foreach(size ${ICON_SIZES})
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph-${size}.png"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${size}x${size}/apps"
+        RENAME "${APPLICATION_ID}.png"
+        COMPONENT Runtime
     )
-")
-
-# Install system-wide icon for window decoration
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo.png"
-    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/512x512/apps"
-    RENAME "whph.png"
-    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
-)
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo_fg-${size}.png"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${size}x${size}/apps"
+        RENAME "${APPLICATION_ID}.default.png"
+        COMPONENT Runtime
+    )
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo_fg_play-${size}.png"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${size}x${size}/apps"
+        RENAME "${APPLICATION_ID}.play.png"
+        COMPONENT Runtime
+    )
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo_fg_pause-${size}.png"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${size}x${size}/apps"
+        RENAME "${APPLICATION_ID}.pause.png"
+        COMPONENT Runtime
+    )
+endforeach()
 
 # Post-installation hooks for system integration
 install(CODE "
