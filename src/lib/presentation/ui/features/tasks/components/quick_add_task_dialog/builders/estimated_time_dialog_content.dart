@@ -134,8 +134,8 @@ class EstimatedTimeDialogContent extends StatelessWidget {
                 value: selectedTime,
                 minValue: 0,
                 maxValue: 480, // 8 hours maximum
-                incrementValue: 5,
-                decrementValue: 5,
+                incrementValue: 10,
+                decrementValue: 10,
                 onValueChanged: onTimeSelected,
                 valueSuffix: '', // Removed suffix as it's now in the description
                 iconSize: AppTheme.iconSizeMedium,
@@ -152,11 +152,11 @@ class EstimatedTimeDialogContent extends StatelessWidget {
   Widget _buildQuickTimeChips() {
     final quickTimeOptions = [
       {'time': 0, 'label': translationService.translate(SharedTranslationKeys.notSetTime)},
-      {'time': 5, 'label': '5 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
       {'time': 10, 'label': '10 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
-      {'time': 15, 'label': '15 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
+      {'time': 20, 'label': '20 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
       {'time': 30, 'label': '30 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
-      {'time': 45, 'label': '45 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
+      {'time': 40, 'label': '40 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
+      {'time': 50, 'label': '50 ${translationService.translate(SharedTranslationKeys.minutesShort)}'},
       {'time': 60, 'label': '1 ${translationService.translate(SharedTranslationKeys.hoursShort)}'},
     ];
 

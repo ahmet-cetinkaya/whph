@@ -22,8 +22,8 @@ class HabitTimeSection {
       widget: NumericInput(
         initialValue: estimatedTime ?? HabitUiConstants.defaultEstimatedTimeOptions.first,
         minValue: 0,
-        incrementValue: 5,
-        decrementValue: 5,
+        incrementValue: 10,
+        decrementValue: 10,
         onValueChanged: onValueChanged,
         iconColor: AppTheme.secondaryTextColor,
         iconSize: AppTheme.iconSizeSmall,

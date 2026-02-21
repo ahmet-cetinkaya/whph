@@ -56,8 +56,8 @@ class EstimatedTimeBuilder {
           initialValue: estimatedTime ?? 0,
           minValue: 0,
           maxValue: 480, // 8 hours maximum
-          incrementValue: 5,
-          decrementValue: 5,
+          incrementValue: 10,
+          decrementValue: 10,
           onValueChanged: onValueChanged,
           valueSuffix: translationService.translate(SharedTranslationKeys.minutesShort),
           iconSize: 20,

@@ -182,10 +182,10 @@ class _DefaultEstimatedTimeSettingState extends State<DefaultEstimatedTimeSettin
                 children: [
                   NumericInput(
                     initialValue: _defaultEstimatedTime ?? TaskConstants.defaultEstimatedTime,
-                    minValue: 5,
+                    minValue: 10,
                     maxValue: 480,
-                    incrementValue: 5,
-                    decrementValue: 5,
+                    incrementValue: 10,
+                    decrementValue: 10,
                     onValueChanged: _onEstimatedTimeChanged,
                     valueSuffix: _translationService.translate(SharedTranslationKeys.minutes),
                     iconSize: 20,

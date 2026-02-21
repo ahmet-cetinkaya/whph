@@ -28,8 +28,8 @@ class TaskTimeSection {
           child: NumericInput(
             initialValue: estimatedTime ?? 0,
             minValue: 0,
-            incrementValue: 5,
-            decrementValue: 5,
+            incrementValue: 10,
+            decrementValue: 10,
             onValueChanged: onEstimatedTimeChanged,
             iconColor: AppTheme.secondaryTextColor,
             iconSize: AppTheme.iconSizeSmall,
