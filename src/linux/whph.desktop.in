@@ -1,6 +1,5 @@
 [Desktop Entry]
 # App name should match AppInfo.name in lib/core/domain/shared/constants/app_info.dart
-Version=@APP_VERSION@
 Name=Work Hard Play Hard
 Name[cs]=Pracuj Tvrdě Hraj Tvrdě
 Name[da]=Arbejd Hård Spil Hård
@@ -46,7 +45,7 @@ Comment[tr]=Görevlerinizi yönetmenize, yeni alışkanlıklar geliştirmenize v
 Comment[uk]=Комплексний додаток продуктивності, розроблений для допомоги в управлінні завданнями, розвитку нових звичок та оптимізації вашого часу.
 Comment[zh]=一个旨在帮助您管理任务、培养新习惯和优化时间的综合生产力应用。
 Type=Application
-Categories=Utility;Office;Productivity;TimeManagement;
+Categories=Utility;Office;
 Exec=@EXEC_PATH@ %U
 Icon=@ICON_PATH@
 Terminal=false

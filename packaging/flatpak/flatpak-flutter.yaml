@@ -88,7 +88,6 @@ modules:
 
       # Desktop & D-Bus Integration
       - install -D $BUNDLE_PATH/share/applications/whph.desktop /app/share/applications/me.ahmetcetinkaya.whph.desktop
-      - desktop-file-edit --set-icon=me.ahmetcetinkaya.whph --set-key=Exec --set-value='/app/bin/whph %U' --remove-key=Version --remove-category=Productivity --remove-category=TimeManagement /app/share/applications/me.ahmetcetinkaya.whph.desktop
       - install -D $BUNDLE_PATH/share/dbus-1/services/whph.service /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service
 
       # Icons & Assets - Install pre-resized icons
