@@ -115,7 +115,7 @@ are built in order. Some modules are prerequisite build tools for others.
 | Module / Dependency       | Category             | Purpose & Justification                                                                                                                                                                    |
 | :------------------------ | :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `perl-xml-parser`         | **Build Dependency** | A Perl module required to build `intltool`. It is used only during the build process and is cleaned up (`cleanup: ["*"]`) afterwards.                                                      |
-| `intltool`                | **Build Tool**       | A set of tools to centralize translation of many different file formats. It is a mandatory requirement for building `libayatana-appindicator`.                                             |
+| `intltool`                | **Build Tool**       | A set of tools to centralize translation. It is required to build `libayatana-appindicator` and is built as an internal module within it.                                              |
 | `libayatana-appindicator` | **Runtime Library**  | Provides support for **System Tray Icons** (AppIndicators) on Linux. This is required by the Flutter `tray_manager` plugin to show the app icon in the system tray.                        |
 | `flutter`                 | **Runtime SDK**      | Included as a source within the `whph` module. The Flutter SDK is downloaded and built during the process to ensure a consistent, reproducible environment independent of the host system. |
 | `whph`                    | **Application**      | The main application module. It uses the `flutter` SDK to compile the source code and bundles the resulting binary with its assets, desktop entries, and metadata.                         |
@@ -125,7 +125,6 @@ are built in order. Some modules are prerequisite build tools for others.
 To support system tray icons in the Flutter application, the following
 dependency chain is established in the manifest:
 
-1.  **`perl-xml-parser`** (Needed by `intltool`)
-2.  **`intltool`** (Needed by `libayatana-appindicator`)
-3.  **`libayatana-appindicator`** (Needed by Flutter's tray plugin)
-4.  **`whph`** (The final application, built using the `flutter` SDK source)
+1.  **`perl-xml-parser`** (Needed by `intltool`, which is built internally by `libayatana-appindicator`)
+2.  **`libayatana-appindicator`** (Needed by Flutter's tray plugin; builds its own `intltool`)
+3.  **`whph`** (The final application, built using the `flutter` SDK source)
