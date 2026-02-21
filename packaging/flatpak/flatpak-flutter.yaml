@@ -92,15 +92,14 @@ modules:
       - install -D $BUNDLE_PATH/share/applications/whph.desktop /app/share/applications/me.ahmetcetinkaya.whph.desktop
       - desktop-file-edit --set-icon=me.ahmetcetinkaya.whph --set-key=Exec --set-value='/app/bin/whph %U' --remove-key=Version --remove-category=Productivity --remove-category=TimeManagement /app/share/applications/me.ahmetcetinkaya.whph.desktop
       - install -D $BUNDLE_PATH/share/dbus-1/services/whph.service /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service
-      - "sed -i 's|Exec=.*|Exec=/app/bin/whph|g' /app/share/dbus-1/services/me.ahmetcetinkaya.whph.service"
 
-      # Icons & Assets - Install to all sizes for compatibility
+      # Icons & Assets - Install pre-resized icons
       - |
         for size in 16 22 24 32 48 64 128 256 512; do
-          install -D src/lib/core/domain/shared/assets/images/whph-512.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.png
-          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.default.png
-          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_play.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.play.png
-          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_pause.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.pause.png
+          install -D src/lib/core/domain/shared/assets/images/whph-${size}.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.png
+          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg-${size}.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.default.png
+          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_play-${size}.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.play.png
+          install -D src/lib/core/domain/shared/assets/images/whph_logo_fg_pause-${size}.png /app/share/icons/hicolor/${size}x${size}/apps/me.ahmetcetinkaya.whph.pause.png
         done
 
       # Metadata & Metainfo
