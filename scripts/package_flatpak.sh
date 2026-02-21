@@ -100,9 +100,9 @@ else
 fi
 
 # Format metainfo XML (Requires @prettier/plugin-xml)
-if bunx prettier --plugin=@prettier/plugin-xml --write "$FLATHUB_DIR/me.ahmetcetinkaya.whph.metainfo.xml" 2>/dev/null; then
+if bunx prettier --plugin=@prettier/plugin-xml --write "$PROJECT_ROOT/src/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml" 2>/dev/null; then
     acore_log_success "Metainfo XML formatted."
-elif bunx prettier --write "$FLATHUB_DIR/me.ahmetcetinkaya.whph.metainfo.xml" 2>/dev/null; then
+elif bunx prettier --write "$PROJECT_ROOT/src/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml" 2>/dev/null; then
     acore_log_success "Metainfo XML formatted."
 else
     acore_log_warning "Could not format XML. For XML formatting, install: bun add -g prettier @prettier/plugin-xml"

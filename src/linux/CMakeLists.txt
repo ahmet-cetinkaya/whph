@@ -205,6 +205,12 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/whph.xml"
     COMPONENT Runtime
 )
 
+# AppStream metadata registration
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/share/metainfo"
+    COMPONENT Runtime
+)
+
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo.png"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons"
     RENAME "whph.png"
