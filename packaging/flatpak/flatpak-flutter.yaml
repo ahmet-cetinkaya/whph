@@ -24,10 +24,6 @@ finish-args:
   - --talk-name=org.kde.StatusNotifierWatcher
 
   # Integration / Theming
-  - --filesystem=xdg-config/kdeglobals:ro
-  - --filesystem=xdg-config/gtk-3.0:ro
-  - --filesystem=xdg-config/gtk-4.0:ro
-  - --env=GSETTINGS_BACKEND=dconf
   - --talk-name=org.freedesktop.Settings
 
   # Window Management (Active Window Detection)

@@ -91,10 +91,6 @@ packaging/flatpak/
 
 | Permission                              | Description & Justification                                                                                                               |
 | :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
-| `--filesystem=xdg-config/kdeglobals:ro` | **KDE Theming**. Read-only access to KDE global configuration to respect user theme settings (colors, fonts).                             |
-| `--filesystem=xdg-config/gtk-3.0:ro`    | **GTK 3 Theming**. Read-only access to GTK 3 user configuration to respect theme settings in GTK based environments.                      |
-| `--filesystem=xdg-config/gtk-4.0:ro`    | **GTK 4 Theming**. Read-only access to GTK 4 user configuration to respect theme settings in newer GTK based environments.                |
-| `--env=GSETTINGS_BACKEND=dconf`         | **GTK Settings Backend**. Sets the GSettings backend to dconf for proper integration with GNOME and other GTK-based desktop environments. |
 | `--talk-name=org.freedesktop.Settings`  | **System Settings**. Allows reading system settings (like dark mode preference) via the XDG Settings Portal fallback/direct access.       |
 
 ### Window Management
