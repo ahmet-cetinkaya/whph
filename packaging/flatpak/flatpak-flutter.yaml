@@ -22,7 +22,6 @@ finish-args:
 
   # System Tray / Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.Notifications
 
   # Integration / Theming
   - --filesystem=xdg-config/kdeglobals:ro

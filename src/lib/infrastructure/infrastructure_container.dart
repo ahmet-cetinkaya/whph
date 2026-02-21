@@ -26,6 +26,7 @@ import 'package:whph/infrastructure/android/features/app_usage/android_app_usage
 import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/infrastructure/linux/features/app_usages/linux_app_usage_service.dart';
+import 'package:whph/infrastructure/linux/features/notification/flatpak_notification_service.dart';
 import 'package:whph/infrastructure/linux/features/window/linux_window_manager.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
@@ -131,6 +132,11 @@ void registerInfrastructure(IContainer container) {
 
     if (PlatformUtils.isDesktop) {
       final windowManager = container.resolve<IWindowManager>();
+
+      if (Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID')) {
+        return FlatpakNotificationService(mediator, windowManager, payloadHandler);
+      }
+
       return DesktopNotificationService(mediator, windowManager, payloadHandler);
     }
     if (PlatformUtils.isMobile) {

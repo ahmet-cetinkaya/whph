@@ -1,37 +1,30 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mediatr/mediatr.dart';
 
-import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
-import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:whph/infrastructure/shared/features/notification/base_notification_service.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/infrastructure/windows/constants/windows_app_constants.dart';
-import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 
-class DesktopNotificationService implements INotificationService {
-  final Mediator _mediatr;
+class DesktopNotificationService extends BaseNotificationService {
+  @override
+  String get componentName => 'DesktopNotificationService';
+
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
   final IWindowManager _windowManager;
   final INotificationPayloadHandler _payloadHandler;
 
   DesktopNotificationService(
-    Mediator mediatr,
+    super.mediator,
     IWindowManager windowManager,
     INotificationPayloadHandler payloadHandler,
   )   : _flutterLocalNotifications = FlutterLocalNotificationsPlugin(),
-        _mediatr = mediatr,
         _windowManager = windowManager,
         _payloadHandler = payloadHandler;
 
@@ -182,47 +175,6 @@ class DesktopNotificationService implements INotificationService {
   }
 
   @override
-  Future<void> destroy() async {
-    await clearAll();
-  }
-
-  @override
-  Future<bool> isEnabled() async {
-    try {
-      final query = GetSettingQuery(key: SettingKeys.notifications);
-      final setting = await _mediatr.send<GetSettingQuery, GetSettingQueryResponse?>(query);
-
-      if (setting == null) {
-        Logger.warning(
-          'DesktopNotificationService: Notification setting not found, defaulting to enabled',
-        );
-        return true; // Default to true if no setting
-      }
-
-      final isEnabled = setting.value == 'false' ? false : true;
-      return isEnabled;
-    } catch (e, stackTrace) {
-      Logger.error(
-        '[notification_check_failed] DesktopNotificationService: Failed to check if notifications are enabled, defaulting to disabled',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      return false; // Default to FALSE on error - safer to disable than to silently fail
-    }
-  }
-
-  @override
-  Future<void> setEnabled(bool enabled) async {
-    final command = SaveSettingCommand(
-      key: SettingKeys.notifications,
-      value: enabled.toString(),
-      valueType: SettingValueType.bool,
-    );
-
-    await _mediatr.send(command);
-  }
-
-  @override
   Future<bool> checkPermissionStatus() async {
     // For desktop platforms, we can't programmatically check permission status
     // in most cases, so we'll rely on the app's notification settings
@@ -296,46 +248,5 @@ class DesktopNotificationService implements INotificationService {
     }
 
     return permissionGranted;
-  }
-
-  @override
-  Future<void> handleNotificationTaskCompletion(String taskId) async {
-    try {
-      Logger.info('DesktopNotificationService: Completing task from notification: $taskId');
-
-      await _mediatr.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
-        CompleteTaskCommand(id: taskId),
-      );
-
-      Logger.info('DesktopNotificationService: Task completed successfully from notification');
-    } catch (e, stackTrace) {
-      Logger.error(
-        '[$TaskErrorIds.notificationActionFailed] DesktopNotificationService: Failed to complete task from notification',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
-  }
-
-  @override
-  Future<void> handleNotificationHabitCompletion(String habitId) async {
-    try {
-      Logger.info('DesktopNotificationService: Completing habit from notification: $habitId');
-
-      await _mediatr.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
-        ToggleHabitCompletionCommand(
-          habitId: habitId,
-          date: DateTime.now(),
-        ),
-      );
-
-      Logger.info('DesktopNotificationService: Habit completed successfully from notification');
-    } catch (e, stackTrace) {
-      Logger.error(
-        '[$TaskErrorIds.notificationActionFailed] DesktopNotificationService: Failed to complete habit from notification',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
   }
 }

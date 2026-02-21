@@ -86,7 +86,6 @@ packaging/flatpak/
 | Permission                                  | Description & Justification                                                                                                                           |
 | :------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--talk-name=org.kde.StatusNotifierWatcher` | **System Tray (KDE/Generic)**. Required to register a system tray icon on KDE Plasma and other desktop environments that use this specific DBus name. |
-| `--talk-name=org.freedesktop.Notifications` | **Desktop Notifications**. Required to send desktop notifications to the user.                                                                        |
 
 ### Integration / Theming
 
