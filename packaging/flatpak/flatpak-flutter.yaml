@@ -38,7 +38,7 @@ modules:
       - make
       - make install
     post-install:
-      - chmod -R u+w /app/lib/perl5
+      - chmod -R u+w /app/lib/perl5 # flatpak-builder eu-strip issue
     sources:
       - type: archive
         url: https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.44.tar.gz
@@ -80,6 +80,7 @@ modules:
 
       # Desktop, D-Bus, Icons & Metainfo Integration
       - cp -r $BUNDLE_PATH/share /app/
+      - desktop-file-edit --set-key=Exec --set-value=whph --remove-key=Version /app/share/applications/me.ahmetcetinkaya.whph.desktop
     sources:
       - type: git
         url: https://github.com/ahmet-cetinkaya/whph.git
