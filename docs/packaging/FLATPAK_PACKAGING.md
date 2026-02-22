@@ -87,12 +87,6 @@ packaging/flatpak/
 | :------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--talk-name=org.kde.StatusNotifierWatcher` | **System Tray (KDE/Generic)**. Required to register a system tray icon on KDE Plasma and other desktop environments that use this specific DBus name. |
 
-### Integration / Theming
-
-| Permission                              | Description & Justification                                                                                                               |
-| :-------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
-| `--talk-name=org.freedesktop.Settings`  | **System Settings**. Allows reading system settings (like dark mode preference) via the XDG Settings Portal fallback/direct access.       |
-
 ### Window Management
 
 | Permission                            | Description & Justification                                                                                                                                                                                                                                                                                                                                                                |

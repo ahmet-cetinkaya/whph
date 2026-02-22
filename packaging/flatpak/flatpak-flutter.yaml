@@ -23,9 +23,6 @@ finish-args:
   # System Tray / Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
 
-  # Integration / Theming
-  - --talk-name=org.freedesktop.Settings
-
   # Window Management (Active Window Detection)
   - --talk-name=org.gnome.Shell
   - --talk-name=org.kde.KWin
