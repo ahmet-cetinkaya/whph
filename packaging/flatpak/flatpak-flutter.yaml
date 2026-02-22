@@ -84,6 +84,9 @@ modules:
       - type: git
         url: https://github.com/ahmet-cetinkaya/whph.git
         tag: v0.22.1
+        x-checker-data:
+          type: git
+          tag-pattern: "^v([\\d.]+)$"
       - type: git
         url: https://github.com/flutter/flutter.git
         tag: 3.32.0
