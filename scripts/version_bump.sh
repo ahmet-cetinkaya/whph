@@ -93,7 +93,7 @@ git add "$PUBSPEC_FILE" "$APP_INFO_FILE" "$INSTALLER_FILE" "CHANGELOG.md"
 git add "fastlane/metadata/android/*/changelogs/*.txt"
 git commit -m "chore: update app version to $NEW_VERSION"
 
-git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION"
+git tag -s "v$NEW_VERSION" -m "Version $NEW_VERSION"
 
 acore_log_success "Version bump completed successfully!"
 acore_log_info "Updated files:"
