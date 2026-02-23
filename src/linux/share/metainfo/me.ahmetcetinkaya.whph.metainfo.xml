@@ -529,11 +529,80 @@
     <content_attribute id="money-gambling">none</content_attribute>
   </content_rating>
   <releases>
-    <release version="0.22.1" date="2026-02-19" />
-    <release version="0.21.1" date="2026-02-13" />
-    <release version="0.21.0" date="2026-02-11" />
-    <release version="0.20.4" date="2026-01-25" />
-    <release version="0.20.3" date="2026-01-22" />
-    <release version="0.20.2" date="2026-01-22" />
+    <release version="0.22.1" date="2026-02-19">
+      <description>
+        <ul>
+          <li>Added: Better descriptions across all supported languages</li>
+          <li>Changed: Smoother theme switching with Linux desktop environments</li>
+          <li>Fixed: Flatpak device sync by enabling required network access</li>
+          <li>Fixed: Improved app detection and reliability in Flatpak</li>
+          <li>Fixed: Appreciation of custom directory settings (XDG_DATA_HOME)</li>
+          <li>Fixed: Task management recurrence and reminder fields</li>
+          <li>Fixed: Translation issues with list items</li>
+          <li>Fixed: Reduced error messages during window detection on Wayland</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.22.0" date="2026-02-14">
+      <description>
+        <ul>
+          <li>Added: Tag icons for easier visual identification</li>
+          <li>Added: Collapsible grouping for better list organization</li>
+          <li>Added: Timer dialog done button to confirm changes</li>
+          <li>Added: Automatic light/dark theme matching on Linux</li>
+          <li>Added: System tray icon for quick access on Linux</li>
+          <li>Fixed: Audio notifications on Linux</li>
+          <li>Fixed: Better automatic theme switching on Linux</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.21.1" date="2026-02-13">
+      <description>
+        <ul>
+          <li>Added: Better mobile touch targets for quick-add task dialog</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.21.0" date="2026-02-11">
+      <description>
+        <ul>
+          <li>Added: Enhanced CSV import from Todoist and other apps</li>
+          <li>Added: Option to skip quick-add dialog for faster task creation</li>
+          <li>Added: Language dialog improvements and dynamic language count</li>
+          <li>Added: Tag creation directly from selection dialog</li>
+          <li>Added: Polished onboarding with smoother navigation</li>
+          <li>Fixed: Font rendering for Asian languages (CJK) on all platforms</li>
+          <li>Fixed: CSV import performance and tag caching</li>
+          <li>Fixed: Notification management and permissions on Android</li>
+          <li>Fixed: Data import validation and version compatibility</li>
+          <li>Fixed: Task recurrence end date handling</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.20.4" date="2026-01-25">
+      <description>
+        <ul>
+          <li>Fixed: Enhanced color picker with tabbed interface and alpha support</li>
+          <li>Fixed: Improved window class setting and icon path handling</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.20.3" date="2026-01-22">
+      <description>
+        <ul>
+          <li>Fixed: App icon display fallback for Linux distributions</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.20.2" date="2026-01-22">
+      <description>
+        <ul>
+          <li>Changed: Redesigned reminder settings with clearer table layout</li>
+          <li>Fixed: Improved app icon loading across Linux distributions</li>
+          <li>Fixed: Desktop sync service lifecycle and reliability</li>
+          <li>Fixed: Interaction feedback on sorting and grouping buttons</li>
+        </ul>
+      </description>
+    </release>
   </releases>
 </component>
