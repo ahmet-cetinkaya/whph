@@ -461,6 +461,10 @@
   <url type="bugtracker">https://github.com/ahmet-cetinkaya/whph/issues</url>
   <url type="vcs-browser">https://github.com/ahmet-cetinkaya/whph</url>
   <url type="donation">https://ahmetcetinkaya.me/donate</url>
+  <branding>
+    <color type="primary" scheme_preference="light">#F4D03E</color>
+    <color type="primary" scheme_preference="dark">#F4D03E</color>
+  </branding>
   <screenshots>
     <screenshot type="default">
       <image>
