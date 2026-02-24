@@ -38,20 +38,48 @@ Future<void> main() async {
   final locale = Platform.environment['SCREENSHOT_LOCALE'] ?? 'en';
   final fastlaneFolder = localeFolderMap[locale] ?? 'en-US';
 
-  // Create fastlane screenshots directory for this locale
-  final screenshotsPath = '../fastlane/metadata/android/$fastlaneFolder/images/phoneScreenshots';
+  final isDesktop = const bool.fromEnvironment('DESKTOP_SCREENSHOT', defaultValue: false);
+
+  String screenshotsPath;
+  if (isDesktop) {
+    screenshotsPath = '../packaging/screenshots/desktop/$fastlaneFolder';
+  } else {
+    screenshotsPath = '../fastlane/metadata/android/$fastlaneFolder/images/phoneScreenshots';
+  }
+
   final screenshotsDir = Directory(screenshotsPath);
   if (!await screenshotsDir.exists()) {
     await screenshotsDir.create(recursive: true);
   }
 
-  print('📍 Generating screenshots for locale: $locale -> $fastlaneFolder');
+  print('📍 Generating screenshots for locale: $locale -> ${isDesktop ? 'desktop' : fastlaneFolder}');
 
   await integrationDriver(
     onScreenshot: (String screenshotName, List<int> screenshotBytes, [Map<String, Object?>? args]) async {
-      final File image = File('$screenshotsPath/$screenshotName.png');
-      await image.writeAsBytes(screenshotBytes);
-      print('📸 Screenshot saved: $screenshotsPath/$screenshotName.png');
+      final imagePath = '$screenshotsPath/$screenshotName.png';
+
+      if (isDesktop) {
+        // Use scrot to capture the active window with shadows and decorations
+        print('📸 Taking desktop window screenshot: $imagePath');
+        try {
+          final result = await Process.run('scrot', [
+            '-u', // active window
+            '-b', // with window border
+            imagePath, // Output file
+          ]);
+
+          if (result.exitCode != 0) {
+            print('⚠️ scrot error: ${result.stderr}');
+          }
+        } catch (e) {
+          print('⚠️ Failed to run scrot: $e');
+        }
+      } else {
+        final File image = File(imagePath);
+        await image.writeAsBytes(screenshotBytes);
+      }
+
+      print('📸 Screenshot saved: $imagePath');
       return true;
     },
   );

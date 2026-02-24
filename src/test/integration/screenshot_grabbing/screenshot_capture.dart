@@ -6,19 +6,51 @@
 ///           --dart-define=SCREENSHOT_LOCALE=en
 library;
 
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whph/main.dart' as app;
+import 'package:whph/presentation/ui/app.dart';
 import 'package:whph/core/application/features/demo/translations/demo_translations_registry.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_statistics_view.dart';
+import 'package:window_manager/window_manager.dart' as wm;
 
 import 'screenshot_config.dart';
 
 /// Get the screenshot locale from dart-define (default: en)
 const String _screenshotLocale = String.fromEnvironment('SCREENSHOT_LOCALE', defaultValue: 'en');
+
+/// Locale to fastlane folder mapping (matches actual folders in fastlane/metadata/android/)
+const Map<String, String> _localeFolderMap = {
+  'cs': 'cs-CZ',
+  'da': 'da-DK',
+  'de': 'de-DE',
+  'el': 'el-GR',
+  'en': 'en-US',
+  'es': 'es-ES',
+  'fi': 'fi-FI',
+  'fr': 'fr-FR',
+  'it': 'it-IT',
+  'ja': 'ja-JP',
+  'ko': 'ko-KR',
+  'nl': 'nl-NL',
+  'no': 'no-NO',
+  'pl': 'pl-PL',
+  'pt': 'pt-PT',
+  'ro': 'ro',
+  'ru': 'ru-RU',
+  'sl': 'sl',
+  'sv': 'sv-SE',
+  'tr': 'tr-TR',
+  'uk': 'uk',
+  'zh': 'zh-CN',
+};
 
 void main() {
   final IntegrationTestWidgetsFlutterBinding binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +72,14 @@ void main() {
       // Change app locale to target language
       await _changeAppLocale(tester, _screenshotLocale);
       debugPrint('✅ App locale changed to: $_screenshotLocale');
+
+      final isDesktop = const bool.fromEnvironment('DESKTOP_SCREENSHOT', defaultValue: false);
+      if (isDesktop) {
+        debugPrint('🖥️ Setting desktop window size to 1000x700 for Flathub guidelines');
+        await wm.windowManager.ensureInitialized();
+        await wm.windowManager.setSize(const Size(1000, 700));
+        await tester.pump(const Duration(seconds: 1));
+      }
 
       // Dismiss the onboarding dialog if present
       await _dismissOnboardingDialog(tester);
@@ -86,10 +126,14 @@ Future<void> _changeAppLocale(WidgetTester tester, String localeCode) async {
   // Find the context and change locale
   final BuildContext? context = _findAppContext(tester);
   if (context != null) {
-    await context.setLocale(Locale(localeCode));
+    // Parse locale string (e.g., "en-US" -> Locale("en", "US"))
+    final parts = localeCode.split('-');
+    final locale = parts.length > 1 ? Locale(parts[0], parts[1]) : Locale(parts[0]);
+
+    await context.setLocale(locale);
     await tester.pumpAndSettle();
     await _waitForScreen(tester, 2);
-    debugPrint('  ✅ Locale changed successfully');
+    debugPrint('  ✅ Locale changed successfully to $locale');
   } else {
     debugPrint('  ⚠️ Could not find context to change locale');
   }
@@ -166,6 +210,12 @@ Future<void> _captureScenario({
       await _tapFirstListItem(tester);
     }
 
+    // Step 3a: Tap specific widget type if specified
+    if (scenario.tapFirstWidgetType != null) {
+      debugPrint('  👆 Tapping first ${scenario.tapFirstWidgetType}');
+      await _tapFirstWidgetType(tester, scenario.tapFirstWidgetType!);
+    }
+
     // Step 3b: Tap on translated text if translation key specified
     if (scenario.tapTranslationKey != null) {
       final translatedText = DemoTranslationsRegistry.translate(scenario.tapTranslationKey!, _screenshotLocale);
@@ -212,8 +262,40 @@ Future<void> _captureScenario({
     debugPrint('  📷 Taking screenshot "$screenshotName" (${scenario.name})...');
 
     try {
-      await binding.takeScreenshot(screenshotName);
-      debugPrint('✅ Screenshot ${scenario.id} captured: ${scenario.name}');
+      try {
+        await binding.takeScreenshot(screenshotName);
+        debugPrint('✅ Screenshot ${scenario.id} captured: ${scenario.name}');
+      } catch (e) {
+        debugPrint('  ⚠️ binding.takeScreenshot failed, attempting fallback...');
+        final isDesktop = const bool.fromEnvironment('DESKTOP_SCREENSHOT', defaultValue: false);
+        if (isDesktop) {
+          final fastlaneFolder = _localeFolderMap[_screenshotLocale] ?? _screenshotLocale;
+          final screenshotsDir = Directory('../packaging/screenshots/desktop/$fastlaneFolder');
+          if (!screenshotsDir.existsSync()) {
+            screenshotsDir.createSync(recursive: true);
+          }
+          final imagePath = '${screenshotsDir.path}/$screenshotName.png';
+          try {
+            final boundary = App.repaintBoundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+            if (boundary != null) {
+              final image = await boundary.toImage(pixelRatio: tester.view.devicePixelRatio);
+              final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+              if (byteData != null) {
+                final buffer = byteData.buffer.asUint8List();
+                final file = File(imagePath);
+                await file.writeAsBytes(buffer);
+                debugPrint('✅ Desktop fallback screenshot saved to $imagePath');
+              }
+            } else {
+              debugPrint('  ⚠️ Fallback failed: Could not find RepaintBoundary with key App.repaintBoundaryKey');
+            }
+          } catch (e2) {
+            debugPrint('  ⚠️ Fallback error: $e2');
+          }
+        } else {
+          rethrow;
+        }
+      }
     } catch (e) {
       debugPrint('  ⚠️ Screenshot error: $e');
     }
@@ -239,6 +321,18 @@ Future<void> _tapOnText(WidgetTester tester, String text) async {
     } else {
       debugPrint('  ⚠️ Text "$text" not found');
     }
+  }
+}
+
+/// Tap the first widget of a specific type (by class name as string).
+Future<void> _tapFirstWidgetType(WidgetTester tester, String widgetTypeName) async {
+  final finder = find.byWidgetPredicate((widget) => widget.runtimeType.toString() == widgetTypeName);
+  if (finder.evaluate().isNotEmpty) {
+    await tester.tap(finder.first, warnIfMissed: false);
+    await _waitForScreen(tester, 2);
+    debugPrint('  ✅ Tapped first $widgetTypeName');
+  } else {
+    debugPrint('  ⚠️ No $widgetTypeName found to tap');
   }
 }
 

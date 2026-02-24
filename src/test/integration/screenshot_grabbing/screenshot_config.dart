@@ -53,7 +53,7 @@ class ScreenshotConfig {
       description: 'Note details page',
       route: '/notes',
       waitSeconds: 2,
-      tapFirst: true,
+      tapFirstWidgetType: 'NoteCard',
     ),
 
     // 6. App Usage View Page
@@ -72,7 +72,7 @@ class ScreenshotConfig {
       description: 'App usage statistics section',
       route: '', // Continue from app-usages
       waitSeconds: 2,
-      tapFirst: true, // Tap first app to open details
+      tapFirstWidgetType: 'AppUsageCard', // Tap first app to open details
       scrollToWidgetType: 'AppUsageStatisticsView', // Scroll to statistics card widget
     ),
 
@@ -116,6 +116,9 @@ class ScreenshotScenario {
   /// Whether to tap the first item in a list (optional).
   final bool tapFirst;
 
+  /// Specific widget type to tap first if tapFirst is false (optional).
+  final String? tapFirstWidgetType;
+
   /// Text to scroll to before capturing (optional).
   final String? scrollToText;
 
@@ -142,6 +145,7 @@ class ScreenshotScenario {
     required this.waitSeconds,
     this.tapText,
     this.tapFirst = false,
+    this.tapFirstWidgetType,
     this.scrollToText,
     this.tapTranslationKey,
     this.scrollDown = false,

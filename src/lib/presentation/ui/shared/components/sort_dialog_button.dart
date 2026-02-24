@@ -462,6 +462,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
               ),
             // Drag handle for reordering
             ReorderableDragStartListener(
+              key: ValueKey('drag_handle_${option.field}'),
               index: index,
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,

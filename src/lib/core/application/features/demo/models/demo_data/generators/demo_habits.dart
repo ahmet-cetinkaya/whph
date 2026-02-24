@@ -11,7 +11,7 @@ class DemoHabits {
         Habit(
           id: KeyHelper.generateStringId(),
           name: translate(DemoTranslationKeys.habitMeditationName),
-          description: translate(DemoTranslationKeys.habitMeditationDescription),
+          description: '',
           hasReminder: true,
           reminderTime: '07:00',
           reminderDays: '1,2,3,4,5,6,7',

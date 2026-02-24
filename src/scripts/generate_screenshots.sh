@@ -8,6 +8,7 @@ source "$SCRIPT_DIR/../../packages/acore-scripts/src/logger.sh"
 #
 # Usage:
 #   ./generate_screenshots.sh --all        # Generate for all locales
+#   ./generate_screenshots.sh desktop      # Generate desktop screenshots
 #   ./generate_screenshots.sh <locale>     # Generate for a specific locale (e.g., tr)
 
 set -e
@@ -56,6 +57,26 @@ copy_en_to_gb() {
     fi
 }
 
+# Function to run screenshot for desktop
+run_desktop() {
+    local locale=${1:-en}
+    acore_log_info "Generating desktop screenshots for locale: $locale"
+
+    # Clear app data to reset demo data for fresh locale
+    rm -rf ~/.local/share/whph/debug_whph 2>/dev/null || true
+
+    # Run flutter drive for linux desktop
+    DESKTOP_SCREENSHOT=true SCREENSHOT_LOCALE="$locale" fvm flutter drive \
+        -d linux \
+        --driver=test/integration/screenshot_grabbing/test_driver.dart \
+        --target=test/integration/screenshot_grabbing/screenshot_capture.dart \
+        --dart-define=DEMO_MODE=true \
+        --dart-define=SCREENSHOT_LOCALE="$locale" \
+        --dart-define=DESKTOP_SCREENSHOT=true
+
+    acore_log_success "Completed desktop screenshots for locale: $locale"
+}
+
 # Process arguments
 if [ "$1" == "--all" ]; then
     acore_log_info "Starting screenshot generation for ${#LOCALES[@]} locales..."
@@ -63,7 +84,19 @@ if [ "$1" == "--all" ]; then
         run_for_locale "$locale"
     done
     acore_log_success "All screenshots generated successfully!"
-elif [ -n "$1" ]; then
+elif [ "$1" == "desktop" ]; then
+    if [ "$2" == "--all" ]; then
+        acore_log_info "Starting desktop screenshot generation for ${#LOCALES[@]} locales..."
+        for locale in "${LOCALES[@]}"; do
+            run_desktop "$locale"
+        done
+        acore_log_success "All desktop screenshots generated successfully!"
+    elif [ -n "$2" ]; then
+        run_desktop "$2"
+    else
+        run_desktop "en"
+    fi
+    exit 0
     # Check if locale is supported
     SUPPORTED=false
     if [[ " ${LOCALES[*]} " == *" $1 "* ]]; then
@@ -80,6 +113,7 @@ elif [ -n "$1" ]; then
 else
     acore_log_warning "Usage:"
     acore_log_info "  ./generate_screenshots.sh --all        # Generate for all locales"
+    acore_log_info "  ./generate_screenshots.sh desktop      # Generate desktop screenshots"
     acore_log_info "  ./generate_screenshots.sh <locale>     # Generate for a specific locale (e.g., tr)"
     exit 1
 fi

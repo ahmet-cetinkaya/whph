@@ -238,7 +238,11 @@ class DemoDataService implements IDemoDataService {
     if (tags.isEmpty) return;
 
     // Tags are created in a fixed order in DemoTags:
-    // [0] Work, [1] Personal, [2] Health, [3] Learning, [4] Finance, [5] Entertainment, [6] Social
+    // [0] Work (Label), [1] Personal (Label), [2] Health (Label), [3] Learning (Label),
+    // [4] Finance (Label), [5] Entertainment (Label), [6] Social (Label),
+    // [7] Home (Context), [8] Office (Context),
+    // [9] WHPH App Development (Project), [10] Handmade Furniture (Project),
+    // [11] Market (Context)
     final workTag = tags[0];
     final personalTag = tags[1];
     final healthTag = tags[2];
@@ -246,36 +250,66 @@ class DemoDataService implements IDemoDataService {
     // final financeTag = tags[4]; // Not used currently
     final entertainmentTag = tags[5];
     final socialTag = tags[6];
+    final homeTag = tags[7];
+    final officeTag = tags[8];
+    final whphProjectTag = tags[9];
+    final furnitureProjectTag = tags[10];
+    final marketTag = tags[11];
 
-    // Associate tasks with tags using index-based assignment
-    // Tasks are created in a fixed order in DemoTasks
+    // Associate tasks with tags logically
     if (tasks.isNotEmpty) {
-      // Task indices (from DemoTasks generator):
-      // [0-8] Work tasks: Status Update, Project X, Team Meeting, Code Review, Email Responses,
-      //                   API Integration, Write Tests, Database Optimization, Quarterly Report
-      // [9-10] Learning tasks: Design Patterns, Microservices Architecture
-      // [11-13] Personal tasks: Buy Groceries, Update Resume, Call Mom, Backup Data, Renew Prescription
       for (int i = 0; i < tasks.length; i++) {
         final task = tasks[i];
-        dynamic targetTag;
+        final List<dynamic> targetTags = [];
 
-        if (i <= 8) {
-          // Work tasks
-          targetTag = workTag;
-        } else if (i <= 10) {
-          // Learning tasks
-          targetTag = learningTag;
-        } else {
-          // Personal tasks
-          targetTag = personalTag;
+        // Logical mapping based on task indices in DemoTasks:
+        // 0: Complete Project Proposal
+        // 1: Review Team Performance
+        // 2: Update Resume
+        // 3: Buy Groceries
+        // 4-8: Grocery Subtasks
+        // 9: Learn Microservices
+        // 10: Call Mom
+        // 11: Review Code
+        // 12: Backup Files
+        // 13: Learn Flutter
+        // 14: Study Patterns
+        // 15: Learn API
+        // 16: Health Checkup
+        // 17: Review Emails
+
+        if ([0, 1, 11, 17].contains(i)) {
+          // Work Tasks
+          targetTags.addAll([workTag, officeTag, whphProjectTag]);
+        } else if ([3, 4, 5, 6, 7, 8].contains(i)) {
+          // Grocery Tasks
+          targetTags.addAll([personalTag, marketTag]);
+        } else if ([10, 16].contains(i)) {
+          // Other Personal Tasks (Family, Health)
+          targetTags.addAll([personalTag, homeTag]);
+          if (i == 10) {
+            // Call Mom is a social context too
+            targetTags.add(socialTag);
+          }
+        } else if ([9, 13, 14, 15].contains(i)) {
+          // Learning Tasks
+          targetTags.addAll([learningTag, homeTag]);
+          // Learning Flutter is part of WHPH development project
+          if (i == 13) targetTags.add(whphProjectTag);
+        } else if ([2, 12].contains(i)) {
+          // Mixed Work/Personal
+          targetTags.addAll([workTag, personalTag, homeTag]);
         }
 
-        await _taskTagRepository.add(TaskTag(
-          id: KeyHelper.generateStringId(),
-          taskId: task.id,
-          tagId: targetTag.id,
-          createdDate: DateTime.now(),
-        ));
+        // Apply tags
+        for (final tag in targetTags) {
+          await _taskTagRepository.add(TaskTag(
+            id: KeyHelper.generateStringId(),
+            taskId: task.id,
+            tagId: tag.id,
+            createdDate: DateTime.now(),
+          ));
+        }
       }
     }
 
@@ -299,10 +333,21 @@ class DemoDataService implements IDemoDataService {
       ];
 
       for (int i = 0; i < habits.length && i < habitTagAssignments.length; i++) {
+        final habit = habits[i];
+        final habitTag = habitTagAssignments[i];
+
         await _habitTagRepository.add(HabitTag(
           id: KeyHelper.generateStringId(),
-          habitId: habits[i].id,
-          tagId: habitTagAssignments[i].id,
+          habitId: habit.id,
+          tagId: habitTag.id,
+          createdDate: DateTime.now(),
+        ));
+
+        // Habits are mostly at home in demo data
+        await _habitTagRepository.add(HabitTag(
+          id: KeyHelper.generateStringId(),
+          habitId: habit.id,
+          tagId: homeTag.id,
           createdDate: DateTime.now(),
         ));
       }
@@ -326,12 +371,39 @@ class DemoDataService implements IDemoDataService {
       ];
 
       for (int i = 0; i < notes.length && i < noteTagAssignments.length; i++) {
+        final note = notes[i];
+        final noteTag = noteTagAssignments[i];
+
         await _noteTagRepository.add(NoteTag(
           id: KeyHelper.generateStringId(),
-          noteId: notes[i].id,
-          tagId: noteTagAssignments[i].id,
+          noteId: note.id,
+          tagId: noteTag.id,
           createdDate: DateTime.now(),
         ));
+
+        // Contexts for notes
+        if (noteTag == workTag) {
+          await _noteTagRepository.add(NoteTag(
+            id: KeyHelper.generateStringId(),
+            noteId: note.id,
+            tagId: officeTag.id,
+            createdDate: DateTime.now(),
+          ));
+          // Meeting notes belongs to WHPH project
+          await _noteTagRepository.add(NoteTag(
+            id: KeyHelper.generateStringId(),
+            noteId: note.id,
+            tagId: whphProjectTag.id,
+            createdDate: DateTime.now(),
+          ));
+        } else {
+          await _noteTagRepository.add(NoteTag(
+            id: KeyHelper.generateStringId(),
+            noteId: note.id,
+            tagId: homeTag.id,
+            createdDate: DateTime.now(),
+          ));
+        }
       }
     }
 

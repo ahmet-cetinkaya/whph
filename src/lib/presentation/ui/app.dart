@@ -25,6 +25,8 @@ class App extends StatefulWidget {
     this.startupErrorState,
   });
 
+  static final GlobalKey repaintBoundaryKey = GlobalKey();
+
   final GlobalKey<NavigatorState> navigatorKey;
   final IContainer container;
   final AppStartupErrorState? startupErrorState;
@@ -117,6 +119,8 @@ class _AppState extends State<App> {
     }
   }
 
+  static final GlobalKey repaintBoundaryKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     // Check for startup errors
@@ -135,16 +139,19 @@ class _AppState extends State<App> {
     return StreamBuilder<void>(
       stream: _themeService.themeChanges,
       builder: (context, snapshot) {
-        return MaterialApp(
-          navigatorKey: widget.navigatorKey,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          title: AppInfo.name,
-          theme: _themeService.themeData,
-          debugShowCheckedModeBanner: false,
-          onGenerateRoute: AppRoutes.onGenerateRoute,
-          home: AppRoutes.defaultRoute,
+        return RepaintBoundary(
+          key: App.repaintBoundaryKey,
+          child: MaterialApp(
+            navigatorKey: widget.navigatorKey,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            title: AppInfo.name,
+            theme: _themeService.themeData,
+            debugShowCheckedModeBanner: false,
+            onGenerateRoute: AppRoutes.onGenerateRoute,
+            home: AppRoutes.defaultRoute,
+          ),
         );
       },
     );

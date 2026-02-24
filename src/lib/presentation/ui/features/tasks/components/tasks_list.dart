@@ -785,11 +785,13 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                         }
                         if (widget.showSelectButton) {
                           trailingButtons.add(IconButton(
+                            key: ValueKey('trailing_select_${task.id}'),
                             icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
                             onPressed: () => widget.onSelectTask?.call(task),
                           ));
                         }
                         trailingButtons.add(ReorderableDragStartListener(
+                          key: ValueKey('trailing_drag_${task.id}'),
                           index: i,
                           child: const Padding(
                             padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
@@ -798,7 +800,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                         ));
 
                         return Padding(
-                            key: ValueKey('task_padding_${task.id}'),
+                            key: ValueKey('task_padding_reorderable_${task.id}'),
                             padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
                             child: TaskCard(
                               key: ValueKey('task_card_${task.id}'),
@@ -918,12 +920,14 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       }
       if (widget.showSelectButton) {
         trailingButtons.add(IconButton(
+          key: ValueKey('sliver_trailing_select_${task.id}'),
           icon: const Icon(Icons.push_pin_outlined, color: Colors.grey),
           onPressed: () => widget.onSelectTask?.call(task),
         ));
       }
       if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
         trailingButtons.add(ReorderableDragStartListener(
+          key: ValueKey('sliver_trailing_drag_${task.id}'),
           index: index,
           child: const Padding(
             padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
@@ -933,10 +937,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       }
 
       return Padding(
-        key: ValueKey('task_padding_${task.id}'),
+        key: ValueKey('sliver_task_padding_reorderable_${task.id}'),
         padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
         child: TaskCard(
-          key: ValueKey('task_card_${task.id}'),
+          key: ValueKey('sliver_task_card_${task.id}'),
           taskItem: task,
           onOpenDetails: () => widget.onClickTask(task),
           onCompleted: widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
@@ -951,7 +955,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         ),
       );
     }
-    return const SizedBox.shrink();
+    return SizedBox.shrink(key: ValueKey('task_item_empty_$index'));
   }
 
   Widget _buildSliverList() {

@@ -82,6 +82,11 @@ const Map<String, String> enDemoTranslations = {
   'tag.finance': 'Finance',
   'tag.entertainment': 'Entertainment',
   'tag.social': 'Social',
+  'tag.home': 'Home',
+  'tag.office': 'Office',
+  'tag.project_whph': 'WHPH App Development',
+  'tag.project_furniture': 'Handmade Furniture',
+  'tag.market': 'Market',
 
   // === NOTES ===
   'note.meeting.title': 'Meeting Notes - Product Planning',

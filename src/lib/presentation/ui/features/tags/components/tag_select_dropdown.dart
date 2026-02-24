@@ -286,17 +286,23 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               },
               itemCount: uniqueSelectedTagIds.length,
               itemBuilder: (context, index) {
-                if (index < 0 || index >= uniqueSelectedTagIds.length) return const SizedBox.shrink();
+                if (index < 0 || index >= uniqueSelectedTagIds.length) {
+                  return SizedBox.shrink(key: ValueKey('empty_index_$index'));
+                }
 
                 final id = uniqueSelectedTagIds[index];
                 final tagsResponse = _tags;
-                if (tagsResponse == null) return const SizedBox.shrink();
+                if (tagsResponse == null) {
+                  return SizedBox.shrink(key: ValueKey('empty_no_tags_$id'));
+                }
 
                 final tag = tagsResponse.items.firstWhereOrNull((t) => t.id == id);
-                if (tag == null) return const SizedBox.shrink();
+                if (tag == null) {
+                  return SizedBox.shrink(key: ValueKey('empty_no_tag_$id'));
+                }
 
                 return ReorderableDelayedDragStartListener(
-                  key: ValueKey(id),
+                  key: ValueKey('drag_listener_$id'),
                   index: index,
                   child: Padding(
                       padding: const EdgeInsets.only(right: 4.0),

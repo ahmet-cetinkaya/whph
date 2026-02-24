@@ -740,7 +740,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                       itemBuilder: (context, i) {
                         final habit = habits[i];
                         return Padding(
-                          key: ValueKey('list_${habit.id}_$_effectiveStyle'),
+                          key: ValueKey('list_reorderable_${habit.id}_$_effectiveStyle'),
                           padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 100),
@@ -895,10 +895,10 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     } else if (item is VisualItemSingle<HabitListItem>) {
       final habit = item.data;
       return Padding(
-        key: ValueKey('list_${habit.id}_$_effectiveStyle'),
+        key: ValueKey('sliver_list_${habit.id}_$_effectiveStyle'),
         padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
         child: HabitCard(
-          key: ValueKey('habit_card_${habit.id}'),
+          key: ValueKey('sliver_habit_card_${habit.id}'),
           habit: habit,
           onOpenDetails: () => widget.onClickHabit(habit),
           style: _effectiveStyle,
@@ -939,7 +939,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         ),
       );
     }
-    return const SizedBox.shrink();
+    return SizedBox.shrink(key: ValueKey('habit_item_empty_$index'));
   }
 
   Widget _buildSliverList({List<VisualItem<HabitListItem>>? precalculatedItems, int gridColumns = 1}) {

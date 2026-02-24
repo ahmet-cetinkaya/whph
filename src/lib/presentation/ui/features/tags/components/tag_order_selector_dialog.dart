@@ -115,6 +115,7 @@ class _TagOrderSelectorDialogState extends State<TagOrderSelectorDialog> {
                       ),
                       title: Text(tag.name),
                       trailing: ReorderableDragStartListener(
+                        key: ValueKey('drag_tag_${tag.id}'),
                         index: index,
                         child: MouseRegion(
                           cursor: SystemMouseCursors.click,
