@@ -57,7 +57,6 @@ const Map<String, String> deDemoTranslations = {
   'tag.personal': 'Persönlich',
   'tag.health': 'Gesundheit',
   'tag.learning': 'Lernen',
-  'tag.finance': 'Finanzen',
   'tag.entertainment': 'Unterhaltung',
   'tag.social': 'Soziales',
 

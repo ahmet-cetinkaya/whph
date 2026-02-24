@@ -52,7 +52,6 @@ const Map<String, String> elDemoTranslations = {
   'tag.personal': 'Προσωπικά',
   'tag.health': 'Υγεία',
   'tag.learning': 'Μάθηση',
-  'tag.finance': 'Οικονομικά',
   'tag.entertainment': 'Ψυχαγωγία',
   'tag.social': 'Κοινωνικά',
   'note.meeting.title': 'Σημειώσεις συνάντησης',

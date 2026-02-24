@@ -52,7 +52,6 @@ const Map<String, String> fiDemoTranslations = {
   'tag.personal': 'Henkilökohtainen',
   'tag.health': 'Terveys',
   'tag.learning': 'Oppiminen',
-  'tag.finance': 'Talous',
   'tag.entertainment': 'Viihde',
   'tag.social': 'Sosiaalinen',
   'note.meeting.title': 'Kokouksen muistiinpanot',

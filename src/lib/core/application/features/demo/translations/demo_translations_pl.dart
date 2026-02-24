@@ -52,7 +52,6 @@ const Map<String, String> plDemoTranslations = {
   'tag.personal': 'Osobiste',
   'tag.health': 'Zdrowie',
   'tag.learning': 'Nauka',
-  'tag.finance': 'Finanse',
   'tag.entertainment': 'Rozrywka',
   'tag.social': 'Społeczne',
   'note.meeting.title': 'Notatki ze spotkania - Planowanie produktu',

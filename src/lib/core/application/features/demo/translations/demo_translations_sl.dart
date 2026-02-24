@@ -52,7 +52,6 @@ const Map<String, String> slDemoTranslations = {
   'tag.personal': 'Osebno',
   'tag.health': 'Zdravje',
   'tag.learning': 'Učenje',
-  'tag.finance': 'Finance',
   'tag.entertainment': 'Zabava',
   'tag.social': 'Družabno',
   'note.meeting.title': 'Beležke s sestanka - Načrtovanje izdelka',

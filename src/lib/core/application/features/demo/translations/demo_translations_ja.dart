@@ -52,7 +52,6 @@ const Map<String, String> jaDemoTranslations = {
   'tag.personal': '個人',
   'tag.health': '健康',
   'tag.learning': '学習',
-  'tag.finance': '財務',
   'tag.entertainment': 'エンターテイメント',
   'tag.social': 'ソーシャル',
   'note.meeting.title': '会議メモ - 製品計画',

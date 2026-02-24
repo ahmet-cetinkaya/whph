@@ -40,14 +40,6 @@ class DemoTags {
         ),
         Tag(
           id: KeyHelper.generateStringId(),
-          name: translate(DemoTranslationKeys.tagFinance),
-          color: 'FFEAA7',
-          isArchived: false,
-          createdDate: DateTime.now().subtract(const Duration(days: 26)),
-          type: TagType.label,
-        ),
-        Tag(
-          id: KeyHelper.generateStringId(),
           name: translate(DemoTranslationKeys.tagEntertainment),
           color: 'FD79A8',
           isArchived: false,
@@ -84,14 +76,6 @@ class DemoTags {
           color: '00CEC9',
           isArchived: false,
           createdDate: DateTime.now().subtract(const Duration(days: 21)),
-          type: TagType.project,
-        ),
-        Tag(
-          id: KeyHelper.generateStringId(),
-          name: translate(DemoTranslationKeys.tagProjectFurniture),
-          color: 'FAB1A0',
-          isArchived: false,
-          createdDate: DateTime.now().subtract(const Duration(days: 20)),
           type: TagType.project,
         ),
         Tag(

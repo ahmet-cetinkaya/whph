@@ -52,7 +52,6 @@ const Map<String, String> noDemoTranslations = {
   'tag.personal': 'Personlig',
   'tag.health': 'Helse',
   'tag.learning': 'Læring',
-  'tag.finance': 'Økonomi',
   'tag.entertainment': 'Underholdning',
   'tag.social': 'Sosialt',
   'note.meeting.title': 'Møtenotater - Produktplanlegging',

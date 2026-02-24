@@ -84,13 +84,11 @@ class DemoTranslationKeys {
   static const tagPersonal = 'tag.personal';
   static const tagHealth = 'tag.health';
   static const tagLearning = 'tag.learning';
-  static const tagFinance = 'tag.finance';
   static const tagEntertainment = 'tag.entertainment';
   static const tagSocial = 'tag.social';
   static const tagHome = 'tag.home';
   static const tagOffice = 'tag.office';
   static const tagProjectWHPH = 'tag.project_whph';
-  static const tagProjectFurniture = 'tag.project_furniture';
   static const tagMarket = 'tag.market';
 
   // === NOTES ===

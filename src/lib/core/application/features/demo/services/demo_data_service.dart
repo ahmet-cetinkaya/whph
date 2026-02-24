@@ -239,22 +239,20 @@ class DemoDataService implements IDemoDataService {
 
     // Tags are created in a fixed order in DemoTags:
     // [0] Work (Label), [1] Personal (Label), [2] Health (Label), [3] Learning (Label),
-    // [4] Finance (Label), [5] Entertainment (Label), [6] Social (Label),
-    // [7] Home (Context), [8] Office (Context),
-    // [9] WHPH App Development (Project), [10] Handmade Furniture (Project),
-    // [11] Market (Context)
+    // [4] Entertainment (Label), [5] Social (Label),
+    // [6] Home (Context), [7] Office (Context),
+    // [8] WHPH App Development (Project),
+    // [9] Market (Context)
     final workTag = tags[0];
     final personalTag = tags[1];
     final healthTag = tags[2];
     final learningTag = tags[3];
-    // final financeTag = tags[4]; // Not used currently
-    final entertainmentTag = tags[5];
-    final socialTag = tags[6];
-    final homeTag = tags[7];
-    final officeTag = tags[8];
-    final whphProjectTag = tags[9];
-    final furnitureProjectTag = tags[10];
-    final marketTag = tags[11];
+    final entertainmentTag = tags[4];
+    final socialTag = tags[5];
+    final homeTag = tags[6];
+    final officeTag = tags[7];
+    final whphProjectTag = tags[8];
+    final marketTag = tags[9];
 
     // Associate tasks with tags logically
     if (tasks.isNotEmpty) {

@@ -52,7 +52,6 @@ const Map<String, String> svDemoTranslations = {
   'tag.personal': 'Personligt',
   'tag.health': 'Hälsa',
   'tag.learning': 'Lärande',
-  'tag.finance': 'Ekonomi',
   'tag.entertainment': 'Underhållning',
   'tag.social': 'Socialt',
   'note.meeting.title': 'Mötesanteckningar - Produktplanering',

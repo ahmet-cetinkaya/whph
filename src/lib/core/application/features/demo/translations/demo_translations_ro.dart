@@ -52,7 +52,6 @@ const Map<String, String> roDemoTranslations = {
   'tag.personal': 'Personal',
   'tag.health': 'Sănătate',
   'tag.learning': 'Învățare',
-  'tag.finance': 'Finanțe',
   'tag.entertainment': 'Divertisment',
   'tag.social': 'Social',
   'note.meeting.title': 'Note de ședință - Planificare produs',

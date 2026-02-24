@@ -57,7 +57,6 @@ const Map<String, String> csDemoTranslations = {
   'tag.personal': 'Osobní',
   'tag.health': 'Zdraví',
   'tag.learning': 'Učení',
-  'tag.finance': 'Finance',
   'tag.entertainment': 'Zábava',
   'tag.social': 'Sociální',
 

@@ -57,7 +57,6 @@ const Map<String, String> daDemoTranslations = {
   'tag.personal': 'Personlig',
   'tag.health': 'Sundhed',
   'tag.learning': 'Læring',
-  'tag.finance': 'Økonomi',
   'tag.entertainment': 'Underholdning',
   'tag.social': 'Social',
 

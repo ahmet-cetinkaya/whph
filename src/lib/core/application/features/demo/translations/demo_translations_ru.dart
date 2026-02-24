@@ -52,7 +52,6 @@ const Map<String, String> ruDemoTranslations = {
   'tag.personal': 'Личное',
   'tag.health': 'Здоровье',
   'tag.learning': 'Обучение',
-  'tag.finance': 'Финансы',
   'tag.entertainment': 'Развлечения',
   'tag.social': 'Социальное',
   'note.meeting.title': 'Заметки со встречи - Планирование продукта',

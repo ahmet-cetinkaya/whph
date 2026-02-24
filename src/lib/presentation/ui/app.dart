@@ -119,8 +119,6 @@ class _AppState extends State<App> {
     }
   }
 
-  static final GlobalKey repaintBoundaryKey = GlobalKey();
-
   @override
   Widget build(BuildContext context) {
     // Check for startup errors

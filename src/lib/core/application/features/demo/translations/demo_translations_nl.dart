@@ -52,7 +52,6 @@ const Map<String, String> nlDemoTranslations = {
   'tag.personal': 'Persoonlijk',
   'tag.health': 'Gezondheid',
   'tag.learning': 'Leren',
-  'tag.finance': 'Financiën',
   'tag.entertainment': 'Entertainment',
   'tag.social': 'Sociaal',
   'note.meeting.title': 'Vergadernotities - Productplanning',

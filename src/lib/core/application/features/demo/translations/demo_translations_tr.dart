@@ -52,7 +52,6 @@ const Map<String, String> trDemoTranslations = {
   'tag.personal': 'Kişisel',
   'tag.health': 'Sağlık',
   'tag.learning': 'Öğrenme',
-  'tag.finance': 'Finans',
   'tag.entertainment': 'Eğlence',
   'tag.social': 'Sosyal',
   'note.meeting.title': 'Toplantı Notları - Ürün Planlama',

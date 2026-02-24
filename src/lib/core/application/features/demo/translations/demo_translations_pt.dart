@@ -52,7 +52,6 @@ const Map<String, String> ptDemoTranslations = {
   'tag.personal': 'Pessoal',
   'tag.health': 'Saúde',
   'tag.learning': 'Aprendizagem',
-  'tag.finance': 'Finanças',
   'tag.entertainment': 'Entretenimento',
   'tag.social': 'Social',
   'note.meeting.title': 'Notas de reunião - Planeamento do produto',

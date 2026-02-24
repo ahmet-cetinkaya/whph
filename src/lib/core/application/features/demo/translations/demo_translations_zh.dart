@@ -52,7 +52,6 @@ const Map<String, String> zhDemoTranslations = {
   'tag.personal': '个人',
   'tag.health': '健康',
   'tag.learning': '学习',
-  'tag.finance': '财务',
   'tag.entertainment': '娱乐',
   'tag.social': '社交',
   'note.meeting.title': '会议记录 - 产品规划',

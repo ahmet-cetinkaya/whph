@@ -52,7 +52,6 @@ const Map<String, String> ukDemoTranslations = {
   'tag.personal': 'Особисте',
   'tag.health': "Здоров'я",
   'tag.learning': 'Навчання',
-  'tag.finance': 'Фінанси',
   'tag.entertainment': 'Розваги',
   'tag.social': 'Соціальне',
   'note.meeting.title': 'Нотатки зустрічі - Планування продукту',

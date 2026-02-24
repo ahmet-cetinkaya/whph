@@ -52,7 +52,6 @@ const Map<String, String> koDemoTranslations = {
   'tag.personal': '개인',
   'tag.health': '건강',
   'tag.learning': '학습',
-  'tag.finance': '재정',
   'tag.entertainment': '엔터테인먼트',
   'tag.social': '소셜',
   'note.meeting.title': '회의 노트 - 제품 기획',

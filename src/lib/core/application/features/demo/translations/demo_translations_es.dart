@@ -52,7 +52,6 @@ const Map<String, String> esDemoTranslations = {
   'tag.personal': 'Personal',
   'tag.health': 'Salud',
   'tag.learning': 'Aprendizaje',
-  'tag.finance': 'Finanzas',
   'tag.entertainment': 'Entretenimiento',
   'tag.social': 'Social',
   'note.meeting.title': 'Notas de reunión - Planificación',
