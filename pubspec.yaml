@@ -74,3 +74,4 @@ scripts:
   # Utilities
   install:linux: bash scripts/install-linux.sh
   validate:fastlane: bash scripts/validate-fastlane-metadata.sh
+  validate:flatpak: bash scripts/validate-flatpak-metadata.sh

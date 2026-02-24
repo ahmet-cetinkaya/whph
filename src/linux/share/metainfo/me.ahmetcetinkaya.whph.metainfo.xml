@@ -4,201 +4,51 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <name>WHPH • Work Hard Play Hard</name>
-
-  <summary>WHPH is a comprehensive productivity app offering a unified experience to help you manage
-    tasks, develop new habits, optimize your time, take quick notes, and track application usage to
-    enhance focus and stay motivated.</summary>
-  <summary xml:lang="cs">WHPH je komplexní aplikace pro produktivitu, která nabízí jednotné
-    prostředí, které vám pomůže spravovat úkoly, rozvíjet nové návyky, optimalizovat váš čas, dělat
-    si rychlé poznámky a sledovat využití aplikací, abyste se mohli lépe soustředit a zůstat
-    motivovaní.</summary>
-  <summary xml:lang="da">WHPH er en omfattende produktivitetsapp, der tilbyder en samlet oplevelse,
-    der hjælper dig med at styre opgaver, udvikle nye vaner, optimere din tid, tage hurtige noter og
-    spore applikationsbrug for at øge fokus og forblive motiveret.</summary>
-  <summary xml:lang="de">WHPH ist eine umfassende Produktivitäts-App, die ein einheitliches Erlebnis
-    bietet, das Ihnen hilft, Aufgaben zu verwalten, neue Gewohnheiten zu entwickeln, Ihre Zeit zu
-    optimieren, schnelle Notizen zu machen und die Anwendungsnutzung zu verfolgen, um die
-    Konzentration zu verbessern und motiviert zu bleiben.</summary>
-  <summary xml:lang="el">Το WHPH είναι μια ολοκληρωμένη εφαρμογή παραγωγικότητας που προσφέρει μια
-    ενοποιημένη εμπειρία για να σας βοηθήσει να διαχειριστείτε εργασίες, να αναπτύξετε νέες
-    συνήθειες, να βελτιστοποιήσετε το χρόνο σας, να κρατάτε γρήγορες σημειώσεις και να
-    παρακολουθείτε τη χρήση της εφαρμογής για να βελτιώσετε την εστίαση και να παραμείνετε
-    παρακινημένοι.</summary>
-  <summary xml:lang="es">WHPH es una aplicación de productividad integral que ofrece una experiencia
-    unificada para ayudarlo a administrar tareas, desarrollar nuevos hábitos, optimizar su tiempo,
-    tomar notas rápidas y realizar un seguimiento del uso de la aplicación para mejorar la
-    concentración y mantenerse motivado.</summary>
-  <summary xml:lang="fi">WHPH on kattava tuottavuussovellus, joka tarjoaa yhtenäisen kokemuksen,
-    jonka avulla voit hallita tehtäviä, kehittää uusia tapoja, optimoida aikaasi, tehdä nopeita
-    muistiinpanoja ja seurata sovelluksen käyttöä parantaaksesi keskittymistä ja pysyäksesi
-    motivoituneena.</summary>
-  <summary xml:lang="fr">WHPH est une application de productivité complète offrant une expérience
-    unifiée pour vous aider à gérer les tâches, à développer de nouvelles habitudes, à optimiser
-    votre temps, à prendre des notes rapides et à suivre l'utilisation des applications pour
-    améliorer votre concentration et rester motivé.</summary>
-  <summary xml:lang="it">WHPH è un'app di produttività completa che offre un'esperienza unificata
-    per aiutarti a gestire le attività, sviluppare nuove abitudini, ottimizzare il tuo tempo,
-    prendere appunti rapidi e monitorare l'utilizzo delle applicazioni per migliorare la
-    concentrazione e rimanere motivati.</summary>
-  <summary xml:lang="ja">
-    WHPH
-    は、統合されたエクスペリエンスを提供する総合的な生産性向上アプリで、タスクの管理、新しい習慣の開発、時間の最適化、簡単なメモの作成、アプリケーションの使用状況の追跡を支援して、集中力を高めてモチベーションを維持することができます。</summary>
-  <summary xml:lang="ko">WHPH는 작업 관리, 새로운 습관 개발, 시간 최적화, 빠른 메모 작성, 애플리케이션 사용 추적을 통해 집중력을 높이고 동기를
-    유지하는 데 도움이 되는 통합 경험을 제공하는 포괄적인 생산성 앱입니다.</summary>
-  <summary xml:lang="nl">WHPH is een uitgebreide productiviteitsapp die een uniforme ervaring biedt
-    waarmee u taken kunt beheren, nieuwe gewoonten kunt ontwikkelen, uw tijd kunt optimaliseren,
-    snelle aantekeningen kunt maken en het gebruik van applicaties kunt volgen om de focus te
-    vergroten en gemotiveerd te blijven.</summary>
-  <summary xml:lang="no">WHPH er en omfattende produktivitetsapp som tilbyr en enhetlig opplevelse
-    for å hjelpe deg med å administrere oppgaver, utvikle nye vaner, optimalisere tiden din, ta
-    raske notater og spore bruken av applikasjoner for å forbedre fokus og holde deg motivert.</summary>
-  <summary xml:lang="pl">WHPH to wszechstronna aplikacja zwiększająca produktywność, oferująca
-    ujednolicone doświadczenie, które pomaga zarządzać zadaniami, rozwijać nowe nawyki,
-    optymalizować czas, robić szybkie notatki i śledzić wykorzystanie aplikacji, aby zwiększyć
-    koncentrację i utrzymać motywację.</summary>
-  <summary xml:lang="pt">WHPH é um aplicativo de produtividade abrangente que oferece uma
-    experiência unificada para ajudá-lo a gerenciar tarefas, desenvolver novos hábitos, otimizar seu
-    tempo, fazer anotações rápidas e monitorar o uso de aplicativos para aumentar o foco e
-    permanecer motivado.</summary>
-  <summary xml:lang="ro">WHPH este o aplicație cuprinzătoare de productivitate care oferă o
-    experiență unificată pentru a vă ajuta să gestionați sarcinile, să dezvoltați noi obiceiuri, să
-    vă optimizați timpul, să luați note rapide și să urmăriți utilizarea aplicației pentru a
-    îmbunătăți concentrarea și a rămâne motivat.</summary>
-  <summary xml:lang="ru">WHPH — это комплексное приложение для повышения производительности,
-    предлагающее унифицированный интерфейс, который поможет вам управлять задачами, развивать новые
-    привычки, оптимизировать свое время, делать быстрые заметки и отслеживать использование
-    приложений, чтобы повысить концентрацию внимания и сохранять мотивацию.</summary>
-  <summary xml:lang="sl">WHPH je obsežna aplikacija za produktivnost, ki ponuja enotno izkušnjo, ki
-    vam pomaga upravljati naloge, razviti nove navade, optimizirati svoj čas, delati hitre zapiske
-    in slediti uporabi aplikacije, da izboljšate osredotočenost in ostanete motivirani.</summary>
-  <summary xml:lang="sv">WHPH är en omfattande produktivitetsapp som erbjuder en enhetlig upplevelse
-    för att hjälpa dig hantera uppgifter, utveckla nya vanor, optimera din tid, ta snabba
-    anteckningar och spåra appanvändning för att förbättra fokus och hålla dig motiverad.</summary>
-  <summary xml:lang="tr">WHPH, odaklanmayı geliştirmek ve motive kalmak için görevleri yönetmenize,
-    yeni alışkanlıklar geliştirmenize, zamanınızı optimize etmenize, hızlı notlar almanıza ve
-    uygulama kullanımını izlemenize yardımcı olacak birleşik bir deneyim sunan kapsamlı bir
-    üretkenlik uygulamasıdır.</summary>
-  <summary xml:lang="uk">WHPH — це комплексна програма для підвищення продуктивності, яка пропонує
-    єдиний досвід, який допоможе вам керувати завданнями, розвивати нові звички, оптимізувати свій
-    час, робити швидкі нотатки та відстежувати використання програми, щоб покращити концентрацію та
-    залишатися мотивованими.</summary>
-  <summary xml:lang="zh-CN">WHPH
-    是一款全面的生产力应用程序，提供统一的体验，帮助您管理任务、养成新习惯、优化时间、快速记笔记并跟踪应用程序使用情况以增强注意力并保持积极性。</summary>
-
+  <summary>WHPH is a productivity app to manage tasks, habits, and time to enhance your focus</summary>
+  <summary xml:lang="cs">WHPH je aplikace pro produktivitu ke správě úkolů, návyků a času pro lepší soustředění</summary>
+  <summary xml:lang="da">WHPH er en produktivitetsapp til at styre opgaver, vaner og tid for at øge dit fokus</summary>
+  <summary xml:lang="de">WHPH ist eine Produktivitäts-App zur Verwaltung von Aufgaben, Gewohnheiten und Zeit</summary>
+  <summary xml:lang="el">Το WHPH είναι μια εφαρμογή για τη διαχείριση εργασιών, συνηθειών και χρόνου</summary>
+  <summary xml:lang="es">WHPH es una app de productividad para gestionar tareas, hábitos y tiempo para enfocarte</summary>
+  <summary xml:lang="fi">WHPH on tuottavuussovellus tehtävien, tapojen ja ajan hallintaan keskittymisen avuksi</summary>
+  <summary xml:lang="fr">WHPH est une application de productivité pour gérer vos tâches, habitudes et votre temps</summary>
+  <summary xml:lang="it">WHPH è un'app di produttività per gestire attività, abitudini e tempo per concentrarti</summary>
+  <summary xml:lang="ja">WHPHは、タスク、習慣、時間を管理して集中力を高めるための生産性向上アプリです</summary>
+  <summary xml:lang="ko">WHPH는 집중력을 높이기 위해 작업, 습관 및 시간을 관리하는 생산성 앱입니다</summary>
+  <summary xml:lang="nl">WHPH is een productiviteitsapp om taken, gewoonten en tijd te beheren voor meer focus</summary>
+  <summary xml:lang="no">WHPH er en produktivitetsapp for å administrere oppgaver, vaner og tid for økt fokus</summary>
+  <summary xml:lang="pl">WHPH to aplikacja do zarządzania zadaniami, nawykami i czasem, aby zwiększyć skupienie</summary>
+  <summary xml:lang="pt">WHPH é um app de produtividade para gerenciar tarefas, hábitos e tempo para ter foco</summary>
+  <summary xml:lang="ro">WHPH este o aplicație de productivitate pentru gestionarea sarcinilor, obiceiurilor și timpului</summary>
+  <summary xml:lang="ru">WHPH — это приложение для управления задачами, привычками и временем для концентрации</summary>
+  <summary xml:lang="sl">WHPH je aplikacija za produktivnost za upravljanje nalog, navad in časa za večjo zbranost</summary>
+  <summary xml:lang="sv">WHPH är en produktivitetsapp för att hantera uppgifter, vanor och tid för att öka fokus</summary>
+  <summary xml:lang="tr">WHPH, odaklanmanızı artırmak için görevleri, alışkanlıkları ve zamanı yöneten bir uygulamadır</summary>
+  <summary xml:lang="uk">WHPH — програма для керування завданнями, звичками та часом для кращої концентрації</summary>
+  <summary xml:lang="zh-CN">WHPH是一款提高注意力的生产力应用，可帮助您管理任务、习惯和时间</summary>
   <description>
-    <p>WHPH (Work Hard Play Hard) is a comprehensive productivity application designed to help you
-      manage tasks, develop new habits, and optimize your time through intelligent tracking and
-      analysis. The application combines task management, habit tracking, time monitoring, and
-      productivity analytics in a unified cross-platform solution.</p>
-    <p xml:lang="cs">WHPH (Work Hard Play Hard) je komplexní produktivní aplikace navržená tak, aby
-      vám pomohla spravovat úkoly, rozvíjet nové návyky a optimalizovat váš čas prostřednictvím
-      inteligentního sledování a analýzy. Aplikace kombinuje správu úkolů, sledování návyků,
-      sledování
-      času a analýzu produktivity v jednotném řešení pro různé platformy.</p>
-    <p xml:lang="da">WHPH (Work Hard Play Hard) er en omfattende produktivitetsapplikation designet
-      til at hjælpe dig med at styre opgaver, udvikle nye vaner og optimere din tid gennem
-      intelligent
-      sporing og analyse. Applikationen kombinerer opgavestyring, vanesporing, tidsovervågning og
-      produktivitetsanalyse i en samlet løsning på tværs af platforme.</p>
-    <p xml:lang="de">WHPH (Work Hard Play Hard) ist eine umfassende Produktivitätsanwendung, die
-      Ihnen
-      dabei hilft, Aufgaben zu verwalten, neue Gewohnheiten zu entwickeln und Ihre Zeit durch
-      intelligente Nachverfolgung und Analyse zu optimieren. Die Anwendung kombiniert
-      Aufgabenverwaltung, Gewohnheitsverfolgung, Zeitüberwachung und Produktivitätsanalysen in einer
-      einheitlichen plattformübergreifenden Lösung.</p>
-    <p xml:lang="el">Το WHPH (Work Hard Play Hard) είναι μια ολοκληρωμένη εφαρμογή παραγωγικότητας
-      που
-      έχει σχεδιαστεί για να σας βοηθήσει να διαχειριστείτε εργασίες, να αναπτύξετε νέες συνήθειες
-      και
-      να βελτιστοποιήσετε το χρόνο σας μέσω έξυπνης παρακολούθησης και ανάλυσης. Η εφαρμογή
-      συνδυάζει
-      διαχείριση εργασιών, παρακολούθηση συνήθειας, παρακολούθηση χρόνου και αναλυτικά στοιχεία
-      παραγωγικότητας σε μια ενοποιημένη λύση πολλαπλών πλατφορμών.</p>
-    <p xml:lang="es">WHPH (Work Hard Play Hard) es una aplicación de productividad integral diseñada
-      para ayudarlo a administrar tareas, desarrollar nuevos hábitos y optimizar su tiempo mediante
-      seguimiento y análisis inteligentes. La aplicación combina gestión de tareas, seguimiento de
-      hábitos, seguimiento del tiempo y análisis de productividad en una solución multiplataforma
-      unificada.</p>
-    <p xml:lang="fi">WHPH (Work Hard Play Hard) on kattava tuottavuussovellus, joka on suunniteltu
-      auttamaan sinua hallitsemaan tehtäviä, kehittämään uusia tapoja ja optimoimaan aikaasi
-      älykkään
-      seurannan ja analyysin avulla. Sovellus yhdistää tehtävien hallinnan, tottumusten seurannan,
-      ajan seurannan ja tuottavuusanalytiikan yhtenäiseen monikäyttöiseen ratkaisuun.</p>
-    <p xml:lang="fr">WHPH (Work Hard Play Hard) est une application de productivité complète conçue
-      pour vous aider à gérer vos tâches, à développer de nouvelles habitudes et à optimiser votre
-      temps grâce à un suivi et une analyse intelligents. L'application combine la gestion des
-      tâches,
-      le suivi des habitudes, la surveillance du temps et l'analyse de la productivité dans une
-      solution multiplateforme unifiée.</p>
-    <p xml:lang="it">WHPH (Work Hard Play Hard) è un'applicazione di produttività completa
-      progettata
-      per aiutarti a gestire le attività, sviluppare nuove abitudini e ottimizzare il tuo tempo
-      attraverso il monitoraggio e l'analisi intelligenti. L'applicazione combina gestione delle
-      attività, monitoraggio delle abitudini, monitoraggio del tempo e analisi della produttività in
-      una soluzione multipiattaforma unificata.</p>
-    <p xml:lang="ja">WHPH (Work Hard Play Hard)
-      は、インテリジェントな追跡と分析を通じて、タスクの管理、新しい習慣の開発、時間の最適化を支援するように設計された包括的な生産性アプリケーションです。このアプリケーションは、タスク管理、習慣追跡、時間監視、生産性分析を統合されたクロスプラットフォーム
-      ソリューションに統合します。</p>
-    <p xml:lang="ko">WHPH(Work Hard Play Hard)는 지능형 추적 및 분석을 통해 작업을 관리하고, 새로운 습관을 개발하고, 시간을 최적화하는 데
-      도움을 주기 위해 설계된 포괄적인 생산성 애플리케이션입니다. 이 애플리케이션은 통합 크로스 플랫폼 솔루션에 작업 관리, 습관 추적, 시간 모니터링 및 생산성 분석을
-      결합합니다.</p>
-    <p xml:lang="nl">WHPH (Work Hard Play Hard) is een uitgebreide productiviteitstoepassing die is
-      ontworpen om u te helpen taken te beheren, nieuwe gewoonten te ontwikkelen en uw tijd te
-      optimaliseren door middel van intelligente tracking en analyse. De applicatie combineert
-      taakbeheer, gewoonteregistratie, tijdbewaking en productiviteitsanalyse in een uniforme
-      platformonafhankelijke oplossing.</p>
-    <p xml:lang="no">WHPH (Work Hard Play Hard) er en omfattende produktivitetsapplikasjon utviklet
-      for å hjelpe deg med å administrere oppgaver, utvikle nye vaner og optimalisere tiden din
-      gjennom intelligent sporing og analyse. Applikasjonen kombinerer oppgavehåndtering,
-      vanesporing,
-      tidsovervåking og produktivitetsanalyse i en enhetlig løsning på tvers av plattformer.</p>
-    <p xml:lang="pl">WHPH (Work Hard Play Hard) to wszechstronna aplikacja zwiększająca
-      produktywność,
-      zaprojektowana, aby pomóc Ci zarządzać zadaniami, rozwijać nowe nawyki i optymalizować czas
-      dzięki inteligentnemu śledzeniu i analizie. Aplikacja łączy zarządzanie zadaniami, śledzenie
-      nawyków, monitorowanie czasu i analitykę produktywności w ujednoliconym rozwiązaniu
-      wieloplatformowym.</p>
-    <p xml:lang="pt">WHPH (Work Hard Play Hard) é um aplicativo de produtividade abrangente
-      projetado
-      para ajudá-lo a gerenciar tarefas, desenvolver novos hábitos e otimizar seu tempo por meio de
-      rastreamento e análise inteligentes. O aplicativo combina gerenciamento de tarefas,
-      rastreamento
-      de hábitos, monitoramento de tempo e análise de produtividade em uma solução unificada de
-      plataforma cruzada.</p>
-    <p xml:lang="ro">WHPH (Work Hard Play Hard) este o aplicație cuprinzătoare de productivitate
-      concepută pentru a vă ajuta să gestionați sarcinile, să dezvoltați noi obiceiuri și să vă
-      optimizați timpul prin urmărire și analiză inteligentă. Aplicația combină gestionarea
-      sarcinilor, urmărirea obiceiurilor, monitorizarea timpului și analiza productivității într-o
-      soluție multiplatformă unificată.</p>
-    <p xml:lang="ru">WHPH (Work Hard Play Hard) — это комплексное приложение для повышения
-      производительности, разработанное, чтобы помочь вам управлять задачами, развивать новые
-      привычки
-      и оптимизировать свое время посредством интеллектуального отслеживания и анализа. Приложение
-      сочетает в себе управление задачами, отслеживание привычек, мониторинг времени и аналитику
-      производительности в едином кроссплатформенном решении.</p>
-    <p xml:lang="sl">WHPH (Work Hard Play Hard) je obsežna aplikacija za produktivnost, ki vam
-      pomaga
-      upravljati naloge, razviti nove navade in optimizirati svoj čas s pomočjo inteligentnega
-      sledenja in analize. Aplikacija združuje upravljanje opravil, sledenje navadam, spremljanje
-      časa
-      in analitiko produktivnosti v enotni rešitvi za več platform.</p>
-    <p xml:lang="sv">WHPH (Work Hard Play Hard) är en omfattande produktivitetsapplikation designad
-      för att hjälpa dig hantera uppgifter, utveckla nya vanor och optimera din tid genom
-      intelligent
-      spårning och analys. Applikationen kombinerar uppgiftshantering, vanespårning, tidsövervakning
-      och produktivitetsanalys i en enhetlig plattformsoberoende lösning.</p>
-    <p xml:lang="tr">WHPH (Work Hard Play Hard), akıllı izleme ve analiz yoluyla görevleri
-      yönetmenize, yeni alışkanlıklar geliştirmenize ve zamanınızı optimize etmenize yardımcı olmak
-      için tasarlanmış kapsamlı bir üretkenlik uygulamasıdır. Uygulama, görev yönetimini, alışkanlık
-      takibini, zaman izlemeyi ve üretkenlik analitiğini birleşik bir platformlar arası çözümde
-      birleştirir.</p>
-    <p xml:lang="uk">WHPH (Work Hard Play Hard) — це комплексна програма для підвищення
-      продуктивності, розроблена, щоб допомогти вам керувати завданнями, розвивати нові звички та
-      оптимізувати свій час за допомогою інтелектуального відстеження та аналізу. Додаток поєднує
-      керування завданнями, відстеження звичок, моніторинг часу та аналітику продуктивності в
-      уніфікованому міжплатформному рішенні.</p>
-    <p xml:lang="zh">WHPH（Work Hard Play
-      Hard）是一款全面的生产力应用程序，旨在通过智能跟踪和分析帮助您管理任务、养成新习惯并优化您的时间。该应用程序将任务管理、习惯跟踪、时间监控和生产力分析结合在一个统一的跨平台解决方案中。</p>
+    <p>WHPH (Work Hard Play Hard) is a comprehensive productivity application designed to help you manage tasks, develop new habits, and optimize your time through intelligent tracking and analysis. The application combines task management, habit tracking, time monitoring, and productivity analytics in a unified cross-platform solution.</p>
+    <p xml:lang="cs">WHPH (Work Hard Play Hard) je komplexní produktivní aplikace navržená tak, aby vám pomohla spravovat úkoly, rozvíjet nové návyky a optimalizovat váš čas prostřednictvím inteligentního sledování a analýzy. Aplikace kombinuje správu úkolů, sledování návyků, sledování času a analýzu produktivity v jednotném řešení pro různé platformy.</p>
+    <p xml:lang="da">WHPH (Work Hard Play Hard) er en omfattende produktivitetsapplikation designet til at hjælpe dig med at styre opgaver, udvikle nye vaner og optimere din tid gennem intelligent sporing og analyse. Applikationen kombinerer opgavestyring, vanesporing, tidsovervågning og produktivitetsanalyse i en samlet løsning på tværs af platforme.</p>
+    <p xml:lang="de">WHPH (Work Hard Play Hard) ist eine umfassende Produktivitätsanwendung, die Ihnen dabei hilft, Aufgaben zu verwalten, neue Gewohnheiten zu entwickeln und Ihre Zeit durch intelligente Nachverfolgung und Analyse zu optimieren. Die Anwendung kombiniert Aufgabenverwaltung, Gewohnheitsverfolgung, Zeitüberwachung und Produktivitätsanalysen in einer einheitlichen plattformübergreifenden Lösung.</p>
+    <p xml:lang="el">Το WHPH (Work Hard Play Hard) είναι μια ολοκληρωμένη εφαρμογή παραγωγικότητας που έχει σχεδιαστεί για να σας βοηθήσει να διαχειριστείτε εργασίες, να αναπτύξετε νέες συνήθειες και να βελτιστοποιήσετε το χρόνο σας μέσω έξυπνης παρακολούθησης και ανάλυσης. Η εφαρμογή συνδυάζει διαχείριση εργασιών, παρακολούθηση συνήθειας, παρακολούθηση χρόνου και αναλυτικά στοιχεία παραγωγικότητας σε μια ενοποιημένη λύση πολλαπλών πλατφορμών.</p>
+    <p xml:lang="es">WHPH (Work Hard Play Hard) es una aplicación de productividad integral diseñada para ayudarlo a administrar tareas, desarrollar nuevos hábitos y optimizar su tiempo mediante seguimiento y análisis inteligentes. La aplicación combina gestión de tareas, seguimiento de hábitos, seguimiento del tiempo y análisis de productividad en una solución multiplataforma unificada.</p>
+    <p xml:lang="fi">WHPH (Work Hard Play Hard) on kattava tuottavuussovellus, joka on suunniteltu auttamaan sinua hallitsemaan tehtäviä, kehittämään uusia tapoja ja optimoimaan aikaasi älykkään seurannan ja analyysin avulla. Sovellus yhdistää tehtävien hallinnan, tottumusten seurannan, ajan seurannan ja tuottavuusanalytiikan yhtenäiseen monikäyttöiseen ratkaisuun.</p>
+    <p xml:lang="fr">WHPH (Work Hard Play Hard) est une application de productivité complète conçue pour vous aider à gérer vos tâches, à développer de nouvelles habitudes et à optimiser votre temps grâce à un suivi et une analyse intelligents. L'application combine la gestion des tâches, le suivi des habitudes, la surveillance du temps et l'analyse de la productivité dans une solution multiplateforme unifiée.</p>
+    <p xml:lang="it">WHPH (Work Hard Play Hard) è un'applicazione di produttività completa progettata per aiutarti a gestire le attività, sviluppare nuove abitudini e ottimizzare il tuo tempo attraverso il monitoraggio e l'analisi intelligenti. L'applicazione combina gestione delle attività, monitoraggio delle abitudini, monitoraggio del tempo e analisi della produttività in una soluzione multipiattaforma unificata.</p>
+    <p xml:lang="ja">WHPH (Work Hard Play Hard) は、インテリジェントな追跡と分析を通じて、タスクの管理、新しい習慣の開発、時間の最適化を支援するように設計された包括的な生産性アプリケーションです。このアプリケーションは、タスク管理、習慣追跡、時間監視、生産性分析を統合されたクロスプラットフォーム ソリューションに統合します。</p>
+    <p xml:lang="ko">WHPH(Work Hard Play Hard)는 지능형 추적 및 분석을 통해 작업을 관리하고, 새로운 습관을 개발하고, 시간을 최적화하는 데 도움을 주기 위해 설계된 포괄적인 생산성 애플리케이션입니다. 이 애플리케이션은 통합 크로스 플랫폼 솔루션에 작업 관리, 습관 추적, 시간 모니터링 및 생산성 분석을 결합합니다.</p>
+    <p xml:lang="nl">WHPH (Work Hard Play Hard) is een uitgebreide productiviteitstoepassing die is ontworpen om u te helpen taken te beheren, nieuwe gewoonten te ontwikkelen en uw tijd te optimaliseren door middel van intelligente tracking en analyse. De applicatie combineert taakbeheer, gewoonteregistratie, tijdbewaking en productiviteitsanalyse in een uniforme platformonafhankelijke oplossing.</p>
+    <p xml:lang="no">WHPH (Work Hard Play Hard) er en omfattende produktivitetsapplikasjon utviklet for å hjelpe deg med å administrere oppgaver, utvikle nye vaner og optimalisere tiden din gjennom intelligent sporing og analyse. Applikasjonen kombinerer oppgavehåndtering, vanesporing, tidsovervåking og produktivitetsanalyse i en enhetlig løsning på tvers av plattformer.</p>
+    <p xml:lang="pl">WHPH (Work Hard Play Hard) to wszechstronna aplikacja zwiększająca produktywność, zaprojektowana, aby pomóc Ci zarządzać zadaniami, rozwijać nowe nawyki i optymalizować czas dzięki inteligentnemu śledzeniu i analizie. Aplikacja łączy zarządzanie zadaniami, śledzenie nawyków, monitorowanie czasu i analitykę produktywności w ujednoliconym rozwiązaniu wieloplatformowym.</p>
+    <p xml:lang="pt">WHPH (Work Hard Play Hard) é um aplicativo de produtividade abrangente projetado para ajudá-lo a gerenciar tarefas, desenvolver novos hábitos e otimizar seu tempo por meio de rastreamento e análise inteligentes. O aplicativo combina gerenciamento de tarefas, rastreamento de hábitos, monitoramento de tempo e análise de produtividade em uma solução unificada de plataforma cruzada.</p>
+    <p xml:lang="ro">WHPH (Work Hard Play Hard) este o aplicație cuprinzătoare de productivitate concepută pentru a vă ajuta să gestionați sarcinile, să dezvoltați noi obiceiuri și să vă optimizați timpul prin urmărire și analiză inteligentă. Aplicația combină gestionarea sarcinilor, urmărirea obiceiurilor, monitorizarea timpului și analiza productivității într-o soluție multiplatformă unificată.</p>
+    <p xml:lang="ru">WHPH (Work Hard Play Hard) — это комплексное приложение для повышения производительности, разработанное, чтобы помочь вам управлять задачами, развивать новые привычки и оптимизировать свое время посредством интеллектуального отслеживания и анализа. Приложение сочетает в себе управление задачами, отслеживание привычек, мониторинг времени и аналитику производительности в едином кроссплатформенном решении.</p>
+    <p xml:lang="sl">WHPH (Work Hard Play Hard) je obsežna aplikacija za produktivnost, ki vam pomaga upravljati naloge, razviti nove navade in optimizirati svoj čas s pomočjo inteligentnega sledenja in analize. Aplikacija združuje upravljanje opravil, sledenje navadam, spremljanje časa in analitiko produktivnosti v enotni rešitvi za več platform.</p>
+    <p xml:lang="sv">WHPH (Work Hard Play Hard) är en omfattande produktivitetsapplikation designad för att hjälpa dig hantera uppgifter, utveckla nya vanor och optimera din tid genom intelligent spårning och analys. Applikationen kombinerar uppgiftshantering, vanespårning, tidsövervakning och produktivitetsanalys i en enhetlig plattformsoberoende lösning.</p>
+    <p xml:lang="tr">WHPH (Work Hard Play Hard), akıllı izleme ve analiz yoluyla görevleri yönetmenize, yeni alışkanlıklar geliştirmenize ve zamanınızı optimize etmenize yardımcı olmak için tasarlanmış kapsamlı bir üretkenlik uygulamasıdır. Uygulama, görev yönetimini, alışkanlık takibini, zaman izlemeyi ve üretkenlik analitiğini birleşik bir platformlar arası çözümde birleştirir.</p>
+    <p xml:lang="uk">WHPH (Work Hard Play Hard) — це комплексна програма для підвищення продуктивності, розроблена, щоб допомогти вам керувати завданнями, розвивати нові звички та оптимізувати свій час за допомогою інтелектуального відстеження та аналізу. Додаток поєднує керування завданнями, відстеження звичок, моніторинг часу та аналітику продуктивності в уніфікованому міжплатформному рішенні.</p>
+    <p xml:lang="zh">WHPH（Work Hard Play Hard）是一款全面的生产力应用程序，旨在通过智能跟踪和分析帮助您管理任务、养成新习惯并优化您的时间。该应用程序将任务管理、习惯跟踪、时间监控和生产力分析结合在一个统一的跨平台解决方案中。</p>
     <p>Key Features:</p>
     <p xml:lang="cs">Klíčové vlastnosti:</p>
     <p xml:lang="da">Nøglefunktioner:</p>
@@ -206,7 +56,7 @@
     <p xml:lang="el">Βασικά Χαρακτηριστικά:</p>
     <p xml:lang="es">Características clave:</p>
     <p xml:lang="fi">Tärkeimmät ominaisuudet:</p>
-    <p xml:lang="fr">Principales caractéristiques :</p>
+    <p xml:lang="fr">Principales caractéristiques:</p>
     <p xml:lang="it">Caratteristiche principali:</p>
     <p xml:lang="ja">主な特徴:</p>
     <p xml:lang="ko">주요 특징:</p>
@@ -225,237 +75,134 @@
       <li>Task Management: Organize and track your daily tasks efficiently</li>
       <li xml:lang="cs">Správa úloh: Efektivně organizujte a sledujte své každodenní úkoly</li>
       <li xml:lang="da">Task Management: Organiser og spor dine daglige opgaver effektivt</li>
-      <li xml:lang="de">Aufgabenverwaltung: Organisieren und verfolgen Sie Ihre täglichen Aufgaben
-        effizient</li>
-      <li xml:lang="el">Διαχείριση εργασιών: Οργανώστε και παρακολουθήστε αποτελεσματικά τις
-        καθημερινές σας εργασίες</li>
-      <li xml:lang="es">Gestión de tareas: organice y realice un seguimiento de sus tareas diarias
-        de
-        manera eficiente</li>
+      <li xml:lang="de">Aufgabenverwaltung: Organisieren und verfolgen Sie Ihre täglichen Aufgaben effizient</li>
+      <li xml:lang="el">Διαχείριση εργασιών: Οργανώστε και παρακολουθήστε αποτελεσματικά τις καθημερινές σας εργασίες</li>
+      <li xml:lang="es">Gestión de tareas: organice y realice un seguimiento de sus tareas diarias de manera eficiente</li>
       <li xml:lang="fi">Tehtävienhallinta: Järjestä ja seuraa päivittäisiä tehtäviäsi tehokkaasti</li>
-      <li xml:lang="fr">Gestion des tâches : organisez et suivez efficacement vos tâches
-        quotidiennes</li>
-      <li xml:lang="it">Gestione delle attività: organizza e monitora le tue attività quotidiane in
-        modo efficiente</li>
+      <li xml:lang="fr">Gestion des tâches : organisez et suivez efficacement vos tâches quotidiennes</li>
+      <li xml:lang="it">Gestione delle attività: organizza e monitora le tue attività quotidiane in modo efficiente</li>
       <li xml:lang="ja">タスク管理: 日々のタスクを効率的に整理し、追跡します。</li>
       <li xml:lang="ko">작업 관리: 일일 작업을 효율적으로 구성하고 추적합니다.</li>
       <li xml:lang="nl">Taakbeheer: Organiseer en volg uw dagelijkse taken efficiënt</li>
       <li xml:lang="no">Oppgavebehandling: Organiser og spor dine daglige oppgaver effektivt</li>
       <li xml:lang="pl">Zarządzanie zadaniami: Efektywnie organizuj i śledź swoje codzienne zadania</li>
-      <li xml:lang="pt">Gerenciamento de tarefas: organize e acompanhe suas tarefas diárias com
-        eficiência</li>
+      <li xml:lang="pt">Gerenciamento de tarefas: organize e acompanhe suas tarefas diárias com eficiência</li>
       <li xml:lang="ro">Managementul sarcinilor: organizați și urmăriți eficient sarcinile zilnice</li>
-      <li xml:lang="ru">Управление задачами: эффективно организуйте и отслеживайте свои ежедневные
-        задачи.</li>
-      <li xml:lang="sl">Upravljanje opravil: Učinkovito organizirajte in spremljajte svoje dnevne
-        naloge</li>
+      <li xml:lang="ru">Управление задачами: эффективно организуйте и отслеживайте свои ежедневные задачи.</li>
+      <li xml:lang="sl">Upravljanje opravil: Učinkovito organizirajte in spremljajte svoje dnevne naloge</li>
       <li xml:lang="sv">Task Management: Organisera och spåra dina dagliga uppgifter effektivt</li>
-      <li xml:lang="tr">Görev Yönetimi: Günlük görevlerinizi verimli bir şekilde organize edin ve
-        takip edin</li>
-      <li xml:lang="uk">Керування завданнями: ефективно організовуйте та відстежуйте свої щоденні
-        завдання</li>
+      <li xml:lang="tr">Görev Yönetimi: Günlük görevlerinizi verimli bir şekilde organize edin ve takip edin</li>
+      <li xml:lang="uk">Керування завданнями: ефективно організовуйте та відстежуйте свої щоденні завдання</li>
       <li xml:lang="zh">任务管理：有效地组织和跟踪您的日常任务</li>
       <li>Habit Tracking: Build and maintain positive habits with progress monitoring</li>
-      <li xml:lang="cs">Sledování návyků: Budujte a udržujte pozitivní návyky pomocí sledování
-        pokroku</li>
+      <li xml:lang="cs">Sledování návyků: Budujte a udržujte pozitivní návyky pomocí sledování pokroku</li>
       <li xml:lang="da">Vanesporing: Opbyg og vedligehold positive vaner med fremskridtsovervågning</li>
-      <li xml:lang="de">Gewohnheitsverfolgung: Bauen und pflegen Sie positive Gewohnheiten mit
-        Fortschrittsüberwachung</li>
-      <li xml:lang="el">Παρακολούθηση συνήθειας: Δημιουργήστε και διατηρήστε θετικές συνήθειες με
-        την
-        παρακολούθηση προόδου</li>
-      <li xml:lang="es">Seguimiento de hábitos: desarrolle y mantenga hábitos positivos con el
-        seguimiento del progreso</li>
-      <li xml:lang="fi">Tottumusten seuranta: Rakenna ja ylläpidä positiivisia tapoja edistymisen
-        seurannan avulla</li>
-      <li xml:lang="fr">Suivi des habitudes : créez et maintenez des habitudes positives grâce au
-        suivi des progrès</li>
-      <li xml:lang="it">Monitoraggio delle abitudini: crea e mantieni abitudini positive con il
-        monitoraggio dei progressi</li>
+      <li xml:lang="de">Gewohnheitsverfolgung: Bauen und pflegen Sie positive Gewohnheiten mit Fortschrittsüberwachung</li>
+      <li xml:lang="el">Παρακολούθηση συνήθειας: Δημιουργήστε και διατηρήστε θετικές συνήθειες με την παρακολούθηση προόδου</li>
+      <li xml:lang="es">Seguimiento de hábitos: desarrolle y mantenga hábitos positivos con el seguimiento del progreso</li>
+      <li xml:lang="fi">Tottumusten seuranta: Rakenna ja ylläpidä positiivisia tapoja edistymisen seurannan avulla</li>
+      <li xml:lang="fr">Suivi des habitudes : créez et maintenez des habitudes positives grâce au suivi des progrès</li>
+      <li xml:lang="it">Monitoraggio delle abitudini: crea e mantieni abitudini positive con il monitoraggio dei progressi</li>
       <li xml:lang="ja">習慣追跡: 進捗状況をモニタリングしてポジティブな習慣を構築および維持します。</li>
       <li xml:lang="ko">습관 추적: 진행 상황 모니터링을 통해 긍정적인 습관을 구축하고 유지합니다.</li>
-      <li xml:lang="nl">Gewoonte volgen: bouw en onderhoud positieve gewoonten met
-        voortgangsmonitoring</li>
+      <li xml:lang="nl">Gewoonte volgen: bouw en onderhoud positieve gewoonten met voortgangsmonitoring</li>
       <li xml:lang="no">Vanesporing: Bygg og oppretthold positive vaner med fremdriftsovervåking</li>
-      <li xml:lang="pl">Śledzenie nawyków: buduj i utrzymuj pozytywne nawyki dzięki monitorowaniu
-        postępów</li>
-      <li xml:lang="pt">Rastreamento de hábitos: crie e mantenha hábitos positivos com monitoramento
-        de progresso</li>
-      <li xml:lang="ro">Urmărirea obiceiurilor: construiți și mențineți obiceiuri pozitive cu
-        monitorizarea progresului</li>
-      <li xml:lang="ru">Отслеживание привычек: создавайте и поддерживайте положительные привычки с
-        помощью мониторинга прогресса.</li>
-      <li xml:lang="sl">Sledenje navadam: zgradite in ohranite pozitivne navade s spremljanjem
-        napredka</li>
+      <li xml:lang="pl">Śledzenie nawyków: buduj i utrzymuj pozytywne nawyki dzięki monitorowaniu postępów</li>
+      <li xml:lang="pt">Rastreamento de hábitos: crie e mantenha hábitos positivos com monitoramento de progresso</li>
+      <li xml:lang="ro">Urmărirea obiceiurilor: construiți și mențineți obiceiuri pozitive cu monitorizarea progresului</li>
+      <li xml:lang="ru">Отслеживание привычек: создавайте и поддерживайте положительные привычки с помощью мониторинга прогресса.</li>
+      <li xml:lang="sl">Sledenje navadam: zgradite in ohranite pozitivne navade s spremljanjem napredka</li>
       <li xml:lang="sv">Vanespårning: Bygg och upprätthåll positiva vanor med framstegsövervakning</li>
-      <li xml:lang="tr">Alışkanlık Takibi: İlerleme izlemeyle olumlu alışkanlıklar oluşturun ve
-        sürdürün</li>
-      <li xml:lang="uk">Відстеження звичок: створюйте та зберігайте позитивні звички за допомогою
-        моніторингу прогресу</li>
+      <li xml:lang="tr">Alışkanlık Takibi: İlerleme izlemeyle olumlu alışkanlıklar oluşturun ve sürdürün</li>
+      <li xml:lang="uk">Відстеження звичок: створюйте та зберігайте позитивні звички за допомогою моніторингу прогресу</li>
       <li xml:lang="zh">习惯跟踪：通过进度监控建立并保持积极的习惯</li>
       <li>Time Optimization: Analyze your time usage patterns and improve productivity</li>
       <li xml:lang="cs">Optimalizace času: Analyzujte vzorce využití času a zvyšte produktivitu</li>
-      <li xml:lang="da">Tidsoptimering: Analyser dine tidsforbrugsmønstre og forbedre
-        produktiviteten</li>
-      <li xml:lang="de">Zeitoptimierung: Analysieren Sie Ihre Zeitnutzungsmuster und verbessern Sie
-        die Produktivität</li>
-      <li xml:lang="el">Βελτιστοποίηση χρόνου: Αναλύστε τα μοτίβα χρήσης του χρόνου σας και
-        βελτιώστε
-        την παραγωγικότητα</li>
-      <li xml:lang="es">Optimización del tiempo: analice sus patrones de uso del tiempo y mejore la
-        productividad</li>
+      <li xml:lang="da">Tidsoptimering: Analyser dine tidsforbrugsmønstre og forbedre produktiviteten</li>
+      <li xml:lang="de">Zeitoptimierung: Analysieren Sie Ihre Zeitnutzungsmuster und verbessern Sie die Produktivität</li>
+      <li xml:lang="el">Βελτιστοποίηση χρόνου: Αναλύστε τα μοτίβα χρήσης του χρόνου σας και βελτιώστε την παραγωγικότητα</li>
+      <li xml:lang="es">Optimización del tiempo: analice sus patrones de uso del tiempo y mejore la productividad</li>
       <li xml:lang="fi">Ajan optimointi: Analysoi ajankäyttösi ja paranna tuottavuuttasi</li>
-      <li xml:lang="fr">Optimisation du temps : analysez vos habitudes d'utilisation du temps et
-        améliorez votre productivité</li>
-      <li xml:lang="it">Ottimizzazione del tempo: analizza i tuoi modelli di utilizzo del tempo e
-        migliora la produttività</li>
+      <li xml:lang="fr">Optimisation du temps : analysez vos habitudes d'utilisation du temps et améliorez votre productivité</li>
+      <li xml:lang="it">Ottimizzazione del tempo: analizza i tuoi modelli di utilizzo del tempo e migliora la produttività</li>
       <li xml:lang="ja">時間の最適化: 時間の使用パターンを分析し、生産性を向上させます。</li>
       <li xml:lang="ko">시간 최적화: 시간 사용 패턴을 분석하고 생산성을 향상시킵니다.</li>
-      <li xml:lang="nl">Tijdoptimalisatie: analyseer uw tijdsgebruikspatronen en verbeter de
-        productiviteit</li>
-      <li xml:lang="no">Tidsoptimalisering: Analyser tidsbruksmønstrene dine og forbedre
-        produktiviteten</li>
-      <li xml:lang="pl">Optymalizacja czasu: analizuj wzorce wykorzystania czasu i zwiększ
-        produktywność</li>
-      <li xml:lang="pt">Otimização de tempo: analise seus padrões de uso de tempo e melhore a
-        produtividade</li>
-      <li xml:lang="ro">Optimizarea timpului: analizați tiparele de utilizare a timpului și
-        îmbunătățiți productivitatea</li>
-      <li xml:lang="ru">Оптимизация времени: анализируйте структуру использования времени и
-        повышайте
-        производительность.</li>
-      <li xml:lang="sl">Optimizacija časa: analizirajte svoje vzorce porabe časa in izboljšajte
-        produktivnost</li>
-      <li xml:lang="sv">Tidsoptimering: Analysera dina tidsanvändningsmönster och förbättra
-        produktiviteten</li>
-      <li xml:lang="tr">Zaman Optimizasyonu: Zaman kullanım kalıplarınızı analiz edin ve üretkenliği
-        artırın</li>
-      <li xml:lang="uk">Оптимізація часу: аналізуйте моделі використання часу та покращуйте
-        продуктивність</li>
+      <li xml:lang="nl">Tijdoptimalisatie: analyseer uw tijdsgebruikspatronen en verbeter de productiviteit</li>
+      <li xml:lang="no">Tidsoptimalisering: Analyser tidsbruksmønstrene dine og forbedre produktiviteten</li>
+      <li xml:lang="pl">Optymalizacja czasu: analizuj wzorce wykorzystania czasu i zwiększ produktywność</li>
+      <li xml:lang="pt">Otimização de tempo: analise seus padrões de uso de tempo e melhore a produtividade</li>
+      <li xml:lang="ro">Optimizarea timpului: analizați tiparele de utilizare a timpului și îmbunătățiți productivitatea</li>
+      <li xml:lang="ru">Оптимизация времени: анализируйте структуру использования времени и повышайте производительность.</li>
+      <li xml:lang="sl">Optimizacija časa: analizirajte svoje vzorce porabe časa in izboljšajte produktivnost</li>
+      <li xml:lang="sv">Tidsoptimering: Analysera dina tidsanvändningsmönster och förbättra produktiviteten</li>
+      <li xml:lang="tr">Zaman Optimizasyonu: Zaman kullanım kalıplarınızı analiz edin ve üretkenliği artırın</li>
+      <li xml:lang="uk">Оптимізація часу: аналізуйте моделі використання часу та покращуйте продуктивність</li>
       <li xml:lang="zh">时间优化：分析您的时间使用模式并提高生产力</li>
       <li>Application Usage Tracking: Monitor how you spend time on different applications</li>
       <li xml:lang="cs">Sledování využití aplikací: Sledujte, jak trávíte čas v různých aplikacích</li>
-      <li xml:lang="da">Applikationsbrugssporing: Overvåg, hvordan du bruger tid på forskellige
-        applikationer</li>
-      <li xml:lang="de">Anwendungsnutzungsverfolgung: Überwachen Sie, wie Sie Zeit mit verschiedenen
-        Anwendungen verbringen</li>
-      <li xml:lang="el">Παρακολούθηση χρήσης εφαρμογών: Παρακολουθήστε πώς ξοδεύετε χρόνο σε
-        διαφορετικές εφαρμογές</li>
-      <li xml:lang="es">Seguimiento del uso de aplicaciones: supervise cómo dedica su tiempo a
-        diferentes aplicaciones</li>
+      <li xml:lang="da">Applikationsbrugssporing: Overvåg, hvordan du bruger tid på forskellige applikationer</li>
+      <li xml:lang="de">Anwendungsnutzungsverfolgung: Überwachen Sie, wie Sie Zeit mit verschiedenen Anwendungen verbringen</li>
+      <li xml:lang="el">Παρακολούθηση χρήσης εφαρμογών: Παρακολουθήστε πώς ξοδεύετε χρόνο σε διαφορετικές εφαρμογές</li>
+      <li xml:lang="es">Seguimiento del uso de aplicaciones: supervise cómo dedica su tiempo a diferentes aplicaciones</li>
       <li xml:lang="fi">Sovelluksen käytön seuranta: Seuraa, kuinka käytät aikaa eri sovelluksissa</li>
-      <li xml:lang="fr">Suivi de l'utilisation des applications : surveillez la façon dont vous
-        passez
-        du temps sur différentes applications</li>
-      <li xml:lang="it">Monitoraggio dell'utilizzo delle applicazioni: monitora il modo in cui
-        trascorri il tempo su diverse applicazioni</li>
+      <li xml:lang="fr">Suivi de l'utilisation des applications : surveillez la façon dont vous passez du temps sur différentes applications</li>
+      <li xml:lang="it">Monitoraggio dell'utilizzo delle applicazioni: monitora il modo in cui trascorri il tempo su diverse applicazioni</li>
       <li xml:lang="ja">アプリケーション使用状況の追跡: さまざまなアプリケーションにどのように時間を費やしたかを監視します。</li>
       <li xml:lang="ko">애플리케이션 사용 추적: 다양한 애플리케이션에서 시간을 보내는 방법을 모니터링합니다.</li>
-      <li xml:lang="nl">Tracking van applicatiegebruik: Houd bij hoe u tijd aan verschillende
-        applicaties besteedt</li>
-      <li xml:lang="no">Sporing av applikasjonsbruk: Overvåk hvordan du bruker tid på forskjellige
-        applikasjoner</li>
-      <li xml:lang="pl">Śledzenie użycia aplikacji: Monitoruj, jak spędzasz czas korzystając z
-        różnych
-        aplikacji</li>
-      <li xml:lang="pt">Rastreamento de uso de aplicativos: monitore como você gasta tempo em
-        diferentes aplicativos</li>
-      <li xml:lang="ro">Urmărirea utilizării aplicației: monitorizați modul în care petreceți timpul
-        cu diferite aplicații</li>
-      <li xml:lang="ru">Отслеживание использования приложений: отслеживайте, как вы тратите время на
-        различные приложения.</li>
-      <li xml:lang="sl">Sledenje uporabi aplikacij: spremljajte, kako porabite čas za različne
-        aplikacije</li>
-      <li xml:lang="sv">Spårning av applikationsanvändning: Övervaka hur du spenderar tid på olika
-        applikationer</li>
-      <li xml:lang="tr">Uygulama Kullanım Takibi: Farklı uygulamalarda nasıl zaman geçirdiğinizi
-        izleyin</li>
-      <li xml:lang="uk">Відстеження використання програми: відстежуйте, як ви витрачаєте час на
-        різні
-        програми</li>
+      <li xml:lang="nl">Tracking van applicatiegebruik: Houd bij hoe u tijd aan verschillende applicaties besteedt</li>
+      <li xml:lang="no">Sporing av applikasjonsbruk: Overvåk hvordan du bruker tid på forskjellige applikasjoner</li>
+      <li xml:lang="pl">Śledzenie użycia aplikacji: Monitoruj, jak spędzasz czas korzystając z różnych aplikacji</li>
+      <li xml:lang="pt">Rastreamento de uso de aplicativos: monitore como você gasta tempo em diferentes aplicativos</li>
+      <li xml:lang="ro">Urmărirea utilizării aplicației: monitorizați modul în care petreceți timpul cu diferite aplicații</li>
+      <li xml:lang="ru">Отслеживание использования приложений: отслеживайте, как вы тратите время на различные приложения.</li>
+      <li xml:lang="sl">Sledenje uporabi aplikacij: spremljajte, kako porabite čas za različne aplikacije</li>
+      <li xml:lang="sv">Spårning av applikationsanvändning: Övervaka hur du spenderar tid på olika applikationer</li>
+      <li xml:lang="tr">Uygulama Kullanım Takibi: Farklı uygulamalarda nasıl zaman geçirdiğinizi izleyin</li>
+      <li xml:lang="uk">Відстеження використання програми: відстежуйте, як ви витрачаєте час на різні програми</li>
       <li xml:lang="zh">应用程序使用情况跟踪：监控您在不同应用程序上花费的时间</li>
       <li>Productivity Analytics: View detailed insights into your productivity patterns</li>
-      <li xml:lang="cs">Analýza produktivity: Prohlédněte si podrobné informace o vzorcích vaší
-        produktivity</li>
+      <li xml:lang="cs">Analýza produktivity: Prohlédněte si podrobné informace o vzorcích vaší produktivity</li>
       <li xml:lang="da">Produktivitetsanalyse: Se detaljeret indsigt i dine produktivitetsmønstre</li>
-      <li xml:lang="de">Produktivitätsanalysen: Zeigen Sie detaillierte Einblicke in Ihre
-        Produktivitätsmuster an</li>
-      <li xml:lang="el">Αναλυτικά στοιχεία παραγωγικότητας: Δείτε λεπτομερείς πληροφορίες σχετικά με
-        τα μοτίβα παραγωγικότητάς σας</li>
-      <li xml:lang="es">Análisis de productividad: vea información detallada sobre sus patrones de
-        productividad</li>
-      <li xml:lang="fi">Tuottavuusanalyysi: Tarkastele yksityiskohtaisia ​​näkemyksiä
-        tuottavuusmalleistasi</li>
-      <li xml:lang="fr">Analyses de productivité : affichez des informations détaillées sur vos
-        modèles de productivité</li>
-      <li xml:lang="it">Analisi della produttività: visualizza informazioni dettagliate sui tuoi
-        modelli di produttività</li>
+      <li xml:lang="de">Produktivitätsanalysen: Zeigen Sie detaillierte Einblicke in Ihre Produktivitätsmuster an</li>
+      <li xml:lang="el">Αναλυτικά στοιχεία παραγωγικότητας: Δείτε λεπτομερείς πληροφορίες σχετικά με τα μοτίβα παραγωγικότητάς σας</li>
+      <li xml:lang="es">Análisis de productividad: vea información detallada sobre sus patrones de productividad</li>
+      <li xml:lang="fi">Tuottavuusanalyysi: Tarkastele yksityiskohtaisia ​​näkemyksiä tuottavuusmalleistasi</li>
+      <li xml:lang="fr">Analyses de productivité : affichez des informations détaillées sur vos modèles de productivité</li>
+      <li xml:lang="it">Analisi della produttività: visualizza informazioni dettagliate sui tuoi modelli di produttività</li>
       <li xml:lang="ja">生産性分析: 生産性パターンに関する詳細な洞察を表示します。</li>
       <li xml:lang="ko">생산성 분석: 생산성 패턴에 대한 자세한 통찰력을 봅니다.</li>
-      <li xml:lang="nl">Productiviteitsanalyse: bekijk gedetailleerde inzichten in uw
-        productiviteitspatronen</li>
+      <li xml:lang="nl">Productiviteitsanalyse: bekijk gedetailleerde inzichten in uw productiviteitspatronen</li>
       <li xml:lang="no">Produktivitetsanalyse: Se detaljert innsikt i produktivitetsmønstrene dine</li>
-      <li xml:lang="pl">Analityka produktywności: przeglądaj szczegółowe informacje na temat wzorców
-        produktywności</li>
-      <li xml:lang="pt">Análise de produtividade: visualize insights detalhados sobre seus padrões
-        de
-        produtividade</li>
-      <li xml:lang="ro">Analiza productivității: vedeți informații detaliate despre modelele dvs. de
-        productivitate</li>
-      <li xml:lang="ru">Аналитика производительности: просмотр подробной информации о моделях вашей
-        производительности.</li>
-      <li xml:lang="sl">Analitika produktivnosti: Oglejte si podrobne vpoglede v svoje vzorce
-        produktivnosti</li>
-      <li xml:lang="sv">Produktivitetsanalys: Visa detaljerade insikter om dina
-        produktivitetsmönster</li>
-      <li xml:lang="tr">Üretkenlik Analitiği: Üretkenlik kalıplarınıza ilişkin ayrıntılı bilgileri
-        görüntüleyin</li>
-      <li xml:lang="uk">Аналітика продуктивності: переглядайте детальну статистику своїх моделей
-        продуктивності</li>
+      <li xml:lang="pl">Analityka produktywności: przeglądaj szczegółowe informacje na temat wzorców produktywności</li>
+      <li xml:lang="pt">Análise de produtividade: visualize insights detalhados sobre seus padrões de produtividade</li>
+      <li xml:lang="ro">Analiza productivității: vedeți informații detaliate despre modelele dvs. de productivitate</li>
+      <li xml:lang="ru">Аналитика производительности: просмотр подробной информации о моделях вашей производительности.</li>
+      <li xml:lang="sl">Analitika produktivnosti: Oglejte si podrobne vpoglede v svoje vzorce produktivnosti</li>
+      <li xml:lang="sv">Produktivitetsanalys: Visa detaljerade insikter om dina produktivitetsmönster</li>
+      <li xml:lang="tr">Üretkenlik Analitiği: Üretkenlik kalıplarınıza ilişkin ayrıntılı bilgileri görüntüleyin</li>
+      <li xml:lang="uk">Аналітика продуктивності: переглядайте детальну статистику своїх моделей продуктивності</li>
       <li xml:lang="zh">生产力分析：查看有关生产力模式的详细见解</li>
       <li>Note-taking: Create and organize rich text notes to capture important thoughts</li>
-      <li xml:lang="cs">Psaní poznámek: Vytvářejte a organizujte poznámky ve formátu RTF, abyste
-        zachytili důležité myšlenky</li>
+      <li xml:lang="cs">Psaní poznámek: Vytvářejte a organizujte poznámky ve formátu RTF, abyste zachytili důležité myšlenky</li>
       <li xml:lang="da">Noter: Opret og organiser rige tekstnoter for at fange vigtige tanker</li>
-      <li xml:lang="de">Notizen machen: Erstellen und organisieren Sie Rich-Text-Notizen, um
-        wichtige
-        Gedanken festzuhalten</li>
-      <li xml:lang="el">Λήψη σημειώσεων: Δημιουργήστε και οργανώστε σημειώσεις με πλούσιο κείμενο
-        για
-        να καταγράψετε σημαντικές σκέψεις</li>
-      <li xml:lang="es">Toma de notas: cree y organice notas de texto enriquecido para capturar
-        pensamientos importantes</li>
-      <li xml:lang="fi">Muistiinpanojen tekeminen: Luo ja järjestä rich text muistiinpanoja
-        tallentaaksesi tärkeitä ajatuksia</li>
-      <li xml:lang="fr">Prise de notes : créez et organisez des notes en texte enrichi pour capturer
-        des pensées importantes</li>
-      <li xml:lang="it">Prendere appunti: crea e organizza note in formato rich text per catturare
-        pensieri importanti</li>
+      <li xml:lang="de">Notizen machen: Erstellen und organisieren Sie Rich-Text-Notizen, um wichtige Gedanken festzuhalten</li>
+      <li xml:lang="el">Λήψη σημειώσεων: Δημιουργήστε και οργανώστε σημειώσεις με πλούσιο κείμενο για να καταγράψετε σημαντικές σκέψεις</li>
+      <li xml:lang="es">Toma de notas: cree y organice notas de texto enriquecido para capturar pensamientos importantes</li>
+      <li xml:lang="fi">Muistiinpanojen tekeminen: Luo ja järjestä rich text muistiinpanoja tallentaaksesi tärkeitä ajatuksia</li>
+      <li xml:lang="fr">Prise de notes : créez et organisez des notes en texte enrichi pour capturer des pensées importantes</li>
+      <li xml:lang="it">Prendere appunti: crea e organizza note in formato rich text per catturare pensieri importanti</li>
       <li xml:lang="ja">メモを取る: リッチテキストのメモを作成して整理し、重要な考えを記録します。</li>
       <li xml:lang="ko">메모 작성: 중요한 생각을 포착하기 위해 서식 있는 텍스트 메모를 만들고 구성합니다.</li>
-      <li xml:lang="nl">Notities maken: maak en organiseer rich-text-notities om belangrijke
-        gedachten
-        vast te leggen</li>
+      <li xml:lang="nl">Notities maken: maak en organiseer rich-text-notities om belangrijke gedachten vast te leggen</li>
       <li xml:lang="no">Notat: Lag og organiser rike tekstnotater for å fange opp viktige tanker</li>
-      <li xml:lang="pl">Robienie notatek: twórz i organizuj notatki z bogatym tekstem, aby uchwycić
-        ważne przemyślenia</li>
-      <li xml:lang="pt">Anotações: crie e organize notas em rich text para capturar pensamentos
-        importantes</li>
-      <li xml:lang="ro">Luarea de note: creați și organizați note cu text bogat pentru a capta
-        gândurile importante</li>
-      <li xml:lang="ru">Ведение заметок: создавайте и систематизируйте текстовые заметки для записи
-        важных мыслей.</li>
-      <li xml:lang="sl">Pisanje zapiskov: ustvarite in organizirajte zapiske z obogatenim besedilom,
-        da zajamete pomembne misli</li>
-      <li xml:lang="sv">Anteckningar: Skapa och organisera rika textanteckningar för att fånga
-        viktiga
-        tankar</li>
-      <li xml:lang="tr">Not alma: Önemli düşünceleri yakalamak için zengin metin notları oluşturun
-        ve
-        düzenleyin</li>
-      <li xml:lang="uk">Нотатки: створюйте та впорядковуйте текстові нотатки, щоб зафіксувати
-        важливі
-        думки</li>
+      <li xml:lang="pl">Robienie notatek: twórz i organizuj notatki z bogatym tekstem, aby uchwycić ważne przemyślenia</li>
+      <li xml:lang="pt">Anotações: crie e organize notas em rich text para capturar pensamentos importantes</li>
+      <li xml:lang="ro">Luarea de note: creați și organizați note cu text bogat pentru a capta gândurile importante</li>
+      <li xml:lang="ru">Ведение заметок: создавайте и систематизируйте текстовые заметки для записи важных мыслей.</li>
+      <li xml:lang="sl">Pisanje zapiskov: ustvarite in organizirajte zapiske z obogatenim besedilom, da zajamete pomembne misli</li>
+      <li xml:lang="sv">Anteckningar: Skapa och organisera rika textanteckningar för att fånga viktiga tankar</li>
+      <li xml:lang="tr">Not alma: Önemli düşünceleri yakalamak için zengin metin notları oluşturun ve düzenleyin</li>
+      <li xml:lang="uk">Нотатки: створюйте та впорядковуйте текстові нотатки, щоб зафіксувати важливі думки</li>
       <li xml:lang="zh">记笔记：创建和组织丰富的文本笔记以捕捉重要想法</li>
     </ul>
     <p>Why Choose WHPH?</p>
@@ -480,206 +227,67 @@
     <p xml:lang="tr">Neden WHPH'yi Seçmelisiniz?</p>
     <p xml:lang="uk">Чому варто вибрати WHPH?</p>
     <p xml:lang="zh">为什么选择WHPH？</p>
-    <p>WHPH combines multiple productivity tools into one unified experience. Whether you're looking
-      to manage your daily tasks, build better habits, or understand how you spend your time, WHPH
-      provides the insights and tools you need to enhance your productivity and achieve your goals.</p>
-    <p xml:lang="cs">WHPH kombinuje více nástrojů produktivity do jednoho jednotného prostředí. Ať
-      už
-      chcete spravovat své každodenní úkoly, budovat lepší návyky nebo pochopit, jak trávíte čas,
-      WHPH
-      poskytuje přehledy a nástroje, které potřebujete ke zvýšení produktivity a dosažení svých
-      cílů.</p>
-    <p xml:lang="da">WHPH kombinerer flere produktivitetsværktøjer til én samlet oplevelse. Uanset
-      om
-      du ønsker at styre dine daglige opgaver, opbygge bedre vaner eller forstå, hvordan du bruger
-      din
-      tid, giver WHPH den indsigt og de værktøjer, du har brug for for at øge din produktivitet og
-      nå
-      dine mål.</p>
-    <p xml:lang="de">WHPH kombiniert mehrere Produktivitätstools zu einem einheitlichen Erlebnis.
-      Egal, ob Sie Ihre täglichen Aufgaben verwalten, bessere Gewohnheiten entwickeln oder verstehen
-      möchten, wie Sie Ihre Zeit verbringen, WHPH bietet die Erkenntnisse und Tools, die Sie
-      benötigen, um Ihre Produktivität zu steigern und Ihre Ziele zu erreichen.</p>
-    <p xml:lang="el">Το WHPH συνδυάζει πολλαπλά εργαλεία παραγωγικότητας σε μια ενοποιημένη
-      εμπειρία.
-      Είτε θέλετε να διαχειριστείτε τις καθημερινές σας εργασίες, να δημιουργήσετε καλύτερες
-      συνήθειες
-      ή να κατανοήσετε πώς ξοδεύετε το χρόνο σας, το WHPH παρέχει τις πληροφορίες και τα εργαλεία
-      που
-      χρειάζεστε για να βελτιώσετε την παραγωγικότητά σας και να επιτύχετε τους στόχους σας.</p>
-    <p xml:lang="es">WHPH combina múltiples herramientas de productividad en una experiencia
-      unificada. Ya sea que esté buscando administrar sus tareas diarias, desarrollar mejores
-      hábitos
-      o comprender cómo emplea su tiempo, WHPH proporciona la información y las herramientas que
-      necesita para mejorar su productividad y alcanzar sus objetivos.</p>
-    <p xml:lang="fi">WHPH yhdistää useita tuottavuustyökaluja yhdeksi yhtenäiseksi kokemukseksi.
-      Halusitpa sitten hallita päivittäisiä tehtäviäsi, kehittää parempia tapojasi tai ymmärtää,
-      miten
-      käytät aikaasi, WHPH tarjoaa oivalluksia ja työkaluja, joita tarvitset tuottavuuden
-      parantamiseen ja tavoitteidesi saavuttamiseen.</p>
-    <p xml:lang="fr">WHPH combine plusieurs outils de productivité en une seule expérience unifiée.
-      Que vous cherchiez à gérer vos tâches quotidiennes, à adopter de meilleures habitudes ou à
-      comprendre comment vous passez votre temps, WHPH fournit les informations et les outils dont
-      vous avez besoin pour améliorer votre productivité et atteindre vos objectifs.</p>
-    <p xml:lang="it">WHPH combina più strumenti di produttività in un'unica esperienza unificata.
-      Che
-      tu stia cercando di gestire le tue attività quotidiane, creare abitudini migliori o capire
-      come
-      trascorri il tuo tempo, WHPH fornisce le informazioni e gli strumenti di cui hai bisogno per
-      migliorare la tua produttività e raggiungere i tuoi obiettivi.</p>
-    <p xml:lang="ja">WHPH は、複数の生産性ツールを 1
-      つの統合されたエクスペリエンスに統合します。日々のタスクを管理したい場合でも、より良い習慣を構築したい場合でも、時間の使い方を理解したい場合でも、WHPH
-      は生産性を高めて目標を達成するために必要な洞察とツールを提供します。</p>
-    <p xml:lang="ko">WHPH는 여러 생산성 도구를 하나의 통합 경험으로 결합합니다. 일상 업무를 관리하거나, 더 나은 습관을 기르거나, 시간을 어떻게 보내는지
-      이해하려는 경우 WHPH는 생산성을 향상하고 목표를 달성하는 데 필요한 통찰력과 도구를 제공합니다.</p>
-    <p xml:lang="nl">WHPH combineert meerdere productiviteitstools in één uniforme ervaring. Of u nu
-      uw dagelijkse taken wilt beheren, betere gewoonten wilt opbouwen of wilt begrijpen hoe u uw
-      tijd
-      besteedt, WHPH biedt de inzichten en hulpmiddelen die u nodig hebt om uw productiviteit te
-      verbeteren en uw doelen te bereiken.</p>
-    <p xml:lang="no">WHPH kombinerer flere produktivitetsverktøy til én enhetlig opplevelse. Enten
-      du
-      ønsker å administrere de daglige oppgavene dine, bygge bedre vaner eller forstå hvordan du
-      bruker tiden din, gir WHPH innsikten og verktøyene du trenger for å forbedre produktiviteten
-      og
-      nå målene dine.</p>
-    <p xml:lang="pl">WHPH łączy wiele narzędzi zwiększających produktywność w jedno ujednolicone
-      doświadczenie. Niezależnie od tego, czy chcesz zarządzać swoimi codziennymi zadaniami, budować
-      lepsze nawyki czy zrozumieć, jak spędzasz czas, WHPH zapewnia spostrzeżenia i narzędzia
-      potrzebne do zwiększenia produktywności i osiągnięcia swoich celów.</p>
-    <p xml:lang="pt">WHPH combina várias ferramentas de produtividade em uma experiência unificada.
-      Esteja você procurando gerenciar suas tarefas diárias, criar hábitos melhores ou entender como
-      você gasta seu tempo, o WHPH fornece os insights e as ferramentas necessárias para aumentar
-      sua
-      produtividade e atingir seus objetivos.</p>
-    <p xml:lang="ro">WHPH combină mai multe instrumente de productivitate într-o singură experiență
-      unificată. Indiferent dacă doriți să vă gestionați sarcinile zilnice, să vă construiți
-      obiceiuri
-      mai bune sau să înțelegeți cum vă petreceți timpul, WHPH vă oferă informațiile și
-      instrumentele
-      de care aveți nevoie pentru a vă îmbunătăți productivitatea și pentru a vă atinge obiectivele.</p>
-    <p xml:lang="ru">WHPH объединяет несколько инструментов повышения производительности в один
-      единый
-      интерфейс. Если вы хотите управлять своими повседневными задачами, формировать лучшие привычки
-      или понимать, как вы проводите свое время, WHPH предоставляет информацию и инструменты,
-      необходимые для повышения вашей производительности и достижения ваших целей.</p>
-    <p xml:lang="sl">WHPH združuje več orodij za produktivnost v eno enotno izkušnjo. Ne glede na
-      to,
-      ali želite upravljati svoje dnevne naloge, ustvariti boljše navade ali razumeti, kako
-      preživljate svoj čas, WHPH ponuja vpoglede in orodja, ki jih potrebujete za izboljšanje vaše
-      produktivnosti in doseganje vaših ciljev.</p>
-    <p xml:lang="sv">WHPH kombinerar flera produktivitetsverktyg till en enhetlig upplevelse.
-      Oavsett
-      om du vill hantera dina dagliga uppgifter, bygga bättre vanor eller förstå hur du spenderar
-      din
-      tid, ger WHPH de insikter och verktyg du behöver för att förbättra din produktivitet och uppnå
-      dina mål.</p>
-    <p xml:lang="tr">WHPH, birden fazla üretkenlik aracını tek bir birleşik deneyimde birleştirir.
-      İster günlük görevlerinizi yönetmek, daha iyi alışkanlıklar oluşturmak veya zamanınızı nasıl
-      harcadığınızı anlamak istiyor olun, WHPH üretkenliğinizi artırmak ve hedeflerinize ulaşmak
-      için
-      ihtiyaç duyduğunuz öngörüleri ve araçları sağlar.</p>
-    <p xml:lang="uk">WHPH поєднує в собі кілька інструментів підвищення продуктивності в єдину
-      систему. Незалежно від того, чи хочете ви керувати своїми щоденними завданнями, виробити кращі
-      звички чи зрозуміти, як ви витрачаєте час, WHPH надає інформацію та інструменти, необхідні для
-      підвищення продуктивності та досягнення ваших цілей.</p>
-    <p xml:lang="zh">WHPH 将多种生产力工具整合为一种统一的体验。无论您是想管理日常任务、养成更好的习惯，还是了解自己如何度过时间，WHPH
-      都能提供您提高工作效率和实现目标所需的见解和工具。</p>
-    <p>The app is designed with a privacy-first approach. All your data is stored locally on your
-      device, giving you complete control over your personal productivity information without cloud
-      dependency.</p>
-    <p xml:lang="cs">Aplikace je navržena s ohledem na ochranu soukromí. Všechna vaše data jsou
-      uložena lokálně ve vašem zařízení, což vám poskytuje úplnou kontrolu nad vašimi osobními
-      informacemi o produktivitě bez závislosti na cloudu.</p>
-    <p xml:lang="da">Appen er designet med en privatlivs-først tilgang. Alle dine data gemmes lokalt
-      på din enhed, hvilket giver dig fuld kontrol over dine personlige produktivitetsoplysninger
-      uden
-      skyafhængighed.</p>
-    <p xml:lang="de">Bei der Entwicklung der App steht der Datenschutz an erster Stelle. Alle Ihre
-      Daten werden lokal auf Ihrem Gerät gespeichert, sodass Sie die vollständige Kontrolle über
-      Ihre
-      persönlichen Produktivitätsinformationen haben, ohne von der Cloud abhängig zu sein.</p>
-    <p xml:lang="el">Η εφαρμογή έχει σχεδιαστεί με μια προσέγγιση που αφορά το απόρρητο. Όλα τα
-      δεδομένα σας αποθηκεύονται τοπικά στη συσκευή σας, δίνοντάς σας πλήρη έλεγχο των προσωπικών
-      σας
-      πληροφοριών παραγωγικότητας χωρίς εξάρτηση από το cloud.</p>
-    <p xml:lang="es">La aplicación está diseñada con un enfoque que prioriza la privacidad. Todos
-      sus
-      datos se almacenan localmente en su dispositivo, lo que le brinda control total sobre su
-      información de productividad personal sin depender de la nube.</p>
-    <p xml:lang="fi">Sovellus on suunniteltu yksityisyyden etusijalle. Kaikki tietosi tallennetaan
-      paikallisesti laitteellesi, joten voit hallita täysin henkilökohtaisia ​​tuottavuustietojasi
-      ilman pilviriippuvuutta.</p>
-    <p xml:lang="fr">L'application est conçue avec une approche axée sur la confidentialité. Toutes
-      vos données sont stockées localement sur votre appareil, vous donnant un contrôle total sur
-      vos
-      informations de productivité personnelle sans dépendance au cloud.</p>
-    <p xml:lang="it">L'app è progettata con un approccio incentrato sulla privacy. Tutti i tuoi dati
-      vengono archiviati localmente sul tuo dispositivo, offrendoti il ​​controllo completo sulle
-      informazioni sulla produttività personale senza dipendenza dal cloud.</p>
-    <p xml:lang="ja">
-      このアプリはプライバシー第一のアプローチで設計されています。すべてのデータはデバイス上にローカルに保存されるため、クラウドに依存せずに個人の生産性情報を完全に制御できます。</p>
-    <p xml:lang="ko">이 앱은 개인 정보 보호를 최우선으로 하는 접근 방식으로 설계되었습니다. 모든 데이터는 장치에 로컬로 저장되므로 클라우드에 의존하지 않고 개인
-      생산성 정보를 완벽하게 제어할 수 있습니다.</p>
-    <p xml:lang="nl">De app is ontworpen met een privacy-first-benadering. Al uw gegevens worden
-      lokaal op uw apparaat opgeslagen, waardoor u volledige controle heeft over uw persoonlijke
-      productiviteitsinformatie zonder dat u afhankelijk bent van de cloud.</p>
-    <p xml:lang="no">Appen er designet med en personvern-først-tilnærming. Alle dataene dine lagres
-      lokalt på enheten din, og gir deg full kontroll over din personlige produktivitetsinformasjon
-      uten skyavhengighet.</p>
-    <p xml:lang="pl">Aplikacja została zaprojektowana z myślą o prywatności. Wszystkie Twoje dane są
-      przechowywane lokalnie na Twoim urządzeniu, co daje Ci pełną kontrolę nad osobistymi
-      informacjami dotyczącymi produktywności bez uzależnienia od chmury.</p>
-    <p xml:lang="pt">O aplicativo foi projetado com uma abordagem que prioriza a privacidade. Todos
-      os
-      seus dados são armazenados localmente no seu dispositivo, proporcionando controle total sobre
-      suas informações pessoais de produtividade sem dependência da nuvem.</p>
-    <p xml:lang="ro">Aplicația este concepută cu o abordare care pune în primul rând
-      confidențialitatea. Toate datele dvs. sunt stocate local pe dispozitivul dvs., oferindu-vă
-      control complet asupra informațiilor dvs. personale de productivitate, fără dependență de
-      cloud.</p>
-    <p xml:lang="ru">Приложение разработано с учетом принципа конфиденциальности. Все ваши данные
-      хранятся локально на вашем устройстве, что дает вам полный контроль над личной информацией о
-      производительности без зависимости от облака.</p>
-    <p xml:lang="sl">Aplikacija je zasnovana tako, da je zasebnost na prvem mestu. Vsi vaši podatki
-      so
-      shranjeni lokalno v vaši napravi, kar vam omogoča popoln nadzor nad vašimi podatki o osebni
-      produktivnosti brez odvisnosti od oblaka.</p>
-    <p xml:lang="sv">Appen är designad med en sekretess-först-strategi. All din data lagras lokalt
-      på
-      din enhet, vilket ger dig fullständig kontroll över din personliga produktivitetsinformation
-      utan molnberoende.</p>
-    <p xml:lang="tr">Uygulama gizlilik öncelikli bir yaklaşımla tasarlanmıştır. Tüm verileriniz
-      yerel
-      olarak cihazınızda depolanır ve bulut bağımlılığı olmadan kişisel üretkenlik bilgileriniz
-      üzerinde tam kontrol sahibi olmanızı sağlar.</p>
-    <p xml:lang="uk">Додаток розроблено з урахуванням принципу конфіденційності. Усі ваші дані
-      зберігаються локально на вашому пристрої, що дає вам повний контроль над особистою інформацією
-      про продуктивність без залежності від хмари.</p>
+    <p>WHPH combines multiple productivity tools into one unified experience. Whether you're looking to manage your daily tasks, build better habits, or understand how you spend your time, WHPH provides the insights and tools you need to enhance your productivity and achieve your goals.</p>
+    <p xml:lang="cs">WHPH kombinuje více nástrojů produktivity do jednoho jednotného prostředí. Ať už chcete spravovat své každodenní úkoly, budovat lepší návyky nebo pochopit, jak trávíte čas, WHPH poskytuje přehledy a nástroje, které potřebujete ke zvýšení produktivity a dosažení svých cílů.</p>
+    <p xml:lang="da">WHPH kombinerer flere produktivitetsværktøjer til én samlet oplevelse. Uanset om du ønsker at styre dine daglige opgaver, opbygge bedre vaner eller forstå, hvordan du bruger din tid, giver WHPH den indsigt og de værktøjer, du har brug for for at øge din produktivitet og nå dine mål.</p>
+    <p xml:lang="de">WHPH kombiniert mehrere Produktivitätstools zu einem einheitlichen Erlebnis. Egal, ob Sie Ihre täglichen Aufgaben verwalten, bessere Gewohnheiten entwickeln oder verstehen möchten, wie Sie Ihre Zeit verbringen, WHPH bietet die Erkenntnisse und Tools, die Sie benötigen, um Ihre Produktivität zu steigern und Ihre Ziele zu erreichen.</p>
+    <p xml:lang="el">Το WHPH συνδυάζει πολλαπλά εργαλεία παραγωγικότητας σε μια ενοποιημένη εμπειρία. Είτε θέλετε να διαχειριστείτε τις καθημερινές σας εργασίες, να δημιουργήσετε καλύτερες συνήθειες ή να κατανοήσετε πώς ξοδεύετε το χρόνο σας, το WHPH παρέχει τις πληροφορίες και τα εργαλεία που χρειάζεστε για να βελτιώσετε την παραγωγικότητά σας και να επιτύχετε τους στόχους σας.</p>
+    <p xml:lang="es">WHPH combina múltiples herramientas de productividad en una experiencia unificada. Ya sea que esté buscando administrar sus tareas diarias, desarrollar mejores hábitos o comprender cómo emplea su tiempo, WHPH proporciona la información y las herramientas que necesita para mejorar su productividad y alcanzar sus objetivos.</p>
+    <p xml:lang="fi">WHPH yhdistää useita tuottavuustyökaluja yhdeksi yhtenäiseksi kokemukseksi. Halusitpa sitten hallita päivittäisiä tehtäviäsi, kehittää parempia tapojasi tai ymmärtää, miten käytät aikaasi, WHPH tarjoaa oivalluksia ja työkaluja, joita tarvitset tuottavuuden parantamiseen ja tavoitteidesi saavuttamiseen.</p>
+    <p xml:lang="fr">WHPH combine plusieurs outils de productivité en une seule expérience unifiée. Que vous cherchiez à gérer vos tâches quotidiennes, à adopter de meilleures habitudes ou à comprendre comment vous passez votre temps, WHPH fournit les informations et les outils dont vous avez besoin pour améliorer votre productivité et atteindre vos objectifs.</p>
+    <p xml:lang="it">WHPH combina più strumenti di produttività in un'unica esperienza unificata. Che tu stia cercando di gestire le tue attività quotidiane, creare abitudini migliori o capire come trascorri il tuo tempo, WHPH fornisce le informazioni e gli strumenti di cui hai bisogno per migliorare la tua produttività e raggiungere i tuoi obiettivi.</p>
+    <p xml:lang="ja">WHPH は、複数の生産性ツールを 1 つの統合されたエクスペリエンスに統合します。日々のタスクを管理したい場合でも、より良い習慣を構築したい場合でも、時間の使い方を理解したい場合でも、WHPH は生産性を高めて目標を達成するために必要な洞察とツールを提供します。</p>
+    <p xml:lang="ko">WHPH는 여러 생산성 도구를 하나의 통합 경험으로 결합합니다. 일상 업무를 관리하거나, 더 나은 습관을 기르거나, 시간을 어떻게 보내는지 이해하려는 경우 WHPH는 생산성을 향상하고 목표를 달성하는 데 필요한 통찰력과 도구를 제공합니다.</p>
+    <p xml:lang="nl">WHPH combineert meerdere productiviteitstools in één uniforme ervaring. Of u nu uw dagelijkse taken wilt beheren, betere gewoonten wilt opbouwen of wilt begrijpen hoe u uw tijd besteedt, WHPH biedt de inzichten en hulpmiddelen die u nodig hebt om uw productiviteit te verbeteren en uw doelen te bereiken.</p>
+    <p xml:lang="no">WHPH kombinerer flere produktivitetsverktøy til én enhetlig opplevelse. Enten du ønsker å administrere de daglige oppgavene dine, bygge bedre vaner eller forstå hvordan du bruker tiden din, gir WHPH innsikten og verktøyene du trenger for å forbedre produktiviteten og nå målene dine.</p>
+    <p xml:lang="pl">WHPH łączy wiele narzędzi zwiększających produktywność w jedno ujednolicone doświadczenie. Niezależnie od tego, czy chcesz zarządzać swoimi codziennymi zadaniami, budować lepsze nawyki czy zrozumieć, jak spędzasz czas, WHPH zapewnia spostrzeżenia i narzędzia potrzebne do zwiększenia produktywności i osiągnięcia swoich celów.</p>
+    <p xml:lang="pt">WHPH combina várias ferramentas de produtividade em uma experiência unificada. Esteja você procurando gerenciar suas tarefas diárias, criar hábitos melhores ou entender como você gasta seu tempo, o WHPH fornece os insights e as ferramentas necessárias para aumentar sua produtividade e atingir seus objetivos.</p>
+    <p xml:lang="ro">WHPH combină mai multe instrumente de productivitate într-o singură experiență unificată. Indiferent dacă doriți să vă gestionați sarcinile zilnice, să vă construiți obiceiuri mai bune sau să înțelegeți cum vă petreceți timpul, WHPH vă oferă informațiile și instrumentele de care aveți nevoie pentru a vă îmbunătăți productivitatea și pentru a vă atinge obiectivele.</p>
+    <p xml:lang="ru">WHPH объединяет несколько инструментов повышения производительности в один единый интерфейс. Если вы хотите управлять своими повседневными задачами, формировать лучшие привычки или понимать, как вы проводите свое время, WHPH предоставляет информацию и инструменты, необходимые для повышения вашей производительности и достижения ваших целей.</p>
+    <p xml:lang="sl">WHPH združuje več orodij za produktivnost v eno enotno izkušnjo. Ne glede na to, ali želite upravljati svoje dnevne naloge, ustvariti boljše navade ali razumeti, kako preživljate svoj čas, WHPH ponuja vpoglede in orodja, ki jih potrebujete za izboljšanje vaše produktivnosti in doseganje vaših ciljev.</p>
+    <p xml:lang="sv">WHPH kombinerar flera produktivitetsverktyg till en enhetlig upplevelse. Oavsett om du vill hantera dina dagliga uppgifter, bygga bättre vanor eller förstå hur du spenderar din tid, ger WHPH de insikter och verktyg du behöver för att förbättra din produktivitet och uppnå dina mål.</p>
+    <p xml:lang="tr">WHPH, birden fazla üretkenlik aracını tek bir birleşik deneyimde birleştirir. İster günlük görevlerinizi yönetmek, daha iyi alışkanlıklar oluşturmak veya zamanınızı nasıl harcadığınızı anlamak istiyor olun, WHPH üretkenliğinizi artırmak ve hedeflerinize ulaşmak için ihtiyaç duyduğunuz öngörüleri ve araçları sağlar.</p>
+    <p xml:lang="uk">WHPH поєднує в собі кілька інструментів підвищення продуктивності в єдину систему. Незалежно від того, чи хочете ви керувати своїми щоденними завданнями, виробити кращі звички чи зрозуміти, як ви витрачаєте час, WHPH надає інформацію та інструменти, необхідні для підвищення продуктивності та досягнення ваших цілей.</p>
+    <p xml:lang="zh">WHPH 将多种生产力工具整合为一种统一的体验。无论您是想管理日常任务、养成更好的习惯，还是了解自己如何度过时间，WHPH 都能提供您提高工作效率和实现目标所需的见解和工具。</p>
+    <p>The app is designed with a privacy-first approach. All your data is stored locally on your device, giving you complete control over your personal productivity information without cloud dependency.</p>
+    <p xml:lang="cs">Aplikace je navržena s ohledem na ochranu soukromí. Všechna vaše data jsou uložena lokálně ve vašem zařízení, což vám poskytuje úplnou kontrolu nad vašimi osobními informacemi o produktivitě bez závislosti na cloudu.</p>
+    <p xml:lang="da">Appen er designet med en privatlivs-først tilgang. Alle dine data gemmes lokalt på din enhed, hvilket giver dig fuld kontrol over dine personlige produktivitetsoplysninger uden skyafhængighed.</p>
+    <p xml:lang="de">Bei der Entwicklung der App steht der Datenschutz an erster Stelle. Alle Ihre Daten werden lokal auf Ihrem Gerät gespeichert, sodass Sie die vollständige Kontrolle über Ihre persönlichen Produktivitätsinformationen haben, ohne von der Cloud abhängig zu sein.</p>
+    <p xml:lang="el">Η εφαρμογή έχει σχεδιαστεί με μια προσέγγιση που αφορά το απόρρητο. Όλα τα δεδομένα σας αποθηκεύονται τοπικά στη συσκευή σας, δίνοντάς σας πλήρη έλεγχο των προσωπικών σας πληροφοριών παραγωγικότητας χωρίς εξάρτηση από το cloud.</p>
+    <p xml:lang="es">La aplicación está diseñada con un enfoque que prioriza la privacidad. Todos sus datos se almacenan localmente en su dispositivo, lo que le brinda control total sobre su información de productividad personal sin depender de la nube.</p>
+    <p xml:lang="fi">Sovellus on suunniteltu yksityisyyden etusijalle. Kaikki tietosi tallennetaan paikallisesti laitteellesi, joten voit hallita täysin henkilökohtaisia ​​tuottavuustietojasi ilman pilviriippuvuutta.</p>
+    <p xml:lang="fr">L'application est conçue avec une approche axée sur la confidentialité. Toutes vos données sont stockées localement sur votre appareil, vous donnant un contrôle total sur vos informations de productivité personnelle sans dépendance au cloud.</p>
+    <p xml:lang="it">L'app è progettata con un approccio incentrato sulla privacy. Tutti i tuoi dati vengono archiviati localmente sul tuo dispositivo, offrendoti il ​​controllo completo sulle informazioni sulla produttività personale senza dipendenza dal cloud.</p>
+    <p xml:lang="ja">このアプリはプライバシー第一のアプローチで設計されています。すべてのデータはデバイス上にローカルに保存されるため、クラウドに依存せずに個人の生産性情報を完全に制御できます。</p>
+    <p xml:lang="ko">이 앱은 개인 정보 보호를 최우선으로 하는 접근 방식으로 설계되었습니다. 모든 데이터는 장치에 로컬로 저장되므로 클라우드에 의존하지 않고 개인 생산성 정보를 완벽하게 제어할 수 있습니다.</p>
+    <p xml:lang="nl">De app is ontworpen met een privacy-first-benadering. Al uw gegevens worden lokaal op uw apparaat opgeslagen, waardoor u volledige controle heeft over uw persoonlijke productiviteitsinformatie zonder dat u afhankelijk bent van de cloud.</p>
+    <p xml:lang="no">Appen er designet med en personvern-først-tilnærming. Alle dataene dine lagres lokalt på enheten din, og gir deg full kontroll over din personlige produktivitetsinformasjon uten skyavhengighet.</p>
+    <p xml:lang="pl">Aplikacja została zaprojektowana z myślą o prywatności. Wszystkie Twoje dane są przechowywane lokalnie na Twoim urządzeniu, co daje Ci pełną kontrolę nad osobistymi informacjami dotyczącymi produktywności bez uzależnienia od chmury.</p>
+    <p xml:lang="pt">O aplicativo foi projetado com uma abordagem que prioriza a privacidade. Todos os seus dados são armazenados localmente no seu dispositivo, proporcionando controle total sobre suas informações pessoais de produtividade sem dependência da nuvem.</p>
+    <p xml:lang="ro">Aplicația este concepută cu o abordare care pune în primul rând confidențialitatea. Toate datele dvs. sunt stocate local pe dispozitivul dvs., oferindu-vă control complet asupra informațiilor dvs. personale de productivitate, fără dependență de cloud.</p>
+    <p xml:lang="ru">Приложение разработано с учетом принципа конфиденциальности. Все ваши данные хранятся локально на вашем устройстве, что дает вам полный контроль над личной информацией о производительности без зависимости от облака.</p>
+    <p xml:lang="sl">Aplikacija je zasnovana tako, da je zasebnost na prvem mestu. Vsi vaši podatki so shranjeni lokalno v vaši napravi, kar vam omogoča popoln nadzor nad vašimi podatki o osebni produktivnosti brez odvisnosti od oblaka.</p>
+    <p xml:lang="sv">Appen är designad med en sekretess-först-strategi. All din data lagras lokalt på din enhet, vilket ger dig fullständig kontroll över din personliga produktivitetsinformation utan molnberoende.</p>
+    <p xml:lang="tr">Uygulama gizlilik öncelikli bir yaklaşımla tasarlanmıştır. Tüm verileriniz yerel olarak cihazınızda depolanır ve bulut bağımlılığı olmadan kişisel üretkenlik bilgileriniz üzerinde tam kontrol sahibi olmanızı sağlar.</p>
+    <p xml:lang="uk">Додаток розроблено з урахуванням принципу конфіденційності. Усі ваші дані зберігаються локально на вашому пристрої, що дає вам повний контроль над особистою інформацією про продуктивність без залежності від хмари.</p>
     <p xml:lang="zh">该应用程序的设计遵循隐私第一的原则。您的所有数据都存储在设备本地，使您可以完全控制个人生产力信息，而无需依赖云。</p>
   </description>
-
   <categories>
     <category>Utility</category>
     <category>Office</category>
   </categories>
-
   <developer id="me.ahmetcetinkaya">
     <name>Ahmet Çetinkaya</name>
   </developer>
-
   <launchable type="desktop-id">me.ahmetcetinkaya.whph.desktop</launchable>
-
   <url type="homepage">https://whph.ahmetcetinkaya.me</url>
   <url type="bugtracker">https://github.com/ahmet-cetinkaya/whph/issues</url>
   <url type="vcs-browser">https://github.com/ahmet-cetinkaya/whph</url>
   <url type="donation">https://ahmetcetinkaya.me/donate</url>
-
   <branding>
     <color type="primary" scheme_preference="light">#F4D03E</color>
     <color type="primary" scheme_preference="dark">#F4D03E</color>
   </branding>
-
   <screenshots>
     <screenshot type="default">
       <caption>Today view with tasks and habits</caption>
@@ -1045,12 +653,10 @@
       <caption xml:lang="fi">Sovellusten käytön seuranta ja keskittymisen parantaminen</caption>
       <image xml:lang="fr">
         https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/6.png</image>
-      <caption xml:lang="fr">Surveillance de l'utilisation des applications et amélioration de la
-        concentration</caption>
+      <caption xml:lang="fr">Surveillance de l'utilisation des applications et amélioration de la concentration</caption>
       <image xml:lang="it">
         https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/6.png</image>
-      <caption xml:lang="it">Monitoraggio dell'uso delle applicazioni e miglioramento della
-        concentrazione</caption>
+      <caption xml:lang="it">Monitoraggio dell'uso delle applicazioni e miglioramento della concentrazione</caption>
       <image xml:lang="ja">
         https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/6.png</image>
       <caption xml:lang="ja">アプリケーションの使用状況監視と集中の強化</caption>
@@ -1228,7 +834,6 @@
       <caption xml:lang="zh-CN">标签管理和组织</caption>
     </screenshot>
   </screenshots>
-
   <content_rating type="oars-1.1">
     <content_attribute id="violence-cartoon">none</content_attribute>
     <content_attribute id="violence-fantasy">none</content_attribute>
@@ -1258,7 +863,6 @@
     <content_attribute id="money-purchasing">none</content_attribute>
     <content_attribute id="money-gambling">none</content_attribute>
   </content_rating>
-
   <supports>
     <control>keyboard</control>
     <control>pointing</control>
@@ -1267,7 +871,6 @@
   <requires>
     <display_length compare="ge">360</display_length>
   </requires>
-
   <releases>
     <release version="0.22.1" date="2026-02-19">
       <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.22.1/CHANGELOG.md</url>
