@@ -91,10 +91,6 @@ if [ -f "$METAINFO_FILE" ]; then
 			ERRORS=$((ERRORS + 1))
 		else
 			acore_log_success "MetaInfo validation passed without errors (flatpak-builder-lint)."
-			if echo "$LINT_APPSTREAM_OUT" | grep -E -q "Validation failed:.*warnings:"; then
-				acore_log_warning "Note: flatpak-builder-lint reported warnings:"
-				echo "$LINT_APPSTREAM_OUT"
-			fi
 		fi
 	fi
 else
@@ -113,22 +109,22 @@ if [ -f "$MANIFEST_FILE" ]; then
 		LINT_EXIT_CODE=$?
 		
 		if [ $LINT_EXIT_CODE -ne 0 ]; then
-			if command -v jq &>/dev/null; then
-				# Filter out known exceptions
-				UNKNOWN_ERRORS=$(echo "$LINT_MANIFEST_OUT" | jq -r '.errors[]?' | grep -v -E '(finish-args-kwin-talk-name|finish-args-flatpak-spawn-access)' || true)
-				
-				if [ -n "$UNKNOWN_ERRORS" ]; then
-					acore_log_error "Manifest validation failed with unexpected errors:"
-					echo "$UNKNOWN_ERRORS"
-					ERRORS=$((ERRORS + 1))
-				else
-					acore_log_success "Manifest validation failed with ONLY known allowed exceptions (KWin, flatpak-spawn). This is expected for WHPH active window tracking."
+			acore_log_error "Manifest validation failed:"
+			if command -v jq &>/dev/null && echo "$LINT_MANIFEST_OUT" | jq -e . &>/dev/null; then
+				echo "$LINT_MANIFEST_OUT" | jq -r '.errors[]?' | while IFS= read -r err; do
+					[ -n "$err" ] && acore_log_error "- $err"
+				done
+				echo "$LINT_MANIFEST_OUT" | jq -r '.info[]?' | while IFS= read -r info; do
+					[ -n "$info" ] && acore_log_info "$info"
+				done
+				LINT_MSG=$(echo "$LINT_MANIFEST_OUT" | jq -r '.message // empty')
+				if [ -n "$LINT_MSG" ]; then
+					acore_log_info "$LINT_MSG"
 				fi
 			else
-				acore_log_warning "Manifest validation failed, but 'jq' is not installed to check exceptions."
-				acore_log_info "Output: $LINT_MANIFEST_OUT"
-				ERRORS=$((ERRORS + 1))
+				echo "$LINT_MANIFEST_OUT"
 			fi
+			ERRORS=$((ERRORS + 1))
 		else
 			acore_log_success "Manifest validation passed."
 		fi
