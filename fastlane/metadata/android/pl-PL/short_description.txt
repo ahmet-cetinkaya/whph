@@ -1,1 +1,1 @@
-Aplikacja do zarządzania zadaniami, nawykami i optymalizacji czasu.
+Ujednolicona produktywność: zadania, nawyki, czas, aplikacje, notatki, analizy.

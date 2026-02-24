@@ -4,10 +4,7 @@
 
 # `WHPH` [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black&style=flat)](https://ahmetcetinkaya.me/donate) [![GitHub stars](https://img.shields.io/github/stars/ahmet-cetinkaya/whph?style=flat)](https://github.com/ahmet-cetinkaya/whph/stargazers) [![GitHub license](https://img.shields.io/github/license/ahmet-cetinkaya/whph?style=flat)](https://github.com/ahmet-cetinkaya/whph/blob/main/LICENSE)
 
-WHPH is a comprehensive productivity app designed to help you manage tasks,
-develop new habits, and optimize your time. It tracks application usage to
-enhance focus, allowing you to analyze your progress, celebrate achievements,
-and stay motivated.
+WHPH is a comprehensive productivity app offering a unified experience to help you manage tasks, develop new habits, optimize your time, take quick notes, and track application usage to enhance focus and stay motivated.
 
 Available for
 ![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white&style=flat),
