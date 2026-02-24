@@ -1259,8 +1259,18 @@
     <content_attribute id="money-gambling">none</content_attribute>
   </content_rating>
 
+  <supports>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+
   <releases>
     <release version="0.22.1" date="2026-02-19">
+      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.22.1/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Added: Better descriptions across all supported languages</li>
@@ -1275,6 +1285,7 @@
       </description>
     </release>
     <release version="0.22.0" date="2026-02-14">
+      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.22.0/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Added: Tag icons for easier visual identification</li>
@@ -1288,6 +1299,7 @@
       </description>
     </release>
     <release version="0.21.1" date="2026-02-13">
+      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.21.1/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Added: Better mobile touch targets for quick-add task dialog</li>
@@ -1295,6 +1307,7 @@
       </description>
     </release>
     <release version="0.21.0" date="2026-02-11">
+      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.21.0/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Added: Enhanced CSV import from Todoist and other apps</li>
@@ -1311,6 +1324,7 @@
       </description>
     </release>
     <release version="0.20.4" date="2026-01-25">
+      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.20.4/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Fixed: Enhanced color picker with tabbed interface and alpha support</li>
@@ -1319,6 +1333,7 @@
       </description>
     </release>
     <release version="0.20.3" date="2026-01-22">
+      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.20.3/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Fixed: App icon display fallback for Linux distributions</li>
@@ -1326,6 +1341,7 @@
       </description>
     </release>
     <release version="0.20.2" date="2026-01-22">
+      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.20.2/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Changed: Redesigned reminder settings with clearer table layout</li>
