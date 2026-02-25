@@ -106,7 +106,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     try {
       final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime);
       if (setting == null) {
-        // Setting not found, use current default behavior (15 minutes)
+        // Setting not found, use current default behavior (20 minutes)
         return TaskConstants.defaultEstimatedTime;
       }
 

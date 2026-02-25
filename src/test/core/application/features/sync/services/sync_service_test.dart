@@ -88,8 +88,9 @@ void main() {
         // Act
         await syncService.runPaginatedSync(isManual: true);
 
-        // Wait for the operation to complete
-        await Future.delayed(const Duration(milliseconds: 150));
+        // Wait for the operation and status transitions to complete
+        // The completed state is set followed by an idle reset after 1500ms
+        await Future.delayed(const Duration(milliseconds: 500));
 
         // Assert
         verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
@@ -99,8 +100,9 @@ void main() {
         // Clean up
         await statusSubscription.cancel();
 
-        // Wait for the timer to reset to idle
-        await Future.delayed(const Duration(seconds: 3));
+        // Wait for the timer to reset to idle (scheduled for 1500ms in SyncService)
+        // Using a slightly longer delay to be safe
+        await Future.delayed(const Duration(milliseconds: 1600));
         expect(syncService.currentSyncStatus.state, SyncState.idle);
       });
 

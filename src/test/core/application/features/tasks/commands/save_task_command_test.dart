@@ -589,7 +589,7 @@ void main() {
   });
 
   group('Default Estimated Time Tests', () {
-    test('should use 15 minute default when setting does not exist', () async {
+    test('should use 20 minute default when setting does not exist', () async {
       // Arrange
       final command = SaveTaskCommand(
         title: 'Test Task',
@@ -610,7 +610,7 @@ void main() {
 
       // Assert
       verify(mockTaskRepository.add(argThat(
-        predicate<Task>((task) => task.estimatedTime == 15),
+        predicate<Task>((task) => task.estimatedTime == 20),
       ))).called(1);
     });
 
