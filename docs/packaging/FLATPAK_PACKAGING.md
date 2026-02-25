@@ -31,7 +31,7 @@ The packaging process is automated via `scripts/package_flatpak.sh`:
     runner and building the Linux release bundle with proper architecture
     support (x64/aarch64).
 7.  **Output**:
-    - `whph.flatpak`: The final installable bundle.
+    - `whph-v<VERSION>-linux.flatpak`: The final installable bundle.
     - `repo/`: The OSTree repository.
     - `flathub/`: The directory ready for Flathub submission (manifest +
       generated sources).
@@ -117,3 +117,23 @@ dependency chain is established in the manifest:
 1.  **`perl-xml-parser`** (Needed by `intltool`, which is built internally by `libayatana-appindicator`)
 2.  **`libayatana-appindicator`** (Needed by Flutter's tray plugin; builds its own `intltool`)
 3.  **`whph`** (The final application, built using the `flutter` SDK source)
+
+## Flathub Submission & Differences
+
+When building for Flathub, we strictly adhere to sandbox guidelines and therefore omit certain permissions that bypass the sandbox. The `scripts/package_flatpak.sh` script supports a `--flathub` option which automatically removes `--talk-name=org.freedesktop.Flatpak` and injects `--dart-define=FLATHUB=true` during the build process.
+
+Because of this, the Flathub version of WHPH cannot use `flatpak-spawn --host` to run absolute fallback heuristics or call specific Wayland compositor tools (like `swaymsg` or `hyprctl`). Users on these environments will see an in-app notice explaining the limitation.
+
+### Installing Flatpak from Release
+If you require full active window tracking on these unsupported Wayland compositors, you can install the fully-featured Flatpak directly from the GitHub releases:
+
+1. Download the `whph-v<VERSION>-linux.flatpak` bundle from the latest [GitHub Release](https://github.com/ahmet-cetinkaya/whph/releases).
+   You can also use `curl` to download it (replace `<VERSION>` with the desired version, e.g., `v0.22.1`):
+   ```bash
+   curl -L -O https://github.com/ahmet-cetinkaya/whph/releases/download/<VERSION>/whph-v<VERSION>-linux.flatpak
+   ```
+2. Install it using the Flatpak CLI (replace `<VERSION>` with the version you downloaded):
+
+```bash
+flatpak install --user whph-v<VERSION>-linux.flatpak
+```

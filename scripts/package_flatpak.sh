@@ -28,8 +28,9 @@ FLATPAK_DIR="$PROJECT_ROOT/packaging/flatpak"
 FLATHUB_DIR="$FLATPAK_DIR/flathub"
 FLATPAK_FLUTTER_PY="$FLATPAK_DIR/flatpak-flutter/flatpak-flutter.py"
 VENV_PYTHON="$PROJECT_ROOT/.venv/bin/python3"
+VERSION=$(grep "^version:" "$PROJECT_ROOT/src/pubspec.yaml" | sed 's/version: //' | sed 's/+.*//')
 
-acore_log_header "FLATPAK PACKAGING (CLEAN FLATHUB OUTPUT)"
+acore_log_header "FLATPAK PACKAGING (v$VERSION)"
 
 # Check dependencies
 for cmd in flatpak-builder flatpak python3; do
@@ -201,7 +202,7 @@ fi
 
 # 3. Create Bundle
 acore_log_section "🎁  Creating Flatpak Bundle..."
-BUNDLE_NAME="$PROJECT_ROOT/whph.flatpak"
+BUNDLE_NAME="$PROJECT_ROOT/whph-v$VERSION-linux.flatpak"
 flatpak build-bundle "$REPO_DIR" "$BUNDLE_NAME" me.ahmetcetinkaya.whph master
 
 acore_log_success "✅  Flatpak packaging complete!"

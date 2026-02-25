@@ -46,7 +46,7 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 
 **Dependencies:** GTK, cmake, ninja-build, clang, and system libraries
 
-**Outputs:** `whph-v{version}-linux`
+**Outputs:** `whph-v{version}-linux.tar.gz` and `whph-v{version}-linux.flatpak`
 
 ### Flutter CI - Windows
 
@@ -67,8 +67,8 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 
 **Outputs:**
 
-- `whph-v{version}-windows-portable`
-- `whph-v{version}-windows-installer`
+- `whph-v{version}-windows-portable.zip`
+- `whph-v{version}-windows-setup.exe`
 
 ## Release Management
 
@@ -94,6 +94,7 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 
 - Android APK
 - Linux tar.gz archive
+- Linux Flatpak bundle
 - Windows portable zip
 - Windows installer
 

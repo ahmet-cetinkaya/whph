@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: whph-v${{ steps.app_version.outputs.version }}-flatpak
-          path: whph.flatpak
+          path: whph-v${{ steps.app_version.outputs.version-number }}-linux.flatpak
 
       - name: Upload Flathub manifest artifact
         uses: actions/upload-artifact@v4

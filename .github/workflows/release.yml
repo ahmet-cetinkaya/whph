@@ -225,8 +225,8 @@ jobs:
           fi
 
           # Prepare Linux Flatpak
-          if [[ -f "artifacts/whph-v$APP_VERSION-flatpak/whph.flatpak" ]]; then
-            cp "artifacts/whph-v$APP_VERSION-flatpak/whph.flatpak" "whph-v$TAG_VERSION.flatpak"
+          if [[ -f "artifacts/whph-v$APP_VERSION-flatpak/whph-v$TAG_VERSION-linux.flatpak" ]]; then
+            cp "artifacts/whph-v$APP_VERSION-flatpak/whph-v$TAG_VERSION-linux.flatpak" "whph-v$TAG_VERSION-linux.flatpak"
             echo "✅ Linux Flatpak prepared"
           else
             echo "⚠️ Linux Flatpak not found"
@@ -243,7 +243,7 @@ jobs:
           files: |
             whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk
             whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz
-            whph-v${{ needs.check-workflows.outputs.tag-version }}.flatpak
+            whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.flatpak
             whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip
             whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe
           name: ${{ needs.check-workflows.outputs.tag-name }}
@@ -256,7 +256,7 @@ jobs:
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk` - Android APK
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz` - Linux portable 
               > 🐧 Linux portable users: See [LINUX-DEPENDENCIES.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/LINUX-DEPENDENCIES.md) for system requirements and installation instructions.
-            - `whph-v${{ needs.check-workflows.outputs.tag-version }}.flatpak` - Linux Flatpak bundle
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.flatpak` - Linux Flatpak bundle
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip` - Windows portable  
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe` - Windows installer
 
