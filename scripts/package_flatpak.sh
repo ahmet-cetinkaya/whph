@@ -7,11 +7,14 @@ set -e
 
 CI_MODE=false
 LOCAL_MODE=false
+FLATHUB_MODE=false
 for arg in "$@"; do
     if [[ "$arg" == "--ci" ]]; then
         CI_MODE=true
     elif [[ "$arg" == "--local" ]]; then
         LOCAL_MODE=true
+    elif [[ "$arg" == "--flathub" ]]; then
+        FLATHUB_MODE=true
     fi
 done
 
@@ -85,6 +88,36 @@ else
         acore_log_error "Manifest generation failed."
         exit 1
     fi
+fi
+
+if [[ "$FLATHUB_MODE" == true ]]; then
+    acore_log_info "Flathub mode enabled. Applying Flathub specific restrictions..."
+    acore_log_info "Removing --talk-name=org.freedesktop.Flatpak for Flathub compliance. Refer to docs/packaging/FLATPAK_PACKAGING.md"
+    
+    $VENV_PYTHON -c "
+import yaml
+manifest_path = '$FLATHUB_DIR/$MANIFEST_NAME'
+with open(manifest_path, 'r') as f:
+    manifest = yaml.safe_load(f)
+
+if 'finish-args' in manifest:
+    manifest['finish-args'] = [arg for arg in manifest['finish-args'] if arg != '--talk-name=org.freedesktop.Flatpak']
+
+for module in manifest.get('modules', []):
+    if isinstance(module, dict) and module.get('name') == 'whph':
+        if 'build-commands' in module:
+            new_cmds = []
+            for cmd in module['build-commands']:
+                if 'flutter build linux' in cmd:
+                    new_cmds.append(cmd + ' --dart-define=FLATHUB=true')
+                else:
+                    new_cmds.append(cmd)
+            module['build-commands'] = new_cmds
+        break
+
+with open(manifest_path, 'w') as f:
+    yaml.dump(manifest, f, sort_keys=False)
+"
 fi
 
 # Format output files with prettier for Flathub submission
