@@ -1,0 +1,2 @@
+• Time estimation now uses 10-minute steps for easier and more accurate planning
+• New tasks now default to 20 minutes for better time estimates

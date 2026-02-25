@@ -1,0 +1,2 @@
+• L'estimation de temps utilise maintenant des étapes de 10 minutes pour une planification plus facile et précise
+• Les nouvelles tâches ont maintenant 20 minutes par défaut pour de meilleures estimations

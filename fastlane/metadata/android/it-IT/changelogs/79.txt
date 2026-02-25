@@ -1,0 +1,2 @@
+• La stima del tempo ora usa passi di 10 minuti per una pianificazione più facile e accurata
+• I nuovi compiti ora hanno 20 minuti come predefinito per stime migliori

@@ -1,0 +1,2 @@
+• A estimativa de tempo agora usa passos de 10 minutos para um planeamento mais fácil e preciso
+• As novas tarefas agora têm 20 minutos por defeito para melhores estimativas

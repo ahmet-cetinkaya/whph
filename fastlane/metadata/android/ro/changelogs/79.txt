@@ -1,0 +1,2 @@
+• Estimarea timpului folosește acum pași de 10 minute pentru planificare mai ușoară și mai precisă
+• Noile sarcini au acum 20 de minute ca implicit pentru estimări mai bune

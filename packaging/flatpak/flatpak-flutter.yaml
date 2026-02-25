@@ -84,7 +84,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/ahmet-cetinkaya/whph.git
-        tag: v0.22.1
+        tag: v0.22.2
         x-checker-data:
           type: git
           tag-pattern: "^v([\\d.]+)$"

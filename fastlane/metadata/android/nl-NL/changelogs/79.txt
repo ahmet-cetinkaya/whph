@@ -1,0 +1,2 @@
+• Tijdschatting gebruikt nu stappen van 10 minuten voor eenvoudigere en nauwkeurigere planning
+• Nieuwe taken hebben nu 20 minuten als standaard voor betere tijdschattingen

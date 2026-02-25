@@ -1,0 +1,2 @@
+• Oszacowanie czasu teraz używa kroków co 10 minut dla łatwiejszego i dokładniejszego planowania
+• Nowe zadania domyślnie mają 20 minut dla lepszych oszacowań czasu

@@ -1,0 +1,2 @@
+• Ocena časa zdaj uporablja korake po 10 minut za lažje in natančnejše načrtovanje
+• Nove naloge imajo zdaj privzeto 20 minut za boljše ocene časa

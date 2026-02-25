@@ -1,0 +1,2 @@
+• Tidsestimering bruger nu 10-minutters trin for lettere og mere præcis planlægning
+• Nye opgaver har nu 20 minutter som standard for bedre tidsestimater

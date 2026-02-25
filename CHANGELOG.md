@@ -3,96 +3,165 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.22.2] - 2026-02-25
+
+### Added
+
+- **Flathub Support**: App now detects when running from Flathub and displays
+  information about usage tracking limitations in sandboxed environments
+
+### Changed
+
+- **Time Estimation Increments**: Time estimation now uses 10-minute steps for
+  easier and more accurate task planning
+- **Desktop Theme Colors**: Consistent theme colors now defined across desktop
+  platforms for better visual integration
+
+### Fixed
+
+- **Default Task Duration**: New tasks now default to 20 minutes for better time
+  estimates
 
 ## [0.22.1] - 2026-02-18
 
 ### Added
-- **Updated App Descriptions**: Better descriptions across all supported languages to help you understand what the app does
+
+- **Updated App Descriptions**: Better descriptions across all supported
+  languages to help you understand what the app does
 
 ### Changed
-- **Linux Theme Integration**: Theme switching now works more smoothly with your desktop environment
+
+- **Linux Theme Integration**: Theme switching now works more smoothly with your
+  desktop environment
 
 ### Fixed
-- **Flatpak Device Sync**: Sync functionality now works correctly in Flatpak version by enabling required network access
-- **Flatpak Compatibility**: Improved app detection and reliability when running as Flatpak
-- **Linux App Directory**: Now respects your custom directory settings (XDG_DATA_HOME) if configured
-- **Task Management**: Recurrence and reminder fields now work consistently throughout the app
-- **List Item Display**: Fixed translation issues with list items for better multilingual support
-- **Linux Desktop**: Reduced error messages during window detection on Wayland systems for cleaner operation
+
+- **Flatpak Device Sync**: Sync functionality now works correctly in Flatpak
+  version by enabling required network access
+- **Flatpak Compatibility**: Improved app detection and reliability when running
+  as Flatpak
+- **Linux App Directory**: Now respects your custom directory settings
+  (XDG_DATA_HOME) if configured
+- **Task Management**: Recurrence and reminder fields now work consistently
+  throughout the app
+- **List Item Display**: Fixed translation issues with list items for better
+  multilingual support
+- **Linux Desktop**: Reduced error messages during window detection on Wayland
+  systems for cleaner operation
 
 ## [0.22.0] - 2026-02-14
 
 ### Added
-- **Tag Icons**: Tags now display with icons for easier visual identification and quicker scanning
-- **Collapsible Grouping**: Collapse and expand grouped items in lists and tag selection for better organization
-- **Timer Dialog Done Button**: Timer settings dialog now has a done button to confirm your changes
-- **Linux Theme Auto-Switch**: The app automatically matches your Linux desktop's light/dark theme
-- **Linux Flatpak Support**: Easier installation on Linux distributions with improved desktop integration
-- **System Tray Icon (Linux)**: App icon now appears in the system tray for quick access
+
+- **Tag Icons**: Tags now display with icons for easier visual identification
+  and quicker scanning
+- **Collapsible Grouping**: Collapse and expand grouped items in lists and tag
+  selection for better organization
+- **Timer Dialog Done Button**: Timer settings dialog now has a done button to
+  confirm your changes
+- **Linux Theme Auto-Switch**: The app automatically matches your Linux
+  desktop's light/dark theme
+- **Linux Flatpak Support**: Easier installation on Linux distributions with
+  improved desktop integration
+- **System Tray Icon (Linux)**: App icon now appears in the system tray for
+  quick access
 
 ### Fixed
+
 - **Linux Audio Support**: Audio notifications now work properly on Linux
-- **Theme Detection (Linux)**: Better automatic theme switching when your desktop environment changes
+- **Theme Detection (Linux)**: Better automatic theme switching when your
+  desktop environment changes
 
 ## [0.21.1] - 2026-02-13
 
 ### Added
-- **Better Mobile Touch Targets**: Buttons in the quick-add task dialog are now easier to tap on mobile devices
+
+- **Better Mobile Touch Targets**: Buttons in the quick-add task dialog are now
+  easier to tap on mobile devices
 
 ## [0.21.0] - 2026-02-11
 
 ### Added
-- **Enhanced CSV Import**: Import tasks from Todoist and other apps with support for tags, custom priorities, and flexible date formats
-- **Skip Quick Add Dialog**: Option to bypass the quick-add dialog and create tasks directly from the main interface
-- **Language Dialog Improvements**: Better scrolling, dynamic language count display, and fully localized descriptions
-- **Tag Creation from Selection**: Create new tags directly from the tag selection dialog without leaving the current flow
-- **Polished Onboarding**: Improved tour completion dialog with smoother navigation and better mobile responsiveness
+
+- **Enhanced CSV Import**: Import tasks from Todoist and other apps with support
+  for tags, custom priorities, and flexible date formats
+- **Skip Quick Add Dialog**: Option to bypass the quick-add dialog and create
+  tasks directly from the main interface
+- **Language Dialog Improvements**: Better scrolling, dynamic language count
+  display, and fully localized descriptions
+- **Tag Creation from Selection**: Create new tags directly from the tag
+  selection dialog without leaving the current flow
+- **Polished Onboarding**: Improved tour completion dialog with smoother
+  navigation and better mobile responsiveness
 
 ### Fixed
-- **Asian Language Support**: Fixed font rendering for Chinese, Japanese, and Korean characters on all platforms
-- **CSV Import Performance**: Faster imports with tag caching and better error messages
-- **Notification System**: Improved notification channel management and permission handling on Android
-- **Data Import Validation**: Better error messages and version compatibility when importing data from different app versions
-- **Task Recurrence**: Fixed an issue where tasks with past recurrence end dates would fail to import (#220)
-- **Language Dialogs**: Corrected Greek translation issues and improved mobile responsiveness
-- **Error Handling**: Better error messages throughout task creation and tag management flows
+
+- **Asian Language Support**: Fixed font rendering for Chinese, Japanese, and
+  Korean characters on all platforms
+- **CSV Import Performance**: Faster imports with tag caching and better error
+  messages
+- **Notification System**: Improved notification channel management and
+  permission handling on Android
+- **Data Import Validation**: Better error messages and version compatibility
+  when importing data from different app versions
+- **Task Recurrence**: Fixed an issue where tasks with past recurrence end dates
+  would fail to import (#220)
+- **Language Dialogs**: Corrected Greek translation issues and improved mobile
+  responsiveness
+- **Error Handling**: Better error messages throughout task creation and tag
+  management flows
 
 ## [0.20.4] - 2026-01-25
 
 ### Fixed
+
 - Enhance color picker component with tabbed interface and full alpha support
 - Improve window class setting and icon path handling
 
 ## [0.20.3] - 2026-01-22
 
 ### Fixed
-- **Linux Icons**: App icon now displays correctly on more Linux distributions by adding a fallback path for Flutter assets
+
+- **Linux Icons**: App icon now displays correctly on more Linux distributions
+  by adding a fallback path for Flutter assets
 
 ## [0.20.2] - 2026-01-22
 
 ### Changed
-- **Custom Reminder Dialog**: Redesigned reminder settings with a clearer table layout for selecting time units
-- **Linux Icons**: Improved app icon loading to display correctly across different Linux distributions
+
+- **Custom Reminder Dialog**: Redesigned reminder settings with a clearer table
+  layout for selecting time units
+- **Linux Icons**: Improved app icon loading to display correctly across
+  different Linux distributions
 
 ### Fixed
-- **Desktop Sync**: Resolved service lifecycle issues on desktop platforms for more reliable synchronization
-- **Button Styling**: Enhanced interaction feedback on sorting and grouping buttons throughout the app
+
+- **Desktop Sync**: Resolved service lifecycle issues on desktop platforms for
+  more reliable synchronization
+- **Button Styling**: Enhanced interaction feedback on sorting and grouping
+  buttons throughout the app
 
 ## [0.20.1] - 2026-01-22
 
 ### Added
 
-- **Habit Completion Notifications**: Mark habits as done directly from notifications with localized support
+- **Habit Completion Notifications**: Mark habits as done directly from
+  notifications with localized support
 
 ### Fixed
 
-- **Task Management**: You can now uncomplete tasks even when the "Done" filter is active
-- **Android Notifications**: Fixed reminder delivery issues for devices with numeric timezone settings
+- **Task Management**: You can now uncomplete tasks even when the "Done" filter
+  is active
+- **Android Notifications**: Fixed reminder delivery issues for devices with
+  numeric timezone settings
 - **App Usage Tracking**: Improved accuracy by skipping system metadata entries
-- **Task Cards**: Better spacing and easier drag handle positioning for smoother reordering
+- **Task Cards**: Better spacing and easier drag handle positioning for smoother
+  reordering
 - **Linux Desktop**: App icon now displays correctly in system taskbars
 - **Dialogs**: More consistent button layout across all dialogs
 
@@ -100,23 +169,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Tag Organization**: Organize tags into three types (labels, contexts, projects) for better categorization
-- **Tag Grouping & Sorting**: Group tasks, habits, and notes by tag with customizable tag order
-- **Weekly Scheduling**: Set different times for each day when configuring weekly schedules
-- **Tag Colors in App Usage**: Display app usage time bars using your tag colors for visual clarity
-- **CSV Import**: Import tasks from CSV files with support for priority, dates, and descriptions
-- **Android Sharing**: Quickly create tasks and notes directly from Android's share menu
-- **Easy Task Completion**: Complete tasks with a simple swipe or directly from notifications
-- **Flexible Recurrence**: Set tasks to recur based on completion date (e.g., "3 days after I finish it")
+- **Tag Organization**: Organize tags into three types (labels, contexts,
+  projects) for better categorization
+- **Tag Grouping & Sorting**: Group tasks, habits, and notes by tag with
+  customizable tag order
+- **Weekly Scheduling**: Set different times for each day when configuring
+  weekly schedules
+- **Tag Colors in App Usage**: Display app usage time bars using your tag colors
+  for visual clarity
+- **CSV Import**: Import tasks from CSV files with support for priority, dates,
+  and descriptions
+- **Android Sharing**: Quickly create tasks and notes directly from Android's
+  share menu
+- **Easy Task Completion**: Complete tasks with a simple swipe or directly from
+  notifications
+- **Flexible Recurrence**: Set tasks to recur based on completion date (e.g., "3
+  days after I finish it")
 - **Task Reminders**: Get reminded before tasks are due with customizable timing
-- **Three-State Habit Tracking**: Track habits as complete, skipped, or missed for more accurate statistics
-- **List Grouping**: Group tasks, habits, and notes by date, tag, priority, and more
-- **Quick Date Selection**: Choose from presets like "Today", "This Week", "This Month" in date pickers
+- **Three-State Habit Tracking**: Track habits as complete, skipped, or missed
+  for more accurate statistics
+- **List Grouping**: Group tasks, habits, and notes by date, tag, priority, and
+  more
+- **Quick Date Selection**: Choose from presets like "Today", "This Week", "This
+  Month" in date pickers
 
 ### Changed
 
-- **Improved Performance**: Lists now load faster and scroll more smoothly on Android
-- **Better Date Picker**: More intuitive date and time selection with localized options
+- **Improved Performance**: Lists now load faster and scroll more smoothly on
+  Android
+- **Better Date Picker**: More intuitive date and time selection with localized
+  options
 
 ### Fixed
 
@@ -124,7 +206,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Window Detection**: Improved app tracking on Wayland with KDE Plasma
 - **Widget Sorting**: Home screen widgets now display items in the correct order
 - **Text Input**: Fixed cursor jumping when typing quickly in description fields
-- **List Reordering**: Drag-and-drop customization now works reliably in all lists
+- **List Reordering**: Drag-and-drop customization now works reliably in all
+  lists
 - **Memory Management**: Fixed memory leaks to improve app stability
 - **Import Errors**: Better error messages when CSV imports fail
 - **Translation Issues**: Fixed various localization problems across languages
@@ -134,7 +217,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Translations for time logging and timer features across all supported languages
+- Translations for time logging and timer features across all supported
+  languages
 
 ### Changed
 
@@ -144,7 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Removed unused variables from encryption key generation to improve code quality
+- Removed unused variables from encryption key generation to improve code
+  quality
 
 ## [0.19.2] - 2025-12-25
 
@@ -166,16 +251,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Changelog Dialog**: View version history directly in the app via Settings → About → Changelog
-- **Habit View Options**: Choose between grid, list, or calendar views for your habits
-- **Task Description Quick Add**: Add descriptions when creating tasks from the quick-add dialog
-- **Weekly Recurrence by Days**: Schedule recurring tasks for specific days of the week (e.g., every Monday and Wednesday)
-- **App Usage Comparison**: Compare app usage statistics between different time periods
+- **Changelog Dialog**: View version history directly in the app via Settings →
+  About → Changelog
+- **Habit View Options**: Choose between grid, list, or calendar views for your
+  habits
+- **Task Description Quick Add**: Add descriptions when creating tasks from the
+  quick-add dialog
+- **Weekly Recurrence by Days**: Schedule recurring tasks for specific days of
+  the week (e.g., every Monday and Wednesday)
+- **App Usage Comparison**: Compare app usage statistics between different time
+  periods
 - **Sound Settings**: Customize all app sounds from a unified settings panel
-- **Infinity Scroll**: Enable smooth continuous scrolling in lists (available in list options)
-- **Linux Theme Auto-Switch**: App automatically switches between light/dark theme based on your Linux desktop settings
-- **Notification Position (Mobile)**: Choose where notifications appear on your screen
-- **KDE Plasma Integration**: Better integration with KDE Plasma desktop environment
+- **Infinity Scroll**: Enable smooth continuous scrolling in lists (available in
+  list options)
+- **Linux Theme Auto-Switch**: App automatically switches between light/dark
+  theme based on your Linux desktop settings
+- **Notification Position (Mobile)**: Choose where notifications appear on your
+  screen
+- **KDE Plasma Integration**: Better integration with KDE Plasma desktop
+  environment
 - **Database Reset**: Reset app data with automatic backup before resetting
 - **Success Notification**: Receive confirmation when creating tasks
 - **Real-Time Log Export**: Stream and export debug logs for troubleshooting
@@ -185,9 +279,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Modernized Settings Interface**: Cleaner, more responsive settings pages
 - **Improved Date Picker**: Better quick-selection options and user experience
 - **Larger Detail Pages**: Details pages now use maximum available space
-- **Better Task Completion Button**: Larger touch area for easier completion on mobile
-- **Enhanced Today View**: Habits section supports dynamic view switching (grid/list/calendar)
-- **Card-Based UI**: Calendar and statistics views now use modern card-based layouts
+- **Better Task Completion Button**: Larger touch area for easier completion on
+  mobile
+- **Enhanced Today View**: Habits section supports dynamic view switching
+  (grid/list/calendar)
+- **Card-Based UI**: Calendar and statistics views now use modern card-based
+  layouts
 - **Improved Tag Selection**: Enhanced dialog for selecting tags across the app
 
 ### Fixed
@@ -213,7 +310,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Address Gemini review feedback - remove redundant callbacks and restore UI descriptions
+- Address Gemini review feedback - remove redundant callbacks and restore UI
+  descriptions
 - Add time data service and integrate with habit and tag components
 - Rename application layer settings translation keys file and update references
 - Replace segmented button for elapsed time dialog
@@ -272,7 +370,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor tag display logic in app_usage_card.dart
 - Remove cursor selection restoration logic from detail components
 - Improve tag display in card components with overflow handling
-- Capture errorParams in _handleIncomingSync method
+- Capture errorParams in \_handleIncomingSync method
 
 ## [0.16.5] - 2025-10-02
 
@@ -295,7 +393,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Handle missing order column in habit_table migration with explicit column mapping
+- Handle missing order column in habit_table migration with explicit column
+  mapping
 
 ## [0.16.3] - 2025-10-01
 
@@ -312,7 +411,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Enhance task table migration by recreating schema (fixes #96 reported by @ujo4eva)
+- Enhance task table migration by recreating schema (fixes #96 reported by
+  @ujo4eva)
 
 ## [0.16.1] - 2025-09-30
 
@@ -428,7 +528,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add debug logging for device discovery failures
 - Enhance concurrent connection logic and device ID generation
 - Replace hardcoded error messages in add sync device page
-- Replace hardcoded error messages with translation keys in manual IP input dialog
+- Replace hardcoded error messages with translation keys in manual IP input
+  dialog
 - Improve hashCode implementation in network interface service
 - Fix late initialization and improve hashCode in device handshake service
 - Improve connection validation and cleanup in concurrent connection service
@@ -476,11 +577,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New filter option to easily show or hide subtasks for better task management
-- Enhanced debug log export with full language support for smoother troubleshooting
+- Enhanced debug log export with full language support for smoother
+  troubleshooting
 - Improved debug logs now display as overlay notifications for instant feedback
 - Complete log export feature with localization for all supported languages
-- Added error translations for debug logs in every language to improve user experience
-- Introduced advanced settings and comprehensive debug logs functionality for power users
+- Added error translations for debug logs in every language to improve user
+  experience
+- Introduced advanced settings and comprehensive debug logs functionality for
+  power users
 - Add layout toggle for tasks and improve habits layout control
 - Add custom sort functionality with drag-and-drop support
 - Complete date range filter modernization across all pages
@@ -520,13 +624,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **UI Density Settings**: New interface density controls allowing users to adjust text and UI element sizes (Compact, Normal, Large, Larger) for improved readability on high DPI displays
-- Complete internationalization support for UI density settings across all supported languages
+- **UI Density Settings**: New interface density controls allowing users to
+  adjust text and UI element sizes (Compact, Normal, Large, Larger) for improved
+  readability on high DPI displays
+- Complete internationalization support for UI density settings across all
+  supported languages
 
 ### Changed
 
 - Optimize task list rendering performance by implementing task card caching
-- Improve date calculation performance with intelligent caching and staleness checks
+- Improve date calculation performance with intelligent caching and staleness
+  checks
 - Optimize display performance for high refresh rate screens
 - Enhanced UI density implementation based on code review feedback
 
@@ -534,7 +642,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Enable Impeller rendering engine for improved performance
 - Validate estimatedTime to prevent negative values in time tracking
-- Replace responsive color dialog with standard AlertDialog for better consistency
+- Replace responsive color dialog with standard AlertDialog for better
+  consistency
 
 ## [0.13.1] - 2025-08-06
 
@@ -576,17 +685,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Use theme service for accent color in ui elements
-- Resolve bidirectional sync failure preventing Linux demo data from syncing to Android
+- Resolve bidirectional sync failure preventing Linux demo data from syncing to
+  Android
 - Add background color to appbar in pages
 
 ## [0.11.1] - 2025-07-29
 
 ### Added
 
-- Implement Digital Wellbeing-compatible usage tracking with precision algorithms
+- Implement Digital Wellbeing-compatible usage tracking with precision
+  algorithms
 - Add clearer description for dynamic color usage
 - Set fallback theme to dark
-- Remove initial titles and add placeholders for task, habit, note, and tag inputs
+- Remove initial titles and add placeholders for task, habit, note, and tag
+  inputs
 
 ### Fixed
 
@@ -615,7 +727,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Russian localization support across multiple features
 - Add Spanish localization support across multiple features
 - Add French localization support across multiple features
-- Add German localization for notes, settings, sync, tags, tasks, and shared components
+- Add German localization for notes, settings, sync, tags, tasks, and shared
+  components
 
 ### Changed
 
@@ -634,7 +747,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve container initialization and error handling
 - Initialize test binding and improve platform handling
 - Make device info helper tests platform-agnostic
-- Replace magic numbers with named constants Add constants for ratio thresholds and daily usage limits to improve code maintainability and readability. This addresses the code review feedback about using magic numbers in the usage calculation logic.
+- Replace magic numbers with named constants Add constants for ratio thresholds
+  and daily usage limits to improve code maintainability and readability. This
+  addresses the code review feedback about using magic numbers in the usage
+  calculation logic.
 - Improve work profile detection logic
 - Use fully qualified column names in queries
 - Address second code review feedback
@@ -730,7 +846,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Improved background tracking of app usage on Android devices for a smoother experience
+- Improved background tracking of app usage on Android devices for a smoother
+  experience
 
 ## [0.8.7] - 2025-06-27
 
@@ -765,13 +882,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Various behind-the-scenes improvements and optimizations for a better experience
+- Various behind-the-scenes improvements and optimizations for a better
+  experience
 
 ## [0.8.2] - 2025-06-24
 
 ### Changed
 
-- Various behind-the-scenes improvements and optimizations for a better experience
+- Various behind-the-scenes improvements and optimizations for a better
+  experience
 
 ## [0.8.1] - 2025-06-24
 
@@ -1013,7 +1132,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add lock settings and clear all functionality
 - Improve help menu contents
 - Update application name to 'Work Hard Play Hard'
-- Refactor BusinessException usage for improved error handling and improve error message on ui
+- Refactor BusinessException usage for improved error handling and improve error
+  message on ui
 - Add storage permission handling for file operations
 - Enhance locale-aware date/time formatting
 - Add navigation to tag details in dropdown
@@ -1085,7 +1205,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add archive feature for habits
 - Add support dialog and update localization for support features
 - Implement onboarding dialog with multi-step guidance and permission handling
-- Enhance permission handling and app usage filters - Add permission check and handling for app usage features - Update filter state initialization to use current date - Refactor refresh functionality to notify app usage service
+- Enhance permission handling and app usage filters - Add permission check and
+  handling for app usage features - Update filter state initialization to use
+  current date - Refactor refresh functionality to notify app usage service
 - Refactor permission handling UI components
 - Add reminders
 - Enhance date input selection
@@ -1119,22 +1241,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Escape field names in custom order query
 - Increase padding for note and tag cards
 - Improve add task dialog layout and styling
-- Ensure state updates only when mounted during permission checks in exact alarm permission.
-- Add delayed permission checks for app usage, battery optimization, exact alarm, and notification permissions
+- Ensure state updates only when mounted during permission checks in exact alarm
+  permission.
+- Add delayed permission checks for app usage, battery optimization, exact
+  alarm, and notification permissions
 - Add refresh on note creation and update event listeners
 - Improve active window tracking and app name extraction
 - Improve tag loading and visibility handling in habit details
-- Implement AutomaticKeepAliveClientMixin for state preservation across task-related pages
+- Implement AutomaticKeepAliveClientMixin for state preservation across
+  task-related pages
 - Add app usage filters component for improved filtering options
 - Replace Container with Expanded for better layout management in details pages
-- Add respectBottomInset property for bottom inset handling in ResponsiveScaffoldLayout
+- Add respectBottomInset property for bottom inset handling in
+  ResponsiveScaffoldLayout
 - Add archived filter functionality and improve tag filtering components
 
 ## [0.5.1] - 2025-05-01
 
 ### Added
 
-- Simplify task list handling and improve filter functionality in tag details page
+- Simplify task list handling and improve filter functionality in tag details
+  page
 - Enhance refresh logic and add tag filter functionality in today page
 - Enhance task listing with improved refresh logic and task data model
 
@@ -1166,7 +1293,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Update fix_auto_start_flutter.sh to properly structure build.gradle and AndroidManifest.xml
+- Update fix_auto_start_flutter.sh to properly structure build.gradle and
+  AndroidManifest.xml
 - Simplify description check and update color opacity methods
 - Remove unnecessary controller disposal after scanning
 - Handle context mounted check before showing error
@@ -1213,7 +1341,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Update task navigation to use MaterialPageRoute and refresh sub-tasks on return
+- Update task navigation to use MaterialPageRoute and refresh sub-tasks on
+  return
 
 ## [0.4.1] - 2025-02-01
 
@@ -1225,7 +1354,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for sub-tasks and parent task relationships; update localization and database schema
+- Add support for sub-tasks and parent task relationships; update localization
+  and database schema
 
 ## [0.3.2] - 2025-01-31
 
@@ -1237,7 +1367,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add translation keys for tags, sync, settings, and habits; update error handling
+- Add translation keys for tags, sync, settings, and habits; update error
+  handling
 
 ### Fixed
 
@@ -1255,7 +1386,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update pattern label translation and add spacing in rule lists
 - Add 'no_habits_found' message in Turkish translation
 - Move name fields to contents
-- Add 'Tags' label in English and Turkish translations; refactor tag details page to use TaskAddButton and improve title handling
+- Add 'Tags' label in English and Turkish translations; refactor tag details
+  page to use TaskAddButton and improve title handling
 
 ## [0.2.1] - 2025-01-29
 
@@ -1275,20 +1407,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Configure release signing with keystore and update build.gradle
-- Implement APK installation via MethodChannel and update manifest for FileProvider
-- Integrate translation service across various components and add localization files
+- Implement APK installation via MethodChannel and update manifest for
+  FileProvider
+- Integrate translation service across various components and add localization
+  files
 - Integrate translation service for tag components
 - Integrate translation service for sync components
 - Integrate translation service for settings components
 - Integrate translation service for calendar components
 - Integrate translation service for calendar components
-- Integrate translation service for app usage components and update error messages
+- Integrate translation service for app usage components and update error
+  messages
 - Implement translation service and integrate localization into the app
 
 ### Fixed
 
-- Update GitHub Actions workflows to use GITHUB_TOKEN consistently and simplify keystore setup
-- Add onUpdated callbacks and to input fields and details components and refresh the components on save
+- Update GitHub Actions workflows to use GITHUB_TOKEN consistently and simplify
+  keystore setup
+- Add onUpdated callbacks and to input fields and details components and refresh
+  the components on save
 - Update schema to version 10 and implement migration logic for timestamp format
 
 ## [0.1.7] - 2025-01-27
@@ -1296,7 +1433,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add setup and update services
-- Integrate app usage ignore rules into sync feature and update related registrations
+- Integrate app usage ignore rules into sync feature and update related
+  registrations
 - Implement add and delete commands for app usage ignore rules
 - Add additional fields to save commands
 
@@ -1357,10 +1495,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Remove label enabling from ColorPicker for cleaner UI
-- Replace hardcoded values with UI constants for improved maintainability and consistency
-- Introduce UI constants for habit messages and icons, and update components to use them
-- Enhance UI by adding constants for error messages and labels, and refactor input fields to use them
-- Introduce shared UI constants for icons and messages, and refactor task components to utilize them
+- Replace hardcoded values with UI constants for improved maintainability and
+  consistency
+- Introduce UI constants for habit messages and icons, and update components to
+  use them
+- Enhance UI by adding constants for error messages and labels, and refactor
+  input fields to use them
+- Introduce shared UI constants for icons and messages, and refactor task
+  components to utilize them
 
 ### Fixed
 
@@ -1373,7 +1515,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Ensure tasks list is marked as non-empty on refresh
-- Enhance Linux and Windows services to dynamically locate and execute active window scripts
+- Enhance Linux and Windows services to dynamically locate and execute active
+  window scripts
 - Remove 'Release' prefix from workflow release names
 
 ## [0.1.1] - 2025-01-24
@@ -1386,18 +1529,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Update release workflows to use dynamic versioning for APK and archives
-- Add libayatana-appindicator3-dev installation to CI workflow for indicator support
+- Add libayatana-appindicator3-dev installation to CI workflow for indicator
+  support
 - Add libnotify-dev installation to CI workflow for notification support
 
 ## [0.1.0] - 2025-01-24
 
 ### Added
 
-- Enhance Pomodoro timer display style and add displayLarge text style for better visibility
+- Enhance Pomodoro timer display style and add displayLarge text style for
+  better visibility
 - Add notification settings management and update notification service
 - Implement desktop startup settings service and add related constants
-- Integrate setting repository for app usage ignore patterns and update related services
-- Add AppUsageTimeRecordWithDetails model and update related services for detailed app usage tracking
+- Integrate setting repository for app usage ignore patterns and update related
+  services
+- Add AppUsageTimeRecordWithDetails model and update related services for
+  detailed app usage tracking
 - Implement background service for app usage tracking and update permissions
 - Add deviceName field to AppUsage and related components
 - Add spacing between logo and surrounding elements for improved layout
@@ -1408,30 +1555,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve drawer spacing and styling
 - Enhance UI components with improved layouts and styling adjustments
 - Enhance sync command structure
-- Improve WebSocket message handling with enhanced error reporting and type validation
+- Improve WebSocket message handling with enhanced error reporting and type
+  validation
 - Fix compilation issues for app_usage and flutter_local_notifications plugins
-- Enhance sync feature by adding error handling and updating repository registrations
+- Enhance sync feature by adding error handling and updating repository
+  registrations
 - Enhance menu item management by adding insert and remove functionality
 - Update tray icon handling and integrate system tray service in Pomodoro timer
 - Integrate local notifier and implement notification service
 - Implement sound caching and initialization for improved performance
 - Add system tray support
-- Introduce app usage tag rules and update tag handling in filters and components
+- Introduce app usage tag rules and update tag handling in filters and
+  components
 - Add time tracking features and update related components
 - Enhance tag selection UI with clear button functionality
 - Add date range filtering to app usage queries and UI components
 - Improve general ui
 - Improve styles
 - Add maratgon page
-- Add HabitTagSection and HabitCalendarView components for enhanced habit tracking
-- Replace CircularProgressIndicator with empty state messages in various components
-- Reduce tracking intervals and enhance app usage saving logic with overwrite option
+- Add HabitTagSection and HabitCalendarView components for enhanced habit
+  tracking
+- Replace CircularProgressIndicator with empty state messages in various
+  components
+- Reduce tracking intervals and enhance app usage saving logic with overwrite
+  option
 - Add migration strategy and update build configurations for drift_dev
-- Add isArchived field to Tag model and update related components for archiving functionality
+- Add isArchived field to Tag model and update related components for archiving
+  functionality
 - Move tags field to up in details
-- Update task creation and completion handling with new UI components and improved state management
+- Update task creation and completion handling with new UI components and
+  improved state management
 - Enhance task creation with initial tag support and improve task list refresh
-- Add query for retrieving habit tags and enhance habit retrieval with associated tags
+- Add query for retrieving habit tags and enhance habit retrieval with
+  associated tags
 - Enhance task retrieval with associated tags and update task card layout
 
 ### Changed
@@ -1440,7 +1596,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Update fix_android script to use correct script for local notifications and improve error handling
+- Update fix_android script to use correct script for local notifications and
+  improve error handling
 - Update support URL and remove unused navigation item action
 - Ensure deleted app usages are excluded from duration queries
 - Restrict functionality to desktop platforms only
@@ -1503,7 +1660,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.22.1...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.22.2...HEAD
+[0.22.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.2
 [0.22.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.1
 [0.22.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.0
 [0.21.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.21.1

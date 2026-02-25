@@ -1,0 +1,2 @@
+• Tidsuppskattning använder nu 10-minuterssteg för enklare och noggrannare planering
+• Nya uppgifter har nu 20 minuter som standard för bättre tidsuppskattningar

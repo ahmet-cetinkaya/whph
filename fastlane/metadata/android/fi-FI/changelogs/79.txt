@@ -1,0 +1,2 @@
+• Aika-arviointi käyttää nyt 10 minuutin askelia helpompaa ja tarkempaa suunnittelua varten
+• Uusilla tehtävillä on nyt 20 minuutin oletus parempia aika-arvioita varten

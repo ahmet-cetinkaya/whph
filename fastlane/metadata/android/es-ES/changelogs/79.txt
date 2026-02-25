@@ -1,0 +1,2 @@
+• La estimación de tiempo ahora usa pasos de 10 minutos para una planificación más fácil y precisa
+• Las nuevas tareas ahora tienen 20 minutos por défaut para mejores estimaciones
