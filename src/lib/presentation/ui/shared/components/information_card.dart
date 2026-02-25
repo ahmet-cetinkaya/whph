@@ -16,6 +16,7 @@ class InformationCard extends StatelessWidget {
   final Color? backgroundColor;
   final BoxBorder? border;
   final TextStyle? textStyle;
+  final Widget? action;
 
   const InformationCard({
     super.key,
@@ -29,6 +30,7 @@ class InformationCard extends StatelessWidget {
     this.backgroundColor,
     this.border,
     this.textStyle,
+    this.action,
   });
 
   /// Creates an information card with the default theme styling
@@ -39,6 +41,7 @@ class InformationCard extends StatelessWidget {
     required String text,
     bool isMarkdown = false,
     TextStyle? textStyle,
+    Widget? action,
   }) {
     final theme = Theme.of(context);
     return InformationCard(
@@ -50,6 +53,7 @@ class InformationCard extends StatelessWidget {
       iconColor: ColorContrastHelper.getContrastingTextColor(theme.colorScheme.surfaceContainerHighest),
       textColor: ColorContrastHelper.getContrastingTextColor(theme.colorScheme.surfaceContainerHighest),
       textStyle: textStyle ?? theme.textTheme.bodySmall,
+      action: action,
     );
   }
 
@@ -81,21 +85,31 @@ class InformationCard extends StatelessWidget {
           ),
           SizedBox(width: AppTheme.sizeSmall),
           Expanded(
-            child: isMarkdown
-                ? MarkdownBody(
-                    data: text,
-                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                      p: textStyle ?? theme.textTheme.bodySmall?.copyWith(color: effectiveTextColor),
-                      listBullet: theme.textTheme.bodySmall?.copyWith(color: effectiveTextColor),
-                    ),
-                  )
-                : Text(
-                    text,
-                    style: textStyle ??
-                        theme.textTheme.bodySmall?.copyWith(
-                          color: effectiveTextColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                isMarkdown
+                    ? MarkdownBody(
+                        data: text,
+                        styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                          p: textStyle ?? theme.textTheme.bodySmall?.copyWith(color: effectiveTextColor),
+                          listBullet: theme.textTheme.bodySmall?.copyWith(color: effectiveTextColor),
                         ),
-                  ),
+                      )
+                    : Text(
+                        text,
+                        style: textStyle ??
+                            theme.textTheme.bodySmall?.copyWith(
+                              color: effectiveTextColor,
+                            ),
+                      ),
+                if (action != null) ...[
+                  SizedBox(height: AppTheme.sizeXSmall),
+                  action!,
+                ],
+              ],
+            ),
           ),
         ],
       ),

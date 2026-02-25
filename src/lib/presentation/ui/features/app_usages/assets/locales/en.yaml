@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Delete rule
     no_rules: No ignore rules
     pattern_label: Pattern
+  notices:
+    flathub: Active window tracking may be limited on the Flathub version. For full tracking features, please install the app directly from our releases.
   no_usage: No app usage yet
   pages:
     view:

@@ -21,4 +21,5 @@ class AppInfo {
   static const String updateCheckerUrl = "https://api.github.com/repos/ahmet-cetinkaya/whph/releases/latest";
   static const String supportEmail = "contact@ahmetcetinkaya.me";
   static const String feedbackUrl = "https://github.com/ahmet-cetinkaya/whph/issues";
+  static const String flatpakPackagingUrl = "$sourceCodeUrl/blob/main/docs/packaging/FLATPAK_PACKAGING.md";
 }

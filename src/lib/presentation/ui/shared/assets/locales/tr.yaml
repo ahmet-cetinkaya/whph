@@ -9,6 +9,7 @@ shared:
     delete: Sil
     done: Tamam
     load_more: Daha Fazla
+    learn_more: "Daha fazla bilgi"
     previous: Önceki
     save: Kaydet
     saved: Kaydedildi

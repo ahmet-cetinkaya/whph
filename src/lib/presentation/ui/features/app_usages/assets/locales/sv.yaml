@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Radera regel
     no_rules: Inga ignorera-regler
     pattern_label: Mönster
+  notices:
+    flathub: "Spårning av aktivt fönster kan vara begränsad i Flathub-versionen. För full spårningsfunktionalitet, installera appen direkt från våra utgåvor."
   no_usage: Ingen appanvändning än
   pages:
     view:

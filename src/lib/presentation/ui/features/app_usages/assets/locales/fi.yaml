@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Poista sääntö
     no_rules: Ei ohitus sääntöjä
     pattern_label: Kuviokuvio
+  notices:
+    flathub: "Aktiivisen ikkunan seuranta voi olla rajoitettu Flathub-versiossa. Saadaksesi täydet seurantaominaisuudet, asenna sovellus suoraan julkaisuistamme."
   no_usage: Ei sovelluksen käyttöä vielä
   pages:
     view:

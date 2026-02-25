@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: 규칙 삭제
     no_rules: 무시 규칙 없음
     pattern_label: 패턴
+  notices:
+    flathub: "Flathub 버전에서는 활성 창 추적이 제한될 수 있습니다. 전체 추적 기능을 사용하려면 릴리스에서 직접 앱을 설치하세요."
   no_usage: 아직 앱 사용량 없음
   pages:
     view:

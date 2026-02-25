@@ -9,6 +9,7 @@ shared:
     delete: Slett
     done: Ferdig
     load_more: Mer belastning
+    learn_more: "Les mer"
     previous: Forrige
     save: Lagre
     saved: Lagret

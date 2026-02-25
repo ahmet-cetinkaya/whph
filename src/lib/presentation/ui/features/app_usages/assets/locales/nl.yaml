@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Regel verwijderen
     no_rules: Geen negeerregels
     pattern_label: Patroon
+  notices:
+    flathub: "Het volgen van het actieve venster kan in de Flathub-versie beperkt zijn. Volg functies installeer de app rechtstreeks vanuit onze releases."
   no_usage: Nog geen app-gebruik
   pages:
     view:

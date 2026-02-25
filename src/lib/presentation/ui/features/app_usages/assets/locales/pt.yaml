@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Excluir regra
     no_rules: Nenhuma regra de ignorar
     pattern_label: Padrão
+  notices:
+    flathub: "O rastreamento da janela ativa pode estar limitado na versão Flathub. Para recursos completos de rastreamento, instale o aplicativo diretamente das nossas versões."
   no_usage: Nenhum uso de app ainda
   pages:
     view:

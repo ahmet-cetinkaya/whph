@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Slett regel
     no_rules: Ingen ignorer-regler
     pattern_label: Mønster
+  notices:
+    flathub: "Sporing av aktivt vindu kan være begrenset i Flathub-versjonen. For full sporingsfunksjonalitet, vennligst installer appen direkte fra våre utgivelser."
   no_usage: Ingen app-bruk ennå
   pages:
     view:

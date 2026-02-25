@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Eliminar regla
     no_rules: Sin reglas de ignorar
     pattern_label: Patrón
+  notices:
+    flathub: "El seguimiento de la ventana activa puede estar limitado en la versión Flathub. Para obtener funciones completas de seguimiento, instale la aplicación directamente desde nuestros lanzamientos."
   no_usage: Aún no hay uso de apps
   pages:
     view:

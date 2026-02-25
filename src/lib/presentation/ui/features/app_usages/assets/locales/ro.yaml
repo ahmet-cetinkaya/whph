@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Ștergeți regula
     no_rules: Nicio regulă de ignorare
     pattern_label: Model
+  notices:
+    flathub: "Urmărirea ferestrei active poate fi limitată în versiunea Flathub. Pentru funcționalități complete de urmărire, vă rugăm să instalați aplicația direct din versiunile noastre."
   no_usage: Nicio utilizare a aplicației încă
   pages:
     view:

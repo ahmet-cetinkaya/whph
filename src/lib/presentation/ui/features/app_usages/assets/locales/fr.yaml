@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Supprimer la règle
     no_rules: Aucune règle d'ignorance
     pattern_label: Motif
+  notices:
+    flathub: "Le suivi de la fenêtre active peut être limité dans la version Flathub. Pour des fonctionnalités de suivi complètes, veuillez installer l'application directement depuis nos versions."
   no_usage: Aucune utilisation d'app encore
   pages:
     view:

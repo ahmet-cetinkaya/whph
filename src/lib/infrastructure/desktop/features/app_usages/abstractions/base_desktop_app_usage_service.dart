@@ -6,6 +6,7 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
   String _activeDesktopWindowOutput = '';
   int _activeDesktopWindowTime = 0;
+  int _consecutiveFailures = 0;
   Timer? _intervalTimer;
 
   BaseDesktopAppUsageService(
@@ -24,7 +25,18 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
     _intervalTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       String? currentWindow = await getActiveWindow(); // <windowTitle>,<windowProcess>,<duration>
 
-      if (currentWindow == null) return;
+      if (currentWindow == null || currentWindow.trim().isEmpty || currentWindow == ',') {
+        _consecutiveFailures++;
+        if (_consecutiveFailures > 10 && isTrackingActiveWindowWorking.value) {
+          isTrackingActiveWindowWorking.value = false;
+        }
+        return;
+      }
+
+      _consecutiveFailures = 0;
+      if (!isTrackingActiveWindowWorking.value) {
+        isTrackingActiveWindowWorking.value = true;
+      }
 
       if (currentWindow != _activeDesktopWindowOutput) {
         if (_activeDesktopWindowOutput.isNotEmpty) {

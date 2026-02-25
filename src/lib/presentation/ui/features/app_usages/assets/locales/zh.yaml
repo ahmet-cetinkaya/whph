@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: 删除规则
     no_rules: 没有忽略规则
     pattern_label: 模式
+  notices:
+    flathub: "Flathub 版本中的活动窗口跟踪可能受限。要获得完整的跟踪功能，请直接从我们的版本安装应用程序。"
   no_usage: 还没有应用使用情况
   pages:
     view:

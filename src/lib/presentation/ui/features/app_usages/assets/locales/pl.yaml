@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Usuń regułę
     no_rules: Brak reguł ignorowania
     pattern_label: Wzorzec
+  notices:
+    flathub: "Śledzenie aktywnego okna może być ograniczone w wersji Flathub. Aby uzyskać pełne funkcje śledzenia, zainstaluj aplikację bezpośrednio z naszych wydań."
   no_usage: Jeszcze brak użycia aplikacji
   pages:
     view:

@@ -9,6 +9,7 @@ shared:
     delete: Poista
     done: Valmis
     load_more: Lataa lisää
+    learn_more: "Lisää tietoa"
     previous: Edellinen
     save: Tallenna
     saved: Tallennettu

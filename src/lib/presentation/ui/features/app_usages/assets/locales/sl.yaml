@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Izbriši pravilo
     no_rules: Brez pravil zanemarjanja
     pattern_label: Vzorec
+  notices:
+    flathub: "Sledovanje aktivnega okna je lahko v Flathub različici omejeno. Za polne funkcije sledenja namestite aplikacijo neposredno iz naših izdaj."
   no_usage: Še ni uporabe aplikacije
   pages:
     view:

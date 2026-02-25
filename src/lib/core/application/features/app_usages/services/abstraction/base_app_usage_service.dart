@@ -27,6 +27,9 @@ abstract class BaseAppUsageService implements IAppUsageService {
   final IAppUsageTagRepository _appUsageTagRepository;
   final IAppUsageFilterService _appUsageFilterService;
 
+  @override
+  final ValueNotifier<bool> isTrackingActiveWindowWorking = ValueNotifier<bool>(true);
+
   // Protected getter for subclasses
   @protected
   IAppUsageTimeRecordRepository get appUsageTimeRecordRepository => _appUsageTimeRecordRepository;

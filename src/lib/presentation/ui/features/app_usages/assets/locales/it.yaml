@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Elimina regola
     no_rules: Nessuna regola di esclusione
     pattern_label: Pattern
+  notices:
+    flathub: "Il tracciamento della finestra attiva potrebbe essere limitato nella versione Flathub. Per funzionalità di tracciamento complete, installare l'applicazione direttamente dalle nostre versioni."
   no_usage: Nessun utilizzo app ancora
   pages:
     view:

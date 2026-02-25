@@ -6,8 +6,10 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_list_options.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_details_page.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_rules_page.dart';
+import 'package:whph/presentation/ui/features/app_usages/components/flathub_notice_card.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
@@ -22,6 +24,7 @@ import 'package:whph/presentation/ui/features/settings/components/app_usage_perm
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/core/domain/shared/constants/demo_config.dart';
+import 'dart:io';
 
 class AppUsageViewPage extends StatefulWidget {
   static const String route = '/app-usages';
@@ -310,6 +313,14 @@ class _AppUsageViewPageState extends State<AppUsageViewPage> {
                   setState(() {});
                 },
               ),
+
+              if (Platform.isLinux) ...[
+                FlathubNoticeCard(
+                  translationService: _translationService,
+                  isTrackingActiveWindowWorking: _deviceAppUsageService.isTrackingActiveWindowWorking,
+                ),
+                const SizedBox(height: AppTheme.sizeSmall),
+              ],
 
               // List
               if (_isListVisible)

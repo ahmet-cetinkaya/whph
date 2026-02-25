@@ -149,6 +149,9 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   // Load More
   static const String loadMoreButton = 'shared.buttons.load_more';
 
+  // Learn More
+  static const String learnMore = 'shared.buttons.learn_more';
+
   // Regex Help
   static const String regexHelpTitle = 'shared.regex_help.title';
   static const String regexHelpTips = 'shared.regex_help.tips_title';

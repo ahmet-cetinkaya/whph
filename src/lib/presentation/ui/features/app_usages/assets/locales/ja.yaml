@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: ルールを削除
     no_rules: 無視ルールがありません
     pattern_label: パターン
+  notices:
+    flathub: "Flathubバージョンではアクティブウィンドウの追跡が制限される場合があります。完全な追跡機能を使用するには、リリースから直接アプリをインストールしてください。"
   no_usage: まだアプリ使用状況がありません
   pages:
     view:

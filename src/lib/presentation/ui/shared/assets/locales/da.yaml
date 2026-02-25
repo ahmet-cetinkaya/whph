@@ -9,6 +9,7 @@ shared:
     delete: Slet
     done: Færdig
     load_more: Indlæs mere
+    learn_more: "Læs mere"
     previous: Forrige
     save: Gem
     saved: Gemt

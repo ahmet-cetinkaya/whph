@@ -9,6 +9,7 @@ shared:
     delete: 삭제
     done: 완료
     load_more: 더 보기
+    learn_more: "자세히 보기"
     previous: 이전
     save: 저장
     saved: 저장됨

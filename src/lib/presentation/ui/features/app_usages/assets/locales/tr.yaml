@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Kuralı sil
     no_rules: Yok sayma kuralı yok
     pattern_label: Desen
+  notices:
+    flathub: "Flathub sürümünde aktif pencere takibi sınırlı olabilir. Tam takip özellikleri için lütfen uygulamayı doğrudan sürümlerimizden yükleyin."
   no_usage: Henüz uygulama kullanımı yok
   pages:
     view:

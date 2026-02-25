@@ -83,6 +83,9 @@ class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
   // Tooltips
   static const String editNameTooltip = 'app_usages.tooltips.edit_name';
 
+  // Notices
+  static const String flathubNotice = 'app_usages.notices.flathub';
+
   // Tour translation keys
   static const String tourAppUsageInsightsTitle = 'app_usages.tour.app_usage_insights.title';
   static const String tourAppUsageInsightsDescription = 'app_usages.tour.app_usage_insights.description';

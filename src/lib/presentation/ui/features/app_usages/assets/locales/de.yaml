@@ -79,6 +79,8 @@ app_usages:
     delete_tooltip: Regel löschen
     no_rules: Keine Ignorierregeln
     pattern_label: Muster
+  notices:
+    flathub: "Die Verfolgung des aktiven Fensters kann in der Flathub-Version eingeschränkt sein. Für volle Tracking-Funktionen installieren Sie die App bitte direkt von unseren Releases."
   no_usage: Noch keine App-Nutzung
   pages:
     view:
