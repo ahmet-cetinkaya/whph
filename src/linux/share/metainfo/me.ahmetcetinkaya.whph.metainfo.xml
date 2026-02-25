@@ -292,545 +292,545 @@
     <screenshot type="default">
       <caption>Today view with tasks and habits</caption>
       <image>
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/en-US/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/en-US/1.png</image>
       <image xml:lang="cs">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/cs-CZ/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/cs-CZ/1.png</image>
       <caption xml:lang="cs">Dnešní pohled s úkoly a návyky</caption>
       <image xml:lang="da">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/da-DK/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/da-DK/1.png</image>
       <caption xml:lang="da">Dagens visning med opgaver og vaner</caption>
       <image xml:lang="de">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/de-DE/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/de-DE/1.png</image>
       <caption xml:lang="de">Tagesansicht mit Aufgaben und Gewohnheiten</caption>
       <image xml:lang="el">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/el-GR/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/el-GR/1.png</image>
       <caption xml:lang="el">Προβολή ημέρας με εργασίες και συνήθειες</caption>
       <image xml:lang="es">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/es-ES/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/es-ES/1.png</image>
       <caption xml:lang="es">Vista de hoy con tareas y hábitos</caption>
       <image xml:lang="fi">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fi-FI/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fi-FI/1.png</image>
       <caption xml:lang="fi">Tänään-näkymä tehtävillä ja tavoilla</caption>
       <image xml:lang="fr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fr-FR/1.png</image>
       <caption xml:lang="fr">Vue d'aujourd'hui avec les tâches et les habitudes</caption>
       <image xml:lang="it">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/it-IT/1.png</image>
       <caption xml:lang="it">Vista di oggi con attività e abitudini</caption>
       <image xml:lang="ja">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ja-JP/1.png</image>
       <caption xml:lang="ja">タスクと習慣のある今日ビュー</caption>
       <image xml:lang="ko">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ko-KR/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ko-KR/1.png</image>
       <caption xml:lang="ko">작업 및 습관이 있는 오늘 보기</caption>
       <image xml:lang="nl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/nl-NL/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/nl-NL/1.png</image>
       <caption xml:lang="nl">Vandaag weergave met taken en gewoonten</caption>
       <image xml:lang="no">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/no-NO/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/no-NO/1.png</image>
       <caption xml:lang="no">Dagens visning med oppgaver og vaner</caption>
       <image xml:lang="pl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pl-PL/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pl-PL/1.png</image>
       <caption xml:lang="pl">Widok dzisiejszy z zadaniami i nawykami</caption>
       <image xml:lang="pt">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pt-PT/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pt-PT/1.png</image>
       <caption xml:lang="pt">Vista de hoje com tarefas e hábitos</caption>
       <image xml:lang="ro">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ro/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ro/1.png</image>
       <caption xml:lang="ro">Vizualizarea de astăzi cu sarcini și obiceiuri</caption>
       <image xml:lang="ru">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ru-RU/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ru-RU/1.png</image>
       <caption xml:lang="ru">Вид на сегодня с задачами и привычками</caption>
       <image xml:lang="sl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sl/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sl/1.png</image>
       <caption xml:lang="sl">Današnji pogled z nalogami in navadami</caption>
       <image xml:lang="sv">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sv-SE/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sv-SE/1.png</image>
       <caption xml:lang="sv">Idag vy med uppgifter och vanor</caption>
       <image xml:lang="tr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/tr-TR/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/tr-TR/1.png</image>
       <caption xml:lang="tr">Görevler ve alışkanlıklarla 'Bugün' görünümü</caption>
       <image xml:lang="uk">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/uk/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/uk/1.png</image>
       <caption xml:lang="uk">Перегляд на сьогодні із завданнями та звичками</caption>
       <image xml:lang="zh-CN">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/zh-CN/1.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/zh-CN/1.png</image>
       <caption xml:lang="zh-CN">带有任务和习惯的今日视图</caption>
     </screenshot>
     <screenshot>
       <caption>Detailed task view with subtasks and notes</caption>
       <image>
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/en-US/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/en-US/2.png</image>
       <image xml:lang="cs">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/cs-CZ/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/cs-CZ/2.png</image>
       <caption xml:lang="cs">Detailní pohled na úkol s podúkoly a poznámkami</caption>
       <image xml:lang="da">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/da-DK/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/da-DK/2.png</image>
       <caption xml:lang="da">Detaljeret opgavevisning med underopgaver og noter</caption>
       <image xml:lang="de">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/de-DE/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/de-DE/2.png</image>
       <caption xml:lang="de">Detaillierte Aufgabenansicht mit Unteraufgaben und Notizen</caption>
       <image xml:lang="el">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/el-GR/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/el-GR/2.png</image>
       <caption xml:lang="el">Λεπτομερής προβολή εργασίας με υποεργασίες και σημειώσεις</caption>
       <image xml:lang="es">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/es-ES/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/es-ES/2.png</image>
       <caption xml:lang="es">Vista detallada de tareas con subtareas y notas</caption>
       <image xml:lang="fi">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fi-FI/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fi-FI/2.png</image>
       <caption xml:lang="fi">Yksityiskohtainen tehtävänäkymä alitehtävillä ja muistiinpanoilla</caption>
       <image xml:lang="fr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fr-FR/2.png</image>
       <caption xml:lang="fr">Vue détaillée des tâches avec sous-tâches et notes</caption>
       <image xml:lang="it">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/it-IT/2.png</image>
       <caption xml:lang="it">Vista dettagliata delle attività con sotto-attività e note</caption>
       <image xml:lang="ja">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ja-JP/2.png</image>
       <caption xml:lang="ja">サブタスクとメモのある詳細タスクビュー</caption>
       <image xml:lang="ko">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ko-KR/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ko-KR/2.png</image>
       <caption xml:lang="ko">하위 작업 및 노트가 있는 세부 작업 보기</caption>
       <image xml:lang="nl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/nl-NL/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/nl-NL/2.png</image>
       <caption xml:lang="nl">Gedetailleerde taakweergave met subtaken en notities</caption>
       <image xml:lang="no">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/no-NO/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/no-NO/2.png</image>
       <caption xml:lang="no">Detaljert oppgavevisning med underoppgaver og notater</caption>
       <image xml:lang="pl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pl-PL/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pl-PL/2.png</image>
       <caption xml:lang="pl">Szczegółowy widok zadania z podzadaniami i notatkami</caption>
       <image xml:lang="pt">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pt-PT/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pt-PT/2.png</image>
       <caption xml:lang="pt">Vista detalhada de tarefas com subtarefas e notas</caption>
       <image xml:lang="ro">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ro/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ro/2.png</image>
       <caption xml:lang="ro">Vizualizare detaliată a sarcinilor cu subsarcini și note</caption>
       <image xml:lang="ru">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ru-RU/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ru-RU/2.png</image>
       <caption xml:lang="ru">Подробный вид задачи с подзадачами и заметками</caption>
       <image xml:lang="sl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sl/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sl/2.png</image>
       <caption xml:lang="sl">Podroben pogled naloge s podnalogami in opombami</caption>
       <image xml:lang="sv">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sv-SE/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sv-SE/2.png</image>
       <caption xml:lang="sv">Detaljerad uppgiftsvy med underuppgifter och anteckningar</caption>
       <image xml:lang="tr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/tr-TR/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/tr-TR/2.png</image>
       <caption xml:lang="tr">Alt görevler ve notlarla detaylı görev görünümü</caption>
       <image xml:lang="uk">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/uk/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/uk/2.png</image>
       <caption xml:lang="uk">Детальний перегляд завдання з підзавданнями та нотатками</caption>
       <image xml:lang="zh-CN">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/zh-CN/2.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/zh-CN/2.png</image>
       <caption xml:lang="zh-CN">包含子任务和注释的详细任务视图</caption>
     </screenshot>
     <screenshot>
       <caption>Habit details and completion history</caption>
       <image>
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/en-US/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/en-US/3.png</image>
       <image xml:lang="cs">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/cs-CZ/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/cs-CZ/3.png</image>
       <caption xml:lang="cs">Detaily návyku a historie dokončení</caption>
       <image xml:lang="da">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/da-DK/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/da-DK/3.png</image>
       <caption xml:lang="da">Vanedetaljer og fuldførelseshistorik</caption>
       <image xml:lang="de">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/de-DE/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/de-DE/3.png</image>
       <caption xml:lang="de">Gewohnheitsdetails und Abschlussverlauf</caption>
       <image xml:lang="el">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/el-GR/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/el-GR/3.png</image>
       <caption xml:lang="el">Λεπτομέρειες συνήθειας και ιστορικό ολοκλήρωσης</caption>
       <image xml:lang="es">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/es-ES/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/es-ES/3.png</image>
       <caption xml:lang="es">Detalles de hábitos e historial de finalización</caption>
       <image xml:lang="fi">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fi-FI/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fi-FI/3.png</image>
       <caption xml:lang="fi">Tapadetaljit ja suoritushistoria</caption>
       <image xml:lang="fr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fr-FR/3.png</image>
       <caption xml:lang="fr">Détails des habitudes et historique de réalisation</caption>
       <image xml:lang="it">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/it-IT/3.png</image>
       <caption xml:lang="it">Dettagli sulle abitudini e cronologia di completamento</caption>
       <image xml:lang="ja">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ja-JP/3.png</image>
       <caption xml:lang="ja">習慣の詳細と完了履歴</caption>
       <image xml:lang="ko">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ko-KR/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ko-KR/3.png</image>
       <caption xml:lang="ko">습관 세부 정보 및 완료 이력</caption>
       <image xml:lang="nl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/nl-NL/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/nl-NL/3.png</image>
       <caption xml:lang="nl">Gewoontedetails en voltooiingsgeschiedenis</caption>
       <image xml:lang="no">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/no-NO/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/no-NO/3.png</image>
       <caption xml:lang="no">Vanedetaljer og fullføringshistorikk</caption>
       <image xml:lang="pl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pl-PL/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pl-PL/3.png</image>
       <caption xml:lang="pl">Szczegóły nawyków i historia ukończenia</caption>
       <image xml:lang="pt">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pt-PT/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pt-PT/3.png</image>
       <caption xml:lang="pt">Detalhes de hábitos e histórico de conclusão</caption>
       <image xml:lang="ro">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ro/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ro/3.png</image>
       <caption xml:lang="ro">Detalii despre obiceiuri și istoricul completărilor</caption>
       <image xml:lang="ru">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ru-RU/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ru-RU/3.png</image>
       <caption xml:lang="ru">Детали привычки и история выполнения</caption>
       <image xml:lang="sl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sl/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sl/3.png</image>
       <caption xml:lang="sl">Podrobnosti o navadah in zgodovina dokončanja</caption>
       <image xml:lang="sv">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sv-SE/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sv-SE/3.png</image>
       <caption xml:lang="sv">Vanodetaljer och slutförandehistorik</caption>
       <image xml:lang="tr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/tr-TR/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/tr-TR/3.png</image>
       <caption xml:lang="tr">Alışkanlık detayları ve tamamlama geçmişi</caption>
       <image xml:lang="uk">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/uk/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/uk/3.png</image>
       <caption xml:lang="uk">Деталі звички та історія виконання</caption>
       <image xml:lang="zh-CN">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/zh-CN/3.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/zh-CN/3.png</image>
       <caption xml:lang="zh-CN">习惯详细信息和完成历史</caption>
     </screenshot>
     <screenshot>
       <caption>Habit statistics and performance trends</caption>
       <image>
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/en-US/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/en-US/4.png</image>
       <image xml:lang="cs">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/cs-CZ/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/cs-CZ/4.png</image>
       <caption xml:lang="cs">Statistiky návyků a trendy výkonnosti</caption>
       <image xml:lang="da">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/da-DK/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/da-DK/4.png</image>
       <caption xml:lang="da">Vanestatistikker og præstationstendenser</caption>
       <image xml:lang="de">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/de-DE/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/de-DE/4.png</image>
       <caption xml:lang="de">Gewohnheitsstatistiken und Leistungstrends</caption>
       <image xml:lang="el">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/el-GR/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/el-GR/4.png</image>
       <caption xml:lang="el">Στατιστικά σύνήθειας και τάσεις απόδοσης</caption>
       <image xml:lang="es">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/es-ES/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/es-ES/4.png</image>
       <caption xml:lang="es">Estadísticas de hábitos y tendencias de rendimiento</caption>
       <image xml:lang="fi">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fi-FI/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fi-FI/4.png</image>
       <caption xml:lang="fi">Tapatilastot ja suoritustrendit</caption>
       <image xml:lang="fr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fr-FR/4.png</image>
       <caption xml:lang="fr">Statistiques des habitudes et tendances de performance</caption>
       <image xml:lang="it">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/it-IT/4.png</image>
       <caption xml:lang="it">Statistiche sulle abitudini e tendenze delle prestazioni</caption>
       <image xml:lang="ja">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ja-JP/4.png</image>
       <caption xml:lang="ja">習慣の統計とパフォーマンストレンド</caption>
       <image xml:lang="ko">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ko-KR/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ko-KR/4.png</image>
       <caption xml:lang="ko">습관 통계 및 성과 동향</caption>
       <image xml:lang="nl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/nl-NL/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/nl-NL/4.png</image>
       <caption xml:lang="nl">Gewoontestatistieken en prestatietrends</caption>
       <image xml:lang="no">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/no-NO/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/no-NO/4.png</image>
       <caption xml:lang="no">Vanestatistikk og prestasjonstrender</caption>
       <image xml:lang="pl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pl-PL/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pl-PL/4.png</image>
       <caption xml:lang="pl">Statystyki nawyków i trendy wydajności</caption>
       <image xml:lang="pt">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pt-PT/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pt-PT/4.png</image>
       <caption xml:lang="pt">Estatísticas de hábitos e tendências de desempenho</caption>
       <image xml:lang="ro">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ro/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ro/4.png</image>
       <caption xml:lang="ro">Statistici ale obiceiurilor și tendințe de performanță</caption>
       <image xml:lang="ru">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ru-RU/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ru-RU/4.png</image>
       <caption xml:lang="ru">Статистика привычек и тенденции успеваемости</caption>
       <image xml:lang="sl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sl/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sl/4.png</image>
       <caption xml:lang="sl">Statistika navad in trendi učinkovitosti</caption>
       <image xml:lang="sv">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sv-SE/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sv-SE/4.png</image>
       <caption xml:lang="sv">Vanestatistik och prestationstrender</caption>
       <image xml:lang="tr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/tr-TR/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/tr-TR/4.png</image>
       <caption xml:lang="tr">Alışkanlık istatistikleri ve performans eğilimleri</caption>
       <image xml:lang="uk">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/uk/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/uk/4.png</image>
       <caption xml:lang="uk">Статистика звичок та тенденції продуктивності</caption>
       <image xml:lang="zh-CN">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/zh-CN/4.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/zh-CN/4.png</image>
       <caption xml:lang="zh-CN">习惯统计和绩效趋势</caption>
     </screenshot>
     <screenshot>
       <caption>Notes management with rich text support</caption>
       <image>
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/en-US/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/en-US/5.png</image>
       <image xml:lang="cs">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/cs-CZ/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/cs-CZ/5.png</image>
       <caption xml:lang="cs">Správa poznámek s podporou bohatého textu</caption>
       <image xml:lang="da">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/da-DK/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/da-DK/5.png</image>
       <caption xml:lang="da">Notestyring med understøttelse af rig tekst</caption>
       <image xml:lang="de">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/de-DE/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/de-DE/5.png</image>
       <caption xml:lang="de">Notizenverwaltung mit Rich-Text-Unterstützung</caption>
       <image xml:lang="el">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/el-GR/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/el-GR/5.png</image>
       <caption xml:lang="el">Διαχείριση σημειώσεων με υποστήριξη εμπλουτισμένου κειμένου</caption>
       <image xml:lang="es">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/es-ES/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/es-ES/5.png</image>
       <caption xml:lang="es">Gestión de notas con soporte de texto enriquecido</caption>
       <image xml:lang="fi">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fi-FI/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fi-FI/5.png</image>
       <caption xml:lang="fi">Muistiinpanojen hallinta rtekstituella</caption>
       <image xml:lang="fr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fr-FR/5.png</image>
       <caption xml:lang="fr">Gestion des notes avec support de texte enrichi</caption>
       <image xml:lang="it">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/it-IT/5.png</image>
       <caption xml:lang="it">Gestione delle note con supporto per testo ricco</caption>
       <image xml:lang="ja">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ja-JP/5.png</image>
       <caption xml:lang="ja">リッチテキスト対応のメモ管理</caption>
       <image xml:lang="ko">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ko-KR/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ko-KR/5.png</image>
       <caption xml:lang="ko">서식 있는 텍스트를 지원하는 노트 관리</caption>
       <image xml:lang="nl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/nl-NL/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/nl-NL/5.png</image>
       <caption xml:lang="nl">Notitiebeheer met ondersteuning voor rich text</caption>
       <image xml:lang="no">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/no-NO/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/no-NO/5.png</image>
       <caption xml:lang="no">Notatstyring med støtte for rik tekst</caption>
       <image xml:lang="pl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pl-PL/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pl-PL/5.png</image>
       <caption xml:lang="pl">Zarządzanie notatkami z obsługą tekstu sformatowanego</caption>
       <image xml:lang="pt">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pt-PT/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pt-PT/5.png</image>
       <caption xml:lang="pt">Gestão de notas com suporte de texto formatado</caption>
       <image xml:lang="ro">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ro/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ro/5.png</image>
       <caption xml:lang="ro">Gestionarea notelor cu suport pentru text îmbogățit</caption>
       <image xml:lang="ru">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ru-RU/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ru-RU/5.png</image>
       <caption xml:lang="ru">Управление заметками с поддержкой форматированного текста</caption>
       <image xml:lang="sl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sl/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sl/5.png</image>
       <caption xml:lang="sl">Upravljanje beležk s podporo za bogato besedilo</caption>
       <image xml:lang="sv">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sv-SE/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sv-SE/5.png</image>
       <caption xml:lang="sv">Anteckningshantering med stöd för ríktig text</caption>
       <image xml:lang="tr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/tr-TR/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/tr-TR/5.png</image>
       <caption xml:lang="tr">Zengin metin destekli not yönetimi</caption>
       <image xml:lang="uk">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/uk/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/uk/5.png</image>
       <caption xml:lang="uk">Управління нотатками з підтримкою розширеного тексту</caption>
       <image xml:lang="zh-CN">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/zh-CN/5.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/zh-CN/5.png</image>
       <caption xml:lang="zh-CN">支持富文本的备忘录管理</caption>
     </screenshot>
     <screenshot>
       <caption>Application usage monitoring and focus enhancement</caption>
       <image>
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/en-US/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/en-US/6.png</image>
       <image xml:lang="cs">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/cs-CZ/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/cs-CZ/6.png</image>
       <caption xml:lang="cs">Sledování využívání aplikací a podpora soustředění</caption>
       <image xml:lang="da">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/da-DK/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/da-DK/6.png</image>
       <caption xml:lang="da">Overvågning af applikationsbrug og fokusforbedring</caption>
       <image xml:lang="de">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/de-DE/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/de-DE/6.png</image>
       <caption xml:lang="de">Überwachung der Anwendungsnutzung und Fokusverbesserung</caption>
       <image xml:lang="el">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/el-GR/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/el-GR/6.png</image>
       <caption xml:lang="el">Παρακολούθηση χρήσης εφαρμογών και ενίσχυση εστίασης</caption>
       <image xml:lang="es">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/es-ES/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/es-ES/6.png</image>
       <caption xml:lang="es">Monitorización del uso de aplicaciones y mejora del enfoque</caption>
       <image xml:lang="fi">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fi-FI/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fi-FI/6.png</image>
       <caption xml:lang="fi">Sovellusten käytön seuranta ja keskittymisen parantaminen</caption>
       <image xml:lang="fr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fr-FR/6.png</image>
       <caption xml:lang="fr">Surveillance de l'utilisation des applications et amélioration de la concentration</caption>
       <image xml:lang="it">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/it-IT/6.png</image>
       <caption xml:lang="it">Monitoraggio dell'uso delle applicazioni e miglioramento della concentrazione</caption>
       <image xml:lang="ja">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ja-JP/6.png</image>
       <caption xml:lang="ja">アプリケーションの使用状況監視と集中の強化</caption>
       <image xml:lang="ko">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ko-KR/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ko-KR/6.png</image>
       <caption xml:lang="ko">애플리케이션 사용 모니터링 및 집중력 강화</caption>
       <image xml:lang="nl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/nl-NL/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/nl-NL/6.png</image>
       <caption xml:lang="nl">Monitoring van app-gebruik en verbetering van focus</caption>
       <image xml:lang="no">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/no-NO/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/no-NO/6.png</image>
       <caption xml:lang="no">Overvåking av applikasjonsbruk og fokusforbedring</caption>
       <image xml:lang="pl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pl-PL/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pl-PL/6.png</image>
       <caption xml:lang="pl">Monitorowanie użycia aplikacji i poprawa koncentracji</caption>
       <image xml:lang="pt">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pt-PT/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pt-PT/6.png</image>
       <caption xml:lang="pt">Monitorização do uso de aplicações e melhoria do foco</caption>
       <image xml:lang="ro">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ro/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ro/6.png</image>
       <caption xml:lang="ro">Monitorizarea utilizării aplicațiilor și îmbunătățirea concentrării</caption>
       <image xml:lang="ru">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ru-RU/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ru-RU/6.png</image>
       <caption xml:lang="ru">Мониторинг использования приложений и улучшение фокусировки</caption>
       <image xml:lang="sl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sl/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sl/6.png</image>
       <caption xml:lang="sl">Spremljanje uporabe aplikacij in izboljšanje zbranosti</caption>
       <image xml:lang="sv">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sv-SE/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sv-SE/6.png</image>
       <caption xml:lang="sv">Övervakning av applikationsanvändning och fokusförbättring</caption>
       <image xml:lang="tr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/tr-TR/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/tr-TR/6.png</image>
       <caption xml:lang="tr">Uygulama kullanım izleme ve odaklanma iyileştirme</caption>
       <image xml:lang="uk">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/uk/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/uk/6.png</image>
       <caption xml:lang="uk">Моніторинг використання додатків і покращення концентрації</caption>
       <image xml:lang="zh-CN">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/zh-CN/6.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/zh-CN/6.png</image>
       <caption xml:lang="zh-CN">应用程序使用监控和专注力增强</caption>
     </screenshot>
     <screenshot>
       <caption>Detailed application usage statistics</caption>
       <image>
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/en-US/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/en-US/7.png</image>
       <image xml:lang="cs">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/cs-CZ/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/cs-CZ/7.png</image>
       <caption xml:lang="cs">Detailní statistiky používání aplikací</caption>
       <image xml:lang="da">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/da-DK/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/da-DK/7.png</image>
       <caption xml:lang="da">Detaljerede statistikker for applikationsbrug</caption>
       <image xml:lang="de">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/de-DE/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/de-DE/7.png</image>
       <caption xml:lang="de">Detaillierte Statistiken zur Anwendungsnutzung</caption>
       <image xml:lang="el">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/el-GR/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/el-GR/7.png</image>
       <caption xml:lang="el">Λεπτομερή στατιστικά χρήσης εφαρμογών</caption>
       <image xml:lang="es">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/es-ES/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/es-ES/7.png</image>
       <caption xml:lang="es">Estadísticas detalladas de uso de aplicaciones</caption>
       <image xml:lang="fi">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fi-FI/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fi-FI/7.png</image>
       <caption xml:lang="fi">Yksityiskohtaiset sovellusten käyttötilastot</caption>
       <image xml:lang="fr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fr-FR/7.png</image>
       <caption xml:lang="fr">Statistiques détaillées de l'utilisation des applications</caption>
       <image xml:lang="it">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/it-IT/7.png</image>
       <caption xml:lang="it">Statistiche dettagliate sull'uso delle applicazioni</caption>
       <image xml:lang="ja">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ja-JP/7.png</image>
       <caption xml:lang="ja">詳細なアプリケーション使用状況統計</caption>
       <image xml:lang="ko">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ko-KR/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ko-KR/7.png</image>
       <caption xml:lang="ko">상세한 애플리케이션 사용 통계</caption>
       <image xml:lang="nl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/nl-NL/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/nl-NL/7.png</image>
       <caption xml:lang="nl">Gedetailleerde statistieken van app-gebruik</caption>
       <image xml:lang="no">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/no-NO/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/no-NO/7.png</image>
       <caption xml:lang="no">Detaljert statistikk for applikasjonsbruk</caption>
       <image xml:lang="pl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pl-PL/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pl-PL/7.png</image>
       <caption xml:lang="pl">Szczegółowe statystyki użycia aplikacji</caption>
       <image xml:lang="pt">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pt-PT/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pt-PT/7.png</image>
       <caption xml:lang="pt">Estatísticas detalhadas de uso de aplicações</caption>
       <image xml:lang="ro">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ro/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ro/7.png</image>
       <caption xml:lang="ro">Statistici detaliate privind utilizarea aplicațiilor</caption>
       <image xml:lang="ru">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ru-RU/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ru-RU/7.png</image>
       <caption xml:lang="ru">Подробная статистика использования приложений</caption>
       <image xml:lang="sl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sl/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sl/7.png</image>
       <caption xml:lang="sl">Podrobna statistika uporabe aplikacij</caption>
       <image xml:lang="sv">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sv-SE/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sv-SE/7.png</image>
       <caption xml:lang="sv">Detaljerad applikationsanvändningsstatistik</caption>
       <image xml:lang="tr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/tr-TR/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/tr-TR/7.png</image>
       <caption xml:lang="tr">Detaylı uygulama kullanım istatistikleri</caption>
       <image xml:lang="uk">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/uk/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/uk/7.png</image>
       <caption xml:lang="uk">Детальна статистика використання додатків</caption>
       <image xml:lang="zh-CN">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/zh-CN/7.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/zh-CN/7.png</image>
       <caption xml:lang="zh-CN">详细的应用程序使用统计</caption>
     </screenshot>
     <screenshot>
       <caption>Tag management and organization</caption>
       <image>
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/en-US/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/en-US/8.png</image>
       <image xml:lang="cs">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/cs-CZ/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/cs-CZ/8.png</image>
       <caption xml:lang="cs">Správa a organizace štítků</caption>
       <image xml:lang="da">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/da-DK/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/da-DK/8.png</image>
       <caption xml:lang="da">Tagstyring og organisering</caption>
       <image xml:lang="de">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/de-DE/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/de-DE/8.png</image>
       <caption xml:lang="de">Tag-Verwaltung und Organisation</caption>
       <image xml:lang="el">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/el-GR/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/el-GR/8.png</image>
       <caption xml:lang="el">Διαχείριση και οργάνωση ετικετών</caption>
       <image xml:lang="es">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/es-ES/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/es-ES/8.png</image>
       <caption xml:lang="es">Gestión y organización de etiquetas</caption>
       <image xml:lang="fi">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fi-FI/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fi-FI/8.png</image>
       <caption xml:lang="fi">Tunnisteiden hallinta ja organisointi</caption>
       <image xml:lang="fr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/fr-FR/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/fr-FR/8.png</image>
       <caption xml:lang="fr">Gestion et organisation des étiquettes</caption>
       <image xml:lang="it">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/it-IT/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/it-IT/8.png</image>
       <caption xml:lang="it">Gestione e organizzazione dei tag</caption>
       <image xml:lang="ja">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ja-JP/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ja-JP/8.png</image>
       <caption xml:lang="ja">タグの管理と整理</caption>
       <image xml:lang="ko">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ko-KR/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ko-KR/8.png</image>
       <caption xml:lang="ko">태그 관리 및 정리</caption>
       <image xml:lang="nl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/nl-NL/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/nl-NL/8.png</image>
       <caption xml:lang="nl">Tagbeheer en organisatie</caption>
       <image xml:lang="no">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/no-NO/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/no-NO/8.png</image>
       <caption xml:lang="no">Tagstyring og organisering</caption>
       <image xml:lang="pl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pl-PL/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pl-PL/8.png</image>
       <caption xml:lang="pl">Zarządzanie i organizacja tagów</caption>
       <image xml:lang="pt">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/pt-PT/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/pt-PT/8.png</image>
       <caption xml:lang="pt">Gestão e organização de etiquetas</caption>
       <image xml:lang="ro">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ro/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ro/8.png</image>
       <caption xml:lang="ro">Gestionarea și organizarea etichetelor</caption>
       <image xml:lang="ru">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/ru-RU/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/ru-RU/8.png</image>
       <caption xml:lang="ru">Управление и организация тегов</caption>
       <image xml:lang="sl">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sl/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sl/8.png</image>
       <caption xml:lang="sl">Upravljanje in organizacija oznak</caption>
       <image xml:lang="sv">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/sv-SE/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/sv-SE/8.png</image>
       <caption xml:lang="sv">Tagg hantering och organisation</caption>
       <image xml:lang="tr">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/tr-TR/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/tr-TR/8.png</image>
       <caption xml:lang="tr">Etiket yönetimi ve organizasyon</caption>
       <image xml:lang="uk">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/uk/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/uk/8.png</image>
       <caption xml:lang="uk">Управління і організація тегів</caption>
       <image xml:lang="zh-CN">
-        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.1/packaging/screenshots/desktop/zh-CN/8.png</image>
+        https://raw.githubusercontent.com/ahmet-cetinkaya/whph/v0.22.2/packaging/screenshots/desktop/zh-CN/8.png</image>
       <caption xml:lang="zh-CN">标签管理和组织</caption>
     </screenshot>
   </screenshots>
@@ -872,6 +872,17 @@
     <display_length compare="ge">360</display_length>
   </requires>
   <releases>
+    <release version="0.22.2" date="2026-02-25">
+      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.22.2/CHANGELOG.md</url>
+      <description>
+        <ul>
+          <li>Added: Flathub Support - App now detects when running from Flathub and displays information about usage tracking limitations in sandboxed environments</li>
+          <li>Changed: Time Estimation Increments - Time estimation now uses 10-minute steps for easier and more accurate task planning</li>
+          <li>Changed: Desktop Theme Colors - Consistent theme colors now defined across desktop platforms for better visual integration</li>
+          <li>Fixed: Default Task Duration - New tasks now default to 20 minutes for better time estimates</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.22.1" date="2026-02-19">
       <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.22.1/CHANGELOG.md</url>
       <description>
