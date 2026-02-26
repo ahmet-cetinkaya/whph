@@ -174,13 +174,29 @@ if [[ "$LOCAL_MODE" == true || "$CI_MODE" == true ]]; then
     # Replace the git source with a directory source in the local manifest
     $VENV_PYTHON -c "
 import yaml
+import os
 manifest_path = 'flathub/$BUILD_MANIFEST'
 with open(manifest_path, 'r') as f:
     manifest = yaml.safe_load(f)
 for module in manifest.get('modules', []):
     if isinstance(module, dict) and module.get('name') == 'whph':
-        # Replace the Git source with a directory source
-        module['sources'] = [{'type': 'dir', 'path': '../../../'}] + [s for s in module.get('sources', []) if not (isinstance(s, dict) and s.get('type') == 'git' and s.get('url') == 'https://github.com/ahmet-cetinkaya/whph.git')]
+        whph_sources = module.get('sources', [])
+        new_sources = [{'type': 'dir', 'path': '../../../'}]
+        # When script runs this, it is in FLATPAK_DIR (packaging/flatpak)
+        PROJECT_ROOT_FOR_CHECK = '../../'
+        for source in whph_sources:
+            if not isinstance(source, dict):
+                new_sources.append(source)
+                continue
+            if source.get('type') == 'git':
+                dest = source.get('dest')
+                url = source.get('url')
+                if url == 'https://github.com/ahmet-cetinkaya/whph.git':
+                    continue
+                if dest and os.path.exists(os.path.join(PROJECT_ROOT_FOR_CHECK, dest)):
+                    continue
+            new_sources.append(source)
+        module['sources'] = new_sources
         break
 with open(manifest_path, 'w') as f:
     yaml.dump(manifest, f, sort_keys=False)
