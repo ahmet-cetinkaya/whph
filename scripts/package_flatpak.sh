@@ -5,13 +5,10 @@
 
 set -e
 
-CI_MODE=false
 LOCAL_MODE=false
 FLATHUB_MODE=false
 for arg in "$@"; do
-    if [[ "$arg" == "--ci" ]]; then
-        CI_MODE=true
-    elif [[ "$arg" == "--local" ]]; then
+    if [[ "$arg" == "--local" ]]; then
         LOCAL_MODE=true
     elif [[ "$arg" == "--flathub" ]]; then
         FLATHUB_MODE=true
@@ -67,9 +64,9 @@ rm -rf "$FLATPAK_DIR/.flatpak-builder/build/whph"*
 cd "$FLATPAK_DIR"
 
 INPUT_MANIFEST="flatpak-flutter.yaml"
-if [[ "$LOCAL_MODE" == true || "$CI_MODE" == true ]]; then
-    acore_log_info "Local or CI mode enabled. Using current directory as source."
-    acore_log_warning "Local/CI mode builds locally but flathub files will use git source for submission."
+if [[ "$LOCAL_MODE" == true ]]; then
+    acore_log_info "Local mode enabled. Using current directory as source."
+    acore_log_warning "Local mode builds locally but flathub files will use git source for submission."
 fi
 
 # Run generator. This creates me.ahmetcetinkaya.whph.yaml and generated/ in CWD.
@@ -169,8 +166,8 @@ flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/fl
 cd "$FLATPAK_DIR"
 
 BUILD_MANIFEST="$MANIFEST_NAME"
-if [[ "$LOCAL_MODE" == true || "$CI_MODE" == true ]]; then
-    acore_log_info "Local/CI mode: Creating shadow manifest for build using local directory source..."
+if [[ "$LOCAL_MODE" == true ]]; then
+    acore_log_info "Local mode: Creating shadow manifest for build using local directory source..."
     BUILD_MANIFEST="me.ahmetcetinkaya.whph.local.yaml"
     cp "flathub/$MANIFEST_NAME" "flathub/$BUILD_MANIFEST"
     
@@ -207,15 +204,11 @@ with open(manifest_path, 'w') as f:
 fi
 
 BUILDER_ARGS=("--force-clean" "--user" "--install" "--install-deps-from=flathub" "--repo=$REPO_DIR")
-if [[ "$CI_MODE" == true || "$CI" == "true" ]]; then
-    acore_log_info "CI mode detected. Disabling rofiles-fuse..."
-    BUILDER_ARGS+=("--disable-rofiles-fuse")
-fi
 
 flatpak-builder "${BUILDER_ARGS[@]}" "$BUILD_DIR" "flathub/$BUILD_MANIFEST"
 
 # Clean up shadow manifest after build
-if [[ ("$LOCAL_MODE" == true || "$CI_MODE" == true) && -f "flathub/$BUILD_MANIFEST" ]]; then
+if [[ "$LOCAL_MODE" == true && -f "flathub/$BUILD_MANIFEST" ]]; then
     rm "flathub/$BUILD_MANIFEST"
 fi
 

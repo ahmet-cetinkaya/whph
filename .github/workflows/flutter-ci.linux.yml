@@ -77,7 +77,7 @@ jobs:
 
       - name: Build Flatpak
         run: |
-          ./scripts/package_flatpak.sh --ci
+          ./scripts/package_flatpak.sh --local
 
       - name: Upload Flatpak artifact
         uses: actions/upload-artifact@v4
