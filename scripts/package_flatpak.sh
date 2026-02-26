@@ -110,7 +110,10 @@ for module in manifest.get('modules', []):
             new_cmds = []
             for cmd in module['build-commands']:
                 if 'flutter build linux' in cmd:
-                    new_cmds.append(cmd + ' --dart-define=FLATHUB=true')
+                    if '--dart-define=FLATHUB=true' not in cmd:
+                        new_cmds.append(cmd + ' --dart-define=FLATHUB=true')
+                    else:
+                        new_cmds.append(cmd)
                 else:
                     new_cmds.append(cmd)
             module['build-commands'] = new_cmds
