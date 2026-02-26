@@ -30,27 +30,42 @@ class TestLogger implements ILogger {
   void fatal(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
 }
 
+// Test ThemeService subclass to override system brightness
+class TestThemeService extends ThemeService {
+  Brightness _mockBrightness = Brightness.light;
+
+  TestThemeService({required super.mediator, required super.logger});
+
+  void setMockBrightness(Brightness brightness) {
+    _mockBrightness = brightness;
+  }
+
+  @override
+  Future<Brightness> getSystemBrightness() async {
+    return _mockBrightness;
+  }
+}
+
 @GenerateMocks([Mediator])
 void main() {
-  late ThemeService themeService;
+  late TestThemeService themeService;
   late MockMediator mockMediator;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     mockMediator = MockMediator();
-    themeService = ThemeService(mediator: mockMediator, logger: TestLogger());
+    themeService = TestThemeService(mediator: mockMediator, logger: TestLogger());
   });
 
   tearDown(() async {
-    // Add a small delay to ensure all async operations complete before disposal
-    await Future.delayed(const Duration(milliseconds: 100));
     themeService.dispose();
+    // Allow any pending microtasks to complete
+    await Future.delayed(Duration.zero);
   });
 
   group('ThemeService', () {
     test('should update theme when system brightness changes and mode is auto', () async {
       // Arrange
-      // Mock the SaveSettingCommand to return a valid response
       when(mockMediator.send<SaveSettingCommand, SaveSettingCommandResponse>(any))
           .thenAnswer((_) async => SaveSettingCommandResponse(
                 id: 'test-id',
@@ -60,63 +75,47 @@ void main() {
       await themeService.initialize();
       await themeService.setThemeMode(AppThemeMode.auto);
 
-      // Wait for async operations inside initialize/setThemeMode to complete
-      await Future.delayed(Duration.zero);
-
-      // Verify initial state is auto and has a valid theme
+      // Verify initial state
+      themeService.setMockBrightness(Brightness.light);
+      await themeService.updateActualThemeMode();
       expect(themeService.currentThemeMode, AppThemeMode.auto);
-      expect(themeService.themeData.brightness, isA<Brightness>());
+      expect(themeService.themeData.brightness, Brightness.light);
 
-      // Act: Simulate system brightness change by calling the method directly
-      // Note: In test environment, we can't easily mock the actual platform brightness
-      // But we can verify that calling didChangePlatformBrightness doesn't crash
-      // and that the service remains in auto mode
+      // Act: Simulate system brightness change
+      themeService.setMockBrightness(Brightness.dark);
       themeService.didChangePlatformBrightness();
 
-      // Wait for async operations in didChangePlatformBrightness to complete
-      await Future.delayed(Duration.zero);
+      // Wait for async operations (updateActualThemeMode and notifyThemeChanged)
+      await Future.delayed(const Duration(milliseconds: 10));
 
-      // Assert: The service should still be in auto mode and have a valid theme
-      expect(themeService.currentThemeMode, AppThemeMode.auto);
-      expect(themeService.themeData.brightness, isA<Brightness>());
-
-      // Additional verification: The service should be responsive to changes
-      // and not throw exceptions when system brightness changes
-      expect(() => themeService.didChangePlatformBrightness(), returnsNormally);
+      // Assert: The service should have updated to dark
+      expect(themeService.themeData.brightness, Brightness.dark);
     });
 
     test('should NOT update theme when system brightness changes and mode is manual', () async {
       // Arrange
-      // Mock the SaveSettingCommand for manual dark mode
       when(mockMediator.send<SaveSettingCommand, SaveSettingCommandResponse>(any))
           .thenAnswer((_) async => SaveSettingCommandResponse(
                 id: 'test-id',
                 createdDate: DateTime.now().toUtc(),
               ));
 
-      // Initialize service
       await themeService.initialize();
-
-      // Set theme mode to dark manually
       await themeService.setThemeMode(AppThemeMode.dark);
 
       // Verify initial state is Dark
       expect(themeService.currentThemeMode, AppThemeMode.dark);
       expect(themeService.themeData.brightness, Brightness.dark);
 
-      // Simulate system brightness change
-      TestWidgetsFlutterBinding.ensureInitialized();
-      // Note: In Flutter 3.9.0+, we need to use platformDispatcher
-      // But for testing, we'll call the didChangePlatformBrightness method directly
+      // Act: Simulate system brightness change (system goes light)
+      themeService.setMockBrightness(Brightness.light);
       themeService.didChangePlatformBrightness();
 
+      // Wait for async operations
+      await Future.delayed(const Duration(milliseconds: 10));
+
       // Assert - should still be Dark (manual mode shouldn't change with system)
-      expect(themeService.currentThemeMode, AppThemeMode.dark);
       expect(themeService.themeData.brightness, Brightness.dark);
     });
-
-    // Note: Testing Linux specific logic (Process.run and Timer) requires more extensive mocking
-    // of dart:io and async waiting which is complex in this setup.
-    // The manual verification plan covers these scenarios.
   });
 }

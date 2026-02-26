@@ -18,6 +18,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   @protected
   final ILogger logger;
   final StreamController<void> _themeChangesController = StreamController<void>.broadcast();
+  bool _isDisposed = false;
 
   AppThemeMode _currentThemeMode = AppThemeMode.auto;
   AppThemeMode _storedThemeMode = AppThemeMode.auto;
@@ -180,7 +181,11 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   @override
   void didChangePlatformBrightness() {
     if (_storedThemeMode == AppThemeMode.auto) {
-      updateActualThemeMode().then((_) => notifyThemeChanged());
+      updateActualThemeMode().then((_) {
+        if (!_isDisposed) {
+          notifyThemeChanged();
+        }
+      });
     }
   }
 
@@ -409,89 +414,13 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   }
 
   /// Gets the system brightness/theme mode
+  @visibleForTesting
   @protected
   Future<Brightness> getSystemBrightness() async {
     try {
       if (Platform.isLinux) {
-        // 1. Try Freedesktop Portal (DBus) - Universal & Flatpak-friendly
-        try {
-          // dbus-send --session --print-reply=literal --dest=org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read string:'org.freedesktop.appearance' string:'color-scheme'
-          // Returns: variant       uint32 1 (1 = Dark, 0 = Light, 2 = No preference)
-          final result = await Process.run(
-            'dbus-send',
-            [
-              '--session',
-              '--print-reply=literal',
-              '--dest=org.freedesktop.portal.Desktop',
-              '/org/freedesktop/portal/desktop',
-              'org.freedesktop.portal.Settings.Read',
-              'string:org.freedesktop.appearance',
-              'string:color-scheme'
-            ],
-          );
-          if (result.exitCode == 0) {
-            final output = result.stdout.toString().trim();
-            // Output format example: variant       uint32 1
-            if (output.contains('uint32 1')) {
-              return Brightness.dark;
-            } else if (output.contains('uint32 0')) {
-              return Brightness.light;
-            }
-          }
-        } catch (e) {
-          logger.debug('Failed to detect Freedesktop Portal theme: $e');
-        }
-
-        // 2. Try GNOME (gsettings) - Fallback for non-portal environments
-        try {
-          final result = await Process.run(
-            'gsettings',
-            ['get', 'org.gnome.desktop.interface', 'color-scheme'],
-          );
-          if (result.exitCode == 0) {
-            final output = result.stdout.toString().trim();
-            if (output.contains('prefer-dark')) {
-              return Brightness.dark;
-            } else if (output.contains('default') || output.contains('prefer-light')) {
-              return Brightness.light;
-            }
-          }
-        } catch (e) {
-          logger.debug('Failed to detect GNOME theme: $e');
-        }
-
-        // 3. Try KDE (kreadconfig) - Fallback for non-portal environments
-        try {
-          // Check kdeglobals for [Colors:Window] BackgroundNormal
-          // Or simpler: check [General] ColorScheme
-          // kreadconfig5 or kreadconfig6
-          for (final cmd in ['kreadconfig6', 'kreadconfig5']) {
-            final result = await Process.run(
-              cmd,
-              ['--group', 'General', '--key', 'ColorScheme'],
-            );
-            if (result.exitCode == 0) {
-              final output = result.stdout.toString().trim().toLowerCase();
-              if (output.isNotEmpty) {
-                // Common dark themes often have "Dark" or "Black" in the name
-                if (output.contains('dark') || output.contains('black')) {
-                  return Brightness.dark;
-                }
-                // If we found a scheme but it's not obviously dark, assume light?
-                // Or maybe we should check BackgroundNormal color...
-                // Let's try a safer check if possible, but for now this is a reasonable heuristic
-                return Brightness.light;
-              }
-            }
-          }
-        } catch (e) {
-          logger.debug('Failed to detect KDE theme: $e');
-        }
+        return await _getLinuxSystemBrightness();
       }
-
-      // Use MediaQuery to get system brightness
-      // This will be called from a context where MediaQuery is available
-      // For now, we'll use a platform channel to get system theme
 
       // Fallback: try to get from window
       final window = WidgetsBinding.instance.platformDispatcher;
@@ -500,6 +429,89 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       // Default to dark if we can't determine system theme
       return Brightness.dark;
     }
+  }
+
+  /// Gets the system brightness on Linux by querying various desktop environments
+  @protected
+  Future<Brightness> _getLinuxSystemBrightness() async {
+    // 1. Try Freedesktop Portal (DBus) - Universal & Flatpak-friendly
+    try {
+      // dbus-send --session --print-reply=literal --dest=org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read string:'org.freedesktop.appearance' string:'color-scheme'
+      // Returns: variant       uint32 1 (1 = Dark, 0 = Light, 2 = No preference)
+      final result = await Process.run(
+        'dbus-send',
+        [
+          '--session',
+          '--print-reply=literal',
+          '--dest=org.freedesktop.portal.Desktop',
+          '/org/freedesktop/portal/desktop',
+          'org.freedesktop.portal.Settings.Read',
+          'string:org.freedesktop.appearance',
+          'string:color-scheme'
+        ],
+      ).timeout(const Duration(seconds: 1));
+      if (result.exitCode == 0) {
+        final output = result.stdout.toString().trim();
+        // Output format example: variant       uint32 1
+        if (output.contains('uint32 1')) {
+          return Brightness.dark;
+        } else if (output.contains('uint32 0')) {
+          return Brightness.light;
+        }
+      }
+    } catch (e) {
+      logger.debug('Failed to detect Freedesktop Portal theme: $e');
+    }
+
+    // 2. Try GNOME (gsettings) - Fallback for non-portal environments
+    try {
+      final result = await Process.run(
+        'gsettings',
+        ['get', 'org.gnome.desktop.interface', 'color-scheme'],
+      ).timeout(const Duration(seconds: 1));
+      if (result.exitCode == 0) {
+        final output = result.stdout.toString().trim();
+        if (output.contains('prefer-dark')) {
+          return Brightness.dark;
+        } else if (output.contains('default') || output.contains('prefer-light')) {
+          return Brightness.light;
+        }
+      }
+    } catch (e) {
+      logger.debug('Failed to detect GNOME theme: $e');
+    }
+
+    // 3. Try KDE (kreadconfig) - Fallback for non-portal environments
+    try {
+      // Check kdeglobals for [Colors:Window] BackgroundNormal
+      // Or simpler: check [General] ColorScheme
+      // kreadconfig5 or kreadconfig6
+      for (final cmd in ['kreadconfig6', 'kreadconfig5']) {
+        final result = await Process.run(
+          cmd,
+          ['--group', 'General', '--key', 'ColorScheme'],
+        ).timeout(const Duration(seconds: 1));
+        if (result.exitCode == 0) {
+          final output = result.stdout.toString().trim().toLowerCase();
+          if (output.isNotEmpty) {
+            // Common dark themes often have "Dark" or "Black" in the name
+            if (output.contains('dark') || output.contains('black')) {
+              return Brightness.dark;
+            }
+            // If we found a scheme but it's not obviously dark, assume light?
+            // Or maybe we should check BackgroundNormal color...
+            // Let's try a safer check if possible, but for now this is a reasonable heuristic
+            return Brightness.light;
+          }
+        }
+      }
+    } catch (e) {
+      logger.debug('Failed to detect KDE theme: $e');
+    }
+
+    // Default fallback for Linux
+    final window = WidgetsBinding.instance.platformDispatcher;
+    return window.platformBrightness;
   }
 
   Future<void> _loadDynamicAccentColor() async {
@@ -614,10 +626,13 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
 
   @protected
   void notifyThemeChanged() {
-    _themeChangesController.add(null);
+    if (!_isDisposed && !_themeChangesController.isClosed) {
+      _themeChangesController.add(null);
+    }
   }
 
   void dispose() {
+    _isDisposed = true;
     WidgetsBinding.instance.removeObserver(this);
     _themeChangesController.close();
   }
