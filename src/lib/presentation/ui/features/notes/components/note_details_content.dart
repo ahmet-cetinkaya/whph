@@ -421,6 +421,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             onChanged: _onContentChanged,
             style: theme.textTheme.bodyMedium,
             height: 400,
+            initialPreviewMode: _contentController.text.trim().isNotEmpty,
             hintText: _translationService.translate(SharedTranslationKeys.markdownEditorHint),
             translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
           ),
