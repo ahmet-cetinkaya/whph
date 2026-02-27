@@ -375,58 +375,56 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     final availableChipFields = [keyTags].where(_shouldShowAsChip).toList();
     final theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.zero,
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppTheme.size2XSmall,
-        children: [
-          // Note Title (always visible)
-          TextFormField(
-            controller: _titleController,
-            focusNode: _titleFocusNode,
-            maxLines: null,
-            onChanged: _onTitleChanged,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              hintText: _translationService.translate(NoteTranslationKeys.titlePlaceholder),
-            ),
-            style: theme.textTheme.bodyLarge,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Note Title (always visible)
+        TextFormField(
+          controller: _titleController,
+          focusNode: _titleFocusNode,
+          maxLines: null,
+          onChanged: _onTitleChanged,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            hintText: _translationService.translate(NoteTranslationKeys.titlePlaceholder),
           ),
+          style: theme.textTheme.bodyLarge,
+        ),
+        const SizedBox(height: AppTheme.size2XSmall),
 
-          // Optional fields (Tags)
-          if (_isFieldVisible(keyTags)) ...[
-            DetailTable(
-              rowData: [_buildTagsSection()],
-              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-            ),
-          ],
+        // Optional fields (Tags)
+        if (_isFieldVisible(keyTags)) ...[
+          DetailTable(
+            rowData: [_buildTagsSection()],
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+          ),
+          const SizedBox(height: AppTheme.size2XSmall),
+        ],
 
-          // Optional field chips at the bottom
-          if (availableChipFields.isNotEmpty) ...[
-            Wrap(
-              spacing: 4,
-              runSpacing: 2,
-              children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
-            ),
-            const SizedBox(height: AppTheme.size2XSmall),
-          ],
+        // Optional field chips at the bottom
+        if (availableChipFields.isNotEmpty) ...[
+          Wrap(
+            spacing: 4,
+            runSpacing: 2,
+            children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
+          ),
+          const SizedBox(height: AppTheme.size2XSmall),
+        ],
 
-          // Note Content (always visible)
-          MarkdownEditor.simple(
+        // Note Content fills remaining page height.
+        Expanded(
+          child: MarkdownEditor.simple(
             controller: _contentController,
             focusNode: _contentFocusNode,
             onChanged: _onContentChanged,
             style: theme.textTheme.bodyMedium,
-            height: 400,
             initialPreviewMode: _contentController.text.trim().isNotEmpty,
             hintText: _translationService.translate(SharedTranslationKeys.markdownEditorHint),
             translations: SharedTranslationKeys.mapMarkdownTranslations(_translationService),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
