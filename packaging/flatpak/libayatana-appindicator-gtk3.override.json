@@ -61,7 +61,8 @@
                 "/include"
             ],
             "config-opts": [
-                "-DENABLE_INTROSPECTION=OFF"
+                "-DENABLE_INTROSPECTION=OFF",
+                "-DCMAKE_INSTALL_LIBDIR=lib"
             ],
             "sources": [
                 {
