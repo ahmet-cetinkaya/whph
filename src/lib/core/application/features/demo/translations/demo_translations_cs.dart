@@ -8,7 +8,7 @@ const Map<String, String> csDemoTranslations = {
   'task.update_resume.title': 'Aktualizovat životopis',
   'task.update_resume.description': 'Přidat nedávné projekty a úspěchy do životopisu',
   'task.buy_groceries.title': 'Nakoupit potraviny',
-  'task.buy_groceries.description': 'Týdenní nákup potravin pro domácnost',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Koupit čerstvou zeleninu',
   'task.buy_vegetables.description': 'Rajčata, salát, mrkev, cibule, papriky',
   'task.buy_dairy.title': 'Koupit mléčné výrobky',

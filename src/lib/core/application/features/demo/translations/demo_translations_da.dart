@@ -8,7 +8,7 @@ const Map<String, String> daDemoTranslations = {
   'task.update_resume.title': 'Opdater CV',
   'task.update_resume.description': 'Tilføj seneste projekter og resultater til CV',
   'task.buy_groceries.title': 'Køb dagligvarer',
-  'task.buy_groceries.description': 'Ugentlig indkøb af dagligvarer til husstanden',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Køb friske grøntsager',
   'task.buy_vegetables.description': 'Tomater, salat, gulerødder, løg, peberfrugter',
   'task.buy_dairy.title': 'Køb mejeriprodukter',

@@ -7,7 +7,7 @@ const Map<String, String> ruDemoTranslations = {
   'task.update_resume.title': 'Обновить резюме',
   'task.update_resume.description': 'Добавить недавние проекты и достижения',
   'task.buy_groceries.title': 'Купить продукты',
-  'task.buy_groceries.description': 'Еженедельная закупка продуктов',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Купить свежие овощи',
   'task.buy_vegetables.description': 'Помидоры, салат, морковь, лук',
   'task.buy_dairy.title': 'Купить молочные продукты',

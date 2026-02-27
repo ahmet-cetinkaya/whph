@@ -7,7 +7,7 @@ const Map<String, String> elDemoTranslations = {
   'task.update_resume.title': 'Ενημέρωση βιογραφικού',
   'task.update_resume.description': 'Προσθήκη πρόσφατων έργων και επιτευγμάτων',
   'task.buy_groceries.title': 'Αγορά τροφίμων',
-  'task.buy_groceries.description': 'Εβδομαδιαίες αγορές τροφίμων',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Αγορά φρέσκων λαχανικών',
   'task.buy_vegetables.description': 'Ντομάτες, μαρούλι, καρότα, κρεμμύδια',
   'task.buy_dairy.title': 'Αγορά γαλακτοκομικών',

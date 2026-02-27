@@ -7,7 +7,7 @@ const Map<String, String> nlDemoTranslations = {
   'task.update_resume.title': 'CV bijwerken',
   'task.update_resume.description': 'Recente projecten en prestaties toevoegen',
   'task.buy_groceries.title': 'Boodschappen doen',
-  'task.buy_groceries.description': 'Wekelijkse boodschappen voor het huishouden',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Verse groenten kopen',
   'task.buy_vegetables.description': 'Tomaten, sla, wortels, uien',
   'task.buy_dairy.title': 'Zuivel kopen',

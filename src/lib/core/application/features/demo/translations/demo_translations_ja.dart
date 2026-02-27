@@ -7,7 +7,7 @@ const Map<String, String> jaDemoTranslations = {
   'task.update_resume.title': '履歴書を更新',
   'task.update_resume.description': '最近のプロジェクトと実績を追加',
   'task.buy_groceries.title': '食料品を買う',
-  'task.buy_groceries.description': '週間の食料品買い物',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': '新鮮な野菜を買う',
   'task.buy_vegetables.description': 'トマト、レタス、にんじん、玉ねぎ',
   'task.buy_dairy.title': '乳製品を買う',

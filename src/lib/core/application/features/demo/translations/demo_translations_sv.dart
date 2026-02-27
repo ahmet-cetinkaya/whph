@@ -7,7 +7,7 @@ const Map<String, String> svDemoTranslations = {
   'task.update_resume.title': 'Uppdatera CV',
   'task.update_resume.description': 'Lägg till senaste projekt och prestationer',
   'task.buy_groceries.title': 'Handla mat',
-  'task.buy_groceries.description': 'Veckovis inköp av matvaror',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Köp färska grönsaker',
   'task.buy_vegetables.description': 'Tomater, sallad, morötter, lök',
   'task.buy_dairy.title': 'Köp mejeriprodukter',

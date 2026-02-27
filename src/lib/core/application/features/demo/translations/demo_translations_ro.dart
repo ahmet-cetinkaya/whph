@@ -7,7 +7,7 @@ const Map<String, String> roDemoTranslations = {
   'task.update_resume.title': 'Actualizează CV-ul',
   'task.update_resume.description': 'Adaugă proiecte și realizări recente',
   'task.buy_groceries.title': 'Fă cumpărături',
-  'task.buy_groceries.description': 'Cumpărături săptămânale pentru casă',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Cumpără legume proaspete',
   'task.buy_vegetables.description': 'Roșii, salată, morcovi, ceapă',
   'task.buy_dairy.title': 'Cumpără lactate',

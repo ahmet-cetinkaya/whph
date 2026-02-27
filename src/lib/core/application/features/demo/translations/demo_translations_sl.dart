@@ -7,7 +7,7 @@ const Map<String, String> slDemoTranslations = {
   'task.update_resume.title': 'Posodobi življenjepis',
   'task.update_resume.description': 'Dodaj nedavne projekte in dosežke',
   'task.buy_groceries.title': 'Nakupuj živila',
-  'task.buy_groceries.description': 'Tedenski nakup živil za dom',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Kupi svežo zelenjavo',
   'task.buy_vegetables.description': 'Paradižniki, solata, korenje, čebula',
   'task.buy_dairy.title': 'Kupi mlečne izdelke',

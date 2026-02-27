@@ -7,7 +7,7 @@ const Map<String, String> ukDemoTranslations = {
   'task.update_resume.title': 'Оновити резюме',
   'task.update_resume.description': 'Додати нещодавні проекти та досягнення',
   'task.buy_groceries.title': 'Купити продукти',
-  'task.buy_groceries.description': 'Щотижневі покупки для дому',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Купити свіжі овочі',
   'task.buy_vegetables.description': 'Помідори, салат, морква, цибуля',
   'task.buy_dairy.title': 'Купити молочні продукти',

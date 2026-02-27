@@ -7,7 +7,7 @@ const Map<String, String> zhDemoTranslations = {
   'task.update_resume.title': '更新简历',
   'task.update_resume.description': '添加最近的项目和成就',
   'task.buy_groceries.title': '购买食品杂货',
-  'task.buy_groceries.description': '每周家庭采购',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': '购买新鲜蔬菜',
   'task.buy_vegetables.description': '西红柿、生菜、胡萝卜、洋葱',
   'task.buy_dairy.title': '购买乳制品',

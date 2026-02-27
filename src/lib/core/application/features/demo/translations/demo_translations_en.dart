@@ -11,7 +11,7 @@ const Map<String, String> enDemoTranslations = {
   'task.update_resume.description': 'Add recent projects and achievements to resume',
 
   'task.buy_groceries.title': 'Buy Groceries',
-  'task.buy_groceries.description': 'Weekly grocery shopping for the household',
+  'task.buy_groceries.description': '',
 
   'task.buy_vegetables.title': 'Buy Fresh Vegetables',
   'task.buy_vegetables.description': 'Tomatoes, lettuce, carrots, onions, peppers',

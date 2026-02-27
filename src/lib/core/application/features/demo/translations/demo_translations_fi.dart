@@ -7,7 +7,7 @@ const Map<String, String> fiDemoTranslations = {
   'task.update_resume.title': 'Päivitä ansioluettelo',
   'task.update_resume.description': 'Lisää viimeisimmät projektit ja saavutukset',
   'task.buy_groceries.title': 'Osta ruokatarvikkeet',
-  'task.buy_groceries.description': 'Viikoittainen ruokaostokset kotitalouteen',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Osta tuoreita vihanneksia',
   'task.buy_vegetables.description': 'Tomaatit, salaatti, porkkanat, sipulit',
   'task.buy_dairy.title': 'Osta maitotuotteita',

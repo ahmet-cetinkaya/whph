@@ -7,7 +7,7 @@ const Map<String, String> trDemoTranslations = {
   'task.update_resume.title': 'Özgeçmişi güncelle',
   'task.update_resume.description': 'Son projeleri ve başarıları ekle',
   'task.buy_groceries.title': 'Market alışverişi yap',
-  'task.buy_groceries.description': 'Haftalık ev alışverişi',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': 'Taze sebze al',
   'task.buy_vegetables.description': 'Domates, marul, havuç, soğan, biber',
   'task.buy_dairy.title': 'Süt ürünleri al',

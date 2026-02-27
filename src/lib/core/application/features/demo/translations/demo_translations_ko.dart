@@ -7,7 +7,7 @@ const Map<String, String> koDemoTranslations = {
   'task.update_resume.title': '이력서 업데이트',
   'task.update_resume.description': '최근 프로젝트와 성과 추가',
   'task.buy_groceries.title': '장보기',
-  'task.buy_groceries.description': '주간 식료품 쇼핑',
+  'task.buy_groceries.description': '',
   'task.buy_vegetables.title': '신선한 채소 구매',
   'task.buy_vegetables.description': '토마토, 상추, 당근, 양파',
   'task.buy_dairy.title': '유제품 구매',
