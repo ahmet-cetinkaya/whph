@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
 import 'package:whph/core/application/features/sync/services/network_interface_service.dart';
 
 void main() {
@@ -74,7 +76,7 @@ void main() {
           expect(interface.name, isNotEmpty);
           expect(interface.ipAddress, isNotEmpty);
           expect(service.isValidLocalIPAddress(interface.ipAddress), true);
-          expect(interface.priority, greaterThan(0));
+          expect(interface.priority, isA<int>());
         }
       });
     });
@@ -89,6 +91,254 @@ void main() {
         for (final address in addresses) {
           expect(service.isValidLocalIPAddress(address), true);
         }
+      });
+    });
+
+    group('sortInterfacesForPreference', () {
+      test('should prefer gateway-backed physical interfaces over virtual adapters', () {
+        final interfaces = [
+          const NetworkInterfaceInfo(
+            name: 'vEthernet (Default Switch)',
+            ipAddress: '172.31.160.1',
+            addressType: InternetAddressType.IPv4,
+            isWiFi: false,
+            isEthernet: true,
+            priority: -40,
+            hasDefaultGateway: false,
+            interfaceMetric: 5000,
+            isVirtual: true,
+          ),
+          const NetworkInterfaceInfo(
+            name: 'Wi-Fi',
+            ipAddress: '192.168.178.30',
+            addressType: InternetAddressType.IPv4,
+            isWiFi: true,
+            isEthernet: false,
+            priority: 160,
+            hasDefaultGateway: true,
+            interfaceMetric: 10,
+            isVirtual: false,
+          ),
+        ];
+
+        final sorted = service.sortInterfacesForPreference(interfaces);
+
+        expect(sorted.first.name, 'Wi-Fi');
+        expect(sorted.first.ipAddress, '192.168.178.30');
+      });
+
+      test('should preserve high priority for 172.x addresses when gateway-backed', () {
+        final interfaces = [
+          const NetworkInterfaceInfo(
+            name: 'Corporate VPN',
+            ipAddress: '172.20.10.5',
+            addressType: InternetAddressType.IPv4,
+            isWiFi: false,
+            isEthernet: false,
+            priority: 140,
+            hasDefaultGateway: true,
+            interfaceMetric: 5,
+            isVirtual: false,
+          ),
+          const NetworkInterfaceInfo(
+            name: 'Ethernet',
+            ipAddress: '192.168.1.20',
+            addressType: InternetAddressType.IPv4,
+            isWiFi: false,
+            isEthernet: true,
+            priority: 40,
+            hasDefaultGateway: false,
+            interfaceMetric: 25,
+            isVirtual: false,
+          ),
+        ];
+
+        final sorted = service.sortInterfacesForPreference(interfaces);
+
+        expect(sorted.first.ipAddress, '172.20.10.5');
+      });
+    });
+
+    group('calculatePriorityForTest', () {
+      test('should prioritize gateway-backed interfaces highest', () {
+        final withGateway = service.calculatePriorityForTest(
+          isWiFi: true,
+          isEthernet: false,
+          hasDefaultGateway: true,
+          interfaceMetric: null,
+          isVirtual: false,
+          ipAddress: '192.168.1.10',
+        );
+
+        final withoutGateway = service.calculatePriorityForTest(
+          isWiFi: true,
+          isEthernet: false,
+          hasDefaultGateway: false,
+          interfaceMetric: null,
+          isVirtual: false,
+          ipAddress: '192.168.1.10',
+        );
+
+        expect(withGateway, greaterThan(withoutGateway));
+      });
+
+      test('should invert interface metric correctly', () {
+        final lowMetric = service.calculatePriorityForTest(
+          isWiFi: false,
+          isEthernet: true,
+          hasDefaultGateway: true,
+          interfaceMetric: 5,
+          isVirtual: false,
+          ipAddress: '192.168.1.10',
+        );
+
+        final highMetric = service.calculatePriorityForTest(
+          isWiFi: false,
+          isEthernet: true,
+          hasDefaultGateway: true,
+          interfaceMetric: 40,
+          isVirtual: false,
+          ipAddress: '192.168.1.10',
+        );
+
+        expect(lowMetric, greaterThan(highMetric));
+      });
+
+      test('should heavily penalize virtual adapters without gateway', () {
+        final virtualNoGateway = service.calculatePriorityForTest(
+          isWiFi: false,
+          isEthernet: true,
+          hasDefaultGateway: false,
+          interfaceMetric: 10,
+          isVirtual: true,
+          ipAddress: '172.31.160.1',
+        );
+
+        final physicalNoGateway = service.calculatePriorityForTest(
+          isWiFi: false,
+          isEthernet: true,
+          hasDefaultGateway: false,
+          interfaceMetric: 10,
+          isVirtual: false,
+          ipAddress: '172.31.160.1',
+        );
+
+        expect(virtualNoGateway, lessThan(physicalNoGateway));
+      });
+
+      test('should handle null interface metric gracefully', () {
+        final score = service.calculatePriorityForTest(
+          isWiFi: false,
+          isEthernet: true,
+          hasDefaultGateway: true,
+          interfaceMetric: null,
+          isVirtual: false,
+          ipAddress: '10.0.0.20',
+        );
+
+        expect(score, isA<int>());
+      });
+
+      test('should break ties ethernet over wifi over unknown', () {
+        final ethernet = service.calculatePriorityForTest(
+          isWiFi: false,
+          isEthernet: true,
+          hasDefaultGateway: true,
+          interfaceMetric: 10,
+          isVirtual: false,
+          ipAddress: '192.168.1.10',
+        );
+
+        final wifi = service.calculatePriorityForTest(
+          isWiFi: true,
+          isEthernet: false,
+          hasDefaultGateway: true,
+          interfaceMetric: 10,
+          isVirtual: false,
+          ipAddress: '192.168.1.10',
+        );
+
+        final unknown = service.calculatePriorityForTest(
+          isWiFi: false,
+          isEthernet: false,
+          hasDefaultGateway: true,
+          interfaceMetric: 10,
+          isVirtual: false,
+          ipAddress: '192.168.1.10',
+        );
+
+        expect(ethernet, greaterThan(wifi));
+        expect(wifi, greaterThan(unknown));
+      });
+    });
+
+    group('isVirtualInterfaceByNameForTest', () {
+      test('should detect common virtual adapter names', () {
+        expect(service.isVirtualInterfaceByNameForTest('vEthernet (Default Switch)'), true);
+        expect(service.isVirtualInterfaceByNameForTest('DockerNAT'), true);
+        expect(service.isVirtualInterfaceByNameForTest('VMware Network Adapter'), true);
+        expect(service.isVirtualInterfaceByNameForTest('Intel(R) Wi-Fi'), false);
+      });
+    });
+
+    group('resolveWindowsMetadataForTest', () {
+      test('should prefer exact interface+ip match over name-only fallback', () {
+        final metadata = {
+          'wi-fi|': {
+            'hasDefaultGateway': false,
+            'interfaceMetric': 50,
+            'isVirtual': false,
+            'gatewayIp': null,
+          },
+          'wi-fi|192.168.1.20': {
+            'hasDefaultGateway': true,
+            'interfaceMetric': 10,
+            'isVirtual': false,
+            'gatewayIp': '192.168.1.1',
+          }
+        };
+
+        final resolved = service.resolveWindowsMetadataForTest(metadata, 'Wi-Fi', '192.168.1.20');
+
+        expect(resolved, isNotNull);
+        expect(resolved?['hasDefaultGateway'], true);
+        expect(resolved?['interfaceMetric'], 10);
+      });
+
+      test('should use name-only fallback when exact key is missing', () {
+        final metadata = {
+          'ethernet|': {
+            'hasDefaultGateway': true,
+            'interfaceMetric': 15,
+            'isVirtual': false,
+            'gatewayIp': '10.0.0.1',
+          },
+        };
+
+        final resolved = service.resolveWindowsMetadataForTest(metadata, 'Ethernet', '10.0.0.20');
+
+        expect(resolved, isNotNull);
+        expect(resolved?['interfaceMetric'], 15);
+      });
+    });
+
+    group('parseWindowsInterfaceMetadataForTest', () {
+      test('should parse windows metadata payload', () {
+        const payload =
+            '{"Config":[{"InterfaceAlias":"Wi-Fi","IPv4Address":{"IPAddress":"192.168.1.20"},"IPv4DefaultGateway":{"NextHop":"192.168.1.1"}}],"Metrics":[{"InterfaceAlias":"Wi-Fi","InterfaceMetric":10}]}';
+
+        final parsed = service.parseWindowsInterfaceMetadataForTest(payload);
+
+        expect(parsed.isNotEmpty, true);
+        final byIp = parsed['wi-fi|192.168.1.20'];
+        expect(byIp, isNotNull);
+        expect(byIp?['hasDefaultGateway'], true);
+        expect(byIp?['interfaceMetric'], 10);
+      });
+
+      test('should return empty map for malformed json', () {
+        final parsed = service.parseWindowsInterfaceMetadataForTest('[]');
+        expect(parsed, isEmpty);
       });
     });
   });

@@ -21,7 +21,7 @@ class NetworkUtils {
   static Future<List<String>> getLocalIpAddresses() async {
     try {
       final networkService = container.resolve<INetworkInterfaceService>();
-      return await networkService.getLocalIPAddresses();
+      return await networkService.getPreferredIPAddresses();
     } catch (e) {
       Logger.error('Failed to get local IP addresses via service: $e');
       return [];

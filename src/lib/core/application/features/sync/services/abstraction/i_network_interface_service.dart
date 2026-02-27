@@ -25,6 +25,10 @@ class NetworkInterfaceInfo {
   final bool isWiFi;
   final bool isEthernet;
   final int priority; // Higher number = higher priority
+  final bool hasDefaultGateway;
+  final int? interfaceMetric;
+  final bool isVirtual;
+  final String? gatewayIp;
 
   const NetworkInterfaceInfo({
     required this.name,
@@ -33,11 +37,15 @@ class NetworkInterfaceInfo {
     required this.isWiFi,
     required this.isEthernet,
     required this.priority,
+    this.hasDefaultGateway = false,
+    this.interfaceMetric,
+    this.isVirtual = false,
+    this.gatewayIp,
   });
 
   @override
   String toString() =>
-      'NetworkInterfaceInfo(name: $name, ip: $ipAddress, wifi: $isWiFi, ethernet: $isEthernet, priority: $priority)';
+      'NetworkInterfaceInfo(name: $name, ip: $ipAddress, wifi: $isWiFi, ethernet: $isEthernet, priority: $priority, hasGateway: $hasDefaultGateway, metric: $interfaceMetric, isVirtual: $isVirtual)';
 
   @override
   bool operator ==(Object other) =>
@@ -45,8 +53,12 @@ class NetworkInterfaceInfo {
       other is NetworkInterfaceInfo &&
           runtimeType == other.runtimeType &&
           name == other.name &&
-          ipAddress == other.ipAddress;
+          ipAddress == other.ipAddress &&
+          hasDefaultGateway == other.hasDefaultGateway &&
+          interfaceMetric == other.interfaceMetric &&
+          isVirtual == other.isVirtual &&
+          gatewayIp == other.gatewayIp;
 
   @override
-  int get hashCode => Object.hash(name, ipAddress);
+  int get hashCode => Object.hash(name, ipAddress, hasDefaultGateway, interfaceMetric, isVirtual, gatewayIp);
 }

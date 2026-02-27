@@ -39,6 +39,7 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
   final _deviceIdService = container.resolve<IDeviceIdService>();
 
   String? _ipAddress;
+  List<String> _ipAddresses = const [];
   String? _deviceName;
   String? _deviceId;
   String? _platform;
@@ -61,7 +62,8 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
       });
 
       // Get device information
-      _ipAddress = await NetworkUtils.getLocalIpAddress();
+      _ipAddresses = await NetworkUtils.getLocalIpAddresses();
+      _ipAddress = _ipAddresses.isNotEmpty ? _ipAddresses.first : null;
       _deviceName = await DeviceInfoHelper.getDeviceName();
       _deviceId = await _deviceIdService.getDeviceId();
 
@@ -82,6 +84,7 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
         deviceName: _deviceName!,
         deviceId: _deviceId!,
         platform: _platform!,
+        ipAddresses: _ipAddresses.isEmpty ? null : _ipAddresses,
       );
 
       Logger.debug('Sync QR Code Message: ${syncQrCodeMessage.toCsv()}');
