@@ -344,24 +344,34 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
             Positioned(
               top: 2,
               left: 2,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                decoration: BoxDecoration(
-                  color: _colorHelper.getBadgeColor(
+              child: Builder(
+                builder: (context) {
+                  final badgeColor = _colorHelper.getBadgeColor(
                     isDailyGoalMet: isDailyGoalMet,
                     isPeriodGoalMet: isPeriodGoalMet,
                     hasRecords: hasRecords,
                     periodCompletionCount: periodCompletionCount,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  _colorHelper.getBadgeText(
-                    dailyCompletionCount: dailyCompletionCount,
-                    periodCompletionCount: periodCompletionCount,
-                  ),
-                  style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                ),
+                  );
+                  final textColor = (badgeColor == Colors.orange || badgeColor == Colors.green)
+                      ? Colors.black
+                      : ThemeData.estimateBrightnessForColor(badgeColor) == Brightness.dark
+                          ? Colors.white
+                          : Colors.black;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: badgeColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      _colorHelper.getBadgeText(
+                        dailyCompletionCount: dailyCompletionCount,
+                        periodCompletionCount: periodCompletionCount,
+                      ),
+                      style: TextStyle(color: textColor, fontSize: 10, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                },
               ),
             ),
           Positioned(
