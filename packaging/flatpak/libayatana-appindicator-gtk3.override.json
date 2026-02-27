@@ -2,8 +2,7 @@
     "name": "libayatana-appindicator",
     "buildsystem": "cmake-ninja",
     "cleanup": [
-        "/include",
-        "/lib/pkgconfig"
+        "/include"
     ],
     "config-opts": [
         "-DENABLE_BINDINGS_MONO=NO",
