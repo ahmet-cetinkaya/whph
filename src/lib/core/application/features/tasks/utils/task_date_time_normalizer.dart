@@ -6,17 +6,16 @@ class TaskDateTimeNormalizer {
 
   /// Detects if a DateTime represents a date-only (all-day) value.
   ///
-  /// Returns true if the local time component is exactly 00:00:00.000000.
+  /// Returns true if the local time component is at 00:00:00 (hour, minute,
+  /// and second are all zero). Fractional seconds are ignored to handle
+  /// dates from external sources that may include microsecond precision.
+  ///
   /// Note: This means a task explicitly scheduled for midnight will be
   /// treated as an all-day task. This is a known limitation - tasks
   /// requiring exact midnight times should not use this normalization.
   static bool isAllDay(DateTime value) {
     final local = DateTimeHelper.toLocalDateTime(value);
-    return local.hour == 0 &&
-        local.minute == 0 &&
-        local.second == 0 &&
-        local.millisecond == 0 &&
-        local.microsecond == 0;
+    return local.hour == 0 && local.minute == 0 && local.second == 0;
   }
 
   /// Converts date input to UTC while preserving explicit times.
