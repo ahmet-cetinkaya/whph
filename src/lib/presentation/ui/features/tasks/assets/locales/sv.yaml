@@ -68,6 +68,7 @@ tasks:
     task_not_found: Uppgift hittades inte
     task_tag_already_deleted: Uppgiftstagg är redan borttagen
     task_tag_already_exists: Denna uppgiftstagg finns redan
+    invalid_date_range: "Ogiltigt datumintervall: Deadline måste vara samma dag eller efter planerat datum"
     task_tag_not_found: Uppgiftstagg hittades inte
   estimated_time:
     description:

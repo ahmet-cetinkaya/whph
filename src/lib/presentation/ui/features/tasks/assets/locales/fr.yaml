@@ -69,6 +69,7 @@ tasks:
     task_not_found: Tâche non trouvée
     task_tag_already_deleted: Le tag de tâche est déjà supprimé
     task_tag_already_exists: Ce tag de tâche existe déjà
+    invalid_date_range: "Plage de dates invalide : La date limite doit être identique ou postérieure à la date planifiée"
     task_tag_not_found: Tag de tâche non trouvé
   estimated_time:
     description:

@@ -69,6 +69,7 @@ tasks:
     task_not_found: Oppgave ikke funnet
     task_tag_already_deleted: Oppgavtag er allerede slettet
     task_tag_already_exists: Denne oppgavtaggen finnes allerede
+    invalid_date_range: "Ugyldig datoområde: Fristdato må være på eller etter planlagt dato"
     task_tag_not_found: Oppgavtag ikke funnet
   estimated_time:
     description:

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, WeekDays;
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
@@ -259,10 +260,19 @@ class TaskDetailsController extends ChangeNotifier {
   Future<void> saveTaskImmediately() async {
     if (_task == null || _isDeleted) return;
 
-    final saveCommand = buildSaveCommand();
-    await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
-    _tasksService.notifyTaskUpdated(_task!.id);
-    onTaskUpdated?.call();
+    try {
+      final saveCommand = buildSaveCommand();
+      await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
+      _tasksService.notifyTaskUpdated(_task!.id);
+      onTaskUpdated?.call();
+    } catch (e, stackTrace) {
+      Logger.error(
+        'TaskDetailsController: Failed to save task ${_task!.id}',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      // TODO: Show user-facing error notification
+    }
   }
 
   SaveTaskCommand buildSaveCommand({

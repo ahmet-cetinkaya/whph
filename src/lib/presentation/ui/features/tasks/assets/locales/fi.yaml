@@ -69,6 +69,7 @@ tasks:
     task_not_found: Tehtävää ei löytynyt
     task_tag_already_deleted: Tehtävän tunniste on jo poistettu
     task_tag_already_exists: Tämä tehtävän tunniste on jo olemassa
+    invalid_date_range: "Virheellinen päivämääräalue: Määräpäivän on oltava suunnitellun päivämäärän jälkeen tai samana päivänä"
     task_tag_not_found: Tehtävän tunnistetta ei löytynyt
   estimated_time:
     description:

@@ -68,6 +68,7 @@ tasks:
     task_not_found: Tarefa não encontrada
     task_tag_already_deleted: Tag da tarefa já foi excluída
     task_tag_already_exists: Esta tag da tarefa já existe
+    invalid_date_range: "Intervalo de datas inválido: A data limite deve ser igual ou posterior à data planejada"
     task_tag_not_found: Tag da tarefa não encontrada
   estimated_time:
     description:

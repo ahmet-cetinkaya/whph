@@ -69,6 +69,7 @@ tasks:
     task_not_found: Úkol nenalezen
     task_tag_already_deleted: Štítek úkolu již smazán
     task_tag_already_exists: Tento štítek úkolu již existuje
+    invalid_date_range: "Neplatny rozsah dat: Datum terminu musi byt stejne nebo po planovanem datu"
     task_tag_not_found: Štítek úkolu nenalezen
   estimated_time:
     description:

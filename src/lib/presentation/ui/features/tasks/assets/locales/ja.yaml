@@ -67,6 +67,7 @@ tasks:
     task_not_found: タスクが見つかりません
     task_tag_already_deleted: タスクタグは既に削除されています
     task_tag_already_exists: このタスクタグは既に存在します
+    invalid_date_range: "無効な日付範囲：締切日は予定日以降である必要があります"
     task_tag_not_found: タスクタグが見つかりません
   estimated_time:
     description: 効率的にタスクを計画し、生産性を追跡するために、現実的な時間見積もりを設定します。

@@ -84,20 +84,40 @@ void main() {
       expect(command.plannedDate, DateTimeHelper.toUtcDateTime(localDateTime));
     });
 
-    test('should throw when deadlineDate is before plannedDate', () {
+    test('should throw BusinessException when deadlineDate is before plannedDate', () {
       // Arrange
       final plannedDate = DateTime(2026, 3, 12, 9, 0);
       final invalidDeadline = DateTime(2026, 3, 12, 8, 59);
+      final command = SaveTaskCommand(
+        title: 'Invalid Date Range Task',
+        plannedDate: plannedDate,
+        deadlineDate: invalidDeadline,
+      );
 
       // Act & Assert
       expect(
-        () => SaveTaskCommand(
-          title: 'Invalid Date Range Task',
-          plannedDate: plannedDate,
-          deadlineDate: invalidDeadline,
-        ),
-        throwsA(isA<ArgumentError>()),
+        () => handler(command),
+        throwsA(isA<BusinessException>()),
       );
+    });
+
+    test('should accept when deadlineDate equals plannedDate', () async {
+      // Arrange
+      final sameDate = DateTime(2026, 3, 12, 9, 0);
+      final command = SaveTaskCommand(
+        title: 'Valid Same Date Task',
+        plannedDate: sameDate,
+        deadlineDate: sameDate,
+      );
+
+      // Setup mocks
+      when(mockTaskRepository.getList(any, any,
+              customWhereFilter: anyNamed('customWhereFilter'), customOrder: anyNamed('customOrder')))
+          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
+
+      // Act & Assert - should not throw
+      expect(() => handler(command), returnsNormally);
     });
   });
 

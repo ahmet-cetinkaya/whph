@@ -69,6 +69,7 @@ tasks:
     task_not_found: Attività non trovata
     task_tag_already_deleted: Il tag dell'attività è già eliminato
     task_tag_already_exists: Questo tag dell'attività esiste già
+    invalid_date_range: "Intervallo di date non valido: La data di scadenza deve essere uguale o successiva alla data pianificata"
     task_tag_not_found: Tag dell'attività non trovato
   estimated_time:
     description:

@@ -68,6 +68,7 @@ tasks:
     task_not_found: Aufgabe nicht gefunden
     task_tag_already_deleted: Aufgaben-Tag ist bereits gelöscht
     task_tag_already_exists: Dieses Aufgaben-Tag existiert bereits
+    invalid_date_range: "Ungültiger Datumsbereich: Das Fälligkeitsdatum muss am oder nach dem geplanten Datum liegen"
     task_tag_not_found: Aufgaben-Tag nicht gefunden
   estimated_time:
     description:
