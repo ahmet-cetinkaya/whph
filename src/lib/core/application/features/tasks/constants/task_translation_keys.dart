@@ -4,6 +4,7 @@ class TaskTranslationKeys {
   static const String taskTagAlreadyDeletedError = 'tasks.errors.task_tag_already_deleted';
   static const String taskTagAlreadyExistsError = 'tasks.errors.task_tag_already_exists';
   static const String sameTagError = 'tasks.errors.same_tag';
+  static const String invalidDateRangeError = 'tasks.errors.invalid_date_range';
 
   // Priority Selection
   static const String prioritySelectionTitle = 'tasks.priority.selection.title';

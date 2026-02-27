@@ -69,6 +69,7 @@ tasks:
     task_not_found: Naloga ni najdena
     task_tag_already_deleted: Oznaka naloge je že izbrisana
     task_tag_already_exists: Ta oznaka naloge že obstaja
+    invalid_date_range: "Neveljaven obseg datumov: Rok mora biti na ali po načrtovanem datumu"
     task_tag_not_found: Oznaka naloge ni najdena
   estimated_time:
     description:

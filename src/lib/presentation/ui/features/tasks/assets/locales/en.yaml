@@ -68,6 +68,7 @@ tasks:
     task_not_found: Task not found
     task_tag_already_deleted: Task tag is already deleted
     task_tag_already_exists: This task tag already exists
+    invalid_date_range: "Invalid date range: Deadline date must be at or after planned date"
     task_tag_not_found: Task tag not found
   estimated_time:
     description:

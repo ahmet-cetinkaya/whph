@@ -69,6 +69,7 @@ tasks:
     task_not_found: Завдання не знайдено
     task_tag_already_deleted: Тег завдання вже видалено
     task_tag_already_exists: Цей тег завдання вже існує
+    invalid_date_range: "Неприпустимий діапазон дат: Термін виконання має бути не раніше запланованої дати"
     task_tag_not_found: Тег завдання не знайдено
   estimated_time:
     description:

@@ -69,6 +69,7 @@ tasks:
     task_not_found: Sarcină negăsită
     task_tag_already_deleted: Eticheta sarcinii este deja ștearsă
     task_tag_already_exists: Această etichetă a sarcinii există deja
+    invalid_date_range: "Interval de date invalid: Data limită trebuie să fie identică sau ulterioară datei planificate"
     task_tag_not_found: Eticheta sarcinii negăsită
   estimated_time:
     description:

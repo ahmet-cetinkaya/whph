@@ -10,6 +10,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_date_display_helper.dart';
 import 'builders/estimated_time_dialog_content.dart';
 import 'builders/description_dialog_content.dart';
 
@@ -200,18 +201,10 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
 
   void _updateDateControllers() {
     if (_controller.plannedDate != null && _plannedDateController.text.isEmpty) {
-      _plannedDateController.text = acore.DateFormatService.formatForInput(
-        _controller.plannedDate!,
-        context,
-        type: acore.DateFormatType.dateTime,
-      );
+      _plannedDateController.text = TaskDateDisplayHelper.formatForInput(_controller.plannedDate!, context);
     }
     if (_controller.deadlineDate != null && _deadlineDateController.text.isEmpty) {
-      _deadlineDateController.text = acore.DateFormatService.formatForInput(
-        _controller.deadlineDate!,
-        context,
-        type: acore.DateFormatType.dateTime,
-      );
+      _deadlineDateController.text = TaskDateDisplayHelper.formatForInput(_controller.deadlineDate!, context);
     }
   }
 
@@ -294,11 +287,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     if (result != null && !result.wasCancelled && mounted) {
       _controller.setPlannedDate(result.selectedDate, result.reminderTime ?? ReminderTime.none);
       if (result.selectedDate != null) {
-        _plannedDateController.text = acore.DateFormatService.formatForInput(
-          result.selectedDate!,
-          context,
-          type: acore.DateFormatType.dateTime,
-        );
+        _plannedDateController.text = TaskDateDisplayHelper.formatForInput(result.selectedDate!, context);
       } else {
         _plannedDateController.clear();
       }
@@ -330,11 +319,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     if (result != null && !result.wasCancelled && mounted) {
       _controller.setDeadlineDate(result.selectedDate, result.reminderTime ?? ReminderTime.none);
       if (result.selectedDate != null) {
-        _deadlineDateController.text = acore.DateFormatService.formatForInput(
-          result.selectedDate!,
-          context,
-          type: acore.DateFormatType.dateTime,
-        );
+        _deadlineDateController.text = TaskDateDisplayHelper.formatForInput(result.selectedDate!, context);
       } else {
         _deadlineDateController.clear();
       }

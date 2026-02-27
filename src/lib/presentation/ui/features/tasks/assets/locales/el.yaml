@@ -69,6 +69,7 @@ tasks:
     task_not_found: Εργασία δεν βρέθηκε
     task_tag_already_deleted: Η ετικέτα εργασίας έχει ήδη διαγραφεί
     task_tag_already_exists: Αυτή η ετικέτα εργασίας υπάρχει ήδη
+    invalid_date_range: "Μη έγκυρο εύρος ημερομηνιών: Η ημερομηνία προθεσμίας πρέπει να είναι την ή μετά την προγραμματισμένη ημερομηνία"
     task_tag_not_found: Ετικέτα εργασίας δεν βρέθηκε
   estimated_time:
     description:

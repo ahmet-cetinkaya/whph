@@ -94,12 +94,14 @@ class TaskDatePickerResult {
   final DateTime? selectedDate;
   final ReminderTime? reminderTime;
   final int? reminderCustomOffset;
+  final bool isAllDay;
   final bool wasCancelled;
 
   const TaskDatePickerResult({
     this.selectedDate,
     this.reminderTime,
     this.reminderCustomOffset,
+    this.isAllDay = false,
     this.wasCancelled = false,
   });
 
@@ -132,6 +134,7 @@ class TaskDatePickerDialog {
           selectedDate: result.selectedDate,
           reminderTime: reminderNotifier.value,
           reminderCustomOffset: customOffsetNotifier.value,
+          isAllDay: result.isAllDay,
           wasCancelled: false,
         );
       } else {
@@ -160,6 +163,7 @@ class TaskDatePickerDialog {
         selectedDate: result.selectedDate,
         reminderTime: null,
         reminderCustomOffset: null,
+        isAllDay: result.isAllDay,
         wasCancelled: false,
       );
     } else {

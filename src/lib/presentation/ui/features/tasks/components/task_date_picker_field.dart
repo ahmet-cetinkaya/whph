@@ -5,6 +5,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/reminder_tooltip_helper.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_date_display_helper.dart';
 import 'task_date_picker_dialog.dart';
 
 /// A widget that provides task date selection using the new TaskDatePickerDialog
@@ -189,11 +190,13 @@ class _TaskDatePickerFieldState extends State<TaskDatePickerField> {
           final selectedDateTime = result.selectedDate!;
 
           // Format the date for display using centralized service
-          final String formattedDateTime = DateFormatService.formatForInput(
-            selectedDateTime,
-            context,
-            type: DateFormatType.dateTime,
-          );
+          final String formattedDateTime = result.isAllDay
+              ? TaskDateDisplayHelper.formatForInput(selectedDateTime, context)
+              : DateFormatService.formatForInput(
+                  selectedDateTime,
+                  context,
+                  type: DateFormatType.dateTime,
+                );
 
           // Update controller text first
           widget.controller.text = formattedDateTime;

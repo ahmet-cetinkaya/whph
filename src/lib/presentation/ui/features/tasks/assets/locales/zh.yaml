@@ -67,6 +67,7 @@ tasks:
     task_not_found: 未找到任务
     task_tag_already_deleted: 任务标签已被删除
     task_tag_already_exists: 此任务标签已存在
+    invalid_date_range: "无效的日期范围：截止日期必须等于或晚于计划日期"
     task_tag_not_found: 未找到任务标签
   estimated_time:
     description: 设定现实的时间估算，以有效规划您的任务并追踪生产力。

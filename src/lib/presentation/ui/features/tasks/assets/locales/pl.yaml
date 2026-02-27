@@ -69,6 +69,7 @@ tasks:
     task_not_found: Nie znaleziono zadania
     task_tag_already_deleted: Tag zadania został już usunięty
     task_tag_already_exists: Ten tag zadania już istnieje
+    invalid_date_range: "Nieprawidłowy zakres dat: Data ostateczna musi być taka sama lub późniejsza od planowanej daty"
     task_tag_not_found: Nie znaleziono tagu zadania
   estimated_time:
     description:

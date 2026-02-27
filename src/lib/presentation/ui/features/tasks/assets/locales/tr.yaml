@@ -69,6 +69,7 @@ tasks:
     task_not_found: Görev bulunamadı
     task_tag_already_deleted: Görev etiketi zaten silinmiş
     task_tag_already_exists: Bu görev etiketi zaten mevcut
+    invalid_date_range: "Geçersiz tarih aralığı: Son tarih, planlanan tarihten sonra veya aynı tarihte olmalıdır"
     task_tag_not_found: Görev etiketi bulunamadı
   estimated_time:
     description:

@@ -15,6 +15,7 @@ import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
+import 'package:whph/core/application/features/tasks/utils/task_date_time_normalizer.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -41,6 +42,13 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? recurrenceParentId;
   final RecurrenceConfiguration? recurrenceConfiguration;
 
+  /// Creates a command to save or update a task.
+  ///
+  /// Date fields (plannedDate, deadlineDate) are automatically normalized:
+  /// - Date-only values (time component is 00:00:00 in local timezone) are converted to UTC start of that local day
+  /// - Values with explicit times preserve their time component in UTC
+  ///
+  /// Throws [BusinessException] if deadlineDate is before plannedDate.
   SaveTaskCommand({
     this.id,
     required this.title,
@@ -65,8 +73,8 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     this.recurrenceCount,
     this.recurrenceParentId,
     this.recurrenceConfiguration,
-  })  : plannedDate = plannedDate != null ? DateTimeHelper.toUtcDateTime(plannedDate) : null,
-        deadlineDate = deadlineDate != null ? DateTimeHelper.toUtcDateTime(deadlineDate) : null,
+  })  : plannedDate = TaskDateTimeNormalizer.normalize(plannedDate),
+        deadlineDate = TaskDateTimeNormalizer.normalize(deadlineDate),
         completedAt = completedAt != null ? DateTimeHelper.toUtcDateTime(completedAt) : null,
         recurrenceStartDate = recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(recurrenceStartDate) : null,
         recurrenceEndDate = recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(recurrenceEndDate) : null;
@@ -225,6 +233,16 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
   @override
   Future<SaveTaskCommandResponse> call(SaveTaskCommand request) async {
+    // Validate date range at handler level for proper error handling
+    final plannedDate = request.plannedDate;
+    final deadlineDate = request.deadlineDate;
+    if (plannedDate != null && deadlineDate != null && deadlineDate.isBefore(plannedDate)) {
+      throw BusinessException(
+        'Deadline date must be at or after planned date',
+        TaskTranslationKeys.invalidDateRangeError,
+      );
+    }
+
     Task? task;
 
     if (request.id != null) {

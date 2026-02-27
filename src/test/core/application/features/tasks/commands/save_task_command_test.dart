@@ -55,6 +55,72 @@ void main() {
         .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
   });
 
+  group('SaveTaskCommand Date Normalization', () {
+    test('should treat date-only plannedDate as all-day and normalize to UTC day start', () {
+      // Arrange
+      final localDateOnly = DateTime(2026, 3, 12);
+
+      // Act
+      final command = SaveTaskCommand(
+        title: 'Date Only Task',
+        plannedDate: localDateOnly,
+      );
+
+      // Assert
+      expect(command.plannedDate, DateTimeHelper.toUtcDateTime(DateTime(2026, 3, 12)));
+    });
+
+    test('should preserve explicit plannedDate time when provided', () {
+      // Arrange
+      final localDateTime = DateTime(2026, 3, 12, 14, 45);
+
+      // Act
+      final command = SaveTaskCommand(
+        title: 'Timed Task',
+        plannedDate: localDateTime,
+      );
+
+      // Assert
+      expect(command.plannedDate, DateTimeHelper.toUtcDateTime(localDateTime));
+    });
+
+    test('should throw BusinessException when deadlineDate is before plannedDate', () {
+      // Arrange
+      final plannedDate = DateTime(2026, 3, 12, 9, 0);
+      final invalidDeadline = DateTime(2026, 3, 12, 8, 59);
+      final command = SaveTaskCommand(
+        title: 'Invalid Date Range Task',
+        plannedDate: plannedDate,
+        deadlineDate: invalidDeadline,
+      );
+
+      // Act & Assert
+      expect(
+        () => handler(command),
+        throwsA(isA<BusinessException>()),
+      );
+    });
+
+    test('should accept when deadlineDate equals plannedDate', () async {
+      // Arrange
+      final sameDate = DateTime(2026, 3, 12, 9, 0);
+      final command = SaveTaskCommand(
+        title: 'Valid Same Date Task',
+        plannedDate: sameDate,
+        deadlineDate: sameDate,
+      );
+
+      // Setup mocks
+      when(mockTaskRepository.getList(any, any,
+              customWhereFilter: anyNamed('customWhereFilter'), customOrder: anyNamed('customOrder')))
+          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
+
+      // Act & Assert - should not throw
+      expect(() => handler(command), returnsNormally);
+    });
+  });
+
   group('SaveTaskCommandHandler Tests - Create', () {
     test('should create task when id is null', () async {
       // Arrange

@@ -349,6 +349,21 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       }
 
       final nextDates = _calculateNextDates(task);
+
+      // Prevent data corruption from invalid recurrence calculations
+      final plannedDate = nextDates.plannedDate;
+      final deadlineDate = nextDates.deadlineDate;
+      if (deadlineDate != null && deadlineDate.isBefore(plannedDate)) {
+        _logger.error(
+          'TaskRecurrenceService: Calculated invalid date range for task ${task.id} - '
+          'planned: $plannedDate, deadline: $deadlineDate',
+        );
+        throw StateError(
+          'Calculated invalid date range for task ${task.id}: '
+          'deadline ($deadlineDate) is before planned ($plannedDate)',
+        );
+      }
+
       final taskTags = await _getTaskTags(task.id, mediator);
 
       // Check if the next recurrence instance already exists to prevent duplicates, excluding the current task
