@@ -24,25 +24,25 @@ scripts:
   pub:get: cd src && fvm flutter pub get
   run: cd src && fvm flutter run
   run:demo: cd src && fvm flutter run --dart-define=DEMO_MODE=true
-  clean: bash src/scripts/clean.sh
-  clean:db: bash src/scripts/clean_db.sh
+  clean: bash scripts/clean.sh
+  clean:db: bash scripts/clean_db.sh
   format: bash scripts/format.sh
   lint: ./scripts/lint.sh
   check: rps format && rps lint && rps test
 
   # Testing
-  test: bash src/scripts/run_tests.sh
-  test:all: bash src/scripts/run_tests.sh
+  test: bash scripts/run_tests.sh
+  test:all: bash scripts/run_tests.sh
   test:locale: cd src && fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
   test:migrate: cd src && fvm flutter test test/drift/app_database/migration_test.dart
 
   # Screenshots
-  # Usage: rps gen:screenshots:device [locale] (e.g., rps gen:screenshots:device tr)
-  gen:screenshots: cd src && bash scripts/generate_screenshots.sh ${1:---all} --
+  # Usage: rps gen:screenshots [locale] (e.g., rps gen:screenshots tr)
+  gen:screenshots: bash scripts/generate_screenshots.sh mobile ${1:---all} --
   gen:feature-graphics: cd scripts/feature_graphics_generator && bun run generate
 
   # Code Generation
-  gen: cd src && bash scripts/generate_gen_files.sh
+  gen: bash scripts/generate_gen_files.sh
   gen:icons: cd src && fvm flutter pub run icons_launcher:create
   gen:migrate: cd src && fvm flutter pub run drift_dev make-migrations
 
