@@ -557,13 +557,20 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                       ],
                     ),
                     // Display text with appropriate unit
-                    Text(
-                      hasGoal && streak.completions != null
-                          ? '${streak.completions} ${_translationService.translate(HabitTranslationKeys.completions)}'
-                          : '${streak.days} ${_translationService.translate(SharedTranslationKeys.days)}',
-                      style: AppTheme.bodySmall.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.surface1,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        hasGoal && streak.completions != null
+                            ? '${streak.completions} ${_translationService.translate(HabitTranslationKeys.completions)}'
+                            : '${streak.days} ${_translationService.translate(SharedTranslationKeys.days)}',
+                        style: AppTheme.bodySmall.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
                       ),
                     ),
                   ],
