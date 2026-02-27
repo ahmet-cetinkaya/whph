@@ -107,6 +107,12 @@ manifest['modules'] = [
     else item
     for item in modules
 ]
+for module in manifest.get('modules', []):
+    if isinstance(module, dict) and module.get('name') == 'whph':
+        build_options = module.setdefault('build-options', {})
+        env = build_options.setdefault('env', {})
+        env['PKG_CONFIG_PATH'] = '/app/lib/pkgconfig:/app/lib64/pkgconfig:/app/lib/x86_64-linux-gnu/pkgconfig:/app/lib/aarch64-linux-gnu/pkgconfig'
+        break
 with open(manifest_path, 'w') as f:
     yaml.dump(manifest, f, sort_keys=False)
 "

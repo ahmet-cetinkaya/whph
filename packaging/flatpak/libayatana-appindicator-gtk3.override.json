@@ -7,7 +7,8 @@
     "config-opts": [
         "-DENABLE_BINDINGS_MONO=NO",
         "-DENABLE_BINDINGS_VALA=NO",
-        "-DENABLE_GTKDOC=NO"
+        "-DENABLE_GTKDOC=NO",
+        "-DCMAKE_INSTALL_LIBDIR=lib"
     ],
     "modules": [
         "shared-modules/intltool/intltool-0.51.json",

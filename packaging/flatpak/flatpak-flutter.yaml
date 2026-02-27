@@ -60,6 +60,7 @@ modules:
       prepend-ld-library-path: /usr/lib/sdk/llvm20/lib
       env:
         PUB_CACHE: /run/build/whph/.pub-cache
+        PKG_CONFIG_PATH: /app/lib/pkgconfig:/app/lib64/pkgconfig:/app/lib/x86_64-linux-gnu/pkgconfig:/app/lib/aarch64-linux-gnu/pkgconfig
     build-commands:
       # Build Process
       - cd src && flutter pub run build_runner build --delete-conflicting-outputs
