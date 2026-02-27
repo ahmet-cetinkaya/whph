@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' show DateFormatService, DateFormatType;
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
@@ -19,6 +18,7 @@ import 'package:whph/presentation/ui/features/tasks/components/task_details_cont
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_date_display_helper.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/components/optional_field_chip.dart';
 import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart';
@@ -126,18 +126,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
 
     if (!_isPlannedDatePickerActive && !_plannedDateFocusNode.hasFocus) {
-      final plannedDateText = task.plannedDate != null
-          ? DateFormatService.formatForInput(task.plannedDate, context, type: DateFormatType.dateTime)
-          : '';
+      final plannedDateText = TaskDateDisplayHelper.formatForInput(task.plannedDate, context);
       if (_plannedDateController.text != plannedDateText) {
         _plannedDateController.text = plannedDateText;
       }
     }
 
     if (!_isDeadlineDatePickerActive && !_deadlineDateFocusNode.hasFocus) {
-      final deadlineDateText = task.deadlineDate != null
-          ? DateFormatService.formatForInput(task.deadlineDate, context, type: DateFormatType.dateTime)
-          : '';
+      final deadlineDateText = TaskDateDisplayHelper.formatForInput(task.deadlineDate, context);
       if (_deadlineDateController.text != deadlineDateText) {
         _deadlineDateController.text = deadlineDateText;
       }
@@ -193,7 +189,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   void _onPlannedDateChanged(DateTime? date) {
     _isPlannedDatePickerActive = true;
     if (date != null) {
-      _plannedDateController.text = DateFormatService.formatForInput(date, context, type: DateFormatType.dateTime);
+      _plannedDateController.text = TaskDateDisplayHelper.formatForInput(date, context);
     } else {
       _plannedDateController.clear();
     }
@@ -207,7 +203,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   void _onDeadlineDateChanged(DateTime? date) {
     _isDeadlineDatePickerActive = true;
     if (date != null) {
-      _deadlineDateController.text = DateFormatService.formatForInput(date, context, type: DateFormatType.dateTime);
+      _deadlineDateController.text = TaskDateDisplayHelper.formatForInput(date, context);
     } else {
       _deadlineDateController.clear();
     }

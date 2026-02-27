@@ -15,6 +15,7 @@ import 'package:whph/core/domain/features/tasks/task_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
+import 'package:whph/core/application/features/tasks/utils/task_date_time_normalizer.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -65,11 +66,16 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     this.recurrenceCount,
     this.recurrenceParentId,
     this.recurrenceConfiguration,
-  })  : plannedDate = plannedDate != null ? DateTimeHelper.toUtcDateTime(plannedDate) : null,
-        deadlineDate = deadlineDate != null ? DateTimeHelper.toUtcDateTime(deadlineDate) : null,
+  })  : plannedDate = TaskDateTimeNormalizer.normalize(plannedDate),
+        deadlineDate = TaskDateTimeNormalizer.normalize(deadlineDate),
         completedAt = completedAt != null ? DateTimeHelper.toUtcDateTime(completedAt) : null,
         recurrenceStartDate = recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(recurrenceStartDate) : null,
-        recurrenceEndDate = recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(recurrenceEndDate) : null;
+        recurrenceEndDate = recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(recurrenceEndDate) : null {
+    TaskDateTimeNormalizer.validateDateRange(
+      plannedDate: this.plannedDate,
+      deadlineDate: this.deadlineDate,
+    );
+  }
 }
 
 class SaveTaskCommandResponse {

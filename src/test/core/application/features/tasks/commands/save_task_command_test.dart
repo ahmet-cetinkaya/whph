@@ -55,6 +55,52 @@ void main() {
         .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
   });
 
+  group('SaveTaskCommand Date Normalization', () {
+    test('should treat date-only plannedDate as all-day and normalize to UTC day start', () {
+      // Arrange
+      final localDateOnly = DateTime(2026, 3, 12);
+
+      // Act
+      final command = SaveTaskCommand(
+        title: 'Date Only Task',
+        plannedDate: localDateOnly,
+      );
+
+      // Assert
+      expect(command.plannedDate, DateTimeHelper.toUtcDateTime(DateTime(2026, 3, 12)));
+    });
+
+    test('should preserve explicit plannedDate time when provided', () {
+      // Arrange
+      final localDateTime = DateTime(2026, 3, 12, 14, 45);
+
+      // Act
+      final command = SaveTaskCommand(
+        title: 'Timed Task',
+        plannedDate: localDateTime,
+      );
+
+      // Assert
+      expect(command.plannedDate, DateTimeHelper.toUtcDateTime(localDateTime));
+    });
+
+    test('should throw when deadlineDate is before plannedDate', () {
+      // Arrange
+      final plannedDate = DateTime(2026, 3, 12, 9, 0);
+      final invalidDeadline = DateTime(2026, 3, 12, 8, 59);
+
+      // Act & Assert
+      expect(
+        () => SaveTaskCommand(
+          title: 'Invalid Date Range Task',
+          plannedDate: plannedDate,
+          deadlineDate: invalidDeadline,
+        ),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+  });
+
   group('SaveTaskCommandHandler Tests - Create', () {
     test('should create task when id is null', () async {
       // Arrange
