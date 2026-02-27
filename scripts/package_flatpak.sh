@@ -24,6 +24,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 FLATPAK_DIR="$PROJECT_ROOT/packaging/flatpak"
 FLATHUB_DIR="$FLATPAK_DIR/flathub"
 FLATPAK_FLUTTER_PY="$FLATPAK_DIR/flatpak-flutter/flatpak-flutter.py"
+AYATANA_MODULE_OVERRIDE="$FLATPAK_DIR/libayatana-appindicator-gtk3.override.json"
 VENV_PYTHON="$PROJECT_ROOT/.venv/bin/python3"
 VERSION=$(grep "^version:" "$PROJECT_ROOT/src/pubspec.yaml" | sed 's/version: //' | sed 's/+.*//')
 
@@ -54,6 +55,10 @@ fi
 
 if [[ ! -f "$FLATPAK_FLUTTER_PY" ]]; then
     acore_log_error "flatpak-flutter.py not found at $FLATPAK_FLUTTER_PY. Did you initialize submodules?"
+    exit 1
+fi
+if [[ ! -f "$AYATANA_MODULE_OVERRIDE" ]]; then
+    acore_log_error "Ayatana module override not found at $AYATANA_MODULE_OVERRIDE."
     exit 1
 fi
 
@@ -87,6 +92,24 @@ else
         exit 1
     fi
 fi
+
+# Ensure manifest references local Ayatana override and make it available next to the generated manifest.
+cp "$AYATANA_MODULE_OVERRIDE" "$FLATHUB_DIR/"
+$VENV_PYTHON -c "
+import yaml
+manifest_path = '$FLATHUB_DIR/$MANIFEST_NAME'
+with open(manifest_path, 'r') as f:
+    manifest = yaml.safe_load(f)
+modules = manifest.get('modules', [])
+manifest['modules'] = [
+    'libayatana-appindicator-gtk3.override.json'
+    if item == 'shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json'
+    else item
+    for item in modules
+]
+with open(manifest_path, 'w') as f:
+    yaml.dump(manifest, f, sort_keys=False)
+"
 
 if [[ "$FLATHUB_MODE" == true ]]; then
     acore_log_info "Flathub mode enabled. Applying Flathub specific restrictions..."
