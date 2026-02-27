@@ -72,7 +72,7 @@ if ! command -v makepkg &>/dev/null; then
     acore_log_error "'makepkg' not found. Please install pacman/base-devel."
     exit 1
 fi
-sudo -u builduser makepkg --printsrcinfo >.SRCINFO
+sudo -u builduser bash -lc 'makepkg --printsrcinfo > .SRCINFO'
 
 # Restore ownership to root for Git operations
 chown -R root:root "$PROJECT_ROOT"

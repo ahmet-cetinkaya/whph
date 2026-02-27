@@ -81,9 +81,9 @@ fi
 if command -v markdownlint-cli2 &>/dev/null; then
 	cd "$PROJECT_ROOT"
 	acore_log_section "🔍 Running Markdown Lint..."
-	MD_FILES=$(fd -e md -t f docs/ 2>/dev/null | grep -v "packaging" | wc -l)
-	if [[ $MD_FILES -gt 0 ]]; then
-		if fd -e md -t f docs/ 2>/dev/null | grep -v "packaging" | xargs markdownlint-cli2; then
+	mapfile -t markdown_files < <(fd -e md -t f docs/ 2>/dev/null | grep -v "packaging")
+	if [[ ${#markdown_files[@]} -gt 0 ]]; then
+		if markdownlint-cli2 "${markdown_files[@]}"; then
 			acore_log_success "✅ Markdown Lint passed"
 			cd "$SRC_DIR"
 		else
@@ -102,11 +102,29 @@ fi
 # 4. Shell script linting (check project scripts, exclude packages/ and packaging/)
 if command -v shellcheck &>/dev/null; then
 	acore_log_section "🐚 Running Shellcheck on shell scripts..."
-	cd "$SRC_DIR"
 
-	# Exclude SC1091 (source file not found) as it's expected for optional files
-	fd -e sh -t f . scripts/ 2>/dev/null | xargs shellcheck -x -e SC1091 2>/dev/null
-	acore_log_success "✅ Shellcheck passed"
+	shell_script_dirs=()
+	if [[ -d "$PROJECT_ROOT/scripts" ]]; then
+		shell_script_dirs+=("$PROJECT_ROOT/scripts")
+	fi
+	if [[ -d "$SRC_DIR/scripts" ]]; then
+		shell_script_dirs+=("$SRC_DIR/scripts")
+	fi
+
+	if [[ ${#shell_script_dirs[@]} -eq 0 ]]; then
+		acore_log_info "No shell script directories found to lint"
+	else
+		mapfile -t shell_script_files < <(fd -e sh -t f . "${shell_script_dirs[@]}" 2>/dev/null)
+
+		if [[ ${#shell_script_files[@]} -eq 0 ]]; then
+			acore_log_info "No shell scripts found to lint"
+		elif shellcheck -x -e SC1091 "${shell_script_files[@]}"; then
+			acore_log_success "✅ Shellcheck passed"
+		else
+			acore_log_error "❌ Shellcheck failed"
+			OVERALL_SUCCESS=false
+		fi
+	fi
 else
 	acore_log_warning "⚠️ shellcheck not found, skipping shell script linting"
 	acore_log_info "Install from https://github.com/koalaman/shellcheck?tab=readme-ov-file#installing"
