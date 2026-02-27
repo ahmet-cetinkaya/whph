@@ -19,9 +19,16 @@ class HabitTagListItem {
   String tagId;
   String tagName;
   String? tagColor;
+  TagType tagType;
 
-  HabitTagListItem(
-      {required this.id, required this.habitId, required this.tagId, required this.tagName, this.tagColor});
+  HabitTagListItem({
+    required this.id,
+    required this.habitId,
+    required this.tagId,
+    required this.tagName,
+    this.tagColor,
+    this.tagType = TagType.label,
+  });
 }
 
 class GetListHabitTagsQueryResponse extends PaginatedList<HabitTagListItem> {
@@ -56,6 +63,7 @@ class GetListHabitTagsQueryHandler implements IRequestHandler<GetListHabitTagsQu
         tagId: habitTag.tagId,
         tagName: secondaryTag.name,
         tagColor: secondaryTag.color,
+        tagType: secondaryTag.type,
       ));
     }
     return GetListHabitTagsQueryResponse(

@@ -312,7 +312,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             id: e.id,
                             name: e.tagName.isNotEmpty
                                 ? e.tagName
-                                : _translationService.translate(SharedTranslationKeys.untitled)))
+                                : _translationService.translate(SharedTranslationKeys.untitled),
+                            type: e.tagType))
                         .toList());
               });
             }
@@ -368,7 +369,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                       id: e.id,
                       name: e.tagName.isNotEmpty
                           ? e.tagName
-                          : _translationService.translate(SharedTranslationKeys.untitled)))
+                          : _translationService.translate(SharedTranslationKeys.untitled),
+                      type: e.tagType))
                   .toList(),
               subTasks: subTasks.items,
             );
