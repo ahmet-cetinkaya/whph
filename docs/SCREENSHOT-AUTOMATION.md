@@ -38,11 +38,11 @@ fastlane screenshots
 # Android only (Using the script)
 # Generate for all locales (default)
 rps gen:screenshots
-# Or directly: cd src && bash scripts/generate_screenshots.sh --all
+# Or directly: bash scripts/generate_screenshots.sh mobile --all
 
 # Generate for a specific locale
 rps gen:screenshots tr
-# Or directly: cd src && bash scripts/generate_screenshots.sh tr
+# Or directly: bash scripts/generate_screenshots.sh mobile tr
 
 # iOS only (requires macOS)
 fastlane ios ios_screenshots

@@ -2,11 +2,11 @@
 
 # Source acore logger
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../../packages/acore-scripts/src/logger.sh"
+source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
-# Get the directory of the script and navigate to src directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SRC_DIR="$(dirname "$SCRIPT_DIR")"
+# Navigate to src directory
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SRC_DIR="$PROJECT_ROOT/src"
 cd "$SRC_DIR" || exit
 
 awk -F: '/^[[:space:]]*flutter:/ {gsub(/'\''|"/,"",$2); gsub(/^[[:space:]]+/,"",$2); print $2; exit}' pubspec.yaml

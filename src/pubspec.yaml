@@ -12,9 +12,9 @@ scripts:
   # To install rps globally: `dart pub global activate rps`
   # To run commands: `rps <command>`
   # For example, to run the `clean` command: `rps clean`
-  clean: bash scripts/clean.sh
+  clean: bash ../scripts/clean.sh
   format: ../scripts/format.sh
-  gen: ./scripts/generate_gen_files.sh
+  gen: bash ../scripts/generate_gen_files.sh
   gen-icons: fvm flutter pub run icons_launcher:create
   gen:migrate: fvm flutter pub run drift_dev make-migrations
   gen:changelog: bash ../scripts/create_changelog.sh --auto
@@ -25,7 +25,7 @@ scripts:
   release:android: fvm flutter build apk --release
   release:android:bundle: fvm flutter build appbundle --release
   lint: ../scripts/lint.sh
-  test: bash scripts/run_tests.sh
+  test: bash ../scripts/run_tests.sh
   test:locale: fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
   test:ci: cd .. && act -j build
   test:ci:android: cd .. && act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets

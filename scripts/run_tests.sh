@@ -3,10 +3,10 @@ set -e
 
 # Source acore logger
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../../packages/acore-scripts/src/logger.sh"
+source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
 # Get the project root directory
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 acore_log_header "WHPH - Test Suite"
 

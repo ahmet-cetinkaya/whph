@@ -3,12 +3,12 @@ set -e
 
 # Source acore logger
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../../packages/acore-scripts/src/logger.sh"
+source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
 trap 'acore_log_error "Clean failed!"; exit 1' ERR
 
-SRC_DIR="$(dirname "$SCRIPT_DIR")"
-PROJECT_ROOT="$(dirname "$SRC_DIR")"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SRC_DIR="$PROJECT_ROOT/src"
 cd "$SRC_DIR"
 
 # Helper function to remove files/directories with sudo fallback
@@ -103,6 +103,6 @@ fvm flutter pub get
 
 # Run code generation
 acore_log_info "Running code generation (rps gen)..."
-bash scripts/generate_gen_files.sh
+bash "$PROJECT_ROOT/scripts/generate_gen_files.sh"
 
 acore_log_success "Clean and generation completed."

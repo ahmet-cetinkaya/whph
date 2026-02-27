@@ -2,10 +2,10 @@
 
 # Source acore logger
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../../packages/acore-scripts/src/logger.sh"
+source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
 # Script to clean the debug database for WHPH
-# Usage: ./src/scripts/clean_db.sh
+# Usage: ./scripts/clean_db.sh
 
 DB_PATH="$HOME/.local/share/whph/debug_whph"
 
