@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:meta/meta.dart';
@@ -33,6 +34,11 @@ class NetworkInterfaceService implements INetworkInterfaceService {
     'host-only',
     'loopback',
   ];
+
+  static const String _activeInterfacesErrorId = 'sync_network_interfaces_discovery_failed';
+  static const String _desktopInterfacesErrorId = 'sync_desktop_interfaces_discovery_failed';
+  static const String _windowsMetadataErrorId = 'sync_windows_interface_metadata_query_failed';
+  static const String _windowsMetadataParseErrorId = 'sync_windows_interface_metadata_parse_failed';
 
   @override
   Future<List<String>> getLocalIPAddresses() async {
@@ -72,8 +78,8 @@ class NetworkInterfaceService implements INetworkInterfaceService {
       Logger.debug(
           'Found ${sortedInterfaces.length} network interfaces: ${sortedInterfaces.map((i) => '${i.name}(${i.ipAddress})').join(', ')}');
       return sortedInterfaces;
-    } catch (e) {
-      Logger.error('Failed to get active network interfaces: $e');
+    } catch (e, st) {
+      Logger.error('[$_activeInterfacesErrorId] Failed to get active network interfaces: $e\n$st');
       return [];
     }
   }
@@ -166,8 +172,8 @@ class NetworkInterfaceService implements INetworkInterfaceService {
           }
         }
       }
-    } catch (e) {
-      Logger.debug('Desktop network interface detection failed: $e');
+    } catch (e, st) {
+      Logger.error('[$_desktopInterfacesErrorId] Desktop network interface detection failed: $e\n$st');
     }
   }
 
@@ -185,8 +191,7 @@ class NetworkInterfaceService implements INetworkInterfaceService {
     final interfaceMetric = metadata?.interfaceMetric;
     final isVirtual = metadata?.isVirtual ?? _isVirtualInterfaceByName(lowerName);
 
-    int priority = _calculatePriority(
-      lowerName: lowerName,
+    final priority = _calculatePriority(
       isWiFi: isWiFi,
       isEthernet: isEthernet,
       hasDefaultGateway: hasDefaultGateway,
@@ -210,7 +215,6 @@ class NetworkInterfaceService implements INetworkInterfaceService {
   }
 
   int _calculatePriority({
-    required String lowerName,
     required bool isWiFi,
     required bool isEthernet,
     required bool hasDefaultGateway,
@@ -241,16 +245,39 @@ class NetworkInterfaceService implements INetworkInterfaceService {
       priority += 5;
     }
 
-    final looksVirtual = isVirtual || _isVirtualInterfaceByName(lowerName);
-    if (looksVirtual && !hasDefaultGateway) {
+    if (isVirtual && !hasDefaultGateway) {
       priority -= 120;
     }
 
     return priority;
   }
 
+  @visibleForTesting
+  int calculatePriorityForTest({
+    required bool isWiFi,
+    required bool isEthernet,
+    required bool hasDefaultGateway,
+    required int? interfaceMetric,
+    required bool isVirtual,
+    required String ipAddress,
+  }) {
+    return _calculatePriority(
+      isWiFi: isWiFi,
+      isEthernet: isEthernet,
+      hasDefaultGateway: hasDefaultGateway,
+      interfaceMetric: interfaceMetric,
+      isVirtual: isVirtual,
+      ipAddress: ipAddress,
+    );
+  }
+
   bool _isVirtualInterfaceByName(String lowerName) {
     return _virtualInterfaceNameKeywords.any(lowerName.contains);
+  }
+
+  @visibleForTesting
+  bool isVirtualInterfaceByNameForTest(String interfaceName) {
+    return _isVirtualInterfaceByName(interfaceName.toLowerCase());
   }
 
   _WindowsInterfaceMetadata? _resolveWindowsMetadata(
@@ -265,6 +292,33 @@ class NetworkInterfaceService implements INetworkInterfaceService {
     if (exact != null) return exact;
 
     return metadataMap[_windowsMetadataKey(interfaceName, null)];
+  }
+
+  @visibleForTesting
+  Map<String, dynamic>? resolveWindowsMetadataForTest(
+    Map<String, Map<String, dynamic>> metadataMap,
+    String interfaceName,
+    String ipAddress,
+  ) {
+    final internalMap = <String, _WindowsInterfaceMetadata>{};
+    for (final entry in metadataMap.entries) {
+      internalMap[entry.key] = _WindowsInterfaceMetadata(
+        hasDefaultGateway: entry.value['hasDefaultGateway'] as bool? ?? false,
+        interfaceMetric: entry.value['interfaceMetric'] as int?,
+        isVirtual: entry.value['isVirtual'] as bool? ?? false,
+        gatewayIp: entry.value['gatewayIp'] as String?,
+      );
+    }
+
+    final resolved = _resolveWindowsMetadata(internalMap, interfaceName, ipAddress);
+    if (resolved == null) return null;
+
+    return {
+      'hasDefaultGateway': resolved.hasDefaultGateway,
+      'interfaceMetric': resolved.interfaceMetric,
+      'isVirtual': resolved.isVirtual,
+      'gatewayIp': resolved.gatewayIp,
+    };
   }
 
   String _windowsMetadataKey(String interfaceName, String? ipAddress) {
@@ -285,21 +339,26 @@ class NetworkInterfaceService implements INetworkInterfaceService {
 $metric = Get-NetIPInterface -AddressFamily IPv4 | Select-Object InterfaceAlias,InterfaceMetric;
 [PSCustomObject]@{ Config=$cfg; Metrics=$metric } | ConvertTo-Json -Depth 5 -Compress''',
         ],
-      );
+      ).timeout(const Duration(seconds: 10));
 
       if (result.exitCode != 0) {
-        Logger.debug('Failed to query Windows interface metadata: ${result.stderr}');
+        Logger.error(
+            '[$_windowsMetadataErrorId] PowerShell metadata query failed with exit code ${result.exitCode}: ${result.stderr}');
         return null;
       }
 
       final output = (result.stdout as String).trim();
       if (output.isEmpty) {
+        Logger.error('[$_windowsMetadataErrorId] PowerShell metadata query returned empty output');
         return null;
       }
 
       return _parseWindowsInterfaceMetadata(output);
-    } catch (e) {
-      Logger.debug('Windows interface metadata query failed: $e');
+    } on TimeoutException catch (e) {
+      Logger.error('[$_windowsMetadataErrorId] Windows interface metadata query timed out: $e');
+      return null;
+    } catch (e, st) {
+      Logger.error('[$_windowsMetadataErrorId] Windows interface metadata query failed: $e\n$st');
       return null;
     }
   }
@@ -321,13 +380,28 @@ $metric = Get-NetIPInterface -AddressFamily IPv4 | Select-Object InterfaceAlias,
   }
 
   Map<String, _WindowsInterfaceMetadata> _parseWindowsInterfaceMetadata(String jsonOutput) {
-    final parsed = jsonDecode(jsonOutput);
-    if (parsed is! Map<String, dynamic>) return {};
+    dynamic parsed;
+    try {
+      parsed = jsonDecode(jsonOutput);
+    } catch (e, st) {
+      Logger.error('[$_windowsMetadataParseErrorId] Failed to parse Windows interface metadata JSON: $e\n$st');
+      return {};
+    }
+
+    if (parsed is! Map<String, dynamic>) {
+      Logger.error('[$_windowsMetadataParseErrorId] Parsed metadata payload is not a JSON object');
+      return {};
+    }
 
     final configList = _toObjectList(parsed['Config']);
     final metricsList = _toObjectList(parsed['Metrics']);
 
+    if (configList.isEmpty && metricsList.isEmpty) {
+      Logger.error('[$_windowsMetadataParseErrorId] Windows metadata payload contains no config or metric entries');
+    }
+
     final metricsByAlias = <String, int>{};
+
     for (final row in metricsList) {
       final alias = (row['InterfaceAlias']?.toString() ?? '').trim().toLowerCase();
       if (alias.isEmpty) continue;

@@ -53,8 +53,12 @@ class NetworkInterfaceInfo {
       other is NetworkInterfaceInfo &&
           runtimeType == other.runtimeType &&
           name == other.name &&
-          ipAddress == other.ipAddress;
+          ipAddress == other.ipAddress &&
+          hasDefaultGateway == other.hasDefaultGateway &&
+          interfaceMetric == other.interfaceMetric &&
+          isVirtual == other.isVirtual &&
+          gatewayIp == other.gatewayIp;
 
   @override
-  int get hashCode => Object.hash(name, ipAddress);
+  int get hashCode => Object.hash(name, ipAddress, hasDefaultGateway, interfaceMetric, isVirtual, gatewayIp);
 }
