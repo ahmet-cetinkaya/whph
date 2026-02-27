@@ -86,6 +86,9 @@
         {
             "name": "libayatana-indicator",
             "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DCMAKE_INSTALL_LIBDIR=lib"
+            ],
             "cleanup": [
                 "/include",
                 "/libexec",
