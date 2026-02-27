@@ -36,17 +36,19 @@ void main() {
       );
     });
 
-    test('returns false when milliseconds are non-zero', () {
+    test('returns true when milliseconds are non-zero at midnight', () {
+      // Fractional seconds are ignored - only hour/minute/second matter
       expect(
         TaskDateTimeNormalizer.isAllDay(DateTime(2026, 3, 12, 0, 0, 0, 1, 0)),
-        false,
+        true,
       );
     });
 
-    test('returns false when microseconds are non-zero', () {
+    test('returns true when microseconds are non-zero at midnight', () {
+      // Fractional seconds are ignored - only hour/minute/second matter
       expect(
         TaskDateTimeNormalizer.isAllDay(DateTime(2026, 3, 12, 0, 0, 0, 0, 1)),
-        false,
+        true,
       );
     });
 
@@ -89,28 +91,30 @@ void main() {
       expect(TaskDateTimeNormalizer.isAllDay(result!), true);
     });
 
-    test('distinguishes all-day from one-millisecond-after-midnight', () {
+    test('treats one-millisecond-after-midnight as all-day', () {
+      // Fractional seconds at midnight are now treated as all-day
       final allDayResult = TaskDateTimeNormalizer.normalize(
         DateTime(2026, 3, 12, 0, 0, 0, 0, 0),
       );
-      final timedResult = TaskDateTimeNormalizer.normalize(
+      final fractionalSecondResult = TaskDateTimeNormalizer.normalize(
         DateTime(2026, 3, 12, 0, 0, 0, 1, 0),
       );
 
       expect(TaskDateTimeNormalizer.isAllDay(allDayResult!), true);
-      expect(TaskDateTimeNormalizer.isAllDay(timedResult!), false);
+      expect(TaskDateTimeNormalizer.isAllDay(fractionalSecondResult!), true);
     });
 
-    test('distinguishes all-day from one-microsecond-after-midnight', () {
+    test('treats one-microsecond-after-midnight as all-day', () {
+      // Fractional seconds at midnight are now treated as all-day
       final allDayResult = TaskDateTimeNormalizer.normalize(
         DateTime(2026, 3, 12, 0, 0, 0, 0, 0),
       );
-      final timedResult = TaskDateTimeNormalizer.normalize(
+      final fractionalSecondResult = TaskDateTimeNormalizer.normalize(
         DateTime(2026, 3, 12, 0, 0, 0, 0, 1),
       );
 
       expect(TaskDateTimeNormalizer.isAllDay(allDayResult!), true);
-      expect(TaskDateTimeNormalizer.isAllDay(timedResult!), false);
+      expect(TaskDateTimeNormalizer.isAllDay(fractionalSecondResult!), true);
     });
   });
 }
