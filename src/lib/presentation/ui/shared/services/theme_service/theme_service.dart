@@ -33,7 +33,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   bool get isPollingLinuxTheme => _isPollingLinuxTheme;
 
   @protected
-  @protected
   set isPollingLinuxTheme(bool value) => _isPollingLinuxTheme = value;
 
   bool _isPollingLinuxTheme = false;
@@ -396,6 +395,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   }
 
   /// Updates the actual theme mode based on user preference and system settings
+  @visibleForTesting
   @protected
   Future<void> updateActualThemeMode() async {
     switch (_storedThemeMode) {
