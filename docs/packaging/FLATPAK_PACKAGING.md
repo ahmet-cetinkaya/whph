@@ -19,18 +19,22 @@ Flatpak packaging.
 The packaging process is automated via `scripts/package_flatpak.sh`:
 
 1.  **Cleanup**: Removes previous build artifacts and `repo` directory.
-2.  **Configuration**: Uses `flatpak-flutter` to generate module definitions
-    from `pubspec.yaml`.
-3.  **Vendoring**: Copies required `shared-modules` (intltool,
-    libayatana-appindicator) into the build context.
-4.  **Building**: Runs `flatpak-builder` to compile the application and create a
+2.  **Manifest Selection**: Chooses one source manifest:
+    - `flatpak-flutter.yaml` for local/CI bundle builds.
+    - `flatpak-flutter.flathub.yaml` for Flathub builds (`--flathub`).
+3.  **Configuration**: Uses `flatpak-flutter` to generate module definitions
+    from `pubspec.yaml` into `flathub/`.
+4.  **Local Override Staging**: For non-Flathub builds, copies
+    `libayatana-appindicator-gtk3.override.json` into the generated `flathub/`
+    directory.
+5.  **Building**: Runs `flatpak-builder` to compile the application and create a
     `.flatpak` bundle.
-5.  **Integration**: Installs desktop entry, D-Bus service file, icons, and
+6.  **Integration**: Installs desktop entry, D-Bus service file, icons, and
     metainfo file to integrate the application with the desktop environment.
-6.  **Flutter Build**: Executes Flutter build commands including running build
+7.  **Flutter Build**: Executes Flutter build commands including running build
     runner and building the Linux release bundle with proper architecture
     support (x64/aarch64).
-7.  **Output**:
+8.  **Output**:
     - `whph-v<VERSION>-linux.flatpak`: The final installable bundle.
     - `repo/`: The OSTree repository.
     - `flathub/`: The directory ready for Flathub submission (manifest +
@@ -42,7 +46,9 @@ The Flatpak packaging is organized in `packaging/flatpak/`:
 
 ```
 packaging/flatpak/
-├── flatpak-flutter.yaml      # Main application manifest
+├── flatpak-flutter.yaml      # Local/CI source manifest (uses local Ayatana override)
+├── flatpak-flutter.flathub.yaml  # Flathub source manifest (uses shared-modules)
+├── libayatana-appindicator-gtk3.override.json  # Local/CI Ayatana override module
 ├── flathub/                  # Flathub submission repository (submodule)
 │   ├── me.ahmetcetinkaya.whph.yaml     # Flathub manifest
 │   ├── me.ahmetcetinkaya.whph.metainfo.xml  # App metadata for Flathub
@@ -109,6 +115,45 @@ are built in order. Some modules are prerequisite build tools for others.
 | `flutter`                 | **Runtime SDK**      | Included as a source within the `whph` module. The Flutter SDK is downloaded and built during the process to ensure a consistent, reproducible environment independent of the host system. |
 | `whph`                    | **Application**      | The main application module. It uses the `flutter` SDK to compile the source code and bundles the resulting binary with its assets, desktop entries, and metadata.                         |
 
+### Custom Ayatana Override (Why It Exists)
+
+WHPH intentionally uses a local override module file:
+
+- `packaging/flatpak/libayatana-appindicator-gtk3.override.json`
+
+instead of relying only on the shared submodule definition for
+`libayatana-appindicator`.
+
+This override is required to keep Flatpak CI builds stable for the Flutter
+`tray_manager` Linux plugin, which checks pkg-config for:
+
+- `ayatana-appindicator3-0.1` (or `appindicator3-0.1`)
+
+#### Root cause
+
+In the default shared module flow, cleanup/install layout differences can remove
+or relocate pkg-config metadata before downstream modules run, which causes
+CMake/pkg-config resolution failures during:
+
+- `libayatana-indicator` configure step
+- `whph` module (`flutter build linux`) via `tray_manager`
+
+#### What the override enforces
+
+- Normalized install libdir (`-DCMAKE_INSTALL_LIBDIR=lib`) for Ayatana modules
+- Preservation of required pkg-config metadata between module boundaries
+- Patch path stability when building from generated manifests
+- Stable `PKG_CONFIG_PATH` in `whph` build options (declared directly in source manifests)
+
+#### Maintenance note
+
+Do not remove this override unless the upstream shared module behavior is proven
+stable for all of these checks in CI:
+
+- `libayatana-ido3-0.4`
+- `ayatana-indicator3-0.4`
+- `ayatana-appindicator3-0.1`
+
 ### Module Dependency Chain
 
 To support system tray icons in the Flutter application, the following
@@ -120,7 +165,13 @@ dependency chain is established in the manifest:
 
 ## Flathub Submission & Differences
 
-When building for Flathub, we strictly adhere to sandbox guidelines and therefore omit certain permissions that bypass the sandbox. The `scripts/package_flatpak.sh` script supports a `--flathub` option which automatically removes `--talk-name=org.freedesktop.Flatpak` and injects `--dart-define=FLATHUB=true` during the build process.
+When building for Flathub, we strictly adhere to sandbox guidelines and use
+`flatpak-flutter.flathub.yaml`, where Flathub-specific differences are declared
+directly (not patched dynamically by the script):
+
+- `--talk-name=org.freedesktop.Flatpak` is omitted.
+- `flutter build linux` includes `--dart-define=FLATHUB=true`.
+- Ayatana module is referenced via `shared-modules/...` instead of local override.
 
 Because of this, the Flathub version of WHPH cannot use `flatpak-spawn --host` to run absolute fallback heuristics or call specific Wayland compositor tools (like `swaymsg` or `hyprctl`). Users on these environments will see an in-app notice explaining the limitation.
 

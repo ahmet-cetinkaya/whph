@@ -23,7 +23,6 @@ finish-args:
   - --talk-name=org.gnome.Shell
   - --talk-name=org.kde.KWin
   - --talk-name=org.kde.kwin.Scripting
-  - --talk-name=org.freedesktop.Flatpak
 
 modules:
   - name: perl-xml-parser
@@ -41,7 +40,7 @@ modules:
         url: https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.44.tar.gz
         sha256: 1ae9d07ee9c35326b3d9aad56eae71a6730a73a116b9fe9e8a4758b7cc033216
 
-  - libayatana-appindicator-gtk3.override.json
+  - shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json
 
   - name: whph
     buildsystem: simple
@@ -61,7 +60,7 @@ modules:
     build-commands:
       # Build Process
       - cd src && flutter pub run build_runner build --delete-conflicting-outputs
-      - cd src && flutter build linux --release --no-pub
+      - cd src && flutter build linux --release --no-pub --dart-define=FLATHUB=true
       # Install to /app/lib/whph to keep relative paths for Flutter engine
       - mkdir -p /app/lib/whph
       - install -D $BUNDLE_PATH/whph /app/lib/whph/whph

@@ -24,6 +24,8 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 FLATPAK_DIR="$PROJECT_ROOT/packaging/flatpak"
 FLATHUB_DIR="$FLATPAK_DIR/flathub"
 FLATPAK_FLUTTER_PY="$FLATPAK_DIR/flatpak-flutter/flatpak-flutter.py"
+DEFAULT_INPUT_MANIFEST="flatpak-flutter.yaml"
+FLATHUB_INPUT_MANIFEST="flatpak-flutter.flathub.yaml"
 AYATANA_MODULE_OVERRIDE="$FLATPAK_DIR/libayatana-appindicator-gtk3.override.json"
 VENV_PYTHON="$PROJECT_ROOT/.venv/bin/python3"
 VERSION=$(grep "^version:" "$PROJECT_ROOT/src/pubspec.yaml" | sed 's/version: //' | sed 's/+.*//')
@@ -57,7 +59,7 @@ if [[ ! -f "$FLATPAK_FLUTTER_PY" ]]; then
     acore_log_error "flatpak-flutter.py not found at $FLATPAK_FLUTTER_PY. Did you initialize submodules?"
     exit 1
 fi
-if [[ ! -f "$AYATANA_MODULE_OVERRIDE" ]]; then
+if [[ "$FLATHUB_MODE" != true && ! -f "$AYATANA_MODULE_OVERRIDE" ]]; then
     acore_log_error "Ayatana module override not found at $AYATANA_MODULE_OVERRIDE."
     exit 1
 fi
@@ -68,7 +70,14 @@ rm -rf "$FLATPAK_DIR/.flatpak-builder/build/whph"*
 # Change to FLATPAK_DIR so .flatpak-builder ends up there
 cd "$FLATPAK_DIR"
 
-INPUT_MANIFEST="flatpak-flutter.yaml"
+INPUT_MANIFEST="$DEFAULT_INPUT_MANIFEST"
+if [[ "$FLATHUB_MODE" == true ]]; then
+    INPUT_MANIFEST="$FLATHUB_INPUT_MANIFEST"
+fi
+if [[ ! -f "$INPUT_MANIFEST" ]]; then
+    acore_log_error "Input manifest not found: $INPUT_MANIFEST"
+    exit 1
+fi
 if [[ "$LOCAL_MODE" == true ]]; then
     acore_log_info "Local mode enabled. Using current directory as source."
     acore_log_warning "Local mode builds locally but flathub files will use git source for submission."
@@ -93,61 +102,9 @@ else
     fi
 fi
 
-# Ensure manifest references local Ayatana override and make it available next to the generated manifest.
-cp "$AYATANA_MODULE_OVERRIDE" "$FLATHUB_DIR/"
-$VENV_PYTHON -c "
-import yaml
-manifest_path = '$FLATHUB_DIR/$MANIFEST_NAME'
-with open(manifest_path, 'r') as f:
-    manifest = yaml.safe_load(f)
-modules = manifest.get('modules', [])
-manifest['modules'] = [
-    'libayatana-appindicator-gtk3.override.json'
-    if item == 'shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json'
-    else item
-    for item in modules
-]
-for module in manifest.get('modules', []):
-    if isinstance(module, dict) and module.get('name') == 'whph':
-        build_options = module.setdefault('build-options', {})
-        env = build_options.setdefault('env', {})
-        env['PKG_CONFIG_PATH'] = '/app/lib/pkgconfig:/app/lib64/pkgconfig:/app/lib/x86_64-linux-gnu/pkgconfig:/app/lib/aarch64-linux-gnu/pkgconfig'
-        break
-with open(manifest_path, 'w') as f:
-    yaml.dump(manifest, f, sort_keys=False)
-"
-
-if [[ "$FLATHUB_MODE" == true ]]; then
-    acore_log_info "Flathub mode enabled. Applying Flathub specific restrictions..."
-    acore_log_info "Removing --talk-name=org.freedesktop.Flatpak for Flathub compliance. Refer to docs/packaging/FLATPAK_PACKAGING.md"
-    
-    $VENV_PYTHON -c "
-import yaml
-manifest_path = '$FLATHUB_DIR/$MANIFEST_NAME'
-with open(manifest_path, 'r') as f:
-    manifest = yaml.safe_load(f)
-
-if 'finish-args' in manifest:
-    manifest['finish-args'] = [arg for arg in manifest['finish-args'] if arg != '--talk-name=org.freedesktop.Flatpak']
-
-for module in manifest.get('modules', []):
-    if isinstance(module, dict) and module.get('name') == 'whph':
-        if 'build-commands' in module:
-            new_cmds = []
-            for cmd in module['build-commands']:
-                if 'flutter build linux' in cmd:
-                    if '--dart-define=FLATHUB=true' not in cmd:
-                        new_cmds.append(cmd + ' --dart-define=FLATHUB=true')
-                    else:
-                        new_cmds.append(cmd)
-                else:
-                    new_cmds.append(cmd)
-            module['build-commands'] = new_cmds
-        break
-
-with open(manifest_path, 'w') as f:
-    yaml.dump(manifest, f, sort_keys=False)
-"
+# For local/CI bundle builds we pin to our local Ayatana override module.
+if [[ "$FLATHUB_MODE" != true ]]; then
+    cp "$AYATANA_MODULE_OVERRIDE" "$FLATHUB_DIR/"
 fi
 
 # Format output files with prettier for Flathub submission
