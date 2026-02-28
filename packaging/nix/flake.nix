@@ -12,7 +12,7 @@
         pkgs = import nixpkgs { inherit system; };
         
         pname = "whph";
-        version = "0.22.1";
+        version = "0.22.2";
 
         # Source assets from the project
         desktopTemplate = ../../src/linux/whph.desktop.in;
