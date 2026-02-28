@@ -372,13 +372,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Copy flathub manifest files
-        run: |
-          # Copy the manifest files to the submodule directory
-          cp flathub-artifact/me.ahmetcetinkaya.whph.yaml packaging/flatpak/flathub/
-          cp -r flathub-artifact/generated packaging/flatpak/flathub/
-          echo "Copied flathub manifest files to submodule"
-
       - name: Update Flathub
         run: |
           cd packaging/flatpak/flathub
@@ -393,6 +386,12 @@ jobs:
           
           # Configure git to use PAT for authentication with the submodule remote
           git remote set-url origin https://${FLATHUB_PAT}@github.com/ahmet-cetinkaya/flathub.git
+
+          # Copy the manifest files to the synchronized submodule directory
+          cp "$GITHUB_WORKSPACE"/flathub-artifact/me.ahmetcetinkaya.whph.yaml .
+          rm -rf generated
+          cp -r "$GITHUB_WORKSPACE"/flathub-artifact/generated ./generated
+          echo "Copied flathub manifest files to submodule"
           
           cd "$GITHUB_WORKSPACE"
           ./scripts/update_flathub.sh
