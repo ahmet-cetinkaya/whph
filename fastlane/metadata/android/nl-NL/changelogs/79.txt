@@ -1,2 +1,7 @@
-• Tijdschatting gebruikt nu stappen van 10 minuten voor eenvoudigere en nauwkeurigere planning
-• Nieuwe taken hebben nu 20 minuten als standaard voor betere tijdschattingen
+• Taken kunnen nu als hele dag worden gemaakt (alleen datum, zonder tijd)
+• Problemen met tag- en gewoontefiltering opgelost
+• Betere taakdatumvalidatie
+• Tijdschatting gebruikt nu stappen van 10 minuten voor makkelijker plannen
+• Nieuwe tasks staan nu standaard op 20 minuten
+• Improved habit chart UI with better streak label readability and badge contrast
+• De notitie-editor vult nu de overgebleven ruimte en opent alleen in voorbeeld wanneer de notitie al inhoud heeft.

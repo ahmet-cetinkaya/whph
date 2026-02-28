@@ -1,2 +1,7 @@
-• Aika-arviointi käyttää nyt 10 minuutin askelia helpompaa ja tarkempaa suunnittelua varten
-• Uusilla tehtävillä on nyt 20 minuutin oletus parempia aika-arvioita varten
+• Tehtävät voi nyt luoda kokopäivä-tapahtumina (vain päiväys, ilman aikaa)
+• Korjattu merkintöjen ja tapojen suodatusongelmat
+• Parempi tehtävän päiväyksen vahvistus
+• Aika-arviointi käyttää nyt 10 minuutin välejä helpompaa suunnittelua varten
+• Uusilla tehtävillä on nyt 20 minuutin oletus
+• Improved habit chart UI with better streak label readability and badge contrast
+• Muistieditori täyttää nyt jäljellä olevan tilan ja avautuu esikatselutilaan vain, kun muistiossa on jo sisältöä.

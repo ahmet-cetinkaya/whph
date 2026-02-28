@@ -1,2 +1,7 @@
-• Tidsuppskattning använder nu 10-minuterssteg för enklare och noggrannare planering
-• Nya uppgifter har nu 20 minuter som standard för bättre tidsuppskattningar
+• Uppgifter kan nu skapas som heldagshändelser (endast datum, utan tid)
+• Åtgärdade problem med tagg- och vanefiltrering
+• Bättre uppgiftsdatumvalidering
+• Tidsuppskattning använder nu 10-minuterssteg för enklare planering
+• Nya uppgifter har nu 20 minuter som standard
+• Improved habit chart UI with better streak label readability and badge contrast
+• Anteckningsredigeraren fyller nu det återstående utrymmet och öppnas i förhandsvisning endast när anteckningen redan har innehåll.

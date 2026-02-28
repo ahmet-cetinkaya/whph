@@ -1,2 +1,7 @@
-• A estimativa de tempo agora usa passos de 10 minutos para um planeamento mais fácil e preciso
-• As novas tarefas agora têm 20 minutos por defeito para melhores estimativas
+• As tarefas agora podem ser criadas como eventos de dia inteiro (apenas data, sem hora)
+• Corrigidos problemas de filtragem de etiquetas e hábitos
+• Melhor validação de data de tarefa
+• A estimativa de tempo agora usa passos de 10 minutos para um planeamento mais fácil
+• Novas tarefas agora têm 20 minutos por defeito
+• Improved habit chart UI with better streak label readability and badge contrast
+• O editor de notas agora preenche o espaço restante e só abre em pré-visualização quando a nota já tem conteúdo.

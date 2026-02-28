@@ -1,2 +1,7 @@
-• Tidsestimering bruger nu 10-minutters trin for lettere og mere præcis planlægning
-• Nye opgaver har nu 20 minutter som standard for bedre tidsestimater
+• Opgaver kan nu oprettes som heldags (kun dato, uden tid)
+• Rettede problemer med tag- og vanefiltrering
+• Bedre opgavedatovalidering
+• Tidsestimering bruger nu 10-minutters trin for lettere planlægning
+• Nye opgaver har nu 20 minutter som standard
+• Improved habit chart UI with better streak label readability and badge contrast
+• Noteredigeringsprogrammet udfylder nu den resterende plads og åbner kun i forhåndsvisning, når noten allerede har indhold.

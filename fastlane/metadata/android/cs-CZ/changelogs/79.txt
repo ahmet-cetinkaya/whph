@@ -1,2 +1,7 @@
-• Odhad času nyní používá kroky po 10 minutách pro snadnější a přesnější plánování
-• Nové úkoly mají nyní výchozích 20 minut pro lepší odhady času
+• Úkoly lze nyní vytvářet jako celodenní (jen datum, bez času)
+• Opraveny problémy s filtrováním štítků a návyků
+• Lepší ověření data úkolu
+• Odhad času nyní používá kroky po 10 minutách pro snadnější plánování
+• Nové úkoly mají nyní výchozích 20 minut
+• Improved habit chart UI with better streak label readability and badge contrast
+• Editor poznámek nyní vyplní zbylý prostor a spustí náhled jen tehdy, pokud poznámka již obsahuje text.

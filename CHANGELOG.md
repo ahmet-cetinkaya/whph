@@ -14,6 +14,8 @@ and this project adheres to
 
 - **Flathub Support**: App now detects when running from Flathub and displays
   information about usage tracking limitations in sandboxed environments
+- **All-Day Tasks**: Tasks can now be created as all-day events (date-only without specific time)
+- **Windows Sync Network Selection**: Improved network interface selection for sync on Windows using gateway priority and metrics
 
 ### Changed
 
@@ -21,11 +23,19 @@ and this project adheres to
   easier and more accurate task planning
 - **Desktop Theme Colors**: Consistent theme colors now defined across desktop
   platforms for better visual integration
+- **Flatpak Build Configuration**: Separated Flathub manifest from local build for better maintainability
+- **Habit Chart UI**: Improved streak label readability and badge text contrast for clearer habit chart visuals
+- **Notes editor**: The note detail view now provides a larger Markdown editor area and starts in edit mode for empty notes or preview mode when content already exists.
 
 ### Fixed
 
 - **Default Task Duration**: New tasks now default to 20 minutes for better time
   estimates
+- **Tag and Habit Queries**: Added missing `tagType` field to list queries for proper filtering
+- **Theme Disposal Errors**: Fixed potential errors after widget disposal in theme handling
+- **Linux Theme Detection**: Added timeout to prevent hanging during theme detection on Linux
+- **Task Date Validation**: Improved date range validation with better error handling
+- **External Task Sources**: All-day detection now properly handles tasks from external sources
 
 ## [0.22.1] - 2026-02-18
 
@@ -1270,7 +1280,7 @@ and this project adheres to
 - Adjust task filtering logic in marathon page
 - Ensure context is mounted before popping the navigator in tag select dropdown
 - Improve habits list filtering and refresh logic
-- Enhance refresh task list on filtering and search functionality
+- Enhance task listing with improved refresh logic and task data model
 - Improve text field updates and debounce timing in details components
 - Display Load More button in reorderable task lists
 
@@ -1458,7 +1468,6 @@ and this project adheres to
 - Add help modals for QR Code Scanner and Sync Devices pages
 - Add help modals for Habit Details and Habits Overview pages
 - Add help modal with features and tips for Today view
-- Add help modals for App Usage Details and App Usage Rules pages
 - Add help modal with Pomodoro Technique guidance and tips
 - Add task creation button with planned date support in today page
 
@@ -1554,10 +1563,6 @@ and this project adheres to
 - Add spacing adjustments between sections for improved layout
 - Improve drawer spacing and styling
 - Enhance UI components with improved layouts and styling adjustments
-- Enhance sync command structure
-- Improve WebSocket message handling with enhanced error reporting and type
-  validation
-- Fix compilation issues for app_usage and flutter_local_notifications plugins
 - Enhance sync feature by adding error handling and updating repository
   registrations
 - Enhance menu item management by adding insert and remove functionality

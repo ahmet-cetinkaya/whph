@@ -1,2 +1,7 @@
-• La stima del tempo ora usa passi di 10 minuti per una pianificazione più facile e accurata
-• I nuovi compiti ora hanno 20 minuti come predefinito per stime migliori
+• I compiti possono ora essere creati come eventi di tutta la giornata (solo data, senza orario)
+• Risolti problemi di filtraggio di etichette e abitudini
+• Migliore convalida della data del compito
+• La stima del tempo ora usa passi di 10 minuti per una pianificazione più facile
+• I nuovi compiti ora hanno 20 minuti come predefinito
+• Improved habit chart UI with better streak label readability and badge contrast
+• L’editor delle note ora occupa lo spazio rimanente e si apre in anteprima solo quando la nota ha già contenuti.

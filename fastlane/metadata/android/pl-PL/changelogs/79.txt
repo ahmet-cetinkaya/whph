@@ -1,2 +1,7 @@
-• Oszacowanie czasu teraz używa kroków co 10 minut dla łatwiejszego i dokładniejszego planowania
-• Nowe zadania domyślnie mają 20 minut dla lepszych oszacowań czasu
+• Zadania można teraz tworzyć jako całodniowe (tylko data, bez czasu)
+• Naprawiono problemy z filtrowaniem tagów i nawyków
+• Lepsza walidacja daty zadania
+• Szacowanie czasu używa teraz kroków 10-minutowych dla łatwiejszego planowania
+• Nowe zadania domyślnie trwają 20 minut
+• Improved habit chart UI with better streak label readability and badge contrast
+• Edytor notatek wypełnia teraz pozostałą przestrzeń i otwiera się w podglądzie tylko wtedy, gdy notatka już zawiera treść.

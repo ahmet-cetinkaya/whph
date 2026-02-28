@@ -1,2 +1,7 @@
-• Time estimation now uses 10-minute steps for easier and more accurate planning
-• New tasks now default to 20 minutes for better time estimates
+• Tasks can now be created as all-day events (date-only without time)
+• Fixed tag and habit filtering issues
+• Better task date validation
+• Time estimation now uses 10-minute steps for easier planning
+• New tasks now default to 20 minutes
+• Improved habit chart UI with better streak label readability and badge contrast
+• Note editor now fills the remaining space and opens in preview for notes with content, or in edit mode for empty notes.

@@ -1,2 +1,7 @@
-• Zeitschätzung jetzt in 10-Minuten-Schritten für einfachere und genauere Planung
-• Neue Aufgaben haben jetzt 20 Minuten als Standard für bessere Zeitschätzungen
+• Aufgaben können jetzt als ganztägig erstellt werden (nur Datum, ohne Uhrzeit)
+• Probleme mit Tag- und Gewohnheitsfilterung behoben
+• Bessere Aufgabendatum-Validierung
+• Zeitschätzung verwendet jetzt 10-Minuten-Schritte für einfachere Planung
+• Neue Aufgaben haben jetzt 20 Minuten als Standard
+• Improved habit chart UI with better streak label readability and badge contrast
+• Der Notizeditor nutzt jetzt den restlichen Platz und startet nur dann in der Vorschau, wenn die Notiz schon Inhalt hat.
