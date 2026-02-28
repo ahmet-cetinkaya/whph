@@ -12,6 +12,7 @@ import 'dart:ui' as ui;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whph/main.dart' as app;
@@ -69,6 +70,18 @@ void main() {
       await _waitForAppInit(tester);
       debugPrint('✅ App initialized');
 
+      // Make the app immersive / edge-to-edge
+      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+      // Override view padding to remove the OS status bar / notch spacing in screenshots
+      tester.view.padding = FakeViewPadding.zero;
+      tester.view.viewPadding = FakeViewPadding.zero;
+      tester.view.viewInsets = FakeViewPadding.zero;
+      tester.view.systemGestureInsets = FakeViewPadding.zero;
+
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+      debugPrint('✅ Set system UI mode to immersiveSticky and forced padding to zero');
+
       // Change app locale to target language
       await _changeAppLocale(tester, _screenshotLocale);
       debugPrint('✅ App locale changed to: $_screenshotLocale');
@@ -103,6 +116,9 @@ void main() {
 
       // Restore ErrorWidget.builder
       ErrorWidget.builder = originalErrorBuilder;
+
+      // Restore system UI mode
+      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     });
   });
 }
