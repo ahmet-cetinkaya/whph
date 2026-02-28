@@ -30,9 +30,20 @@ cd "$AUR_DIR"
 acore_log_info "Setting remote to SSH..."
 git remote set-url origin "ssh://aur@aur.archlinux.org/whph-bin.git"
 
-# Ensure we are on master branch
-acore_log_info "Ensuring master branch..."
-git checkout master || git checkout -b master
+# Ensure local branch exactly tracks remote default branch
+acore_log_info "Syncing with remote default branch..."
+git fetch origin
+AUR_BRANCH=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')
+if [[ -z "$AUR_BRANCH" ]]; then
+    AUR_BRANCH=$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')
+fi
+if [[ -z "$AUR_BRANCH" ]]; then
+    acore_log_error "Failed to detect origin default branch."
+    exit 1
+fi
+acore_log_info "Using branch: $AUR_BRANCH"
+git checkout -B "$AUR_BRANCH" "origin/$AUR_BRANCH"
+git reset --hard "origin/$AUR_BRANCH"
 
 # Setup SSH known hosts to prevent interactive prompt
 if [ ! -d ~/.ssh ]; then
@@ -99,7 +110,6 @@ acore_log_info "Pushing changes..."
 # Use a custom SSH command to bypass host key checking and ensure agent usage
 export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
 
-git pull --rebase
-git push
+git push origin HEAD:"$AUR_BRANCH"
 
 acore_log_success "AUR package updated and pushed successfully."
