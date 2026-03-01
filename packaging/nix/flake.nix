@@ -77,6 +77,16 @@
               --replace "@APP_VERSION@" "${version}" \
               --replace "@EXEC_PATH@" "$out/bin/whph" \
               --replace "@ICON_PATH@" "me.ahmetcetinkaya.whph"
+
+            # Provide a D-Bus activation service matching the desktop id.
+            # Keep this Exec-based (no SystemdService key) so activation works
+            # on systems without a user unit named whph.service.
+            install -d "$out/share/dbus-1/services"
+            cat > "$out/share/dbus-1/services/me.ahmetcetinkaya.whph.service" <<EOF
+[D-BUS Service]
+Name=me.ahmetcetinkaya.whph
+Exec=$out/bin/whph
+EOF
           '';
 
           # Add runtime dependencies to PATH

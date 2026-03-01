@@ -1,4 +1,3 @@
 [D-BUS Service]
 Name=me.ahmetcetinkaya.whph
 Exec=@EXEC_PATH@
-SystemdService=whph.service
