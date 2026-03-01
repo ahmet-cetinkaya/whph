@@ -41,7 +41,10 @@ acore_log_info "Fetching SRI hash for $ARTIFACT_URL..."
 # Prefetch with nix if available, otherwise fallback to curl + sha256sum
 NEW_HASH=""
 if command -v nix-prefetch-url &>/dev/null; then
-    NEW_HASH=$(nix-prefetch-url --type sha256 --unpack "$ARTIFACT_URL" 2>/dev/null || true)
+    RAW_HASH=$(nix-prefetch-url --type sha256 "$ARTIFACT_URL" 2>/dev/null || true)
+    if [ -n "$RAW_HASH" ] && command -v nix &>/dev/null; then
+        NEW_HASH=$(nix hash convert --from nix32 --to sri --hash-algo sha256 "$RAW_HASH" 2>/dev/null || true)
+    fi
 fi
 
 if [ -z "$NEW_HASH" ]; then
@@ -62,9 +65,9 @@ acore_log_info "New hash: $NEW_HASH"
 
 # Update hash in flake.nix
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    sed -i '' "s|hash = \"sha256-.*\";|hash = \"$NEW_HASH\";|g" "$FLAKE_FILE"
+    sed -i '' "s|hash = \".*\";|hash = \"$NEW_HASH\";|g" "$FLAKE_FILE"
 else
-    sed -i "s|hash = \"sha256-.*\";|hash = \"$NEW_HASH\";|g" "$FLAKE_FILE"
+    sed -i "s|hash = \".*\";|hash = \"$NEW_HASH\";|g" "$FLAKE_FILE"
 fi
 
 # Update flake.lock if nix is available
