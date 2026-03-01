@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # General formatting script for all project files
 # Usage: ./scripts/format.sh
