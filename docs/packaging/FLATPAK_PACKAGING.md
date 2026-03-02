@@ -170,10 +170,13 @@ When building for Flathub, we strictly adhere to sandbox guidelines and use
 directly (not patched dynamically by the script):
 
 - `--talk-name=org.freedesktop.Flatpak` is omitted.
+- `--talk-name=org.gnome.Shell` is omitted.
+- `--talk-name=org.kde.KWin` is omitted.
+- `--talk-name=org.kde.kwin.Scripting` is omitted.
 - `flutter build linux` includes `--dart-define=FLATHUB=true`.
 - Ayatana module is referenced via `shared-modules/...` instead of local override.
 
-Because of this, the Flathub version of WHPH cannot use `flatpak-spawn --host` to run absolute fallback heuristics or call specific Wayland compositor tools (like `swaymsg` or `hyprctl`). Users on these environments will see an in-app notice explaining the limitation.
+Because of this, the Flathub version of WHPH cannot use `flatpak-spawn --host` fallback heuristics and does not request direct GNOME/KWin session-bus access. Active window tracking is therefore more limited on Flathub, and users will see an in-app notice when tracking is unavailable.
 
 ### Installing Flatpak from Release
 If you require full active window tracking on these unsupported Wayland compositors, you can install the fully-featured Flatpak directly from the GitHub releases:

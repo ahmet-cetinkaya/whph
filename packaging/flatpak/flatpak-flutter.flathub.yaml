@@ -19,10 +19,6 @@ finish-args:
   - --device=dri
   # System Tray / Notifications
   - --talk-name=org.kde.StatusNotifierWatcher
-  # Window Management (Active Window Detection)
-  - --talk-name=org.gnome.Shell
-  - --talk-name=org.kde.KWin
-  - --talk-name=org.kde.kwin.Scripting
 
 modules:
   - name: perl-xml-parser
