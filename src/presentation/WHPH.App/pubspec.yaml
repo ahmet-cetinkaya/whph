@@ -7,38 +7,6 @@ environment:
   sdk: ^3.5.3
   flutter: "3.32.0"
 
-scripts:
-  # This section defines custom commands you can run using the rps package.
-  # To install rps globally: `dart pub global activate rps`
-  # To run commands: `rps <command>`
-  # For example, to run the `clean` command: `rps clean`
-  clean: bash ../scripts/clean.sh
-  format: ../scripts/format.sh
-  gen: bash ../scripts/generate_gen_files.sh
-  gen-icons: fvm flutter pub run icons_launcher:create
-  gen:migrate: fvm flutter pub run drift_dev make-migrations
-  gen:changelog: bash ../scripts/create_changelog.sh --auto
-  gen:changelog:all: bash ../scripts/create_changelog.sh --all-versions --auto
-  release:linux: fvm flutter build linux --release
-  release:windows: fvm flutter build windows --release
-  release:windows:setup: fvm flutter build windows --release && "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" ..\packaging\inno-setup\installer.iss
-  release:android: fvm flutter build apk --release
-  release:android:bundle: fvm flutter build appbundle --release
-  lint: ../scripts/lint.sh
-  test: bash ../scripts/run_tests.sh
-  test:locale: fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
-  test:ci: cd .. && act -j build
-  test:ci:android: cd .. && act -W .github/workflows/flutter-ci.android.yml -j build --secret-file .secrets
-  test:ci:fdroid: bash ../scripts/test_ci_fdroid.sh
-  test:ci:linux: cd .. && act -W .github/workflows/flutter-ci.linux.yml -j build --secret-file .secrets
-  test:ci:windows: cd .. && act -W .github/workflows/flutter-ci.windows.yml -j build --secret-file .secrets
-  run: fvm flutter run
-  run:demo: fvm flutter run --dart-define=DEMO_MODE=true
-  version:major: bash ../scripts/version_bump.sh major
-  version:minor: bash ../scripts/version_bump.sh minor
-  version:patch: bash ../scripts/version_bump.sh patch
-  version:push: cd ../ && git push && git push --tags
-
 dependencies:
   flutter:
     sdk: flutter
@@ -46,7 +14,7 @@ dependencies:
 
   # Core Packages
   acore:
-    path: ../packages/acore-flutter
+    path: ../../../packages/acore-flutter
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1

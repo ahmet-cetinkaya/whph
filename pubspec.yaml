@@ -21,9 +21,9 @@ documentation: https://github.com/ahmet-cetinkaya/whph/blob/main/README.md
 # Run commands from project root: rps <command>
 scripts:
   # Development
-  pub:get: cd src && fvm flutter pub get
-  run: cd src && fvm flutter run -d linux
-  run:demo: cd src && fvm flutter run --dart-define=DEMO_MODE=true
+  pub:get: cd src/presentation/WHPH.App && fvm flutter pub get
+  run: cd src/presentation/WHPH.App && fvm flutter run -d linux
+  run:demo: cd src/presentation/WHPH.App && fvm flutter run --dart-define=DEMO_MODE=true
   clean: bash scripts/clean.sh
   clean:db: bash scripts/clean_db.sh
   format: bash scripts/format.sh
@@ -34,8 +34,8 @@ scripts:
   # Testing
   test: bash scripts/run_tests.sh
   test:all: bash scripts/run_tests.sh
-  test:locale: cd src && fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
-  test:migrate: cd src && fvm flutter test test/drift/app_database/migration_test.dart
+  test:locale: cd src/presentation/WHPH.App && fvm flutter test test/presentation/ui/shared/services/translation_analysis_test.dart
+  test:migrate: cd src/presentation/WHPH.App && fvm flutter test test/drift/app_database/migration_test.dart
 
   # Screenshots
   # Usage: rps gen:screenshots [locale] (e.g., rps gen:screenshots tr)
@@ -44,16 +44,16 @@ scripts:
 
   # Code Generation
   gen: bash scripts/generate_gen_files.sh
-  gen:icons: cd src && fvm flutter pub run icons_launcher:create
-  gen:migrate: cd src && fvm flutter pub run drift_dev make-migrations
+  gen:icons: cd src/presentation/WHPH.App && fvm flutter pub run icons_launcher:create
+  gen:migrate: cd src/presentation/WHPH.App && fvm flutter pub run drift_dev make-migrations
 
   # Build Releases
-  release:linux: cd src && fvm flutter build linux --release
+  release:linux: cd src/presentation/WHPH.App && fvm flutter build linux --release
   release:linux:flatpak: bash scripts/package_flatpak.sh
-  release:windows: cd src && fvm flutter build windows --release
-  release:windows:setup: cd src && fvm flutter build windows --release && ISCC.exe ..\packaging\inno-setup\installer.iss
-  release:android: cd src && fvm flutter build apk --release
-  release:android:bundle: cd src && fvm flutter build appbundle --release
+  release:windows: cd src/presentation/WHPH.App && fvm flutter build windows --release
+  release:windows:setup: cd src/presentation/WHPH.App && fvm flutter build windows --release && ISCC.exe ..\packaging\inno-setup\installer.iss
+  release:android: cd src/presentation/WHPH.App && fvm flutter build apk --release
+  release:android:bundle: cd src/presentation/WHPH.App && fvm flutter build appbundle --release
 
   # Version Management
   version:major: bash scripts/version_bump.sh major
