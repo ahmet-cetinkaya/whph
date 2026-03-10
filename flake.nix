@@ -6,8 +6,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -24,6 +30,8 @@
           gtk3
           glib
           libgee
+          pcre2
+          libx11
 
           # Build tools
           cmake
@@ -59,6 +67,7 @@
           libepoxy
           fontconfig
           sysprof
+          libsysprof-capture
           libdrm
           libxkbcommon
 
@@ -118,7 +127,7 @@
         shellHook = ''
           # Project paths
           export PROJECT_ROOT="$(pwd)"
-          export SRC_DIR="$PROJECT_ROOT/src"
+          export SRC_DIR="$PROJECT_ROOT/src/presentation/WHPH.App"
 
           # Setup FVM for Flutter version management
           if command -v fvm &> /dev/null && [ -f "$SRC_DIR/.fvmrc" ]; then
@@ -137,8 +146,8 @@
           # CMake prefix for native builds
           export CMAKE_PREFIX_PATH="${pkgs.cmake}:${pkgs.gtk3}:$CMAKE_PREFIX_PATH"
 
-          # CMake install prefix (avoid needing root)
-          export CMAKE_INSTALL_PREFIX="$SRC_DIR/build/linux/install"
+          # CMake install prefix (let Flutter handle the default)
+          # export CMAKE_INSTALL_PREFIX="$SRC_DIR/build/linux/install"
 
           # PKG_CONFIG_PATH for finding libraries (includes all build inputs)
           export PKG_CONFIG_PATH="${pkgs.lib.makeSearchPath "lib/pkgconfig" linuxBuildInputs}:$PKG_CONFIG_PATH"
@@ -156,7 +165,8 @@
           export GST_PLUGIN_SYSTEM_PATH_1_0="${pkgs.gst_all_1.gst-plugins-base}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-good}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-bad}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-ugly}/lib/gstreamer-1.0"
         '';
 
-      in {
+      in
+      {
         # Development shell
         devShells.default = pkgs.mkShell {
           name = "whph-dev";
