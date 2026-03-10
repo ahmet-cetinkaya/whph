@@ -155,7 +155,7 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 **Features:**
 
 - Cross-platform support (Unix and Windows)
-- Automatic version detection from `src/.fvmrc`
+- Automatic version detection from `src/presentation/WHPH.App/.fvmrc`
 - PATH configuration for FVM and Flutter tools
 - Analytics disabled for CI/CD environments
 
@@ -246,7 +246,7 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 
 **Flutter Build Failures:**
 
-- Check Flutter version in `src/.fvmrc`
+- Check Flutter version in `src/presentation/WHPH.App/.fvmrc`
 - Verify platform-specific dependencies
 - Review build logs for missing requirements
 

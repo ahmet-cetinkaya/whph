@@ -100,7 +100,7 @@ Defines:
 
 ### Integration Tests
 
-Located in `src/test/integration/screenshot_grabbing/`:
+Located in `src/presentation/WHPH.App/test/integration/screenshot_grabbing/`:
 
 - `screenshot_config.dart` - Dart configuration
 - `screenshot_capture.dart` - Main test file

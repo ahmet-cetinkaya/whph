@@ -23,7 +23,7 @@ The packaging process is automated via `scripts/package_flatpak.sh`:
     - `flatpak-flutter.yaml` for local/CI bundle builds.
     - `flatpak-flutter.flathub.yaml` for Flathub builds (`--flathub`).
 3.  **Configuration**: Uses `flatpak-flutter` to generate module definitions
-    from `pubspec.yaml` into `flathub/`.
+    from `src/presentation/WHPH.App/pubspec.yaml` into `flathub/`.
 4.  **Local Override Staging**: For non-Flathub builds, copies
     `libayatana-appindicator-gtk3.override.json` into the generated `flathub/`
     directory.

@@ -7,7 +7,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=/dev/null
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
-PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
+PUBSPEC_FILE="$PROJECT_ROOT/src/presentation/WHPH.App/pubspec.yaml"
 
 # Extract current version
 CURRENT_VERSION=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: //' | sed 's/+.*//')

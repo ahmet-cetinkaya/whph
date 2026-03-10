@@ -4,36 +4,41 @@ This document provides a comprehensive overview of the WHPH (Work Hard Play Hard
 
 ## Root Directory Overview
 
-The project follows a standard Flutter application structure with additional platform-specific directories and custom organization:
+The project follows a Clean Architecture structure with the Flutter application organized under a presentation layer:
 
 ```text
-whph-2/
-├── android/                    # Android platform-specific code and configuration
-├── build/                      # Build artifacts and generated files
+whph/
 ├── docs/                       # Project documentation
-├── fastlane/                   # Fastlane configuration for CI/CD
-├── ios/                        # iOS platform-specific code (currently unused)
-├── lib/                        # Main Dart source code
-├── linux/                      # Linux platform-specific code
-├── macos/                      # macOS platform-specific code (currently unused)
 ├── scripts/                    # Build and utility scripts
-├── snap/                       # Snap package configuration
-├── test/                       # Test files
-├── web/                        # Web platform assets
-├── windows/                    # Windows platform-specific code
-├── pubspec.yaml               # Flutter project configuration
+├── fastlane/                   # Fastlane configuration for CI/CD
+├── packaging/                  # Packaging configurations (flatpak, nix, inno-setup, fdroid)
+├── .github/                    # GitHub Actions and templates
+├── src/                        # Source code organized by layer
+│   ├── presentation/
+│   │   └── WHPH.App/          # Flutter project root
+│   │       ├── lib/           # App logic and entry point
+│   │       ├── test/          # App tests
+│   │       ├── android/       # Platform files
+│   │       ├── ios/
+│   │       ├── linux/
+│   │       ├── windows/
+│   │       ├── web/
+│   │       └── pubspec.yaml   # Flutter project configuration
+│   ├── core/                   # Domain and Application layers
+│   └── infrastructure/         # Infrastructure layer
 ├── README.md                  # Project overview and installation guide
 ├── CHANGELOG.md               # Version history and changes
 ├── LICENSE                    # Project license
+├── CLAUDE.md                  # AI coding assistant guidelines
 └── PRIVACY_POLICY.md          # Privacy policy document
 ```text
 
-## Source Code Organization (`src/lib/` directory)
+## Source Code Organization (`src/presentation/WHPH.App/lib/` directory)
 
-The `src/lib/` directory contains the main Dart source code organized using Clean Architecture principles:
+The `src/presentation/WHPH.App/lib/` directory contains the main Dart source code organized using Clean Architecture principles:
 
 ```text
-src/lib/
+src/presentation/WHPH.App/lib/
 ├── corePackages/              # External core packages and submodules
 │   └── acore/                 # Core Flutter utilities submodule
 ├── core/                      # Core business logic and domain
@@ -45,7 +50,7 @@ src/lib/
 └── main.mapper.g.dart         # Generated mapper code
 ```
 
-### Core Layer (`src/lib/core/`)
+### Core Layer (`src/presentation/WHPH.App/lib/core/`)
 
 Contains the business logic and domain models:
 
@@ -68,7 +73,7 @@ core/
     └── shared/                # Shared domain utilities
 ```
 
-### Infrastructure Layer (`src/lib/infrastructure/`)
+### Infrastructure Layer (`src/presentation/WHPH.App/lib/infrastructure/`)
 
 Handles external concerns and platform-specific implementations:
 
@@ -88,7 +93,7 @@ infrastructure/
 └── infrastructure_container.dart  # Dependency injection container
 ```
 
-### Presentation Layer (`src/lib/presentation/`)
+### Presentation Layer (`src/presentation/WHPH.App/lib/presentation/`)
 
 Contains UI components and API controllers:
 
@@ -188,10 +193,10 @@ components/task_recurrence_selector/
 
 The project follows Clean Architecture principles:
 
-1. **Domain Layer** (`src/lib/core/domain/`) - Business entities and rules
-2. **Application Layer** (`src/lib/core/application/`) - Use cases and application services
-3. **Infrastructure Layer** (`src/lib/infrastructure/`) - External concerns (database, file system, platform APIs)
-4. **Presentation Layer** (`src/lib/presentation/`) - UI components and API controllers
+1. **Domain Layer** (`src/presentation/WHPH.App/lib/core/domain/`) - Business entities and rules
+2. **Application Layer** (`src/presentation/WHPH.App/lib/core/application/`) - Use cases and application services
+3. **Infrastructure Layer** (`src/presentation/WHPH.App/lib/infrastructure/`) - External concerns (database, file system, platform APIs)
+4. **Presentation Layer** (`src/presentation/WHPH.App/lib/presentation/`) - UI components and API controllers
 
 This structure ensures separation of concerns, testability, and maintainability while supporting multiple platforms (Android, Windows, Linux) with platform-specific optimizations.
 
@@ -201,7 +206,7 @@ For new contributors:
 
 1. Read `docs/CONTRIBUTING.md` for development setup
 2. Check `docs/LINUX-DEPENDENCIES.md` if developing on Linux
-3. Review the `pubspec.yaml` scripts section for available commands
-4. Explore the `src/lib/` directory structure to understand the codebase organization
+3. Review the `src/presentation/WHPH.App/pubspec.yaml` scripts section for available commands
+4. Explore the `src/presentation/WHPH.App/lib/` directory structure to understand the codebase organization
 
 The project uses modern Flutter development practices with comprehensive tooling for building, testing, and deploying across multiple platforms.

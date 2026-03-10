@@ -64,4 +64,4 @@ outputs = { self, nixpkgs, whph, ... }: {
 
 ## Maintenance
 
-The `flake.nix` uses `autoPubspecLock` to manage Dart dependencies. Ensure `src/pubspec.lock` is up-to-date.
+The `flake.nix` uses `autoPubspecLock` to manage Dart dependencies. Ensure `src/presentation/WHPH.App/pubspec.lock` is up-to-date.

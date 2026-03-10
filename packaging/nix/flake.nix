@@ -15,8 +15,8 @@
         version = "0.22.2";
 
         # Source assets from the project
-        desktopTemplate = ../../src/linux/whph.desktop.in;
-        iconFile = ../../src/lib/core/domain/shared/assets/images/whph-512.png;
+        desktopTemplate = ../../src/presentation/WHPH.App/linux/whph.desktop.in;
+        iconFile = ../../src/presentation/WHPH.App/lib/core/domain/shared/assets/images/whph-512.png;
         
         src = pkgs.fetchurl {
           url = "https://github.com/ahmet-cetinkaya/whph/releases/download/v${version}/whph-v${version}-linux.tar.gz";

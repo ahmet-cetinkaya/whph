@@ -8,7 +8,7 @@ source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 trap 'acore_log_error "Clean failed!"; exit 1' ERR
 
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SRC_DIR="$PROJECT_ROOT/src"
+SRC_DIR="$PROJECT_ROOT/src/presentation/WHPH.App"
 cd "$SRC_DIR"
 
 # Helper function to remove files/directories with sudo fallback

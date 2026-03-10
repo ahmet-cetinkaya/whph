@@ -12,7 +12,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=/dev/null
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
-PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
+PUBSPEC_FILE="$PROJECT_ROOT/src/presentation/WHPH.App/pubspec.yaml"
 NIX_DIR="$PROJECT_ROOT/packaging/nix"
 FLAKE_FILE="$NIX_DIR/flake.nix"
 

@@ -18,12 +18,12 @@ The packaging process is automated via the GitHub Actions CI workflow in `.githu
 1.  **Environment Setup**: Installs Inno Setup on the runner and adds it to the PATH.
 2.  **App Build**: Executes `fvm flutter build windows --release`.
 3.  **Installer Configuration**:
-    -   Extracts version from `src/pubspec.yaml`.
+    -   Extracts version from `src/presentation/WHPH.App/pubspec.yaml`.
     -   Creates a temporary `.iss` file.
     -   Patches `AppVersion` and file source paths using PowerShell.
 4.  **Compilation**: Runs `ISCC.exe` on the configured script.
 5.  **Output**:
-    -   `src/build/windows/installer/whph-setup.exe`: The final installable bundle.
+    -   `src/presentation/WHPH.App/build/windows/installer/whph-setup.exe`: The final installable bundle.
 
 ## Manual Build
 
@@ -33,11 +33,11 @@ To build the installer manually on Windows:
     -   Install [Inno Setup 6](https://jrsoftware.org/isinfo.php).
     -   Ensure `fvm` is configured if using it for Flutter.
 2.  **Steps**:
-    -   Run `fvm flutter build windows --release` in the `src` directory.
+    -   Run `fvm flutter build windows --release` in the `src/presentation/WHPH.App` directory.
     -   From the project root, run:
         `"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" packaging\inno-setup\installer.iss`
 
-The installer will be created at `src\build\windows\installer\whph-setup.exe`.
+The installer will be created at `src/presentation/WHPH.App\build\windows\installer\whph-setup.exe`.
 
 ## Installer Features
 

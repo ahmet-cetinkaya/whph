@@ -80,5 +80,5 @@
     "whph",
     "wlan"
   ],
-  "dart.flutterSdkPath": "src/.fvm/versions/3.32.0"
+  "dart.flutterSdkPath": "src/presentation/WHPH.App/.fvm/versions/3.32.0"
 }

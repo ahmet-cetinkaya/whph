@@ -58,7 +58,7 @@ runs:
       shell: bash
       run: |
         echo "🔧 Running build_runner..."
-        cd src
+        cd src/presentation/WHPH.App
         ${{ inputs.flutter-command }} pub run build_runner build --delete-conflicting-outputs
         echo "✅ build_runner completed successfully"
 
@@ -70,15 +70,15 @@ runs:
     - name: Create test results directory
       shell: bash
       run: |
-        mkdir -p src/test-results
-        mkdir -p src/coverage
+        mkdir -p src/presentation/WHPH.App/test-results
+        mkdir -p src/presentation/WHPH.App/coverage
 
     # Step 5: Run unit and widget tests
     - name: Run Unit and Widget Tests
       shell: bash
       run: |
         echo "🧪 Running unit and widget tests..."
-        cd src
+        cd src/presentation/WHPH.App
 
         # Run tests with coverage if enabled
         if [[ "${{ inputs.enable-code-coverage }}" == "true" ]]; then
@@ -108,7 +108,7 @@ runs:
       shell: bash
       run: |
         echo "🧪 Running additional test suites..."
-        cd src
+        cd src/presentation/WHPH.App
 
         for test_dir in ${{ inputs.test-directories }}; do
           if [[ -d "$test_dir" ]]; then
@@ -132,7 +132,7 @@ runs:
       shell: bash
       run: |
         echo "📊 Processing coverage reports..."
-        cd src
+        cd src/presentation/WHPH.App
 
         if [[ -f "coverage/lcov.info" ]]; then
           # Generate coverage summary
@@ -179,7 +179,7 @@ runs:
       shell: bash
       run: |
         echo "🌐 Running localization tests..."
-        cd src
+        cd src/presentation/WHPH.App
 
         ${{ inputs.flutter-command }} test test/presentation/ui/shared/services/translation_analysis_test.dart \
           --reporter=expanded > test-results/localization-tests.log 2>&1 || {
@@ -196,7 +196,7 @@ runs:
       shell: bash
       run: |
         echo "🗄️ Running migration tests..."
-        cd src
+        cd src/presentation/WHPH.App
 
         ${{ inputs.flutter-command }} test test/drift/app_database/migration_test.dart \
           --reporter=expanded > test-results/migration-tests.log 2>&1 || {
@@ -213,7 +213,7 @@ runs:
       if: inputs.enable-code-coverage == 'true' && inputs.upload-coverage == 'true'
       uses: codecov/codecov-action@v3
       with:
-        file: ./src/coverage/lcov.info
+        file: ./src/presentation/WHPH.App/coverage/lcov.info
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
@@ -224,7 +224,7 @@ runs:
       shell: bash
       run: |
         echo "📋 Generating test summary..."
-        cd src
+        cd src/presentation/WHPH.App
 
         # Count total tests from logs
         TOTAL_TESTS=0
@@ -263,7 +263,7 @@ runs:
       if: always()
       with:
         name: test-results-${{ inputs.cache-key-suffix }}
-        path: src/test-results/
+        path: src/presentation/WHPH.App/test-results/
         retention-days: 30
 
     # Step 13: Upload coverage reports
@@ -272,7 +272,7 @@ runs:
       if: inputs.enable-code-coverage == 'true'
       with:
         name: coverage-reports-${{ inputs.cache-key-suffix }}
-        path: src/coverage/
+        path: src/presentation/WHPH.App/coverage/
         retention-days: 30
 
     # Step 14: Display test summary

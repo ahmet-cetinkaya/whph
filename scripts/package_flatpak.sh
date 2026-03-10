@@ -28,7 +28,7 @@ DEFAULT_INPUT_MANIFEST="flatpak-flutter.yaml"
 FLATHUB_INPUT_MANIFEST="flatpak-flutter.flathub.yaml"
 AYATANA_MODULE_OVERRIDE="$FLATPAK_DIR/libayatana-appindicator-gtk3.override.json"
 VENV_PYTHON="$PROJECT_ROOT/.venv/bin/python3"
-VERSION=$(grep "^version:" "$PROJECT_ROOT/src/pubspec.yaml" | sed 's/version: //' | sed 's/+.*//')
+VERSION=$(grep "^version:" "$PROJECT_ROOT/src/presentation/WHPH.App/pubspec.yaml" | sed 's/version: //' | sed 's/+.*//')
 
 acore_log_header "FLATPAK PACKAGING (v$VERSION)"
 
@@ -120,9 +120,9 @@ else
 fi
 
 # Format metainfo XML (Requires @prettier/plugin-xml)
-if bunx prettier --plugin=@prettier/plugin-xml --write "$PROJECT_ROOT/src/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml" 2>/dev/null; then
+if bunx prettier --plugin=@prettier/plugin-xml --write "$PROJECT_ROOT/src/presentation/WHPH.App/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml" 2>/dev/null; then
     acore_log_success "Metainfo XML formatted."
-elif bunx prettier --write "$PROJECT_ROOT/src/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml" 2>/dev/null; then
+elif bunx prettier --write "$PROJECT_ROOT/src/presentation/WHPH.App/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml" 2>/dev/null; then
     acore_log_success "Metainfo XML formatted."
 else
     acore_log_warning "Could not format XML. For XML formatting, install: bun add -g prettier @prettier/plugin-xml"
@@ -133,7 +133,7 @@ fi
 # 2. Build Flatpak
 acore_log_section "🏗️  Building Flatpak..."
 acore_log_info "Cleaning host build artifacts..."
-rm -rf "$PROJECT_ROOT/src/build"
+rm -rf "$PROJECT_ROOT/src/presentation/WHPH.App/build"
 
 BUILD_DIR="$PROJECT_ROOT/build-dir"
 REPO_DIR="$PROJECT_ROOT/repo"

@@ -31,13 +31,13 @@ else
 fi
 
 # Define files to validate
-METAINFO_FILE="$PROJECT_ROOT/src/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml"
+METAINFO_FILE="$PROJECT_ROOT/src/presentation/WHPH.App/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml"
 MANIFEST_FILE="$PROJECT_ROOT/packaging/flatpak/flathub/me.ahmetcetinkaya.whph.yaml"
 
 # 1. Validate Desktop File
 acore_log_section "Validating Desktop File"
 # Search for built desktop file (since it's generated/copied during build)
-DESKTOP_FILE=$(find "$PROJECT_ROOT/build-dir" "$PROJECT_ROOT/src/build" -name "me.ahmetcetinkaya.whph.desktop" 2>/dev/null | head -n 1)
+DESKTOP_FILE=$(find "$PROJECT_ROOT/build-dir" "$PROJECT_ROOT/src/presentation/WHPH.App/build" -name "me.ahmetcetinkaya.whph.desktop" 2>/dev/null | head -n 1)
 
 if [ -n "$DESKTOP_FILE" ] && [ -f "$DESKTOP_FILE" ]; then
 	acore_log_info "Found desktop file at: $DESKTOP_FILE"

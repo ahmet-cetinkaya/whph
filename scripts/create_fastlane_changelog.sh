@@ -12,7 +12,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
 CHANGELOG_DIR="$PROJECT_ROOT/fastlane/metadata/android/en-GB/changelogs"
-PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
+PUBSPEC_FILE="$PROJECT_ROOT/src/presentation/WHPH.App/pubspec.yaml"
 
 # Parse arguments
 AUTO_ACCEPT=false

@@ -70,7 +70,7 @@ jobs:
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
         uses: codecov/codecov-action@v3
         with:
-          file: ./src/coverage/lcov.info
+          file: ./src/presentation/WHPH.App/coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -100,7 +100,7 @@ jobs:
       - name: Generate Code
         shell: bash
         run: |
-          cd src
+          cd src/presentation/WHPH.App
           fvm flutter pub run build_runner build --delete-conflicting-outputs
           fvm dart run drift_dev schema generate lib/infrastructure/persistence/shared/contexts/drift/schemas/app_database/ test/drift/app_database/generated
 
@@ -108,7 +108,7 @@ jobs:
         shell: bash
         run: |
           echo "⚡ Running performance tests..."
-          cd src
+          cd src/presentation/WHPH.App
 
           # Create test-results directory if it doesn't exist
           mkdir -p test-results
@@ -128,7 +128,7 @@ jobs:
         if: always()
         with:
           name: performance-test-results
-          path: src/test-results/
+          path: src/presentation/WHPH.App/test-results/
           retention-days: 7
 
   security-scan:
@@ -156,7 +156,7 @@ jobs:
       - name: Generate Code
         shell: bash
         run: |
-          cd src
+          cd src/presentation/WHPH.App
           fvm flutter pub run build_runner build --delete-conflicting-outputs
           fvm dart run drift_dev schema generate lib/infrastructure/persistence/shared/contexts/drift/schemas/app_database/ test/drift/app_database/generated
 
@@ -164,7 +164,7 @@ jobs:
         shell: bash
         run: |
           echo "🔒 Running security audit..."
-          cd src
+          cd src/presentation/WHPH.App
 
           # Check for common security issues
           echo "Checking dependencies for known vulnerabilities..."

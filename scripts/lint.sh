@@ -12,7 +12,7 @@ source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
 # Get project root and src directory
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-SRC_DIR="$PROJECT_ROOT/src"
+SRC_DIR="$PROJECT_ROOT/src/presentation/WHPH.App"
 
 acore_log_header "WHPH PROJECT LINTER"
 
@@ -139,7 +139,7 @@ if command -v ktlint &>/dev/null; then
 
 	# Run ktlint to check code quality
 	# .editorconfig disables property-naming rule for uppercase TAG constants
-	if ktlint "src/android/app/src/main/kotlin/**/*.kt"; then
+	if ktlint "src/presentation/WHPH.App/android/app/src/main/kotlin/**/*.kt"; then
 		acore_log_success "✅ ktlint passed"
 	else
 		acore_log_error "❌ ktlint failed"

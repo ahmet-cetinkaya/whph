@@ -38,6 +38,7 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 - **Install dependencies:**
 
   ```bash
+  cd src/presentation/WHPH.App
   fvm flutter pub get
   ```
 
@@ -50,6 +51,7 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 - **Start the application:**
 
   ```bash
+  cd src/presentation/WHPH.App
   fvm flutter run
   ```
 

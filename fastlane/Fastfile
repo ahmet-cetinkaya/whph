@@ -22,7 +22,7 @@ default_platform(:android)
   # Android Platform
   # ==============================================================================
   lane :test do
-    Dir.chdir("../src/android") do
+    Dir.chdir("../src/presentation/WHPH.App/android") do
       sh("../../gradlew", "test")
     end
   end
@@ -35,7 +35,7 @@ default_platform(:android)
     validate_signing_config({})
 
     # Check if Flutter-generated AAB exists
-    aab_path = File.expand_path('../src/build/app/outputs/bundle/release/app-release.aab', __dir__)
+    aab_path = File.expand_path('../src/presentation/WHPH.App/build/app/outputs/bundle/release/app-release.aab', __dir__)
     unless File.exist?(aab_path)
       UI.error("❌ Flutter-generated AAB not found at: #{aab_path}")
       UI.error("Please ensure 'flutter build appbundle --release' was executed successfully")
@@ -63,7 +63,7 @@ default_platform(:android)
 
     upload_to_play_store(
       track: 'internal',
-      aab: File.expand_path('../src/build/app/outputs/bundle/release/app-release.aab', __dir__),
+      aab: File.expand_path('../src/presentation/WHPH.App/build/app/outputs/bundle/release/app-release.aab', __dir__),
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_images: true,
@@ -82,7 +82,7 @@ default_platform(:android)
 
     upload_to_play_store(
       track: 'alpha',
-      aab: File.expand_path('../src/build/app/outputs/bundle/release/app-release.aab', __dir__),
+      aab: File.expand_path('../src/presentation/WHPH.App/build/app/outputs/bundle/release/app-release.aab', __dir__),
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_images: true,
@@ -101,7 +101,7 @@ default_platform(:android)
 
     upload_to_play_store(
       track: 'beta',
-      aab: File.expand_path('../src/build/app/outputs/bundle/release/app-release.aab', __dir__),
+      aab: File.expand_path('../src/presentation/WHPH.App/build/app/outputs/bundle/release/app-release.aab', __dir__),
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_images: true,
@@ -120,7 +120,7 @@ default_platform(:android)
 
     upload_to_play_store(
       track: 'production',
-      aab: File.expand_path('../src/build/app/outputs/bundle/release/app-release.aab', __dir__),
+      aab: File.expand_path('../src/presentation/WHPH.App/build/app/outputs/bundle/release/app-release.aab', __dir__),
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_images: true,
@@ -140,7 +140,7 @@ default_platform(:android)
 
     upload_to_play_store(
       track: 'production',
-      aab: File.expand_path('../src/build/app/outputs/bundle/release/app-release.aab', __dir__),
+      aab: File.expand_path('../src/presentation/WHPH.App/build/app/outputs/bundle/release/app-release.aab', __dir__),
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
       skip_upload_images: true,
@@ -317,7 +317,7 @@ default_platform(:android)
     FileUtils.mkdir_p(output_dir) unless Dir.exist?(output_dir)
 
     # Run Flutter integration test with screenshot capture
-    Dir.chdir("../src") do
+    Dir.chdir("../src/presentation/WHPH.App") do
       # Set device locale if possible
       begin
         sh("adb", "shell", "settings", "put", "system", "system_locales", locale.gsub('-', '_'))
@@ -377,7 +377,7 @@ default_platform(:android)
 
   private_lane :extract_changelog do
     # Get version from pubspec.yaml
-    pubspec_path = File.join(Dir.pwd, '..', 'src', 'pubspec.yaml')
+    pubspec_path = File.join(Dir.pwd, '..', 'src', 'presentation', 'WHPH.App', 'pubspec.yaml')
     version_line = File.readlines(pubspec_path).find { |line| line.match(/^version:/) }
     version = version_line.split(' ')[1].strip
     
@@ -536,7 +536,7 @@ platform :ios do
      end
      UI.message("Using iOS simulator: #{device_name}")
 
-     Dir.chdir("../src") do
+     Dir.chdir("../src/presentation/WHPH.App") do
        screenshot_config = YAML.load_file("../fastlane/screenshot_config.yaml")
        output_dir = File.expand_path("../fastlane/metadata/ios", __dir__)
        

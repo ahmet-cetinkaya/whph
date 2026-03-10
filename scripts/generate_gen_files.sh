@@ -4,7 +4,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SRC_DIR="$PROJECT_ROOT/src"
+SRC_DIR="$PROJECT_ROOT/src/presentation/WHPH.App"
 cd "$SRC_DIR" || exit 1
 
 acore_log_info "Cleaning build_runner cache..."

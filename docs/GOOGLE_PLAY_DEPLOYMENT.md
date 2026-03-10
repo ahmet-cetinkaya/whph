@@ -30,7 +30,7 @@ Add the following secrets to your GitHub repository:
 | Secret Name | Description | How to Get |
 | :---------- | :---------- | :--------- |
 | `GOOGLE_PLAY_SERVICE_ACCOUNT_KEY` | Base64-encoded service account JSON key | `base64 your-service-account-key.json` |
-| `KEYSTORE_BASE64` | Base64-encoded Android keystore file | `base64 src/android/app/whph-release.keystore` |
+| `KEYSTORE_BASE64` | Base64-encoded Android keystore file | `base64 src/presentation/WHPH.App/android/app/whph-release.keystore` |
 | `KEYSTORE_PASSWORD` | Keystore password | From your existing keystore |
 | `KEY_ALIAS` | Key alias | From your existing keystore |
 | `KEY_PASSWORD` | Key password | From your existing keystore |

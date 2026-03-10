@@ -33,7 +33,7 @@ done
 if [ "$SKIP_FLUTTER" = false ]; then
 	if command -v fvm &>/dev/null; then
 		acore_log_section "Running Flutter Tests"
-		cd "$PROJECT_ROOT/src"
+		cd "$PROJECT_ROOT/src/presentation/WHPH.App"
 		fvm flutter test || {
 			acore_log_error "Flutter tests failed"
 			exit 1
@@ -42,7 +42,7 @@ if [ "$SKIP_FLUTTER" = false ]; then
 		cd "$PROJECT_ROOT"
 	elif command -v flutter &>/dev/null; then
 		acore_log_section "Running Flutter Tests"
-		cd "$PROJECT_ROOT/src"
+		cd "$PROJECT_ROOT/src/presentation/WHPH.App"
 		flutter test || {
 			acore_log_error "Flutter tests failed"
 			exit 1
@@ -57,17 +57,17 @@ fi
 # 2. Run C++ Native Tests
 if [ "$SKIP_CPP" = false ]; then
 	acore_log_section "Running Linux C++ Tests"
-	INCLUDE_DIR="$PROJECT_ROOT/src/linux"
+	INCLUDE_DIR="$PROJECT_ROOT/src/presentation/WHPH.App/linux"
 
 	# Define common source files needed for linking
 	# We compile these once or include them in the g++ command
-	COMMON_SOURCES="$PROJECT_ROOT/src/linux/window_utils.cpp $PROJECT_ROOT/src/linux/window_detector.cpp $PROJECT_ROOT/src/linux/window_detector_x11.cpp $PROJECT_ROOT/src/linux/window_detector_wayland.cpp $PROJECT_ROOT/src/linux/window_detector_fallback.cpp"
+	COMMON_SOURCES="$PROJECT_ROOT/src/presentation/WHPH.App/linux/window_utils.cpp $PROJECT_ROOT/src/presentation/WHPH.App/linux/window_detector.cpp $PROJECT_ROOT/src/presentation/WHPH.App/linux/window_detector_x11.cpp $PROJECT_ROOT/src/presentation/WHPH.App/linux/window_detector_wayland.cpp $PROJECT_ROOT/src/presentation/WHPH.App/linux/window_detector_fallback.cpp"
 
-	# Find all C++ test files in src/test/linux
-	# If src/test/linux doesn't exist, try src/test for backward compatibility or general tests
-	TEST_DIR="$PROJECT_ROOT/src/test/linux"
+	# Find all C++ test files in src/presentation/WHPH.App/test/linux
+	# If src/presentation/WHPH.App/test/linux doesn't exist, try src/presentation/WHPH.App/test for backward compatibility or general tests
+	TEST_DIR="$PROJECT_ROOT/src/presentation/WHPH.App/test/linux"
 	if [ ! -d "$TEST_DIR" ]; then
-		TEST_DIR="$PROJECT_ROOT/src/test"
+		TEST_DIR="$PROJECT_ROOT/src/presentation/WHPH.App/test"
 	fi
 
 	TEST_FILES=$(fd -e "_test.cpp" -t f . "$TEST_DIR" 2>/dev/null)

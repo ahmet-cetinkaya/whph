@@ -47,11 +47,11 @@ jobs:
 
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/android/app/whph-release.keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/presentation/WHPH.App/android/app/whph-release.keystore
 
       - name: Update Gradle Properties
         run: |
-          cat << EOF > src/android/key.properties
+          cat << EOF > src/presentation/WHPH.App/android/key.properties
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=${{ secrets.KEY_ALIAS }}
@@ -60,7 +60,7 @@ jobs:
 
       - name: Build for Android
         run: |
-          cd src
+          cd src/presentation/WHPH.App
           fvm flutter build apk --release
 
       # Publish the build artifacts
@@ -72,6 +72,6 @@ jobs:
         uses: ./.github/actions/upload-build-artifact
         with:
           artifact-name: android
-          artifact-path: src/build/app/outputs/flutter-apk/app-release.apk
+          artifact-path: src/presentation/WHPH.App/build/app/outputs/flutter-apk/app-release.apk
           app-version: ${{ steps.app_version.outputs.version }}
           compression-level: "0"

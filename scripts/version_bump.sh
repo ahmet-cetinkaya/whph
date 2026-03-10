@@ -21,12 +21,12 @@ fi
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # Define all version-related files
-PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
-APP_INFO_FILE="$PROJECT_ROOT/src/lib/core/domain/shared/constants/app_info.dart"
+PUBSPEC_FILE="$PROJECT_ROOT/src/presentation/WHPH.App/pubspec.yaml"
+APP_INFO_FILE="$PROJECT_ROOT/src/presentation/WHPH.App/lib/core/domain/shared/constants/app_info.dart"
 INSTALLER_FILE="$PROJECT_ROOT/packaging/inno-setup/installer.iss"
 FLATPAK_MANIFEST_FILE="$PROJECT_ROOT/packaging/flatpak/flatpak-flutter.yaml"
 FLATHUB_MANIFEST_FILE="$PROJECT_ROOT/packaging/flatpak/flathub/me.ahmetcetinkaya.whph.yaml"
-METAINFO_FILE="$PROJECT_ROOT/src/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml"
+METAINFO_FILE="$PROJECT_ROOT/src/presentation/WHPH.App/linux/share/metainfo/me.ahmetcetinkaya.whph.metainfo.xml"
 
 # Files that are handled by release.yml - skip these
 AUR_PKGBUILD_FILE="$PROJECT_ROOT/packaging/aur/PKGBUILD"
