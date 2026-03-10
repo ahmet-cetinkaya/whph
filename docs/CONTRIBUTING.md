@@ -55,6 +55,40 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
 
 > **Note:** This project uses FVM to ensure all contributors use the same Flutter version. Always use `fvm flutter` instead of `flutter` when running commands.
 
+### Alternative Setup: Nix Development Environment
+
+For Nix or NixOS users, you can use the provided Nix flake for a reproducible development environment:
+
+- **Install Nix with Flakes enabled:**
+  Follow the [Nix install guide](https://nixos.org/download.html) and enable flakes in your configuration.
+
+- **Enter the development environment:**
+  ```bash
+  nix develop
+  ```
+
+  Or with direnv for automatic loading:
+  ```bash
+  # Install direnv if needed
+  nix-env -iA nixpkgs.direnv
+
+  # Allow direnv in the project
+  direnv allow
+  ```
+
+- **Using the RPS command:**
+  ```bash
+  rps dev  # Equivalent to 'nix develop'
+  ```
+
+The Nix environment includes:
+- Flutter SDK via FVM
+- All native dependencies for Linux development (GTK, GLib, GStreamer, etc.)
+- Development tools (prettier, shfmt, clang-format, ktfmt, etc.)
+- Build tools (CMake, ninja, pkg-config)
+
+## 2. Code Style and Formatting Requirements
+
 ## 2. Code Style and Formatting Requirements
 
 - Write idiomatic Flutter and Dart code.

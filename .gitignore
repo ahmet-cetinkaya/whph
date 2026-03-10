@@ -23,6 +23,10 @@ PROJECT_INDEX.md
 # FVM Version Cache
 .fvm/
 
+# Nix
+.direnv/
+.flake-lock.d/
+
 # Dart tool
 .dart_tool/
 
