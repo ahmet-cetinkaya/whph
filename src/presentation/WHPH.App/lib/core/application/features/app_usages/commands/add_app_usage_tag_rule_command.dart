@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_tag_rule.dart';
+import 'package:whph_domain/features/app_usages/app_usage_tag_rule.dart';
 
 class AddAppUsageTagRuleCommand implements IRequest<AddAppUsageTagRuleCommandResponse> {
   final String pattern;

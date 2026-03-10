@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
-import 'package:whph/core/domain/features/tasks/task_constants.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph_domain/shared/utils/logger.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/features/tasks/task_constants.dart';
+import 'package:whph_domain/features/tasks/models/recurrence_configuration.dart';
 
 enum EisenhowerPriority {
   notUrgentNotImportant,
@@ -263,8 +262,8 @@ class Task extends BaseEntity<String> {
             matchesName;
 
         if (!isDefaultOrNone) {
-          Logger.warning('Invalid $enumName value "$value", defaulting to $defaultValue',
-              component: DomainLogComponents.task);
+          DomainLogger.warning('Invalid $enumName value "$value", defaulting to $defaultValue',
+              component: 'Task');
         }
         return defaultValue;
       },
@@ -310,9 +309,9 @@ class Task extends BaseEntity<String> {
       if (plannedOffsetValue is num) {
         plannedDateReminderCustomOffset = plannedOffsetValue.toInt();
         if (!ReminderOffsets.isValidCustomOffset(plannedDateReminderCustomOffset)) {
-          Logger.warning(
+          DomainLogger.warning(
               'Invalid plannedDateReminderCustomOffset value "$plannedDateReminderCustomOffset", ignoring value',
-              component: DomainLogComponents.task);
+              component: 'Task');
           plannedDateReminderCustomOffset = null;
         }
       }
@@ -322,9 +321,9 @@ class Task extends BaseEntity<String> {
       if (deadlineOffsetValue is num) {
         deadlineDateReminderCustomOffset = deadlineOffsetValue.toInt();
         if (!ReminderOffsets.isValidCustomOffset(deadlineDateReminderCustomOffset)) {
-          Logger.warning(
+          DomainLogger.warning(
               'Invalid deadlineDateReminderCustomOffset value "$deadlineDateReminderCustomOffset", ignoring value',
-              component: DomainLogComponents.task);
+              component: 'Task');
           deadlineDateReminderCustomOffset = null;
         }
       }
@@ -368,27 +367,27 @@ class Task extends BaseEntity<String> {
                 RecurrenceConfiguration.fromJson(json['recurrenceConfiguration'] as Map<String, dynamic>);
           }
         } on FormatException catch (e, stackTrace) {
-          Logger.error(
+          DomainLogger.error(
             'Invalid JSON in task recurrenceConfiguration [$TaskErrorIds.recurrenceConfigInvalidJson]',
             error: e,
             stackTrace: stackTrace,
-            component: DomainLogComponents.task,
+            component: 'Task',
           );
           rethrow;
         } on TypeError catch (e, stackTrace) {
-          Logger.error(
+          DomainLogger.error(
             'Invalid task recurrenceConfiguration data structure [$TaskErrorIds.recurrenceConfigInvalidStructure]',
             error: e,
             stackTrace: stackTrace,
-            component: DomainLogComponents.task,
+            component: 'Task',
           );
           rethrow;
         } catch (e, stackTrace) {
-          Logger.error(
+          DomainLogger.error(
             'Unexpected error deserializing task recurrenceConfiguration [$TaskErrorIds.recurrenceConfigDeserializeError]',
             error: e,
             stackTrace: stackTrace,
-            component: DomainLogComponents.task,
+            component: 'Task',
           );
           rethrow;
         }
@@ -424,8 +423,8 @@ class Task extends BaseEntity<String> {
         recurrenceConfiguration: recurrenceConfiguration,
       );
     } catch (e, stackTrace) {
-      Logger.error('CRITICAL ERROR in Task.fromJson. JSON data keys: ${json.keys.toList()}',
-          error: e, stackTrace: stackTrace, component: DomainLogComponents.task);
+      DomainLogger.error('CRITICAL ERROR in Task.fromJson. JSON data keys: ${json.keys.toList()}',
+          error: e, stackTrace: stackTrace, component: 'Task');
       rethrow;
     }
   }

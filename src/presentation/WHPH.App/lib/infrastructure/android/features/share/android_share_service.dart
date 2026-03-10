@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Callback type for handling shared text
 typedef SharedTextCallback = Future<void> Function(String text, String? subject);

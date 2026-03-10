@@ -1,5 +1,5 @@
 [Desktop Entry]
-# App name should match AppInfo.name in lib/core/domain/shared/constants/app_info.dart
+# App name should match AppInfo.name in src/core/WHPH.Domain/lib/shared/constants/app_info.dart
 Name=Work Hard Play Hard
 Name[cs]=Pracuj Tvrdě Hraj Tvrdě
 Name[da]=Arbejd Hård Spil Hård

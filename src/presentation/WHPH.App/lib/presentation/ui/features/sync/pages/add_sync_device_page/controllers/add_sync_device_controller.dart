@@ -9,7 +9,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_devic
 import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/models/discovered_device.dart';

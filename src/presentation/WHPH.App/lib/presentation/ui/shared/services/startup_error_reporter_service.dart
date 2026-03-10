@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
 import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';

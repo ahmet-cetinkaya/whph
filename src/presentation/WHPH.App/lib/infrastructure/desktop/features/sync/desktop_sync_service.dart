@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
-import 'package:whph/core/domain/features/sync/models/desktop_sync_settings.dart';
+import 'package:whph_domain/features/sync/models/desktop_sync_mode.dart';
+import 'package:whph_domain/features/sync/models/desktop_sync_settings.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_server_sync_service.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_client_sync_service.dart';
 

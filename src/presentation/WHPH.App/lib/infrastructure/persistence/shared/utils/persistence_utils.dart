@@ -1,7 +1,7 @@
 /// Shared utility functions for persistence layer.
 library;
 
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 
 /// Parses tag type from database index.
 ///

@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:whph_domain/shared/constants/app_assets.dart';
 
 class TrayMenuItem {
   final String key;

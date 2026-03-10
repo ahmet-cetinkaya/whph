@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart' as shared;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/infrastructure/shared/features/notification/base_notification_service.dart';
 

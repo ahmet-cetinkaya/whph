@@ -30,8 +30,8 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
 
 class MarathonPage extends StatefulWidget {
   static const String route = '/marathon';

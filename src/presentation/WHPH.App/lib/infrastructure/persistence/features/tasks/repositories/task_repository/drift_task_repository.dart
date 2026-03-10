@@ -9,14 +9,14 @@ import 'package:whph/core/application/features/tags/queries/get_list_tags_query.
 import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
 import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/models/task_with_total_duration.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/models/task_with_total_duration.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_domain/shared/constants/domain_log_components.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/task_data_mapper.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/task_query_builder.dart';
 

@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 
 abstract class IReminderCalculationService {
   /// Calculates the actual reminder DateTime based on the task date and reminder settings

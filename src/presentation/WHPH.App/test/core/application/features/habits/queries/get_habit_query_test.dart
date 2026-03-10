@@ -4,10 +4,10 @@ import 'package:whph/core/application/features/habits/queries/get_habit_query.da
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph_domain/features/habits/habit.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph_domain/features/habits/habit_record_status.dart';
+import 'package:whph_domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:acore/acore.dart';
 

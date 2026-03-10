@@ -13,7 +13,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as whph_repo;
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
 
 import 'paginated_sync_command_bidirectional_progress_test.mocks.dart';
 

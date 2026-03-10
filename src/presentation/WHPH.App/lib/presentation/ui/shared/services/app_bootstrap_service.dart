@@ -5,7 +5,8 @@ import 'package:whph/core/application/features/app_usages/commands/start_track_a
 import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
-import 'package:whph/core/domain/shared/constants/demo_config.dart';
+import 'package:whph_domain/shared/constants/demo_config.dart';
+import 'package:whph_domain/shared/utils/logger.dart' show DomainLogger;
 import 'package:whph/infrastructure/infrastructure_container.dart';
 import 'package:whph/infrastructure/persistence/persistence_container.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
@@ -14,7 +15,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/domain_logger_adapter.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart';
 import 'package:whph/presentation/ui/ui_presentation_container.dart';
 import 'package:acore/acore.dart';
@@ -39,6 +41,9 @@ class AppBootstrapService {
     // Initialize Logger after ALL services are registered
     Logger.initialize(container);
     Logger.info('AppBootstrapService: Starting app initialization...');
+
+    // Initialize Domain Logger with application layer adapter
+    DomainLogger.initialize(DomainLoggerAdapter());
     Logger.debug('AppBootstrapService: Registering dependency modules...');
 
     Logger.info('AppBootstrapService: Dependency injection container setup completed');

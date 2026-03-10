@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/task_details_content.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_date_picker_field.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';

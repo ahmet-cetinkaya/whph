@@ -21,10 +21,10 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
 
 class TaskDetailsPage extends StatefulWidget {
   static const String route = '/tasks/details';

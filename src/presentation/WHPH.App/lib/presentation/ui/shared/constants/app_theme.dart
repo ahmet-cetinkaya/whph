@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
+import 'package:whph_domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/services/theme_service/page_padding_theme.dart';

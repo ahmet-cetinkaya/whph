@@ -1,5 +1,5 @@
-import 'package:whph/core/domain/features/app_usages/app_usage.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart';
+import 'package:whph_domain/features/app_usages/app_usage.dart';
+import 'package:whph_domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 
 /// Demo app usage data generator

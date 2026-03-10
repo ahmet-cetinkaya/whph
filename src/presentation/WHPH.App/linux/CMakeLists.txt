@@ -216,22 +216,22 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/share/metainfo/me.ahmetcetinkaya.whph
 set(ICON_SIZES 16 22 24 32 48 64 128 256 512)
 
 foreach(size ${ICON_SIZES})
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph-${size}.png"
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../../core/WHPH.Domain/lib/shared/assets/images/whph-${size}.png"
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${size}x${size}/apps"
         RENAME "${APPLICATION_ID}.png"
         COMPONENT Runtime
     )
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo_fg-${size}.png"
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../../core/WHPH.Domain/lib/shared/assets/images/whph_logo_fg-${size}.png"
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${size}x${size}/apps"
         RENAME "${APPLICATION_ID}.default.png"
         COMPONENT Runtime
     )
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo_fg_play-${size}.png"
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../../core/WHPH.Domain/lib/shared/assets/images/whph_logo_fg_play-${size}.png"
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${size}x${size}/apps"
         RENAME "${APPLICATION_ID}.play.png"
         COMPONENT Runtime
     )
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../lib/core/domain/shared/assets/images/whph_logo_fg_pause-${size}.png"
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../../core/WHPH.Domain/lib/shared/assets/images/whph_logo_fg_pause-${size}.png"
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/${size}x${size}/apps"
         RENAME "${APPLICATION_ID}.pause.png"
         COMPONENT Runtime

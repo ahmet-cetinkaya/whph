@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph_domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
@@ -12,7 +12,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';

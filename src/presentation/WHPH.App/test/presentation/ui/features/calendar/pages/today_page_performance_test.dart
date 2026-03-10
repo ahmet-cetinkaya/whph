@@ -18,9 +18,9 @@ import 'package:whph/presentation/ui/features/tags/services/time_data_service.da
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
-import 'package:whph/core/domain/shared/constants/app_theme.dart';
+import 'package:whph_domain/shared/constants/app_theme.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 
 // Mocks
 class MockSoundManagerService extends Mock implements ISoundManagerService {}

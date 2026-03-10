@@ -1,7 +1,7 @@
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Service responsible for resolving sync conflicts between local and remote entities
 class SyncConflictResolutionService {

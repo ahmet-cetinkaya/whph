@@ -6,7 +6,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_tags_repo
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 import 'package:whph/core/application/features/tags/constants/tag_translation_keys.dart';
 
 class DeleteTagCommand implements IRequest<DeleteTagCommandResponse> {

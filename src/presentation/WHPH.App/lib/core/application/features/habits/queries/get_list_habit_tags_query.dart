@@ -2,8 +2,8 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/habits/habit_tag.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/habits/habit_tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 
 class GetListHabitTagsQuery implements IRequest<GetListHabitTagsQueryResponse> {
   late String habitId;

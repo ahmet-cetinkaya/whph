@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';

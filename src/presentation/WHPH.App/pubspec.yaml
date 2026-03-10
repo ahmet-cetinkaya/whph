@@ -15,6 +15,8 @@ dependencies:
   # Core Packages
   acore:
     path: ../../../packages/acore-flutter
+  whph_domain:
+    path: ../../core/WHPH.Domain
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1
@@ -88,7 +90,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - lib/core/domain/shared/assets/images/
+    # Note: Domain images moved to whph_domain package, but kept here for reference
+    # TODO: Move domain images to presentation layer or whph_domain package assets
+    # - lib/core/domain/shared/assets/images/
     - lib/presentation/ui/shared/assets/sounds/
     - lib/presentation/ui/shared/assets/locales/
     - lib/presentation/ui/features/about/assets/locales/

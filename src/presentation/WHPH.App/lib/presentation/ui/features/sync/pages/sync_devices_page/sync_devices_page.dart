@@ -8,8 +8,8 @@ import 'package:whph/core/application/features/sync/queries/get_list_syncs_query
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/sync/models/desktop_sync_mode.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/main.dart';

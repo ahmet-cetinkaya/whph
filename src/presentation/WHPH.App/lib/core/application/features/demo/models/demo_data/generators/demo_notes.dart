@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/notes/note.dart';
+import 'package:whph_domain/features/notes/note.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/demo/constants/demo_translation_keys.dart';
 

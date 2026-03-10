@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph_domain/features/habits/habit.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:acore/acore.dart' as acore;

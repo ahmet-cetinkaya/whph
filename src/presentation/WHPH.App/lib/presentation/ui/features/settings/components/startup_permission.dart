@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_card.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';

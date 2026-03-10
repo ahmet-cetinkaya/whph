@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Handles WebSocket message serialization and deserialization
 class SyncMessageSerializer {

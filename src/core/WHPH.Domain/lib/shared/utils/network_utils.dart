@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class NetworkUtils {
   /// Check if an IP is from a private network
@@ -25,7 +24,8 @@ class NetworkUtils {
         return ip.startsWith('fe80:') || ip == '::1' || ip.startsWith('fc') || ip.startsWith('fd');
       }
     } catch (e) {
-      Logger.debug('Error parsing IP address $ip: $e');
+      // Domain layer cannot depend on application layer Logger
+      // Return false on parse errors; caller handles logging if needed
       return false;
     }
     return false;

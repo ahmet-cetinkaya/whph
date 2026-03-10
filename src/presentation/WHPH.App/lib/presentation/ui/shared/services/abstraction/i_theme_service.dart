@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/domain/shared/constants/app_theme.dart';
+import 'package:whph_domain/shared/constants/app_theme.dart';
 
 enum AppThemeMode { light, dark, auto }
 

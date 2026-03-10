@@ -4,7 +4,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/notes/models/note_sort_fields.dart';
 import 'package:whph/core/application/features/notes/models/note_list_item.dart';
 import 'package:whph/core/application/features/notes/utils/note_grouping_helper.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 import 'package:whph/core/application/shared/utils/validation_utils.dart';
 
 export 'package:whph/core/application/features/notes/models/note_sort_fields.dart';

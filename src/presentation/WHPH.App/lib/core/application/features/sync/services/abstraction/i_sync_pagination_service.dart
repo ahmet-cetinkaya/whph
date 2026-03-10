@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
 
 /// Service responsible for managing sync pagination and progress tracking
 abstract class ISyncPaginationService {

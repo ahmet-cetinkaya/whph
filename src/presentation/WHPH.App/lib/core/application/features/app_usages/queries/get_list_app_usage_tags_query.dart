@@ -2,8 +2,8 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/app_usages/app_usage_tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 
 class GetListAppUsageTagsQuery implements IRequest<GetListAppUsageTagsQueryResponse> {
   late String appUsageId;

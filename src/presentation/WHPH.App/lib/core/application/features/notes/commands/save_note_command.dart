@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/domain/features/notes/note.dart';
+import 'package:whph_domain/features/notes/note.dart';
 
 class SaveNoteCommand implements IRequest<SaveNoteCommandResponse> {
   final String? id;

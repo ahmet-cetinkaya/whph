@@ -7,9 +7,9 @@ import 'package:whph/core/application/features/habits/services/i_habit_time_reco
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph_domain/features/habits/habit.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph_domain/features/habits/habit_record_status.dart';
 import 'package:acore/acore.dart';
 
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';

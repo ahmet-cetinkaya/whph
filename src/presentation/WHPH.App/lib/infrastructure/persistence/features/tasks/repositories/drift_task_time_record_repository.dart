@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/domain/features/tasks/task_time_record.dart';
+import 'package:whph_domain/features/tasks/task_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 

@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:home_widget/home_widget.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dart';
 import 'helpers/widget_background_callback_handler.dart';
 import 'helpers/widget_toggle_helper.dart';

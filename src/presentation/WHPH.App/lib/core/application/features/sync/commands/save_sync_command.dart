@@ -2,7 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
 import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
 
 class SaveSyncDeviceCommand implements IRequest<SaveSyncDeviceCommandResponse> {

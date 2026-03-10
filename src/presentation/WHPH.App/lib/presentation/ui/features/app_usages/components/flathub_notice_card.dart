@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:whph/infrastructure/linux/constants/linux_app_constants.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/information_card.dart';

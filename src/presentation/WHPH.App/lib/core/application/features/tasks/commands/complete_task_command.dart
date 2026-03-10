@@ -4,8 +4,8 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 
 /// Command to complete a task by ID.

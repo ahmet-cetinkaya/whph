@@ -1,11 +1,11 @@
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
-import 'package:whph/core/domain/features/notes/note.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/tasks/task_time_record.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph_domain/features/habits/habit.dart';
+import 'package:whph_domain/features/tags/tag.dart';
+import 'package:whph_domain/features/notes/note.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph_domain/features/tasks/task_time_record.dart';
+import 'package:whph_domain/features/app_usages/app_usage.dart';
+import 'package:whph_domain/features/app_usages/app_usage_time_record.dart';
 
 import 'generators/generators.dart';
 import '../../translations/demo_translations_registry.dart';

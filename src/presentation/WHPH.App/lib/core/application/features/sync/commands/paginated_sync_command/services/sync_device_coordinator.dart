@@ -3,8 +3,8 @@ import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Typedef for the DTO creation callback
 typedef DtoCreator = Future<dynamic> Function(

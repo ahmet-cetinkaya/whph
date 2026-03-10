@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph_domain/features/habits/habit_record_status.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 

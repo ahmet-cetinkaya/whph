@@ -122,8 +122,9 @@ static void my_application_activate(GApplication* application) {
           if (error) {
             g_clear_error(&error);
           }
-          // Path: data/flutter_assets/lib/core/domain/shared/assets/images/whph_logo.png
-          std::string asset_path = exe_dir + "/data/flutter_assets/lib/core/domain/shared/assets/images/whph_logo.png";
+          // Path: data/flutter_assets/packages/whph_domain/lib/shared/assets/images/whph_logo.png
+          // Note: Package assets are bundled under packages/<package_name>/
+          std::string asset_path = exe_dir + "/data/flutter_assets/packages/whph_domain/lib/shared/assets/images/whph_logo.png";
           icon = gdk_pixbuf_new_from_file(asset_path.c_str(), &error);
        }
     }

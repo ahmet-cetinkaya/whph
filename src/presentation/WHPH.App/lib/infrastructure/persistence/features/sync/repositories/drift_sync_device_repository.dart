@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 

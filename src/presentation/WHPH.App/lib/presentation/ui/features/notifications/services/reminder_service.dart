@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
@@ -7,8 +7,8 @@ import 'package:whph/core/application/features/tasks/queries/get_list_tasks_quer
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/habits/habit.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/pages/habits_page.dart';

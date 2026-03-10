@@ -2,7 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 import 'package:whph/core/application/features/tags/constants/tag_translation_keys.dart';
 
 class SaveTagCommand implements IRequest<SaveTagCommandResponse> {

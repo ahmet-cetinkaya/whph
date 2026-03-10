@@ -2,7 +2,7 @@
 #define WINDOWS_APP_CONSTANTS_H_
 
 // App constants that should match
-// lib/core/domain/shared/constants/app_info.dart
+// src/core/WHPH.Domain/lib/shared/constants/app_info.dart
 #define APP_NAME L"Work Hard Play Hard"
 #define APP_SHORT_NAME L"WHPH"
 

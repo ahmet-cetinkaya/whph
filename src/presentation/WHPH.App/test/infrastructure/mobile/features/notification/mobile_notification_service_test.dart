@@ -6,7 +6,7 @@ import 'package:whph/core/application/features/tasks/commands/complete_task_comm
 import 'package:whph/infrastructure/mobile/features/notification/mobile_notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph_domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 

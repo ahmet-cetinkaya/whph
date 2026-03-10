@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
 import 'package:whph/core/application/features/demo/models/demo_data/demo_data.dart';
-import 'package:whph/core/domain/shared/constants/demo_config.dart';
+import 'package:whph_domain/shared/constants/demo_config.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
@@ -15,13 +15,13 @@ import 'package:whph/core/application/features/notes/services/abstraction/i_note
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/core/domain/features/habits/habit_tag.dart';
-import 'package:whph/core/domain/features/notes/note_tag.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
+import 'package:whph_domain/features/settings/setting.dart';
+import 'package:whph_domain/features/tasks/task_tag.dart';
+import 'package:whph_domain/features/habits/habit_tag.dart';
+import 'package:whph_domain/features/notes/note_tag.dart';
+import 'package:whph_domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Demo data service implementation
 ///

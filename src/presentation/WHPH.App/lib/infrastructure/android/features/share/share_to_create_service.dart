@@ -10,7 +10,7 @@ import 'package:whph/presentation/ui/shared/components/share_disambiguation_dial
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:acore/acore.dart' hide Container;
 
 /// Service that handles creating tasks/notes from Android share intents

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 
 class TagListItem extends Equatable {
   final String tagId;

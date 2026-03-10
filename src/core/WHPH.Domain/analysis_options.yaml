@@ -1,0 +1,26 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Prefer const constructors
+    prefer_const_constructors: true
+    prefer_const_constructors_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+
+    # Code quality
+    avoid_print: true
+    avoid_unnecessary_containers: true
+    prefer_single_quotes: true
+    sort_child_properties_last: true
+    use_key_in_widget_constructors: true
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+  errors:
+    # Treat missing return as error
+    missing_return: error
+    # Treat dead code as warning
+    dead_code: warning

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/components/app_logo.dart';
 import 'package:whph/presentation/ui/shared/constants/app_routes.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';

@@ -23,7 +23,7 @@ import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/settings/components/app_usage_permission.dart';
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
-import 'package:whph/core/domain/shared/constants/demo_config.dart';
+import 'package:whph_domain/shared/constants/demo_config.dart';
 import 'dart:io';
 
 class AppUsageViewPage extends StatefulWidget {

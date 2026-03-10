@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/migrations/migration_exceptions.dart';
 
 /// Migrates the database from version 30 to 31.

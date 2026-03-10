@@ -3,7 +3,7 @@ import 'package:whph/core/application/features/tasks/commands/save_task_command.
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/services/task_recurrence_service.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 

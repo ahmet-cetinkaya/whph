@@ -6,7 +6,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 
 import 'get_list_tasks_query_test.mocks.dart';

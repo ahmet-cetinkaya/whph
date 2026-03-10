@@ -3,7 +3,7 @@ import 'package:whph/core/application/features/notes/constants/note_translation_
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:acore/acore.dart';
 // ignore: unused_import
-import 'package:whph/core/domain/features/notes/note_tag.dart';
+import 'package:whph_domain/features/notes/note_tag.dart';
 
 class RemoveNoteTagCommand implements IRequest<RemoveNoteTagCommandResponse> {
   final String id;

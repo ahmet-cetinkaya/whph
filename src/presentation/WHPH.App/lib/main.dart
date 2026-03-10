@@ -20,7 +20,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
 import 'package:whph/infrastructure/android/features/share/share_to_create_service.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Global navigator key for accessing context throughout the application
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

@@ -6,8 +6,8 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart';
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command/services/sync_device_coordinator.dart';
 import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Callback types for outgoing sync operations
 typedef DeviceSyncCallback = Future<bool> Function(SyncDevice device);

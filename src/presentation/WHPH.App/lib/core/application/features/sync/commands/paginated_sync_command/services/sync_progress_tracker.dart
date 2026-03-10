@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:whph/core/application/features/sync/models/bidirectional_sync_progress.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Service for tracking bidirectional sync progress across entities and devices.
 class SyncProgressTracker {

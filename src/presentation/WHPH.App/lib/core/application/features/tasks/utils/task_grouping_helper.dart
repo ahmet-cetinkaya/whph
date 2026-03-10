@@ -2,7 +2,7 @@ import 'package:whph/core/application/features/tasks/models/task_sort_fields.dar
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/core/application/shared/utils/grouping_utils.dart';
 
 class TaskGroupingHelper {

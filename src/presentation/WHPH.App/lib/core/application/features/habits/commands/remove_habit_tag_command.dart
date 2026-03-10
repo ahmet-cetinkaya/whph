@@ -3,7 +3,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_tags_repo
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 
-import 'package:whph/core/domain/features/habits/habit_tag.dart';
+import 'package:whph_domain/features/habits/habit_tag.dart';
 
 class RemoveHabitTagCommand implements IRequest<RemoveHabitTagCommandResponse> {
   String id;

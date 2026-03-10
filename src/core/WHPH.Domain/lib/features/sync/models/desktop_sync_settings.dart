@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
+import 'package:whph_domain/features/sync/models/desktop_sync_mode.dart';
 
 /// Settings for desktop sync functionality
 class DesktopSyncSettings {

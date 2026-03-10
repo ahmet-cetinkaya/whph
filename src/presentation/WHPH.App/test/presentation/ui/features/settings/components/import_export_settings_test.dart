@@ -7,7 +7,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 
-import 'package:whph/core/domain/shared/constants/app_theme.dart';
+import 'package:whph_domain/shared/constants/app_theme.dart';
 import 'package:acore/acore.dart';
 
 import 'dart:async';

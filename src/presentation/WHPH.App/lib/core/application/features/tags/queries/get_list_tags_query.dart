@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 
 import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/core/application/features/tags/utils/tag_grouping_helper.dart';

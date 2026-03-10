@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Handles bidirectional sync server pagination and pending response data
 class ServerPaginationHandler {

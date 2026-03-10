@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:path/path.dart' as path;
 import 'package:whph/main.dart';
 import 'package:whph/infrastructure/shared/features/setup/models/update_info.dart';

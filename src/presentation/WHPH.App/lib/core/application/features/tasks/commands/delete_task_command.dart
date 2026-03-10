@@ -3,7 +3,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 
 class DeleteTaskCommand implements IRequest<DeleteTaskCommandResponse> {

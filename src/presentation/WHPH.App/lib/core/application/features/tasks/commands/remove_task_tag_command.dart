@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
+import 'package:whph_domain/features/tasks/task_tag.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 
 class RemoveTaskTagCommand implements IRequest<RemoveTaskTagCommandResponse> {

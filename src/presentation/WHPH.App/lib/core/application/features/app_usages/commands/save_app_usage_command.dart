@@ -2,7 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage.dart';
+import 'package:whph_domain/features/app_usages/app_usage.dart';
 import 'package:whph/core/application/features/app_usages/constants/app_usage_translation_keys.dart';
 
 class SaveAppUsageCommand implements IRequest<SaveAppUsageCommandResponse> {

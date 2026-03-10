@@ -1,7 +1,7 @@
 import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Handler for processing SyncDevice entities during sync.
 ///

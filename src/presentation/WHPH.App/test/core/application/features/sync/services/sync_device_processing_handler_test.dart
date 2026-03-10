@@ -3,7 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:whph/core/application/features/sync/services/sync_device_processing_handler.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
 
 import 'sync_device_processing_handler_test.mocks.dart';
 

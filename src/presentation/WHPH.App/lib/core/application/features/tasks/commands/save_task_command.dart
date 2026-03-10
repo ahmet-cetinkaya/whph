@@ -1,20 +1,20 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task_tag.dart';
+import 'package:whph_domain/features/tasks/task_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
-import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/shared/constants/domain_log_components.dart';
 import 'package:whph/core/application/features/tasks/utils/task_date_time_normalizer.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {

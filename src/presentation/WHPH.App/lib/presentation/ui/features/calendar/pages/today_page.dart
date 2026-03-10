@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/settings/setting.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
@@ -44,7 +44,7 @@ import 'package:whph/core/application/features/settings/queries/get_setting_quer
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
 
 class TodayPage extends StatefulWidget {
   static const String route = '/today';

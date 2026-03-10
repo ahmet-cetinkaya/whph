@@ -1,6 +1,6 @@
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
 
 class DateHelper {
   static int weekDayToNumber(WeekDays day) {

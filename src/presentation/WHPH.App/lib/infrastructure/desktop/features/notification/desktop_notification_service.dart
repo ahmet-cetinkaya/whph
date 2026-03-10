@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/domain/shared/constants/app_assets.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/shared/constants/app_assets.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/infrastructure/shared/features/notification/base_notification_service.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';

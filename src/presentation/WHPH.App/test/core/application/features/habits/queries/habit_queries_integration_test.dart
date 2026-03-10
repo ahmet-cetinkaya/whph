@@ -5,7 +5,7 @@ import 'package:whph/infrastructure/persistence/features/habits/repositories/dri
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_tags_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_records_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph_domain/features/habits/habit.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 

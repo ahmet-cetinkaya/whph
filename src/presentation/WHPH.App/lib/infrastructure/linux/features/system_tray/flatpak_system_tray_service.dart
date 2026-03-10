@@ -1,6 +1,6 @@
 import 'package:tray_manager/tray_manager.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_domain/shared/constants/app_assets.dart';
 import 'package:whph/infrastructure/desktop/features/system_tray/desktop_system_tray_service.dart';
 
 class FlatpakSystemTrayService extends DesktopSystemTrayService {

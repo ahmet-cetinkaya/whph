@@ -5,7 +5,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/sync_communication_service/helpers/sync_dto_serializer.dart';
 import 'package:whph/core/application/features/sync/services/sync_communication_service/helpers/sync_message_serializer.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Implementation of sync communication service for WebSocket-based sync operations
 ///

@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/habits/habit_time_record.dart';
+import 'package:whph_domain/features/habits/habit_time_record.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';

@@ -2,7 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/habits/habit_tag.dart';
+import 'package:whph_domain/features/habits/habit_tag.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 
 class AddHabitTagCommand implements IRequest<AddHabitTagCommandResponse> {

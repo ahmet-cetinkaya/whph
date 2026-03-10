@@ -9,7 +9,7 @@ import 'package:whph/core/application/features/sync/commands/paginated_sync_comm
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;
 import 'dart:io';
 

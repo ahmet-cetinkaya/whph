@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 
 class TaskListItem {

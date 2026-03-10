@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
-import 'package:whph/core/domain/features/notes/note.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
-import 'package:whph/core/domain/features/notes/note_tag.dart';
+import 'package:whph_domain/features/notes/note.dart';
+import 'package:whph_domain/features/tags/tag.dart';
+import 'package:whph_domain/features/notes/note_tag.dart';
 import 'package:whph/infrastructure/persistence/features/notes/repositories/drift_note_repository.dart';
 import 'package:whph/infrastructure/persistence/features/notes/repositories/drift_note_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_repository.dart';

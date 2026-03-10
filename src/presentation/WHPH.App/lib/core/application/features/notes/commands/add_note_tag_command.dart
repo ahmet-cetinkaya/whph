@@ -3,7 +3,7 @@ import 'package:whph/core/application/features/notes/constants/note_translation_
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/notes/note_tag.dart';
+import 'package:whph_domain/features/notes/note_tag.dart';
 
 class AddNoteTagCommand implements IRequest<AddNoteTagCommandResponse> {
   final String noteId;

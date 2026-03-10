@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tasks/services/task_recurrence_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';

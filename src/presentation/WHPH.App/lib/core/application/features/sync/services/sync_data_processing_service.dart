@@ -5,9 +5,9 @@ import 'package:whph/core/application/features/sync/services/sync_conflict_resol
 import 'package:whph/core/application/features/sync/services/sync_device_processing_handler.dart';
 import 'package:whph/core/application/features/sync/services/recurring_task_duplicate_checker.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Implementation of sync data processing service.
 ///

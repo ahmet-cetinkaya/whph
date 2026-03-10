@@ -19,7 +19,7 @@ import 'package:whph/core/application/features/notes/services/abstraction/i_note
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'dart:convert';
 import 'package:csv/csv.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';

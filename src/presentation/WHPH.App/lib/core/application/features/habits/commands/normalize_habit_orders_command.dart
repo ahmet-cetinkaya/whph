@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph_domain/features/habits/habit.dart';
 import 'package:acore/acore.dart';
 
 class NormalizeHabitOrdersCommand implements IRequest<NormalizeHabitOrdersResponse> {

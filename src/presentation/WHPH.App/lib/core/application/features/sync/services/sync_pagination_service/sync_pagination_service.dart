@@ -7,8 +7,8 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/sync_pagination_service/helpers/server_pagination_handler.dart';
 import 'package:whph/core/application/features/sync/services/sync_pagination_service/helpers/sync_dto_builder.dart';
 import 'package:whph/core/application/features/sync/services/sync_pagination_service/helpers/sync_progress_tracker.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Implementation of sync pagination service
 /// Orchestrates sync operations by delegating to specialized helpers

@@ -3,12 +3,12 @@ import 'package:whph/core/application/features/app_usages/models/app_usage_time_
 import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart';
+import 'package:whph_domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 
 @UseRowClass(AppUsageTimeRecord)
 class AppUsageTimeRecordTable extends Table {

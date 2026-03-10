@@ -1,5 +1,5 @@
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_time_record.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/demo/constants/demo_translation_keys.dart';
 

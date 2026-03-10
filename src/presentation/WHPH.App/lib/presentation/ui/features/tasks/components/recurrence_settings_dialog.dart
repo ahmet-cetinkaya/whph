@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart' hide DatePickerDialog;
 import 'package:acore/acore.dart' hide Container;
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph_domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_weekday_selector.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_weekly_time_selector.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_end_condition_selector.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_monthly_pattern_selector.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
-import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/shared/constants/domain_log_components.dart';
 
 class RecurrenceSettingsDialog extends StatefulWidget {
   final RecurrenceType initialRecurrenceType;

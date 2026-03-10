@@ -1,0 +1,26 @@
+name: whph_domain
+description: Domain layer for WHPH (Work Hard Play Hard) productivity app. Contains business entities and rules following Clean Architecture principles.
+version: 0.0.1
+publish_to: "none"
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  acore:
+    path: ../../../packages/acore-flutter
+  dart_json_mapper: ^2.2.16
+  equatable: ^2.0.7
+  meta: ^1.15.0
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  assets:
+    - lib/shared/assets/images/

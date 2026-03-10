@@ -7,7 +7,7 @@ import 'package:whph/infrastructure/persistence/features/tasks/repositories/drif
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
 
 void main() {

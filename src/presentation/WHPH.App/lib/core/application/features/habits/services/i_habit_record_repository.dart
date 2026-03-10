@@ -1,7 +1,7 @@
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
 import 'package:acore/acore.dart' hide IRepository;
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph_domain/features/habits/habit_record_status.dart';
 
 abstract class IHabitRecordRepository extends app.IRepository<HabitRecord, String> {
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(

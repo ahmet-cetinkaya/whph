@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:meta/meta.dart';
@@ -10,9 +10,9 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/application/features/tasks/utils/task_recurrence_validator.dart';
 import 'package:whph/core/application/features/tasks/utils/date_helper.dart';
-import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
-import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
-import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
+import 'package:whph_domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph_domain/shared/constants/task_error_ids.dart';
+import 'package:whph_domain/shared/constants/domain_log_components.dart';
 
 class TaskRecurrenceService implements ITaskRecurrenceService {
   final ILogger _logger;

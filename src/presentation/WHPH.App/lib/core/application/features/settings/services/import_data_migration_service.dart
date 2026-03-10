@@ -1,6 +1,6 @@
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 

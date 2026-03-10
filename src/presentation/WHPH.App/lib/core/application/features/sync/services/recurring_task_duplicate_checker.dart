@@ -1,8 +1,8 @@
 import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 import 'package:whph/core/application/features/sync/services/abstraction/i_recurring_task_duplicate_checker.dart';
 

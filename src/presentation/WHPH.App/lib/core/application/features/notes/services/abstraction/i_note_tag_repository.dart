@@ -1,5 +1,5 @@
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
-import 'package:whph/core/domain/features/notes/note_tag.dart';
+import 'package:whph_domain/features/notes/note_tag.dart';
 
 abstract class INoteTagRepository extends app.IRepository<NoteTag, String> {
   Future<List<NoteTag>> getByNoteId(String noteId);

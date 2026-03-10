@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/windows/features/setup/exceptions/windows_firewall_rule_exception.dart';
 import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
 import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_firewall_service.dart';

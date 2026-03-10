@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph_domain/features/settings/setting.dart';
 
 class GetListSettingsQuery implements IRequest<GetListSettingsQueryResponse> {
   late int pageIndex;

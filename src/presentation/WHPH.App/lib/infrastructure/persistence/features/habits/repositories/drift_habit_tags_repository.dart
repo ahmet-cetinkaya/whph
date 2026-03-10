@@ -1,12 +1,12 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
-import 'package:whph/core/domain/features/habits/habit_tag.dart';
+import 'package:whph_domain/features/habits/habit_tag.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag.dart';
 import 'package:acore/acore.dart';
 
 @UseRowClass(HabitTag)

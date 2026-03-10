@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:whph_domain/shared/constants/app_assets.dart';
 
 class AppLogo extends StatelessWidget {
   final double width;

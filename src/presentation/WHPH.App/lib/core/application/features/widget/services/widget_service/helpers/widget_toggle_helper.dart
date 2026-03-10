@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';

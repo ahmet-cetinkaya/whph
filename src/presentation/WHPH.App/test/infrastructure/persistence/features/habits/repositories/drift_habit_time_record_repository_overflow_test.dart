@@ -3,8 +3,8 @@ import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habits_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/domain/features/habits/habit_time_record.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph_domain/features/habits/habit_time_record.dart';
+import 'package:whph_domain/features/habits/habit.dart';
 
 void main() {
   group('Habit Time Record Overflow Tests', () {

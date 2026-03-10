@@ -1,5 +1,5 @@
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:whph_domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';

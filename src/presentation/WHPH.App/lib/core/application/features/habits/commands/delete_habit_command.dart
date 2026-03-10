@@ -3,7 +3,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_repositor
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph_domain/features/habits/habit.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 
 class DeleteHabitCommand implements IRequest<DeleteHabitCommandResponse> {

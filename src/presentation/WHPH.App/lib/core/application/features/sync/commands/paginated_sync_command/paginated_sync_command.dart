@@ -18,8 +18,8 @@ import 'package:whph/core/application/features/sync/commands/paginated_sync_comm
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command/services/sync_outgoing_handler.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 
 class PaginatedSyncCommand implements IRequest<PaginatedSyncCommandResponse> {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph_domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
@@ -9,7 +9,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 
 class NotificationSettings extends StatefulWidget {

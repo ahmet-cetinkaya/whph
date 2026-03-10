@@ -7,9 +7,9 @@ import 'package:whph/core/application/features/sync/services/sync_conflict_resol
 import 'package:whph/core/application/features/sync/services/sync_data_processing_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 
 import 'sync_data_processing_service_test.mocks.dart';
 

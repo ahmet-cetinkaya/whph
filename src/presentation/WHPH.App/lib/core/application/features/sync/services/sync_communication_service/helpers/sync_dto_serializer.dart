@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Handles DTO-to-JSON conversion for sync operations with isolate support
 class SyncDtoSerializer {

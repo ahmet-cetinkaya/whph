@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
 import 'package:whph/infrastructure/windows/features/setup/constants/windows_script_templates.dart';
 import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_update_service.dart';

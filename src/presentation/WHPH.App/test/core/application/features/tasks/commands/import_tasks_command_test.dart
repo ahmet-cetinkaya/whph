@@ -5,7 +5,7 @@ import 'package:whph/core/application/features/tasks/commands/import_tasks_comma
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:mockito/annotations.dart';
 

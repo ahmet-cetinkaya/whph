@@ -1,25 +1,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_tag_rule.dart';
-import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/habits/habit_tag.dart';
-import 'package:whph/core/domain/features/notes/note.dart';
-import 'package:whph/core/domain/features/notes/note_tag.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
-import 'package:whph/core/domain/features/tags/tag.dart';
-import 'package:whph/core/domain/features/tags/tag_tag.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/core/domain/features/tasks/task_time_record.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph_domain/features/app_usages/app_usage.dart';
+import 'package:whph_domain/features/app_usages/app_usage_tag.dart';
+import 'package:whph_domain/features/app_usages/app_usage_time_record.dart';
+import 'package:whph_domain/features/app_usages/app_usage_tag_rule.dart';
+import 'package:whph_domain/features/app_usages/app_usage_ignore_rule.dart';
+import 'package:whph_domain/features/habits/habit.dart';
+import 'package:whph_domain/features/habits/habit_record.dart';
+import 'package:whph_domain/features/habits/habit_tag.dart';
+import 'package:whph_domain/features/notes/note.dart';
+import 'package:whph_domain/features/notes/note_tag.dart';
+import 'package:whph_domain/features/settings/setting.dart';
+import 'package:whph_domain/features/sync/sync_device.dart';
+import 'package:whph_domain/features/tags/tag.dart';
+import 'package:whph_domain/features/tags/tag_tag.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task_tag.dart';
+import 'package:whph_domain/features/tasks/task_time_record.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 
 /// Service for building bidirectional sync response DTOs.
 /// Replaces 17 near-identical switch cases with a unified builder.

@@ -1,5 +1,5 @@
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
-import 'package:whph/core/domain/features/tasks/task_tag.dart';
+import 'package:whph_domain/features/tasks/task_tag.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
 
 abstract class ITaskTagRepository extends app.IRepository<TaskTag, String> {

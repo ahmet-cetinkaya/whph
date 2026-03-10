@@ -26,7 +26,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph_domain/shared/constants/app_info.dart';
 
 import 'import_data_command_test.mocks.dart';
 

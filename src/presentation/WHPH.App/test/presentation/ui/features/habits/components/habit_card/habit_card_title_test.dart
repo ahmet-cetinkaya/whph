@@ -7,7 +7,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
-import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
+import 'package:whph_domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/main.dart' as app_main;
 import 'package:acore/acore.dart' hide Container;
 

@@ -1,4 +1,4 @@
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph_domain/features/tasks/task.dart';
 
 class TaskRecurrenceValidator {
   static void validateRecurrenceInterval(int? interval) {

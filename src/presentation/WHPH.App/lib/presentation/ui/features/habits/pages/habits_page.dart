@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/utils/logger.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_add_button.dart';
@@ -24,7 +24,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph_domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
