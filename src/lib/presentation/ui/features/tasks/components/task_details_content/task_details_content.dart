@@ -25,6 +25,7 @@ import 'package:whph/presentation/ui/shared/components/time_logging_dialog.dart'
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:acore/utils/dialog_size.dart';
 
@@ -33,6 +34,7 @@ class TaskDetailsContent extends StatefulWidget {
   final VoidCallback? onTaskUpdated;
   final Function(String)? onTitleUpdated;
   final Function(bool)? onCompletedChanged;
+  final Function(String)? onError;
 
   const TaskDetailsContent({
     super.key,
@@ -40,6 +42,7 @@ class TaskDetailsContent extends StatefulWidget {
     this.onTaskUpdated,
     this.onTitleUpdated,
     this.onCompletedChanged,
+    this.onError,
   });
 
   @override
@@ -70,6 +73,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _controller.onTaskUpdated = widget.onTaskUpdated;
     _controller.onTitleUpdated = widget.onTitleUpdated;
     _controller.onCompletedChanged = widget.onCompletedChanged;
+    _controller.onError = _handleError;
     _controller.addListener(_onControllerChanged);
     _fieldHelpers = TaskFieldHelpers(translationService: _controller.translationService);
     _setupFocusListeners();
@@ -99,6 +103,18 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       _lastSyncedTitle = _controller.task?.title;
       _lastSyncedDescription = _controller.task?.description;
       _syncControllersFromTask();
+    }
+  }
+
+  void _handleError(String errorMessage) {
+    // Call widget callback if provided, otherwise show error notification
+    if (widget.onError != null) {
+      widget.onError!(errorMessage);
+    } else if (mounted) {
+      OverlayNotificationHelper.showError(
+        context: context,
+        message: errorMessage,
+      );
     }
   }
 
@@ -160,6 +176,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _controller.onTaskUpdated = widget.onTaskUpdated;
     _controller.onTitleUpdated = widget.onTitleUpdated;
     _controller.onCompletedChanged = widget.onCompletedChanged;
+    _controller.onError = _handleError;
   }
 
   @override

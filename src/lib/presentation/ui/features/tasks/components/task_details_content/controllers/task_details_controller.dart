@@ -69,6 +69,7 @@ class TaskDetailsController extends ChangeNotifier {
   VoidCallback? onTaskUpdated;
   Function(String)? onTitleUpdated;
   Function(bool)? onCompletedChanged;
+  Function(String)? onError;
 
   TaskDetailsController({
     Mediator? mediator,
@@ -271,7 +272,8 @@ class TaskDetailsController extends ChangeNotifier {
         error: e,
         stackTrace: stackTrace,
       );
-      // TODO: Show user-facing error notification
+      // Notify UI of error for user-facing error notification
+      onError?.call(_translationService.translate(TaskTranslationKeys.saveTaskError));
     }
   }
 
