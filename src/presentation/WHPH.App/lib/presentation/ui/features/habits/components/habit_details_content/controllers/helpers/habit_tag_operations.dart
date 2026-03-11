@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/commands/add_habit_tag_command.dart';
-import 'package:whph/core/application/features/habits/commands/remove_habit_tag_command.dart';
-import 'package:whph/core/application/features/habits/commands/update_habit_tags_order_command.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habit_tags_query.dart';
+import 'package:whph_application/features/habits/commands/add_habit_tag_command.dart';
+import 'package:whph_application/features/habits/commands/remove_habit_tag_command.dart';
+import 'package:whph_application/features/habits/commands/update_habit_tags_order_command.dart';
+import 'package:whph_application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';

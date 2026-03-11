@@ -17,7 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:whph/main.dart' as app;
 import 'package:whph/presentation/ui/app.dart';
-import 'package:whph/core/application/features/demo/translations/demo_translations_registry.dart';
+import 'package:whph_application/features/demo/translations/demo_translations_registry.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_statistics_view.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_statistics_view.dart';
 import 'package:window_manager/window_manager.dart' as wm;

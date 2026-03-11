@@ -1,6 +1,6 @@
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph_application/shared/utils/logger.dart';
+import 'package:whph_application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_sounds.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_sounds.dart';

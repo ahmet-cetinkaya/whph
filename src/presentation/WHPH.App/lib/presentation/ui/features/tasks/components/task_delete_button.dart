@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/commands/delete_task_command.dart';
+import 'package:whph_application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';

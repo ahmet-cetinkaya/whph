@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
+import 'package:whph_application/features/habits/commands/toggle_habit_completion_command.dart';
 
-import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph_application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:whph_application/features/habits/queries/get_list_habits_query.dart';
 
 import 'package:acore/acore.dart' as acore;
 

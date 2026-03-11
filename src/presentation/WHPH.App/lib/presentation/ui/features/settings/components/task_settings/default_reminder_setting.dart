@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
+import 'package:whph_application/features/settings/commands/save_setting_command.dart';
 import 'package:whph_domain/features/settings/setting.dart';
 import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';

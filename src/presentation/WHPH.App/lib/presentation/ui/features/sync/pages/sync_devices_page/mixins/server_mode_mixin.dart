@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph_application/features/settings/commands/save_setting_command.dart';
+import 'package:whph_application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph_domain/features/settings/setting.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';

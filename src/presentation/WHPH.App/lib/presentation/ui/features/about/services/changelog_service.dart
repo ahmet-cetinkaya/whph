@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:whph_domain/shared/constants/app_info.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
 import 'package:flutter/foundation.dart';
 

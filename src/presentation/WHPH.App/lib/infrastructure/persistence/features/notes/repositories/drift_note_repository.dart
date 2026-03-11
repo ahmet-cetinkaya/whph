@@ -3,7 +3,7 @@ import 'package:whph_domain/features/notes/note.dart';
 import 'package:whph_domain/features/notes/note_tag.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:whph_application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph_domain/features/tags/tag.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';

@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart' as application;
+import 'package:whph_application/features/settings/constants/settings_translation_keys.dart' as application;
 
 class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   // Language Settings

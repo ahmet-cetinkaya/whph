@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph_domain/shared/constants/task_error_ids.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_card.dart';

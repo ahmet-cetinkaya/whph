@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/app_usage/android_app_usage_service.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 
 /// Debug screen to test and compare app usage calculation methods.

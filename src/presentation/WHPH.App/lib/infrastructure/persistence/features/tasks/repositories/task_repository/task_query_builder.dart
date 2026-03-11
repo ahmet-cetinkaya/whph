@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:acore/acore.dart' show CustomOrder, SortDirection;
-import 'package:whph/core/application/shared/utils/validation_utils.dart';
+import 'package:whph_application/shared/utils/validation_utils.dart';
 
 /// Result type for query condition builders.
 typedef QueryConditionResult = ({String condition, List<Variable> variables});

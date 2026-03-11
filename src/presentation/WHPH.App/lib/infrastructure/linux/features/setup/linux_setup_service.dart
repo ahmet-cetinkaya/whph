@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'services/abstraction/i_linux_firewall_service.dart';
 import 'services/abstraction/i_linux_desktop_service.dart';
 import 'services/abstraction/i_linux_kde_service.dart';

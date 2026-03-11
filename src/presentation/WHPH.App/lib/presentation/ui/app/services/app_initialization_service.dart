@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph_application/features/settings/queries/get_setting_query.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:acore/utils/platform_utils.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
+import 'package:whph_application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/presentation/ui/features/about/components/onboarding_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 
 /// Service responsible for handling app initialization tasks
 class AppInitializationService {

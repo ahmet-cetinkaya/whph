@@ -1,6 +1,6 @@
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:whph_application/features/app_usages/models/app_usage_sort_fields.dart';
 
 class AppUsageFilterSettings {
   /// Selected tag IDs for filtering

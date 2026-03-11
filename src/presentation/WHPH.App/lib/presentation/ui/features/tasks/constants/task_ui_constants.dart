@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whph_domain/features/tasks/task.dart';
 
-import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart' as application;
+import 'package:whph_application/features/tasks/constants/task_translation_keys.dart' as application;
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';

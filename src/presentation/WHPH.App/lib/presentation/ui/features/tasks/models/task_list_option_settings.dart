@@ -1,5 +1,5 @@
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph_application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';

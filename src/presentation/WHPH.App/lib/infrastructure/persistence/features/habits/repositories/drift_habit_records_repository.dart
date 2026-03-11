@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph_application/features/habits/services/i_habit_record_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph_domain/features/habits/habit_record.dart';
 import 'package:whph_domain/features/habits/habit_record_status.dart';

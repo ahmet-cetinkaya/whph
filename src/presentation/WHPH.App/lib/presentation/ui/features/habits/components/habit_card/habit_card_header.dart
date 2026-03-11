@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph_application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_card_metadata.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_card_title.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';

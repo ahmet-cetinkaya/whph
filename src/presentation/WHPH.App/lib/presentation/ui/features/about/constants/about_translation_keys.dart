@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/about/constants/about_translation_keys.dart' as application;
+import 'package:whph_application/features/about/constants/about_translation_keys.dart' as application;
 
 // A class to store translation keys for the About section
 class AboutTranslationKeys extends application.AboutTranslationKeys {

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show DateTimeHelper;
-import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
+import 'package:whph_application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';

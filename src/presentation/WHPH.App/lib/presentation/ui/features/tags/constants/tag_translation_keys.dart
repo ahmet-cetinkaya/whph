@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/tags/constants/tag_translation_keys.dart' as application;
+import 'package:whph_application/features/tags/constants/tag_translation_keys.dart' as application;
 
 class TagTranslationKeys extends application.TagTranslationKeys {
   // Actions

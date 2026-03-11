@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/app_usages/constants/app_usage_translation_keys.dart' as application;
+import 'package:whph_application/features/app_usages/constants/app_usage_translation_keys.dart' as application;
 
 class AppUsageTranslationKeys extends application.AppUsageTranslationKeys {
   static const String noUsage = 'app_usages.no_usage';

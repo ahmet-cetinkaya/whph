@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph_application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
@@ -24,8 +24,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
-import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph_domain/shared/constants/task_error_ids.dart';
 
 class TasksPage extends StatefulWidget {

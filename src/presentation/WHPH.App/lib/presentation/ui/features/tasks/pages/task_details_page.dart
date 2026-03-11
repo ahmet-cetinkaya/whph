@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph_application/features/tasks/models/task_list_item.dart';
 import 'dart:async';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph_application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph_application/features/tasks/queries/get_task_query.dart';
 
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_add_button.dart';
@@ -21,9 +21,9 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
-import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph_application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph_domain/shared/constants/task_error_ids.dart';
 
 class TaskDetailsPage extends StatefulWidget {

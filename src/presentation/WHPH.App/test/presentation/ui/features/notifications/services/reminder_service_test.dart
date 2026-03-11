@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph_domain/features/tasks/task.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:whph/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:mediatr/mediatr.dart';

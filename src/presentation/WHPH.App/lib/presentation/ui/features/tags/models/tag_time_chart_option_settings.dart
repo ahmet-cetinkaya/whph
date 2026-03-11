@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
+import 'package:whph_application/features/tags/models/tag_time_category.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 
 class TagTimeChartOptionSettings {

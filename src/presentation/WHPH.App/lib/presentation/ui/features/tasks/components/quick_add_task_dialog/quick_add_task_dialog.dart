@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:whph_domain/features/tasks/task.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:acore/utils/dialog_size.dart';
 

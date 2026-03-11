@@ -1,11 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
+import 'package:whph_application/features/sync/models/sync_data.dart';
+import 'package:whph_application/features/sync/models/paginated_sync_data.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/services/abstraction/i_repository.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 
 abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {

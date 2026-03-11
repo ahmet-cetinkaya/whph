@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/commands/add_app_usage_tag_command.dart';
-import 'package:whph/core/application/features/app_usages/commands/remove_tag_tag_command.dart';
-import 'package:whph/core/application/features/app_usages/commands/update_app_usage_tags_order_command.dart';
-import 'package:whph/core/application/features/app_usages/commands/save_app_usage_command.dart';
-import 'package:whph/core/application/features/app_usages/queries/get_app_usage_query.dart';
-import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
+import 'package:whph_application/features/app_usages/commands/add_app_usage_tag_command.dart';
+import 'package:whph_application/features/app_usages/commands/remove_tag_tag_command.dart';
+import 'package:whph_application/features/app_usages/commands/update_app_usage_tags_order_command.dart';
+import 'package:whph_application/features/app_usages/commands/save_app_usage_command.dart';
+import 'package:whph_application/features/app_usages/queries/get_app_usage_query.dart';
+import 'package:whph_application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/shared/components/color_picker/color_field.dart';

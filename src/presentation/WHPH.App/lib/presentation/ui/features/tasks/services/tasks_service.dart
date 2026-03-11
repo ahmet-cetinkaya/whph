@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_task_completion_notifier.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 
-class TasksService extends ChangeNotifier {
+class TasksService extends ChangeNotifier implements ITaskCompletionNotifier {
   final ITaskRecurrenceService _taskRecurrenceService;
   final Mediator _mediator;
   final ILogger _logger;
@@ -41,6 +42,7 @@ class TasksService extends ChangeNotifier {
     onTaskTimeRecordUpdated.notifyListeners();
   }
 
+  @override
   void notifyTaskCompleted(String taskId) async {
     onTaskCompleted.value = taskId;
     onTaskCompleted.notifyListeners();

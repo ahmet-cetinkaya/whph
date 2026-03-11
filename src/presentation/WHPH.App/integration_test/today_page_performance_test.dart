@@ -4,7 +4,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:whph/main.dart' as app;
 import 'package:whph/presentation/ui/shared/services/global_error_handler_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
+import 'package:whph_application/shared/services/abstraction/i_single_instance_service.dart';
 
 /// Performance integration test that runs on actual device/emulator.
 /// This test measures real render times for TodayPage operations.

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
+import 'package:whph_application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/presentation/ui/features/sync/models/sync_connection_string.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';

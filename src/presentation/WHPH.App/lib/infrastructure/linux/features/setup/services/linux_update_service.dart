@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/shared/features/setup/services/abstraction/base_setup_service.dart';
 import 'abstraction/i_linux_update_service.dart';
 
@@ -9,7 +9,7 @@ class LinuxUpdateService extends BaseSetupService implements ILinuxUpdateService
   static const String _componentName = 'LinuxUpdateService';
 
   static const _updateScriptTemplate = '''
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 sleep 2
 cd "{appDir}"

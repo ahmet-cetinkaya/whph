@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
-import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
+import 'package:whph_application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph_application/features/tags/commands/save_tag_command.dart';
+import 'package:whph_application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';

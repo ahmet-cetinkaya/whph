@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
+import 'package:whph_application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/components/note_add_button.dart';
 import 'package:whph/presentation/ui/features/notes/components/note_list_options.dart';

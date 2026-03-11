@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
+import 'package:whph_application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/components/note_card.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';

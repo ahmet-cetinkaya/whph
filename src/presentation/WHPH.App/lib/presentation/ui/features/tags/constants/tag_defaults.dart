@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
+import 'package:whph_application/features/tags/models/tag_sort_fields.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';

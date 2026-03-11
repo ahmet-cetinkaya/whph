@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph_application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/main.dart';

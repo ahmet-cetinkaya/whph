@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/notes/commands/delete_note_command.dart';
+import 'package:whph_application/features/notes/commands/delete_note_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_ui_constants.dart';

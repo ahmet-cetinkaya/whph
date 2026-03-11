@@ -1,7 +1,11 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_task_completion_notifier.dart';
+import 'package:whph_application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
@@ -32,7 +36,7 @@ import 'package:whph/presentation/ui/features/about/services/abstraction/i_chang
 import 'package:whph/presentation/ui/features/about/services/changelog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/changelog_dialog_service.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph_application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/main.dart' show navigatorKey;
 
 void registerUIPresentation(IContainer container) {
@@ -45,6 +49,8 @@ void registerUIPresentation(IContainer container) {
         container.resolve<Mediator>(),
         container.resolve<ILogger>(),
       ));
+  // Register TasksService as ITaskCompletionNotifier for application layer handlers
+  container.registerSingleton<ITaskCompletionNotifier>((c) => c.resolve<TasksService>());
   container.registerSingleton<TagsService>((_) => TagsService());
   container.registerSingleton<TimeDataService>((_) => TimeDataService());
   container
@@ -93,5 +99,16 @@ void registerUIPresentation(IContainer container) {
   );
   container.registerSingleton<ITourNavigationService>(
     (c) => TourNavigationServiceImpl(c.resolve<Mediator>()),
+  );
+
+  // Register CompleteTaskCommandHandler here because it depends on TasksService
+  final mediator = container.resolve<Mediator>();
+  mediator.registerHandler<CompleteTaskCommand, CompleteTaskCommandResponse, CompleteTaskCommandHandler>(
+    () => CompleteTaskCommandHandler(
+      container.resolve<ITaskRepository>(),
+      container.resolve<ITaskTimeRecordRepository>(),
+      container.resolve<ITaskRecurrenceService>(),
+      container.resolve<ITaskCompletionNotifier>(),
+    ),
   );
 }

@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:launch_at_startup/launch_at_startup.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph_application/shared/utils/key_helper.dart';
 import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/app_args.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph_application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph_domain/features/settings/setting.dart';
 

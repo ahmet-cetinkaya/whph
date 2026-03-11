@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
+import 'package:whph_application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';

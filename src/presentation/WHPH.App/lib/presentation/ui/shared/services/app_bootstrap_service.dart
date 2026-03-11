@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/application_container.dart';
-import 'package:whph/core/application/features/app_usages/commands/start_track_app_usages_command.dart';
-import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
-import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
+import 'package:whph_application/application_container.dart';
+import 'package:whph_application/features/app_usages/commands/start_track_app_usages_command.dart';
+import 'package:whph_application/features/demo/services/abstraction/i_demo_data_service.dart';
+import 'package:whph_application/features/sync/services/database_integrity_service.dart';
+import 'package:whph_application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph_domain/shared/constants/demo_config.dart';
 import 'package:whph_domain/shared/utils/logger.dart' show DomainLogger;
 import 'package:whph/infrastructure/infrastructure_container.dart';
@@ -15,9 +15,9 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
-import 'package:whph/core/application/shared/utils/domain_logger_adapter.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_logger_service.dart';
+import 'package:whph_application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/domain_logger_adapter.dart';
+import 'package:whph_application/shared/services/abstraction/i_logger_service.dart';
 import 'package:whph/presentation/ui/ui_presentation_container.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 /// A utility class that provides methods to handle asynchronous operations with error handling.

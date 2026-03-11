@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
-import 'package:whph/core/application/features/tags/queries/get_elements_by_time_query.dart';
+import 'package:whph_application/features/tags/models/tag_time_category.dart';
+import 'package:whph_application/features/tags/queries/get_elements_by_time_query.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_details_page.dart';
@@ -15,7 +15,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 
 class TagTimeBarChart extends StatefulWidget {
   final List<String>? filterByTags;

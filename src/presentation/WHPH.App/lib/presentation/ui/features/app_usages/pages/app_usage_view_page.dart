@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:whph/main.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_list_options.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_list.dart';
 import 'package:whph/presentation/ui/features/app_usages/pages/app_usage_details_page.dart';

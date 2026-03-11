@@ -1,0 +1,67 @@
+import 'package:whph_application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph_application/features/tasks/models/task_list_item.dart';
+import 'package:whph_application/shared/constants/shared_translation_keys.dart';
+import 'package:whph_application/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph_domain/features/tasks/task.dart';
+import 'package:whph_application/shared/utils/grouping_utils.dart';
+
+class TaskGroupingHelper {
+  static String? getGroupName(TaskListItem task, TaskSortFields? sortField, {DateTime? now}) {
+    if (sortField == null) return null;
+
+    switch (sortField) {
+      case TaskSortFields.createdDate:
+        return GroupingUtils.getForwardDateGroup(task.createdDate, now: now);
+      case TaskSortFields.deadlineDate:
+        return GroupingUtils.getForwardDateGroup(task.deadlineDate, now: now);
+      case TaskSortFields.modifiedDate:
+        return GroupingUtils.getForwardDateGroup(task.modifiedDate, now: now);
+      case TaskSortFields.plannedDate:
+        return GroupingUtils.getForwardDateGroup(task.plannedDate, now: now);
+      case TaskSortFields.priority:
+        return _getPriorityGroup(task.priority);
+      case TaskSortFields.title:
+        return GroupingUtils.getTitleGroup(task.title);
+      case TaskSortFields.estimatedTime:
+        return GroupingUtils.getDurationGroup(task.estimatedTime);
+      case TaskSortFields.totalDuration:
+        return GroupingUtils.getDurationGroup(task.totalElapsedTime);
+      case TaskSortFields.tag:
+        return task.tags.isNotEmpty ? task.tags.first.name : SharedTranslationKeys.none;
+    }
+  }
+
+  /// Returns true if the group name should be translated based on the sort field
+  static bool isGroupTranslatable(TaskSortFields? sortField) {
+    if (sortField == null) return false;
+
+    switch (sortField) {
+      case TaskSortFields.priority:
+      case TaskSortFields.createdDate:
+      case TaskSortFields.deadlineDate:
+      case TaskSortFields.modifiedDate:
+      case TaskSortFields.plannedDate:
+      case TaskSortFields.estimatedTime:
+      case TaskSortFields.totalDuration:
+        return true;
+      case TaskSortFields.title:
+      case TaskSortFields.tag:
+        return false;
+    }
+  }
+
+  static String _getPriorityGroup(EisenhowerPriority? priority) {
+    if (priority == null) return SharedTranslationKeys.none;
+
+    switch (priority) {
+      case EisenhowerPriority.urgentImportant:
+        return TaskTranslationKeys.priorityUrgentImportant;
+      case EisenhowerPriority.urgentNotImportant:
+        return TaskTranslationKeys.priorityUrgentNotImportant;
+      case EisenhowerPriority.notUrgentImportant:
+        return TaskTranslationKeys.priorityNotUrgentImportant;
+      case EisenhowerPriority.notUrgentNotImportant:
+        return TaskTranslationKeys.priorityNotUrgentNotImportant;
+    }
+  }
+}

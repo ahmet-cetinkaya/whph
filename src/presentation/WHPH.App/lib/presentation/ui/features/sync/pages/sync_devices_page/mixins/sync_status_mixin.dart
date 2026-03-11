@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/features/sync/models/sync_status.dart';
+import 'package:whph_application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/utils/sync_error_handler.dart';

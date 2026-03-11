@@ -12,15 +12,15 @@ import 'package:whph/presentation/ui/shared/services/global_error_handler_servic
 import 'package:whph/presentation/ui/shared/services/notification_payload_service.dart';
 import 'package:whph/presentation/ui/shared/services/platform_initialization_service.dart';
 import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
-import 'package:whph/core/application/features/widget/services/widget_service/widget_service.dart';
-import 'package:whph/core/application/features/widget/services/widget_update_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
+import 'package:whph_application/features/widget/services/widget_service/widget_service.dart';
+import 'package:whph_application/features/widget/services/widget_update_service.dart';
+import 'package:whph_application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
 import 'package:whph/infrastructure/android/features/share/share_to_create_service.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 
 /// Global navigator key for accessing context throughout the application
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

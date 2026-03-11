@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
+import 'package:whph_application/features/tags/models/tag_time_category.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';

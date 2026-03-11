@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart' as application;
+import 'package:whph_application/features/habits/constants/habit_translation_keys.dart' as application;
 
 class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String newHabit = 'habits.new_habit';

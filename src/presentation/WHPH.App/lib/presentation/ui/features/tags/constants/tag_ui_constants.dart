@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
+import 'package:whph_application/features/tags/models/tag_time_category.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph_domain/features/tags/tag.dart';
 

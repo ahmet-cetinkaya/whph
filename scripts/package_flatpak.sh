@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Package Flatpak script (New Structure - Clean Flathub Output)
 # Usage: ./scripts/package_flatpak.sh

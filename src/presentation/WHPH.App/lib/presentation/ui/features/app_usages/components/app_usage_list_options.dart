@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:whph_application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/models/app_usage_filter_settings.dart';
@@ -25,8 +25,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/main.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_order_selector_dialog.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
+import 'package:whph_application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph_application/features/tags/models/tag_sort_fields.dart';
 import 'dart:async';
 
 class AppUsageFilterState {

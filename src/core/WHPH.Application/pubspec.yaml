@@ -1,0 +1,31 @@
+name: whph_application
+description: Application layer for WHPH (Work Hard Play Hard) productivity app. Contains use cases, commands, queries, and services following Clean Architecture with CQRS pattern.
+version: 0.0.1
+publish_to: "none"
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  acore:
+    path: ../../../packages/acore-flutter
+  whph_domain:
+    path: ../WHPH.Domain
+  mediatr: ^0.2.1
+  dart_json_mapper: ^2.2.16
+  equatable: ^2.0.7
+  meta: ^1.15.0
+  intl: ^0.20.2
+  collection: ^1.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  mockito: ^5.4.5
+
+flutter:
+  assets:
+    - lib/features/demo/assets/locales/

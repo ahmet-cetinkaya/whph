@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart' as application;
+import 'package:whph_application/features/sync/constants/sync_translation_keys.dart' as application;
 
 class SyncTranslationKeys extends application.SyncTranslationKeys {
   // Messages

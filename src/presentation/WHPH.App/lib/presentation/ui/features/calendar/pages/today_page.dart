@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph_application/features/tags/models/tag_time_category.dart';
+import 'package:whph_application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph_domain/features/settings/setting.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_list_options.dart';
 import 'package:whph/presentation/ui/features/habits/components/habits_list.dart';
@@ -24,7 +24,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
-import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:whph_application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
@@ -40,10 +40,10 @@ import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/features/calendar/constants/calendar_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph_application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph_application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph_domain/shared/constants/task_error_ids.dart';
 
 class TodayPage extends StatefulWidget {

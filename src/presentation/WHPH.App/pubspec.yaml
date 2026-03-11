@@ -17,6 +17,8 @@ dependencies:
     path: ../../../packages/acore-flutter
   whph_domain:
     path: ../../core/WHPH.Domain
+  whph_application:
+    path: ../../core/WHPH.Application
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1

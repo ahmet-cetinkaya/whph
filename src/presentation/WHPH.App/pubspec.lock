@@ -1653,6 +1653,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  whph_application:
+    dependency: "direct main"
+    description:
+      path: "../../core/WHPH.Application"
+      relative: true
+    source: path
+    version: "0.0.1"
   whph_domain:
     dependency: "direct main"
     description:

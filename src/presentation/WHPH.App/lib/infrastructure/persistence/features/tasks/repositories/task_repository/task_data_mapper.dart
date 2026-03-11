@@ -3,7 +3,7 @@ import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph_domain/features/tasks/models/recurrence_configuration.dart';
 import 'dart:convert';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph_domain/shared/constants/domain_log_components.dart';
 import 'package:whph_domain/shared/constants/task_error_ids.dart';
 

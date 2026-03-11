@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
-import 'package:whph/core/application/features/habits/commands/save_habit_time_record_command.dart';
-import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
+import 'package:whph_application/features/habits/commands/add_habit_time_record_command.dart';
+import 'package:whph_application/features/habits/commands/save_habit_time_record_command.dart';
+import 'package:whph_application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:whph_application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/main.dart';

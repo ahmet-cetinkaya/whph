@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/tasks/utils/task_date_time_normalizer.dart';
+import 'package:whph_application/features/tasks/utils/task_date_time_normalizer.dart';
 
 /// Presentation helper for rendering task dates with all-day semantics.
 class TaskDateDisplayHelper {

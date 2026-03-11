@@ -1,12 +1,12 @@
 import 'package:mediatr/mediatr.dart';
 
-import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
-import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
+import 'package:whph_application/features/habits/commands/toggle_habit_completion_command.dart';
+import 'package:whph_application/features/settings/commands/save_setting_command.dart';
+import 'package:whph_application/features/settings/queries/get_setting_query.dart';
+import 'package:whph_application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph_domain/features/settings/setting.dart';
 import 'package:whph_domain/shared/constants/task_error_ids.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 

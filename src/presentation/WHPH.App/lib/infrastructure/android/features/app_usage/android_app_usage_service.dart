@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/base_app_usage_service.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 
 class AndroidAppUsageService extends BaseAppUsageService {
   static final appUsageStatsChannel = MethodChannel(AndroidAppConstants.channels.appUsageStats);

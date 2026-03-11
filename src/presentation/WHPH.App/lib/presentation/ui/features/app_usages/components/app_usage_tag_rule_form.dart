@@ -5,7 +5,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
+import 'package:whph_application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/components/regex_help_dialog.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';

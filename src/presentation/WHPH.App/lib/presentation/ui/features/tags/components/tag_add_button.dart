@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
+import 'package:whph_application/features/tags/commands/save_tag_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';

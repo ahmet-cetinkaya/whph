@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph_application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph_application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_card_header.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';

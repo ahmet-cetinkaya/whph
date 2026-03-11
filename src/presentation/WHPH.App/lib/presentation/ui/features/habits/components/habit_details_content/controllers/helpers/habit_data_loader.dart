@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habit_tags_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_total_duration_by_habit_id_query.dart';
+import 'package:whph_application/features/habits/queries/get_habit_query.dart';
+import 'package:whph_application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:whph_application/features/habits/queries/get_list_habit_tags_query.dart';
+import 'package:whph_application/features/habits/queries/get_total_duration_by_habit_id_query.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';

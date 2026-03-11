@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/services.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
 import 'package:whph/presentation/ui/features/sync/models/sync_qr_code_message.dart';
 import 'package:whph/presentation/ui/features/sync/models/sync_connection_string.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph_application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:whph/presentation/api/api.dart';
 import 'package:acore/acore.dart' hide Container;

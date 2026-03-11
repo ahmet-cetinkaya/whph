@@ -1,6 +1,6 @@
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:whph_application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
+import 'package:whph_application/features/app_usages/queries/get_list_by_top_app_usages_query.dart';
+import 'package:whph_application/features/app_usages/models/app_usage_list_item.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/features/app_usages/components/app_usage_card.dart';
 import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
@@ -17,7 +17,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
+import 'package:whph_application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
 import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
 

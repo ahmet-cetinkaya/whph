@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
-import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
+import 'package:whph_application/features/tasks/commands/save_task_command.dart';
+import 'package:whph_application/features/notes/commands/save_note_command.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/context_manager.dart';
 import 'package:whph/presentation/ui/shared/components/share_disambiguation_dialog.dart';
-import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:whph_application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:acore/acore.dart' hide Container;
 
 /// Service that handles creating tasks/notes from Android share intents

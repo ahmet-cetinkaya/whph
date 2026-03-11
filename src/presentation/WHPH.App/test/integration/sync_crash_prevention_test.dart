@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
+import 'package:whph_application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:whph_application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:acore/acore.dart';
 
 /// Test implementation of IApplicationDirectoryService for testing

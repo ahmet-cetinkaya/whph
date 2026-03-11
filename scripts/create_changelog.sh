@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Script to create changelogs following "Keep a Changelog" standards
 # Usage: ./scripts/create_changelog.sh [version_code] [changelog_text] [--auto] [--all-versions]

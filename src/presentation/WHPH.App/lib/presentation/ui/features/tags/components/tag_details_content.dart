@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tags/commands/add_tag_tag_command.dart';
-import 'package:whph/core/application/features/tags/commands/remove_tag_tag_command.dart';
-import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tag_tags_query.dart';
-import 'package:whph/core/application/features/tags/queries/get_tag_query.dart';
+import 'package:whph_application/features/tags/commands/add_tag_tag_command.dart';
+import 'package:whph_application/features/tags/commands/remove_tag_tag_command.dart';
+import 'package:whph_application/features/tags/commands/save_tag_command.dart';
+import 'package:whph_application/features/tags/queries/get_list_tag_tags_query.dart';
+import 'package:whph_application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';

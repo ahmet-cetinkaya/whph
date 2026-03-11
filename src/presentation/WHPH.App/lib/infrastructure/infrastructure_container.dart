@@ -2,19 +2,19 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
-import 'package:whph/core/application/features/app_usages/services/app_usage_filter_service.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_service.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph_application/features/app_usages/services/app_usage_filter_service.dart';
+import 'package:whph_application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph_application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph_application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:whph_application/shared/services/abstraction/i_setup_service.dart';
+import 'package:whph_application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/infrastructure/android/features/settings/android_startup_settings_service.dart';
 import 'package:whph/infrastructure/desktop/features/notification/desktop_notification_service.dart';
@@ -67,8 +67,8 @@ import 'package:whph/infrastructure/desktop/features/file_system/desktop_file_se
 import 'package:whph/infrastructure/desktop/features/single_instance/desktop_single_instance_service.dart';
 import 'package:whph/infrastructure/linux/features/file_system/linux_application_directory_service.dart';
 import 'package:whph/infrastructure/windows/features/file_system/windows_application_directory_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/application/features/sync/services/device_id_service.dart';
+import 'package:whph_application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph_application/features/sync/services/device_id_service.dart';
 
 void registerInfrastructure(IContainer container) {
   // Register Logger Service

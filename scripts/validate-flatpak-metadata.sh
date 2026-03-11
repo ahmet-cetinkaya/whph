@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Flatpak Validation Script
 # This script validates Flatpak manifests, desktop files, and AppStream metadata

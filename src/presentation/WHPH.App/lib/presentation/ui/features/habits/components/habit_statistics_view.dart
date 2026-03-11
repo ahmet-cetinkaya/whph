@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'dart:async';
-import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
+import 'package:whph_application/features/habits/queries/get_habit_query.dart';
+import 'package:whph_application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';

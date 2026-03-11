@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph_application/features/tasks/commands/update_task_order_command.dart';
+import 'package:whph_application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
-import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph_application/features/tasks/models/task_list_item.dart';
+import 'package:whph_application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 

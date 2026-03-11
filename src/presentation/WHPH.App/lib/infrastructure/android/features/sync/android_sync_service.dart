@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
-import 'package:whph/core/application/features/sync/services/sync_service.dart';
+import 'package:whph_application/shared/utils/logger.dart';
+import 'package:whph_application/features/sync/services/sync_service.dart';
 
 class AndroidSyncService extends SyncService {
   static final MethodChannel _syncChannel = MethodChannel(AndroidAppConstants.channels.sync);

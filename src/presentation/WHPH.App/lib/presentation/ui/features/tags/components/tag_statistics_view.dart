@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
+import 'package:whph_application/features/tags/models/tag_time_category.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_time_bar_chart.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_time_chart_options.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';

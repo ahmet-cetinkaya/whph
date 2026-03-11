@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
-import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
-import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
+import 'package:whph_application/shared/utils/logger.dart';
+import 'package:whph_application/features/habits/commands/save_habit_command.dart';
+import 'package:whph_application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';

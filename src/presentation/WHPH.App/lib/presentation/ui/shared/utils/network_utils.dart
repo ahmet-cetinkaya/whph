@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/features/sync/services/abstraction/i_network_interface_service.dart';
+import 'package:whph_application/shared/models/websocket_request.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 
 class NetworkUtils {

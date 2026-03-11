@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph_application/features/tasks/models/task_list_item.dart';
 import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph_domain/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
@@ -11,7 +11,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:acore/acore.dart';
 
 class MockMediator extends Mock implements Mediator {}

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
+import 'package:whph_application/features/tasks/queries/get_task_query.dart';
+import 'package:whph_application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 
 /// Model to hold parent task data
 class _ParentTaskData {

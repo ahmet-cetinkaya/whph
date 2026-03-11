@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph_application/features/tasks/models/task_list_item.dart';
 
-import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph_application/features/tasks/queries/get_task_query.dart';
 import 'package:whph_domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
@@ -10,7 +10,7 @@ import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph_application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
@@ -19,8 +19,8 @@ import 'package:whph/presentation/ui/shared/utils/tag_display_utils.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/extensions/widget_extensions.dart';
 import 'package:whph/presentation/ui/features/tasks/components/schedule_button.dart';
-import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
-import 'package:whph/core/application/features/tasks/utils/task_date_time_normalizer.dart';
+import 'package:whph_application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph_application/features/tasks/utils/task_date_time_normalizer.dart';
 import 'package:flutter/widgets.dart' as widgets;
 
 /// Dismiss threshold as fraction of widget width (0.4 = 40% swipe required)

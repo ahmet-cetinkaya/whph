@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
+import 'package:whph_application/features/app_usages/models/app_usage_list_item.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/bar_chart.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';

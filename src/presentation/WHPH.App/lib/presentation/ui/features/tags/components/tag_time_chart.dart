@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
-import 'package:whph/core/application/features/tags/queries/get_top_tags_by_time_query.dart';
+import 'package:whph_application/features/tags/models/tag_time_category.dart';
+import 'package:whph_application/features/tags/models/tag_time_data.dart';
+import 'package:whph_application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';

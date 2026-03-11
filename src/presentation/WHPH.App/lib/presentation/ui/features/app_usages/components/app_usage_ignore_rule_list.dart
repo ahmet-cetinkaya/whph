@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
-import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
+import 'package:whph_application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
+import 'package:whph_application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';

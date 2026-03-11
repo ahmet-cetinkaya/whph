@@ -1,11 +1,11 @@
 import 'package:drift/drift.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
+import 'package:whph_application/features/tags/models/tag_time_category.dart';
 import 'package:acore/acore.dart';
 import 'package:whph_domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
-import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
+import 'package:whph_application/features/tags/models/tag_time_data.dart';
 
 @UseRowClass(AppUsageTag)
 class AppUsageTagTable extends Table {

@@ -1,4 +1,4 @@
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph_domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';

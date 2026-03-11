@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
+import 'package:whph_application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/presentation/ui/features/sync/components/manual_connection_dialog.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';

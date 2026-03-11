@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tags/queries/get_tag_query.dart';
+import 'package:whph_application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/main.dart';
-import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
+import 'package:whph_application/features/tags/commands/save_tag_command.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';

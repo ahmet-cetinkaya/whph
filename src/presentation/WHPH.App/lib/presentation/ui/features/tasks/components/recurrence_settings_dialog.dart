@@ -12,7 +12,7 @@ import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_s
 import 'package:whph/presentation/ui/features/tasks/components/task_recurrence_selector/recurrence_monthly_pattern_selector.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph_domain/shared/constants/task_error_ids.dart';
 import 'package:whph_domain/shared/constants/domain_log_components.dart';
 

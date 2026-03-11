@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:whph_application/features/habits/models/habit_sort_fields.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -12,8 +12,8 @@ import 'package:whph/presentation/ui/features/habits/models/habit_list_option_se
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
-import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
+import 'package:whph_application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph_application/features/tags/models/tag_sort_fields.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_order_selector_dialog.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
 import 'package:whph/presentation/ui/shared/components/persistent_list_options_base.dart';

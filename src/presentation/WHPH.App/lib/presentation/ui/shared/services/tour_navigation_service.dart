@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
-import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph_application/features/settings/commands/save_setting_command.dart';
+import 'package:whph_application/features/settings/queries/get_setting_query.dart';
 import 'package:whph_domain/features/settings/setting.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/main.dart';
@@ -14,7 +14,7 @@ import 'package:whph/presentation/ui/features/tasks/pages/tasks_page.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/about/components/tour_completion_dialog.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_tour_navigation_service.dart';
 
 /// Static bridge for TourNavigationService to support legacy calls and convenience

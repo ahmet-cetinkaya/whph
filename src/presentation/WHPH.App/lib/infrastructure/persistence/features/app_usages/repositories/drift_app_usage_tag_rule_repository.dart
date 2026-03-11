@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
+import 'package:whph_application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph_domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';

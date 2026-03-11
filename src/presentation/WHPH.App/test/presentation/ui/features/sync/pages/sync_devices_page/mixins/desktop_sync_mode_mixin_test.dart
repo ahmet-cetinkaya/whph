@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
+import 'package:whph_application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph_domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/desktop_sync_mode_mixin.dart';

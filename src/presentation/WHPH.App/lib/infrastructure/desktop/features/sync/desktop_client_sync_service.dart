@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:whph/core/application/features/sync/services/sync_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
+import 'package:whph_application/features/sync/services/sync_service.dart';
+import 'package:whph_application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph_application/shared/models/websocket_request.dart';
+import 'package:whph_application/features/sync/models/sync_status.dart';
+import 'package:whph_application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
+import 'package:whph_application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 
 /// Desktop client sync service that connects to WHPH servers
 class DesktopClientSyncService extends SyncService {

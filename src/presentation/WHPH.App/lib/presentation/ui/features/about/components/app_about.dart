@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show PlatformUtils;
-import 'package:whph/core/application/shared/utils/logger.dart';
+import 'package:whph_application/shared/utils/logger.dart';
 import 'package:whph_domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,7 +10,7 @@ import 'package:whph/presentation/ui/features/about/constants/about_translation_
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'dart:io' show Platform;
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
+import 'package:whph_application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 

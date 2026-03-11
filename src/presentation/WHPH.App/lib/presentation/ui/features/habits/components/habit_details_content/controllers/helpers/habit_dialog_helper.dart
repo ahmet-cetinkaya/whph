@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, ResponsiveDialogHelper, DialogSize;
-import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
+import 'package:whph_application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_goal_dialog.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_reminder_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';

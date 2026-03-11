@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/calendar/constants/calendar_translation_keys.dart' as application;
+import 'package:whph_application/features/calendar/constants/calendar_translation_keys.dart' as application;
 
 class CalendarTranslationKeys extends application.CalendarTranslationKeys {
   static const String todayTitle = 'calendar.pages.today.title';

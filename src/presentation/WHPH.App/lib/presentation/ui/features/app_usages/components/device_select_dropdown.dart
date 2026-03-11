@@ -9,7 +9,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
-import 'package:whph/core/application/features/app_usages/queries/get_distinct_device_names_query.dart';
+import 'package:whph_application/features/app_usages/queries/get_distinct_device_names_query.dart';
 import 'dart:async';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 

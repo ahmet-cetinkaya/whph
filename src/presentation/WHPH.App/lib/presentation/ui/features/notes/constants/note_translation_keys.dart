@@ -1,4 +1,4 @@
-import 'package:whph/core/application/features/notes/constants/note_translation_keys.dart' as application;
+import 'package:whph_application/features/notes/constants/note_translation_keys.dart' as application;
 
 class NoteTranslationKeys extends application.NoteTranslationKeys {
   static const String notesLabel = 'notes.title';
