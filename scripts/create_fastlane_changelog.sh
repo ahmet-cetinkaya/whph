@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Script to create Fastlane changelogs for app stores
 # Usage: ./scripts/create_fastlane_changelog.sh [version_code] [changelog_text] [--auto]

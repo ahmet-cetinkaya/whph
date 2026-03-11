@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Fastlane Metadata Validation Script for F-Droid Compliance
 # This script validates all language metadata directories for F-Droid requirements

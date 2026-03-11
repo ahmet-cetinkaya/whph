@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Script to update the Nix flake with the latest version and hash
 # Similar to update_aur.sh but for Nix packaging

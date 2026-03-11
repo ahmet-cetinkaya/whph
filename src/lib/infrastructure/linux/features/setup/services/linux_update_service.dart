@@ -9,7 +9,7 @@ class LinuxUpdateService extends BaseSetupService implements ILinuxUpdateService
   static const String _componentName = 'LinuxUpdateService';
 
   static const _updateScriptTemplate = '''
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 sleep 2
 cd "{appDir}"

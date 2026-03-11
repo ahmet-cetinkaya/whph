@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Comprehensive linting script for WHPH project
 # Runs Flutter analyze, dart_unused_files, markdownlint, shellcheck, and ktlint
