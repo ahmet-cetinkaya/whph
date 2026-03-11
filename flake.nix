@@ -37,6 +37,23 @@
           libxtst
           xprop
           xwininfo
+          libsm
+          libice
+          libxext
+          libxrandr
+          libxcomposite
+          libxdamage
+          libxfixes
+          libxrender
+          libxcursor
+          libxinerama
+          libxi
+
+          # OpenGL support
+          libglvnd
+
+          # Base libraries
+          zlib
 
           # Wayland support
           wayland
@@ -134,14 +151,11 @@
           # Development mode flags
           export DEMO_MODE="true"
 
-          # CMake prefix for native builds
-          export CMAKE_PREFIX_PATH="${pkgs.cmake}:${pkgs.gtk3}:$CMAKE_PREFIX_PATH"
-
           # CMake install prefix (avoid needing root)
-          export CMAKE_INSTALL_PREFIX="$SRC_DIR/build/linux/install"
+          # Removed export CMAKE_INSTALL_PREFIX to let Flutter use the default bundle path
 
-          # PKG_CONFIG_PATH for finding libraries (includes all build inputs)
-          export PKG_CONFIG_PATH="${pkgs.lib.makeSearchPath "lib/pkgconfig" linuxBuildInputs}:$PKG_CONFIG_PATH"
+          # PKG_CONFIG_PATH is automatically handled by Nix mkShell
+
 
           # Library path for runtime
           export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath linuxBuildInputs}:$LD_LIBRARY_PATH"

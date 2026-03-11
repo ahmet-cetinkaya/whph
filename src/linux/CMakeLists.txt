@@ -115,10 +115,11 @@ include(flutter/generated_plugins.cmake)
 
 
 # === Installation ===
-# By default, "installing" just makes a relocatable bundle in the build
-# directory.
+# Directory overrides for Flutter Linux
 set(BUILD_BUNDLE_DIR "${PROJECT_BINARY_DIR}/bundle")
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+
+# Sometimes CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT is false but the value is still /usr/local
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
   set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "..." FORCE)
 endif()
 
