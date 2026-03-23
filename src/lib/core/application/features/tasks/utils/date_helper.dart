@@ -26,8 +26,9 @@ class DateHelper {
     DateTime startDate,
     List<int> targetWeekdays,
     int? intervalInWeeks,
-    DateTime? referenceDate,
-  ) {
+    DateTime? referenceDate, {
+    bool includeToday = false,
+  }) {
     // Calculate maxSearchDays based on interval to handle long recurrence periods
     // Ensure at least two full cycles plus a week to find the next occurrence
     final maxSearchDays = (intervalInWeeks ?? 1) * 7 * 2 + 7;
@@ -36,7 +37,7 @@ class DateHelper {
       throw ArgumentError('targetWeekdays cannot be empty');
     }
 
-    for (int daysFromNow = 1; daysFromNow <= maxSearchDays; daysFromNow++) {
+    for (int daysFromNow = includeToday ? 0 : 1; daysFromNow <= maxSearchDays; daysFromNow++) {
       final candidateDate = startDate.add(Duration(days: daysFromNow));
       final candidateWeekday = candidateDate.weekday;
 
@@ -65,16 +66,13 @@ class DateHelper {
     );
   }
 
-  /// Finds the next occurrence of a weekly schedule with per-day times.
-  /// This allows different days of the week to have different scheduled times.
-  ///
-  /// Example: Monday at 9:00 AM, Tuesday at 10:00 AM, Wednesday at 9:00 AM
   static DateTime findNextWeekdayOccurrenceWithTimes(
     DateTime startDate,
     List<WeeklySchedule> weeklySchedule,
     int? intervalInWeeks,
-    DateTime? referenceDate,
-  ) {
+    DateTime? referenceDate, {
+    bool includeToday = false,
+  }) {
     // Calculate maxSearchDays based on interval to handle long recurrence periods
     // Ensure at least two full cycles plus a week to find the next occurrence
     final maxSearchDays = (intervalInWeeks ?? 1) * 7 * 2 + 7;
@@ -86,7 +84,7 @@ class DateHelper {
     // Extract the valid days from the schedule
     final validDays = weeklySchedule.map((s) => s.dayOfWeek).toList();
 
-    for (int daysFromNow = 1; daysFromNow <= maxSearchDays; daysFromNow++) {
+    for (int daysFromNow = includeToday ? 0 : 1; daysFromNow <= maxSearchDays; daysFromNow++) {
       final candidateDate = startDate.add(Duration(days: daysFromNow));
       final candidateWeekday = candidateDate.weekday;
 
@@ -123,13 +121,20 @@ class DateHelper {
             );
           }
 
-          return DateTime(
+          final scheduledDate = DateTime(
             candidateDate.year,
             candidateDate.month,
             candidateDate.day,
             schedule.hour,
             schedule.minute,
           );
+
+          // If the occurrence is on the start day, ensure the time hasn't passed
+          if (daysFromNow == 0 && scheduledDate.isBefore(startDate)) {
+            continue;
+          }
+
+          return scheduledDate;
         }
       }
     }

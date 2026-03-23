@@ -174,11 +174,13 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         // Check if weeklySchedule is provided for per-day times
         if (config.weeklySchedule != null && config.weeklySchedule!.isNotEmpty) {
           final referenceDate = task.recurrenceStartDate ?? task.plannedDate ?? currentDate;
+          final includeToday = config.fromPolicy == RecurrenceFromPolicy.completionDate;
           return DateHelper.findNextWeekdayOccurrenceWithTimes(
             currentDate,
             config.weeklySchedule!,
             config.interval,
             referenceDate,
+            includeToday: includeToday,
           );
         }
         // Fall back to existing logic for daysOfWeek
