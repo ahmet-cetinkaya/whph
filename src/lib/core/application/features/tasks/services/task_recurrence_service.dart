@@ -286,13 +286,24 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
   /// Handles the creation of the next recurring task instance when a task is completed
   @override
   Future<String?> handleCompletedRecurringTask(String taskId, Mediator mediator) async {
+    final task = await _getTaskForRecurrence(taskId, mediator);
+    if (!_canProcessRecurrence(task)) {
+      return null;
+    }
+
+    final parentId = task.recurrenceParentId ?? task.id;
+    await _acquireRecurrenceLock(parentId);
+
     try {
-      final task = await _getTaskForRecurrence(taskId, mediator);
-      if (!_canProcessRecurrence(task)) {
+      // Re-verify the task is still completed before creating recurrence.
+      // This is crucial now that we've moved the lock acquisition earlier.
+      final currentTaskState = await _getTaskForRecurrence(taskId, mediator);
+      if (!currentTaskState.isCompleted) {
+        _logger.info('TaskRecurrenceService: Task $taskId is no longer completed - ABORTING recurrence creation');
         return null;
       }
 
-      return await _createNextRecurrenceInstance(task, mediator);
+      return await _createNextRecurrenceInstanceInternal(currentTaskState, mediator);
     } on StateError catch (_) {
       // Task state changed (no longer completed) - this is expected in some scenarios
       _logger.warning(
@@ -337,10 +348,9 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
   }
 
   /// Creates the next recurrence instance for a completed recurring task.
-  Future<String> _createNextRecurrenceInstance(Task task, Mediator mediator) async {
+  /// Internal method assumed to be running under a lock for the parentId.
+  Future<String> _createNextRecurrenceInstanceInternal(Task task, Mediator mediator) async {
     final parentId = task.recurrenceParentId ?? task.id;
-
-    await _acquireRecurrenceLock(parentId);
 
     try {
       // Re-verify the task is still completed before creating recurrence.
@@ -459,22 +469,12 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
   /// Checks if a recurrence instance already exists for the given parent and date, excluding the current task
   Future<String?> _findDuplicateRecurrence(String parentId, DateTime scheduledDate, {String? excludeTaskId}) async {
     try {
-      // Create a range for the whole day to check for existing tasks safely with integer timestamps
-      final startOfDay = DateTime(scheduledDate.year, scheduledDate.month, scheduledDate.day);
-      final endOfDay = startOfDay.add(const Duration(days: 1));
-
-      // Drift/SQLite stores DateTimes as integer Unix timestamps (seconds or milliseconds depending on config).
-      // Comparing DATE(..., 'unixepoch') is fragile if the stored value doesn't match the expectation.
-      // It is safer to check if the integer value falls within the timestamps for the start and end of the day.
-      var filterSql =
-          "recurrence_parent_id = ? AND planned_date >= ? AND planned_date < ? AND deleted_date IS NULL AND completed_at IS NULL";
-
-      // Use milliSecondsSinceEpoch / 1000 if storing as seconds, or just milliSecondsSinceEpoch.
-      // Drift default for DateTime is to store as seconds since epoch (unix timestamp).
-      final startTimestamp = startOfDay.millisecondsSinceEpoch ~/ 1000;
-      final endTimestamp = endOfDay.millisecondsSinceEpoch ~/ 1000;
-
-      final filterArgs = [parentId, startTimestamp, endTimestamp];
+      // Broaden duplicate detection: instead of checking only the specific date,
+      // check for ANY uncompleted instance for the same parent. This prevents
+      // duplicates if multiple requests use slightly different calculations
+      // or if an instance already exists for that day or future.
+      var filterSql = "recurrence_parent_id = ? AND deleted_date IS NULL AND completed_at IS NULL";
+      final filterArgs = [parentId];
 
       if (excludeTaskId != null) {
         filterSql += " AND id != ?";
