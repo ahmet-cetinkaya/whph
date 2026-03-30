@@ -6,8 +6,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -51,6 +57,9 @@
 
           # OpenGL support
           libglvnd
+
+          # GLib dependency (sysprof-capture-4.pc required by glib-2.0)
+          libsysprof-capture
 
           # Base libraries
           zlib
@@ -154,11 +163,22 @@
           # CMake install prefix (avoid needing root)
           # Removed export CMAKE_INSTALL_PREFIX to let Flutter use the default bundle path
 
-          # PKG_CONFIG_PATH is automatically handled by Nix mkShell
+          # Explicitly add all pkgconfig paths from dev and lib outputs
+          # (mkShell only auto-includes some, causing CMake pkg_check_modules failures)
+          export PKG_CONFIG_PATH="${pkgs.lib.makeSearchPathOutput "dev" "lib/pkgconfig" linuxBuildInputs}:${pkgs.lib.makeSearchPathOutput "lib" "lib/pkgconfig" linuxBuildInputs}"
 
+          # Library path for runtime — use only flake paths to avoid duplicate
+          # nix store entries from the system profile (causes CMake cycle warnings)
+          export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath linuxBuildInputs}"
 
-          # Library path for runtime
-          export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath linuxBuildInputs}:$LD_LIBRARY_PATH"
+          # Library path for build-time linking
+          export LIBRARY_PATH="${pkgs.lib.makeLibraryPath linuxBuildInputs}"
+          export NIX_LDFLAGS="-L${pkgs.libepoxy}/lib -L${pkgs.fontconfig}/lib $NIX_LDFLAGS"
+          export LDFLAGS="-Wl,-rpath-link,${pkgs.lib.makeLibraryPath linuxBuildInputs} $LDFLAGS"
+
+          # CMake linker flags for Flutter build
+          export CMAKE_EXE_LINKER_FLAGS="-Wl,-rpath-link,${pkgs.lib.makeLibraryPath linuxBuildInputs}"
+          export CMAKE_SHARED_LINKER_FLAGS="-Wl,-rpath-link,${pkgs.lib.makeLibraryPath linuxBuildInputs}"
 
           # Dart build configuration
           export DART_WARN_ON_DART_2_XX_BREAKING_CHANGES=false
@@ -170,7 +190,8 @@
           export GST_PLUGIN_SYSTEM_PATH_1_0="${pkgs.gst_all_1.gst-plugins-base}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-good}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-bad}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-ugly}/lib/gstreamer-1.0"
         '';
 
-      in {
+      in
+      {
         # Development shell
         devShells.default = pkgs.mkShell {
           name = "whph-dev";

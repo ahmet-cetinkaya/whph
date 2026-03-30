@@ -34,6 +34,29 @@
       "cwd": "${workspaceFolder}/src",
       "program": "lib/main.dart",
       "args": ["--dart-define", "DEMO_MODE=true"]
-    }
+    },
+    {
+      "name": "whph (nix)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/src",
+      "program": "lib/main.dart"
+    },
+    {
+      "name": "whph (nix profile)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/src",
+      "program": "lib/main.dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "whph (nix release)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/src",
+      "program": "lib/main.dart",
+      "flutterMode": "release"
+    },
   ]
 }
