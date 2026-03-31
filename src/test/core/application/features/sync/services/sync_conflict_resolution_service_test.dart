@@ -593,6 +593,67 @@ void main() {
         expect(result.deadlineDateReminderCustomOffset, equals(60));
         expect(result.recurrenceConfiguration?.frequency, equals(RecurrenceFrequency.weekly));
       });
+
+      test('should overwrite local custom offset with null from remote', () {
+        // Arrange: local has custom offset, remote changed to none
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.custom,
+          plannedDateReminderCustomOffset: 30, // Local has value
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.none, // Remote changed to none
+          plannedDateReminderCustomOffset: null, // Remote has null
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert - Verify that null from remote overwrites local value
+        expect(result.plannedDateReminderCustomOffset, isNull);
+        expect(result.plannedDateReminderTime, equals(ReminderTime.none));
+      });
+
+      test('should overwrite local recurrenceConfiguration with null from remote', () {
+        // Arrange: local has config, remote has null
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.daily,
+          interval: 1,
+        );
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          recurrenceConfiguration: config, // Local has config
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          recurrenceConfiguration: null, // Remote has null
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.recurrenceConfiguration, isNull);
+      });
     });
 
     group('Timestamp Resolution Tests', () {
