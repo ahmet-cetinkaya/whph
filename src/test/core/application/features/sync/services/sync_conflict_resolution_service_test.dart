@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 
 void main() {
   group('SyncConflictResolutionService Tests', () {
@@ -423,6 +424,305 @@ void main() {
       });
     });
 
+    group('Reminder Data Copying Tests', () {
+      test('should copy plannedDateReminderCustomOffset from remote task', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.none,
+          plannedDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.custom,
+          plannedDateReminderCustomOffset: 30,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('existing-id'));
+        expect(result.plannedDateReminderTime, equals(ReminderTime.custom));
+        expect(result.plannedDateReminderCustomOffset, equals(30));
+      });
+
+      test('should copy deadlineDateReminderCustomOffset from remote task', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          deadlineDateReminderTime: ReminderTime.none,
+          deadlineDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          deadlineDateReminderTime: ReminderTime.custom,
+          deadlineDateReminderCustomOffset: 45,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('existing-id'));
+        expect(result.deadlineDateReminderTime, equals(ReminderTime.custom));
+        expect(result.deadlineDateReminderCustomOffset, equals(45));
+      });
+
+      test('should copy both reminder times and offsets together', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.none,
+          plannedDateReminderCustomOffset: null,
+          deadlineDateReminderTime: ReminderTime.none,
+          deadlineDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.fiveMinutesBefore,
+          plannedDateReminderCustomOffset: null,
+          deadlineDateReminderTime: ReminderTime.oneHourBefore,
+          deadlineDateReminderCustomOffset: null,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.plannedDateReminderTime, equals(ReminderTime.fiveMinutesBefore));
+        expect(result.deadlineDateReminderTime, equals(ReminderTime.oneHourBefore));
+      });
+
+      test('should preserve existing ID when copying reminder data', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'local-id-123',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'remote-id-456',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Updated Task',
+          completedAt: null,
+          priority: EisenhowerPriority.urgentImportant,
+          plannedDateReminderTime: ReminderTime.oneDayBefore,
+          plannedDateReminderCustomOffset: 120,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('local-id-123'));
+        expect(result.title, equals('Updated Task'));
+        expect(result.plannedDateReminderTime, equals(ReminderTime.oneDayBefore));
+        expect(result.plannedDateReminderCustomOffset, equals(120));
+      });
+    });
+
+    group('Reminder Field Copying Tests', () {
+      test('should copy plannedDateReminderCustomOffset from remote task', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.none,
+          plannedDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.custom,
+          plannedDateReminderCustomOffset: 30,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('existing-id'));
+        expect(result.plannedDateReminderTime, equals(ReminderTime.custom));
+        expect(result.plannedDateReminderCustomOffset, equals(30));
+      });
+
+      test('should copy deadlineDateReminderCustomOffset from remote task', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          deadlineDateReminderTime: ReminderTime.none,
+          deadlineDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          deadlineDateReminderTime: ReminderTime.custom,
+          deadlineDateReminderCustomOffset: 45,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('existing-id'));
+        expect(result.deadlineDateReminderTime, equals(ReminderTime.custom));
+        expect(result.deadlineDateReminderCustomOffset, equals(45));
+      });
+
+      test('should copy both reminder times and offsets together', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.none,
+          plannedDateReminderCustomOffset: null,
+          deadlineDateReminderTime: ReminderTime.none,
+          deadlineDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.fiveMinutesBefore,
+          plannedDateReminderCustomOffset: null,
+          deadlineDateReminderTime: ReminderTime.oneHourBefore,
+          deadlineDateReminderCustomOffset: null,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.plannedDateReminderTime, equals(ReminderTime.fiveMinutesBefore));
+        expect(result.deadlineDateReminderTime, equals(ReminderTime.oneHourBefore));
+      });
+
+      test('should copy recurrenceConfiguration from remote task', () {
+        // Arrange
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.daily,
+          interval: 2,
+        );
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          recurrenceConfiguration: null,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentImportant,
+          recurrenceConfiguration: config,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('existing-id'));
+        expect(result.recurrenceConfiguration, equals(config));
+        expect(result.recurrenceConfiguration?.frequency, equals(RecurrenceFrequency.daily));
+        expect(result.recurrenceConfiguration?.interval, equals(2));
+      });
+
+      test('should preserve existing ID when copying all reminder data', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'local-id-123',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'remote-id-456',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Updated Task',
+          completedAt: null,
+          priority: EisenhowerPriority.urgentImportant,
+          plannedDateReminderTime: ReminderTime.oneDayBefore,
+          plannedDateReminderCustomOffset: 120,
+          deadlineDateReminderTime: ReminderTime.custom,
+          deadlineDateReminderCustomOffset: 60,
+          recurrenceConfiguration: RecurrenceConfiguration(
+            frequency: RecurrenceFrequency.weekly,
+            interval: 1,
+          ),
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('local-id-123'));
+        expect(result.title, equals('Updated Task'));
+        expect(result.plannedDateReminderTime, equals(ReminderTime.oneDayBefore));
+        expect(result.plannedDateReminderCustomOffset, equals(120));
+        expect(result.deadlineDateReminderTime, equals(ReminderTime.custom));
+        expect(result.deadlineDateReminderCustomOffset, equals(60));
+        expect(result.recurrenceConfiguration?.frequency, equals(RecurrenceFrequency.weekly));
+      });
+    });
+
     group('Timestamp Resolution Tests', () {
       test('should use modification date when available', () {
         // Arrange
@@ -492,5 +792,27 @@ Task createMockTask(String id, DateTime timestamp, {bool isDeleted = false}) {
     title: 'Test Task $id',
     completedAt: null,
     priority: EisenhowerPriority.notUrgentNotImportant,
+  );
+}
+
+// Helper function to create mock tasks with reminder settings
+Task createMockTaskWithReminders(String id, DateTime timestamp, {
+  int? plannedOffset,
+  int? deadlineOffset,
+  RecurrenceConfiguration? config,
+}) {
+  return Task(
+    id: id,
+    createdDate: timestamp.subtract(const Duration(hours: 1)),
+    modifiedDate: timestamp,
+    deletedDate: null,
+    title: 'Task with reminders',
+    completedAt: null,
+    priority: EisenhowerPriority.notUrgentImportant,
+    plannedDateReminderTime: plannedOffset != null ? ReminderTime.custom : ReminderTime.none,
+    plannedDateReminderCustomOffset: plannedOffset,
+    deadlineDateReminderTime: deadlineOffset != null ? ReminderTime.custom : ReminderTime.none,
+    deadlineDateReminderCustomOffset: deadlineOffset,
+    recurrenceConfiguration: config,
   );
 }

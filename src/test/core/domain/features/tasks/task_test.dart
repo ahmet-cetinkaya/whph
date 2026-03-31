@@ -323,5 +323,67 @@ void main() {
         expect(task.recurrenceConfiguration?.interval, 1);
       });
     });
+
+    group('copyWith nullable field sentinel pattern', () {
+      late Task baseTask;
+
+      setUp(() {
+        baseTask = Task(
+          id: 'test-id',
+          createdDate: DateTime(2024, 1, 1),
+          modifiedDate: DateTime(2024, 1, 2),
+          title: 'Test Task',
+          description: 'Original description',
+          plannedDateReminderCustomOffset: 30,
+          deadlineDateReminderCustomOffset: 45,
+        );
+      });
+
+      test('should preserve nullable field when not provided', () {
+        final result = baseTask.copyWith(title: 'Updated Title');
+
+        expect(result.description, equals('Original description'));
+        expect(result.plannedDateReminderCustomOffset, equals(30));
+        expect(result.deadlineDateReminderCustomOffset, equals(45));
+        expect(result.modifiedDate, equals(DateTime(2024, 1, 2)));
+      });
+
+      test('should explicitly set nullable field to null', () {
+        final result = baseTask.copyWith(
+          description: null,
+          plannedDateReminderCustomOffset: null,
+          deadlineDateReminderCustomOffset: null,
+        );
+
+        expect(result.description, isNull);
+        expect(result.plannedDateReminderCustomOffset, isNull);
+        expect(result.deadlineDateReminderCustomOffset, isNull);
+      });
+
+      test('should set nullable field to a new value', () {
+        final result = baseTask.copyWith(
+          description: 'New description',
+          plannedDateReminderCustomOffset: 60,
+          deadlineDateReminderCustomOffset: 90,
+        );
+
+        expect(result.description, equals('New description'));
+        expect(result.plannedDateReminderCustomOffset, equals(60));
+        expect(result.deadlineDateReminderCustomOffset, equals(90));
+      });
+
+      test('should handle setting modifiedDate to null', () {
+        final result = baseTask.copyWith(modifiedDate: null);
+
+        expect(result.modifiedDate, isNull);
+        expect(result.title, equals('Test Task'));
+      });
+
+      test('should preserve id when not provided', () {
+        final result = baseTask.copyWith(title: 'New Title');
+
+        expect(result.id, equals('test-id'));
+      });
+    });
   });
 }

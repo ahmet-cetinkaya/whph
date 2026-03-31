@@ -123,7 +123,9 @@ class SyncConflictResolutionService {
       parentTaskId: remoteTask.parentTaskId,
       order: remoteTask.order,
       plannedDateReminderTime: remoteTask.plannedDateReminderTime,
+      plannedDateReminderCustomOffset: remoteTask.plannedDateReminderCustomOffset,
       deadlineDateReminderTime: remoteTask.deadlineDateReminderTime,
+      deadlineDateReminderCustomOffset: remoteTask.deadlineDateReminderCustomOffset,
       recurrenceType: remoteTask.recurrenceType,
       recurrenceInterval: remoteTask.recurrenceInterval,
       recurrenceDaysString: remoteTask.recurrenceDaysString,
@@ -131,6 +133,7 @@ class SyncConflictResolutionService {
       recurrenceEndDate: remoteTask.recurrenceEndDate,
       recurrenceCount: remoteTask.recurrenceCount,
       recurrenceParentId: remoteTask.recurrenceParentId,
+      recurrenceConfiguration: remoteTask.recurrenceConfiguration,
     );
 
     return updatedTask as T;
