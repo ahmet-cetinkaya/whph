@@ -174,61 +174,78 @@ class Task extends BaseEntity<String> {
             recurrenceConfiguration != null ? JsonMapper.serialize(recurrenceConfiguration) : null,
       };
 
+  /// Sentinel value to distinguish "not provided" from "explicitly null" in [copyWith].
+  static const _copyWithSentinel = Object();
+
   /// Creates a copy of this Task with specified fields replaced by the new values.
   /// The id field is preserved by default unless explicitly changed.
+  ///
+  /// Nullable fields use a sentinel pattern so callers can explicitly set them
+  /// to null by passing `null` — e.g. `task.copyWith(description: null)`.
   Task copyWith({
     String? id,
     DateTime? createdDate,
-    DateTime? modifiedDate,
-    DateTime? deletedDate,
+    Object? modifiedDate = _copyWithSentinel,
+    Object? deletedDate = _copyWithSentinel,
     String? title,
-    String? description,
-    EisenhowerPriority? priority,
-    DateTime? plannedDate,
-    DateTime? deadlineDate,
-    int? estimatedTime,
-    DateTime? completedAt,
-    String? parentTaskId,
+    Object? description = _copyWithSentinel,
+    Object? priority = _copyWithSentinel,
+    Object? plannedDate = _copyWithSentinel,
+    Object? deadlineDate = _copyWithSentinel,
+    Object? estimatedTime = _copyWithSentinel,
+    Object? completedAt = _copyWithSentinel,
+    Object? parentTaskId = _copyWithSentinel,
     double? order,
     ReminderTime? plannedDateReminderTime,
     ReminderTime? deadlineDateReminderTime,
-    int? plannedDateReminderCustomOffset,
-    int? deadlineDateReminderCustomOffset,
+    Object? plannedDateReminderCustomOffset = _copyWithSentinel,
+    Object? deadlineDateReminderCustomOffset = _copyWithSentinel,
     RecurrenceType? recurrenceType,
-    int? recurrenceInterval,
-    String? recurrenceDaysString,
-    DateTime? recurrenceStartDate,
-    DateTime? recurrenceEndDate,
-    int? recurrenceCount,
-    String? recurrenceParentId,
-    RecurrenceConfiguration? recurrenceConfiguration,
+    Object? recurrenceInterval = _copyWithSentinel,
+    Object? recurrenceDaysString = _copyWithSentinel,
+    Object? recurrenceStartDate = _copyWithSentinel,
+    Object? recurrenceEndDate = _copyWithSentinel,
+    Object? recurrenceCount = _copyWithSentinel,
+    Object? recurrenceParentId = _copyWithSentinel,
+    Object? recurrenceConfiguration = _copyWithSentinel,
   }) {
     return Task(
       id: id ?? this.id,
       createdDate: createdDate ?? this.createdDate,
-      modifiedDate: modifiedDate ?? this.modifiedDate,
-      deletedDate: deletedDate ?? this.deletedDate,
+      modifiedDate: modifiedDate == _copyWithSentinel ? this.modifiedDate : modifiedDate as DateTime?,
+      deletedDate: deletedDate == _copyWithSentinel ? this.deletedDate : deletedDate as DateTime?,
       title: title ?? this.title,
-      description: description ?? this.description,
-      priority: priority ?? this.priority,
-      plannedDate: plannedDate ?? this.plannedDate,
-      deadlineDate: deadlineDate ?? this.deadlineDate,
-      estimatedTime: estimatedTime ?? this.estimatedTime,
-      completedAt: completedAt ?? this.completedAt,
-      parentTaskId: parentTaskId ?? this.parentTaskId,
+      description: description == _copyWithSentinel ? this.description : description as String?,
+      priority: priority == _copyWithSentinel ? this.priority : priority as EisenhowerPriority?,
+      plannedDate: plannedDate == _copyWithSentinel ? this.plannedDate : plannedDate as DateTime?,
+      deadlineDate: deadlineDate == _copyWithSentinel ? this.deadlineDate : deadlineDate as DateTime?,
+      estimatedTime: estimatedTime == _copyWithSentinel ? this.estimatedTime : estimatedTime as int?,
+      completedAt: completedAt == _copyWithSentinel ? this.completedAt : completedAt as DateTime?,
+      parentTaskId: parentTaskId == _copyWithSentinel ? this.parentTaskId : parentTaskId as String?,
       order: order ?? this.order,
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
       deadlineDateReminderTime: deadlineDateReminderTime ?? this.deadlineDateReminderTime,
-      plannedDateReminderCustomOffset: plannedDateReminderCustomOffset ?? this.plannedDateReminderCustomOffset,
-      deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset ?? this.deadlineDateReminderCustomOffset,
+      plannedDateReminderCustomOffset: plannedDateReminderCustomOffset == _copyWithSentinel
+          ? this.plannedDateReminderCustomOffset
+          : plannedDateReminderCustomOffset as int?,
+      deadlineDateReminderCustomOffset: deadlineDateReminderCustomOffset == _copyWithSentinel
+          ? this.deadlineDateReminderCustomOffset
+          : deadlineDateReminderCustomOffset as int?,
       recurrenceType: recurrenceType ?? this.recurrenceType,
-      recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
-      recurrenceDaysString: recurrenceDaysString ?? this.recurrenceDaysString,
-      recurrenceStartDate: recurrenceStartDate ?? this.recurrenceStartDate,
-      recurrenceEndDate: recurrenceEndDate ?? this.recurrenceEndDate,
-      recurrenceCount: recurrenceCount ?? this.recurrenceCount,
-      recurrenceParentId: recurrenceParentId ?? this.recurrenceParentId,
-      recurrenceConfiguration: recurrenceConfiguration ?? this.recurrenceConfiguration,
+      recurrenceInterval:
+          recurrenceInterval == _copyWithSentinel ? this.recurrenceInterval : recurrenceInterval as int?,
+      recurrenceDaysString:
+          recurrenceDaysString == _copyWithSentinel ? this.recurrenceDaysString : recurrenceDaysString as String?,
+      recurrenceStartDate:
+          recurrenceStartDate == _copyWithSentinel ? this.recurrenceStartDate : recurrenceStartDate as DateTime?,
+      recurrenceEndDate:
+          recurrenceEndDate == _copyWithSentinel ? this.recurrenceEndDate : recurrenceEndDate as DateTime?,
+      recurrenceCount: recurrenceCount == _copyWithSentinel ? this.recurrenceCount : recurrenceCount as int?,
+      recurrenceParentId:
+          recurrenceParentId == _copyWithSentinel ? this.recurrenceParentId : recurrenceParentId as String?,
+      recurrenceConfiguration: recurrenceConfiguration == _copyWithSentinel
+          ? this.recurrenceConfiguration
+          : recurrenceConfiguration as RecurrenceConfiguration?,
     );
   }
 
