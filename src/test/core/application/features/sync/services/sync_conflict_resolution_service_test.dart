@@ -712,6 +712,118 @@ void main() {
         expect(result.winningEntity, equals(remoteTask));
       });
     });
+
+    group('Error Validation Tests', () {
+      late SyncConflictResolutionService service;
+
+      setUp(() {
+        service = SyncConflictResolutionService();
+      });
+
+      test('should throw StateError on ID mismatch', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'local-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Local Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Remote Task',
+          completedAt: null,
+          priority: EisenhowerPriority.urgentImportant,
+        );
+
+        // Act & Assert
+        expect(
+          () => service.copyRemoteDataToExistingTask(existingTask, remoteTask),
+          throwsA(isA<StateError>()),
+        );
+      });
+
+      test('should throw StateError on suspicious createdDate in far future', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'task-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'task-id',
+          createdDate: DateTime.now().add(const Duration(days: 60)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+
+        // Act & Assert
+        expect(
+          () => service.copyRemoteDataToExistingTask(existingTask, remoteTask),
+          throwsA(isA<StateError>()),
+        );
+      });
+
+      test('should throw StateError when completedAt before createdDate', () {
+        // Arrange
+        final createdDate = DateTime.now().subtract(const Duration(days: 5));
+        final completedAt = DateTime.now().subtract(const Duration(days: 10));
+
+        final existingTask = Task(
+          id: 'task-id',
+          createdDate: createdDate,
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'task-id',
+          createdDate: createdDate,
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: completedAt,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+
+        // Act & Assert
+        expect(
+          () => service.copyRemoteDataToExistingTask(existingTask, remoteTask),
+          throwsA(isA<StateError>()),
+        );
+      });
+
+      test('should accept valid task with createdDate within 30 days', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'task-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'task-id',
+          createdDate: DateTime.now().add(const Duration(days: 10)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('task-id'));
+        expect(result.createdDate.isAfter(DateTime.now()), isTrue);
+      });
+    });
   });
 }
 
