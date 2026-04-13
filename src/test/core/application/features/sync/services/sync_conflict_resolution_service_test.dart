@@ -377,7 +377,7 @@ void main() {
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
         final remoteTask = Task(
-          id: 'remote-id',
+          id: 'existing-id', // Same ID - will be preserved
           createdDate: DateTime.now().subtract(const Duration(hours: 1)),
           modifiedDate: DateTime.now(),
           title: 'New Title',
@@ -437,7 +437,7 @@ void main() {
           plannedDateReminderCustomOffset: null,
         );
         final remoteTask = Task(
-          id: 'remote-id',
+          id: 'existing-id', // Same ID
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           modifiedDate: DateTime.now(),
           title: 'Task',
@@ -468,7 +468,7 @@ void main() {
           deadlineDateReminderCustomOffset: null,
         );
         final remoteTask = Task(
-          id: 'remote-id',
+          id: 'existing-id', // Same ID
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           modifiedDate: DateTime.now(),
           title: 'Task',
@@ -501,7 +501,7 @@ void main() {
           deadlineDateReminderCustomOffset: null,
         );
         final remoteTask = Task(
-          id: 'remote-id',
+          id: 'existing-id', // Same ID
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           modifiedDate: DateTime.now(),
           title: 'Task',
@@ -536,7 +536,7 @@ void main() {
           recurrenceConfiguration: null,
         );
         final remoteTask = Task(
-          id: 'remote-id',
+          id: 'existing-id', // Same ID to test copying with matching IDs
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           modifiedDate: DateTime.now(),
           title: 'Task',
@@ -565,7 +565,7 @@ void main() {
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
         final remoteTask = Task(
-          id: 'remote-id-456',
+          id: 'local-id-123', // Same ID - will be preserved
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           modifiedDate: DateTime.now(),
           title: 'Updated Task',
@@ -585,7 +585,7 @@ void main() {
         final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
 
         // Assert
-        expect(result.id, equals('local-id-123'));
+        expect(result.id, equals('local-id-123')); // ID preserved from existingTask
         expect(result.title, equals('Updated Task'));
         expect(result.plannedDateReminderTime, equals(ReminderTime.oneDayBefore));
         expect(result.plannedDateReminderCustomOffset, equals(120));
@@ -606,7 +606,7 @@ void main() {
           plannedDateReminderCustomOffset: 30, // Local has value
         );
         final remoteTask = Task(
-          id: 'remote-id',
+          id: 'existing-id', // Same ID for copying
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           modifiedDate: DateTime.now(),
           title: 'Task',
@@ -639,7 +639,7 @@ void main() {
           recurrenceConfiguration: config, // Local has config
         );
         final remoteTask = Task(
-          id: 'remote-id',
+          id: 'existing-id', // Same ID for copying
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           modifiedDate: DateTime.now(),
           title: 'Task',

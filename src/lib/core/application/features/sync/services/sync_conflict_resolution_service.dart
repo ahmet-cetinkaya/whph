@@ -129,99 +129,77 @@ class SyncConflictResolutionService {
       return existingTask; // Return unchanged if not tasks
     }
 
-    try {
-      final existing = existingTask as Task;
-      final remote = remoteTask as Task;
+    final existing = existingTask as Task;
+    final remote = remoteTask as Task;
 
-      // Safety: Validate IDs match before copying
-      if (existing.id != remote.id) {
-        Logger.warning(
-          'copyRemoteDataToExistingTask: ID mismatch - existing=${existing.id}, remote=${remote.id}. Preserving existing ID.',
-          component: DomainLogComponents.task,
-        );
-      }
-
-      // Safety: Type validation - ensure remote task has valid data structure
-      if (remote.createdDate.isAfter(DateTime.now().add(const Duration(days: 365)))) {
-        Logger.warning(
-          'copyRemoteDataToExistingTask: Remote task has suspicious createdDate far in future - ${remote.createdDate}',
-          component: DomainLogComponents.task,
-        );
-      }
-
-      // Copy remote data to existing task.
-      // Note: copyWith uses sentinel pattern where null means "set to null" and
-      // sentinel means "keep existing". Since remoteTask came from a sync source,
-      // we want to copy all fields including nulls (which may represent cleared data).
-      final updatedTask = existing.copyWith(
-        createdDate: remote.createdDate,
-        modifiedDate: remote.modifiedDate,
-        deletedDate: remote.deletedDate,
-        title: remote.title,
-        description: remote.description,
-        priority: remote.priority,
-        plannedDate: remote.plannedDate,
-        deadlineDate: remote.deadlineDate,
-        estimatedTime: remote.estimatedTime,
-        completedAt: remote.completedAt,
-        parentTaskId: remote.parentTaskId,
-        order: remote.order,
-        plannedDateReminderTime: remote.plannedDateReminderTime,
-        plannedDateReminderCustomOffset: remote.plannedDateReminderCustomOffset,
-        deadlineDateReminderTime: remote.deadlineDateReminderTime,
-        deadlineDateReminderCustomOffset: remote.deadlineDateReminderCustomOffset,
-        recurrenceType: remote.recurrenceType,
-        recurrenceInterval: remote.recurrenceInterval,
-        recurrenceDaysString: remote.recurrenceDaysString,
-        recurrenceStartDate: remote.recurrenceStartDate,
-        recurrenceEndDate: remote.recurrenceEndDate,
-        recurrenceCount: remote.recurrenceCount,
-        recurrenceParentId: remote.recurrenceParentId,
-        recurrenceConfiguration: remote.recurrenceConfiguration,
+    // Safety: Validate IDs match before copying - throw if mismatched
+    if (existing.id != remote.id) {
+      throw StateError(
+        'copyRemoteDataToExistingTask: ID mismatch - existing=${existing.id}, remote=${remote.id}. '
+        'ID must match to preserve task identity. [$TaskErrorIds.syncCopyRemoteDataFailed]',
       );
-
-      // Safety: Verify the updated task was created successfully with correct ID
-      if (updatedTask.id != existing.id) {
-        Logger.error(
-          'copyRemoteDataToExistingTask: Critical - ID changed during copy! '
-          'expected=${existing.id}, got=${updatedTask.id} [$TaskErrorIds.syncCopyRemoteDataFailed]',
-          component: DomainLogComponents.task,
-        );
-        // Return existing task to prevent data corruption
-        return existingTask;
-      }
-
-      // Safety: Verify critical invariants are maintained
-      if (updatedTask.completedAt != null && updatedTask.completedAt!.isBefore(updatedTask.createdDate)) {
-        Logger.warning(
-          'copyRemoteDataToExistingTask: completedAt before createdDate - created=${updatedTask.createdDate}, completed=${updatedTask.completedAt}',
-          component: DomainLogComponents.task,
-        );
-      }
-
-      return updatedTask as T;
-    } on TypeError catch (e, stackTrace) {
-      // Catch type casting errors specifically
-      Logger.error(
-        'Type error in copyRemoteDataToExistingTask - possible data corruption. '
-        'existingType=${existingTask.runtimeType}, remoteType=${remoteTask.runtimeType} [$TaskErrorIds.syncCopyRemoteDataFailed]',
-        error: e,
-        stackTrace: stackTrace,
-        component: DomainLogComponents.task,
-      );
-      // Return existing task to prevent crash
-      return existingTask;
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to copy remote data to existing task. '
-        'existingTaskId=${existingTask.id}, remoteTaskId=${remoteTask.id} [$TaskErrorIds.syncCopyRemoteDataFailed]',
-        error: e,
-        stackTrace: stackTrace,
-        component: DomainLogComponents.task,
-      );
-      // Return existing task on error to prevent data loss
-      return existingTask;
     }
+
+    // Safety: Type validation - reject corrupted data with dates too far in future
+    // Threshold of 30 days catches data corruption (e.g., year 2099) while allowing clock skew
+    final thirtyDaysFromNow = DateTime.now().add(const Duration(days: 30));
+    if (remote.createdDate.isAfter(thirtyDaysFromNow)) {
+      throw StateError(
+        'copyRemoteDataToExistingTask: Remote task has suspicious createdDate in future - ${remote.createdDate}. '
+        'This indicates data corruption. [$TaskErrorIds.syncCopyRemoteDataFailed]',
+      );
+    }
+
+    // Copy remote data to existing task.
+    // Note: copyWith uses sentinel pattern where null means "set to null" and
+    // sentinel means "keep existing". Since remoteTask came from a sync source,
+    // we want to copy all fields including nulls (which may represent cleared data).
+    final updatedTask = existing.copyWith(
+      createdDate: remote.createdDate,
+      modifiedDate: remote.modifiedDate,
+      deletedDate: remote.deletedDate,
+      title: remote.title,
+      description: remote.description,
+      priority: remote.priority,
+      plannedDate: remote.plannedDate,
+      deadlineDate: remote.deadlineDate,
+      estimatedTime: remote.estimatedTime,
+      completedAt: remote.completedAt,
+      parentTaskId: remote.parentTaskId,
+      order: remote.order,
+      plannedDateReminderTime: remote.plannedDateReminderTime,
+      plannedDateReminderCustomOffset: remote.plannedDateReminderCustomOffset,
+      deadlineDateReminderTime: remote.deadlineDateReminderTime,
+      deadlineDateReminderCustomOffset: remote.deadlineDateReminderCustomOffset,
+      recurrenceType: remote.recurrenceType,
+      recurrenceInterval: remote.recurrenceInterval,
+      recurrenceDaysString: remote.recurrenceDaysString,
+      recurrenceStartDate: remote.recurrenceStartDate,
+      recurrenceEndDate: remote.recurrenceEndDate,
+      recurrenceCount: remote.recurrenceCount,
+      recurrenceParentId: remote.recurrenceParentId,
+      recurrenceConfiguration: remote.recurrenceConfiguration,
+    );
+
+    // Safety: Verify the updated task was created successfully with correct ID
+    // This should never happen if copyWith works correctly, but we verify to fail fast
+    if (updatedTask.id != existing.id) {
+      throw StateError(
+        'copyRemoteDataToExistingTask: Critical - ID changed during copy! '
+        'expected=${existing.id}, got=${updatedTask.id}. '
+        'This indicates a bug in Task.copyWith. [$TaskErrorIds.syncCopyRemoteDataFailed]',
+      );
+    }
+
+    // Safety: Verify critical invariants are maintained - throw for data corruption
+    if (updatedTask.completedAt != null && updatedTask.completedAt!.isBefore(updatedTask.createdDate)) {
+      throw StateError(
+        'copyRemoteDataToExistingTask: completedAt (${updatedTask.completedAt}) is before createdDate (${updatedTask.createdDate}). '
+        'This violates data invariants and indicates data corruption. [$TaskErrorIds.syncCopyRemoteDataFailed]',
+      );
+    }
+
+    return updatedTask as T;
   }
 
   /// Gets the effective timestamp for conflict resolution
