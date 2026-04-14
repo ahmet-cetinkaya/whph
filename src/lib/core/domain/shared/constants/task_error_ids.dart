@@ -50,6 +50,10 @@ class TaskErrorIds {
   // Repository Errors
   static const String repositoryDuplicateCleanupFailed = 'task_repository_duplicate_cleanup_failed';
 
+  // Sync Errors
+  static const String syncCopyRemoteDataFailed = 'task_sync_copy_remote_data_failed';
+  static const String syncCopyRemoteDataInvalidType = 'task_sync_copy_remote_data_invalid_type';
+
   // Date Helper Errors
   static const String dateHelperMaxSearchDaysExceeded = 'task_date_helper_max_search_days_exceeded';
   static const String dateHelperMaxSearchDaysWithTimesExceeded = 'task_date_helper_max_search_days_with_times_exceeded';

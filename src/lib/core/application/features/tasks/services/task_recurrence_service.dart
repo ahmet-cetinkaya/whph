@@ -283,27 +283,34 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
         .toList();
   }
 
-  /// Handles the creation of the next recurring task instance when a task is completed
   @override
   Future<String?> handleCompletedRecurringTask(String taskId, Mediator mediator) async {
-    final task = await _getTaskForRecurrence(taskId, mediator);
-    if (!_canProcessRecurrence(task)) {
-      return null;
-    }
-
-    final parentId = task.recurrenceParentId ?? task.id;
-    await _acquireRecurrenceLock(parentId);
-
     try {
-      // Re-verify the task is still completed before creating recurrence.
-      // This is crucial now that we've moved the lock acquisition earlier.
-      final currentTaskState = await _getTaskForRecurrence(taskId, mediator);
-      if (!currentTaskState.isCompleted) {
-        _logger.info('TaskRecurrenceService: Task $taskId is no longer completed - ABORTING recurrence creation');
+      final task = await _getTaskForRecurrence(taskId, mediator);
+      if (!_canProcessRecurrence(task)) {
         return null;
       }
 
-      return await _createNextRecurrenceInstanceInternal(currentTaskState, mediator);
+      final parentId = task.recurrenceParentId ?? task.id;
+      await _acquireRecurrenceLock(parentId);
+
+      try {
+        // Re-verify the task is still completed before creating recurrence.
+        // This is crucial now that we've moved the lock acquisition earlier.
+        final currentTaskState = await _getTaskForRecurrence(taskId, mediator);
+        if (!currentTaskState.isCompleted) {
+          _logger.info('TaskRecurrenceService: Task $taskId is no longer completed - ABORTING recurrence creation');
+          return null;
+        }
+
+        return await _createNextRecurrenceInstanceInternal(currentTaskState, mediator);
+      } finally {
+        final completer = _processingRecurrenceParents.remove(parentId);
+        if (completer != null && !completer.isCompleted) {
+          completer.complete();
+        }
+        _logger.debug('TaskRecurrenceService: Released lock for parent $parentId');
+      }
     } on StateError catch (_) {
       // Task state changed (no longer completed) - this is expected in some scenarios
       _logger.warning(
@@ -393,12 +400,8 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
       _logger.info('TaskRecurrenceService: Created recurrence ${result.id} for task ${task.id}');
 
       return result.id;
-    } finally {
-      final completer = _processingRecurrenceParents.remove(parentId);
-      if (completer != null && !completer.isCompleted) {
-        completer.complete();
-      }
-      _logger.debug('TaskRecurrenceService: Released lock for parent $parentId');
+    } catch (e) {
+      rethrow;
     }
   }
 

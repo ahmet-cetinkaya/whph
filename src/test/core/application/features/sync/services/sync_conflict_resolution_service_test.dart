@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/services/sync_conflict_resolution_service.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 
 void main() {
   group('SyncConflictResolutionService Tests', () {
@@ -376,7 +377,7 @@ void main() {
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
         final remoteTask = Task(
-          id: 'remote-id',
+          id: 'existing-id', // Same ID - will be preserved
           createdDate: DateTime.now().subtract(const Duration(hours: 1)),
           modifiedDate: DateTime.now(),
           title: 'New Title',
@@ -420,6 +421,238 @@ void main() {
 
         // Assert
         expect(result, equals(habitRecord1)); // Should return unchanged
+      });
+    });
+
+    group('Reminder Data Copying Tests', () {
+      test('should copy plannedDateReminderCustomOffset from remote task', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.none,
+          plannedDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'existing-id', // Same ID
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.custom,
+          plannedDateReminderCustomOffset: 30,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('existing-id'));
+        expect(result.plannedDateReminderTime, equals(ReminderTime.custom));
+        expect(result.plannedDateReminderCustomOffset, equals(30));
+      });
+
+      test('should copy deadlineDateReminderCustomOffset from remote task', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          deadlineDateReminderTime: ReminderTime.none,
+          deadlineDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'existing-id', // Same ID
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          deadlineDateReminderTime: ReminderTime.custom,
+          deadlineDateReminderCustomOffset: 45,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('existing-id'));
+        expect(result.deadlineDateReminderTime, equals(ReminderTime.custom));
+        expect(result.deadlineDateReminderCustomOffset, equals(45));
+      });
+
+      test('should copy both reminder times and offsets together', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.none,
+          plannedDateReminderCustomOffset: null,
+          deadlineDateReminderTime: ReminderTime.none,
+          deadlineDateReminderCustomOffset: null,
+        );
+        final remoteTask = Task(
+          id: 'existing-id', // Same ID
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.fiveMinutesBefore,
+          plannedDateReminderCustomOffset: null,
+          deadlineDateReminderTime: ReminderTime.oneHourBefore,
+          deadlineDateReminderCustomOffset: null,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.plannedDateReminderTime, equals(ReminderTime.fiveMinutesBefore));
+        expect(result.deadlineDateReminderTime, equals(ReminderTime.oneHourBefore));
+      });
+
+      test('should copy recurrenceConfiguration from remote task', () {
+        // Arrange
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.daily,
+          interval: 2,
+        );
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          recurrenceConfiguration: null,
+        );
+        final remoteTask = Task(
+          id: 'existing-id', // Same ID to test copying with matching IDs
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentImportant,
+          recurrenceConfiguration: config,
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('existing-id'));
+        expect(result.recurrenceConfiguration, equals(config));
+        expect(result.recurrenceConfiguration?.frequency, equals(RecurrenceFrequency.daily));
+        expect(result.recurrenceConfiguration?.interval, equals(2));
+      });
+
+      test('should preserve existing ID when copying reminder data', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'local-id-123',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'local-id-123', // Same ID - will be preserved
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Updated Task',
+          completedAt: null,
+          priority: EisenhowerPriority.urgentImportant,
+          plannedDateReminderTime: ReminderTime.oneDayBefore,
+          plannedDateReminderCustomOffset: 120,
+          deadlineDateReminderTime: ReminderTime.custom,
+          deadlineDateReminderCustomOffset: 60,
+          recurrenceConfiguration: RecurrenceConfiguration(
+            frequency: RecurrenceFrequency.weekly,
+            interval: 1,
+          ),
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('local-id-123')); // ID preserved from existingTask
+        expect(result.title, equals('Updated Task'));
+        expect(result.plannedDateReminderTime, equals(ReminderTime.oneDayBefore));
+        expect(result.plannedDateReminderCustomOffset, equals(120));
+        expect(result.deadlineDateReminderTime, equals(ReminderTime.custom));
+        expect(result.deadlineDateReminderCustomOffset, equals(60));
+        expect(result.recurrenceConfiguration?.frequency, equals(RecurrenceFrequency.weekly));
+      });
+
+      test('should overwrite local custom offset with null from remote', () {
+        // Arrange: local has custom offset, remote changed to none
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.custom,
+          plannedDateReminderCustomOffset: 30, // Local has value
+        );
+        final remoteTask = Task(
+          id: 'existing-id', // Same ID for copying
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          plannedDateReminderTime: ReminderTime.none, // Remote changed to none
+          plannedDateReminderCustomOffset: null, // Remote has null
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert - Verify that null from remote overwrites local value
+        expect(result.plannedDateReminderCustomOffset, isNull);
+        expect(result.plannedDateReminderTime, equals(ReminderTime.none));
+      });
+
+      test('should overwrite local recurrenceConfiguration with null from remote', () {
+        // Arrange: local has config, remote has null
+        final config = RecurrenceConfiguration(
+          frequency: RecurrenceFrequency.daily,
+          interval: 1,
+        );
+        final existingTask = Task(
+          id: 'existing-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          recurrenceConfiguration: config, // Local has config
+        );
+        final remoteTask = Task(
+          id: 'existing-id', // Same ID for copying
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+          recurrenceConfiguration: null, // Remote has null
+        );
+
+        // Act
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.recurrenceConfiguration, isNull);
       });
     });
 
@@ -477,6 +710,119 @@ void main() {
         // Assert
         expect(result.action, ConflictAction.acceptRemote);
         expect(result.winningEntity, equals(remoteTask));
+      });
+    });
+
+    group('Error Validation Tests', () {
+      late SyncConflictResolutionService service;
+
+      setUp(() {
+        service = SyncConflictResolutionService();
+      });
+
+      test('should throw StateError on ID mismatch', () {
+        // Arrange
+        final existingTask = Task(
+          id: 'local-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Local Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'remote-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          modifiedDate: DateTime.now(),
+          title: 'Remote Task',
+          completedAt: null,
+          priority: EisenhowerPriority.urgentImportant,
+        );
+
+        // Act & Assert
+        expect(
+          () => service.copyRemoteDataToExistingTask(existingTask, remoteTask),
+          throwsA(isA<StateError>()),
+        );
+      });
+
+      test('should accept task with createdDate in far future', () {
+        // Arrange - far future dates are now accepted (removed non-deterministic validation)
+        final existingTask = Task(
+          id: 'task-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'task-id',
+          createdDate: DateTime.now().add(const Duration(days: 60)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+
+        // Act - should NOT throw (removed DateTime.now() based validation)
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('task-id'));
+        expect(result.createdDate.isAfter(DateTime.now()), isTrue);
+      });
+
+      test('should throw StateError when completedAt before createdDate', () {
+        // Arrange
+        final createdDate = DateTime.now().subtract(const Duration(days: 5));
+        final completedAt = DateTime.now().subtract(const Duration(days: 10));
+
+        final existingTask = Task(
+          id: 'task-id',
+          createdDate: createdDate,
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'task-id',
+          createdDate: createdDate,
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: completedAt,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+
+        // Act & Assert
+        expect(
+          () => service.copyRemoteDataToExistingTask(existingTask, remoteTask),
+          throwsA(isA<StateError>()),
+        );
+      });
+
+      test('should accept task with createdDate in future', () {
+        // Arrange - dates in near future are accepted (clock skew allowed)
+        final existingTask = Task(
+          id: 'task-id',
+          createdDate: DateTime.now().subtract(const Duration(days: 1)),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+        final remoteTask = Task(
+          id: 'task-id',
+          createdDate: DateTime.now().add(const Duration(days: 10)),
+          modifiedDate: DateTime.now(),
+          title: 'Task',
+          completedAt: null,
+          priority: EisenhowerPriority.notUrgentNotImportant,
+        );
+
+        // Act - should NOT throw
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('task-id'));
+        expect(result.createdDate.isAfter(DateTime.now()), isTrue);
       });
     });
   });
