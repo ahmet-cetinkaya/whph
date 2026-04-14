@@ -169,6 +169,7 @@ class DateRangeFilterController extends ChangeNotifier {
       Duration refreshInterval;
       switch (_activeQuickSelectionKey) {
         case 'today':
+        case 'up_to_today':
           refreshInterval = const Duration(minutes: 15);
           break;
         case 'this_week':

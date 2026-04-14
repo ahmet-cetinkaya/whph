@@ -183,6 +183,13 @@ class DateFilterSetting {
           endDate: now,
         );
 
+      case 'up_to_today':
+        final upToTodayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        return DateRange(
+          startDate: DateTime(2000, 1, 1), // Same as TaskUiConstants.minFilterDate
+          endDate: upToTodayEnd,
+        );
+
       default:
         // Fallback to static dates if unknown key
         return DateRange(startDate: startDate, endDate: endDate);
