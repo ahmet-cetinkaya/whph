@@ -169,17 +169,21 @@ class DateRangeFilterController extends ChangeNotifier {
 
       Duration refreshInterval;
       switch (_activeQuickSelectionKey) {
+        // Daily ranges need frequent refresh to handle midnight rollover
         case 'today':
         case 'up_to_today':
           refreshInterval = const Duration(minutes: 15);
           break;
+        // Weekly ranges change once per week, refresh hourly
         case 'this_week':
           refreshInterval = const Duration(hours: 1);
           break;
+        // Monthly and longer ranges change very infrequently
         case 'this_month':
         case 'this_3_months':
           refreshInterval = const Duration(hours: 4);
           break;
+        // Default fallback for unknown or custom ranges
         default:
           refreshInterval = const Duration(minutes: 30);
       }

@@ -27,22 +27,31 @@ void main() {
       });
 
       test('up_to_today updates dynamically', () async {
+        // Get current date
+        final now = DateTime.now();
+
+        // Create filter with old historic dates that would never match current calculation
+        final historicStart = DateTime(1990, 1, 1);
+        final historicEnd = DateTime(1990, 12, 31);
+
         final setting = DateFilterSetting.quickSelection(
           key: 'up_to_today',
-          startDate: DateTime(2000, 1, 1),
-          endDate: DateTime(2020, 1, 1),
+          startDate: historicStart,
+          endDate: historicEnd,
           isAutoRefreshEnabled: true,
         );
 
-        setting.calculateCurrentDateRange();
+        // First calculation should return current date, NOT historic stored date
+        final firstRange = setting.calculateCurrentDateRange();
+        expect(firstRange.endDate?.year, now.year);
+        expect(firstRange.endDate?.month, now.month);
+        expect(firstRange.endDate?.day, now.day);
 
-        // Simulate passing midnight
-        await Future.delayed(const Duration(milliseconds: 1));
+        // Verify we are not returning the stored static dates
+        expect(firstRange.startDate, isNot(historicStart));
+        expect(firstRange.endDate, isNot(historicEnd));
 
-        final secondRange = setting.calculateCurrentDateRange();
-
-        // Range should always be recalculated based on current time
-        expect(secondRange.endDate, isNotNull);
+        // No static dates are ever returned for dynamic quick selections
       });
 
       test('manual range returns static dates', () {
@@ -82,6 +91,113 @@ void main() {
         expect(range.endDate?.day, now.day);
         expect(range.endDate?.hour, 23);
         expect(range.endDate?.minute, 59);
+      });
+
+      test('this_week returns correct range', () {
+        final now = DateTime.now();
+        final daysToSubtract = now.weekday - 1;
+        final daysToAdd = 7 - now.weekday;
+
+        final setting = DateFilterSetting.quickSelection(
+          key: 'this_week',
+          startDate: DateTime(2020, 1, 1),
+          endDate: DateTime(2020, 1, 1),
+          isAutoRefreshEnabled: true,
+        );
+
+        final range = setting.calculateCurrentDateRange();
+
+        expect(range.startDate?.year, now.year);
+        expect(range.startDate?.month, now.month);
+        expect(range.startDate?.day, now.day - daysToSubtract);
+        expect(range.endDate?.year, now.year);
+        expect(range.endDate?.month, now.month);
+        expect(range.endDate?.day, now.day + daysToAdd);
+        expect(range.endDate?.hour, 23);
+        expect(range.endDate?.minute, 59);
+      });
+
+      test('this_month returns correct range', () {
+        final now = DateTime.now();
+        final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+
+        final setting = DateFilterSetting.quickSelection(
+          key: 'this_month',
+          startDate: DateTime(2020, 1, 1),
+          endDate: DateTime(2020, 1, 1),
+          isAutoRefreshEnabled: true,
+        );
+
+        final range = setting.calculateCurrentDateRange();
+
+        expect(range.startDate?.year, now.year);
+        expect(range.startDate?.month, now.month);
+        expect(range.startDate?.day, 1);
+        expect(range.endDate?.year, now.year);
+        expect(range.endDate?.month, now.month);
+        expect(range.endDate?.day, lastDayOfMonth.day);
+        expect(range.endDate?.hour, 23);
+        expect(range.endDate?.minute, 59);
+      });
+
+      test('this_3_months returns correct range', () {
+        final setting = DateFilterSetting.quickSelection(
+          key: 'this_3_months',
+          startDate: DateTime(2020, 1, 1),
+          endDate: DateTime(2020, 1, 1),
+          isAutoRefreshEnabled: true,
+        );
+
+        final range = setting.calculateCurrentDateRange();
+
+        expect(range.startDate, isNotNull);
+        expect(range.endDate, isNotNull);
+        expect(range.startDate!.isBefore(range.endDate!), isTrue);
+      });
+
+      test('last_week returns correct range', () {
+        final setting = DateFilterSetting.quickSelection(
+          key: 'last_week',
+          startDate: DateTime(2020, 1, 1),
+          endDate: DateTime(2020, 1, 1),
+          isAutoRefreshEnabled: true,
+        );
+
+        final range = setting.calculateCurrentDateRange();
+
+        expect(range.startDate, isNotNull);
+        expect(range.endDate, isNotNull);
+        expect(range.startDate!.isBefore(range.endDate!), isTrue);
+      });
+
+      test('last_month returns correct range', () {
+        final setting = DateFilterSetting.quickSelection(
+          key: 'last_month',
+          startDate: DateTime(2020, 1, 1),
+          endDate: DateTime(2020, 1, 1),
+          isAutoRefreshEnabled: true,
+        );
+
+        final range = setting.calculateCurrentDateRange();
+
+        expect(range.startDate, isNotNull);
+        expect(range.endDate, isNotNull);
+        expect(range.startDate!.isBefore(range.endDate!), isTrue);
+      });
+
+      test('last_3_months returns correct range', () {
+        final setting = DateFilterSetting.quickSelection(
+          key: 'last_3_months',
+          startDate: DateTime(2020, 1, 1),
+          endDate: DateTime(2020, 1, 1),
+          isAutoRefreshEnabled: true,
+        );
+
+        final range = setting.calculateCurrentDateRange();
+
+        expect(range.startDate, isNotNull);
+        expect(range.endDate, isNotNull);
+        expect(range.startDate!.isBefore(range.endDate!), isTrue);
       });
 
       test('unknown key falls back to static dates', () {
