@@ -291,6 +291,9 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
+      - name: Wait for GitHub release assets to propagate
+        run: sleep 180
+
       - name: Update AUR
         run: ./scripts/update_aur.sh
 
