@@ -127,9 +127,8 @@ class ImportDataMigrationService implements IImportDataMigrationService {
 
   @override
   bool isMigrationNeeded(String sourceVersion) {
-    final currentVersion = SemanticVersion.parse(AppInfo.version);
-
     try {
+      final currentVersion = SemanticVersion.parse(AppInfo.version);
       final sourceSemanticVersion = SemanticVersion.parse(sourceVersion);
 
       // Migration is needed if source version is older than current version

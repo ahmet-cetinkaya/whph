@@ -10,8 +10,13 @@ class DeviceInfoHelper {
   static Future<String> getDeviceName() async {
     try {
       if (Platform.isAndroid) {
-        final androidInfo = await _deviceInfo.androidInfo;
-        String deviceName = '${androidInfo.brand.toUpperCase()} ${androidInfo.model}';
+        final info = await _deviceInfo.deviceInfo;
+        String deviceName;
+        if (info is AndroidDeviceInfo) {
+          deviceName = '${info.brand.toUpperCase()} ${info.model}';
+        } else {
+          deviceName = Platform.localHostname;
+        }
 
         // Check if running in work profile and add (Work) suffix
         try {
@@ -31,8 +36,11 @@ class DeviceInfoHelper {
 
       if (Platform.isLinux) {
         try {
-          final linuxInfo = await _deviceInfo.linuxInfo;
-          return userName != null ? '${linuxInfo.prettyName} ($userName)' : linuxInfo.prettyName;
+          final info = await _deviceInfo.deviceInfo;
+          if (info is LinuxDeviceInfo) {
+            return userName != null ? '${info.prettyName} ($userName)' : info.prettyName;
+          }
+          return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
         } catch (e) {
           Logger.error('Failed to get Linux device info: $e');
           return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
@@ -41,8 +49,11 @@ class DeviceInfoHelper {
 
       if (Platform.isWindows) {
         try {
-          final windowsInfo = await _deviceInfo.windowsInfo;
-          return userName != null ? '${windowsInfo.computerName} ($userName)' : windowsInfo.computerName;
+          final info = await _deviceInfo.deviceInfo;
+          if (info is WindowsDeviceInfo) {
+            return userName != null ? '${info.computerName} ($userName)' : info.computerName;
+          }
+          return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
         } catch (e) {
           Logger.error('Failed to get Windows device info: $e');
           return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
@@ -51,8 +62,11 @@ class DeviceInfoHelper {
 
       if (Platform.isMacOS) {
         try {
-          final macOsInfo = await _deviceInfo.macOsInfo;
-          return userName != null ? '${macOsInfo.computerName} ($userName)' : macOsInfo.computerName;
+          final info = await _deviceInfo.deviceInfo;
+          if (info is MacOsDeviceInfo) {
+            return userName != null ? '${info.computerName} ($userName)' : info.computerName;
+          }
+          return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
         } catch (e) {
           Logger.error('Failed to get macOS device info: $e');
           return userName != null ? '${Platform.localHostname} ($userName)' : Platform.localHostname;
@@ -61,8 +75,11 @@ class DeviceInfoHelper {
 
       if (Platform.isIOS) {
         try {
-          final iosInfo = await _deviceInfo.iosInfo;
-          return iosInfo.name;
+          final info = await _deviceInfo.deviceInfo;
+          if (info is IosDeviceInfo) {
+            return info.name;
+          }
+          return Platform.localHostname;
         } catch (e) {
           Logger.error('Failed to get iOS device info: $e');
           return Platform.localHostname;
