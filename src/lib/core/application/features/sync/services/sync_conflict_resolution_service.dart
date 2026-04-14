@@ -140,16 +140,6 @@ class SyncConflictResolutionService {
       );
     }
 
-    // Safety: Type validation - reject corrupted data with dates too far in future
-    // Threshold of 30 days catches data corruption (e.g., year 2099) while allowing clock skew
-    final thirtyDaysFromNow = DateTime.now().add(const Duration(days: 30));
-    if (remote.createdDate.isAfter(thirtyDaysFromNow)) {
-      throw StateError(
-        'copyRemoteDataToExistingTask: Remote task has suspicious createdDate in future - ${remote.createdDate}. '
-        'This indicates data corruption. [$TaskErrorIds.syncCopyRemoteDataFailed]',
-      );
-    }
-
     // Copy remote data to existing task.
     // Note: copyWith uses sentinel pattern where null means "set to null" and
     // sentinel means "keep existing". Since remoteTask came from a sync source,

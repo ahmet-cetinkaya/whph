@@ -745,8 +745,8 @@ void main() {
         );
       });
 
-      test('should throw StateError on suspicious createdDate in far future', () {
-        // Arrange
+      test('should accept task with createdDate in far future', () {
+        // Arrange - far future dates are now accepted (removed non-deterministic validation)
         final existingTask = Task(
           id: 'task-id',
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
@@ -763,11 +763,12 @@ void main() {
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
 
-        // Act & Assert
-        expect(
-          () => service.copyRemoteDataToExistingTask(existingTask, remoteTask),
-          throwsA(isA<StateError>()),
-        );
+        // Act - should NOT throw (removed DateTime.now() based validation)
+        final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
+
+        // Assert
+        expect(result.id, equals('task-id'));
+        expect(result.createdDate.isAfter(DateTime.now()), isTrue);
       });
 
       test('should throw StateError when completedAt before createdDate', () {
@@ -798,8 +799,8 @@ void main() {
         );
       });
 
-      test('should accept valid task with createdDate within 30 days', () {
-        // Arrange
+      test('should accept task with createdDate in future', () {
+        // Arrange - dates in near future are accepted (clock skew allowed)
         final existingTask = Task(
           id: 'task-id',
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
@@ -816,7 +817,7 @@ void main() {
           priority: EisenhowerPriority.notUrgentNotImportant,
         );
 
-        // Act
+        // Act - should NOT throw
         final result = service.copyRemoteDataToExistingTask(existingTask, remoteTask);
 
         // Assert
