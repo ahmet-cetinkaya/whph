@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/date_range_filter/helpers/quick_date_range_helper.dart';
 import 'package:acore/acore.dart' show QuickDateRange;
@@ -190,19 +191,24 @@ class DateRangeFilterController extends ChangeNotifier {
   }
 
   void _refreshQuickSelection() {
-    final activeQuickSetting = _preservedQuickSelectionSetting ?? _dateFilterSetting;
+    try {
+      final activeQuickSetting = _preservedQuickSelectionSetting ?? _dateFilterSetting;
 
-    if (activeQuickSetting?.isQuickSelection != true) return;
+      if (activeQuickSetting?.isQuickSelection != true) return;
 
-    final currentRange = activeQuickSetting!.calculateCurrentDateRange();
-    final hasChanged = currentRange.startDate != _selectedStartDate || currentRange.endDate != _selectedEndDate;
+      final currentRange = activeQuickSetting!.calculateCurrentDateRange();
+      final hasChanged = currentRange.startDate != _selectedStartDate || currentRange.endDate != _selectedEndDate;
 
-    if (hasChanged) {
-      _selectedStartDate = currentRange.startDate;
-      _selectedEndDate = currentRange.endDate;
-      _dateFilterSetting = activeQuickSetting;
-      _activeQuickSelectionKey = activeQuickSetting.quickSelectionKey;
-      notifyListeners();
+      if (hasChanged) {
+        _selectedStartDate = currentRange.startDate;
+        _selectedEndDate = currentRange.endDate;
+        _dateFilterSetting = activeQuickSetting;
+        _activeQuickSelectionKey = activeQuickSetting.quickSelectionKey;
+        notifyListeners();
+      }
+    } catch (e, stackTrace) {
+      Logger.error('[date_filter_refresh_failed] Auto refresh failed for date filter',
+          component: 'DateRangeFilterController', error: e, stackTrace: stackTrace);
     }
   }
 

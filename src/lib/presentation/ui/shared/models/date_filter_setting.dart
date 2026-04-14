@@ -1,3 +1,6 @@
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+
 /// Represents a date filter setting with support for both quick selections and manual date ranges
 class DateFilterSetting {
   /// Quick selection key (e.g., 'today', 'this_week', null for manual)
@@ -184,13 +187,21 @@ class DateFilterSetting {
         );
 
       case 'up_to_today':
-        final upToTodayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
-        return DateRange(
-          startDate: DateTime(2000, 1, 1), // Same as TaskUiConstants.minFilterDate
-          endDate: upToTodayEnd,
-        );
+        try {
+          final upToTodayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+          return DateRange(
+            startDate: TaskUiConstants.minFilterDate,
+            endDate: upToTodayEnd,
+          );
+        } catch (e, stackTrace) {
+          Logger.error('[date_filter_up_to_today_failed] Failed to calculate up_to_today date range',
+              component: 'DateFilterSetting', error: e, stackTrace: stackTrace);
+          return DateRange(startDate: startDate, endDate: endDate);
+        }
 
       default:
+        Logger.error('[date_filter_unknown_key] Unknown quick selection key: $quickSelectionKey',
+            component: 'DateFilterSetting');
         // Fallback to static dates if unknown key
         return DateRange(startDate: startDate, endDate: endDate);
     }
