@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/date_range_filter/helpers/quick_date_range_helper.dart';
 import 'package:acore/acore.dart' show QuickDateRange;
@@ -168,16 +169,21 @@ class DateRangeFilterController extends ChangeNotifier {
 
       Duration refreshInterval;
       switch (_activeQuickSelectionKey) {
+        // Daily ranges need frequent refresh to handle midnight rollover
         case 'today':
+        case 'up_to_today':
           refreshInterval = const Duration(minutes: 15);
           break;
+        // Weekly ranges change once per week, refresh hourly
         case 'this_week':
           refreshInterval = const Duration(hours: 1);
           break;
+        // Monthly and longer ranges change very infrequently
         case 'this_month':
         case 'this_3_months':
           refreshInterval = const Duration(hours: 4);
           break;
+        // Default fallback for unknown or custom ranges
         default:
           refreshInterval = const Duration(minutes: 30);
       }
@@ -189,19 +195,24 @@ class DateRangeFilterController extends ChangeNotifier {
   }
 
   void _refreshQuickSelection() {
-    final activeQuickSetting = _preservedQuickSelectionSetting ?? _dateFilterSetting;
+    try {
+      final activeQuickSetting = _preservedQuickSelectionSetting ?? _dateFilterSetting;
 
-    if (activeQuickSetting?.isQuickSelection != true) return;
+      if (activeQuickSetting?.isQuickSelection != true) return;
 
-    final currentRange = activeQuickSetting!.calculateCurrentDateRange();
-    final hasChanged = currentRange.startDate != _selectedStartDate || currentRange.endDate != _selectedEndDate;
+      final currentRange = activeQuickSetting!.calculateCurrentDateRange();
+      final hasChanged = currentRange.startDate != _selectedStartDate || currentRange.endDate != _selectedEndDate;
 
-    if (hasChanged) {
-      _selectedStartDate = currentRange.startDate;
-      _selectedEndDate = currentRange.endDate;
-      _dateFilterSetting = activeQuickSetting;
-      _activeQuickSelectionKey = activeQuickSetting.quickSelectionKey;
-      notifyListeners();
+      if (hasChanged) {
+        _selectedStartDate = currentRange.startDate;
+        _selectedEndDate = currentRange.endDate;
+        _dateFilterSetting = activeQuickSetting;
+        _activeQuickSelectionKey = activeQuickSetting.quickSelectionKey;
+        notifyListeners();
+      }
+    } catch (e, stackTrace) {
+      Logger.error('[date_filter_refresh_failed] Auto refresh failed for date filter',
+          component: 'DateRangeFilterController', error: e, stackTrace: stackTrace);
     }
   }
 
