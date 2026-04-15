@@ -47,8 +47,8 @@ void main() {
         expect(firstRange.endDate?.month, now.month);
         expect(firstRange.endDate?.day, now.day);
 
-        // Verify we are not returning the stored static dates
-        expect(firstRange.startDate, isNot(historicStart));
+        // Verify end date is dynamically updated (start date remains stored value)
+        expect(firstRange.startDate, historicStart);
         expect(firstRange.endDate, isNot(historicEnd));
 
         // No static dates are ever returned for dynamic quick selections

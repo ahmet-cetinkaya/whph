@@ -188,11 +188,11 @@ class DateFilterSetting {
 
       case 'up_to_today':
         try {
-          // Includes all items from the beginning of time up to end of current day
+          // Includes all items from the stored start date up to end of current day
           // Used for filtering overdue tasks and all pending items with no future cutoff
           final upToTodayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
           return DateRange(
-            startDate: TaskUiConstants.minFilterDate,
+            startDate: startDate,
             endDate: upToTodayEnd,
           );
         } catch (e, stackTrace) {
