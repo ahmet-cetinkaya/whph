@@ -294,6 +294,26 @@ jobs:
       - name: Wait for GitHub release assets to propagate
         run: sleep 180
 
+      - name: Verify checksums before AUR update
+        run: |
+          TAG_VERSION="${{ needs.release.outputs.tag-version }}"
+          echo "Computing SHA256 for Linux release..."
+          curl -sL "https://github.com/ahmet-cetinkaya/whph/releases/download/v$TAG_VERSION/whph-v$TAG_VERSION-linux.tar.gz" | sha256sum | tee /tmp/computed_hash.txt
+          
+          EXPECTED_HASH=$(grep sha256sums packaging/aur/PKGBUILD | sed "s/sha256sums=('//;s/')//")
+          COMPUTED_HASH=$(awk '{print $1}' /tmp/computed_hash.txt)
+          
+          echo "Expected hash from PKGBUILD: $EXPECTED_HASH"
+          echo "Computed hash from release:     $COMPUTED_HASH"
+          
+          if [[ "$EXPECTED_HASH" == "$COMPUTED_HASH" ]]; then
+            echo "✅ Hash verification PASSED"
+          else
+            echo "❌ Hash mismatch! The AUR will fail to build."
+            echo "This indicates the release was recreated after the PKGBUILD was last updated."
+            exit 1
+          fi
+
       - name: Update AUR
         run: ./scripts/update_aur.sh
 
