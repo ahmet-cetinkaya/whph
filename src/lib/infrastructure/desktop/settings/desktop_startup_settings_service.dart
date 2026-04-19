@@ -11,17 +11,34 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 class DesktopStartupSettingsService implements IStartupSettingsService {
   final ISettingRepository _settingRepository;
 
-  DesktopStartupSettingsService(this._settingRepository) {
-    launchAtStartup.setup(
-      appPath: Platform.resolvedExecutable,
-      appName: AppInfo.name,
-      args: [AppArgs.minimized],
-    );
+  DesktopStartupSettingsService(this._settingRepository);
+
+  bool _setupCompleted = false;
+
+  Future<bool> _ensureSetup() async {
+    if (_setupCompleted) return true;
+    if (!(Platform.isWindows || Platform.isLinux || Platform.isMacOS))
+      return false;
+
+    try {
+      launchAtStartup.setup(
+        appPath: Platform.resolvedExecutable,
+        appName: AppInfo.name,
+        args: [AppArgs.minimized],
+      );
+      _setupCompleted = true;
+      return true;
+    } catch (e) {
+      // Ignore setup errors, startup functionality will be unavailable but app won't crash
+      return false;
+    }
   }
 
   @override
   Future<void> ensureStartupSettingSync() async {
-    final setting = await _settingRepository.getByKey(SettingKeys.startAtStartup);
+    if (!await _ensureSetup()) return;
+    final setting =
+        await _settingRepository.getByKey(SettingKeys.startAtStartup);
     final shouldStart = setting?.value == 'true';
     final isEnabled = await launchAtStartup.isEnabled();
 
@@ -34,18 +51,21 @@ class DesktopStartupSettingsService implements IStartupSettingsService {
 
   @override
   Future<bool> isEnabledAtStartup() async {
-    final setting = await _settingRepository.getByKey(SettingKeys.startAtStartup);
+    final setting =
+        await _settingRepository.getByKey(SettingKeys.startAtStartup);
     return setting?.value == 'true';
   }
 
   @override
   Future<void> enableStartAtStartup() async {
+    if (!await _ensureSetup()) return;
     await launchAtStartup.enable();
     await _saveSetting(true);
   }
 
   Future<void> _saveSetting(bool isActive) async {
-    final existingSetting = await _settingRepository.getByKey(SettingKeys.startAtStartup);
+    final existingSetting =
+        await _settingRepository.getByKey(SettingKeys.startAtStartup);
     if (existingSetting != null) {
       existingSetting.value = isActive.toString();
       await _settingRepository.update(existingSetting);
@@ -62,6 +82,7 @@ class DesktopStartupSettingsService implements IStartupSettingsService {
 
   @override
   Future<void> disableStartAtStartup() async {
+    if (!await _ensureSetup()) return;
     await launchAtStartup.disable();
     await _saveSetting(false);
   }
