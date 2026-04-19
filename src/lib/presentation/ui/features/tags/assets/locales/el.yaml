@@ -218,6 +218,7 @@ tags:
   time_records: Καταγραφές Χρόνου
   title: Ετικέτες
   tooltips:
+    open_details: "Άνοιγμα λεπτομερειών"
     add_tag: Προσθήκη ετικέτας
     add_task: Προσθήκη νέας εργασίας
     archive_tag: Αρχειοθέτηση ετικέτας

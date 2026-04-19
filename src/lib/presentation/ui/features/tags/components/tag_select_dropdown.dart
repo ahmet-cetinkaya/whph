@@ -15,6 +15,7 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_translation_key
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
+import 'package:whph/presentation/ui/features/tags/components/tag_options_dialog.dart';
 import 'package:acore/acore.dart' show SortDirection, SortOption;
 
 class TagSelectDropdown extends StatefulWidget {
@@ -44,7 +45,7 @@ class TagSelectDropdown extends StatefulWidget {
     required this.isMultiSelect,
     this.icon = TagUiConstants.tagIcon,
     this.buttonLabel,
-    this.iconSize = AppTheme.iconSizeMedium,
+    this.iconSize = AppTheme.iconSizeMedium, // Default to Medium for better mobile touch target
     this.color,
     this.tooltip,
     required this.onTagsSelected,
@@ -305,56 +306,59 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                   key: ValueKey('drag_listener_$id'),
                   index: index,
                   child: Padding(
-                      padding: const EdgeInsets.only(right: 4.0),
-                      child: GestureDetector(
-                        onTap: () => _navigateToTagDetails(tag.id),
-                        child: Chip(
-                          visualDensity: VisualDensity.compact,
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          backgroundColor: AppTheme.surface3,
-                          side: BorderSide.none,
-                          label: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                TagUiConstants.getTagTypeIcon(tag.type),
-                                size: AppTheme.iconSizeXSmall,
-                                color: TagUiConstants.getTagColor(tag.color),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                  tag.name.isNotEmpty
-                                      ? tag.name
-                                      : _translationService.translate(SharedTranslationKeys.untitled),
-                                  style: AppTheme.labelSmall),
-                              const SizedBox(width: 4),
-                              GestureDetector(
-                                onTap: () {
-                                  final currentTags = _tags;
-                                  if (currentTags == null) return;
+                    padding: const EdgeInsets.only(right: 4.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final result = await TagOptionsDialog.show(
+                          context: context,
+                          tag: tag,
+                        );
 
-                                  final List<DropdownOption<String>> updatedTags =
-                                      uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
-                                    final tagItem = currentTags.items.firstWhereOrNull((t) => t.id == tagId);
-                                    return DropdownOption(label: tagItem?.name ?? '', value: tagId);
-                                  }).toList();
+                        if (result == null || !mounted) return;
 
-                                  widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
-                                  setState(() {
-                                    _selectedTags.removeWhere((tagId) => tagId == id);
-                                  });
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  size: AppTheme.iconSizeXSmall,
-                                  color: widget.color ?? Theme.of(context).iconTheme.color,
-                                ),
-                              ),
-                            ],
-                          ),
+                        if (result == TagOptionsResult.removeTag) {
+                          final currentTags = _tags;
+                          if (currentTags == null) return;
+
+                          final List<DropdownOption<String>> updatedTags =
+                              uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
+                            final tagItem = currentTags.items.firstWhereOrNull((t) => t.id == tagId);
+                            return DropdownOption(label: tagItem?.name ?? '', value: tagId);
+                          }).toList();
+
+                          widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
+                          setState(() {
+                            _selectedTags.removeWhere((tagId) => tagId == id);
+                          });
+                        } else if (result == TagOptionsResult.openDetails) {
+                          _navigateToTagDetails(tag.id);
+                        }
+                      },
+                      child: Chip(
+                        visualDensity: VisualDensity.compact,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        backgroundColor: AppTheme.surface3,
+                        side: BorderSide.none,
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              TagUiConstants.getTagTypeIcon(tag.type),
+                              size: AppTheme.iconSizeXSmall,
+                              color: TagUiConstants.getTagColor(tag.color),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                                tag.name.isNotEmpty
+                                    ? tag.name
+                                    : _translationService.translate(SharedTranslationKeys.untitled),
+                                style: AppTheme.labelSmall),
+                          ],
                         ),
-                      )),
+                      ),
+                    ),
+                  ),
                 );
               },
             ));
@@ -374,10 +378,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             widget.icon,
             color: widget.color,
           ),
-          iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+          iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
           onPressed: () => _showTagSelectionModal(context),
           tooltip: displayTooltip,
-          style: widget.buttonStyle,
+          style: widget.buttonStyle?.copyWith(
+            minimumSize: WidgetStateProperty.all(const Size(48, 48)),
+          ),
         );
         if (selectedTagNames.isNotEmpty) {
           displayTooltip = selectedTagNames.join(', ');
@@ -396,10 +402,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           widget.icon,
           color: widget.color,
         ),
-        iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+        iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
         onPressed: () => _showTagSelectionModal(context),
         tooltip: displayTooltip,
-        style: widget.buttonStyle,
+        style: widget.buttonStyle?.copyWith(
+          minimumSize: WidgetStateProperty.all(const Size(48, 48)),
+        ),
       );
     }
 
@@ -429,10 +437,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       widget.icon,
                       color: widget.color ?? Theme.of(context).iconTheme.color,
                     ),
-                    iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+                    iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
                     onPressed: () => _showTagSelectionModal(context),
                     tooltip: displayTooltip ?? '',
-                    style: widget.buttonStyle,
+                    style: widget.buttonStyle?.copyWith(
+                      minimumSize: WidgetStateProperty.all(const Size(48, 48)),
+                    ),
                   ),
           ),
         if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
@@ -440,12 +450,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: IconButton(
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
               icon: Icon(
                 widget.icon,
                 color: widget.color ?? Theme.of(context).iconTheme.color,
               ),
-              iconSize: widget.iconSize ?? AppTheme.iconSizeSmall,
+              iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
               onPressed: () => _showTagSelectionModal(context),
               tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
               style: widget.buttonStyle,

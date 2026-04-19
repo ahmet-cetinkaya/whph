@@ -203,6 +203,7 @@ tags:
   time_records: Tidsposter
   title: Merker
   tooltips:
+    open_details: "Åpne detaljer"
     add_tag: Legg til merke
     add_task: Legg til ny oppgave
     archive_tag: Arkivér merke

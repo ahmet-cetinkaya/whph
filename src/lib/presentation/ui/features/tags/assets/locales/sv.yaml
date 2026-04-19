@@ -201,6 +201,7 @@ tags:
   time_records: Tidsregistreringar
   title: Taggar
   tooltips:
+    open_details: "Öppna detaljer"
     add_tag: Lägg till tagg
     add_task: Lägg till ny uppgift
     archive_tag: Arkivera tagg

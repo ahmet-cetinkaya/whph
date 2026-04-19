@@ -1,4 +1,5 @@
 shared:
+  options: Параметры
   buttons:
     add: Добавить
     back: Назад

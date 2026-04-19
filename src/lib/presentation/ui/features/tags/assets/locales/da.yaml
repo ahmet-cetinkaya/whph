@@ -204,6 +204,7 @@ tags:
   time_records: Tidsoptegnelser
   title: Mærker
   tooltips:
+    open_details: "Åbn detaljer"
     add_tag: Tilføj mærke
     add_task: Tilføj ny opgave
     archive_tag: Arkivér mærke

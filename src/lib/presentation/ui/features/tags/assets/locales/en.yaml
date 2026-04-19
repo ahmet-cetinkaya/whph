@@ -204,6 +204,7 @@ tags:
   time_records: Time Records
   title: Tags
   tooltips:
+    open_details: "Open details"
     add_tag: Add tag
     add_task: Add new task
     archive_tag: Archive tag

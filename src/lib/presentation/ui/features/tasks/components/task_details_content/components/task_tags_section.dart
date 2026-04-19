@@ -44,6 +44,7 @@ class TaskTagsSection {
                     value: tag.tagId))
                 .toList(),
             icon: SharedUiConstants.addIcon,
+            iconSize: AppTheme.iconSizeMedium,
           ),
         ),
       );

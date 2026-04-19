@@ -1,4 +1,5 @@
 shared:
+  options: "Options"
   buttons:
     add: Add
     back: Back

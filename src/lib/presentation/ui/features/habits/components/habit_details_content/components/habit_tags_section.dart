@@ -5,6 +5,7 @@ import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdow
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -34,6 +35,7 @@ class HabitTagsSection {
                 .toList() ??
             [],
         icon: SharedUiConstants.addIcon,
+        iconSize: AppTheme.iconSizeMedium,
       ),
     );
   }

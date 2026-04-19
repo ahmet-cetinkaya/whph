@@ -208,6 +208,7 @@ tags:
   time_records: Záznamy času
   title: Štítky
   tooltips:
+    open_details: "Otevřít podrobnosti"
     add_tag: Přidat štítek
     add_task: Přidat nový úkol
     archive_tag: Archivovat štítek

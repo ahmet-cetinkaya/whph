@@ -1,4 +1,5 @@
 shared:
+  options: Seçenekler
   buttons:
     add: Ekle
     back: Geri

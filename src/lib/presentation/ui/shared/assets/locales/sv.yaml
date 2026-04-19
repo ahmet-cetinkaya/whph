@@ -1,4 +1,5 @@
 shared:
+  options: Alternativ
   buttons:
     add: Lägg till
     back: Tillbaka

@@ -189,6 +189,7 @@ tags:
   time_records: 시간 기록
   title: 태그
   tooltips:
+    open_details: "세부 정보 열기"
     add_tag: 태그 추가
     add_task: 새 작업 추가
     archive_tag: 태그 보관

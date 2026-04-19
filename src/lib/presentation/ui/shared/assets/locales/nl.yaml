@@ -1,4 +1,5 @@
 shared:
+  options: Opties
   buttons:
     add: Toevoegen
     back: Terug

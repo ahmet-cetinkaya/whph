@@ -242,6 +242,7 @@ tags:
   time_records: Zeitaufzeichnungen
   title: Tags
   tooltips:
+    open_details: "Details anzeigen"
     add_tag: Tag hinzufügen
     add_task: Neue Aufgabe hinzufügen
     archive_tag: Tag archivieren

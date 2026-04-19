@@ -236,6 +236,7 @@ tags:
   time_records: Enregistrements de temps
   title: Tags
   tooltips:
+    open_details: "Ouvrir les détails"
     add_tag: Ajouter un tag
     add_task: Ajouter une nouvelle tâche
     archive_tag: Archiver le tag

@@ -1,4 +1,5 @@
 shared:
+  options: オプション
   buttons:
     add: 追加
     back: 戻る

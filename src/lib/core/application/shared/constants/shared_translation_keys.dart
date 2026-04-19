@@ -46,4 +46,6 @@ class SharedTranslationKeys {
   static const String shareTaskCreated = 'shared.share.task_created';
   static const String shareNoteCreated = 'shared.share.note_created';
   static const String shareFailedToCreate = 'shared.share.failed_to_create';
+
+  static const String options = 'shared.options';
 }

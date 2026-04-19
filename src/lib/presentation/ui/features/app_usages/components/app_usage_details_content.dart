@@ -470,6 +470,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                                 : _translationService.translate(SharedTranslationKeys.untitled)))
                         .toList(),
                     icon: SharedUiConstants.addIcon,
+                    iconSize: AppTheme.iconSizeMedium,
                   ),
                 ),
 

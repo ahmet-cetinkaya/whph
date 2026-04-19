@@ -1,4 +1,5 @@
 shared:
+  options: Asetukset
   buttons:
     add: Lisää
     back: Takaisin

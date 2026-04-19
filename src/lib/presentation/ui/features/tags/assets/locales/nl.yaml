@@ -210,6 +210,7 @@ tags:
   time_records: Tijdregistraties
   title: Tags
   tooltips:
+    open_details: "Details openen"
     add_tag: Tag toevoegen
     add_task: Nieuwe taak toevoegen
     archive_tag: Tag archiveren

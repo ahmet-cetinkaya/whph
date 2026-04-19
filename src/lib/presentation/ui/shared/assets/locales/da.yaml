@@ -1,4 +1,5 @@
 shared:
+  options: Indstillinger
   buttons:
     add: Tilføj
     back: Tilbage

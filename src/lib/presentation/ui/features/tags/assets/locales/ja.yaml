@@ -184,6 +184,7 @@ tags:
   time_records: 時間記録
   title: タグ
   tooltips:
+    open_details: "詳細を開く"
     add_tag: タグを追加
     add_task: 新しいタスクを追加
     archive_tag: タグをアーカイブ

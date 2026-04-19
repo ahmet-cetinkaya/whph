@@ -232,6 +232,7 @@ tags:
   time_records: Zaman Kayıtları
   title: Etiketler
   tooltips:
+    open_details: "Ayrıntıları aç"
     add_tag: Etiket ekle
     add_task: Yeni görev ekle
     archive_tag: Etiketi arşivle

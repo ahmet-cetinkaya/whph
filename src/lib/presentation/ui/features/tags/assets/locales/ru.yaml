@@ -231,6 +231,7 @@ tags:
   time_records: Записи времени
   title: Теги
   tooltips:
+    open_details: "Открыть детали"
     add_tag: Добавить тег
     add_task: Добавить новую задачу
     archive_tag: Архивировать тег

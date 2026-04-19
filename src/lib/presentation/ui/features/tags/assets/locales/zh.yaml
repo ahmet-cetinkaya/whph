@@ -185,6 +185,7 @@ tags:
   time_records: 时间记录
   title: 标签
   tooltips:
+    open_details: "打开详情"
     add_tag: 添加标签
     add_task: 添加新任务
     archive_tag: 归档标签

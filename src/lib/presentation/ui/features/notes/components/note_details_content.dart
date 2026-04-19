@@ -449,6 +449,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
                             : _translationService.translate(SharedTranslationKeys.untitled)))
                     .toList(),
                 icon: SharedUiConstants.addIcon,
+                iconSize: AppTheme.iconSizeMedium,
               )
             : Container(),
       );

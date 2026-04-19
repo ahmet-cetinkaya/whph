@@ -51,6 +51,7 @@ class TagTranslationKeys extends application.TagTranslationKeys {
   // Tooltips
   static const String colorTooltip = 'tags.tooltips.color';
   static const String selectTooltip = 'tags.tooltips.select';
+  static const String openDetailsTooltip = 'tags.tooltips.open_details';
   static const String addTagTooltip = 'tags.tooltips.add_tag';
   static const String deleteTagTooltip = 'tags.tooltips.delete_tag';
   static const String archiveTagTooltip = 'tags.tooltips.archive_tag';

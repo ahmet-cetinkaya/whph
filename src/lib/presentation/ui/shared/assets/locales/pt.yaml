@@ -1,4 +1,5 @@
 shared:
+  options: Opções
   buttons:
     add: Adicionar
     back: Voltar

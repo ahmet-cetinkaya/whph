@@ -1,4 +1,5 @@
 shared:
+  options: 选项
   buttons:
     add: 添加
     back: 返回

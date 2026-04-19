@@ -209,6 +209,7 @@ tags:
   time_records: Rekordy czasu
   title: Tagi
   tooltips:
+    open_details: "Otwórz szczegóły"
     add_tag: Dodaj tag
     add_task: Dodaj nowe zadanie
     archive_tag: Archiwizuj tag

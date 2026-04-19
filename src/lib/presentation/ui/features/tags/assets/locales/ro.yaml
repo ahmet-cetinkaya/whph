@@ -212,6 +212,7 @@ tags:
   time_records: Înregistrări Timp
   title: Etichete
   tooltips:
+    open_details: "Deschide detalii"
     add_tag: Adăugare etichetă
     add_task: Adăugare sarcină nouă
     archive_tag: Arhivare etichetă

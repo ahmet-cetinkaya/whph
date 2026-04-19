@@ -204,6 +204,7 @@ tags:
   time_records: Aika tallenteet
   title: Tunnisteet
   tooltips:
+    open_details: "Avaa tiedot"
     add_tag: Lisää tunniste
     add_task: Lisää uusi tehtävä
     archive_tag: Arkistoi tunniste
