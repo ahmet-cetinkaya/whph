@@ -17,7 +17,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
   static const String backButton = 'shared.buttons.back';
   static const String confirmDeleteMessage = 'shared.messages.confirm_delete';
   static const String noItemsFoundMessage = 'shared.messages.no_items_found';
-  static const String untitled = 'shared.untitled'; // Added for sl, tr, uk locales
+  static const String untitled = 'shared.untitled';
   static const String requiredValidation = 'shared.validation.required';
   static const String refreshTooltip = 'shared.tooltips.refresh';
   static const String resetTooltip = 'shared.tooltips.reset';
@@ -243,6 +243,7 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
 
   static const String change = 'shared.change';
   static const String configure = 'shared.configure';
+  static const String options = 'shared.options';
 
   // Date Picker Translations
   static const String selectedDateMustBeAtOrAfter = 'shared.datepicker.selected_date_must_be_at_or_after';

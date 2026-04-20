@@ -1,3 +1,4 @@
+import 'package:acore/acore.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Represents a date filter setting with support for both quick selections and manual date ranges
@@ -20,14 +21,27 @@ class DateFilterSetting {
   /// Whether to include items with null dates in the filter results
   final bool includeNullDates;
 
-  const DateFilterSetting({
+  DateFilterSetting({
     this.quickSelectionKey,
     this.startDate,
     this.endDate,
     this.isQuickSelection = false,
     this.isAutoRefreshEnabled = false,
     this.includeNullDates = false,
-  });
+  }) {
+    // Constructor invariants validation
+    if (isQuickSelection && quickSelectionKey == null) {
+      throw ArgumentError('quickSelectionKey must be provided when isQuickSelection is true');
+    }
+
+    if (isAutoRefreshEnabled && !isQuickSelection) {
+      throw ArgumentError('isAutoRefreshEnabled can only be true when isQuickSelection is true');
+    }
+
+    if (!isQuickSelection && startDate == null && endDate == null) {
+      throw ArgumentError('At least one of startDate or endDate must be provided for manual date filters');
+    }
+  }
 
   /// Create a quick selection date filter
   factory DateFilterSetting.quickSelection({
@@ -135,10 +149,8 @@ class DateFilterSetting {
       case 'this_week':
         final daysToSubtract = now.weekday - 1;
         final daysToAdd = 7 - now.weekday;
-        final weekStart =
-            DateTime(now.year, now.month, now.day - daysToSubtract);
-        final weekEnd =
-            DateTime(now.year, now.month, now.day + daysToAdd, 23, 59, 59);
+        final weekStart = DateTime(now.year, now.month, now.day - daysToSubtract);
+        final weekEnd = DateTime(now.year, now.month, now.day + daysToAdd, 23, 59, 59);
         return DateRange(
           startDate: weekStart,
           endDate: weekEnd,
@@ -147,8 +159,7 @@ class DateFilterSetting {
       case 'this_month':
         final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
         final monthStart = DateTime(now.year, now.month, 1);
-        final monthEnd =
-            DateTime(now.year, now.month, lastDayOfMonth.day, 23, 59, 59);
+        final monthEnd = DateTime(now.year, now.month, lastDayOfMonth.day, 23, 59, 59);
         return DateRange(
           startDate: monthStart,
           endDate: monthEnd,
@@ -160,10 +171,8 @@ class DateFilterSetting {
         final endYear = now.year + (endMonth > 12 ? 1 : 0);
         final adjustedEndMonth = endMonth > 12 ? endMonth - 12 : endMonth;
         final lastDayOfEndMonth = DateTime(endYear, adjustedEndMonth + 1, 0);
-        final quarter3Start =
-            DateTime(now.year, now.month - monthsToSubtract, 1);
-        final quarter3End = DateTime(
-            endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
+        final quarter3Start = DateTime(now.year, now.month - monthsToSubtract, 1);
+        final quarter3End = DateTime(endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
         return DateRange(
           startDate: quarter3Start,
           endDate: quarter3End,
@@ -194,27 +203,22 @@ class DateFilterSetting {
         try {
           // Includes all items from the stored start date up to end of current day
           // Used for filtering overdue tasks and all pending items with no future cutoff
-          final upToTodayEnd =
-              DateTime(now.year, now.month, now.day, 23, 59, 59);
+          final upToTodayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
           return DateRange(
             startDate: startDate,
             endDate: upToTodayEnd,
           );
         } catch (e, stackTrace) {
-          Logger.error(
-              '[date_filter_up_to_today_failed] Failed to calculate up_to_today date range',
-              component: 'DateFilterSetting',
-              error: e,
-              stackTrace: stackTrace);
+          Logger.error('[date_filter_up_to_today_failed] Failed to calculate up_to_today date range',
+              component: 'DateFilterSetting', error: e, stackTrace: stackTrace);
           return DateRange(startDate: startDate, endDate: endDate);
         }
 
       default:
-        Logger.error(
-            '[date_filter_unknown_key] Unknown quick selection key: $quickSelectionKey',
-            component: 'DateFilterSetting');
-        // Fallback to static dates if unknown key
-        return DateRange(startDate: startDate, endDate: endDate);
+        const errorCode = 'date_filter.unknown_quick_selection_key';
+        Logger.error('[$errorCode] Unknown quick selection key: $quickSelectionKey', component: 'DateFilterSetting');
+        throw BusinessException('Unknown quick selection filter key: $quickSelectionKey', errorCode,
+            args: {'key': quickSelectionKey ?? 'null'});
     }
   }
 
@@ -232,8 +236,7 @@ class DateFilterSetting {
 
   @override
   int get hashCode {
-    return Object.hash(quickSelectionKey, startDate, endDate, isQuickSelection,
-        isAutoRefreshEnabled, includeNullDates);
+    return Object.hash(quickSelectionKey, startDate, endDate, isQuickSelection, isAutoRefreshEnabled, includeNullDates);
   }
 
   @override
@@ -253,17 +256,21 @@ class DateRange {
   final DateTime? startDate;
   final DateTime? endDate;
 
-  const DateRange({
+  DateRange({
     this.startDate,
     this.endDate,
-  });
+  }) {
+    if (startDate != null && endDate != null) {
+      if (startDate!.isAfter(endDate!)) {
+        throw ArgumentError('startDate must be before or equal to endDate');
+      }
+    }
+  }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is DateRange &&
-        other.startDate == startDate &&
-        other.endDate == endDate;
+    return other is DateRange && other.startDate == startDate && other.endDate == endDate;
   }
 
   @override

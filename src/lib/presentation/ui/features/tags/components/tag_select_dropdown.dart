@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:mediatr/mediatr.dart';
@@ -199,7 +200,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         try {
           final tag = _tags!.items.firstWhere((t) => t.id == tagId);
           label = tag.name;
-        } catch (_) {}
+        } catch (e, stackTrace) {
+          developer.log('Tag not found for id: $tagId', name: 'TagSelectDropdown', error: e, stackTrace: stackTrace);
+          label = 'Unknown tag';
+        }
       }
       return DropdownOption(label: label, value: tagId);
     }).toList();

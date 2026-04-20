@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 
 void main() {
@@ -200,7 +201,7 @@ void main() {
         expect(range.startDate!.isBefore(range.endDate!), isTrue);
       });
 
-      test('unknown key falls back to static dates', () {
+      test('unknown key throws BusinessException', () {
         final start = DateTime(2020, 1, 1);
         final end = DateTime(2020, 12, 31);
 
@@ -211,10 +212,8 @@ void main() {
           isAutoRefreshEnabled: true,
         );
 
-        final range = setting.calculateCurrentDateRange();
-
-        expect(range.startDate, start);
-        expect(range.endDate, end);
+        expect(() => setting.calculateCurrentDateRange(),
+            throwsA(isA<BusinessException>()));
       });
     });
 
