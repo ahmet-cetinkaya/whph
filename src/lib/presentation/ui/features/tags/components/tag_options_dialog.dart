@@ -59,7 +59,7 @@ class TagOptionsDialog extends StatelessWidget {
           children: [
             AppBar(
               automaticallyImplyLeading: false,
-              title: Text(translationService.translate('shared.options')),
+              title: Text(translationService.translate(SharedTranslationKeys.options)),
               actions: [
                 IconButton(
                   icon: const Icon(Icons.close),
