@@ -212,8 +212,7 @@ void main() {
           isAutoRefreshEnabled: true,
         );
 
-        expect(() => setting.calculateCurrentDateRange(),
-            throwsA(isA<BusinessException>()));
+        expect(() => setting.calculateCurrentDateRange(), throwsA(isA<BusinessException>()));
       });
     });
 

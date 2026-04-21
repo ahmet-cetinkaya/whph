@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'dart:developer' as developer;
 import 'package:launch_at_startup/launch_at_startup.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/app_args.dart';
@@ -29,8 +29,8 @@ class DesktopStartupSettingsService implements IStartupSettingsService {
       _setupCompleted = true;
       return true;
     } catch (e, stackTrace) {
-      developer.log('Failed to setup launch at startup',
-          name: 'DesktopStartupSettingsService', error: e, stackTrace: stackTrace);
+      Logger.error('Failed to setup launch at startup',
+          component: 'DesktopStartupSettingsService', error: e, stackTrace: stackTrace);
       return false;
     }
   }
