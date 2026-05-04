@@ -13,6 +13,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -59,8 +60,9 @@ class _AppTimerState extends State<AppTimer> {
     _translationService = container.resolve<ITranslationService>();
     _notificationService = container.resolve<INotificationService>();
     _wakelockService = container.resolve<IWakelockService>();
+    final reminderService = container.resolve<IReminderService>();
 
-    _controller = TimerController(mediator: mediator);
+    _controller = TimerController(mediator: mediator, reminderService: reminderService);
     _soundHelper = TimerSoundHelper(soundManagerService: soundManagerService);
     _systemTrayHelper = TimerSystemTrayHelper(
       systemTrayService: systemTrayService,

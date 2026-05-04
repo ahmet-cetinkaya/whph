@@ -114,6 +114,11 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
     await init();
   }
 
+  @override
+  Future<void> cancelNotification() async {
+    // No-op for desktop - desktop uses system tray, not notifications
+  }
+
   // Private helper methods
   Future<void> _rebuildMenu() async {
     final menu = Menu(

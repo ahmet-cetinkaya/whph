@@ -44,47 +44,37 @@ class DateFilterSetting {
   }) {
     if (isQuickSelection && quickSelectionKey == null) {
       const errorCode = 'date_filter.quick_selection_key_required';
-      Logger.error(
-          '$errorCode: quickSelectionKey must be provided when isQuickSelection is true',
+      Logger.error('$errorCode: quickSelectionKey must be provided when isQuickSelection is true',
           component: 'DateFilterSetting');
-      throw ArgumentError(
-          'quickSelectionKey must be provided when isQuickSelection is true');
+      throw ArgumentError('quickSelectionKey must be provided when isQuickSelection is true');
     }
 
     if (isAutoRefreshEnabled && !isQuickSelection) {
       const errorCode = 'date_filter.auto_refresh_not_allowed';
-      Logger.error(
-          '$errorCode: isAutoRefreshEnabled can only be true when isQuickSelection is true',
+      Logger.error('$errorCode: isAutoRefreshEnabled can only be true when isQuickSelection is true',
           component: 'DateFilterSetting');
-      throw ArgumentError(
-          'isAutoRefreshEnabled can only be true when isQuickSelection is true');
+      throw ArgumentError('isAutoRefreshEnabled can only be true when isQuickSelection is true');
     }
 
     if (!isQuickSelection && startDate == null && endDate == null) {
       const errorCode = 'date_filter.no_dates_provided';
-      Logger.error(
-          '$errorCode: At least one of startDate or endDate must be provided for manual date filters',
+      Logger.error('$errorCode: At least one of startDate or endDate must be provided for manual date filters',
           component: 'DateFilterSetting');
-      throw ArgumentError(
-          'At least one of startDate or endDate must be provided for manual date filters');
+      throw ArgumentError('At least one of startDate or endDate must be provided for manual date filters');
     }
 
     if (isAutoRefreshEnabled && !isQuickSelection) {
       const errorCode = 'date_filter.auto_refresh_not_allowed';
-      Logger.error(
-          '$errorCode: isAutoRefreshEnabled can only be true when isQuickSelection is true',
+      Logger.error('$errorCode: isAutoRefreshEnabled can only be true when isQuickSelection is true',
           component: 'DateFilterSetting');
-      throw ArgumentError(
-          'isAutoRefreshEnabled can only be true when isQuickSelection is true');
+      throw ArgumentError('isAutoRefreshEnabled can only be true when isQuickSelection is true');
     }
 
     if (!isQuickSelection && startDate == null && endDate == null) {
       const errorCode = 'date_filter.no_dates_provided';
-      Logger.error(
-          '$errorCode: At least one of startDate or endDate must be provided for manual date filters',
+      Logger.error('$errorCode: At least one of startDate or endDate must be provided for manual date filters',
           component: 'DateFilterSetting');
-      throw ArgumentError(
-          'At least one of startDate or endDate must be provided for manual date filters');
+      throw ArgumentError('At least one of startDate or endDate must be provided for manual date filters');
     }
 
     return DateFilterSetting._(
@@ -171,16 +161,14 @@ class DateFilterSetting {
     // Fix corrupted persisted data
     if (isQuickSelection && quickSelectionKey == null) {
       const errorCode = 'date_filter_invalid_json';
-      Logger.warning(
-          '$errorCode: Corrupted date filter: isQuickSelection=true without key',
+      Logger.warning('$errorCode: Corrupted date filter: isQuickSelection=true without key',
           component: 'DateFilterSetting');
       isQuickSelection = false;
     }
 
     if (isAutoRefreshEnabled && !isQuickSelection) {
       const errorCode = 'date_filter_invalid_json';
-      Logger.warning(
-          '$errorCode: Corrupted date filter: isAutoRefreshEnabled=true without quick selection',
+      Logger.warning('$errorCode: Corrupted date filter: isAutoRefreshEnabled=true without quick selection',
           component: 'DateFilterSetting');
       isAutoRefreshEnabled = false;
     }
@@ -188,8 +176,7 @@ class DateFilterSetting {
     // Fallback to default if manual filter has no dates
     if (!isQuickSelection && startDate == null && endDate == null) {
       const errorCode = 'date_filter_invalid_json';
-      Logger.warning(
-          '$errorCode: Corrupted date filter: manual filter without dates, falling back to today',
+      Logger.warning('$errorCode: Corrupted date filter: manual filter without dates, falling back to today',
           component: 'DateFilterSetting');
       isQuickSelection = false;
     }
@@ -259,10 +246,8 @@ class DateFilterSetting {
         case 'this_week':
           final daysToSubtract = now.weekday - 1;
           final daysToAdd = 7 - now.weekday;
-          final weekStart =
-              DateTime(now.year, now.month, now.day - daysToSubtract);
-          final weekEnd =
-              DateTime(now.year, now.month, now.day + daysToAdd, 23, 59, 59);
+          final weekStart = DateTime(now.year, now.month, now.day - daysToSubtract);
+          final weekEnd = DateTime(now.year, now.month, now.day + daysToAdd, 23, 59, 59);
           return DateRange(
             startDate: weekStart,
             endDate: weekEnd,
@@ -271,8 +256,7 @@ class DateFilterSetting {
         case 'this_month':
           final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
           final monthStart = DateTime(now.year, now.month, 1);
-          final monthEnd =
-              DateTime(now.year, now.month, lastDayOfMonth.day, 23, 59, 59);
+          final monthEnd = DateTime(now.year, now.month, lastDayOfMonth.day, 23, 59, 59);
           return DateRange(
             startDate: monthStart,
             endDate: monthEnd,
@@ -284,10 +268,8 @@ class DateFilterSetting {
           final endYear = now.year + (endMonth > 12 ? 1 : 0);
           final adjustedEndMonth = endMonth > 12 ? endMonth - 12 : endMonth;
           final lastDayOfEndMonth = DateTime(endYear, adjustedEndMonth + 1, 0);
-          final quarter3Start =
-              DateTime(now.year, now.month - monthsToSubtract, 1);
-          final quarter3End = DateTime(
-              endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
+          final quarter3Start = DateTime(now.year, now.month - monthsToSubtract, 1);
+          final quarter3End = DateTime(endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
           return DateRange(
             startDate: quarter3Start,
             endDate: quarter3End,
@@ -318,38 +300,27 @@ class DateFilterSetting {
           try {
             // Includes all items from the stored start date up to end of current day
             // Used for filtering overdue tasks and all pending items with no future cutoff
-            final upToTodayEnd =
-                DateTime(now.year, now.month, now.day, 23, 59, 59);
+            final upToTodayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
             return DateRange(
               startDate: startDate,
               endDate: upToTodayEnd,
             );
           } catch (e, stackTrace) {
-            Logger.error(
-                '[date_filter_up_to_today_failed] Failed to calculate up_to_today date range',
-                component: 'DateFilterSetting',
-                error: e,
-                stackTrace: stackTrace);
+            Logger.error('[date_filter_up_to_today_failed] Failed to calculate up_to_today date range',
+                component: 'DateFilterSetting', error: e, stackTrace: stackTrace);
             return DateRange(startDate: startDate, endDate: endDate);
           }
 
         default:
           const errorCode = 'date_filter.unknown_quick_selection_key';
-          Logger.error(
-              '$errorCode: Unknown quick selection key: $quickSelectionKey',
-              component: 'DateFilterSetting');
-          throw BusinessException(
-              'Unknown quick selection filter key: $quickSelectionKey',
-              errorCode,
+          Logger.error('$errorCode: Unknown quick selection key: $quickSelectionKey', component: 'DateFilterSetting');
+          throw BusinessException('Unknown quick selection filter key: $quickSelectionKey', errorCode,
               args: {'key': quickSelectionKey ?? 'null'});
       }
     } catch (e, stackTrace) {
       const errorCode = 'date_filter.calculate_range_failed';
-      Logger.error(
-          '$errorCode: Failed to calculate current date range, falling back to today',
-          component: 'DateFilterSetting',
-          error: e,
-          stackTrace: stackTrace);
+      Logger.error('$errorCode: Failed to calculate current date range, falling back to today',
+          component: 'DateFilterSetting', error: e, stackTrace: stackTrace);
 
       // Fallback to safe default today range that will never fail
       final now = DateTime.now();
@@ -374,8 +345,7 @@ class DateFilterSetting {
 
   @override
   int get hashCode {
-    return Object.hash(quickSelectionKey, startDate, endDate, isQuickSelection,
-        isAutoRefreshEnabled, includeNullDates);
+    return Object.hash(quickSelectionKey, startDate, endDate, isQuickSelection, isAutoRefreshEnabled, includeNullDates);
   }
 
   @override
@@ -403,13 +373,9 @@ class DateRange {
     DateTime? finalStart = startDate;
     DateTime? finalEnd = endDate;
 
-    if (finalStart != null &&
-        finalEnd != null &&
-        finalStart.isAfter(finalEnd)) {
+    if (finalStart != null && finalEnd != null && finalStart.isAfter(finalEnd)) {
       const errorCode = 'date_range_reversed';
-      Logger.warning(
-          '$errorCode: startDate is after endDate, automatically swapping values',
-          component: 'DateRange');
+      Logger.warning('$errorCode: startDate is after endDate, automatically swapping values', component: 'DateRange');
       final temp = finalStart;
       finalStart = finalEnd;
       finalEnd = temp;
@@ -423,9 +389,7 @@ class DateRange {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is DateRange &&
-        other.startDate == startDate &&
-        other.endDate == endDate;
+    return other is DateRange && other.startDate == startDate && other.endDate == endDate;
   }
 
   @override
