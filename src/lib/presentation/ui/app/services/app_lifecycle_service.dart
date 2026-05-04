@@ -33,7 +33,9 @@ class AppLifecycleService with WidgetsBindingObserver {
         _cleanupSystemTray();
         break;
       case AppLifecycleState.resumed:
-        _initializeSystemTray();
+        _systemTrayService.cancelNotification().catchError((error) {
+          Logger.error('Error canceling system tray notification: $error', component: 'AppLifecycleService');
+        });
         break;
       case AppLifecycleState.hidden:
         break;
@@ -46,15 +48,6 @@ class AppLifecycleService with WidgetsBindingObserver {
 
     _systemTrayService.destroy().catchError((error) {
       Logger.error('Error cleaning up system tray: $error', component: 'AppLifecycleService');
-    });
-  }
-
-  /// Initialize system tray
-  void _initializeSystemTray() {
-    if (!PlatformUtils.isMobile) return;
-
-    _systemTrayService.init().catchError((error) {
-      Logger.error('Error initializing system tray: $error', component: 'AppLifecycleService');
     });
   }
 }

@@ -25,6 +25,7 @@ abstract class ISystemTrayService {
   // Core methods
   Future<void> init();
   Future<void> destroy();
+  Future<void> cancelNotification();
 
   // Tray/notification functionality
   Future<void> setIcon(TrayIconType type);

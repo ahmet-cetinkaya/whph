@@ -6,13 +6,20 @@ import 'package:whph/core/application/features/settings/queries/get_setting_quer
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 
 /// Controller for timer business logic and state management.
 /// Handles timer lifecycle, settings persistence, and session tracking.
 class TimerController extends ChangeNotifier {
   final Mediator _mediator;
+  final IReminderService _reminderService;
+  static const _timerAlarmId = 'timer_alarm';
 
-  TimerController({required Mediator mediator}) : _mediator = mediator;
+  TimerController({
+    required Mediator mediator,
+    required IReminderService reminderService,
+  })  : _mediator = mediator,
+        _reminderService = reminderService;
 
   // Timer state
   Timer? _timer;
@@ -20,6 +27,7 @@ class TimerController extends ChangeNotifier {
   Duration _elapsedTime = const Duration();
   Duration _sessionTotalElapsed = const Duration();
   Duration _currentWorkSessionElapsed = const Duration();
+  DateTime? _startTimestamp;
 
   bool _isWorking = true;
   bool _isRunning = false;
@@ -171,19 +179,52 @@ class TimerController extends ChangeNotifier {
   }
 
   void _startRegularTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final elapsedIncrement = kDebugMode ? const Duration(minutes: 1) : const Duration(seconds: 1);
+    _startTimestamp = DateTime.now();
+    final initialElapsed = _sessionTotalElapsed;
+    final initialCurrentWorkElapsed = _currentWorkSessionElapsed;
+    final initialStopwatchElapsed = _elapsedTime;
+    final initialRemaining = _remainingTime;
+    final wasWorking = _isWorking;
 
-      if (_timerMode == TimerMode.stopwatch) {
-        _elapsedTime += elapsedIncrement;
+    // Schedule system alarm for exact wake up
+    if (_timerMode != TimerMode.stopwatch) {
+      final alarmTime = _startTimestamp!.add(initialRemaining);
+      _reminderService.scheduleReminder(
+        id: _timerAlarmId,
+        title: 'Zamanlayıcı Tamamlandı',
+        body: 'Zamanlayıcı süresi doldu',
+        scheduledDate: alarmTime,
+      );
+    }
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final now = DateTime.now();
+      Duration elapsedIncrement;
+
+      if (kDebugMode) {
+        // Debug mode: advance 1 minute per tick for fast testing
+        elapsedIncrement = const Duration(minutes: 1) * timer.tick;
       } else {
-        _remainingTime -= elapsedIncrement;
+        elapsedIncrement = now.difference(_startTimestamp!);
+
+        // Guard against clock being adjusted backwards
+        if (elapsedIncrement.isNegative) {
+          _startTimestamp = now;
+          elapsedIncrement = Duration.zero;
+        }
       }
 
-      _sessionTotalElapsed += elapsedIncrement;
+      // Calculate all values using actual wall-clock time difference
+      _sessionTotalElapsed = initialElapsed + elapsedIncrement;
 
-      if (_isWorking) {
-        _currentWorkSessionElapsed += elapsedIncrement;
+      if (wasWorking) {
+        _currentWorkSessionElapsed = initialCurrentWorkElapsed + elapsedIncrement;
+      }
+
+      if (_timerMode == TimerMode.stopwatch) {
+        _elapsedTime = initialStopwatchElapsed + elapsedIncrement;
+      } else {
+        _remainingTime = initialRemaining - elapsedIncrement;
       }
 
       onTick?.call(elapsedIncrement);
@@ -215,6 +256,8 @@ class TimerController extends ChangeNotifier {
   void stopTimer() {
     _timer?.cancel();
     onAlarmStop?.call();
+    _startTimestamp = null;
+    _reminderService.cancelReminder(_timerAlarmId);
 
     _isRunning = false;
     _isAlarmPlaying = false;
@@ -283,6 +326,8 @@ class TimerController extends ChangeNotifier {
       _currentWorkSessionElapsed = Duration.zero;
     }
 
+    _startTimestamp = null;
+    _reminderService.cancelReminder(_timerAlarmId);
     notifyListeners();
     startTimer();
   }
@@ -329,6 +374,7 @@ class TimerController extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
+    _reminderService.cancelReminder(_timerAlarmId);
     super.dispose();
   }
 }

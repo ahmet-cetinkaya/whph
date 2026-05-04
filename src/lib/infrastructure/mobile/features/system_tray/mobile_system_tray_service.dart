@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
@@ -59,6 +60,11 @@ class MobileSystemTrayService implements ISystemTrayService {
   @override
   Future<void> reset() async {
     destroy();
+  }
+
+  @override
+  Future<void> cancelNotification() async {
+    await _notifications.cancel(_notificationId);
   }
 
   // Tray/notification appearance methods
@@ -127,6 +133,14 @@ class MobileSystemTrayService implements ISystemTrayService {
   }
 
   Future<void> _showPersistentNotification() async {
+    // Only show persistent notification when app is in background
+    final lifecycleState = WidgetsBinding.instance.lifecycleState;
+    if (lifecycleState == AppLifecycleState.resumed) {
+      // App is in foreground, cancel any existing notification and don't show
+      await _notifications.cancel(_notificationId);
+      return;
+    }
+
     final List<AndroidNotificationAction> actions = _menuItems.map((item) {
       return AndroidNotificationAction(
         item.key,
