@@ -59,17 +59,10 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
       1000,
     );
 
-    final dayRecords = habitRecords.items
-        .where((record) =>
-            record.habitId == request.habitId &&
-            DateTimeHelper.isSameDay(
-              DateTimeHelper.toLocalDateTime(record.occurredAt),
-              targetDate,
-            ))
-        .toList();
+    final dayRecords = habitRecords.items;
 
     final completeRecords = dayRecords.where((record) => record.status == HabitRecordStatus.complete).toList();
-    final dailyTarget = habit.hasGoal ? (habit.dailyTarget ?? 1) : 1;
+    final dailyTarget = habit.getDailyTarget();
     final isMultiOccurrence = habit.hasGoal && dailyTarget > 1;
 
     await AppDatabase.instance().transaction(() async {
