@@ -38,34 +38,33 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
 
   @override
   Future<CompleteHabitCommandResponse> call(CompleteHabitCommand request) async {
-    final habit = await _habitRepository.getById(request.habitId);
-    if (habit == null) {
-      throw BusinessException(
-        'Habit not found',
-        HabitTranslationKeys.habitNotFoundError,
-        args: {'habitId': request.habitId},
-      );
-    }
-
     final targetDate = DateTimeHelper.toLocalDateTime(request.date);
     final startOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day).toUtc();
     final endOfDay = startOfDay.add(const Duration(days: 1)).subtract(const Duration(microseconds: 1));
 
-    final habitRecords = await _habitRecordRepository.getListByHabitIdAndRangeDate(
-      request.habitId,
-      startOfDay,
-      endOfDay,
-      0,
-      1000,
-    );
-
-    final dayRecords = habitRecords.items;
-
-    final completeRecords = dayRecords.where((record) => record.status == HabitRecordStatus.complete).toList();
-    final dailyTarget = habit.getDailyTarget();
-    final isMultiOccurrence = habit.hasGoal && dailyTarget > 1;
-
     await AppDatabase.instance().transaction(() async {
+      final habit = await _habitRepository.getById(request.habitId);
+      if (habit == null) {
+        throw BusinessException(
+          'Habit not found',
+          HabitTranslationKeys.habitNotFoundError,
+          args: {'habitId': request.habitId},
+        );
+      }
+
+      final habitRecords = await _habitRecordRepository.getListByHabitIdAndRangeDate(
+        request.habitId,
+        startOfDay,
+        endOfDay,
+        0,
+        1000,
+      );
+
+      final dayRecords = habitRecords.items;
+      final completeRecords = dayRecords.where((record) => record.status == HabitRecordStatus.complete).toList();
+      final dailyTarget = habit.getDailyTarget();
+      final isMultiOccurrence = habit.hasGoal && dailyTarget > 1;
+
       if (isMultiOccurrence) {
         await _clearNonCompleteRecords(dayRecords);
 
