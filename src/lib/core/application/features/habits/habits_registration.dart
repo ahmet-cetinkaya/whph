@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
+import 'package:whph/core/application/features/habits/commands/complete_habit_command.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_time_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
@@ -63,6 +64,13 @@ void registerHabitsFeature(
       () => AddHabitRecordCommandHandler(
         habitRecordRepository: habitRecordRepository,
         habitRepository: habitRepository,
+        habitTimeRecordRepository: habitTimeRecordRepository,
+      ),
+    )
+    ..registerHandler<CompleteHabitCommand, CompleteHabitCommandResponse, CompleteHabitCommandHandler>(
+      () => CompleteHabitCommandHandler(
+        habitRepository: habitRepository,
+        habitRecordRepository: habitRecordRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )
