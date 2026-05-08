@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 
-import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
+import 'package:whph/core/application/features/habits/commands/complete_habit_command.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
@@ -43,8 +43,8 @@ abstract class BaseNotificationService implements INotificationService {
     try {
       Logger.info('$componentName: Completing habit from notification: $habitId', component: componentName);
 
-      await mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
-        ToggleHabitCompletionCommand(
+      await mediator.send<CompleteHabitCommand, CompleteHabitCommandResponse>(
+        CompleteHabitCommand(
           habitId: habitId,
           date: DateTime.now(),
         ),
