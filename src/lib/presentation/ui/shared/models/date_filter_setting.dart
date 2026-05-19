@@ -317,6 +317,8 @@ class DateFilterSetting {
           throw BusinessException('Unknown quick selection filter key: $quickSelectionKey', errorCode,
               args: {'key': quickSelectionKey ?? 'null'});
       }
+    } on BusinessException {
+      rethrow;
     } catch (e, stackTrace) {
       const errorCode = 'date_filter.calculate_range_failed';
       Logger.error('$errorCode: Failed to calculate current date range, falling back to today',
