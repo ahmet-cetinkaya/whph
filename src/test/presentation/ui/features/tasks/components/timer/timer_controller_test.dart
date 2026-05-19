@@ -24,6 +24,7 @@ class FakeReminderService implements IReminderService {
     String? payload,
   }) async {
     alarmScheduled = true;
+    alarmCancelled = false; // Reset cancellation flag when new alarm is scheduled
     lastAlarmId = id;
     lastScheduledTime = scheduledDate;
   }

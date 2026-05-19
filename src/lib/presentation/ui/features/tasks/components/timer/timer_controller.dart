@@ -4,6 +4,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
@@ -14,6 +15,7 @@ class TimerController extends ChangeNotifier {
   final Mediator _mediator;
   final IReminderService _reminderService;
   static const _timerAlarmId = 'timer_alarm';
+  static const _timerTickInterval = Duration(seconds: 1);
 
   TimerController({
     required Mediator mediator,
@@ -75,7 +77,7 @@ class TimerController extends ChangeNotifier {
   /// Callbacks for external effects (sounds, notifications, system tray)
   VoidCallback? onTimerStarted;
   void Function(Duration elapsed)? onTimerStopped;
-  void Function(Duration elapsed)? onWorkSessionComplete;
+  void Function(Duration elapsedIncrement)? onWorkSessionComplete;
   void Function(Duration elapsedIncrement)? onTick;
   VoidCallback? onAlarmStart;
   VoidCallback? onAlarmStop;
@@ -126,7 +128,13 @@ class TimerController extends ChangeNotifier {
       );
       if (response == null) return defaultValue;
       return response.getValue<bool>();
-    } catch (_) {
+    } catch (e, stackTrace) {
+      Logger.warning(
+        'Failed to load timer setting "$key", using default: $defaultValue',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return defaultValue;
     }
   }
@@ -138,7 +146,13 @@ class TimerController extends ChangeNotifier {
       );
       if (response == null) return TimerMode.pomodoro;
       return TimerMode.fromString(response.getValue<String>());
-    } catch (_) {
+    } catch (e, stackTrace) {
+      Logger.warning(
+        'Failed to load timer mode setting, using default: pomodoro',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return TimerMode.pomodoro;
     }
   }
@@ -150,18 +164,33 @@ class TimerController extends ChangeNotifier {
       );
       if (response == null) return defaultValue;
       return response.getValue<int>();
-    } catch (_) {
+    } catch (e, stackTrace) {
+      Logger.warning(
+        'Failed to load timer setting "$key", using default: $defaultValue',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return defaultValue;
     }
   }
 
   Future<void> saveSetting(String key, int value) async {
-    final command = SaveSettingCommand(
-      key: key,
-      value: value.toString(),
-      valueType: SettingValueType.int,
-    );
-    await _mediator.send(command);
+    try {
+      final command = SaveSettingCommand(
+        key: key,
+        value: value.toString(),
+        valueType: SettingValueType.int,
+      );
+      await _mediator.send(command);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to save timer setting "$key" with value $value',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
   /// Start the timer
@@ -179,6 +208,9 @@ class TimerController extends ChangeNotifier {
   }
 
   void _startRegularTimer() {
+    // Capture initial state to calculate elapsed time from wall-clock difference.
+    // This approach ensures accuracy regardless of tick frequency or jitter.
+    // Each timer tick computes: elapsed = initial + (now - startTimestamp)
     _startTimestamp = DateTime.now();
     final initialElapsed = _sessionTotalElapsed;
     final initialCurrentWorkElapsed = _currentWorkSessionElapsed;
@@ -186,31 +218,59 @@ class TimerController extends ChangeNotifier {
     final initialRemaining = _remainingTime;
     final wasWorking = _isWorking;
 
-    // Schedule system alarm for exact wake up
+    // Schedule system alarm for exact wake-up (countdown modes only)
+    // Stopwatch mode runs indefinitely and has no natural end point.
+    // Alarm is automatically cancelled when timer stops, pauses, or toggles between work/break.
     if (_timerMode != TimerMode.stopwatch) {
       final alarmTime = _startTimestamp!.add(initialRemaining);
-      _reminderService.scheduleReminder(
-        id: _timerAlarmId,
-        title: 'Zamanlayıcı Tamamlandı',
-        body: 'Zamanlayıcı süresi doldu',
-        scheduledDate: alarmTime,
-      );
+      try {
+        // Note: Hard-coded Turkish text because system alarm must work even if app locale is not loaded
+        _reminderService.scheduleReminder(
+          id: _timerAlarmId,
+          title: 'Zamanlayıcı Tamamlandı',
+          body: 'Zamanlayıcı süresi doldu',
+          scheduledDate: alarmTime,
+        );
+      } catch (e, stackTrace) {
+        Logger.error(
+          'Failed to schedule timer alarm - notification may not fire when timer completes',
+          component: 'TimerController',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
     }
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(_timerTickInterval, (timer) {
       final now = DateTime.now();
       Duration elapsedIncrement;
 
       if (kDebugMode) {
         // Debug mode: advance 1 minute per tick for fast testing
+        // Note: This bypasses wall-clock calculation, so clock adjustment issues won't be tested
         elapsedIncrement = const Duration(minutes: 1) * timer.tick;
       } else {
         elapsedIncrement = now.difference(_startTimestamp!);
 
-        // Guard against clock being adjusted backwards
+        // Guard against clock being adjusted backwards (e.g., user manually changes time, NTP sync)
+        // When detected, we reset the baseline to prevent negative elapsed time.
+        // The timer effectively pauses for the duration of the backward jump.
+        // Note: System alarm is not rescheduled, so timer may complete later than expected.
         if (elapsedIncrement.isNegative) {
           _startTimestamp = now;
           elapsedIncrement = Duration.zero;
+        }
+
+        // Guard against clock being adjusted forward (e.g., user manually changes time, NTP sync)
+        // Allow some slack for normal tick intervals, but detect large jumps
+        final expectedMaxIncrement = Duration(seconds: timer.tick + 2);
+        if (elapsedIncrement > expectedMaxIncrement) {
+          Logger.warning(
+            'Clock adjusted forward, resetting baseline to prevent timer jump',
+            component: 'TimerController',
+          );
+          _startTimestamp = now;
+          elapsedIncrement = Duration(seconds: timer.tick);
         }
       }
 
@@ -257,7 +317,16 @@ class TimerController extends ChangeNotifier {
     _timer?.cancel();
     onAlarmStop?.call();
     _startTimestamp = null;
-    _reminderService.cancelReminder(_timerAlarmId);
+    try {
+      _reminderService.cancelReminder(_timerAlarmId);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to cancel timer alarm',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
 
     _isRunning = false;
     _isAlarmPlaying = false;
@@ -327,7 +396,16 @@ class TimerController extends ChangeNotifier {
     }
 
     _startTimestamp = null;
-    _reminderService.cancelReminder(_timerAlarmId);
+    try {
+      _reminderService.cancelReminder(_timerAlarmId);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to cancel timer alarm during work/break toggle',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
     notifyListeners();
     startTimer();
   }
@@ -346,6 +424,20 @@ class TimerController extends ChangeNotifier {
     required int tickingVolume,
     required int tickingSpeed,
   }) {
+    // Cancel active timer and alarm before applying new settings
+    _timer?.cancel();
+    try {
+      _reminderService.cancelReminder(_timerAlarmId);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to cancel timer alarm during settings update',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+    _startTimestamp = null;
+
     _isWorking = true;
     _isRunning = false;
     _timerMode = timerMode;
@@ -374,7 +466,16 @@ class TimerController extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
-    _reminderService.cancelReminder(_timerAlarmId);
+    try {
+      _reminderService.cancelReminder(_timerAlarmId);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to cancel timer alarm during disposal',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
     super.dispose();
   }
 }
