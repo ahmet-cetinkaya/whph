@@ -96,6 +96,12 @@
         <action android:name="me.ahmetcetinkaya.whph.ALARM_TRIGGERED" />
       </intent-filter>
     </receiver>
+    
+    <!-- Receiver for flutter_local_notifications background actions -->
+    <receiver
+      android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
+      android:exported="false"
+    />
     <!-- Tasks Widget Provider -->
     <receiver android:name=".WhphTasksWidgetProvider" android:exported="true">
       <intent-filter>

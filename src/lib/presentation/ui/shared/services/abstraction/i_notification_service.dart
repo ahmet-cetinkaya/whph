@@ -48,12 +48,28 @@ abstract class INotificationService {
   Future<void> handleNotificationHabitCompletion(String habitId);
 }
 
+class NotificationAction {
+  final String id;
+  final String title;
+  final bool showsUserInterface;
+
+  const NotificationAction({
+    required this.id,
+    required this.title,
+    this.showsUserInterface = true,
+  });
+}
+
 class NotificationOptions {
   final String? actionButtonText;
   final String? channelId;
+  final List<NotificationAction>? actions;
+  final bool ongoing;
 
   const NotificationOptions({
     this.actionButtonText,
     this.channelId,
+    this.actions,
+    this.ongoing = false,
   });
 }

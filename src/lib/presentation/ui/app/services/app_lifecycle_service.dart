@@ -27,8 +27,6 @@ class AppLifecycleService with WidgetsBindingObserver {
     if (!PlatformUtils.isMobile) return;
 
     switch (state) {
-      case AppLifecycleState.paused:
-      case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
         _cleanupSystemTray();
         break;
@@ -37,6 +35,8 @@ class AppLifecycleService with WidgetsBindingObserver {
           Logger.error('Error canceling system tray notification: $error', component: 'AppLifecycleService');
         });
         break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
       case AppLifecycleState.hidden:
         break;
     }

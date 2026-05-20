@@ -269,6 +269,8 @@ tasks:
     actions:
       stop_timer: Pysäytä Ajastin
     notifications:
+      start_break: "Aloita tauko"
+      start_work: "Aloita työ"
       break_completed: Taukotunnus valmis!
       long_break_completed: Pitkä tauko valmis!
       time_remaining_prefix: "Jäljellä oleva aika:"

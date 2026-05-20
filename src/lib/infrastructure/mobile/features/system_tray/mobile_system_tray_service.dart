@@ -3,7 +3,6 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
-import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 
 class MobileSystemTrayService implements ISystemTrayService {
   // Constants
@@ -12,7 +11,7 @@ class MobileSystemTrayService implements ISystemTrayService {
   static const String _notificationChannelName = 'System Tray';
 
   // Private fields
-  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notifications;
   bool _isInitialized = false;
   String _currentTitle = '';
   String _currentBody = '';
@@ -20,24 +19,17 @@ class MobileSystemTrayService implements ISystemTrayService {
   // Additional private fields for menu items
   List<TrayMenuItem> _menuItems = [];
 
+  /// Accepts a shared [FlutterLocalNotificationsPlugin] instance that has
+  /// already been initialized by [MobileNotificationService].
+  /// This avoids a second `.initialize()` call that would overwrite the
+  /// notification service's foreground/background response callbacks.
+  MobileSystemTrayService(this._notifications);
+
   // Core methods
   @override
   Future<void> init() async {
     if (_isInitialized) return;
 
-    const initSettings = InitializationSettings(
-      android: AndroidInitializationSettings(AndroidAppConstants.notificationIcon),
-      iOS: DarwinInitializationSettings(
-        requestAlertPermission: false,
-        requestBadgePermission: false,
-        requestSoundPermission: false,
-      ),
-    );
-
-    await _notifications.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: _handleNotificationAction,
-    );
     await _createNotificationChannel();
 
     _isInitialized = true;
@@ -123,7 +115,7 @@ class MobileSystemTrayService implements ISystemTrayService {
     const androidChannel = AndroidNotificationChannel(
       _notificationChannelId,
       _notificationChannelName,
-      importance: Importance.defaultImportance, // Change from min to defaultImportance
+      importance: Importance.defaultImportance,
       playSound: false,
       enableVibration: false,
     );
@@ -142,11 +134,14 @@ class MobileSystemTrayService implements ISystemTrayService {
       return;
     }
 
-    final List<AndroidNotificationAction> actions = _menuItems.map((item) {
+    final List<AndroidNotificationAction> actions = _menuItems
+        .where((item) => item.label.isNotEmpty) // Filter out separators
+        .map((item) {
       return AndroidNotificationAction(
         item.key,
         item.label,
-        showsUserInterface: true,
+        showsUserInterface: false,
+        cancelNotification: false,
       );
     }).toList();
 
@@ -155,12 +150,11 @@ class MobileSystemTrayService implements ISystemTrayService {
       _notificationChannelName,
       ongoing: true,
       autoCancel: false,
-      importance: Importance.defaultImportance, // Change from min to defaultImportance
-      priority: Priority.high, // Change from low to high
+      importance: Importance.defaultImportance,
+      priority: Priority.high,
       playSound: false,
       enableVibration: false,
       actions: actions,
-      category: AndroidNotificationCategory.progress,
       showWhen: false,
     );
 
@@ -170,16 +164,5 @@ class MobileSystemTrayService implements ISystemTrayService {
       _currentBody,
       NotificationDetails(android: androidDetails),
     );
-  }
-
-  void _handleNotificationAction(NotificationResponse response) {
-    if (response.notificationResponseType == NotificationResponseType.selectedNotification) return;
-
-    final selectedItem = _menuItems.firstWhere(
-      (item) => item.key == response.actionId,
-      orElse: () => TrayMenuItem(key: '', label: ''),
-    );
-
-    selectedItem.onClicked?.call();
   }
 }

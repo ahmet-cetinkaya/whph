@@ -355,6 +355,8 @@ tasks:
     actions:
       stop_timer: Остановить таймер
     notifications:
+      start_break: "Начать перерыв"
+      start_work: "Начать работу"
       break_completed: Сессия перерыва завершена!
       long_break_completed: Длинный перерыв завершён!
       time_remaining_prefix: "Оставшееся время:"

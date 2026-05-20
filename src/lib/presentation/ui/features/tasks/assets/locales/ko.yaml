@@ -323,6 +323,8 @@ tasks:
     actions:
       stop_timer: 타이머 중지
     notifications:
+      start_break: "휴식 시작"
+      start_work: "작업 시작"
       break_completed: 휴식 세션이 완료되었습니다!
       long_break_completed: 긴 휴식이 완료되었습니다!
       time_remaining_prefix: "남은 시간:"

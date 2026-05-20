@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart' as shared;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/ui/shared/services/notification_payload_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/infrastructure/shared/features/notification/base_notification_service.dart';
@@ -13,6 +14,10 @@ class MobileNotificationService extends BaseNotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
   final bool _isAndroid;
   final bool _isIOS;
+
+  /// Exposes the shared plugin instance so [MobileSystemTrayService] can
+  /// reuse it without calling `.initialize()` a second time.
+  FlutterLocalNotificationsPlugin get plugin => _flutterLocalNotifications;
 
   MobileNotificationService(
     super.mediator, {
@@ -30,6 +35,12 @@ class MobileNotificationService extends BaseNotificationService {
         android: AndroidInitializationSettings(AndroidAppConstants.notificationIcon),
         iOS: DarwinInitializationSettings(),
       ),
+      onDidReceiveNotificationResponse: (response) {
+        if (response.actionId != null) {
+          NotificationPayloadService.handleForegroundAction(response.actionId!);
+        }
+      },
+      onDidReceiveBackgroundNotificationResponse: whphBackgroundNotificationHandler,
     );
     await _createNotificationChannels();
   }
@@ -113,6 +124,17 @@ class MobileNotificationService extends BaseNotificationService {
           ? AndroidAppConstants.notificationChannels.habitChannelName
           : AndroidAppConstants.notificationChannels.taskChannelName;
 
+      List<AndroidNotificationAction>? mappedActions;
+      if (options?.actions != null && options!.actions!.isNotEmpty) {
+        mappedActions = options.actions!.map((action) {
+          return AndroidNotificationAction(
+            action.id,
+            action.title,
+            showsUserInterface: action.showsUserInterface,
+          );
+        }).toList();
+      }
+
       notificationDetails = NotificationDetails(
         android: AndroidNotificationDetails(
           effectiveChannelId,
@@ -123,6 +145,9 @@ class MobileNotificationService extends BaseNotificationService {
           enableLights: true,
           enableVibration: true,
           playSound: true,
+          actions: mappedActions,
+          ongoing: options?.ongoing ?? false,
+          autoCancel: !(options?.ongoing ?? false),
         ),
         iOS: const DarwinNotificationDetails(
           presentAlert: true,

@@ -1,10 +1,23 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
+
+@pragma('vm:entry-point')
+void whphBackgroundNotificationHandler(NotificationResponse response) {
+  if (response.actionId != null) {
+    final SendPort? sendPort = IsolateNameServer.lookupPortByName(NotificationPayloadService.actionPortName);
+    if (sendPort != null) {
+      sendPort.send(response.actionId);
+    }
+  }
+}
 
 /// Callback type for handling task completion from notification
 typedef TaskCompletionCallback = Future<void> Function(String taskId);
@@ -14,6 +27,7 @@ typedef HabitCompletionCallback = Future<void> Function(String habitId);
 
 /// Service responsible for handling notification payloads and platform channel communication
 class NotificationPayloadService {
+  static const String actionPortName = 'whph_notification_action_port';
   static const Duration _initialPayloadDelay = Duration(milliseconds: 1500);
   static const Duration _retryDelay = Duration(milliseconds: 500);
   static const Duration _platformHandlerDelay = Duration(milliseconds: 500);
@@ -26,6 +40,27 @@ class NotificationPayloadService {
 
   /// Override for testing purposes to simulate Android platform
   static bool forceAndroid = false;
+
+  static final StreamController<String> _actionStreamController = StreamController<String>.broadcast();
+  static Stream<String> get actionStream => _actionStreamController.stream;
+  static ReceivePort? _actionPort;
+
+  static void setupActionStream() {
+    if (_actionPort != null) return;
+    _actionPort = ReceivePort();
+    IsolateNameServer.removePortNameMapping(actionPortName);
+    IsolateNameServer.registerPortWithName(_actionPort!.sendPort, actionPortName);
+
+    _actionPort!.listen((message) {
+      if (message is String) {
+        _actionStreamController.add(message);
+      }
+    });
+  }
+
+  static void handleForegroundAction(String actionId) {
+    _actionStreamController.add(actionId);
+  }
 
   /// Sets up notification click listener for Android platform
   static void setupNotificationListener(

@@ -264,6 +264,8 @@ tasks:
     notifications:
       break_completed: Break session completed!
       long_break_completed: Long break completed!
+      start_break: "Start Break"
+      start_work: "Start Work"
       time_remaining_prefix: "Time remaining:"
       timer_completed: Timer completed!
       title: Pomodoro Timer

@@ -281,6 +281,8 @@ tasks:
     actions:
       stop_timer: Σταμάτα Χρονόμετρο
     notifications:
+      start_break: "Έναρξη διαλείμματος"
+      start_work: "Έναρξη εργασίας"
       break_completed: Συνεδρία διαλείμματος ολοκληρώθηκε!
       long_break_completed: Μεγάλο διάλειμμα ολοκληρώθηκε!
       time_remaining_prefix: "Υπόλοιπος χρόνος:"

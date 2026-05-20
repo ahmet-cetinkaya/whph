@@ -316,6 +316,8 @@ tasks:
     actions:
       stop_timer: 停止计时器
     notifications:
+      start_break: "开始休息"
+      start_work: "开始工作"
       break_completed: 休息会话已完成！
       long_break_completed: 长休息已完成！
       time_remaining_prefix: 剩余时间：

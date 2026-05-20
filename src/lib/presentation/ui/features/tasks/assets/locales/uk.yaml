@@ -354,6 +354,8 @@ tasks:
     actions:
       stop_timer: Зупинити таймер
     notifications:
+      start_break: "Почати перерву"
+      start_work: "Почати роботу"
       break_completed: Сесія перерви завершена!
       long_break_completed: Довга перерва завершена!
       time_remaining_prefix: "Залишилося часу:"

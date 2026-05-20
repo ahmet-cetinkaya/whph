@@ -277,6 +277,8 @@ tasks:
     actions:
       stop_timer: Oprește Timer
     notifications:
+      start_break: "Începe pauza"
+      start_work: "Începe lucrul"
       break_completed: Sesiune de pauză finalizată!
       long_break_completed: Pauză lungă finalizată!
       time_remaining_prefix: "Timp rămas:"

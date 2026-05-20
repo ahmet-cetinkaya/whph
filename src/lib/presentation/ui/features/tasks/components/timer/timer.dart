@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer_controller.dart';
@@ -13,6 +15,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/ui/shared/services/notification_payload_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
@@ -45,12 +48,30 @@ class _AppTimerState extends State<AppTimer> {
   late final IWakelockService _wakelockService;
   late final INotificationService _notificationService;
   late final ITranslationService _translationService;
+  StreamSubscription<String>? _actionSubscription;
 
   @override
   void initState() {
     super.initState();
     _initializeServices();
     _controller.initializeSettings();
+
+    // Setup action stream for background notification buttons
+    NotificationPayloadService.setupActionStream();
+    _actionSubscription = NotificationPayloadService.actionStream.listen(_handleNotificationAction);
+  }
+
+  void _handleNotificationAction(String actionId) {
+    if (!mounted) return;
+
+    if (actionId == AndroidAppConstants.intentActions.timerStop) {
+      if (_controller.isRunning || _controller.isAlarmPlaying) {
+        _controller.stopTimer();
+      }
+    } else if (actionId == AndroidAppConstants.intentActions.timerStartWork ||
+        actionId == AndroidAppConstants.intentActions.timerStartBreak) {
+      _controller.toggleWorkBreak();
+    }
   }
 
   void _initializeServices() {
@@ -79,6 +100,8 @@ class _AppTimerState extends State<AppTimer> {
     _controller.onTick = _handleTick;
     _controller.onAlarmStart = _handleAlarmStart;
     _controller.onAlarmStop = _handleAlarmStop;
+    _controller.alarmTitle = _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle);
+    _controller.alarmBody = _translationService.translate(TaskTranslationKeys.pomodoroTimerCompleted);
   }
 
   void _handleTimerStarted() {
@@ -149,6 +172,14 @@ class _AppTimerState extends State<AppTimer> {
             ? TaskTranslationKeys.pomodoroLongBreakSessionCompleted
             : TaskTranslationKeys.pomodoroBreakSessionCompleted);
 
+    final actionId = _controller.isWorking
+        ? AndroidAppConstants.intentActions.timerStartBreak
+        : AndroidAppConstants.intentActions.timerStartWork;
+
+    final actionTitle = _controller.isWorking
+        ? _translationService.translate(TaskTranslationKeys.pomodoroStartBreak)
+        : _translationService.translate(TaskTranslationKeys.pomodoroStartWork);
+
     _systemTrayHelper.setCompletionNotification(
       isWorking: _controller.isWorking,
       isLongBreak: _controller.isLongBreak,
@@ -157,11 +188,26 @@ class _AppTimerState extends State<AppTimer> {
     _notificationService.show(
       title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
       body: completionMessage,
+      options: NotificationOptions(
+        actions: [
+          NotificationAction(
+            id: actionId,
+            title: actionTitle,
+            showsUserInterface: false,
+          ),
+          NotificationAction(
+            id: AndroidAppConstants.intentActions.timerStop,
+            title: _translationService.translate(TaskTranslationKeys.pomodoroStopTimer),
+            showsUserInterface: false,
+          ),
+        ],
+      ),
     );
   }
 
   @override
   void dispose() {
+    _actionSubscription?.cancel();
     _soundHelper.dispose();
     _wakelockService.disable();
 

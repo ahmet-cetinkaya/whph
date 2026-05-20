@@ -273,6 +273,8 @@ tasks:
     actions:
       stop_timer: Stop Timer
     notifications:
+      start_break: "Pauze starten"
+      start_work: "Werk starten"
       break_completed: Pauzesessie voltooid!
       long_break_completed: Lange pauze voltooid!
       time_remaining_prefix: "Resterende tijd:"

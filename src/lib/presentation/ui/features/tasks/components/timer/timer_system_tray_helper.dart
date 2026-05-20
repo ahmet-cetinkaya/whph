@@ -1,5 +1,6 @@
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -10,7 +11,7 @@ class TimerSystemTrayHelper {
   final ISystemTrayService _systemTrayService;
   final ITranslationService _translationService;
 
-  static const String _stopTimerMenuKey = 'stop_timer';
+  static final String _stopTimerMenuKey = AndroidAppConstants.intentActions.timerStop;
   static const String _pomodoroTimerSeparatorKey = 'pomodoro_timer_separator';
 
   bool _isTimerMenuAdded = false;

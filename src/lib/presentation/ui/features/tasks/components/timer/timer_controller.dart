@@ -82,6 +82,11 @@ class TimerController extends ChangeNotifier {
   VoidCallback? onAlarmStart;
   VoidCallback? onAlarmStop;
 
+  /// Localized alarm notification text, set by the UI layer.
+  /// Falls back to English defaults when not provided.
+  String alarmTitle = 'Timer Completed';
+  String alarmBody = 'Timer has finished';
+
   int getTimeInSeconds(int value) => value * 60;
 
   int getTotalDurationInSeconds() {
@@ -224,11 +229,10 @@ class TimerController extends ChangeNotifier {
     if (_timerMode != TimerMode.stopwatch) {
       final alarmTime = _startTimestamp!.add(initialRemaining);
       try {
-        // Note: Hard-coded Turkish text because system alarm must work even if app locale is not loaded
         _reminderService.scheduleReminder(
           id: _timerAlarmId,
-          title: 'Zamanlayıcı Tamamlandı',
-          body: 'Zamanlayıcı süresi doldu',
+          title: alarmTitle,
+          body: alarmBody,
           scheduledDate: alarmTime,
         );
       } catch (e, stackTrace) {
