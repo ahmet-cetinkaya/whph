@@ -6,6 +6,7 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 /// Service responsible for managing app lifecycle events
 class AppLifecycleService with WidgetsBindingObserver {
   final ISystemTrayService _systemTrayService;
+  bool _isDisposed = false;
 
   AppLifecycleService(this._systemTrayService);
 
@@ -16,6 +17,8 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   /// Clean up the lifecycle service
   void dispose() {
+    if (_isDisposed) return;
+    _isDisposed = true;
     WidgetsBinding.instance.removeObserver(this);
     _cleanupSystemTray();
   }
@@ -44,6 +47,7 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   /// Clean up system tray notifications
   void _cleanupSystemTray() {
+    if (_isDisposed) return;
     if (!PlatformUtils.isMobile) return;
 
     _systemTrayService.destroy().catchError((error) {

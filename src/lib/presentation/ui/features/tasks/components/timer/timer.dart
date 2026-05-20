@@ -21,12 +21,13 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_serv
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/features/tasks/models/timer_settings.dart';
 
 class AppTimer extends StatefulWidget {
   final void Function(Duration elapsedIncrement)? onTick;
   final VoidCallback? onTimerStart;
-  final Function(Duration)? onTimerStop;
-  final Function(Duration)? onWorkSessionComplete;
+  final void Function(Duration elapsed)? onTimerStop;
+  final void Function(Duration elapsedIncrement)? onWorkSessionComplete;
   final bool isMiniLayout;
 
   const AppTimer({
@@ -117,12 +118,12 @@ class _AppTimerState extends State<AppTimer> {
     );
   }
 
-  void _handleTimerStarted() {
+  Future<void> _handleTimerStarted() async {
     widget.onTimerStart?.call();
     _soundHelper.playControlSound();
-    _systemTrayHelper.setIcon(isWorking: _controller.isWorking);
-    _systemTrayHelper.addMenuItems(onStopTimer: _controller.stopTimer);
-    _updateSystemTrayTimer();
+    await _systemTrayHelper.setIcon(isWorking: _controller.isWorking);
+    await _systemTrayHelper.addMenuItems(onStopTimer: _controller.stopTimer);
+    await _updateSystemTrayTimer();
 
     if (_controller.tickingEnabled) {
       _soundHelper.startTicking(
@@ -137,20 +138,20 @@ class _AppTimerState extends State<AppTimer> {
     }
   }
 
-  void _handleTimerStopped(Duration elapsed) {
+  Future<void> _handleTimerStopped(Duration elapsed) async {
     _soundHelper.stopTicking();
     _soundHelper.stopAll();
     _soundHelper.playControlSound();
     _wakelockService.disable();
-    _systemTrayHelper.resetIcon();
-    _systemTrayHelper.removeMenuItems();
-    _systemTrayHelper.resetToDefault();
+    await _systemTrayHelper.resetIcon();
+    await _systemTrayHelper.removeMenuItems();
+    await _systemTrayHelper.resetToDefault();
     widget.onTimerStop?.call(elapsed);
   }
 
-  void _handleTick(Duration elapsedIncrement) {
+  Future<void> _handleTick(Duration elapsedIncrement) async {
     widget.onTick?.call(elapsedIncrement);
-    _updateSystemTrayTimer();
+    await _updateSystemTrayTimer();
   }
 
   void _handleAlarmStart() {
@@ -163,7 +164,7 @@ class _AppTimerState extends State<AppTimer> {
     _soundHelper.stopAlarm();
   }
 
-  void _updateSystemTrayTimer() {
+  Future<void> _updateSystemTrayTimer() async {
     final timeDisplay = TimerUiHelpers.getDisplayTime(
       context: context,
       timerMode: _controller.timerMode,
@@ -171,7 +172,7 @@ class _AppTimerState extends State<AppTimer> {
       remainingTime: _controller.remainingTime,
     );
 
-    _systemTrayHelper.updateTimerNotification(
+    await _systemTrayHelper.updateTimerNotification(
       isWorking: _controller.isWorking,
       isLongBreak: _controller.isLongBreak,
       timeDisplay: timeDisplay,
@@ -273,7 +274,7 @@ class _AppTimerState extends State<AppTimer> {
     await _controller.saveSetting('long_break_time', longBreakDuration);
     await _controller.saveSetting('sessions_before_long_break', sessionsCount);
 
-    _controller.updateSettings(
+    _controller.updateSettings(TimerSettings(
       timerMode: timerMode,
       workDuration: workDuration,
       breakDuration: breakDuration,
@@ -285,7 +286,7 @@ class _AppTimerState extends State<AppTimer> {
       keepScreenAwake: keepScreenAwake,
       tickingVolume: tickingVolume,
       tickingSpeed: tickingSpeed,
-    );
+    ));
   }
 
   VoidCallback _getButtonAction() {

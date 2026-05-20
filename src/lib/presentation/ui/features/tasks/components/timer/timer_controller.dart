@@ -9,6 +9,8 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
+import 'package:whph/presentation/ui/features/tasks/models/timer_settings.dart';
+import 'package:whph/presentation/ui/features/tasks/components/timer/alarm_cancel_reason.dart';
 
 /// Controller for timer business logic and state management.
 /// Handles timer lifecycle, settings persistence, and session tracking.
@@ -17,6 +19,8 @@ class TimerController extends ChangeNotifier {
   final IReminderService _reminderService;
   static const _timerAlarmId = 'timer_alarm';
   static const _timerTickInterval = Duration(seconds: 1);
+  static const _clockJumpDetectionThreshold = Duration(seconds: 30);
+  static const _secondsPerMinute = 60;
 
   TimerController({
     required Mediator mediator,
@@ -94,15 +98,15 @@ class TimerController extends ChangeNotifier {
   String alarmTitle = 'Timer Completed';
   String alarmBody = 'Timer has finished';
 
-  int getTimeInSeconds(int value) => value * 60;
+  int _minutesToSeconds(int minutes) => minutes * _secondsPerMinute;
 
   int getTotalDurationInSeconds() {
     if (_timerMode == TimerMode.normal) {
-      return getTimeInSeconds(_workDuration);
+      return _minutesToSeconds(_workDuration);
     }
-    if (_isWorking) return getTimeInSeconds(_workDuration);
-    if (_isLongBreak) return getTimeInSeconds(_longBreakDuration);
-    return getTimeInSeconds(_breakDuration);
+    if (_isWorking) return _minutesToSeconds(_workDuration);
+    if (_isLongBreak) return _minutesToSeconds(_longBreakDuration);
+    return _minutesToSeconds(_breakDuration);
   }
 
   /// Initialize timer settings from persistence
@@ -125,7 +129,7 @@ class TimerController extends ChangeNotifier {
       await saveSetting(SettingKeys.tickingVolume, _tickingVolume);
     }
 
-    _remainingTime = Duration(seconds: getTimeInSeconds(_workDuration));
+    _remainingTime = Duration(seconds: _minutesToSeconds(_workDuration));
     _elapsedTime = const Duration();
     _isLongBreak = false;
     _completedSessions = 0;
@@ -207,12 +211,12 @@ class TimerController extends ChangeNotifier {
     }
   }
 
-  Future<void> _cancelAlarm(String debugContext) async {
+  Future<void> _cancelAlarm(AlarmCancelReason reason) async {
     try {
       await _reminderService.cancelReminder(_timerAlarmId);
     } catch (e, stackTrace) {
       Logger.error(
-        'Failed to cancel timer alarm during $debugContext',
+        'Failed to cancel timer alarm during $reason',
         component: 'TimerController',
         error: e,
         stackTrace: stackTrace,
@@ -233,7 +237,11 @@ class TimerController extends ChangeNotifier {
       _currentWorkSessionElapsed = const Duration();
     }
 
-    onTimerStarted?.call();
+    try {
+      onTimerStarted?.call();
+    } catch (e, stackTrace) {
+      Logger.error('onTimerStarted callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+    }
 
     _isRunning = true;
     _startRegularTimer();
@@ -294,9 +302,8 @@ class TimerController extends ChangeNotifier {
         }
 
         // Guard against clock being adjusted forward (e.g., user manually changes time, NTP sync)
-        // Use a stable 30s threshold to detect real clock jumps while allowing normal operation
-        final expectedMaxIncrement = const Duration(seconds: 30);
-        if (elapsedIncrement > expectedMaxIncrement) {
+        // Use a stable threshold to detect real clock jumps while allowing normal operation
+        if (elapsedIncrement > _clockJumpDetectionThreshold) {
           Logger.warning(
             'Clock adjusted forward, resetting baseline to prevent timer jump',
             component: 'TimerController',
@@ -306,7 +313,7 @@ class TimerController extends ChangeNotifier {
           initialCurrentWorkElapsed = _currentWorkSessionElapsed;
           initialStopwatchElapsed = _elapsedTime;
           initialRemaining = _remainingTime;
-          elapsedIncrement = Duration(seconds: timer.tick);
+          elapsedIncrement = Duration.zero;
         }
 
         // Calculate all values using actual wall-clock time difference
@@ -325,14 +332,24 @@ class TimerController extends ChangeNotifier {
         final tickDelta = _sessionTotalElapsed - previousTotalElapsed;
         previousTotalElapsed = _sessionTotalElapsed;
 
-        onTick?.call(tickDelta);
+        try {
+          onTick?.call(tickDelta);
+        } catch (e, stackTrace) {
+          Logger.error('onTick callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+        }
         notifyListeners();
 
         // Check if countdown timer modes should finish
         if (_timerMode != TimerMode.stopwatch && _remainingTime.inSeconds <= 0) {
           _timer?.cancel();
           _isRunning = false;
-          onAlarmStart?.call();
+          _cancelAlarm(AlarmCancelReason.naturalCompletion);
+          try {
+            onAlarmStart?.call();
+          } catch (e, stackTrace) {
+            Logger.error('onAlarmStart callback failed',
+                component: 'TimerController', error: e, stackTrace: stackTrace);
+          }
           _isAlarmPlaying = true;
           notifyListeners();
 
@@ -340,8 +357,17 @@ class TimerController extends ChangeNotifier {
           if (_timerMode == TimerMode.pomodoro) {
             if ((_isWorking && _autoStartBreak) || (!_isWorking && _autoStartWork)) {
               Future.delayed(const Duration(seconds: 3), () {
-                if (_isAlarmPlaying) {
-                  toggleWorkBreak();
+                try {
+                  if (_isAlarmPlaying) {
+                    toggleWorkBreak();
+                  }
+                } catch (e, stackTrace) {
+                  Logger.error(
+                    'Auto-start next session failed',
+                    component: 'TimerController',
+                    error: e,
+                    stackTrace: stackTrace,
+                  );
                 }
               });
             }
@@ -356,7 +382,7 @@ class TimerController extends ChangeNotifier {
         );
         _timer?.cancel();
         _isRunning = false;
-        _cancelAlarm('periodic tick error');
+        _cancelAlarm(AlarmCancelReason.periodicTickError);
         notifyListeners();
       }
     });
@@ -366,7 +392,7 @@ class TimerController extends ChangeNotifier {
   void pauseTimer() {
     _timer?.cancel();
     _startTimestamp = null;
-    _cancelAlarm('pause');
+    _cancelAlarm(AlarmCancelReason.pause);
 
     _isRunning = false;
     notifyListeners();
@@ -375,9 +401,13 @@ class TimerController extends ChangeNotifier {
   /// Stop the timer
   void stopTimer() {
     _timer?.cancel();
-    onAlarmStop?.call();
+    try {
+      onAlarmStop?.call();
+    } catch (e, stackTrace) {
+      Logger.error('onAlarmStop callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+    }
     _startTimestamp = null;
-    _cancelAlarm('stop');
+    _cancelAlarm(AlarmCancelReason.stop);
 
     _isRunning = false;
     _isAlarmPlaying = false;
@@ -392,18 +422,26 @@ class TimerController extends ChangeNotifier {
         _completedSessions = 0;
         _isLongBreak = false;
       }
-      _remainingTime = Duration(seconds: getTimeInSeconds(_workDuration));
+      _remainingTime = Duration(seconds: _minutesToSeconds(_workDuration));
     }
 
     _currentWorkSessionElapsed = Duration.zero;
 
-    onTimerStopped?.call(_sessionTotalElapsed);
+    try {
+      onTimerStopped?.call(_sessionTotalElapsed);
+    } catch (e, stackTrace) {
+      Logger.error('onTimerStopped callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+    }
     notifyListeners();
   }
 
   /// Toggle between work and break (for Pomodoro mode)
   void toggleWorkBreak() {
-    onAlarmStop?.call();
+    try {
+      onAlarmStop?.call();
+    } catch (e, stackTrace) {
+      Logger.error('onAlarmStop callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+    }
     _isAlarmPlaying = false;
 
     if (_timerMode == TimerMode.stopwatch) {
@@ -414,7 +452,7 @@ class TimerController extends ChangeNotifier {
     }
 
     if (_timerMode == TimerMode.normal) {
-      _remainingTime = Duration(seconds: getTimeInSeconds(_workDuration));
+      _remainingTime = Duration(seconds: _minutesToSeconds(_workDuration));
       notifyListeners();
       startTimer();
       return;
@@ -422,7 +460,12 @@ class TimerController extends ChangeNotifier {
 
     // Pass the current work session duration when work completes
     if (_isWorking && _currentWorkSessionElapsed > Duration.zero) {
-      onWorkSessionComplete?.call(_currentWorkSessionElapsed);
+      try {
+        onWorkSessionComplete?.call(_currentWorkSessionElapsed);
+      } catch (e, stackTrace) {
+        Logger.error('onWorkSessionComplete callback failed',
+            component: 'TimerController', error: e, stackTrace: stackTrace);
+      }
     }
 
     if (_isWorking) {
@@ -435,62 +478,51 @@ class TimerController extends ChangeNotifier {
       }
 
       _remainingTime = Duration(
-        seconds: getTimeInSeconds(_isLongBreak ? _longBreakDuration : _breakDuration),
+        seconds: _minutesToSeconds(_isLongBreak ? _longBreakDuration : _breakDuration),
       );
 
       _currentWorkSessionElapsed = Duration.zero;
     } else {
       _isWorking = true;
       _isLongBreak = false;
-      _remainingTime = Duration(seconds: getTimeInSeconds(_workDuration));
+      _remainingTime = Duration(seconds: _minutesToSeconds(_workDuration));
       _currentWorkSessionElapsed = Duration.zero;
     }
 
     _startTimestamp = null;
-    _cancelAlarm('work/break toggle');
+    _cancelAlarm(AlarmCancelReason.workBreakToggle);
     notifyListeners();
     startTimer();
   }
 
   /// Update settings from dialog
-  void updateSettings({
-    required TimerMode timerMode,
-    required int workDuration,
-    required int breakDuration,
-    required int longBreakDuration,
-    required int sessionsCount,
-    required bool autoStartBreak,
-    required bool autoStartWork,
-    required bool tickingEnabled,
-    required bool keepScreenAwake,
-    required int tickingVolume,
-    required int tickingSpeed,
-  }) {
+  void updateSettings(TimerSettings settings) {
     // Cancel active timer and alarm before applying new settings
     _timer?.cancel();
-    _cancelAlarm('settings update');
+    _cancelAlarm(AlarmCancelReason.settingsUpdate);
     _startTimestamp = null;
 
     _isWorking = true;
     _isRunning = false;
-    _timerMode = timerMode;
-    _workDuration = workDuration;
-    _breakDuration = breakDuration;
-    _longBreakDuration = longBreakDuration;
-    _sessionsCount = sessionsCount;
-    _autoStartBreak = autoStartBreak;
-    _autoStartWork = autoStartWork;
-    _tickingEnabled = tickingEnabled;
-    _keepScreenAwake = keepScreenAwake;
-    _tickingVolume = tickingVolume;
-    _tickingSpeed = tickingSpeed;
+    _isAlarmPlaying = false;
+    _timerMode = settings.timerMode;
+    _workDuration = settings.workDuration;
+    _breakDuration = settings.breakDuration;
+    _longBreakDuration = settings.longBreakDuration;
+    _sessionsCount = settings.sessionsCount;
+    _autoStartBreak = settings.autoStartBreak;
+    _autoStartWork = settings.autoStartWork;
+    _tickingEnabled = settings.tickingEnabled;
+    _keepScreenAwake = settings.keepScreenAwake;
+    _tickingVolume = settings.tickingVolume;
+    _tickingSpeed = settings.tickingSpeed;
     _isLongBreak = false;
     _completedSessions = 0;
 
     if (_timerMode == TimerMode.stopwatch) {
       _elapsedTime = const Duration();
     } else {
-      _remainingTime = Duration(seconds: getTimeInSeconds(_workDuration));
+      _remainingTime = Duration(seconds: _minutesToSeconds(_workDuration));
     }
 
     notifyListeners();
@@ -499,7 +531,7 @@ class TimerController extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
-    _cancelAlarm('disposal');
+    _cancelAlarm(AlarmCancelReason.disposal);
     super.dispose();
   }
 }

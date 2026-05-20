@@ -15,7 +15,7 @@ import androidx.core.app.NotificationManagerCompat
 import org.json.JSONObject
 
 class NotificationHelper(private val context: Context) {
-  @Suppress("PropertyNaming") private val TAG = "NotificationHelper"
+  private val tag = "NotificationHelper"
 
   init {
     createNotificationChannels()
@@ -26,48 +26,46 @@ class NotificationHelper(private val context: Context) {
       val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-      val taskChannel =
-        NotificationChannel(
-            Constants.NotificationChannels.TASK_CHANNEL_ID,
-            Constants.NotificationChannels.TASK_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_HIGH,
-          )
-          .apply {
-            description = "Notifications for task reminders"
-            enableLights(true)
-            lightColor = Color.RED
-            enableVibration(true)
-            setSound(
-              RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-              AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build(),
-            )
-          }
-      notificationManager.createNotificationChannel(taskChannel)
+      createNotificationChannel(
+        notificationManager,
+        Constants.NotificationChannels.TASK_CHANNEL_ID,
+        Constants.NotificationChannels.TASK_CHANNEL_NAME,
+        "Notifications for task reminders",
+        Color.RED,
+      )
 
-      val habitChannel =
-        NotificationChannel(
-            Constants.NotificationChannels.HABIT_CHANNEL_ID,
-            Constants.NotificationChannels.HABIT_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_HIGH,
-          )
-          .apply {
-            description = "Notifications for habit reminders"
-            enableLights(true)
-            lightColor = Color.BLUE
-            enableVibration(true)
-            setSound(
-              RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-              AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build(),
-            )
-          }
-      notificationManager.createNotificationChannel(habitChannel)
+      createNotificationChannel(
+        notificationManager,
+        Constants.NotificationChannels.HABIT_CHANNEL_ID,
+        Constants.NotificationChannels.HABIT_CHANNEL_NAME,
+        "Notifications for habit reminders",
+        Color.BLUE,
+      )
     }
+  }
+
+  private fun createNotificationChannel(
+    notificationManager: NotificationManager,
+    channelId: String,
+    channelName: String,
+    description: String,
+    lightColor: Int,
+  ) {
+    val channel =
+      NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
+        this.description = description
+        enableLights(true)
+        lightColor = lightColor
+        enableVibration(true)
+        setSound(
+          RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+          AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build(),
+        )
+      }
+    notificationManager.createNotificationChannel(channel)
   }
 
   fun showNotification(
@@ -76,35 +74,30 @@ class NotificationHelper(private val context: Context) {
     body: String,
     payload: String?,
     actionButtonText: String? = null,
-  ) {
+  ): Boolean {
     Log.d(
-      TAG,
+      tag,
       "Showing notification with ID: $id, Title: $title, Payload: $payload, ActionText: $actionButtonText",
     )
 
-    // Create an explicit intent to launch MainActivity
-    // Use the specific action we defined in the AndroidManifest
     val activityIntent =
       Intent(context, MainActivity::class.java).apply {
         action = Constants.IntentActions.NOTIFICATION_CLICK
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
 
-        // Add the payload as an extra
         if (payload != null) {
           putExtra(Constants.IntentExtras.NOTIFICATION_PAYLOAD, payload)
 
-          // For detailed debugging purposes
           try {
             val jsonPayload = JSONObject(payload)
-            Log.d(TAG, "Payload route: ${jsonPayload.optString("route")}")
-            Log.d(TAG, "Payload arguments: ${jsonPayload.optJSONObject("arguments")}")
+            Log.d(tag, "Payload route: ${jsonPayload.optString("route")}")
+            Log.d(tag, "Payload arguments: ${jsonPayload.optJSONObject("arguments")}")
           } catch (e: Exception) {
-            Log.d(TAG, "Non-JSON payload or parsing error: ${e.message}")
+            Log.d(tag, "Non-JSON payload or parsing error: ${e.message}")
           }
         }
       }
 
-    // Create a PendingIntent with a unique request code per notification ID
     val pendingIntent =
       PendingIntent.getActivity(
         context,
@@ -113,57 +106,10 @@ class NotificationHelper(private val context: Context) {
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
       )
 
-    // Determine the correct notification channel
-    val channelId =
-      if (payload?.contains("habitId") == true || payload?.contains("/habits") == true) {
-        Constants.NotificationChannels.HABIT_CHANNEL_ID
-      } else {
-        Constants.NotificationChannels.TASK_CHANNEL_ID
-      }
+    val channelId = resolveNotificationChannel(payload)
 
-    // Extract taskId from payload for action button (only for task notifications)
-    val taskId = extractEntityId(payload, "taskId")
-    val isTaskNotification =
-      channelId == Constants.NotificationChannels.TASK_CHANNEL_ID && taskId != null
+    val completePendingIntent = buildCompleteAction(payload, channelId)
 
-    // Extract habitId from payload for action button
-    val habitId = extractEntityId(payload, "habitId")
-    val isHabitNotification =
-      channelId == Constants.NotificationChannels.HABIT_CHANNEL_ID && habitId != null
-
-    // Create complete action intent (only for task or habit notifications)
-    val completePendingIntent =
-      if (isTaskNotification) {
-        val completeIntent =
-          Intent(context, NotificationReceiver::class.java).apply {
-            action = Constants.IntentActions.TASK_COMPLETE_ACTION
-            putExtra(Constants.IntentExtras.TASK_ID, taskId)
-            putExtra(Constants.IntentExtras.NOTIFICATION_ID, id)
-          }
-        PendingIntent.getBroadcast(
-          context,
-          id + 1000, // Unique request code for action
-          completeIntent,
-          PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-      } else if (isHabitNotification) {
-        val completeIntent =
-          Intent(context, NotificationReceiver::class.java).apply {
-            action = Constants.IntentActions.HABIT_COMPLETE_ACTION
-            putExtra(Constants.IntentExtras.HABIT_ID, habitId)
-            putExtra(Constants.IntentExtras.NOTIFICATION_ID, id)
-          }
-        PendingIntent.getBroadcast(
-          context,
-          id + 2000, // Unique request code for action (different from task)
-          completeIntent,
-          PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-      } else {
-        null
-      }
-
-    // Build the notification
     val builder =
       NotificationCompat.Builder(context, channelId)
         .setSmallIcon(R.drawable.ic_notification)
@@ -175,29 +121,72 @@ class NotificationHelper(private val context: Context) {
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setCategory(NotificationCompat.CATEGORY_REMINDER)
 
-    // Add action button if available
     completePendingIntent?.let {
       val actionLabel =
         actionButtonText ?: context.getString(R.string.notification_action_mark_done)
       builder.addAction(R.drawable.ic_widget_done_all, actionLabel, it)
     }
 
-    try {
-      // Show the notification
+    return try {
       NotificationManagerCompat.from(context).notify(id, builder.build())
-      Log.d(TAG, "Successfully showed notification with ID: $id")
+      Log.d(tag, "Successfully showed notification with ID: $id")
+      true
     } catch (e: SecurityException) {
-      Log.e(TAG, "Failed to show notification: ${e.message}")
+      Log.e(tag, "Failed to show notification: ${e.message}")
+      false
     }
   }
 
-  private fun extractEntityId(payload: String?, key: String): String? {
+  private fun resolveNotificationChannel(payload: String?): String {
+    return if (isHabitPayload(payload)) {
+      Constants.NotificationChannels.HABIT_CHANNEL_ID
+    } else {
+      Constants.NotificationChannels.TASK_CHANNEL_ID
+    }
+  }
+
+  private fun isHabitPayload(payload: String?): Boolean {
+    return payload?.contains("habitId") == true || payload?.contains("/habits") == true
+  }
+
+  private fun buildCompleteAction(payload: String?, channelId: String): PendingIntent? {
+    val taskId = extractPayloadId(payload, "taskId")
+    val habitId = extractPayloadId(payload, "habitId")
+
+    return when {
+      channelId == Constants.NotificationChannels.TASK_CHANNEL_ID && taskId != null ->
+        buildCompleteIntent(Constants.IntentActions.TASK_COMPLETE_ACTION, taskId, idOffset = 1000)
+      channelId == Constants.NotificationChannels.HABIT_CHANNEL_ID && habitId != null ->
+        buildCompleteIntent(Constants.IntentActions.HABIT_COMPLETE_ACTION, habitId, idOffset = 2000)
+      else -> null
+    }
+  }
+
+  private fun buildCompleteIntent(action: String, entityId: String, idOffset: Int): PendingIntent {
+    val completeIntent =
+      Intent(context, NotificationReceiver::class.java).apply {
+        this.action = action
+        putExtra(
+          if (action == Constants.IntentActions.TASK_COMPLETE_ACTION) Constants.IntentExtras.TASK_ID
+          else Constants.IntentExtras.HABIT_ID,
+          entityId,
+        )
+      }
+    return PendingIntent.getBroadcast(
+      context,
+      idOffset,
+      completeIntent,
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+  }
+
+  private fun extractPayloadId(payload: String?, key: String): String? {
     if (payload == null) return null
     return try {
       val jsonPayload = JSONObject(payload)
       jsonPayload.getJSONObject("arguments")?.optString(key)
     } catch (e: Exception) {
-      Log.d(TAG, "Failed to extract $key from payload: ${e.message}")
+      Log.d(tag, "Failed to extract $key from payload: ${e.message}")
       null
     }
   }

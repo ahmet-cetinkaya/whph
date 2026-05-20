@@ -64,6 +64,11 @@ class NotificationPayloadService {
     _actionPort!.listen((message) {
       if (message is String) {
         _actionStreamController.add(message);
+      } else {
+        Logger.warning(
+          'Unexpected message type in notification action port: ${message.runtimeType}',
+          component: 'NotificationPayloadService',
+        );
       }
     });
   }

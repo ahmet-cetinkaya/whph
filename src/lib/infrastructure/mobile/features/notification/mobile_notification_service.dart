@@ -12,8 +12,8 @@ class MobileNotificationService extends BaseNotificationService {
   String get componentName => 'MobileNotificationService';
 
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
-  final bool _isAndroid;
-  final bool _isIOS;
+  final bool _isAndroidPlatform;
+  final bool _isIOSPlatform;
 
   /// Exposes the shared plugin instance so [MobileSystemTrayService] can
   /// reuse it without calling `.initialize()` a second time.
@@ -25,8 +25,8 @@ class MobileNotificationService extends BaseNotificationService {
     bool? isAndroid,
     bool? isIOS,
   })  : _flutterLocalNotifications = flutterLocalNotifications ?? FlutterLocalNotificationsPlugin(),
-        _isAndroid = isAndroid ?? Platform.isAndroid,
-        _isIOS = isIOS ?? Platform.isIOS;
+        _isAndroidPlatform = isAndroid ?? Platform.isAndroid,
+        _isIOSPlatform = isIOS ?? Platform.isIOS;
 
   @override
   Future<void> init() async {
@@ -55,7 +55,7 @@ class MobileNotificationService extends BaseNotificationService {
   }
 
   Future<void> _createNotificationChannels() async {
-    if (!_isAndroid) return;
+    if (!_isAndroidPlatform) return;
 
     try {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
@@ -123,73 +123,80 @@ class MobileNotificationService extends BaseNotificationService {
     final bool? permissionGranted = await _checkPermission();
     if (permissionGranted != true) return;
 
-    // Platform-specific notification details
-    NotificationDetails notificationDetails;
+    try {
+      NotificationDetails notificationDetails;
 
-    if (_isAndroid) {
-      // Use task channel as default if none provided
-      final String effectiveChannelId = options?.channelId ?? AndroidAppConstants.notificationChannels.taskChannelId;
-      final String effectiveChannelName = effectiveChannelId == AndroidAppConstants.notificationChannels.habitChannelId
-          ? AndroidAppConstants.notificationChannels.habitChannelName
-          : AndroidAppConstants.notificationChannels.taskChannelName;
+      if (_isAndroidPlatform) {
+        final String effectiveChannelId = options?.channelId ?? AndroidAppConstants.notificationChannels.taskChannelId;
+        final String effectiveChannelName =
+            effectiveChannelId == AndroidAppConstants.notificationChannels.habitChannelId
+                ? AndroidAppConstants.notificationChannels.habitChannelName
+                : AndroidAppConstants.notificationChannels.taskChannelName;
 
-      List<AndroidNotificationAction>? mappedActions = options?.actions?.map((action) {
-        return AndroidNotificationAction(
-          action.id,
-          action.title,
-          showsUserInterface: action.showsUserInterface,
+        List<AndroidNotificationAction>? mappedActions = options?.actions?.map((action) {
+          return AndroidNotificationAction(
+            action.id,
+            action.title,
+            showsUserInterface: action.showsUserInterface,
+          );
+        }).toList();
+
+        notificationDetails = NotificationDetails(
+          android: AndroidNotificationDetails(
+            effectiveChannelId,
+            effectiveChannelName,
+            importance: Importance.max,
+            priority: Priority.high,
+            channelShowBadge: true,
+            enableLights: true,
+            enableVibration: true,
+            playSound: true,
+            actions: mappedActions,
+            ongoing: options?.ongoing ?? false,
+            autoCancel: !(options?.ongoing ?? false),
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         );
-      }).toList();
+      } else {
+        notificationDetails = const NotificationDetails(
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+        );
+      }
 
-      notificationDetails = NotificationDetails(
-        android: AndroidNotificationDetails(
-          effectiveChannelId,
-          effectiveChannelName,
-          importance: Importance.max,
-          priority: Priority.high,
-          channelShowBadge: true,
-          enableLights: true,
-          enableVibration: true,
-          playSound: true,
-          actions: mappedActions,
-          ongoing: options?.ongoing ?? false,
-          autoCancel: !(options?.ongoing ?? false),
-        ),
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
+      await _flutterLocalNotifications.show(
+        id ?? shared.KeyHelper.generateNumericId(),
+        title,
+        body,
+        notificationDetails,
+        payload: payload,
       );
-    } else {
-      // iOS or other platforms
-      notificationDetails = const NotificationDetails(
-        iOS: DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to show notification',
+        component: 'MobileNotificationService',
+        error: e,
+        stackTrace: stackTrace,
       );
     }
-
-    await _flutterLocalNotifications.show(
-      id ?? shared.KeyHelper.generateNumericId(),
-      title,
-      body,
-      notificationDetails,
-      payload: payload,
-    );
   }
 
   Future<bool?> _checkPermission() async {
-    if (_isAndroid) {
+    if (_isAndroidPlatform) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
           _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
       return await androidImplementation?.requestNotificationsPermission();
     }
 
-    if (_isIOS) {
+    if (_isIOSPlatform) {
       return await _flutterLocalNotifications
           .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
@@ -219,11 +226,11 @@ class MobileNotificationService extends BaseNotificationService {
   @override
   Future<bool> checkPermissionStatus() async {
     // Override platform check if flags are forced (testing)
-    if (!_isAndroid && !_isIOS) {
+    if (!_isAndroidPlatform && !_isIOSPlatform) {
       return true; // Always return true for non-mobile platforms
     }
 
-    if (_isAndroid) {
+    if (_isAndroidPlatform) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
           _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
@@ -231,7 +238,7 @@ class MobileNotificationService extends BaseNotificationService {
       return areNotificationsEnabled ?? false;
     }
 
-    if (_isIOS) {
+    if (_isIOSPlatform) {
       final IOSFlutterLocalNotificationsPlugin? iosImplementation =
           _flutterLocalNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
@@ -246,19 +253,19 @@ class MobileNotificationService extends BaseNotificationService {
   @override
   Future<bool> requestPermission() async {
     // Override platform check if flags are forced (testing)
-    if (!_isAndroid && !_isIOS) {
+    if (!_isAndroidPlatform && !_isIOSPlatform) {
       return true; // Non-mobile platforms don't need explicit permission
     }
 
     bool permissionGranted = false;
 
     try {
-      if (_isAndroid) {
+      if (_isAndroidPlatform) {
         final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
             _flutterLocalNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
         permissionGranted = await androidImplementation?.requestNotificationsPermission() ?? false;
-      } else if (_isIOS) {
+      } else if (_isIOSPlatform) {
         final IOSFlutterLocalNotificationsPlugin? iosImplementation =
             _flutterLocalNotifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
 
