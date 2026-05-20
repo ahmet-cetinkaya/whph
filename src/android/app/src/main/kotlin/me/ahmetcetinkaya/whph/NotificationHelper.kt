@@ -179,7 +179,7 @@ class NotificationHelper(private val context: Context) {
     completePendingIntent?.let {
       val actionLabel =
         actionButtonText ?: context.getString(R.string.notification_action_mark_done)
-      builder.addAction(R.drawable.ic_done_all, actionLabel, it)
+      builder.addAction(R.drawable.ic_widget_done_all, actionLabel, it)
     }
 
     try {

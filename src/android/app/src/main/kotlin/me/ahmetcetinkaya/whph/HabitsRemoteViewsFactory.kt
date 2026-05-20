@@ -63,15 +63,15 @@ class HabitsRemoteViewsFactory(private val context: Context) :
       if (hasGoal && dailyTarget > 1) {
         when {
           currentCompletionCount == 0 -> {
-            views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_check_box_outline)
+            views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_widget_checkbox_empty)
           }
 
           currentCompletionCount < dailyTarget -> {
-            views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_add)
+            views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_widget_add)
           }
 
           currentCompletionCount >= dailyTarget -> {
-            views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_check_box)
+            views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_widget_checkbox_done)
           }
         }
 
@@ -91,9 +91,9 @@ class HabitsRemoteViewsFactory(private val context: Context) :
         }
       } else {
         if (isCompletedToday) {
-          views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_check_box)
+          views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_widget_checkbox_done)
         } else {
-          views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_check_box_outline)
+          views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_widget_checkbox_empty)
         }
         views.setViewVisibility(R.id.habit_progress, View.GONE)
       }
