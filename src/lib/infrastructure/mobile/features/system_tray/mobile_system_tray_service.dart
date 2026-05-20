@@ -3,6 +3,7 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 
 class MobileSystemTrayService implements ISystemTrayService {
   // Constants
@@ -25,7 +26,7 @@ class MobileSystemTrayService implements ISystemTrayService {
     if (_isInitialized) return;
 
     const initSettings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      android: AndroidInitializationSettings(AndroidAppConstants.notificationIcon),
       iOS: DarwinInitializationSettings(
         requestAlertPermission: false,
         requestBadgePermission: false,

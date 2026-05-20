@@ -27,7 +27,7 @@ class MobileNotificationService extends BaseNotificationService {
   Future<void> init() async {
     await _flutterLocalNotifications.initialize(
       const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings(AndroidAppConstants.notificationIcon),
         iOS: DarwinInitializationSettings(),
       ),
     );

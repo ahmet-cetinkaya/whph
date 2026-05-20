@@ -36,4 +36,5 @@
     <color name="widget_checkbox_unchecked">@color/secondary_text_color</color>
     <color name="widget_checkbox_checked">@color/primary_color</color>
     <color name="widget_checkbox_partial">@color/warning_color</color>
+    <color name="widget_icon_inner">#000000</color>
 </resources>

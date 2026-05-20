@@ -9,6 +9,6 @@
         android:translateY="960">
         <path
             android:pathData="M268 -240L42 -466l57 -56 170 170 56 56 -57 56Zm226 0L268 -466l56 -57 170 170 368 -368 56 57 -424 424Zm0 -226l-57 -56 198 -198 57 56 -198 198Z"
-            android:fillColor="#F4D03E" />
+            android:fillColor="@color/widget_text_primary" />
     </group>
 </vector>

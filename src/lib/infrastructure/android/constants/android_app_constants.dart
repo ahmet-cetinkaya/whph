@@ -2,6 +2,9 @@
 class AndroidAppConstants {
   static const String packageName = "me.ahmetcetinkaya.whph";
 
+  /// Default notification icon resource name
+  static const String notificationIcon = '@drawable/ic_notification';
+
   /// Method channel names
   static final channels = _Channels();
 
