@@ -43,3 +43,6 @@ build-dir/
 *.flatpak
 repo/
 .venv/
+
+# Node
+node_modules/

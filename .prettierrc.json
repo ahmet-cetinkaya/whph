@@ -1,4 +1,5 @@
 {
+  "plugins": ["@prettier/plugin-xml"],
   "semi": true,
   "trailingComma": "none",
   "singleQuote": false,
