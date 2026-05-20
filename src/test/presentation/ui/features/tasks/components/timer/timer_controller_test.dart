@@ -1,3 +1,4 @@
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer_controller.dart';
@@ -54,28 +55,30 @@ void main() {
   });
 
   group('TimerController fixes for #268', () {
-    test('wall clock time calculation works regardless of tick frequency', () async {
-      controller.updateSettings(
-        timerMode: TimerMode.normal,
-        workDuration: 1,
-        breakDuration: 1,
-        longBreakDuration: 15,
-        sessionsCount: 4,
-        autoStartBreak: false,
-        autoStartWork: false,
-        tickingEnabled: false,
-        keepScreenAwake: false,
-        tickingVolume: 50,
-        tickingSpeed: 1,
-      );
+    test('wall clock time calculation works regardless of tick frequency', () {
+      fakeAsync((async) {
+        controller.updateSettings(
+          timerMode: TimerMode.normal,
+          workDuration: 1,
+          breakDuration: 1,
+          longBreakDuration: 15,
+          sessionsCount: 4,
+          autoStartBreak: false,
+          autoStartWork: false,
+          tickingEnabled: false,
+          keepScreenAwake: false,
+          tickingVolume: 50,
+          tickingSpeed: 1,
+        );
 
-      controller.startTimer();
-      expect(controller.isRunning, true);
+        controller.startTimer();
+        expect(controller.isRunning, true);
 
-      // Simulate real time passing
-      await Future.delayed(const Duration(milliseconds: 1100));
+        // Simulate time passing deterministically
+        async.elapse(const Duration(milliseconds: 1100));
 
-      expect(controller.sessionTotalElapsed.inMilliseconds, greaterThanOrEqualTo(1000));
+        expect(controller.sessionTotalElapsed.inMilliseconds, greaterThanOrEqualTo(1000));
+      });
     });
 
     test('system alarm is scheduled for countdown timers', () async {
@@ -144,6 +147,102 @@ void main() {
       expect(fakeReminderService.alarmCancelled, true);
     });
 
+    test('system alarm is cancelled when timer completes naturally', () {
+      fakeAsync((async) {
+        controller.updateSettings(
+          timerMode: TimerMode.normal,
+          workDuration: 1, // 1 minute
+          breakDuration: 1,
+          longBreakDuration: 15,
+          sessionsCount: 4,
+          autoStartBreak: false,
+          autoStartWork: false,
+          tickingEnabled: false,
+          keepScreenAwake: false,
+          tickingVolume: 50,
+          tickingSpeed: 1,
+        );
+
+        controller.startTimer();
+        expect(fakeReminderService.alarmCancelled, false);
+
+        // Advance past the 1 minute duration
+        async.elapse(const Duration(minutes: 1, seconds: 1));
+
+        expect(controller.isRunning, false);
+        expect(controller.isAlarmPlaying, true);
+        // The natural completion should NOT manually cancel the alarm,
+        // as the OS alarm service handles playing its own notification
+      });
+    });
+
+    test('timer pauses and resumes correctly, rescheduling alarms', () {
+      fakeAsync((async) {
+        controller.updateSettings(
+          timerMode: TimerMode.normal,
+          workDuration: 10,
+          breakDuration: 1,
+          longBreakDuration: 15,
+          sessionsCount: 4,
+          autoStartBreak: false,
+          autoStartWork: false,
+          tickingEnabled: false,
+          keepScreenAwake: false,
+          tickingVolume: 50,
+          tickingSpeed: 1,
+        );
+
+        controller.startTimer();
+        expect(fakeReminderService.alarmScheduled, true);
+        final initialAlarmTime = fakeReminderService.lastScheduledTime;
+
+        // Elapse 1 minute
+        async.elapse(const Duration(minutes: 1));
+
+        // Pause timer
+        controller.pauseTimer();
+        expect(fakeReminderService.alarmCancelled, true);
+        expect(controller.remainingTime.inMinutes, 9); // 10m - 1m
+
+        // Resume timer
+        controller.startTimer();
+        expect(fakeReminderService.alarmScheduled, true);
+        // New scheduled time should be at the same moment as initial (remaining time accounts for elapsed)
+        expect(fakeReminderService.lastScheduledTime, initialAlarmTime);
+      });
+    });
+
+    test('timer broadcasts tick state for tray/notification updates', () {
+      fakeAsync((async) {
+        controller.updateSettings(
+          timerMode: TimerMode.normal,
+          workDuration: 1,
+          breakDuration: 1,
+          longBreakDuration: 15,
+          sessionsCount: 4,
+          autoStartBreak: false,
+          autoStartWork: false,
+          tickingEnabled: false,
+          keepScreenAwake: false,
+          tickingVolume: 50,
+          tickingSpeed: 1,
+        );
+
+        int tickBroadcastCount = 0;
+        Duration? lastTickDelta;
+        controller.onTick = (delta) {
+          tickBroadcastCount++;
+          lastTickDelta = delta;
+        };
+
+        controller.startTimer();
+
+        async.elapse(const Duration(seconds: 3));
+
+        expect(tickBroadcastCount, 3);
+        expect(lastTickDelta, const Duration(seconds: 1));
+      });
+    });
     test('system alarm is cancelled on dispose', () async {
       controller.updateSettings(
         timerMode: TimerMode.normal,

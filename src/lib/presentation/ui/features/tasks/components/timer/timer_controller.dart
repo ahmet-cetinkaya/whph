@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
@@ -216,12 +217,13 @@ class TimerController extends ChangeNotifier {
     // Capture initial state to calculate elapsed time from wall-clock difference.
     // This approach ensures accuracy regardless of tick frequency or jitter.
     // Each timer tick computes: elapsed = initial + (now - startTimestamp)
-    _startTimestamp = DateTime.now();
-    final initialElapsed = _sessionTotalElapsed;
-    final initialCurrentWorkElapsed = _currentWorkSessionElapsed;
-    final initialStopwatchElapsed = _elapsedTime;
-    final initialRemaining = _remainingTime;
+    _startTimestamp = clock.now();
+    var initialElapsed = _sessionTotalElapsed;
+    var initialCurrentWorkElapsed = _currentWorkSessionElapsed;
+    var initialStopwatchElapsed = _elapsedTime;
+    var initialRemaining = _remainingTime;
     final wasWorking = _isWorking;
+    var previousTotalElapsed = _sessionTotalElapsed;
 
     // Schedule system alarm for exact wake-up (countdown modes only)
     // Stopwatch mode runs indefinitely and has no natural end point.
@@ -246,36 +248,36 @@ class TimerController extends ChangeNotifier {
     }
 
     _timer = Timer.periodic(_timerTickInterval, (timer) {
-      final now = DateTime.now();
-      Duration elapsedIncrement;
+      final now = clock.now();
+      Duration elapsedIncrement = now.difference(_startTimestamp!);
 
-      if (kDebugMode) {
-        // Debug mode: advance 1 minute per tick for fast testing
-        // Note: This bypasses wall-clock calculation, so clock adjustment issues won't be tested
-        elapsedIncrement = const Duration(minutes: 1) * timer.tick;
-      } else {
-        elapsedIncrement = now.difference(_startTimestamp!);
+      // Guard against clock being adjusted backwards (e.g., user manually changes time, NTP sync)
+      // When detected, we reset the baseline to prevent negative elapsed time.
+      // The timer effectively pauses for the duration of the backward jump.
+      // Note: System alarm is not rescheduled, so timer may complete later than expected.
+      if (elapsedIncrement.isNegative) {
+        _startTimestamp = now;
+        initialElapsed = _sessionTotalElapsed;
+        initialCurrentWorkElapsed = _currentWorkSessionElapsed;
+        initialStopwatchElapsed = _elapsedTime;
+        initialRemaining = _remainingTime;
+        elapsedIncrement = Duration.zero;
+      }
 
-        // Guard against clock being adjusted backwards (e.g., user manually changes time, NTP sync)
-        // When detected, we reset the baseline to prevent negative elapsed time.
-        // The timer effectively pauses for the duration of the backward jump.
-        // Note: System alarm is not rescheduled, so timer may complete later than expected.
-        if (elapsedIncrement.isNegative) {
-          _startTimestamp = now;
-          elapsedIncrement = Duration.zero;
-        }
-
-        // Guard against clock being adjusted forward (e.g., user manually changes time, NTP sync)
-        // Allow some slack for normal tick intervals, but detect large jumps
-        final expectedMaxIncrement = Duration(seconds: timer.tick + 2);
-        if (elapsedIncrement > expectedMaxIncrement) {
-          Logger.warning(
-            'Clock adjusted forward, resetting baseline to prevent timer jump',
-            component: 'TimerController',
-          );
-          _startTimestamp = now;
-          elapsedIncrement = Duration(seconds: timer.tick);
-        }
+      // Guard against clock being adjusted forward (e.g., user manually changes time, NTP sync)
+      // Allow some slack for normal tick intervals, but detect large jumps
+      final expectedMaxIncrement = Duration(seconds: timer.tick + 2);
+      if (elapsedIncrement > expectedMaxIncrement) {
+        Logger.warning(
+          'Clock adjusted forward, resetting baseline to prevent timer jump',
+          component: 'TimerController',
+        );
+        _startTimestamp = now;
+        initialElapsed = _sessionTotalElapsed;
+        initialCurrentWorkElapsed = _currentWorkSessionElapsed;
+        initialStopwatchElapsed = _elapsedTime;
+        initialRemaining = _remainingTime;
+        elapsedIncrement = Duration(seconds: timer.tick);
       }
 
       // Calculate all values using actual wall-clock time difference
@@ -291,7 +293,10 @@ class TimerController extends ChangeNotifier {
         _remainingTime = initialRemaining - elapsedIncrement;
       }
 
-      onTick?.call(elapsedIncrement);
+      final tickDelta = _sessionTotalElapsed - previousTotalElapsed;
+      previousTotalElapsed = _sessionTotalElapsed;
+
+      onTick?.call(tickDelta);
       notifyListeners();
 
       // Check if countdown timer modes should finish
@@ -314,6 +319,25 @@ class TimerController extends ChangeNotifier {
         }
       }
     });
+  }
+
+  /// Pause the timer
+  void pauseTimer() {
+    _timer?.cancel();
+    _startTimestamp = null;
+    try {
+      _reminderService.cancelReminder(_timerAlarmId);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to cancel timer alarm on pause',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+
+    _isRunning = false;
+    notifyListeners();
   }
 
   /// Stop the timer

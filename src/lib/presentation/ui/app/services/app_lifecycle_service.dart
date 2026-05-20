@@ -31,7 +31,7 @@ class AppLifecycleService with WidgetsBindingObserver {
         _cleanupSystemTray();
         break;
       case AppLifecycleState.resumed:
-        _systemTrayService.cancelNotification().catchError((error) {
+        _systemTrayService.cancelTrayNotification().catchError((error) {
           Logger.error('Error canceling system tray notification: $error', component: 'AppLifecycleService');
         });
         break;

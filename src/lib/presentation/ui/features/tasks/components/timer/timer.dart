@@ -191,13 +191,13 @@ class _AppTimerState extends State<AppTimer> {
       options: NotificationOptions(
         actions: [
           NotificationAction(
-            id: actionId,
-            title: actionTitle,
+            actionId,
+            actionTitle,
             showsUserInterface: false,
           ),
           NotificationAction(
-            id: AndroidAppConstants.intentActions.timerStop,
-            title: _translationService.translate(TaskTranslationKeys.pomodoroStopTimer),
+            AndroidAppConstants.intentActions.timerStop,
+            _translationService.translate(TaskTranslationKeys.pomodoroStopTimer),
             showsUserInterface: false,
           ),
         ],

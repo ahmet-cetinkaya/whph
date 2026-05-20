@@ -53,11 +53,14 @@ class NotificationAction {
   final String title;
   final bool showsUserInterface;
 
-  const NotificationAction({
-    required this.id,
-    required this.title,
-    this.showsUserInterface = true,
-  });
+  NotificationAction(
+    this.id,
+    this.title, {
+    this.showsUserInterface = false,
+  }) {
+    assert(id.isNotEmpty, 'NotificationAction id cannot be empty');
+    assert(title.isNotEmpty, 'NotificationAction title cannot be empty');
+  }
 }
 
 class NotificationOptions {
@@ -66,10 +69,12 @@ class NotificationOptions {
   final List<NotificationAction>? actions;
   final bool ongoing;
 
-  const NotificationOptions({
+  NotificationOptions({
     this.actionButtonText,
     this.channelId,
-    this.actions,
+    List<NotificationAction>? actions,
     this.ongoing = false,
-  });
+  }) : actions = actions != null ? List.unmodifiable(actions) : null {
+    assert(this.actions == null || this.actions!.length <= 3, 'Maximum 3 actions allowed for notifications');
+  }
 }

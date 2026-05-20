@@ -137,7 +137,7 @@ void main() {
         await service.show(
           title: 'Habit',
           body: 'Done',
-          options: const NotificationOptions(
+          options: NotificationOptions(
             channelId: 'whph_habit_reminders',
           ),
         );

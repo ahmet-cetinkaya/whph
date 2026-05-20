@@ -11,11 +11,25 @@ import 'package:whph/infrastructure/shared/features/notification/abstractions/i_
 
 @pragma('vm:entry-point')
 void whphBackgroundNotificationHandler(NotificationResponse response) {
-  if (response.actionId != null) {
-    final SendPort? sendPort = IsolateNameServer.lookupPortByName(NotificationPayloadService.actionPortName);
-    if (sendPort != null) {
-      sendPort.send(response.actionId);
+  try {
+    if (response.actionId != null) {
+      final SendPort? sendPort = IsolateNameServer.lookupPortByName(NotificationPayloadService.actionPortName);
+      if (sendPort != null) {
+        sendPort.send(response.actionId);
+      } else {
+        Logger.warning(
+          'whphBackgroundNotificationHandler: No SendPort found for ${NotificationPayloadService.actionPortName}',
+          component: 'NotificationPayloadService',
+        );
+      }
     }
+  } catch (e, stackTrace) {
+    Logger.error(
+      'Failed to handle background notification action: ${response.actionId}',
+      component: 'NotificationPayloadService',
+      error: e,
+      stackTrace: stackTrace,
+    );
   }
 }
 

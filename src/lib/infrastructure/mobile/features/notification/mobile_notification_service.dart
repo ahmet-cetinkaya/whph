@@ -37,7 +37,16 @@ class MobileNotificationService extends BaseNotificationService {
       ),
       onDidReceiveNotificationResponse: (response) {
         if (response.actionId != null) {
-          NotificationPayloadService.handleForegroundAction(response.actionId!);
+          try {
+            NotificationPayloadService.handleForegroundAction(response.actionId!);
+          } catch (e, stackTrace) {
+            Logger.error(
+              'Failed to handle foreground notification action: ${response.actionId}',
+              component: 'MobileNotificationService',
+              error: e,
+              stackTrace: stackTrace,
+            );
+          }
         }
       },
       onDidReceiveBackgroundNotificationResponse: whphBackgroundNotificationHandler,
@@ -124,16 +133,13 @@ class MobileNotificationService extends BaseNotificationService {
           ? AndroidAppConstants.notificationChannels.habitChannelName
           : AndroidAppConstants.notificationChannels.taskChannelName;
 
-      List<AndroidNotificationAction>? mappedActions;
-      if (options?.actions != null && options!.actions!.isNotEmpty) {
-        mappedActions = options.actions!.map((action) {
-          return AndroidNotificationAction(
-            action.id,
-            action.title,
-            showsUserInterface: action.showsUserInterface,
-          );
-        }).toList();
-      }
+      List<AndroidNotificationAction>? mappedActions = options?.actions?.map((action) {
+        return AndroidNotificationAction(
+          action.id,
+          action.title,
+          showsUserInterface: action.showsUserInterface,
+        );
+      }).toList();
 
       notificationDetails = NotificationDetails(
         android: AndroidNotificationDetails(

@@ -56,7 +56,7 @@ class MobileSystemTrayService implements ISystemTrayService {
   }
 
   @override
-  Future<void> cancelNotification() async {
+  Future<void> cancelTrayNotification() async {
     await _notifications.cancel(_notificationId);
   }
 
