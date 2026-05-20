@@ -63,20 +63,6 @@ class DateFilterSetting {
       throw ArgumentError('At least one of startDate or endDate must be provided for manual date filters');
     }
 
-    if (isAutoRefreshEnabled && !isQuickSelection) {
-      const errorCode = 'date_filter.auto_refresh_not_allowed';
-      Logger.error('$errorCode: isAutoRefreshEnabled can only be true when isQuickSelection is true',
-          component: 'DateFilterSetting');
-      throw ArgumentError('isAutoRefreshEnabled can only be true when isQuickSelection is true');
-    }
-
-    if (!isQuickSelection && startDate == null && endDate == null) {
-      const errorCode = 'date_filter.no_dates_provided';
-      Logger.error('$errorCode: At least one of startDate or endDate must be provided for manual date filters',
-          component: 'DateFilterSetting');
-      throw ArgumentError('At least one of startDate or endDate must be provided for manual date filters');
-    }
-
     return DateFilterSetting._(
       quickSelectionKey: quickSelectionKey,
       startDate: startDate,
@@ -175,21 +161,6 @@ class DateFilterSetting {
 
     // Fallback to default if manual filter has no dates
     if (!isQuickSelection && startDate == null && endDate == null) {
-      const errorCode = 'date_filter_invalid_json';
-      Logger.warning('$errorCode: Corrupted date filter: manual filter without dates, falling back to today',
-          component: 'DateFilterSetting');
-      isQuickSelection = false;
-    }
-
-    if (isAutoRefreshEnabled && !isQuickSelection) {
-      Logger.warning(
-          '[date_filter_invalid_json] Corrupted date filter: isAutoRefreshEnabled=true without quick selection',
-          component: 'DateFilterSetting');
-      isAutoRefreshEnabled = false;
-    }
-
-    // Fallback to default if manual filter has no dates
-    if (!isQuickSelection && startDate == null && endDate == null) {
       Logger.warning(
           '[date_filter_invalid_json] Corrupted date filter: manual filter without dates, falling back to today',
           component: 'DateFilterSetting');
@@ -268,11 +239,11 @@ class DateFilterSetting {
           final endYear = now.year + (endMonth > 12 ? 1 : 0);
           final adjustedEndMonth = endMonth > 12 ? endMonth - 12 : endMonth;
           final lastDayOfEndMonth = DateTime(endYear, adjustedEndMonth + 1, 0);
-          final quarter3Start = DateTime(now.year, now.month - monthsToSubtract, 1);
-          final quarter3End = DateTime(endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
+          final threeMonthStart = DateTime(now.year, now.month - monthsToSubtract, 1);
+          final threeMonthEnd = DateTime(endYear, adjustedEndMonth, lastDayOfEndMonth.day, 23, 59, 59);
           return DateRange(
-            startDate: quarter3Start,
-            endDate: quarter3End,
+            startDate: threeMonthStart,
+            endDate: threeMonthEnd,
           );
 
         case 'last_week':

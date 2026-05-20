@@ -58,8 +58,12 @@ class NotificationAction {
     this.title, {
     this.showsUserInterface = false,
   }) {
-    assert(id.isNotEmpty, 'NotificationAction id cannot be empty');
-    assert(title.isNotEmpty, 'NotificationAction title cannot be empty');
+    if (id.isEmpty) {
+      throw ArgumentError('NotificationAction id cannot be empty');
+    }
+    if (title.isEmpty) {
+      throw ArgumentError('NotificationAction title cannot be empty');
+    }
   }
 }
 
@@ -75,6 +79,8 @@ class NotificationOptions {
     List<NotificationAction>? actions,
     this.ongoing = false,
   }) : actions = actions != null ? List.unmodifiable(actions) : null {
-    assert(this.actions == null || this.actions!.length <= 3, 'Maximum 3 actions allowed for notifications');
+    if (this.actions != null && this.actions!.length > 3) {
+      throw ArgumentError('Maximum 3 actions allowed for notifications');
+    }
   }
 }

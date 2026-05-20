@@ -17,19 +17,15 @@ void whphBackgroundNotificationHandler(NotificationResponse response) {
       if (sendPort != null) {
         sendPort.send(response.actionId);
       } else {
-        Logger.warning(
-          'whphBackgroundNotificationHandler: No SendPort found for ${NotificationPayloadService.actionPortName}',
-          component: 'NotificationPayloadService',
-        );
+        // Logger may not be initialized in background isolate — use print as fallback
+        // ignore: avoid_print
+        print('[NotificationPayloadService] No SendPort found for ${NotificationPayloadService.actionPortName}');
       }
     }
   } catch (e, stackTrace) {
-    Logger.error(
-      'Failed to handle background notification action: ${response.actionId}',
-      component: 'NotificationPayloadService',
-      error: e,
-      stackTrace: stackTrace,
-    );
+    // Logger may not be initialized in background isolate — use print as fallback
+    // ignore: avoid_print
+    print('[NotificationPayloadService] Background handler failed: $e\n$stackTrace');
   }
 }
 
@@ -70,6 +66,12 @@ class NotificationPayloadService {
         _actionStreamController.add(message);
       }
     });
+  }
+
+  static void disposeActionStream() {
+    _actionPort?.close();
+    _actionPort = null;
+    IsolateNameServer.removePortNameMapping(actionPortName);
   }
 
   static void handleForegroundAction(String actionId) {

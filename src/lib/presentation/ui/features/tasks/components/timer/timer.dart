@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/main.dart';
@@ -68,9 +69,19 @@ class _AppTimerState extends State<AppTimer> {
       if (_controller.isRunning || _controller.isAlarmPlaying) {
         _controller.stopTimer();
       }
-    } else if (actionId == AndroidAppConstants.intentActions.timerStartWork ||
-        actionId == AndroidAppConstants.intentActions.timerStartBreak) {
-      _controller.toggleWorkBreak();
+    } else if (actionId == AndroidAppConstants.intentActions.timerStartWork) {
+      if (!_controller.isWorking) {
+        _controller.toggleWorkBreak();
+      }
+    } else if (actionId == AndroidAppConstants.intentActions.timerStartBreak) {
+      if (_controller.isWorking) {
+        _controller.toggleWorkBreak();
+      }
+    } else {
+      Logger.warning(
+        'Received unknown notification action: $actionId',
+        component: 'AppTimer',
+      );
     }
   }
 
@@ -100,8 +111,10 @@ class _AppTimerState extends State<AppTimer> {
     _controller.onTick = _handleTick;
     _controller.onAlarmStart = _handleAlarmStart;
     _controller.onAlarmStop = _handleAlarmStop;
-    _controller.alarmTitle = _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle);
-    _controller.alarmBody = _translationService.translate(TaskTranslationKeys.pomodoroTimerCompleted);
+    _controller.setAlarmText(
+      title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
+      body: _translationService.translate(TaskTranslationKeys.pomodoroTimerCompleted),
+    );
   }
 
   void _handleTimerStarted() {
@@ -208,6 +221,7 @@ class _AppTimerState extends State<AppTimer> {
   @override
   void dispose() {
     _actionSubscription?.cancel();
+    NotificationPayloadService.disposeActionStream();
     _soundHelper.dispose();
     _wakelockService.disable();
 

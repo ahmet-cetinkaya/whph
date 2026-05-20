@@ -123,7 +123,7 @@ void main() {
         verify(mockMediator.send<SaveSettingCommand, SaveSettingCommandResponse>(any)).called(greaterThanOrEqualTo(1));
       });
 
-      test('should handle dialog display failure gracefully when new version available', () async {
+      test('should save version setting when new version is available', () async {
         // Arrange
         final response = MockGetSettingQueryResponse();
         when(response.getValue<String>()).thenReturn('0.17.0');

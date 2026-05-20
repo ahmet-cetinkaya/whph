@@ -75,6 +75,12 @@ class TimerController extends ChangeNotifier {
   int get tickingVolume => _tickingVolume;
   int get tickingSpeed => _tickingSpeed;
 
+  /// Sets the localized alarm text for notifications.
+  void setAlarmText({required String title, required String body}) {
+    alarmTitle = title;
+    alarmBody = body;
+  }
+
   /// Callbacks for external effects (sounds, notifications, system tray)
   VoidCallback? onTimerStarted;
   void Function(Duration elapsed)? onTimerStopped;
@@ -181,7 +187,7 @@ class TimerController extends ChangeNotifier {
     }
   }
 
-  Future<void> saveSetting(String key, int value) async {
+  Future<bool> saveSetting(String key, int value) async {
     try {
       final command = SaveSettingCommand(
         key: key,
@@ -189,9 +195,24 @@ class TimerController extends ChangeNotifier {
         valueType: SettingValueType.int,
       );
       await _mediator.send(command);
+      return true;
     } catch (e, stackTrace) {
       Logger.error(
         'Failed to save timer setting "$key" with value $value',
+        component: 'TimerController',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return false;
+    }
+  }
+
+  Future<void> _cancelAlarm(String debugContext) async {
+    try {
+      await _reminderService.cancelReminder(_timerAlarmId);
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to cancel timer alarm during $debugContext',
         component: 'TimerController',
         error: e,
         stackTrace: stackTrace,
@@ -203,8 +224,14 @@ class TimerController extends ChangeNotifier {
   void startTimer() {
     if (_isRunning || _isAlarmPlaying) return;
 
-    _sessionTotalElapsed = const Duration();
-    _currentWorkSessionElapsed = const Duration();
+    // Only reset elapsed times if starting a fresh session (not resuming from pause)
+    final isResuming = _timerMode == TimerMode.stopwatch
+        ? _elapsedTime > Duration.zero
+        : _remainingTime.inSeconds < getTotalDurationInSeconds();
+    if (!isResuming) {
+      _sessionTotalElapsed = const Duration();
+      _currentWorkSessionElapsed = const Duration();
+    }
 
     onTimerStarted?.call();
 
@@ -222,7 +249,7 @@ class TimerController extends ChangeNotifier {
     var initialCurrentWorkElapsed = _currentWorkSessionElapsed;
     var initialStopwatchElapsed = _elapsedTime;
     var initialRemaining = _remainingTime;
-    final wasWorking = _isWorking;
+    final isWorkingAtStart = _isWorking;
     var previousTotalElapsed = _sessionTotalElapsed;
 
     // Schedule system alarm for exact wake-up (countdown modes only)
@@ -248,75 +275,89 @@ class TimerController extends ChangeNotifier {
     }
 
     _timer = Timer.periodic(_timerTickInterval, (timer) {
-      final now = clock.now();
-      Duration elapsedIncrement = now.difference(_startTimestamp!);
+      try {
+        if (_startTimestamp == null) return;
+        final now = clock.now();
+        Duration elapsedIncrement = now.difference(_startTimestamp!);
 
-      // Guard against clock being adjusted backwards (e.g., user manually changes time, NTP sync)
-      // When detected, we reset the baseline to prevent negative elapsed time.
-      // The timer effectively pauses for the duration of the backward jump.
-      // Note: System alarm is not rescheduled, so timer may complete later than expected.
-      if (elapsedIncrement.isNegative) {
-        _startTimestamp = now;
-        initialElapsed = _sessionTotalElapsed;
-        initialCurrentWorkElapsed = _currentWorkSessionElapsed;
-        initialStopwatchElapsed = _elapsedTime;
-        initialRemaining = _remainingTime;
-        elapsedIncrement = Duration.zero;
-      }
+        // Guard against clock being adjusted backwards (e.g., user manually changes time, NTP sync)
+        // When detected, we reset the baseline to prevent negative elapsed time.
+        // The timer effectively pauses for the duration of the backward jump.
+        // Note: System alarm is not rescheduled, so timer may complete later than expected.
+        if (elapsedIncrement.isNegative) {
+          _startTimestamp = now;
+          initialElapsed = _sessionTotalElapsed;
+          initialCurrentWorkElapsed = _currentWorkSessionElapsed;
+          initialStopwatchElapsed = _elapsedTime;
+          initialRemaining = _remainingTime;
+          elapsedIncrement = Duration.zero;
+        }
 
-      // Guard against clock being adjusted forward (e.g., user manually changes time, NTP sync)
-      // Allow some slack for normal tick intervals, but detect large jumps
-      final expectedMaxIncrement = Duration(seconds: timer.tick + 2);
-      if (elapsedIncrement > expectedMaxIncrement) {
-        Logger.warning(
-          'Clock adjusted forward, resetting baseline to prevent timer jump',
-          component: 'TimerController',
-        );
-        _startTimestamp = now;
-        initialElapsed = _sessionTotalElapsed;
-        initialCurrentWorkElapsed = _currentWorkSessionElapsed;
-        initialStopwatchElapsed = _elapsedTime;
-        initialRemaining = _remainingTime;
-        elapsedIncrement = Duration(seconds: timer.tick);
-      }
+        // Guard against clock being adjusted forward (e.g., user manually changes time, NTP sync)
+        // Use a stable 30s threshold to detect real clock jumps while allowing normal operation
+        final expectedMaxIncrement = const Duration(seconds: 30);
+        if (elapsedIncrement > expectedMaxIncrement) {
+          Logger.warning(
+            'Clock adjusted forward, resetting baseline to prevent timer jump',
+            component: 'TimerController',
+          );
+          _startTimestamp = now;
+          initialElapsed = _sessionTotalElapsed;
+          initialCurrentWorkElapsed = _currentWorkSessionElapsed;
+          initialStopwatchElapsed = _elapsedTime;
+          initialRemaining = _remainingTime;
+          elapsedIncrement = Duration(seconds: timer.tick);
+        }
 
-      // Calculate all values using actual wall-clock time difference
-      _sessionTotalElapsed = initialElapsed + elapsedIncrement;
+        // Calculate all values using actual wall-clock time difference
+        _sessionTotalElapsed = initialElapsed + elapsedIncrement;
 
-      if (wasWorking) {
-        _currentWorkSessionElapsed = initialCurrentWorkElapsed + elapsedIncrement;
-      }
+        if (isWorkingAtStart) {
+          _currentWorkSessionElapsed = initialCurrentWorkElapsed + elapsedIncrement;
+        }
 
-      if (_timerMode == TimerMode.stopwatch) {
-        _elapsedTime = initialStopwatchElapsed + elapsedIncrement;
-      } else {
-        _remainingTime = initialRemaining - elapsedIncrement;
-      }
+        if (_timerMode == TimerMode.stopwatch) {
+          _elapsedTime = initialStopwatchElapsed + elapsedIncrement;
+        } else {
+          _remainingTime = initialRemaining - elapsedIncrement;
+        }
 
-      final tickDelta = _sessionTotalElapsed - previousTotalElapsed;
-      previousTotalElapsed = _sessionTotalElapsed;
+        final tickDelta = _sessionTotalElapsed - previousTotalElapsed;
+        previousTotalElapsed = _sessionTotalElapsed;
 
-      onTick?.call(tickDelta);
-      notifyListeners();
-
-      // Check if countdown timer modes should finish
-      if (_timerMode != TimerMode.stopwatch && _remainingTime.inSeconds <= 0) {
-        _timer?.cancel();
-        _isRunning = false;
-        onAlarmStart?.call();
-        _isAlarmPlaying = true;
+        onTick?.call(tickDelta);
         notifyListeners();
 
-        // Only auto-start next session in Pomodoro mode
-        if (_timerMode == TimerMode.pomodoro) {
-          if (_isWorking && _autoStartBreak || !_isWorking && _autoStartWork) {
-            Future.delayed(const Duration(seconds: 3), () {
-              if (_isAlarmPlaying) {
-                toggleWorkBreak();
-              }
-            });
+        // Check if countdown timer modes should finish
+        if (_timerMode != TimerMode.stopwatch && _remainingTime.inSeconds <= 0) {
+          _timer?.cancel();
+          _isRunning = false;
+          onAlarmStart?.call();
+          _isAlarmPlaying = true;
+          notifyListeners();
+
+          // Only auto-start next session in Pomodoro mode
+          if (_timerMode == TimerMode.pomodoro) {
+            if ((_isWorking && _autoStartBreak) || (!_isWorking && _autoStartWork)) {
+              Future.delayed(const Duration(seconds: 3), () {
+                if (_isAlarmPlaying) {
+                  toggleWorkBreak();
+                }
+              });
+            }
           }
         }
+      } catch (e, stackTrace) {
+        Logger.error(
+          'Timer periodic tick callback failed',
+          component: 'TimerController',
+          error: e,
+          stackTrace: stackTrace,
+        );
+        _timer?.cancel();
+        _isRunning = false;
+        _cancelAlarm('periodic tick error');
+        notifyListeners();
       }
     });
   }
@@ -325,16 +366,7 @@ class TimerController extends ChangeNotifier {
   void pauseTimer() {
     _timer?.cancel();
     _startTimestamp = null;
-    try {
-      _reminderService.cancelReminder(_timerAlarmId);
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to cancel timer alarm on pause',
-        component: 'TimerController',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
+    _cancelAlarm('pause');
 
     _isRunning = false;
     notifyListeners();
@@ -345,16 +377,7 @@ class TimerController extends ChangeNotifier {
     _timer?.cancel();
     onAlarmStop?.call();
     _startTimestamp = null;
-    try {
-      _reminderService.cancelReminder(_timerAlarmId);
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to cancel timer alarm',
-        component: 'TimerController',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
+    _cancelAlarm('stop');
 
     _isRunning = false;
     _isAlarmPlaying = false;
@@ -424,16 +447,7 @@ class TimerController extends ChangeNotifier {
     }
 
     _startTimestamp = null;
-    try {
-      _reminderService.cancelReminder(_timerAlarmId);
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to cancel timer alarm during work/break toggle',
-        component: 'TimerController',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
+    _cancelAlarm('work/break toggle');
     notifyListeners();
     startTimer();
   }
@@ -454,16 +468,7 @@ class TimerController extends ChangeNotifier {
   }) {
     // Cancel active timer and alarm before applying new settings
     _timer?.cancel();
-    try {
-      _reminderService.cancelReminder(_timerAlarmId);
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to cancel timer alarm during settings update',
-        component: 'TimerController',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
+    _cancelAlarm('settings update');
     _startTimestamp = null;
 
     _isWorking = true;
@@ -494,16 +499,7 @@ class TimerController extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
-    try {
-      _reminderService.cancelReminder(_timerAlarmId);
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to cancel timer alarm during disposal',
-        component: 'TimerController',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
+    _cancelAlarm('disposal');
     super.dispose();
   }
 }
