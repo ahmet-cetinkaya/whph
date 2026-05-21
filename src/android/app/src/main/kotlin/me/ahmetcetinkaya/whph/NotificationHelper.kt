@@ -55,7 +55,7 @@ class NotificationHelper(private val context: Context) {
       NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
         this.description = description
         enableLights(true)
-        lightColor = lightColor
+        this.lightColor = lightColor
         enableVibration(true)
         setSound(
           RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
