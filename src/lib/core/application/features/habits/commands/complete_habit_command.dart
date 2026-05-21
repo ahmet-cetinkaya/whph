@@ -1,11 +1,9 @@
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
+import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
@@ -26,15 +24,15 @@ class CompleteHabitCommandResponse {}
 class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitCommand, CompleteHabitCommandResponse> {
   final IHabitRepository _habitRepository;
   final IHabitRecordRepository _habitRecordRepository;
-  final IHabitTimeRecordRepository _habitTimeRecordRepository;
+  final HabitRecordOperationsService _operationsService;
 
   CompleteHabitCommandHandler({
     required IHabitRepository habitRepository,
     required IHabitRecordRepository habitRecordRepository,
-    required IHabitTimeRecordRepository habitTimeRecordRepository,
+    required HabitRecordOperationsService operationsService,
   })  : _habitRepository = habitRepository,
         _habitRecordRepository = habitRecordRepository,
-        _habitTimeRecordRepository = habitTimeRecordRepository;
+        _operationsService = operationsService;
 
   @override
   Future<CompleteHabitCommandResponse> call(CompleteHabitCommand request) async {
@@ -88,22 +86,21 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
 
   Future<void> _addCompleteRecord(Habit habit, String habitId, DateTime date) async {
     final occurredAt = DateTimeHelper.toUtcDateTime(date);
-    await _habitRecordRepository.add(HabitRecord(
-      id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now().toUtc(),
-      habitId: habitId,
-      occurredAt: occurredAt,
-      status: HabitRecordStatus.complete,
-    ));
+    final now = DateTime.now().toUtc();
 
-    if (habit.estimatedTime != null && habit.estimatedTime! > 0) {
-      await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
-        repository: _habitTimeRecordRepository,
-        habitId: habitId,
-        targetDate: occurredAt,
-        estimatedDuration: (habit.estimatedTime! * 60).toInt(),
-      );
-    }
+    await _operationsService.addHabitRecord(
+      habitId,
+      occurredAt,
+      HabitRecordStatus.complete,
+      now,
+    );
+
+    await _operationsService.addTimeRecordIfComplete(
+      habit,
+      habitId,
+      occurredAt,
+      HabitRecordStatus.complete,
+    );
   }
 
   Future<void> _clearNonCompleteRecords(List<HabitRecord> records) async {

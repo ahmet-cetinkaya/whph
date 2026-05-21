@@ -1,14 +1,10 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
-import 'package:whph/core/domain/features/habits/habit.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:acore/acore.dart';
 
@@ -34,18 +30,18 @@ class ToggleHabitCompletionCommandHandler
     implements IRequestHandler<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse> {
   final IHabitRepository _habitRepository;
   final IHabitRecordRepository _habitRecordRepository;
-  final IHabitTimeRecordRepository _habitTimeRecordRepository;
   final ISettingRepository _settingsRepository;
+  final HabitRecordOperationsService _operationsService;
 
   ToggleHabitCompletionCommandHandler({
     required IHabitRepository habitRepository,
     required IHabitRecordRepository habitRecordRepository,
-    required IHabitTimeRecordRepository habitTimeRecordRepository,
     required ISettingRepository settingsRepository,
+    required HabitRecordOperationsService operationsService,
   })  : _habitRepository = habitRepository,
         _habitRecordRepository = habitRecordRepository,
-        _habitTimeRecordRepository = habitTimeRecordRepository,
-        _settingsRepository = settingsRepository;
+        _settingsRepository = settingsRepository,
+        _operationsService = operationsService;
 
   @override
   Future<ToggleHabitCompletionCommandResponse> call(ToggleHabitCompletionCommand request) async {
@@ -141,11 +137,12 @@ class ToggleHabitCompletionCommandHandler
       if (!isMultiOccurrence) {
         // Only clear for single occurrence habits where we are replacing the state
         // Always clear existing records for single-occurrence logic to ensure strict 1-to-1 state mapping
-        await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
+        await _operationsService.clearAllRecordsForDay(
+            request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
         if (nextStatus != HabitRecordStatus.skipped) {
           // Add new record
-          await _addHabitRecord(
+          await _operationsService.addHabitRecord(
             request.habitId,
             occurredAt,
             nextStatus,
@@ -153,7 +150,7 @@ class ToggleHabitCompletionCommandHandler
           );
 
           // Add time record ONLY if complete
-          await _addTimeRecordIfComplete(
+          await _operationsService.addTimeRecordIfComplete(
             habit,
             request.habitId,
             occurredAt,
@@ -163,14 +160,14 @@ class ToggleHabitCompletionCommandHandler
       } else {
         if (nextStatus == HabitRecordStatus.complete) {
           // Add ONE record
-          await _addHabitRecord(
+          await _operationsService.addHabitRecord(
             request.habitId,
             occurredAt,
             HabitRecordStatus.complete,
             now,
           );
 
-          await _addTimeRecordIfComplete(
+          await _operationsService.addTimeRecordIfComplete(
             habit,
             request.habitId,
             occurredAt,
@@ -178,10 +175,11 @@ class ToggleHabitCompletionCommandHandler
           );
         } else if (nextStatus == HabitRecordStatus.notDone) {
           // Switch to Not Done - Clear all existing attempts first
-          await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
+          await _operationsService.clearAllRecordsForDay(
+              request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
           // Add ONE Not Done record
-          await _addHabitRecord(
+          await _operationsService.addHabitRecord(
             request.habitId,
             occurredAt,
             HabitRecordStatus.notDone,
@@ -189,59 +187,12 @@ class ToggleHabitCompletionCommandHandler
           );
         } else {
           // Reset (Skipped) - Clear all
-          await _clearAllRecordsForDay(request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
+          await _operationsService.clearAllRecordsForDay(
+              request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
         }
       }
     });
 
     return ToggleHabitCompletionCommandResponse();
-  }
-
-  Future<void> _addHabitRecord(
-    String habitId,
-    DateTime occurredAt,
-    HabitRecordStatus status,
-    DateTime createdDate,
-  ) async {
-    final habitRecord = HabitRecord(
-      id: KeyHelper.generateStringId(),
-      createdDate: createdDate,
-      habitId: habitId,
-      occurredAt: occurredAt,
-      status: status,
-    );
-    await _habitRecordRepository.add(habitRecord);
-  }
-
-  Future<void> _addTimeRecordIfComplete(
-    Habit habit,
-    String habitId,
-    DateTime occurredAt,
-    HabitRecordStatus status,
-  ) async {
-    if (status == HabitRecordStatus.complete && habit.estimatedTime != null && habit.estimatedTime! > 0) {
-      await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
-        repository: _habitTimeRecordRepository,
-        habitId: habitId,
-        targetDate: occurredAt,
-        estimatedDuration: (habit.estimatedTime! * 60).toInt(),
-      );
-    }
-  }
-
-  Future<void> _clearAllRecordsForDay(
-      String habitId, DateTime startOfDay, DateTime endOfDay, List<HabitRecord> recordsToDelete) async {
-    for (final habitRecord in recordsToDelete) {
-      await _habitRecordRepository.delete(habitRecord);
-    }
-
-    final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
-      habitId,
-      startOfDay,
-      endOfDay,
-    );
-    for (final timeRecord in timeRecords) {
-      await _habitTimeRecordRepository.delete(timeRecord);
-    }
   }
 }

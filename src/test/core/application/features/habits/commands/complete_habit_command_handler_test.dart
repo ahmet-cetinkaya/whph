@@ -7,6 +7,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_time_reco
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
@@ -34,9 +35,7 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
   ) async {
     final matchingRecords = records
         .where((record) =>
-            record.habitId == habitId &&
-            !record.occurredAt.isBefore(startDate) &&
-            !record.occurredAt.isAfter(endDate))
+            record.habitId == habitId && !record.occurredAt.isBefore(startDate) && !record.occurredAt.isAfter(endDate))
         .toList();
     return PaginatedList(
       items: matchingRecords,
@@ -104,10 +103,15 @@ void main() {
     habitRecordRepository = FakeHabitRecordRepository();
     habitTimeRecordRepository = FakeHabitTimeRecordRepository();
 
+    final operationsService = HabitRecordOperationsService(
+      habitRecordRepository: habitRecordRepository,
+      habitTimeRecordRepository: habitTimeRecordRepository,
+    );
+
     handler = CompleteHabitCommandHandler(
       habitRepository: habitRepository,
       habitRecordRepository: habitRecordRepository,
-      habitTimeRecordRepository: habitTimeRecordRepository,
+      operationsService: operationsService,
     );
   });
 

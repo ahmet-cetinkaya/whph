@@ -10,6 +10,7 @@ import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
@@ -96,11 +97,16 @@ void main() {
     fakeHabitTimeRecordRepository = FakeHabitTimeRecordRepository();
     fakeSettingRepository = FakeSettingRepository();
 
+    final operationsService = HabitRecordOperationsService(
+      habitRecordRepository: fakeHabitRecordRepository,
+      habitTimeRecordRepository: fakeHabitTimeRecordRepository,
+    );
+
     handler = ToggleHabitCompletionCommandHandler(
       habitRepository: fakeHabitRepository,
       habitRecordRepository: fakeHabitRecordRepository,
-      habitTimeRecordRepository: fakeHabitTimeRecordRepository,
       settingsRepository: fakeSettingRepository,
+      operationsService: operationsService,
     );
   });
 
