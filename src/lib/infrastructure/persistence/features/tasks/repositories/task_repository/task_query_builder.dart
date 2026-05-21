@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:acore/acore.dart' show CustomOrder, SortDirection;
 import 'package:whph/core/application/shared/utils/validation_utils.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 /// Result type for query condition builders.
 typedef QueryConditionResult = ({String condition, List<Variable> variables});
@@ -72,9 +73,31 @@ class TaskQueryBuilder {
           // Construct CASE statement for user defined order
           final caseStatements = StringBuffer();
           for (int i = 0; i < customTagSortOrder.length; i++) {
-            // Validate and sanitize ID to prevent SQL injection
-            final safeId = sanitizeAndValidateId(customTagSortOrder[i]);
-            caseStatements.write("WHEN '$safeId' THEN $i ");
+            try {
+              // Validate and sanitize ID to prevent SQL injection
+              final safeId = sanitizeAndValidateId(customTagSortOrder[i]);
+              caseStatements.write("WHEN '$safeId' THEN $i ");
+            } catch (e, stackTrace) {
+              Logger.error(
+                'Invalid tag ID at index $i: ${customTagSortOrder[i]}',
+                error: e,
+                stackTrace: stackTrace,
+              );
+            }
+          }
+
+          if (caseStatements.isEmpty) {
+            Logger.warning('All custom tag IDs were invalid, falling back to default tag sort.');
+            final tagSubquery = '''(
+              SELECT t.name 
+              FROM task_tag_table tt 
+              INNER JOIN tag_table t ON tt.tag_id = t.id 
+              WHERE tt.task_id = task_table.id 
+              AND tt.deleted_date IS NULL
+              ORDER BY tt.tag_order ASC, t.name COLLATE NOCASE ASC 
+              LIMIT 1
+            )''';
+            return '$tagSubquery IS NULL, $tagSubquery ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
           }
 
           final customTagSubquery = '''(
@@ -254,27 +277,35 @@ class TaskQueryBuilder {
 
     if (filterByCompleted == null) return (condition: '1=1', variables: variables);
 
-    if (areParentAndSubTasksIncluded) {
-      // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent is completed.
-      // When showing incomplete tasks (filterByCompleted=false), a parent should remain visible if it has
-      // at least one incomplete subtask — it should only be hidden when ALL subtasks are completed.
-      final condition = filterByCompleted
-          ? '''(
-            task_table.completed_at IS NOT NULL
-            OR EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NOT NULL)
-            OR EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)
-          )'''
-          : '''(
-            task_table.completed_at IS NULL
-            AND (
-              NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id)
-              OR EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NULL)
-            )
-            AND NOT EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)
-          )''';
+    try {
+      if (areParentAndSubTasksIncluded) {
+        // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent is completed.
+        // When showing incomplete tasks (filterByCompleted=false), include tasks that:
+        // 1) Have no subtasks (leaf nodes), OR
+        // 2) Have at least one incomplete subtask
+        // A parent is hidden only when ALL its subtasks are completed.
+        final condition = filterByCompleted
+            ? '''(
+              task_table.completed_at IS NOT NULL
+              OR EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NOT NULL)
+              OR EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)
+            )'''
+            : '''(
+              task_table.completed_at IS NULL
+              AND (
+                NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id)
+                OR EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NULL)
+              )
+              AND NOT EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)
+            )''';
 
-      return (condition: condition, variables: variables);
-    } else {
+        return (condition: condition, variables: variables);
+      } else {
+        final condition = filterByCompleted ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL';
+        return (condition: condition, variables: variables);
+      }
+    } catch (e, stackTrace) {
+      Logger.error('Failed to build completion condition', error: e, stackTrace: stackTrace);
       final condition = filterByCompleted ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL';
       return (condition: condition, variables: variables);
     }
