@@ -17,6 +17,10 @@ abstract class BaseNotificationService implements INotificationService {
   /// The component name to use for logging
   String get componentName;
 
+  /// Callback invoked after successful habit completion from notification.
+  /// Used to notify the UI layer to refresh habit lists.
+  void Function(String habitId)? onHabitCompleted;
+
   BaseNotificationService(this.mediator);
 
   @override
@@ -52,6 +56,7 @@ abstract class BaseNotificationService implements INotificationService {
       );
 
       Logger.info('$componentName: Habit completed successfully from notification', component: componentName);
+      onHabitCompleted?.call(habitId);
     } on BusinessException catch (e, stackTrace) {
       Logger.error(
         '[$TaskErrorIds.notificationActionFailed] $componentName: Failed to complete habit',
