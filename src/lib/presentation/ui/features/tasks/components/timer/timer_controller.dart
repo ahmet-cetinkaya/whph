@@ -12,6 +12,18 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_serv
 import 'package:whph/presentation/ui/features/tasks/models/timer_settings.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/alarm_cancel_reason.dart';
 
+void _safeInvoke(FutureOr<void> Function() callback, String name) {
+  Future.sync(callback).catchError((e, stackTrace) {
+    Logger.error('$name callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+  });
+}
+
+void _safeInvokeWithArg<T>(FutureOr<void> Function(T) callback, T arg, String name) {
+  Future.sync(() => callback(arg)).catchError((e, stackTrace) {
+    Logger.error('$name callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+  });
+}
+
 /// Controller for timer business logic and state management.
 /// Handles timer lifecycle, settings persistence, and session tracking.
 class TimerController extends ChangeNotifier {
@@ -85,13 +97,14 @@ class TimerController extends ChangeNotifier {
     alarmBody = body;
   }
 
-  /// Callbacks for external effects (sounds, notifications, system tray)
-  VoidCallback? onTimerStarted;
-  void Function(Duration elapsed)? onTimerStopped;
-  void Function(Duration elapsedIncrement)? onWorkSessionComplete;
-  void Function(Duration elapsedIncrement)? onTick;
-  VoidCallback? onAlarmStart;
-  VoidCallback? onAlarmStop;
+  /// Callbacks for external effects (sounds, notifications, system tray).
+  /// Support both sync and async handlers via FutureOr.
+  FutureOr<void> Function()? onTimerStarted;
+  FutureOr<void> Function(Duration elapsed)? onTimerStopped;
+  FutureOr<void> Function(Duration elapsedIncrement)? onWorkSessionComplete;
+  FutureOr<void> Function(Duration elapsedIncrement)? onTick;
+  FutureOr<void> Function()? onAlarmStart;
+  FutureOr<void> Function()? onAlarmStop;
 
   /// Localized alarm notification text, set by the UI layer.
   /// Falls back to English defaults when not provided.
@@ -237,11 +250,7 @@ class TimerController extends ChangeNotifier {
       _currentWorkSessionElapsed = const Duration();
     }
 
-    try {
-      onTimerStarted?.call();
-    } catch (e, stackTrace) {
-      Logger.error('onTimerStarted callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
-    }
+    _safeInvoke(() => onTimerStarted?.call(), 'onTimerStarted');
 
     _isRunning = true;
     _startRegularTimer();
@@ -332,11 +341,7 @@ class TimerController extends ChangeNotifier {
         final tickDelta = _sessionTotalElapsed - previousTotalElapsed;
         previousTotalElapsed = _sessionTotalElapsed;
 
-        try {
-          onTick?.call(tickDelta);
-        } catch (e, stackTrace) {
-          Logger.error('onTick callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
-        }
+        _safeInvokeWithArg((delta) => onTick?.call(delta), tickDelta, 'onTick');
         notifyListeners();
 
         // Check if countdown timer modes should finish
@@ -344,12 +349,7 @@ class TimerController extends ChangeNotifier {
           _timer?.cancel();
           _isRunning = false;
           _cancelAlarm(AlarmCancelReason.naturalCompletion);
-          try {
-            onAlarmStart?.call();
-          } catch (e, stackTrace) {
-            Logger.error('onAlarmStart callback failed',
-                component: 'TimerController', error: e, stackTrace: stackTrace);
-          }
+          _safeInvoke(() => onAlarmStart?.call(), 'onAlarmStart');
           _isAlarmPlaying = true;
           notifyListeners();
 
@@ -401,11 +401,7 @@ class TimerController extends ChangeNotifier {
   /// Stop the timer
   void stopTimer() {
     _timer?.cancel();
-    try {
-      onAlarmStop?.call();
-    } catch (e, stackTrace) {
-      Logger.error('onAlarmStop callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
-    }
+    _safeInvoke(() => onAlarmStop?.call(), 'onAlarmStop');
     _startTimestamp = null;
     _cancelAlarm(AlarmCancelReason.stop);
 
@@ -427,21 +423,13 @@ class TimerController extends ChangeNotifier {
 
     _currentWorkSessionElapsed = Duration.zero;
 
-    try {
-      onTimerStopped?.call(_sessionTotalElapsed);
-    } catch (e, stackTrace) {
-      Logger.error('onTimerStopped callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
-    }
+    _safeInvokeWithArg((elapsed) => onTimerStopped?.call(elapsed), _sessionTotalElapsed, 'onTimerStopped');
     notifyListeners();
   }
 
   /// Toggle between work and break (for Pomodoro mode)
   void toggleWorkBreak() {
-    try {
-      onAlarmStop?.call();
-    } catch (e, stackTrace) {
-      Logger.error('onAlarmStop callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
-    }
+    _safeInvoke(() => onAlarmStop?.call(), 'onAlarmStop');
     _isAlarmPlaying = false;
 
     if (_timerMode == TimerMode.stopwatch) {
@@ -458,14 +446,12 @@ class TimerController extends ChangeNotifier {
       return;
     }
 
-    // Pass the current work session duration when work completes
     if (_isWorking && _currentWorkSessionElapsed > Duration.zero) {
-      try {
-        onWorkSessionComplete?.call(_currentWorkSessionElapsed);
-      } catch (e, stackTrace) {
-        Logger.error('onWorkSessionComplete callback failed',
-            component: 'TimerController', error: e, stackTrace: stackTrace);
-      }
+      _safeInvokeWithArg(
+        (elapsed) => onWorkSessionComplete?.call(elapsed),
+        _currentWorkSessionElapsed,
+        'onWorkSessionComplete',
+      );
     }
 
     if (_isWorking) {
