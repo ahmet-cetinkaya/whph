@@ -141,7 +141,6 @@ class ToggleHabitCompletionCommandHandler
             request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
         if (nextStatus != HabitRecordStatus.skipped) {
-          // Add new record
           await _operationsService.addHabitRecord(
             request.habitId,
             occurredAt,
@@ -149,7 +148,6 @@ class ToggleHabitCompletionCommandHandler
             now,
           );
 
-          // Add time record ONLY if complete
           await _operationsService.addTimeRecordIfComplete(
             habit,
             request.habitId,
@@ -159,7 +157,6 @@ class ToggleHabitCompletionCommandHandler
         }
       } else {
         if (nextStatus == HabitRecordStatus.complete) {
-          // Add ONE record
           await _operationsService.addHabitRecord(
             request.habitId,
             occurredAt,
@@ -178,7 +175,6 @@ class ToggleHabitCompletionCommandHandler
           await _operationsService.clearAllRecordsForDay(
               request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
 
-          // Add ONE Not Done record
           await _operationsService.addHabitRecord(
             request.habitId,
             occurredAt,

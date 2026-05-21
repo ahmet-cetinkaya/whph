@@ -1,3 +1,4 @@
+import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 
 import 'package:whph/core/application/features/habits/commands/complete_habit_command.dart';
@@ -28,7 +29,7 @@ abstract class BaseNotificationService implements INotificationService {
       );
 
       Logger.info('$componentName: Task completed successfully from notification', component: componentName);
-    } catch (e, stackTrace) {
+    } on BusinessException catch (e, stackTrace) {
       Logger.error(
         '[$TaskErrorIds.notificationActionFailed] $componentName: Failed to complete task',
         error: e,
@@ -51,7 +52,7 @@ abstract class BaseNotificationService implements INotificationService {
       );
 
       Logger.info('$componentName: Habit completed successfully from notification', component: componentName);
-    } catch (e, stackTrace) {
+    } on BusinessException catch (e, stackTrace) {
       Logger.error(
         '[$TaskErrorIds.notificationActionFailed] $componentName: Failed to complete habit',
         error: e,
@@ -68,29 +69,19 @@ abstract class BaseNotificationService implements INotificationService {
 
   @override
   Future<bool> isEnabled() async {
-    try {
-      final query = GetSettingQuery(key: SettingKeys.notifications);
-      final setting = await mediator.send<GetSettingQuery, GetSettingQueryResponse?>(query);
+    final query = GetSettingQuery(key: SettingKeys.notifications);
+    final setting = await mediator.send<GetSettingQuery, GetSettingQueryResponse?>(query);
 
-      if (setting == null) {
-        Logger.warning(
-          '$componentName: Notification setting not found, defaulting to enabled',
-          component: componentName,
-        );
-        return true; // Default to true if no setting
-      }
-
-      final isEnabled = setting.value == 'false' ? false : true;
-      return isEnabled;
-    } catch (e, stackTrace) {
-      Logger.error(
-        '[notification_check_failed] $componentName: Failed to check if notifications are enabled, defaulting to disabled',
-        error: e,
-        stackTrace: stackTrace,
+    if (setting == null) {
+      Logger.warning(
+        '$componentName: Notification setting not found, defaulting to enabled',
         component: componentName,
       );
-      return false; // Default to FALSE on error - safer to disable than to silently fail
+      return true; // Default to true if no setting
     }
+
+    final isEnabled = setting.value == 'false' ? false : true;
+    return isEnabled;
   }
 
   @override

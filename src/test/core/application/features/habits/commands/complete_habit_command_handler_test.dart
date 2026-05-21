@@ -12,12 +12,12 @@ import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 class FakeHabitRepository extends Fake implements IHabitRepository {
-  Habit? _habit;
+  final Map<String, Habit> _habits = {};
 
-  void setHabit(Habit habit) => _habit = habit;
+  void setHabit(Habit habit) => _habits[habit.id] = habit;
 
   @override
-  Future<Habit?> getById(String id, {bool includeDeleted = false}) async => _habit;
+  Future<Habit?> getById(String id, {bool includeDeleted = false}) async => _habits[id];
 }
 
 class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
@@ -62,9 +62,11 @@ class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepo
   final List<HabitTimeRecord> records = [];
   int addCount = 0;
   int updateCount = 0;
+  int deleteCount = 0;
 
   @override
   Future<HabitTimeRecord?> getFirst(CustomWhereFilter filter, {bool includeDeleted = false}) async {
+    // A simplified fake implementation.
     return records.firstOrNull;
   }
 
@@ -84,8 +86,20 @@ class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepo
   }
 
   @override
+  Future<void> delete(HabitTimeRecord record) async {
+    deleteCount++;
+    records.removeWhere((existingRecord) => existingRecord.id == record.id);
+  }
+
+  @override
   Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) async {
-    return records.where((record) => record.habitId == habitId).toList();
+    return records
+        .where((record) =>
+            record.habitId == habitId &&
+            record.occurredAt != null &&
+            !record.occurredAt!.isBefore(start) &&
+            !record.occurredAt!.isAfter(end))
+        .toList();
   }
 }
 
@@ -118,6 +132,16 @@ void main() {
   tearDown(() async {
     await AppDatabase.instance().close();
     AppDatabase.resetInstance();
+  });
+
+  test('throws BusinessException when habit is not found', () async {
+    const habitId = 'non-existent-habit';
+    final date = DateTime(2026, 1, 11, 9);
+
+    expect(
+      () => handler.call(CompleteHabitCommand(habitId: habitId, date: date)),
+      throwsA(isA<BusinessException>()),
+    );
   });
 
   group('single occurrence habit', () {
@@ -159,7 +183,16 @@ void main() {
       expect(habitRecordRepository.deleteCount, 0);
     });
 
-    test('replaces not done with complete', () async {
+    test('replaces not done with complete and adds estimated time', () async {
+      habitRepository.setHabit(Habit(
+        id: habitId,
+        createdDate: DateTime.now(),
+        name: 'Single Habit Estimated',
+        description: 'Test',
+        estimatedTime: 20,
+        hasGoal: false,
+      ));
+
       habitRecordRepository.records.add(HabitRecord(
         id: 'record-1',
         habitId: habitId,
@@ -172,8 +205,8 @@ void main() {
 
       expect(habitRecordRepository.records.length, 1);
       expect(habitRecordRepository.records.first.status, HabitRecordStatus.complete);
-      expect(habitRecordRepository.addCount, 1);
-      expect(habitRecordRepository.deleteCount, 1);
+      expect(habitTimeRecordRepository.records.length, 1);
+      expect(habitTimeRecordRepository.records.first.duration, 20 * 60);
     });
   });
 
