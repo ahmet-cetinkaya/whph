@@ -1,0 +1,7 @@
+• Neuer Tag-Optionen-Dialog
+• Unteraufgaben als einfache Listeneinträge
+• „Bis heute"-Filter für überfällige Aufgaben korrigiert
+• Absturz bei Einstellungen unter Windows behoben
+• Doppelte wiederkehrende Aufgaben behoben
+• Erinnerungszeiten synchronisieren jetzt korrekt
+• Zuverlässigkeit von Benachrichtigungen verbessert

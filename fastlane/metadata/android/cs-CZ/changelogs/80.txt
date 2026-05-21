@@ -1,0 +1,7 @@
+• Nový dialog možností štítků
+• Podúkoly se zobrazují jako jednoduché položky seznamu
+• Opraven filtr 'Až do dnes' pro pozdní úkoly
+• Opraven pád nastavení na Windows
+• Opraveno duplikování opakujících se úkolů
+• Časy připomínek se nyní správně synchronizují
+• Zlepšena spolehlivost oznámení

@@ -1,0 +1,7 @@
+• Novo diálogo de opções de etiquetas
+• Subtarefas como itens simples de lista
+• Corrigido o filtro 'Até hoje'
+• Resolvido crash ao abrir definições no Windows
+• Corrigidas tarefas recorrentes duplicadas
+• Lembretes sincronizam corretamente
+• Fiabilidade das notificações melhorada

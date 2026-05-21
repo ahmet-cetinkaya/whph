@@ -1,0 +1,7 @@
+• Nieuw tag-optiesvenster
+• Subtaken als eenvoudige lijstitems
+• 'Tot vandaag'-filter gecorrigeerd
+• Crash bij instellingen op Windows opgelost
+• Duplicatie van terugkerende taken opgelost
+• Herinneringstijden synchroniseren correct
+• Betrouwbaarheid van meldingen verbeterd

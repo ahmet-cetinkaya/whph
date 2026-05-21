@@ -1,0 +1,7 @@
+• Dialog nou pentru opțiuni de etichete
+• Sub-sarcinile apar ca elemente simple de listă
+• Filtrul 'Până azi' corectat
+• Blocarea la setări pe Windows rezolvată
+• Duplicarea sarcinilor recurente corectată
+• Orele de reamintire se sincronizează corect
+• Fiabilitatea notificărilor îmbunătățită

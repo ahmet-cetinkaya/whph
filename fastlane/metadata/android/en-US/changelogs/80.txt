@@ -1,0 +1,7 @@
+• New tag options dialog
+• Subtasks now display as simple list items
+• Fixed 'Up to today' filter for overdue tasks
+• Resolved crash when opening settings on Windows
+• Fixed duplicate recurring tasks
+• Reminder times now sync correctly between devices
+• Improved reliability of completion notifications

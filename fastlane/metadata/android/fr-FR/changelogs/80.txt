@@ -1,0 +1,7 @@
+• Nouvelle boîte de dialogue d'options d'étiquettes
+• Les sous-tâches apparaissent comme des éléments de liste simples
+• Correction du filtre 'Jusqu'à aujourd'hui'
+• Résolu le plantage des paramètres sur Windows
+• Correction des tâches récurrentes en double
+• Les rappels se synchronisent correctement
+• Fiabilité des notifications améliorée

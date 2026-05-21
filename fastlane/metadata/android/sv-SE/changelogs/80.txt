@@ -1,0 +1,7 @@
+• Ny dialog för taggalternativ
+• Deluppgifter visas som enkla listobjekt
+• 'Till idag'-filtret korrigerat
+• Åtgärdad krasch vid inställningar på Windows
+• Duplicering av återkommande uppgifter åtgärdad
+• Påminnelsetider synkroniseras korrekt
+• Tillförlitlighet för aviseringar förbättrad

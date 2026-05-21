@@ -73,7 +73,7 @@ if [ ! -d "$METADATA_DIR" ]; then
 fi
 
 # Get all language directories (both xx and xx-XX formats)
-LANGUAGES=$(fd -t d -d 1 . "$METADATA_DIR" 2>/dev/null | grep -E '^[a-z]{2}(-[A-Z]{2})?$' | sort)
+LANGUAGES=$(fd -t d -d 1 . "$METADATA_DIR" 2>/dev/null | xargs -I{} basename {} | grep -E '^[a-z]{2}(-[A-Z]{2})?$' | sort)
 
 if [ -z "$LANGUAGES" ]; then
 	acore_log_error "FATAL: No language directories found in $METADATA_DIR"
@@ -120,7 +120,7 @@ for lang in $LANGUAGES; do
 			acore_log_warning "Missing phoneScreenshots directory for $lang"
 			WARNINGS=$((WARNINGS + 1))
 		else
-			screenshot_count=$(fd -e png -t f "$lang_dir/images/phoneScreenshots" 2>/dev/null | wc -l)
+			screenshot_count=$(fd -e png -t f . "$lang_dir/images/phoneScreenshots" 2>/dev/null | wc -l)
 			if [ "$screenshot_count" -eq 0 ]; then
 				acore_log_warning "No screenshots found for $lang"
 				WARNINGS=$((WARNINGS + 1))
@@ -136,13 +136,13 @@ for lang in $LANGUAGES; do
 		acore_log_warning "Missing changelogs directory for $lang"
 		WARNINGS=$((WARNINGS + 1))
 	else
-		changelog_count=$(fd -e txt -t f "$lang_dir/changelogs" 2>/dev/null | wc -l)
+		changelog_count=$(fd -e txt -t f . "$lang_dir/changelogs" 2>/dev/null | wc -l)
 		if [ "$changelog_count" -eq 0 ]; then
 			acore_log_warning "No changelogs found for $lang"
 			WARNINGS=$((WARNINGS + 1))
 		else
 			# Validate latest changelog exists
-			latest_changelog=$(fd -e txt -t f "$lang_dir/changelogs" 2>/dev/null | sort -V | tail -1)
+			latest_changelog=$(fd -e txt -t f . "$lang_dir/changelogs" 2>/dev/null | sort -V | tail -1)
 			if [ -n "$latest_changelog" ]; then
 				version=$(basename "$latest_changelog" .txt)
 				validate_changelog_length "$latest_changelog" "$lang" "$version"

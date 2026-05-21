@@ -1,0 +1,7 @@
+• Yeni etiket seçenekleri iletişim kutusu
+• Alt görevler basit liste öğeleri olarak görünüyor
+• 'Bugüne kadar' filtresi düzeltildi
+• Windows'ta ayarlar çökmesi çözüldü
+• Yinelenen görev tekrarları düzeltildi
+• Hatırlatıcı saatleri doğru senkronize ediliyor
+• Bildirim güvenilirliği artırıldı

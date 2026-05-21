@@ -1,0 +1,7 @@
+• Nowe okno opcji tagów
+• Podzadania jako proste elementy listy
+• Naprawiono filtr 'Do dzisiaj'
+• Naprawiono awarię ustawień na Windows
+• Naprawiono duplikowanie zadań cyklicznych
+• Czasy przypomnień synchronizują się poprawnie
+• Poprawiono niezawodność powiadomień

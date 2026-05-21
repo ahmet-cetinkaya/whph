@@ -1,0 +1,7 @@
+• Ny dialog for tag-indstillinger
+• Delopgaver vises som simple listepunkter
+• Rettede 'Op til i dag'-filter for forfaldne opgaver
+• Rettet nedbrud ved indstillinger på Windows
+• Rettet duplikering af tilbagevendende opgaver
+• Påmindelsestider synkroniseres nu korrekt
+• Forbedret pålidelighed af fuldførelsesnotifikationer

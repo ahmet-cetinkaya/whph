@@ -1,0 +1,7 @@
+• Ny dialog for tag-alternativer
+• Deloppgaver vises som enkle listeoppføringer
+• 'Opp til i dag'-filteret korrigert
+• Løst krasj ved innstillinger på Windows
+• Duplisering av tilbakevendende oppgaver fikset
+• Påminnelsestider synkroniseres korrekt
+• Pålitelighet for varsler forbedret

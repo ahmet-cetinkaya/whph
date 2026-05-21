@@ -8,6 +8,22 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.22.3] - 2026-05-22
+
+### Added
+
+- **Tag Options Dialog**: New dialog for managing tag settings directly from the tag list
+- **Flat Subtask Display**: Subtasks now appear as simple list items instead of nested cards for easier reading
+
+### Fixed
+
+- **Overdue Task Filter**: The 'Up to today' filter now correctly updates to show overdue tasks
+- **Windows Settings Crash**: Fixed a crash that could occur when opening settings on Windows
+- **Recurring Task Duplicates**: Prevented duplicate recurring tasks from appearing due to timing issues
+- **Reminder Sync**: Custom reminder times and recurrence settings are now preserved correctly during sync
+- **Today Recurrence**: Tasks set to recur based on completion date can now correctly schedule for today
+- **Notification Handling**: Improved reliability of task and habit completion notifications
+
 ## [0.22.2] - 2026-02-25
 
 ### Added
@@ -1665,7 +1681,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.22.2...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.22.3...HEAD
+[0.22.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.3
 [0.22.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.2
 [0.22.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.1
 [0.22.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.0

@@ -1,0 +1,7 @@
+• Nuevo diálogo de opciones de etiquetas
+• Las subtareas aparecen como elementos simples de lista
+• Corregido el filtro 'Hasta hoy' para tareas vencidas
+• Resuelto bloqueo al abrir configuración en Windows
+• Corregidas tareas recurrentes duplicadas
+• Los recordatorios se sincronizan correctamente
+• Mejorada la fiabilidad de las notificaciones

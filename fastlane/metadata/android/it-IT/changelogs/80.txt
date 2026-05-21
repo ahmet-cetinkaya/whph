@@ -1,0 +1,7 @@
+• Nuova finestra delle opzioni delle etichette
+• Le sottoattività appaiono come semplici elementi della lista
+• Corretto il filtro 'Fino ad oggi'
+• Risolto il crash all'apertura delle impostazioni su Windows
+• Corrette le attività ricorrenti duplicate
+• Gli orari dei promemoria si sincronizzano correttamente
+• Affidabilità delle notifiche migliorata

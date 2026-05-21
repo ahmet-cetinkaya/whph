@@ -1,0 +1,7 @@
+• Uusi merkintöjen asetusten dialogi
+• Alatehtävät näkyvät yksinkertaisina listakohteina
+• Korjattu 'Tähän asti'-suodatin
+• Korjattu kaatuminen asetuksissa Windowsissa
+• Korjattu toistuvien tehtävien duplikoituminen
+• Muistutusajat synkronoituvat oikein
+• Parannettu ilmoitusten luotettavuutta

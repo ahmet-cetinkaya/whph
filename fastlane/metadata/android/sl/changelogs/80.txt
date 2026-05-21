@@ -1,0 +1,7 @@
+• Nov dialog možnosti oznak
+• Podnaloge kot preprosti elementi seznama
+• Popravljen filter 'Do danes'
+• Odpravljena napaka pri nastavitvah v Windows
+• Popravljeno podvajanje ponavljajočih se nalog
+• Časi opomnikov se pravilno sinhronizirajo
+• Izboljšana zanesljivost obvestil
