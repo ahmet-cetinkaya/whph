@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
+import 'package:whph/core/application/features/habits/commands/complete_habit_command.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_time_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
@@ -17,6 +18,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_command.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
+import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
@@ -34,6 +36,11 @@ void registerHabitsFeature(
   ITagRepository tagRepository,
   ISettingRepository settingsRepository,
 ) {
+  final habitRecordOperationsService = HabitRecordOperationsService(
+    habitRecordRepository: habitRecordRepository,
+    habitTimeRecordRepository: habitTimeRecordRepository,
+  );
+
   mediator
     ..registerHandler<SaveHabitCommand, SaveHabitCommandResponse, SaveHabitCommandHandler>(
       () => SaveHabitCommandHandler(habitRepository: habitRepository),
@@ -64,6 +71,13 @@ void registerHabitsFeature(
         habitRecordRepository: habitRecordRepository,
         habitRepository: habitRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
+      ),
+    )
+    ..registerHandler<CompleteHabitCommand, CompleteHabitCommandResponse, CompleteHabitCommandHandler>(
+      () => CompleteHabitCommandHandler(
+        habitRepository: habitRepository,
+        habitRecordRepository: habitRecordRepository,
+        operationsService: habitRecordOperationsService,
       ),
     )
     ..registerHandler<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse, AddHabitTimeRecordCommandHandler>(
@@ -112,8 +126,8 @@ void registerHabitsFeature(
       () => ToggleHabitCompletionCommandHandler(
         habitRepository: habitRepository,
         habitRecordRepository: habitRecordRepository,
-        habitTimeRecordRepository: habitTimeRecordRepository,
         settingsRepository: settingsRepository,
+        operationsService: habitRecordOperationsService,
       ),
     );
 }

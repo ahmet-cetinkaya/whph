@@ -129,59 +129,72 @@ class DateFilterSetting {
 
   /// Create from JSON
   factory DateFilterSetting.fromJson(Map<String, dynamic> json) {
-    DateTime? startDate;
-    if (json['startDate'] != null) {
-      startDate = DateTime.tryParse(json['startDate'] as String);
-    }
+    try {
+      DateTime? startDate;
+      if (json['startDate'] != null) {
+        startDate = DateTime.tryParse(json['startDate'] as String);
+      }
 
-    DateTime? endDate;
-    if (json['endDate'] != null) {
-      endDate = DateTime.tryParse(json['endDate'] as String);
-    }
+      DateTime? endDate;
+      if (json['endDate'] != null) {
+        endDate = DateTime.tryParse(json['endDate'] as String);
+      }
 
-    final quickSelectionKey = json['quickSelectionKey'] as String?;
-    var isQuickSelection = json['isQuickSelection'] as bool? ?? false;
-    var isAutoRefreshEnabled = json['isAutoRefreshEnabled'] as bool? ?? false;
-    final includeNullDates = json['includeNullDates'] as bool? ?? false;
+      final quickSelectionKey = json['quickSelectionKey'] as String?;
+      var isQuickSelection = json['isQuickSelection'] as bool? ?? false;
+      var isAutoRefreshEnabled = json['isAutoRefreshEnabled'] as bool? ?? false;
+      final includeNullDates = json['includeNullDates'] as bool? ?? false;
 
-    // Fix corrupted persisted data
-    if (isQuickSelection && quickSelectionKey == null) {
-      const errorCode = 'date_filter_invalid_json';
-      Logger.warning('$errorCode: Corrupted date filter: isQuickSelection=true without key',
-          component: 'DateFilterSetting');
-      isQuickSelection = false;
-    }
+      // Fix corrupted persisted data
+      if (isQuickSelection && quickSelectionKey == null) {
+        const errorCode = 'date_filter_invalid_json';
+        Logger.warning('$errorCode: Corrupted date filter: isQuickSelection=true without key',
+            component: 'DateFilterSetting');
+        isQuickSelection = false;
+      }
 
-    if (isAutoRefreshEnabled && !isQuickSelection) {
-      const errorCode = 'date_filter_invalid_json';
-      Logger.warning('$errorCode: Corrupted date filter: isAutoRefreshEnabled=true without quick selection',
-          component: 'DateFilterSetting');
-      isAutoRefreshEnabled = false;
-    }
+      if (isAutoRefreshEnabled && !isQuickSelection) {
+        const errorCode = 'date_filter_invalid_json';
+        Logger.warning('$errorCode: Corrupted date filter: isAutoRefreshEnabled=true without quick selection',
+            component: 'DateFilterSetting');
+        isAutoRefreshEnabled = false;
+      }
 
-    // Fallback to default if manual filter has no dates
-    if (!isQuickSelection && startDate == null && endDate == null) {
-      Logger.warning(
-          '[date_filter_invalid_json] Corrupted date filter: manual filter without dates, falling back to today',
-          component: 'DateFilterSetting');
+      // Fallback to default if manual filter has no dates
+      if (!isQuickSelection && startDate == null && endDate == null) {
+        Logger.warning(
+            '[date_filter_invalid_json] Corrupted date filter: manual filter without dates, falling back to today',
+            component: 'DateFilterSetting');
+        final now = DateTime.now();
+        return DateFilterSetting.quickSelection(
+          key: 'today',
+          startDate: DateTime(now.year, now.month, now.day),
+          endDate: DateTime(now.year, now.month, now.day, 23, 59, 59),
+          isAutoRefreshEnabled: true,
+          includeNullDates: includeNullDates,
+        );
+      }
+
+      return DateFilterSetting(
+        quickSelectionKey: quickSelectionKey,
+        startDate: startDate,
+        endDate: endDate,
+        isQuickSelection: isQuickSelection,
+        isAutoRefreshEnabled: isAutoRefreshEnabled,
+        includeNullDates: includeNullDates,
+      );
+    } catch (e, stackTrace) {
+      Logger.error('[date_filter_json_parse_failed] Failed to parse DateFilterSetting from JSON, falling back to today',
+          component: 'DateFilterSetting', error: e, stackTrace: stackTrace);
+
       final now = DateTime.now();
       return DateFilterSetting.quickSelection(
         key: 'today',
         startDate: DateTime(now.year, now.month, now.day),
         endDate: DateTime(now.year, now.month, now.day, 23, 59, 59),
         isAutoRefreshEnabled: true,
-        includeNullDates: includeNullDates,
       );
     }
-
-    return DateFilterSetting(
-      quickSelectionKey: quickSelectionKey,
-      startDate: startDate,
-      endDate: endDate,
-      isQuickSelection: isQuickSelection,
-      isAutoRefreshEnabled: isAutoRefreshEnabled,
-      includeNullDates: includeNullDates,
-    );
   }
 
   /// Convert to JSON

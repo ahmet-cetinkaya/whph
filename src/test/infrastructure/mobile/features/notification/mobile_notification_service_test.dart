@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/infrastructure/mobile/features/notification/mobile_notification_service.dart';
+import 'package:whph/infrastructure/shared/features/notification/task_notification_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
@@ -157,7 +158,7 @@ void main() {
     });
 
     // Existing tests...
-    group('handleNotificationTaskCompletion', () {
+    group('TaskNotificationHandler', () {
       test('should send CompleteTaskCommand when valid task ID is provided', () async {
         // Arrange
         final taskId = 'test-task-id';
@@ -166,10 +167,10 @@ void main() {
           argThat(isA<CompleteTaskCommand>()),
         )).thenAnswer((_) async => CompleteTaskCommandResponse(taskId: taskId));
 
-        service = MobileNotificationService(mockMediator);
+        final handler = TaskNotificationHandler(mockMediator);
 
         // Act
-        await service.handleNotificationTaskCompletion(taskId);
+        await handler.handleNotificationTaskCompletion(taskId);
 
         // Assert
         verify(mockMediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(

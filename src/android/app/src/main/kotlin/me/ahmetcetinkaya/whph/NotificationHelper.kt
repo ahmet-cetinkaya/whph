@@ -55,7 +55,7 @@ class NotificationHelper(private val context: Context) {
       NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
         this.description = description
         enableLights(true)
-        lightColor = lightColor
+        this.lightColor = lightColor
         enableVibration(true)
         setSound(
           RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
@@ -108,7 +108,7 @@ class NotificationHelper(private val context: Context) {
 
     val channelId = resolveNotificationChannel(payload)
 
-    val completePendingIntent = buildCompleteAction(payload, channelId)
+    val completePendingIntent = buildCompleteAction(payload, channelId, id)
 
     val builder =
       NotificationCompat.Builder(context, channelId)
@@ -149,20 +149,39 @@ class NotificationHelper(private val context: Context) {
     return payload?.contains("habitId") == true || payload?.contains("/habits") == true
   }
 
-  private fun buildCompleteAction(payload: String?, channelId: String): PendingIntent? {
+  private fun buildCompleteAction(
+    payload: String?,
+    channelId: String,
+    notificationId: Int,
+  ): PendingIntent? {
     val taskId = extractPayloadId(payload, "taskId")
     val habitId = extractPayloadId(payload, "habitId")
 
     return when {
       channelId == Constants.NotificationChannels.TASK_CHANNEL_ID && taskId != null ->
-        buildCompleteIntent(Constants.IntentActions.TASK_COMPLETE_ACTION, taskId, idOffset = 1000)
+        buildCompleteIntent(
+          Constants.IntentActions.TASK_COMPLETE_ACTION,
+          taskId,
+          notificationId,
+          idOffset = 1000,
+        )
       channelId == Constants.NotificationChannels.HABIT_CHANNEL_ID && habitId != null ->
-        buildCompleteIntent(Constants.IntentActions.HABIT_COMPLETE_ACTION, habitId, idOffset = 2000)
+        buildCompleteIntent(
+          Constants.IntentActions.HABIT_COMPLETE_ACTION,
+          habitId,
+          notificationId,
+          idOffset = 2000,
+        )
       else -> null
     }
   }
 
-  private fun buildCompleteIntent(action: String, entityId: String, idOffset: Int): PendingIntent {
+  private fun buildCompleteIntent(
+    action: String,
+    entityId: String,
+    notificationId: Int,
+    idOffset: Int,
+  ): PendingIntent {
     val completeIntent =
       Intent(context, NotificationReceiver::class.java).apply {
         this.action = action
@@ -171,10 +190,11 @@ class NotificationHelper(private val context: Context) {
           else Constants.IntentExtras.HABIT_ID,
           entityId,
         )
+        putExtra(Constants.IntentExtras.NOTIFICATION_ID, notificationId)
       }
     return PendingIntent.getBroadcast(
       context,
-      idOffset,
+      idOffset + notificationId,
       completeIntent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )

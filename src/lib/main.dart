@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_habit_notification_handler.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_task_notification_handler.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
 import 'package:whph/presentation/ui/app.dart';
@@ -150,23 +152,31 @@ Future<void> main(List<String> args) async {
       return;
     }
 
-    // Set up notification handling
+    // Set up notification handling with domain-specific handlers
     final payloadHandler = tempContainer.resolve<INotificationPayloadHandler>();
-    final notificationService = tempContainer.resolve<INotificationService>();
+    final taskNotificationHandler = tempContainer.resolve<ITaskNotificationHandler>();
+    final habitNotificationHandler = tempContainer.resolve<IHabitNotificationHandler>();
+    final habitsService = tempContainer.resolve<HabitsService>();
+
+    // Wire up UI refresh callback for habit completions from notifications
+    habitNotificationHandler.onHabitCompleted = (habitId) {
+      habitsService.notifyHabitRecordAdded(habitId);
+    };
+
     NotificationPayloadService.setupNotificationListener(
       payloadHandler,
-      onTaskCompletion: notificationService.handleNotificationTaskCompletion,
-      onHabitCompletion: notificationService.handleNotificationHabitCompletion,
+      onTaskCompletion: taskNotificationHandler.handleNotificationTaskCompletion,
+      onHabitCompletion: habitNotificationHandler.handleNotificationHabitCompletion,
     );
 
     // Process any pending task completions from notifications that arrived while app was closed
     await NotificationPayloadService.processPendingTaskCompletions(
-      notificationService.handleNotificationTaskCompletion,
+      taskNotificationHandler.handleNotificationTaskCompletion,
     );
 
     // Process any pending habit completions
     await NotificationPayloadService.processPendingHabitCompletions(
-      notificationService.handleNotificationHabitCompletion,
+      habitNotificationHandler.handleNotificationHabitCompletion,
     );
 
     // Get translation service for app wrapper
