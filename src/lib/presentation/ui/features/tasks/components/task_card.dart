@@ -11,6 +11,8 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
@@ -35,7 +37,6 @@ class TaskCard extends StatelessWidget {
 
   final List<Widget>? trailingButtons;
   final bool transparent;
-  final bool showSubTasks;
   final bool showScheduleButton;
   final bool isDense;
   final bool isCustomOrder;
@@ -53,48 +54,65 @@ class TaskCard extends StatelessWidget {
     this.onCompleted,
     required this.onOpenDetails,
     this.onScheduled,
-    this.showSubTasks = false,
     this.showScheduleButton = true,
     this.isDense = false,
     this.isCustomOrder = false,
     this.enableSwipeToComplete = true,
   });
 
-  Future<void> _handleSchedule(DateTime date) async {
-    final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
-    final taskService = container.resolve<TasksService>();
+  Future<void> _handleSchedule(BuildContext context, DateTime date) async {
+    try {
+      final plannedDateUtc = DateTimeHelper.toUtcDateTime(date);
 
-    // The date parameter comes from ScheduleButton in local time
-    // toUtcDateTime will properly convert it to UTC for storage
-    final command = SaveTaskCommand(
-      id: task.id,
-      title: task.title,
-      priority: task.priority,
-      plannedDate: DateTimeHelper.toUtcDateTime(date),
-      deadlineDate: task.deadlineDate,
-      estimatedTime: task.estimatedTime,
-      completedAt: task.completedAt,
-      description: task.description,
-      parentTaskId: task.parentTaskId,
-      order: task.order,
-      plannedDateReminderTime: task.plannedDateReminderTime,
-      plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
-      deadlineDateReminderTime: task.deadlineDateReminderTime,
-      deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
-      recurrenceType: task.recurrenceType,
-      recurrenceInterval: task.recurrenceInterval,
-      recurrenceDays: _recurrenceService.getRecurrenceDays(task),
-      recurrenceStartDate: task.recurrenceStartDate,
-      recurrenceEndDate: task.recurrenceEndDate,
-      recurrenceCount: task.recurrenceCount,
-      recurrenceParentId: task.recurrenceParentId,
-      recurrenceConfiguration: task.recurrenceConfiguration,
-    );
+      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
+      final taskService = container.resolve<TasksService>();
 
-    await _mediator.send(command);
+      // The date parameter comes from ScheduleButton in local time
+      // toUtcDateTime will properly convert it to UTC for storage
+      final command = SaveTaskCommand(
+        id: task.id,
+        title: task.title,
+        priority: task.priority,
+        plannedDate: plannedDateUtc,
+        deadlineDate: task.deadlineDate,
+        estimatedTime: task.estimatedTime,
+        completedAt: task.completedAt,
+        description: task.description,
+        parentTaskId: task.parentTaskId,
+        order: task.order,
+        plannedDateReminderTime: task.plannedDateReminderTime,
+        plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
+        deadlineDateReminderTime: task.deadlineDateReminderTime,
+        deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
+        recurrenceType: task.recurrenceType,
+        recurrenceInterval: task.recurrenceInterval,
+        recurrenceDays: _recurrenceService.getRecurrenceDays(task),
+        recurrenceStartDate: task.recurrenceStartDate,
+        recurrenceEndDate: task.recurrenceEndDate,
+        recurrenceCount: task.recurrenceCount,
+        recurrenceParentId: task.recurrenceParentId,
+        recurrenceConfiguration: task.recurrenceConfiguration,
+      );
 
-    taskService.notifyTaskUpdated(task.id);
-    onScheduled?.call();
+      await _mediator.send(command);
+
+      taskService.notifyTaskUpdated(task.id);
+      onScheduled?.call();
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Failed to schedule task ${taskItem.id}',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      if (context.mounted) {
+        ErrorHelper.showUnexpectedError(
+          context,
+          e,
+          stackTrace,
+          message: _translationService.translate(SharedTranslationKeys.unexpectedError),
+        );
+      }
+    }
   }
 
   @override
@@ -128,12 +146,6 @@ class TaskCard extends StatelessWidget {
             size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
           ),
           title: _buildTitleAndMetadata(context),
-          subtitle: showSubTasks && taskItem.subTasks.isNotEmpty
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _buildSubTasks(context),
-                )
-              : null,
           contentPadding: EdgeInsets.only(
             left: AppTheme.sizeMedium,
             right: isCustomOrder ? AppTheme.sizeMedium : AppTheme.size2XSmall,
@@ -155,7 +167,7 @@ class TaskCard extends StatelessWidget {
               if (showScheduleButton)
                 ScheduleButton(
                   translationService: _translationService,
-                  onScheduleSelected: _handleSchedule,
+                  onScheduleSelected: (date) => _handleSchedule(context, date),
                   isDense: isDense,
                   currentPlannedDate: taskItem.plannedDate,
                 ),
@@ -190,8 +202,24 @@ class TaskCard extends StatelessWidget {
         // This keeps the widget visible during completion and prevents the error
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.startToEnd) {
-            // Execute the completion callback
-            onCompleted!(taskItem.id);
+            try {
+              // Execute the completion callback
+              onCompleted!(taskItem.id);
+            } catch (e, stackTrace) {
+              Logger.error(
+                'Failed to complete task ${taskItem.id} via swipe gesture',
+                error: e,
+                stackTrace: stackTrace,
+              );
+              if (context.mounted) {
+                ErrorHelper.showUnexpectedError(
+                  context,
+                  e,
+                  stackTrace,
+                  message: _translationService.translate(SharedTranslationKeys.unexpectedError),
+                );
+              }
+            }
             // Return false to keep the widget in the tree
             // The parent will rebuild and filter out completed tasks
             return false;
@@ -308,25 +336,6 @@ class TaskCard extends StatelessWidget {
     }
 
     return elements;
-  }
-
-  List<Widget> _buildSubTasks(BuildContext context) {
-    return taskItem.subTasks.map((subTask) {
-      return Padding(
-        padding: EdgeInsets.only(left: isDense ? 12.0 : 16.0, top: isDense ? 4.0 : 8.0),
-        child: TaskCard(
-          taskItem: subTask,
-          onOpenDetails: () => onOpenDetails(),
-          onCompleted: onCompleted,
-          trailingButtons: trailingButtons,
-          transparent: true,
-          showSubTasks: showSubTasks,
-          isDense: isDense,
-          isCustomOrder: isCustomOrder,
-          enableSwipeToComplete: false, // Disable swipe on subtasks to avoid accidental completion
-        ),
-      );
-    }).toList();
   }
 
   Widget _buildInfoRow(IconData icon, String text, Color color) => Row(

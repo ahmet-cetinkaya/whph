@@ -4,6 +4,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:acore/acore.dart' hide Container;
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
@@ -167,7 +168,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
   void _handleTaskUpdate() {
     if (!mounted) return;
-    refresh();
+    refresh().catchError((e, stackTrace) {
+      Logger.error('Failed to refresh task list after update event', error: e, stackTrace: stackTrace);
+    });
   }
 
   void _saveScrollPosition() {
@@ -375,46 +378,70 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         return await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
       },
       onSuccess: (result) {
-        setState(() {
-          if (_tasks == null || isRefresh) {
-            _tasks = result;
-            _cachedGroupedTasks = null; // Invalidate cache
-            _cachedVisualItems = null;
-          } else {
-            // Deduplicate items to ensure uniqueness
-            final existingIds = _tasks!.items.map((e) => e.id).toSet();
-            final newItems = result.items.where((e) => !existingIds.contains(e.id)).toList();
+        try {
+          setState(() {
+            if (_tasks == null || isRefresh) {
+              _tasks = result;
+              _cachedGroupedTasks = null; // Invalidate cache
+              _cachedVisualItems = null;
+            } else {
+              // Deduplicate items to ensure uniqueness
+              final existingIds = _tasks!.items.map((e) => e.id).toSet();
+              final newItems = result.items.where((e) => !existingIds.contains(e.id)).toList();
 
-            _tasks = GetListTasksQueryResponse(
-              items: [..._tasks!.items, ...newItems],
-              totalItemCount: result.totalItemCount,
-              pageIndex: result.pageIndex,
-              pageSize: result.pageSize,
-            );
-            _cachedGroupedTasks = null; // Invalidate cache
-            _cachedVisualItems = null;
+              _tasks = GetListTasksQueryResponse(
+                items: [..._tasks!.items, ...newItems],
+                totalItemCount: result.totalItemCount,
+                pageIndex: result.pageIndex,
+                pageSize: result.pageSize,
+              );
+              _cachedGroupedTasks = null; // Invalidate cache
+              _cachedVisualItems = null;
+            }
+          });
+
+          if (_tasks != null) {
+            // Safely notify callbacks
+            try {
+              widget.onTasksLoaded?.call(_tasks!.items);
+            } catch (e, stackTrace) {
+              Logger.error('Failed to invoke onTasksLoaded callback', error: e, stackTrace: stackTrace);
+            }
+
+            try {
+              final incompleteTasks = _tasks!.items.where((task) => !task.isCompleted).length;
+              widget.onList?.call(incompleteTasks);
+            } catch (e, stackTrace) {
+              Logger.error('Failed to invoke onList callback', error: e, stackTrace: stackTrace);
+            }
+
+            // Check if we need to normalize very small orders
+            if (widget.enableReordering && _shouldNormalizeOrders(_tasks!.items)) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  _normalizeTaskOrders().catchError((e, stackTrace) {
+                    Logger.error('Failed to normalize task orders in post-frame callback',
+                        error: e, stackTrace: stackTrace);
+                  });
+                }
+              });
+            }
+
+            // For infinity scroll: check if viewport needs more content
+            if (widget.paginationMode == PaginationMode.infinityScroll && _tasks!.hasNext) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  try {
+                    checkAndFillViewport();
+                  } catch (e, stackTrace) {
+                    Logger.error('Failed to fill viewport in post-frame callback', error: e, stackTrace: stackTrace);
+                  }
+                }
+              });
+            }
           }
-        });
-
-        // Notify about loaded tasks
-        widget.onTasksLoaded?.call(_tasks?.items ?? []);
-
-        // Notify about incomplete task count (for confetti logic)
-        final incompleteTasks = _tasks?.items.where((task) => !task.isCompleted).length ?? 0;
-        widget.onList?.call(incompleteTasks);
-
-        // Check if we need to normalize very small orders
-        if (widget.enableReordering && _shouldNormalizeOrders(_tasks!.items)) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _normalizeTaskOrders();
-          });
-        }
-
-        // For infinity scroll: check if viewport needs more content
-        if (widget.paginationMode == PaginationMode.infinityScroll && _tasks!.hasNext) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            checkAndFillViewport();
-          });
+        } catch (e, stackTrace) {
+          Logger.error('Failed to update task list state', error: e, stackTrace: stackTrace);
         }
       },
     );
@@ -438,33 +465,54 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   Future<void> _normalizeTaskOrders() async {
     if (_tasks == null) return;
 
-    final items = _tasks!.items;
-    final shouldNormalize = _shouldNormalizeOrders(items);
+    try {
+      final items = _tasks!.items;
+      final shouldNormalize = _shouldNormalizeOrders(items);
 
-    if (!shouldNormalize) return;
+      if (!shouldNormalize) return;
 
-    // Sort items by current order to maintain relative positioning
-    final sortedItems = List<TaskListItem>.from(items)..sort((a, b) => a.order.compareTo(b.order));
+      // Sort items by current order to maintain relative positioning
+      final sortedItems = List<TaskListItem>.from(items)..sort((a, b) => a.order.compareTo(b.order));
 
-    // Normalize orders with proper spacing
-    for (int i = 0; i < sortedItems.length; i++) {
-      final newOrder = (i + 1) * OrderRank.initialStep;
-      final item = sortedItems[i];
+      int successCount = 0;
+      int failureCount = 0;
 
-      if ((item.order - newOrder).abs() > 1e-10) {
-        await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-          UpdateTaskOrderCommand(
-            taskId: item.id,
-            parentTaskId: widget.parentTaskId,
-            beforeTaskOrder: item.order,
-            afterTaskOrder: newOrder,
-          ),
-        );
+      // Normalize orders with proper spacing
+      for (int i = 0; i < sortedItems.length; i++) {
+        final newOrder = (i + 1) * OrderRank.initialStep;
+        final item = sortedItems[i];
+
+        if ((item.order - newOrder).abs() > 1e-10) {
+          try {
+            await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+              UpdateTaskOrderCommand(
+                taskId: item.id,
+                parentTaskId: widget.parentTaskId,
+                beforeTaskOrder: item.order,
+                afterTaskOrder: newOrder,
+              ),
+            );
+            successCount++;
+          } catch (e, stackTrace) {
+            failureCount++;
+            Logger.error(
+              'Failed to normalize order for task ${item.id}',
+              error: e,
+              stackTrace: stackTrace,
+            );
+          }
+        }
       }
-    }
 
-    // Refresh to get updated orders
-    await refresh();
+      if (failureCount > 0) {
+        Logger.warning('Completed normalization with $failureCount failures and $successCount successes.');
+      }
+
+      // Refresh to get updated orders
+      await refresh();
+    } catch (e, stackTrace) {
+      Logger.error('Critical error during task order normalization', error: e, stackTrace: stackTrace);
+    }
   }
 
   void _updateCacheIfNeeded() {
@@ -620,29 +668,29 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       }
     });
 
-    try {
-      final existingOrders = groupTasks.map((item) => item.order).toList()..removeAt(oldIndex);
-      double targetOrder;
+    final existingOrders = groupTasks.map((item) => item.order).toList()..removeAt(oldIndex);
+    double targetOrder;
 
-      if (targetIndex == 0) {
-        final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
-        targetOrder = firstOrder - OrderRank.initialStep;
-      } else if (targetIndex >= existingOrders.length) {
-        final lastOrder = existingOrders.isNotEmpty ? existingOrders.last : 0.0;
-        targetOrder = lastOrder + OrderRank.initialStep;
-      } else {
-        targetOrder = OrderRank.getTargetOrder(existingOrders, targetIndex);
-      }
+    if (targetIndex == 0) {
+      final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
+      targetOrder = firstOrder - OrderRank.initialStep;
+    } else if (targetIndex >= existingOrders.length) {
+      final lastOrder = existingOrders.isNotEmpty ? existingOrders.last : 0.0;
+      targetOrder = lastOrder + OrderRank.initialStep;
+    } else {
+      targetOrder = OrderRank.getTargetOrder(existingOrders, targetIndex);
+    }
 
-      if ((targetOrder - originalOrder).abs() < 1e-10) {
-        _dragStateNotifier.stopDragging();
-        return;
-      }
+    if ((targetOrder - originalOrder).abs() < 1e-10) {
+      _dragStateNotifier.stopDragging();
+      return;
+    }
 
-      await AsyncErrorHandler.executeVoid(
-        context: context,
-        errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
-        operation: () async {
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+      operation: () async {
+        try {
           await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
             UpdateTaskOrderCommand(
               taskId: task.id,
@@ -651,55 +699,44 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
               afterTaskOrder: targetOrder,
             ),
           );
-        },
-        onSuccess: () {
-          _dragStateNotifier.stopDragging();
-          widget.onReorderComplete?.call();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) refresh();
-          });
-        },
-        onError: (_) {
-          _dragStateNotifier.stopDragging();
-          if (mounted) refresh();
-        },
-      );
-    } catch (e) {
-      if (e is RankGapTooSmallException && mounted) {
-        // Fallback for RankGapTooSmallException: Try to recover by placing the item at the end of the group
-        // with a larger spacing. This helps to resolve the inconsistent order values.
-        final retryTargetOrder = (groupTasks.isNotEmpty ? groupTasks.last.order : 0.0) + OrderRank.initialStep * 2;
-
-        await AsyncErrorHandler.executeVoid(
-          context: context,
-          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
-          operation: () async {
-            await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-              UpdateTaskOrderCommand(
-                taskId: task.id,
-                parentTaskId: widget.parentTaskId,
-                beforeTaskOrder: originalOrder,
-                afterTaskOrder: retryTargetOrder,
-              ),
-            );
-          },
-          onSuccess: () {
-            _dragStateNotifier.stopDragging();
-            widget.onReorderComplete?.call();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) refresh();
-            });
-          },
-          onError: (_) {
-            _dragStateNotifier.stopDragging();
-            if (mounted) refresh();
-          },
-        );
-      } else {
+        } on RankGapTooSmallException {
+          // Fallback for RankGapTooSmallException: Try to recover by placing the item at the end of the group
+          // with a larger spacing. This helps to resolve the inconsistent order values.
+          final retryTargetOrder = (groupTasks.isNotEmpty ? groupTasks.last.order : 0.0) + OrderRank.initialStep * 2;
+          await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+            UpdateTaskOrderCommand(
+              taskId: task.id,
+              parentTaskId: widget.parentTaskId,
+              beforeTaskOrder: originalOrder,
+              afterTaskOrder: retryTargetOrder,
+            ),
+          );
+        }
+      },
+      onSuccess: () {
         _dragStateNotifier.stopDragging();
-        if (mounted) refresh();
-      }
-    }
+        try {
+          widget.onReorderComplete?.call();
+        } catch (e, stackTrace) {
+          Logger.error('Failed to invoke onReorderComplete callback', error: e, stackTrace: stackTrace);
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            refresh().catchError((e, stackTrace) {
+              Logger.error('Failed to refresh task list after reorder success', error: e, stackTrace: stackTrace);
+            });
+          }
+        });
+      },
+      onError: (_) {
+        _dragStateNotifier.stopDragging();
+        if (mounted) {
+          refresh().catchError((e, stackTrace) {
+            Logger.error('Failed to refresh task list after reorder error', error: e, stackTrace: stackTrace);
+          });
+        }
+      },
+    );
   }
 
   @override
@@ -779,6 +816,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                       },
                       itemBuilder: (context, i) {
                         final task = tasks[i];
+                        final isDense = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
                         final List<Widget> trailingButtons = [];
                         if (widget.trailingButtons != null) {
                           trailingButtons.addAll(widget.trailingButtons!(task));
@@ -813,8 +851,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                                   : () => widget.onScheduleTask!(task, DateTime.now()),
                               transparent: widget.transparentCards,
                               trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-                              showSubTasks: widget.includeSubTasks,
-                              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                              isDense: isDense,
                             ));
                       },
                     )
@@ -850,7 +887,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                                   : () => widget.onScheduleTask!(task, DateTime.now()),
                               transparent: widget.transparentCards,
                               trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-                              showSubTasks: widget.includeSubTasks,
                               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                             ));
                       },
@@ -949,7 +985,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
               : () => widget.onScheduleTask!(task, DateTime.now()),
           transparent: widget.transparentCards,
           trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-          showSubTasks: widget.includeSubTasks,
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           isCustomOrder: widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
         ),

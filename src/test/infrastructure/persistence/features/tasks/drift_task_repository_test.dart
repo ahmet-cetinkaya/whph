@@ -1190,6 +1190,205 @@ void main() {
           }
         }
       });
+
+      test('should keep parent visible when one of three subtasks is completed', () async {
+        // Regression test for GitHub issue #252:
+        // "Partially completed tasks are treated as complete when showing subtasks"
+        // Arrange - Create a parent with 3 subtasks, complete only 1
+        final parentTask = Task(
+          id: 'partial-completion-parent',
+          createdDate: DateTime.utc(2024, 1, 1),
+          title: 'Parent with 3 subtasks',
+        );
+        await repository.add(parentTask);
+
+        final subtaskA = Task(
+          id: 'partial-subtask-a',
+          createdDate: DateTime.utc(2024, 1, 2),
+          title: 'Subtask A - Completed',
+          parentTaskId: 'partial-completion-parent',
+          completedAt: DateTime.utc(2024, 1, 3),
+        );
+        await repository.add(subtaskA);
+
+        final subtaskB = Task(
+          id: 'partial-subtask-b',
+          createdDate: DateTime.utc(2024, 1, 4),
+          title: 'Subtask B - Incomplete',
+          parentTaskId: 'partial-completion-parent',
+          completedAt: null,
+        );
+        await repository.add(subtaskB);
+
+        final subtaskC = Task(
+          id: 'partial-subtask-c',
+          createdDate: DateTime.utc(2024, 1, 5),
+          title: 'Subtask C - Incomplete',
+          parentTaskId: 'partial-completion-parent',
+          completedAt: null,
+        );
+        await repository.add(subtaskC);
+
+        // Act - Filter for incomplete tasks with subtasks included
+        final incompleteResult = await repository.getListWithOptions(
+          pageIndex: 0,
+          pageSize: 10,
+          filter: TaskQueryFilter(
+            completed: false,
+            includeParentAndSubTasks: true,
+          ),
+        );
+
+        // Assert - Parent should STILL be visible (not all subtasks completed)
+        final resultIds = incompleteResult.items.map((t) => t.id).toList();
+        expect(resultIds, contains('partial-completion-parent'),
+            reason: 'Parent should remain visible when only 1 of 3 subtasks is completed');
+        expect(resultIds, contains('partial-subtask-b'), reason: 'Incomplete subtask B should be visible');
+        expect(resultIds, contains('partial-subtask-c'), reason: 'Incomplete subtask C should be visible');
+        // Completed subtask A should NOT appear in incomplete filter
+        expect(resultIds, isNot(contains('partial-subtask-a')),
+            reason: 'Completed subtask A should not appear in incomplete filter');
+      });
+
+      test('should hide parent when ALL subtasks are completed', () async {
+        // Arrange - Create a parent with 2 subtasks, complete both
+        final parentTask = Task(
+          id: 'all-complete-parent',
+          createdDate: DateTime.utc(2024, 1, 1),
+          title: 'Parent with all subtasks done',
+        );
+        await repository.add(parentTask);
+
+        final subtask1 = Task(
+          id: 'all-complete-sub-1',
+          createdDate: DateTime.utc(2024, 1, 2),
+          title: 'Subtask 1 - Completed',
+          parentTaskId: 'all-complete-parent',
+          completedAt: DateTime.utc(2024, 1, 3),
+        );
+        await repository.add(subtask1);
+
+        final subtask2 = Task(
+          id: 'all-complete-sub-2',
+          createdDate: DateTime.utc(2024, 1, 4),
+          title: 'Subtask 2 - Completed',
+          parentTaskId: 'all-complete-parent',
+          completedAt: DateTime.utc(2024, 1, 5),
+        );
+        await repository.add(subtask2);
+
+        // Act - Filter for incomplete tasks with subtasks included
+        final incompleteResult = await repository.getListWithOptions(
+          pageIndex: 0,
+          pageSize: 10,
+          filter: TaskQueryFilter(
+            completed: false,
+            includeParentAndSubTasks: true,
+          ),
+        );
+
+        // Assert - Parent should be hidden (all subtasks completed)
+        final resultIds = incompleteResult.items.map((t) => t.id).toList();
+        expect(resultIds, isNot(contains('all-complete-parent')),
+            reason: 'Parent should be hidden when ALL subtasks are completed');
+        expect(resultIds, isNot(contains('all-complete-sub-1')));
+        expect(resultIds, isNot(contains('all-complete-sub-2')));
+      });
+
+      test('should show parent with no subtasks when filtering incomplete tasks', () async {
+        // Arrange - Create a parent with no subtasks
+        final parentTask = Task(
+          id: 'no-subtasks-parent',
+          createdDate: DateTime.utc(2024, 1, 1),
+          title: 'Parent without subtasks',
+          completedAt: null,
+        );
+        await repository.add(parentTask);
+
+        // Act - Filter for incomplete tasks with subtasks included
+        final incompleteResult = await repository.getListWithOptions(
+          pageIndex: 0,
+          pageSize: 10,
+          filter: TaskQueryFilter(
+            completed: false,
+            includeParentAndSubTasks: true,
+          ),
+        );
+
+        // Assert - Parent should be visible (no subtasks means not fully completed)
+        final resultIds = incompleteResult.items.map((t) => t.id).toList();
+        expect(resultIds, contains('no-subtasks-parent'),
+            reason: 'Parent without subtasks should remain visible in incomplete filter');
+      });
+
+      test('should show parent with single incomplete subtask', () async {
+        // Arrange - Create a parent with 1 subtask that is NOT completed
+        final parentTask = Task(
+          id: 'single-incomplete-parent',
+          createdDate: DateTime.utc(2024, 1, 1),
+          title: 'Parent with single subtask',
+        );
+        await repository.add(parentTask);
+
+        final subtask = Task(
+          id: 'single-incomplete-sub',
+          createdDate: DateTime.utc(2024, 1, 2),
+          title: 'Only Subtask - Incomplete',
+          parentTaskId: 'single-incomplete-parent',
+          completedAt: null,
+        );
+        await repository.add(subtask);
+
+        // Act - Filter for incomplete tasks with subtasks included
+        final incompleteResult = await repository.getListWithOptions(
+          pageIndex: 0,
+          pageSize: 10,
+          filter: TaskQueryFilter(
+            completed: false,
+            includeParentAndSubTasks: true,
+          ),
+        );
+
+        // Assert - Both parent and subtask should be visible
+        final resultIds = incompleteResult.items.map((t) => t.id).toList();
+        expect(resultIds, contains('single-incomplete-parent'));
+        expect(resultIds, contains('single-incomplete-sub'));
+      });
+
+      test('should show completed parent with single completed subtask', () async {
+        // Arrange - Create a parent and subtask, both completed
+        final parentTask = Task(
+          id: 'single-complete-parent',
+          createdDate: DateTime.utc(2024, 1, 1),
+          title: 'Completed Parent',
+          completedAt: DateTime.utc(2024, 1, 2),
+        );
+        await repository.add(parentTask);
+
+        final subtask = Task(
+          id: 'single-complete-sub',
+          createdDate: DateTime.utc(2024, 1, 3),
+          title: 'Completed Subtask',
+          parentTaskId: 'single-complete-parent',
+          completedAt: DateTime.utc(2024, 1, 4),
+        );
+        await repository.add(subtask);
+
+        // Act - Filter for completed tasks with subtasks included
+        final completedResult = await repository.getListWithOptions(
+          pageIndex: 0,
+          pageSize: 10,
+          filter: TaskQueryFilter(
+            completed: true,
+            includeParentAndSubTasks: true,
+          ),
+        );
+
+        // Assert - Both parent and subtask should be visible
+        final resultIds = completedResult.items.map((t) => t.id).toList();
+        expect(resultIds, contains('single-complete-parent'));
+        expect(resultIds, contains('single-complete-sub'));
+      });
     });
 
     group('edge cases and error handling', () {

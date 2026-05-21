@@ -6,6 +6,90 @@ void main() {
   group('TaskQueryBuilder', () {
     final builder = TaskQueryBuilder();
 
+    group('buildCompletionCondition', () {
+      test('returns neutral condition when filterByCompleted is null', () {
+        final result = builder.buildCompletionCondition(
+          filterByCompleted: null,
+          areParentAndSubTasksIncluded: false,
+        );
+
+        expect(result.condition, equals('1=1'));
+        expect(result.variables, isEmpty);
+      });
+
+      test('filters completed tasks when areParentAndSubTasksIncluded is false', () {
+        final result = builder.buildCompletionCondition(
+          filterByCompleted: true,
+          areParentAndSubTasksIncluded: false,
+        );
+
+        expect(result.condition, contains('task_table.completed_at IS NOT NULL'));
+        expect(result.variables, isEmpty);
+      });
+
+      test('filters incomplete tasks when areParentAndSubTasksIncluded is false', () {
+        final result = builder.buildCompletionCondition(
+          filterByCompleted: false,
+          areParentAndSubTasksIncluded: false,
+        );
+
+        expect(result.condition, contains('task_table.completed_at IS NULL'));
+        expect(result.variables, isEmpty);
+      });
+
+      test('includes parent if any subtask is completed when filterByCompleted is true', () {
+        final result = builder.buildCompletionCondition(
+          filterByCompleted: true,
+          areParentAndSubTasksIncluded: true,
+        );
+
+        expect(result.condition, contains('task_table.completed_at IS NOT NULL'));
+        expect(result.condition, contains('EXISTS(SELECT 1 FROM task_table subtask'));
+        expect(result.condition, contains('subtask.completed_at IS NOT NULL'));
+        expect(result.condition, contains('EXISTS(SELECT 1 FROM task_table parent'));
+      });
+
+      test('excludes parent only when ALL subtasks are completed when filterByCompleted is false', () {
+        final result = builder.buildCompletionCondition(
+          filterByCompleted: false,
+          areParentAndSubTasksIncluded: true,
+        );
+
+        // Parent must be incomplete
+        expect(result.condition, contains('task_table.completed_at IS NULL'));
+        // Parent should remain if it has NO subtasks
+        expect(result.condition,
+            contains('NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id)'));
+        // Parent should remain if it has at least one incomplete subtask
+        expect(
+            result.condition,
+            contains(
+                'EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NULL)'));
+        // Parent should be excluded if its parent is completed
+        expect(
+            result.condition,
+            contains(
+                'NOT EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)'));
+      });
+
+      test('uses OR logic between no-subtasks and has-incomplete-subtask conditions', () {
+        final result = builder.buildCompletionCondition(
+          filterByCompleted: false,
+          areParentAndSubTasksIncluded: true,
+        );
+
+        // The two conditions must be OR'd: a parent with no subtasks OR a parent with at least one incomplete subtask
+        expect(result.condition, contains('OR'));
+        // Both conditions are grouped together in parentheses
+        expect(result.condition,
+            contains('NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id)'));
+        expect(
+            result.condition,
+            contains(
+                'EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NULL)'));
+      });
+    });
+
     test('buildOrderByClause generates default sort for tag when no custom order provided', () {
       final customOrder = [CustomOrder(field: 'tag', direction: SortDirection.asc)];
       final clause = builder.buildOrderByClause(customOrder, customTagSortOrder: null);
