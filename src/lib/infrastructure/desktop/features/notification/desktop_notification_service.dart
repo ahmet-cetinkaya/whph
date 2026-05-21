@@ -11,6 +11,7 @@ import 'package:whph/infrastructure/shared/features/notification/base_notificati
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/infrastructure/windows/constants/windows_app_constants.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_task_notification_handler.dart';
 
 class DesktopNotificationService extends BaseNotificationService {
   @override
@@ -19,14 +20,17 @@ class DesktopNotificationService extends BaseNotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications;
   final IWindowManager _windowManager;
   final INotificationPayloadHandler _payloadHandler;
+  final ITaskNotificationHandler _taskNotificationHandler;
 
   DesktopNotificationService(
     super.mediator,
     IWindowManager windowManager,
     INotificationPayloadHandler payloadHandler,
+    ITaskNotificationHandler taskNotificationHandler,
   )   : _flutterLocalNotifications = FlutterLocalNotificationsPlugin(),
         _windowManager = windowManager,
-        _payloadHandler = payloadHandler;
+        _payloadHandler = payloadHandler,
+        _taskNotificationHandler = taskNotificationHandler;
 
   @override
   Future<void> init() async {
@@ -69,7 +73,7 @@ class DesktopNotificationService extends BaseNotificationService {
       if (payload != null) {
         final taskId = _extractTaskIdFromPayload(payload);
         if (taskId != null) {
-          await handleNotificationTaskCompletion(taskId);
+          await _taskNotificationHandler.handleNotificationTaskCompletion(taskId);
         }
       }
       return;

@@ -16,26 +16,39 @@ import 'package:whph/core/application/shared/services/abstraction/i_application_
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/infrastructure/android/features/app_usage/android_app_usage_service.dart';
+import 'package:whph/infrastructure/android/features/reminder/android_reminder_service.dart';
 import 'package:whph/infrastructure/android/features/settings/android_startup_settings_service.dart';
+import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/infrastructure/desktop/features/notification/desktop_notification_service.dart';
 import 'package:whph/infrastructure/desktop/features/reminder/desktop_reminder_service.dart';
-import 'package:whph/infrastructure/desktop/settings/desktop_startup_settings_service.dart';
+import 'package:whph/infrastructure/desktop/features/system_tray/desktop_system_tray_service.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/linux_setup_service.dart';
-import 'package:whph/infrastructure/android/features/app_usage/android_app_usage_service.dart';
-import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:whph/infrastructure/desktop/settings/desktop_startup_settings_service.dart';
 import 'package:whph/infrastructure/linux/features/app_usages/linux_app_usage_service.dart';
 import 'package:whph/infrastructure/linux/features/notification/flatpak_notification_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/linux_setup_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_desktop_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_firewall_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_kde_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_update_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/linux_desktop_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/linux_firewall_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/linux_kde_service.dart';
+import 'package:whph/infrastructure/linux/features/setup/services/linux_update_service.dart';
+import 'package:whph/infrastructure/linux/features/system_tray/flatpak_system_tray_service.dart';
 import 'package:whph/infrastructure/linux/features/window/linux_window_manager.dart';
+import 'package:whph/infrastructure/mobile/features/notification/mobile_notification_service.dart';
+import 'package:whph/infrastructure/mobile/features/system_tray/mobile_system_tray_service.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
+import 'package:whph/infrastructure/shared/features/notification/habit_notification_handler.dart';
+import 'package:whph/infrastructure/shared/features/notification/task_notification_handler.dart';
+import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
+import 'package:whph/infrastructure/shared/features/wakelock/wakelock_service.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/infrastructure/shared/features/window/window_manager.dart';
 import 'package:whph/infrastructure/windows/features/app_usages/windows_app_usage_service.dart';
-import 'package:whph/infrastructure/android/features/reminder/android_reminder_service.dart';
-import 'package:whph/infrastructure/mobile/features/system_tray/mobile_system_tray_service.dart';
-import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
-import 'package:whph/infrastructure/shared/features/wakelock/wakelock_service.dart';
 import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_elevation_service.dart';
 import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_firewall_service.dart';
 import 'package:whph/infrastructure/windows/features/setup/services/abstraction/i_windows_shortcut_service.dart';
@@ -45,21 +58,12 @@ import 'package:whph/infrastructure/windows/features/setup/services/windows_fire
 import 'package:whph/infrastructure/windows/features/setup/services/windows_shortcut_service.dart';
 import 'package:whph/infrastructure/windows/features/setup/services/windows_update_service.dart';
 import 'package:whph/infrastructure/windows/features/setup/windows_setup_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_firewall_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_desktop_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_kde_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/abstraction/i_linux_update_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/linux_firewall_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/linux_desktop_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/linux_kde_service.dart';
-import 'package:whph/infrastructure/linux/features/setup/services/linux_update_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_habit_notification_handler.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
-import 'package:whph/infrastructure/desktop/features/system_tray/desktop_system_tray_service.dart';
-import 'package:whph/infrastructure/linux/features/system_tray/flatpak_system_tray_service.dart';
-import 'package:whph/infrastructure/mobile/features/notification/mobile_notification_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_task_notification_handler.dart';
 import 'package:whph/infrastructure/android/features/setup/android_setup_service.dart';
 import 'package:whph/infrastructure/android/features/file_system/android_file_service.dart';
 import 'package:whph/infrastructure/android/features/file_system/android_application_directory_service.dart';
@@ -119,13 +123,24 @@ void registerInfrastructure(IContainer container) {
         return FlatpakNotificationService(mediator, windowManager, payloadHandler);
       }
 
-      return DesktopNotificationService(mediator, windowManager, payloadHandler);
+      final taskHandler = container.resolve<ITaskNotificationHandler>();
+      return DesktopNotificationService(mediator, windowManager, payloadHandler, taskHandler);
     }
     if (PlatformUtils.isMobile) {
       return MobileNotificationService(mediator);
     }
 
     throw Exception('Unsupported platform for notification service.');
+  });
+
+  container.registerSingleton<ITaskNotificationHandler>((_) {
+    final mediator = container.resolve<Mediator>();
+    return TaskNotificationHandler(mediator);
+  });
+
+  container.registerSingleton<IHabitNotificationHandler>((_) {
+    final mediator = container.resolve<Mediator>();
+    return HabitNotificationHandler(mediator);
   });
 
   container.registerSingleton<ISystemTrayService>((_) {
