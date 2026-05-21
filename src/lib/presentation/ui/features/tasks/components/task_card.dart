@@ -35,7 +35,6 @@ class TaskCard extends StatelessWidget {
 
   final List<Widget>? trailingButtons;
   final bool transparent;
-  final bool showSubTasks;
   final bool showScheduleButton;
   final bool isDense;
   final bool isCustomOrder;
@@ -53,7 +52,6 @@ class TaskCard extends StatelessWidget {
     this.onCompleted,
     required this.onOpenDetails,
     this.onScheduled,
-    this.showSubTasks = false,
     this.showScheduleButton = true,
     this.isDense = false,
     this.isCustomOrder = false,
@@ -128,12 +126,6 @@ class TaskCard extends StatelessWidget {
             size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
           ),
           title: _buildTitleAndMetadata(context),
-          subtitle: showSubTasks && taskItem.subTasks.isNotEmpty
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _buildSubTasks(context),
-                )
-              : null,
           contentPadding: EdgeInsets.only(
             left: AppTheme.sizeMedium,
             right: isCustomOrder ? AppTheme.sizeMedium : AppTheme.size2XSmall,
@@ -308,25 +300,6 @@ class TaskCard extends StatelessWidget {
     }
 
     return elements;
-  }
-
-  List<Widget> _buildSubTasks(BuildContext context) {
-    return taskItem.subTasks.map((subTask) {
-      return Padding(
-        padding: EdgeInsets.only(left: isDense ? 12.0 : 16.0, top: isDense ? 4.0 : 8.0),
-        child: TaskCard(
-          taskItem: subTask,
-          onOpenDetails: () => onOpenDetails(),
-          onCompleted: onCompleted,
-          trailingButtons: trailingButtons,
-          transparent: true,
-          showSubTasks: showSubTasks,
-          isDense: isDense,
-          isCustomOrder: isCustomOrder,
-          enableSwipeToComplete: false, // Disable swipe on subtasks to avoid accidental completion
-        ),
-      );
-    }).toList();
   }
 
   Widget _buildInfoRow(IconData icon, String text, Color color) => Row(

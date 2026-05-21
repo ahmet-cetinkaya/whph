@@ -779,6 +779,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                       },
                       itemBuilder: (context, i) {
                         final task = tasks[i];
+                        final isDense = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
                         final List<Widget> trailingButtons = [];
                         if (widget.trailingButtons != null) {
                           trailingButtons.addAll(widget.trailingButtons!(task));
@@ -813,8 +814,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                                   : () => widget.onScheduleTask!(task, DateTime.now()),
                               transparent: widget.transparentCards,
                               trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-                              showSubTasks: widget.includeSubTasks,
-                              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                              isDense: isDense,
                             ));
                       },
                     )
@@ -850,7 +850,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                                   : () => widget.onScheduleTask!(task, DateTime.now()),
                               transparent: widget.transparentCards,
                               trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-                              showSubTasks: widget.includeSubTasks,
                               isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                             ));
                       },
@@ -949,7 +948,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
               : () => widget.onScheduleTask!(task, DateTime.now()),
           transparent: widget.transparentCards,
           trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-          showSubTasks: widget.includeSubTasks,
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           isCustomOrder: widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
         ),

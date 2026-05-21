@@ -255,7 +255,9 @@ class TaskQueryBuilder {
     if (filterByCompleted == null) return (condition: '1=1', variables: variables);
 
     if (areParentAndSubTasksIncluded) {
-      // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent is completed
+      // For parent and subtasks inclusion, check if the task itself or any of its subtasks or parent is completed.
+      // When showing incomplete tasks (filterByCompleted=false), a parent should remain visible if it has
+      // at least one incomplete subtask — it should only be hidden when ALL subtasks are completed.
       final condition = filterByCompleted
           ? '''(
             task_table.completed_at IS NOT NULL
@@ -264,7 +266,10 @@ class TaskQueryBuilder {
           )'''
           : '''(
             task_table.completed_at IS NULL
-            AND NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NOT NULL)
+            AND (
+              NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id)
+              OR EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NULL)
+            )
             AND NOT EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)
           )''';
 

@@ -342,7 +342,6 @@ void main() {
               taskItem: taskWithSubTasks,
               onOpenDetails: () {},
               onCompleted: (id) {},
-              showSubTasks: true,
               enableSwipeToComplete: true,
             ),
           ),
@@ -509,7 +508,7 @@ void main() {
       expect(find.text('Untitled'), findsOneWidget);
     });
 
-    testWidgets('should display subtasks when showSubTasks is true', (tester) async {
+    testWidgets('should not display subtasks in card', (tester) async {
       // Arrange
       final taskWithSubTasks = TaskListItem(
         id: 'parent-task',
@@ -536,50 +535,12 @@ void main() {
               taskItem: taskWithSubTasks,
               onOpenDetails: () {},
               onCompleted: (id) {},
-              showSubTasks: true,
             ),
           ),
         ),
       );
 
-      // Act & Assert
-      expect(find.text('Subtask 1'), findsOneWidget);
-    });
-
-    testWidgets('should not display subtasks when showSubTasks is false', (tester) async {
-      // Arrange
-      final taskWithSubTasks = TaskListItem(
-        id: 'parent-task',
-        title: 'Parent Task',
-        isCompleted: false,
-        priority: EisenhowerPriority.urgentImportant,
-        tags: [],
-        subTasks: [
-          TaskListItem(
-            id: 'subtask-1',
-            title: 'Subtask 1',
-            isCompleted: false,
-            priority: EisenhowerPriority.urgentImportant,
-            tags: [],
-            subTasks: [],
-          ),
-        ],
-      );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: TaskCard(
-              taskItem: taskWithSubTasks,
-              onOpenDetails: () {},
-              onCompleted: (id) {},
-              showSubTasks: false,
-            ),
-          ),
-        ),
-      );
-
-      // Act & Assert
+      // Act & Assert - Subtasks are rendered as flat list items, not inside the card
       expect(find.text('Subtask 1'), findsNothing);
     });
   });
