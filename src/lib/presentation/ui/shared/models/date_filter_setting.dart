@@ -61,6 +61,11 @@ class DateFilterSetting {
       Logger.error('$errorCode: At least one of startDate or endDate must be provided for manual date filters',
           component: 'DateFilterSetting');
       throw ArgumentError('At least one of startDate or endDate must be provided for manual date filters');
+    if (!isQuickSelection && startDate == null && endDate == null) {
+      const errorCode = 'date_filter.no_dates_provided';
+      Logger.error('$errorCode: At least one of startDate or endDate must be provided for manual date filters',
+          component: 'DateFilterSetting');
+      throw ArgumentError('At least one of startDate or endDate must be provided for manual date filters');
     }
 
     return DateFilterSetting._(
@@ -152,6 +157,9 @@ class DateFilterSetting {
       isQuickSelection = false;
     }
 
+    if (isAutoRefreshEnabled && !isQuickSelection) {
+      const errorCode = 'date_filter_invalid_json';
+      Logger.warning('$errorCode: Corrupted date filter: isAutoRefreshEnabled=true without quick selection',
     if (isAutoRefreshEnabled && !isQuickSelection) {
       const errorCode = 'date_filter_invalid_json';
       Logger.warning('$errorCode: Corrupted date filter: isAutoRefreshEnabled=true without quick selection',
