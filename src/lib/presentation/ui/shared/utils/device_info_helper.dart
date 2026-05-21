@@ -10,7 +10,7 @@ class DeviceInfoHelper {
   static Future<String> getDeviceName() async {
     try {
       if (Platform.isAndroid) {
-        final info = await _deviceInfo.deviceInfo;
+        final BaseDeviceInfo info = await _deviceInfo.deviceInfo;
         String deviceName;
         if (info is AndroidDeviceInfo) {
           deviceName = '${info.brand.toUpperCase()} ${info.model}';
@@ -36,7 +36,7 @@ class DeviceInfoHelper {
 
       if (Platform.isLinux) {
         try {
-          final info = await _deviceInfo.deviceInfo;
+          final BaseDeviceInfo info = await _deviceInfo.deviceInfo;
           if (info is LinuxDeviceInfo) {
             return userName != null ? '${info.prettyName} ($userName)' : info.prettyName;
           }
@@ -49,7 +49,7 @@ class DeviceInfoHelper {
 
       if (Platform.isWindows) {
         try {
-          final info = await _deviceInfo.deviceInfo;
+          final BaseDeviceInfo info = await _deviceInfo.deviceInfo;
           if (info is WindowsDeviceInfo) {
             return userName != null ? '${info.computerName} ($userName)' : info.computerName;
           }
@@ -62,7 +62,7 @@ class DeviceInfoHelper {
 
       if (Platform.isMacOS) {
         try {
-          final info = await _deviceInfo.deviceInfo;
+          final BaseDeviceInfo info = await _deviceInfo.deviceInfo;
           if (info is MacOsDeviceInfo) {
             return userName != null ? '${info.computerName} ($userName)' : info.computerName;
           }
@@ -75,7 +75,7 @@ class DeviceInfoHelper {
 
       if (Platform.isIOS) {
         try {
-          final info = await _deviceInfo.deviceInfo;
+          final BaseDeviceInfo info = await _deviceInfo.deviceInfo;
           if (info is IosDeviceInfo) {
             return info.name;
           }

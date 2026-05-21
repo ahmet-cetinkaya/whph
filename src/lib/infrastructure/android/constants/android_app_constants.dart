@@ -2,6 +2,9 @@
 class AndroidAppConstants {
   static const String packageName = "me.ahmetcetinkaya.whph";
 
+  /// Default notification icon resource name
+  static const String notificationIcon = 'ic_notification';
+
   /// Method channel names
   static final channels = _Channels();
 
@@ -54,6 +57,9 @@ class _IntentActions {
 
   String get notificationClicked => "${AndroidAppConstants.packageName}.NOTIFICATION_CLICKED";
   String get alarmTriggered => "${AndroidAppConstants.packageName}.ALARM_TRIGGERED";
+  String get timerStop => "${AndroidAppConstants.packageName}.TIMER_STOP";
+  String get timerStartWork => "${AndroidAppConstants.packageName}.TIMER_START_WORK";
+  String get timerStartBreak => "${AndroidAppConstants.packageName}.TIMER_START_BREAK";
 }
 
 /// Intent extra constants

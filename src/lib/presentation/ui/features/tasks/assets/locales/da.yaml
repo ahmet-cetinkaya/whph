@@ -349,6 +349,8 @@ tasks:
     actions:
       stop_timer: Stop Timer
     notifications:
+      start_break: "Start pause"
+      start_work: "Start arbejde"
       break_completed: Pausesession færdig!
       long_break_completed: Lang pause færdig!
       time_remaining_prefix: "Tid tilbage:"

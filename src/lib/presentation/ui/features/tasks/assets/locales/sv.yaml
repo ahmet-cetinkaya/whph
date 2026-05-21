@@ -270,6 +270,8 @@ tasks:
     actions:
       stop_timer: Stoppa Timer
     notifications:
+      start_break: "Starta paus"
+      start_work: "Starta arbete"
       break_completed: Pausesession slutförd!
       long_break_completed: Lång paus slutförd!
       time_remaining_prefix: "Återstående tid:"

@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer_controller.dart';
@@ -13,15 +16,18 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
+import 'package:whph/presentation/ui/shared/services/notification_payload_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/features/tasks/models/timer_settings.dart';
 
 class AppTimer extends StatefulWidget {
   final void Function(Duration elapsedIncrement)? onTick;
   final VoidCallback? onTimerStart;
-  final Function(Duration)? onTimerStop;
-  final Function(Duration)? onWorkSessionComplete;
+  final void Function(Duration elapsed)? onTimerStop;
+  final void Function(Duration elapsedIncrement)? onWorkSessionComplete;
   final bool isMiniLayout;
 
   const AppTimer({
@@ -44,12 +50,40 @@ class _AppTimerState extends State<AppTimer> {
   late final IWakelockService _wakelockService;
   late final INotificationService _notificationService;
   late final ITranslationService _translationService;
+  StreamSubscription<String>? _actionSubscription;
 
   @override
   void initState() {
     super.initState();
     _initializeServices();
     _controller.initializeSettings();
+
+    // Setup action stream for background notification buttons
+    NotificationPayloadService.setupActionStream();
+    _actionSubscription = NotificationPayloadService.actionStream.listen(_handleNotificationAction);
+  }
+
+  void _handleNotificationAction(String actionId) {
+    if (!mounted) return;
+
+    if (actionId == AndroidAppConstants.intentActions.timerStop) {
+      if (_controller.isRunning || _controller.isAlarmPlaying) {
+        _controller.stopTimer();
+      }
+    } else if (actionId == AndroidAppConstants.intentActions.timerStartWork) {
+      if (!_controller.isWorking) {
+        _controller.toggleWorkBreak();
+      }
+    } else if (actionId == AndroidAppConstants.intentActions.timerStartBreak) {
+      if (_controller.isWorking) {
+        _controller.toggleWorkBreak();
+      }
+    } else {
+      Logger.warning(
+        'Received unknown notification action: $actionId',
+        component: 'AppTimer',
+      );
+    }
   }
 
   void _initializeServices() {
@@ -59,8 +93,9 @@ class _AppTimerState extends State<AppTimer> {
     _translationService = container.resolve<ITranslationService>();
     _notificationService = container.resolve<INotificationService>();
     _wakelockService = container.resolve<IWakelockService>();
+    final reminderService = container.resolve<IReminderService>();
 
-    _controller = TimerController(mediator: mediator);
+    _controller = TimerController(mediator: mediator, reminderService: reminderService);
     _soundHelper = TimerSoundHelper(soundManagerService: soundManagerService);
     _systemTrayHelper = TimerSystemTrayHelper(
       systemTrayService: systemTrayService,
@@ -77,14 +112,18 @@ class _AppTimerState extends State<AppTimer> {
     _controller.onTick = _handleTick;
     _controller.onAlarmStart = _handleAlarmStart;
     _controller.onAlarmStop = _handleAlarmStop;
+    _controller.setAlarmText(
+      title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
+      body: _translationService.translate(TaskTranslationKeys.pomodoroTimerCompleted),
+    );
   }
 
-  void _handleTimerStarted() {
+  Future<void> _handleTimerStarted() async {
     widget.onTimerStart?.call();
     _soundHelper.playControlSound();
-    _systemTrayHelper.setIcon(isWorking: _controller.isWorking);
-    _systemTrayHelper.addMenuItems(onStopTimer: _controller.stopTimer);
-    _updateSystemTrayTimer();
+    await _systemTrayHelper.setIcon(isWorking: _controller.isWorking);
+    await _systemTrayHelper.addMenuItems(onStopTimer: _controller.stopTimer);
+    await _updateSystemTrayTimer();
 
     if (_controller.tickingEnabled) {
       _soundHelper.startTicking(
@@ -99,20 +138,20 @@ class _AppTimerState extends State<AppTimer> {
     }
   }
 
-  void _handleTimerStopped(Duration elapsed) {
+  Future<void> _handleTimerStopped(Duration elapsed) async {
     _soundHelper.stopTicking();
     _soundHelper.stopAll();
     _soundHelper.playControlSound();
     _wakelockService.disable();
-    _systemTrayHelper.resetIcon();
-    _systemTrayHelper.removeMenuItems();
-    _systemTrayHelper.resetToDefault();
+    await _systemTrayHelper.resetIcon();
+    await _systemTrayHelper.removeMenuItems();
+    await _systemTrayHelper.resetToDefault();
     widget.onTimerStop?.call(elapsed);
   }
 
-  void _handleTick(Duration elapsedIncrement) {
+  Future<void> _handleTick(Duration elapsedIncrement) async {
     widget.onTick?.call(elapsedIncrement);
-    _updateSystemTrayTimer();
+    await _updateSystemTrayTimer();
   }
 
   void _handleAlarmStart() {
@@ -125,7 +164,7 @@ class _AppTimerState extends State<AppTimer> {
     _soundHelper.stopAlarm();
   }
 
-  void _updateSystemTrayTimer() {
+  Future<void> _updateSystemTrayTimer() async {
     final timeDisplay = TimerUiHelpers.getDisplayTime(
       context: context,
       timerMode: _controller.timerMode,
@@ -133,7 +172,7 @@ class _AppTimerState extends State<AppTimer> {
       remainingTime: _controller.remainingTime,
     );
 
-    _systemTrayHelper.updateTimerNotification(
+    await _systemTrayHelper.updateTimerNotification(
       isWorking: _controller.isWorking,
       isLongBreak: _controller.isLongBreak,
       timeDisplay: timeDisplay,
@@ -147,6 +186,14 @@ class _AppTimerState extends State<AppTimer> {
             ? TaskTranslationKeys.pomodoroLongBreakSessionCompleted
             : TaskTranslationKeys.pomodoroBreakSessionCompleted);
 
+    final actionId = _controller.isWorking
+        ? AndroidAppConstants.intentActions.timerStartBreak
+        : AndroidAppConstants.intentActions.timerStartWork;
+
+    final actionTitle = _controller.isWorking
+        ? _translationService.translate(TaskTranslationKeys.pomodoroStartBreak)
+        : _translationService.translate(TaskTranslationKeys.pomodoroStartWork);
+
     _systemTrayHelper.setCompletionNotification(
       isWorking: _controller.isWorking,
       isLongBreak: _controller.isLongBreak,
@@ -155,11 +202,27 @@ class _AppTimerState extends State<AppTimer> {
     _notificationService.show(
       title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
       body: completionMessage,
+      options: NotificationOptions(
+        actions: [
+          NotificationAction(
+            actionId,
+            actionTitle,
+            showsUserInterface: false,
+          ),
+          NotificationAction(
+            AndroidAppConstants.intentActions.timerStop,
+            _translationService.translate(TaskTranslationKeys.pomodoroStopTimer),
+            showsUserInterface: false,
+          ),
+        ],
+      ),
     );
   }
 
   @override
   void dispose() {
+    _actionSubscription?.cancel();
+    NotificationPayloadService.disposeActionStream();
     _soundHelper.dispose();
     _wakelockService.disable();
 
@@ -211,7 +274,7 @@ class _AppTimerState extends State<AppTimer> {
     await _controller.saveSetting('long_break_time', longBreakDuration);
     await _controller.saveSetting('sessions_before_long_break', sessionsCount);
 
-    _controller.updateSettings(
+    _controller.updateSettings(TimerSettings(
       timerMode: timerMode,
       workDuration: workDuration,
       breakDuration: breakDuration,
@@ -223,7 +286,7 @@ class _AppTimerState extends State<AppTimer> {
       keepScreenAwake: keepScreenAwake,
       tickingVolume: tickingVolume,
       tickingSpeed: tickingSpeed,
-    );
+    ));
   }
 
   VoidCallback _getButtonAction() {

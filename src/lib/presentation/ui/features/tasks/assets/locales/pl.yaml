@@ -351,6 +351,8 @@ tasks:
     actions:
       stop_timer: Zatrzymaj timer
     notifications:
+      start_break: "Rozpocznij przerwę"
+      start_work: "Rozpocznij pracę"
       break_completed: Sesja przerwy ukończona!
       long_break_completed: Długa przerwa ukończona!
       time_remaining_prefix: "Pozostały czas:"

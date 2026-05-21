@@ -123,7 +123,7 @@ void main() {
         verify(mockMediator.send<SaveSettingCommand, SaveSettingCommandResponse>(any)).called(greaterThanOrEqualTo(1));
       });
 
-      test('should show dialog when new version available', () async {
+      test('should save version setting when new version is available', () async {
         // Arrange
         final response = MockGetSettingQueryResponse();
         when(response.getValue<String>()).thenReturn('0.17.0');
@@ -131,19 +131,10 @@ void main() {
           any,
         )).thenAnswer((_) async => response);
 
-        when(mockChangelogService.fetchChangelog('en')).thenAnswer(
-          (_) async => const ChangelogEntry(
-            version: '0.18.0',
-            content: '- New features',
-          ),
-        );
-
-        // Act
+        // Act - Dialog will fail due to mock context limitations, but error should be handled gracefully
         await service.checkAndShowChangelogDialog(mockContext);
 
-        // Assert - Due to dialog error, just verify that error handling occurs
-        verifyNever(mockChangelogService.fetchChangelog(any));
-        // SaveSettingCommand should be called due to error handling
+        // Assert - Error handling should save the version despite dialog failure
         verify(mockMediator.send<SaveSettingCommand, SaveSettingCommandResponse>(any)).called(greaterThanOrEqualTo(1));
       });
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<vector
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:name="vector"
+  android:width="24dp"
+  android:height="24dp"
+  android:viewportWidth="960"
+  android:viewportHeight="960"
+>
+  <path
+    android:name="path"
+    android:pathData="M 440 520 L 200 520 L 200 440 L 440 440 L 440 200 L 520 200 L 520 440 L 760 440 L 760 520 L 520 520 L 520 760 L 440 760 L 440 520 Z"
+    android:fillColor="@color/widget_icon_inner"
+    android:strokeWidth="1"
+  />
+</vector>

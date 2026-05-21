@@ -354,6 +354,8 @@ tasks:
     actions:
       stop_timer: Detener temporizador
     notifications:
+      start_break: "Iniciar descanso"
+      start_work: "Iniciar trabajo"
       break_completed: ¡Sesión de descanso completada!
       long_break_completed: ¡Descanso largo completado!
       time_remaining_prefix: "Tiempo restante:"

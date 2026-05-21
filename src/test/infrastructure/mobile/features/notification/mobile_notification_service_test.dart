@@ -38,9 +38,11 @@ void main() {
     group('init', () {
       test('should initialize notifications and create channels on Android', () async {
         // Arrange
-        when(mockFlutterLocalNotificationsPlugin.initialize(any,
-                onDidReceiveNotificationResponse: anyNamed('onDidReceiveNotificationResponse')))
-            .thenAnswer((_) async => true);
+        when(mockFlutterLocalNotificationsPlugin.initialize(
+          any,
+          onDidReceiveNotificationResponse: anyNamed('onDidReceiveNotificationResponse'),
+          onDidReceiveBackgroundNotificationResponse: anyNamed('onDidReceiveBackgroundNotificationResponse'),
+        )).thenAnswer((_) async => true);
 
         when(mockAndroidFlutterLocalNotificationsPlugin.createNotificationChannel(any)).thenAnswer((_) async {});
 
@@ -54,9 +56,11 @@ void main() {
         await service.init();
 
         // Assert
-        verify(mockFlutterLocalNotificationsPlugin.initialize(any,
-                onDidReceiveNotificationResponse: anyNamed('onDidReceiveNotificationResponse')))
-            .called(1);
+        verify(mockFlutterLocalNotificationsPlugin.initialize(
+          any,
+          onDidReceiveNotificationResponse: anyNamed('onDidReceiveNotificationResponse'),
+          onDidReceiveBackgroundNotificationResponse: anyNamed('onDidReceiveBackgroundNotificationResponse'),
+        )).called(1);
 
         // Verify channels are created (Task and Habit)
         verify(mockAndroidFlutterLocalNotificationsPlugin.createNotificationChannel(argThat(
@@ -133,7 +137,7 @@ void main() {
         await service.show(
           title: 'Habit',
           body: 'Done',
-          options: const NotificationOptions(
+          options: NotificationOptions(
             channelId: 'whph_habit_reminders',
           ),
         );

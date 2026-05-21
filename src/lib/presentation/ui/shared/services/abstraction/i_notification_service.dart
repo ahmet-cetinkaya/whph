@@ -48,12 +48,39 @@ abstract class INotificationService {
   Future<void> handleNotificationHabitCompletion(String habitId);
 }
 
+class NotificationAction {
+  final String id;
+  final String title;
+  final bool showsUserInterface;
+
+  NotificationAction(
+    this.id,
+    this.title, {
+    this.showsUserInterface = false,
+  }) {
+    if (id.isEmpty) {
+      throw ArgumentError('NotificationAction id cannot be empty');
+    }
+    if (title.isEmpty) {
+      throw ArgumentError('NotificationAction title cannot be empty');
+    }
+  }
+}
+
 class NotificationOptions {
   final String? actionButtonText;
   final String? channelId;
+  final List<NotificationAction>? actions;
+  final bool ongoing;
 
-  const NotificationOptions({
+  NotificationOptions({
     this.actionButtonText,
     this.channelId,
-  });
+    List<NotificationAction>? actions,
+    this.ongoing = false,
+  }) : actions = actions != null ? List.unmodifiable(actions) : null {
+    if (this.actions != null && this.actions!.length > 3) {
+      throw ArgumentError('Maximum 3 actions allowed for notifications');
+    }
+  }
 }

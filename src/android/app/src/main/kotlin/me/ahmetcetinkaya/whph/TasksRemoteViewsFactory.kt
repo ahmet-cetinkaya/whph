@@ -59,10 +59,10 @@ class TasksRemoteViewsFactory(private val context: Context) :
       // Apply strikethrough to completed tasks
       if (isCompleted) {
         views.setInt(R.id.task_title, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG)
-        views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_check_box)
+        views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_widget_checkbox_done)
       } else {
         views.setInt(R.id.task_title, "setPaintFlags", 0)
-        views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_check_box_outline)
+        views.setImageViewResource(R.id.task_checkbox, R.drawable.ic_widget_checkbox_empty)
       }
 
       // Fill Intent

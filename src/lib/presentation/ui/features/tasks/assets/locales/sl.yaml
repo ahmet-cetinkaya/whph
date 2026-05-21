@@ -269,6 +269,8 @@ tasks:
     actions:
       stop_timer: Ustavi Timer
     notifications:
+      start_break: "Začni odmor"
+      start_work: "Začni delo"
       break_completed: Seja odmora končana!
       long_break_completed: Dolg odmor končan!
       time_remaining_prefix: "Preostali čas:"

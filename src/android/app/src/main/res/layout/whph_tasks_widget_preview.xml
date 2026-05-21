@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/tasks_widget_container"
@@ -41,7 +41,7 @@
       android:id="@+id/tasks_widget_refresh_button"
       android:layout_width="24dp"
       android:layout_height="24dp"
-      android:src="@drawable/ic_refresh"
+      android:src="@drawable/ic_widget_refresh"
       android:clickable="true"
       android:background="@drawable/widget_refresh_background"
       android:padding="4dp"
@@ -52,101 +52,101 @@
 
   <!-- Tasks List Preview Items -->
   <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+  >
+    <!-- Item 1 -->
+    <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-      <!-- Item 1 -->
-      <LinearLayout
-        android:layout_width="match_parent"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:paddingVertical="3dp"
+      android:paddingHorizontal="2dp"
+    >
+      <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_widget_checkbox_empty"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/widget_checkbox_background"
+        android:padding="6dp"
+      />
+      <TextView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingVertical="3dp"
-        android:paddingHorizontal="2dp"
-      >
-          <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_check_box_outline"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/widget_checkbox_background"
-            android:padding="6dp"
-          />
-          <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Finish Report"
-            android:textSize="13sp"
-            android:textColor="@color/widget_text_primary"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:lineSpacingExtra="1dp"
-            android:fontFamily="sans-serif"
-          />
-      </LinearLayout>
+        android:layout_weight="1"
+        android:text="Finish Report"
+        android:textSize="13sp"
+        android:textColor="@color/widget_text_primary"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:lineSpacingExtra="1dp"
+        android:fontFamily="sans-serif"
+      />
+    </LinearLayout>
 
-      <!-- Item 2 -->
-      <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Item 2 -->
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:paddingVertical="3dp"
+      android:paddingHorizontal="2dp"
+    >
+      <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_widget_checkbox_empty"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/widget_checkbox_background"
+        android:padding="6dp"
+      />
+      <TextView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingVertical="3dp"
-        android:paddingHorizontal="2dp"
-      >
-          <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_check_box_outline"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/widget_checkbox_background"
-            android:padding="6dp"
-          />
-          <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Call John"
-            android:textSize="13sp"
-            android:textColor="@color/widget_text_primary"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:lineSpacingExtra="1dp"
-            android:fontFamily="sans-serif"
-          />
-      </LinearLayout>
+        android:layout_weight="1"
+        android:text="Call John"
+        android:textSize="13sp"
+        android:textColor="@color/widget_text_primary"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:lineSpacingExtra="1dp"
+        android:fontFamily="sans-serif"
+      />
+    </LinearLayout>
 
-      <!-- Item 3 -->
-      <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Item 3 -->
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:paddingVertical="3dp"
+      android:paddingHorizontal="2dp"
+    >
+      <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_widget_checkbox_empty"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/widget_checkbox_background"
+        android:padding="6dp"
+      />
+      <TextView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingVertical="3dp"
-        android:paddingHorizontal="2dp"
-      >
-          <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_check_box_outline"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/widget_checkbox_background"
-            android:padding="6dp"
-          />
-          <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Buy Groceries"
-            android:textSize="13sp"
-            android:textColor="@color/widget_text_primary"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:lineSpacingExtra="1dp"
-            android:fontFamily="sans-serif"
-          />
-      </LinearLayout>
+        android:layout_weight="1"
+        android:text="Buy Groceries"
+        android:textSize="13sp"
+        android:textColor="@color/widget_text_primary"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:lineSpacingExtra="1dp"
+        android:fontFamily="sans-serif"
+      />
+    </LinearLayout>
   </LinearLayout>
 </LinearLayout>

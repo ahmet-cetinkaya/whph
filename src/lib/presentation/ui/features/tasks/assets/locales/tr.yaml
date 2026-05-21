@@ -313,8 +313,10 @@ tasks:
     actions:
       stop_timer: Zamanlayıcıyı Durdur
     notifications:
-      break_completed: Mola süresi tamamlandı!
-      long_break_completed: Uzun mola tamamlandı!
+      break_completed: "Mola tamamlandı! Çalışmaya hazır mısınız?"
+      long_break_completed: "Uzun mola tamamlandı! Odaklanmaya hazır mısınız?"
+      start_break: "Molaya Başla"
+      start_work: "Çalışmaya Başla"
       time_remaining_prefix: "Kalan süre:"
       timer_completed: Zamanlayıcı tamamlandı!
       title: Pomodoro Zamanlayıcı

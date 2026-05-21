@@ -29,25 +29,19 @@ cd "$SRC_DIR"
 
 # Create temp files for storing file lists
 DART_FILES_LIST=$(mktemp)
-JSON_FILES_LIST=$(mktemp)
-YAML_FILES_LIST=$(mktemp)
-MD_FILES_LIST=$(mktemp)
 SHELL_FILES_LIST=$(mktemp)
 KOTLIN_FILES_LIST=$(mktemp)
 CPP_FILES_LIST=$(mktemp)
 
 # Cleanup function
 cleanup() {
-	rm -f "$DART_FILES_LIST" "$JSON_FILES_LIST" "$YAML_FILES_LIST" "$MD_FILES_LIST" "$SHELL_FILES_LIST" "$KOTLIN_FILES_LIST" "$CPP_FILES_LIST"
+	rm -f "$DART_FILES_LIST" "$SHELL_FILES_LIST" "$KOTLIN_FILES_LIST" "$CPP_FILES_LIST"
 }
 trap cleanup EXIT
 
 # Collect all files - using fd with gitignore support
 acore_log_section "🔍 Scanning for files to format..."
 fd -e dart -t f . . 2>/dev/null | grep -v '\.g\.dart$' | grep -v '\.mocks\.dart$' | grep -v '\.log$' >>"$DART_FILES_LIST"
-fd -e json -t f . . 2>/dev/null >>"$JSON_FILES_LIST"
-fd -e yaml -e yml -t f . . 2>/dev/null >>"$YAML_FILES_LIST"
-fd -e md -t f . . 2>/dev/null >>"$MD_FILES_LIST"
 fd -e kt -e kts -t f . . 2>/dev/null >>"$KOTLIN_FILES_LIST"
 fd -e cpp -e h -t f . . 2>/dev/null >>"$CPP_FILES_LIST"
 
@@ -71,55 +65,14 @@ else
 	acore_log_info "No Dart files found to format"
 fi
 
-# Format JSON files
-acore_log_section "📋 Formatting JSON Files"
+# Format files with Prettier (JSON, YAML, Markdown, XML)
+acore_log_section "🎨 Formatting files with Prettier"
 if command -v prettier &>/dev/null; then
-	JSON_COUNT=$(wc -l <"$JSON_FILES_LIST" 2>/dev/null || echo "0")
-	if [[ $JSON_COUNT -gt 0 ]]; then
-		acore_log_info "Found $JSON_COUNT JSON files to format"
-		# Use prettier config from project root
-		cd "$PROJECT_ROOT"
-		sed "s|^\.|$SRC_DIR|" "$JSON_FILES_LIST" | xargs prettier --write --log-level error || true
-		cd "$SRC_DIR"
-	else
-		acore_log_info "No JSON files found to format"
-	fi
+	cd "$PROJECT_ROOT"
+	prettier --write 'src/**/*.{json,yaml,yml,md,xml}' --log-level error || true
+	cd "$SRC_DIR"
 else
-	acore_log_warning "⚠️ Prettier not found, skipping JSON formatting"
-fi
-
-# Format YAML files
-acore_log_section "📄 Formatting YAML Files"
-if command -v prettier &>/dev/null; then
-	YAML_COUNT=$(wc -l <"$YAML_FILES_LIST" 2>/dev/null || echo "0")
-	if [[ $YAML_COUNT -gt 0 ]]; then
-		acore_log_info "Found $YAML_COUNT YAML files to format"
-		# Use prettier config from project root
-		cd "$PROJECT_ROOT"
-		sed "s|^\.|$SRC_DIR|" "$YAML_FILES_LIST" | xargs prettier --write --log-level error || true
-		cd "$SRC_DIR"
-	else
-		acore_log_info "No YAML files found to format"
-	fi
-else
-	acore_log_warning "⚠️ Prettier not found, skipping YAML formatting"
-fi
-
-# Format Markdown files
-acore_log_section "📝 Formatting Markdown Files"
-if command -v prettier &>/dev/null; then
-	MD_COUNT=$(wc -l <"$MD_FILES_LIST" 2>/dev/null || echo "0")
-	if [[ $MD_COUNT -gt 0 ]]; then
-		acore_log_info "Found $MD_COUNT Markdown files to format"
-		# Convert relative paths to absolute paths for prettier
-		cd "$PROJECT_ROOT"
-		sed "s|^\.|$SRC_DIR|" "$MD_FILES_LIST" | xargs prettier --write --log-level error || true
-		cd "$SRC_DIR"
-	else
-		acore_log_info "No Markdown files found to format"
-	fi
-else
-	acore_log_warning "⚠️ Prettier not found, skipping Markdown formatting"
+	acore_log_warning "⚠️ Prettier not found, skipping JSON, YAML, Markdown, XML formatting"
 fi
 
 # 🐚 Shell Script Formatting (run from project root)

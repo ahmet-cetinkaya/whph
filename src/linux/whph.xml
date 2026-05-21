@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
     <mime-type type="application/x-whph">
         <comment>WHPH productivity data</comment>
@@ -23,7 +23,7 @@
         <comment xml:lang="tr">WHPH üretkenlik verileri</comment>
         <comment xml:lang="uk">Дані продуктивності WHPH</comment>
         <comment xml:lang="zh">WHPH生产力数据</comment>
-        <icon name="whph"/>
-        <glob pattern="*.whph"/>
+        <icon name="whph" />
+        <glob pattern="*.whph" />
     </mime-type>
 </mime-info>

@@ -349,6 +349,8 @@ tasks:
     actions:
       stop_timer: Zastavit časovač
     notifications:
+      start_break: "Spustit pauzu"
+      start_work: "Spustit práci"
       break_completed: Relace přestávky dokončena!
       long_break_completed: Dlouhá přestávka dokončena!
       time_remaining_prefix: "Zbývající čas:"

@@ -6,6 +6,7 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 /// Service responsible for managing app lifecycle events
 class AppLifecycleService with WidgetsBindingObserver {
   final ISystemTrayService _systemTrayService;
+  bool _isDisposed = false;
 
   AppLifecycleService(this._systemTrayService);
 
@@ -16,6 +17,8 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   /// Clean up the lifecycle service
   void dispose() {
+    if (_isDisposed) return;
+    _isDisposed = true;
     WidgetsBinding.instance.removeObserver(this);
     _cleanupSystemTray();
   }
@@ -27,14 +30,16 @@ class AppLifecycleService with WidgetsBindingObserver {
     if (!PlatformUtils.isMobile) return;
 
     switch (state) {
-      case AppLifecycleState.paused:
-      case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
         _cleanupSystemTray();
         break;
       case AppLifecycleState.resumed:
-        _initializeSystemTray();
+        _systemTrayService.cancelTrayNotification().catchError((error) {
+          Logger.error('Error canceling system tray notification: $error', component: 'AppLifecycleService');
+        });
         break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
       case AppLifecycleState.hidden:
         break;
     }
@@ -42,19 +47,11 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   /// Clean up system tray notifications
   void _cleanupSystemTray() {
+    if (_isDisposed) return;
     if (!PlatformUtils.isMobile) return;
 
     _systemTrayService.destroy().catchError((error) {
       Logger.error('Error cleaning up system tray: $error', component: 'AppLifecycleService');
-    });
-  }
-
-  /// Initialize system tray
-  void _initializeSystemTray() {
-    if (!PlatformUtils.isMobile) return;
-
-    _systemTrayService.init().catchError((error) {
-      Logger.error('Error initializing system tray: $error', component: 'AppLifecycleService');
     });
   }
 }

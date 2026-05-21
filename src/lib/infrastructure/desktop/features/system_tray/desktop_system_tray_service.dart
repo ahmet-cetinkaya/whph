@@ -96,10 +96,9 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
 
   @override
   Future<TrayMenuItem?> getMenuItem(String key) async {
-    return _menuItems.firstWhere(
-      (item) => item.key == key,
-      orElse: () => TrayMenuItem(key: '', label: ''),
-    );
+    final index = _menuItems.indexWhere((item) => item.key == key);
+    if (index == -1) return null;
+    return _menuItems[index];
   }
 
   @override
@@ -114,24 +113,41 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
     await init();
   }
 
+  @override
+  Future<void> cancelTrayNotification() async {
+    // No-op for desktop - desktop uses system tray, not notifications
+  }
+
   // Private helper methods
   Future<void> _rebuildMenu() async {
-    final menu = Menu(
-      items: _menuItems.map((item) {
-        if (item.isSeparator) return MenuItem.separator();
-        return MenuItem(key: item.key, label: item.label);
-      }).toList(),
-    );
-    await trayManager.setContextMenu(menu);
+    try {
+      final menu = Menu(
+        items: _menuItems.map((item) {
+          if (item.isSeparator) return MenuItem.separator();
+          return MenuItem(key: item.key, label: item.label);
+        }).toList(),
+      );
+      await trayManager.setContextMenu(menu);
+    } catch (e) {
+      Logger.error('Failed to rebuild tray menu: $e');
+    }
   }
 
   Future<void> _showWindow() async {
-    await _windowManager.show();
-    await _windowManager.focus();
+    try {
+      await _windowManager.show();
+      await _windowManager.focus();
+    } catch (e) {
+      Logger.error('Failed to show window from tray: $e');
+    }
   }
 
   Future<void> _hideWindow() async {
-    await _windowManager.hide();
+    try {
+      await _windowManager.hide();
+    } catch (e) {
+      Logger.error('Failed to hide window from tray: $e');
+    }
   }
 
   Future<void> _exitApp() async {
@@ -158,6 +174,8 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
 
   @override
   void onTrayIconMouseUp() {
+    // Intentionally duplicates onTrayIconMouseDown: different platforms
+    // fire different events (some MouseDown, some MouseUp, some both).
     _showWindow();
   }
 

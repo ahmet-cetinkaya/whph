@@ -319,6 +319,8 @@ tasks:
     actions:
       stop_timer: タイマーを停止
     notifications:
+      start_break: "休憩を開始"
+      start_work: "作業を開始"
       break_completed: 休憩セッションが完了しました！
       long_break_completed: 長い休憩が完了しました！
       time_remaining_prefix: "残り時間:"

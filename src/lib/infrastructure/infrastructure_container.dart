@@ -108,24 +108,6 @@ void registerInfrastructure(IContainer container) {
     return WindowManager();
   });
 
-  container.registerSingleton<ISystemTrayService>((_) {
-    if (PlatformUtils.isMobile) {
-      return MobileSystemTrayService();
-    }
-
-    // Check for Flatpak environment on Linux
-    if (Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID')) {
-      return FlatpakSystemTrayService();
-    }
-
-    return DesktopSystemTrayService();
-  });
-
-  // Register single instance service (desktop only)
-  if (PlatformUtils.isDesktop) {
-    container.registerSingleton<ISingleInstanceService>((_) => DesktopSingleInstanceService());
-  }
-
   container.registerSingleton<INotificationService>((_) {
     final mediator = container.resolve<Mediator>();
     final payloadHandler = container.resolve<INotificationPayloadHandler>();
@@ -145,6 +127,27 @@ void registerInfrastructure(IContainer container) {
 
     throw Exception('Unsupported platform for notification service.');
   });
+
+  container.registerSingleton<ISystemTrayService>((_) {
+    if (PlatformUtils.isMobile) {
+      // Share the FlutterLocalNotificationsPlugin instance from MobileNotificationService
+      // to avoid a second .initialize() call that would overwrite notification callbacks.
+      final notificationService = container.resolve<INotificationService>() as MobileNotificationService;
+      return MobileSystemTrayService(notificationService.plugin);
+    }
+
+    // Check for Flatpak environment on Linux
+    if (Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID')) {
+      return FlatpakSystemTrayService();
+    }
+
+    return DesktopSystemTrayService();
+  });
+
+  // Register single instance service (desktop only)
+  if (PlatformUtils.isDesktop) {
+    container.registerSingleton<ISingleInstanceService>((_) => DesktopSingleInstanceService());
+  }
   container.registerSingleton<IAppUsageService>((_) {
     final appUsageRepository = container.resolve<IAppUsageRepository>();
     final appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
