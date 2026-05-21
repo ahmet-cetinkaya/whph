@@ -113,7 +113,8 @@ void main() {
           argThat(isA<CompleteHabitCommand>().having(
             (cmd) => cmd.date,
             'date',
-            predicate<DateTime>((date) => date.isAfter(beforeCall.subtract(const Duration(seconds: 1))) &&
+            predicate<DateTime>((date) =>
+                date.isAfter(beforeCall.subtract(const Duration(seconds: 1))) &&
                 date.isBefore(afterCall.add(const Duration(seconds: 1)))),
           )),
         )).called(1);
