@@ -234,7 +234,7 @@ jobs:
           Write-Host $flutterOutput
           
           # Try to find Flutter root from output
-          $flutterRoot = $flutterOutput | Select-String "Flutter root" | Select-Object -FirstObject
+          $flutterRoot = $flutterOutput | Select-String "Flutter root" | Select-Object -First 1
           if ($flutterRoot) {
             Write-Host "Flutter root line: $flutterRoot"
           }
