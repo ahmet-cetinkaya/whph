@@ -8,10 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
-    env:
-      CMAKE_GENERATOR: "Visual Studio 18 2026"
-      CMAKE_GENERATOR_PLATFORM: "x64"
+    runs-on: windows-2019
 
     steps:
       - name: Checkout code
@@ -26,26 +23,6 @@ jobs:
         uses: ./.github/actions/setup-fvm
         with:
           cache-key-suffix: "windows"
-
-      - name: Setup Visual Studio C++ tools
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          vs-version: '[18]'
-          arch: x64
-
-      - name: Verify Visual Studio environment
-        run: |
-          Write-Host "Visual Studio environment variables:"
-          Write-Host "  VSINSTALLDIR=$env:VSINSTALLDIR"
-          Write-Host "  VCToolsRedistDir=$env:VCToolsRedistDir"
-          Write-Host "  WindowsSDKVersion=$env:WindowsSDKVersion"
-          Write-Host "  WindowsSdkBinPath=$env:WindowsSdkBinPath"
-          
-          # Check if vswhere is available
-          if (Get-Command "vswhere" -ErrorAction SilentlyContinue) {
-            Write-Host "Visual Studio installations (via vswhere):"
-            & vswhere -all -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64
-          }
 
       - name: Install Inno Setup
         run: |
@@ -114,151 +91,14 @@ jobs:
           # These flags may help with the AOT compilation issue
           echo "FLUTTER_BUILD_MODE=release" >> $env:GITHUB_ENV
 
-      - name: Clear FVM and Flutter caches
-        shell: bash
-        run: |
-          echo "Clearing FVM and Flutter caches..."
-          rm -rf ~/.fvm/flutter_sdk/.flutter-sdk/global_packages
-          rm -rf ~/.fvm/flutter_sdk/.flutter-sdk/bin/cache
-          rm -rf src/.dart_tool
-          rm -rf src/build
-          rm -rf src/windows/build
-          rm -rf src/windows/CMakeCache.txt
-          rm -rf src/windows/CMakeFiles
-          echo "Caches cleared"
-
       - name: Build for Windows
         run: |
           Write-Host "🔧 Configuring Windows build environment..."
           cd src
           
-          # Clear any cached CMake configuration
-          if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
-          if (Test-Path "windows/CMakeCache.txt") { Remove-Item -Force "windows/CMakeCache.txt" }
-          if (Test-Path "windows/CMakeFiles") { Remove-Item -Recurse -Force "windows/CMakeFiles" }
-
-          # Check for CMakeUserPresets
-          Write-Host "Checking for CMakeUserPresets.json..."
-          if (Test-Path "windows/CMakeUserPresets.json") {
-            Write-Host "Found CMakeUserPresets.json:"
-            Get-Content "windows/CMakeUserPresets.json" | Write-Host
-          }
-
-          # Set environment variables for CMake (must be set before flutter commands)
-          $env:CMAKE_GENERATOR = "Visual Studio 18 2026"
-          $env:CMAKE_GENERATOR_PLATFORM = "x64"
-          $env:CMAKE_PREFERR_GENERATOR = "Visual Studio 18 2026"
-          Write-Host "CMake environment variables set:"
-          Write-Host "  CMAKE_GENERATOR=$env:CMAKE_GENERATOR"
-          Write-Host "  CMAKE_GENERATOR_PLATFORM=$env:CMAKE_GENERATOR_PLATFORM"
-
           fvm flutter config --enable-windows-desktop
           fvm flutter clean
           fvm flutter pub get
-
-          # Check what Visual Studio is available
-          Write-Host "Checking for Visual Studio installations..."
-          if (Test-Path "C:\Program Files\Microsoft Visual Studio") {
-            Get-ChildItem "C:\Program Files\Microsoft Visual Studio" | ForEach-Object { Write-Host "Found: $($_.Name)" }
-          }
-
-          # Check CMake version and available generators
-          Write-Host "Checking CMake..."
-          cmake --version
-          
-          # Check for CMakePresets.json or CMakeUserPresets.json
-          Write-Host "Checking for CMake preset files..."
-          Get-ChildItem -Path "windows" -Filter "*Presets.json" -ErrorAction SilentlyContinue | ForEach-Object {
-            Write-Host "Found: $($_.FullName)"
-            Get-Content $_.FullName | Write-Host
-          }
-
-          # Check for any CMakeCache.txt files that might exist
-          Write-Host "Checking for existing CMake cache files..."
-          Get-ChildItem -Path "." -Recurse -Filter "CMakeCache.txt" -ErrorAction SilentlyContinue | ForEach-Object {
-            Write-Host "Found CMakeCache.txt: $($_.FullName)"
-            Get-Content $_.FullName | Select-String "CMAKE_GENERATOR" | Write-Host
-          }
-          
-          # Check environment variables that might affect CMake
-          Write-Host "Current environment variables affecting CMake:"
-          Write-Host "  CMAKE_GENERATOR=$env:CMAKE_GENERATOR"
-          Write-Host "  CMAKE_GENERATOR_PLATFORM=$env:CMAKE_GENERATOR_PLATFORM"
-          Write-Host "  CMAKE_PREFIX_PATH=$env:CMAKE_PREFIX_PATH"
-          Write-Host "  FLUTTER_CMAKE_GENERATOR=$env:FLUTTER_CMAKE_GENERATOR"
-          
-          # Try to manually configure CMake first (from windows directory)
-          Write-Host "Pre-configuring CMake with correct generator..."
-          if (Test-Path "windows/build") { Remove-Item -Recurse -Force "windows/build" }
-          mkdir -Force windows/build
-          Push-Location windows
-          cmake -G "Visual Studio 18 2026" -A x64 -B build -S .
-          if ($LASTEXITCODE -eq 0) {
-            Write-Host "✅ CMake pre-configuration succeeded"
-            Get-Content build/CMakeCache.txt | Select-String "CMAKE_GENERATOR" | Write-Host
-            
-            # Preserve the CMakeCache.txt so Flutter uses it
-            Write-Host "Preserving CMakeCache.txt for Flutter..."
-          } else {
-            Write-Host "⚠️ CMake pre-configuration failed with exit code: $LASTEXITCODE"
-            # Don't fail - let Flutter try anyway
-          }
-          Pop-Location
-          
-          # Create a marker to tell Flutter to use existing build
-          if (Test-Path "windows/build/CMakeCache.txt") {
-            Write-Host "CMake cache ready at windows/build/CMakeCache.txt"
-          }
-
-          # Check for any cached Flutter configuration that might specify CMake generator
-          Write-Host "Checking for Flutter configuration files..."
-          $flutterConfigPaths = @(
-            "$env:LOCALAPPDATA\flutter\tool_state",
-            "$env:LOCALAPPDATA\Pub\Cache\.flutter_tool_state",
-            "$env:USERPROFILE\.flutter\tool_state",
-            "src\.flutter-plugins",
-            "src\.flutter-plugins-dependencies",
-            "src\packages\flutter_tools\lib\src\windows\build_windows.dart"
-          )
-          foreach ($path in $flutterConfigPaths) {
-            if (Test-Path $path) {
-              Write-Host "Found: $path"
-              Get-Content $path | Select-String -Pattern "Visual Studio|CMAKE|generator" -Context 2 | Write-Host
-            }
-          }
-          
-          # Check Flutter SDK's build_windows.dart for hardcoded generator
-          Write-Host "Checking Flutter SDK for hardcoded CMake generator..."
-          $flutterOutput = fvm flutter --verbose 2>&1
-          Write-Host "Flutter command output:"
-          Write-Host $flutterOutput
-          
-          # Try to find Flutter root from output
-          $flutterRoot = $flutterOutput | Select-String "Flutter root" | Select-Object -First 1
-          if ($flutterRoot) {
-            Write-Host "Flutter root line: $flutterRoot"
-          }
-          
-          # Directly check known Flutter SDK paths
-          $knownFlutterPaths = @(
-            "$env:USERPROFILE\.fvm\flutter_sdk",
-            "$env:LOCALAPPDATA\Pub\Cache\flutter",
-            "C:\flutter"
-          )
-          
-          foreach ($path in $knownFlutterPaths) {
-            if (Test-Path $path) {
-              Write-Host "Found Flutter SDK at: $path"
-              $buildWindowsPath = "$path\packages\flutter_tools\lib\src\windows"
-              if (Test-Path $buildWindowsPath) {
-                Write-Host "Checking build_windows files..."
-                Get-ChildItem $buildWindowsPath -Filter "*.dart" | ForEach-Object {
-                  Write-Host "  $($_.Name)"
-                  Select-String -Path $_.FullName -Pattern "Visual Studio 16|2019" -Context 1,1 | Write-Host
-                }
-              }
-            }
-          }
           
           # Strategy 1: Standard release build
           Write-Host "📦 Building Windows application (Release mode)..."
