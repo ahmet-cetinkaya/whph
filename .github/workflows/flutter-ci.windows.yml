@@ -24,8 +24,10 @@ jobs:
         with:
           cache-key-suffix: "windows"
 
-      - name: Setup Visual Studio tools
-        uses: microsoft/setup-msbuild@v2
+      - name: Setup Visual Studio C++ tools
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          vs-version: '[17]'
 
       - name: Install Inno Setup
         run: |
@@ -94,14 +96,90 @@ jobs:
           # These flags may help with the AOT compilation issue
           echo "FLUTTER_BUILD_MODE=release" >> $env:GITHUB_ENV
 
+      - name: Clear FVM and Flutter caches
+        shell: bash
+        run: |
+          echo "Clearing FVM and Flutter caches..."
+          rm -rf ~/.fvm/flutter_sdk/.flutter-sdk/global_packages
+          rm -rf ~/.fvm/flutter_sdk/.flutter-sdk/bin/cache
+          rm -rf src/.dart_tool
+          rm -rf src/build
+          rm -rf src/windows/build
+          rm -rf src/windows/CMakeCache.txt
+          rm -rf src/windows/CMakeFiles
+          echo "Caches cleared"
+
       - name: Build for Windows
         run: |
           Write-Host "🔧 Configuring Windows build environment..."
           cd src
+          
+          # Clear any cached CMake configuration
+          if (Test-Path "build") { Remove-Item -Recurse -Force "build" }
+          if (Test-Path "windows/CMakeCache.txt") { Remove-Item -Force "windows/CMakeCache.txt" }
+          if (Test-Path "windows/CMakeFiles") { Remove-Item -Recurse -Force "windows/CMakeFiles" }
+
+          # Check for CMakeUserPresets
+          Write-Host "Checking for CMakeUserPresets.json..."
+          if (Test-Path "windows/CMakeUserPresets.json") {
+            Write-Host "Found CMakeUserPresets.json:"
+            Get-Content "windows/CMakeUserPresets.json" | Write-Host
+          }
+
+          # Set environment variables for CMake (must be set before flutter commands)
+          $env:CMAKE_GENERATOR = "Visual Studio 17 2022"
+          $env:CMAKE_GENERATOR_PLATFORM = "x64"
+          $env:CMAKE_PREFERR_GENERATOR = "Visual Studio 17 2022"
+          Write-Host "CMake environment variables set:"
+          Write-Host "  CMAKE_GENERATOR=$env:CMAKE_GENERATOR"
+          Write-Host "  CMAKE_GENERATOR_PLATFORM=$env:CMAKE_GENERATOR_PLATFORM"
+
           fvm flutter config --enable-windows-desktop
           fvm flutter clean
           fvm flutter pub get
 
+          # Check what Visual Studio is available
+          Write-Host "Checking for Visual Studio installations..."
+          if (Test-Path "C:\Program Files\Microsoft Visual Studio") {
+            Get-ChildItem "C:\Program Files\Microsoft Visual Studio" | ForEach-Object { Write-Host "Found: $($_.Name)" }
+          }
+
+          # Check CMake version and available generators
+          Write-Host "Checking CMake..."
+          cmake --version
+          Write-Host "Available CMake generators (for this platform):"
+          cmake --help | Select-String -Pattern "Generator" -Context 0,20
+
+          # Try to manually configure CMake first (from windows directory)
+          Write-Host "Pre-configuring CMake with correct generator..."
+          if (Test-Path "windows/build") { Remove-Item -Recurse -Force "windows/build" }
+          mkdir -Force windows/build
+          Push-Location windows/build
+          cmake -G "Visual Studio 17 2022" -A x64 ../..
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ CMake pre-configuration succeeded"
+            Get-Content CMakeCache.txt | Select-String "CMAKE_GENERATOR" | Write-Host
+          } else {
+            Write-Host "⚠️ CMake pre-configuration failed with exit code: $LASTEXITCODE"
+          }
+          Pop-Location
+
+          # Check for any cached Flutter config that might specify CMake generator
+          Write-Host "Checking for Flutter configuration files..."
+          $flutterConfigPaths = @(
+            "$env:LOCALAPPDATA\flutter\flutter_config.json",
+            "$env:USERPROFILE\.flutter\flutter_config.json",
+            "$env:USERPROFILE\.flutter_settings",
+            "src\.flutter-plugins",
+            "src\.flutter-plugins-dependencies"
+          )
+          foreach ($path in $flutterConfigPaths) {
+            if (Test-Path $path) {
+              Write-Host "Found: $path"
+              Get-Content $path | Write-Host
+            }
+          }
+          
           # Strategy 1: Standard release build
           Write-Host "📦 Building Windows application (Release mode)..."
           fvm flutter build windows --release
