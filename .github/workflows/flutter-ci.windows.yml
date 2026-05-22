@@ -196,24 +196,46 @@ jobs:
           if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ CMake pre-configuration succeeded"
             Get-Content build/CMakeCache.txt | Select-String "CMAKE_GENERATOR" | Write-Host
+            
+            # Preserve the CMakeCache.txt so Flutter uses it
+            Write-Host "Preserving CMakeCache.txt for Flutter..."
           } else {
             Write-Host "⚠️ CMake pre-configuration failed with exit code: $LASTEXITCODE"
+            # Don't fail - let Flutter try anyway
           }
           Pop-Location
+          
+          # Create a marker to tell Flutter to use existing build
+          if (Test-Path "windows/build/CMakeCache.txt") {
+            Write-Host "CMake cache ready at windows/build/CMakeCache.txt"
+          }
 
-          # Check for any cached Flutter config that might specify CMake generator
+          # Check for any cached Flutter configuration that might specify CMake generator
           Write-Host "Checking for Flutter configuration files..."
           $flutterConfigPaths = @(
-            "$env:LOCALAPPDATA\flutter\flutter_config.json",
-            "$env:USERPROFILE\.flutter\flutter_config.json",
-            "$env:USERPROFILE\.flutter_settings",
+            "$env:LOCALAPPDATA\flutter\tool_state",
+            "$env:LOCALAPPDATA\Pub\Cache\.flutter_tool_state",
+            "$env:USERPROFILE\.flutter\tool_state",
             "src\.flutter-plugins",
-            "src\.flutter-plugins-dependencies"
+            "src\.flutter-plugins-dependencies",
+            "src\packages\flutter_tools\lib\src\windows\build_windows.dart"
           )
           foreach ($path in $flutterConfigPaths) {
             if (Test-Path $path) {
               Write-Host "Found: $path"
-              Get-Content $path | Write-Host
+              Get-Content $path | Select-String -Pattern "Visual Studio|CMAKE|generator" -Context 2 | Write-Host
+            }
+          }
+          
+          # Check Flutter SDK's build_windows.dart for hardcoded generator
+          Write-Host "Checking Flutter SDK for hardcoded CMake generator..."
+          $flutterSdkPath = fvm flutter --verbose 2>&1 | Select-String "Flutter root" | ForEach-Object { $_ -replace ".*Flutter root is "(.*)"", '$1' }
+          if ($flutterSdkPath) {
+            Write-Host "Flutter SDK path: $flutterSdkPath"
+            $buildWindowsPath = "$flutterSdkPath\packages\flutter_tools\lib\src\windows\build_windows.dart"
+            if (Test-Path $buildWindowsPath) {
+              Write-Host "Found build_windows.dart - checking for Visual Studio 16 2019..."
+              Select-String -Path $buildWindowsPath -Pattern "Visual Studio 16|CMAKE_GENERATOR" -Context 3 | Write-Host
             }
           }
           
