@@ -168,14 +168,14 @@ jobs:
           
           # Check for CMakePresets.json or CMakeUserPresets.json
           Write-Host "Checking for CMake preset files..."
-          Get-ChildItem -Path "src/windows" -Filter "*Presets.json" | ForEach-Object {
+          Get-ChildItem -Path "windows" -Filter "*Presets.json" -ErrorAction SilentlyContinue | ForEach-Object {
             Write-Host "Found: $($_.FullName)"
             Get-Content $_.FullName | Write-Host
           }
 
           # Check for any CMakeCache.txt files that might exist
           Write-Host "Checking for existing CMake cache files..."
-          Get-ChildItem -Path "src" -Recurse -Filter "CMakeCache.txt" -ErrorAction SilentlyContinue | ForEach-Object {
+          Get-ChildItem -Path "." -Recurse -Filter "CMakeCache.txt" -ErrorAction SilentlyContinue | ForEach-Object {
             Write-Host "Found CMakeCache.txt: $($_.FullName)"
             Get-Content $_.FullName | Select-String "CMAKE_GENERATOR" | Write-Host
           }
