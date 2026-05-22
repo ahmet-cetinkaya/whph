@@ -229,13 +229,34 @@ jobs:
           
           # Check Flutter SDK's build_windows.dart for hardcoded generator
           Write-Host "Checking Flutter SDK for hardcoded CMake generator..."
-          $flutterSdkPath = fvm flutter --verbose 2>&1 | Select-String "Flutter root" | ForEach-Object { $_ -replace ".*Flutter root is "(.*)"", '$1' }
-          if ($flutterSdkPath) {
-            Write-Host "Flutter SDK path: $flutterSdkPath"
-            $buildWindowsPath = "$flutterSdkPath\packages\flutter_tools\lib\src\windows\build_windows.dart"
-            if (Test-Path $buildWindowsPath) {
-              Write-Host "Found build_windows.dart - checking for Visual Studio 16 2019..."
-              Select-String -Path $buildWindowsPath -Pattern "Visual Studio 16|CMAKE_GENERATOR" -Context 3 | Write-Host
+          $flutterOutput = fvm flutter --verbose 2>&1
+          Write-Host "Flutter command output:"
+          Write-Host $flutterOutput
+          
+          # Try to find Flutter root from output
+          $flutterRoot = $flutterOutput | Select-String "Flutter root" | Select-Object -FirstObject
+          if ($flutterRoot) {
+            Write-Host "Flutter root line: $flutterRoot"
+          }
+          
+          # Directly check known Flutter SDK paths
+          $knownFlutterPaths = @(
+            "$env:USERPROFILE\.fvm\flutter_sdk",
+            "$env:LOCALAPPDATA\Pub\Cache\flutter",
+            "C:\flutter"
+          )
+          
+          foreach ($path in $knownFlutterPaths) {
+            if (Test-Path $path) {
+              Write-Host "Found Flutter SDK at: $path"
+              $buildWindowsPath = "$path\packages\flutter_tools\lib\src\windows"
+              if (Test-Path $buildWindowsPath) {
+                Write-Host "Checking build_windows files..."
+                Get-ChildItem $buildWindowsPath -Filter "*.dart" | ForEach-Object {
+                  Write-Host "  $($_.Name)"
+                  Select-String -Path $_.FullName -Pattern "Visual Studio 16|2019" -Context 1,1 | Write-Host
+                }
+              }
             }
           }
           
