@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      CMAKE_GENERATOR: "Visual Studio 17 2022"
+      CMAKE_GENERATOR: "Visual Studio 18 2026"
       CMAKE_GENERATOR_PLATFORM: "x64"
 
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Setup Visual Studio C++ tools
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          vs-version: '[17]'
+          vs-version: '[18]'
           arch: x64
 
       - name: Verify Visual Studio environment
@@ -145,9 +145,9 @@ jobs:
           }
 
           # Set environment variables for CMake (must be set before flutter commands)
-          $env:CMAKE_GENERATOR = "Visual Studio 17 2022"
+          $env:CMAKE_GENERATOR = "Visual Studio 18 2026"
           $env:CMAKE_GENERATOR_PLATFORM = "x64"
-          $env:CMAKE_PREFERR_GENERATOR = "Visual Studio 17 2022"
+          $env:CMAKE_PREFERR_GENERATOR = "Visual Studio 18 2026"
           Write-Host "CMake environment variables set:"
           Write-Host "  CMAKE_GENERATOR=$env:CMAKE_GENERATOR"
           Write-Host "  CMAKE_GENERATOR_PLATFORM=$env:CMAKE_GENERATOR_PLATFORM"
@@ -192,7 +192,7 @@ jobs:
           if (Test-Path "windows/build") { Remove-Item -Recurse -Force "windows/build" }
           mkdir -Force windows/build
           Push-Location windows
-          cmake -G "Visual Studio 17 2022" -A x64 -B build -S .
+          cmake -G "Visual Studio 18 2026" -A x64 -B build -S .
           if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ CMake pre-configuration succeeded"
             Get-Content build/CMakeCache.txt | Select-String "CMAKE_GENERATOR" | Write-Host
