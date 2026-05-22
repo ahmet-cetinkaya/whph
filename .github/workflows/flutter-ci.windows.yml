@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      CMAKE_GENERATOR: "Visual Studio 17 2022"
+      CMAKE_GENERATOR_PLATFORM: "x64"
 
     steps:
       - name: Checkout code
@@ -28,6 +31,21 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           vs-version: '[17]'
+          arch: x64
+
+      - name: Verify Visual Studio environment
+        run: |
+          Write-Host "Visual Studio environment variables:"
+          Write-Host "  VSINSTALLDIR=$env:VSINSTALLDIR"
+          Write-Host "  VCToolsRedistDir=$env:VCToolsRedistDir"
+          Write-Host "  WindowsSDKVersion=$env:WindowsSDKVersion"
+          Write-Host "  WindowsSdkBinPath=$env:WindowsSdkBinPath"
+          
+          # Check if vswhere is available
+          if (Get-Command "vswhere" -ErrorAction SilentlyContinue) {
+            Write-Host "Visual Studio installations (via vswhere):"
+            & vswhere -all -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+          }
 
       - name: Install Inno Setup
         run: |
@@ -147,18 +165,37 @@ jobs:
           # Check CMake version and available generators
           Write-Host "Checking CMake..."
           cmake --version
-          Write-Host "Available CMake generators (for this platform):"
-          cmake --help | Select-String -Pattern "Generator" -Context 0,20
+          
+          # Check for CMakePresets.json or CMakeUserPresets.json
+          Write-Host "Checking for CMake preset files..."
+          Get-ChildItem -Path "src/windows" -Filter "*Presets.json" | ForEach-Object {
+            Write-Host "Found: $($_.FullName)"
+            Get-Content $_.FullName | Write-Host
+          }
 
+          # Check for any CMakeCache.txt files that might exist
+          Write-Host "Checking for existing CMake cache files..."
+          Get-ChildItem -Path "src" -Recurse -Filter "CMakeCache.txt" -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Host "Found CMakeCache.txt: $($_.FullName)"
+            Get-Content $_.FullName | Select-String "CMAKE_GENERATOR" | Write-Host
+          }
+          
+          # Check environment variables that might affect CMake
+          Write-Host "Current environment variables affecting CMake:"
+          Write-Host "  CMAKE_GENERATOR=$env:CMAKE_GENERATOR"
+          Write-Host "  CMAKE_GENERATOR_PLATFORM=$env:CMAKE_GENERATOR_PLATFORM"
+          Write-Host "  CMAKE_PREFIX_PATH=$env:CMAKE_PREFIX_PATH"
+          Write-Host "  FLUTTER_CMAKE_GENERATOR=$env:FLUTTER_CMAKE_GENERATOR"
+          
           # Try to manually configure CMake first (from windows directory)
           Write-Host "Pre-configuring CMake with correct generator..."
           if (Test-Path "windows/build") { Remove-Item -Recurse -Force "windows/build" }
           mkdir -Force windows/build
-          Push-Location windows/build
-          cmake -G "Visual Studio 17 2022" -A x64 ../..
+          Push-Location windows
+          cmake -G "Visual Studio 17 2022" -A x64 -B build -S .
           if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ CMake pre-configuration succeeded"
-            Get-Content CMakeCache.txt | Select-String "CMAKE_GENERATOR" | Write-Host
+            Get-Content build/CMakeCache.txt | Select-String "CMAKE_GENERATOR" | Write-Host
           } else {
             Write-Host "⚠️ CMake pre-configuration failed with exit code: $LASTEXITCODE"
           }
