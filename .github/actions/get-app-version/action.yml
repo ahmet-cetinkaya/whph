@@ -3,19 +3,19 @@ description: "Extracts application version from pubspec.yaml"
 outputs:
   version:
     description: "The application version"
-    value: ${{ steps.extract-version.outputs.version }}
+    value: ${{ steps.extract-version-unix.outputs.version || steps.extract-version-windows.outputs.version }}
   version-number:
     description: "The version number without build number"
-    value: ${{ steps.extract-version.outputs.version-number }}
+    value: ${{ steps.extract-version-unix.outputs.version-number || steps.extract-version-windows.outputs.version-number }}
   build-number:
     description: "The build number"
-    value: ${{ steps.extract-version.outputs.build-number }}
+    value: ${{ steps.extract-version-unix.outputs.build-number || steps.extract-version-windows.outputs.build-number }}
 
 runs:
   using: "composite"
   steps:
     - name: Extract version from pubspec.yaml (Unix)
-      id: extract-version
+      id: extract-version-unix
       if: runner.os != 'Windows'
       shell: bash
       run: |
@@ -40,7 +40,7 @@ runs:
         echo "APP_VERSION=$FULL_VERSION" >> $GITHUB_ENV
 
     - name: Extract version from pubspec.yaml (Windows)
-      id: extract-version
+      id: extract-version-windows
       if: runner.os == 'Windows'
       shell: pwsh
       run: |

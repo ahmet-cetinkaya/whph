@@ -8,7 +8,7 @@ inputs:
 outputs:
   flutter-version:
     description: "The Flutter version that was installed"
-    value: ${{ steps.get-version.outputs.version }}
+    value: ${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }}
   cache-hit:
     description: "Whether the cache was hit"
     value: ${{ steps.cache-fvm.outputs.cache-hit }}
@@ -17,7 +17,7 @@ runs:
   using: "composite"
   steps:
     - name: Get Flutter version from src/.fvmrc (Unix)
-      id: get-version
+      id: get-version-unix
       if: runner.os != 'Windows'
       shell: bash
       run: |
@@ -36,7 +36,7 @@ runs:
         fi
 
     - name: Get Flutter version from src/.fvmrc (Windows)
-      id: get-version
+      id: get-version-windows
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
@@ -77,9 +77,9 @@ runs:
           ~/.fvm/versions
           ~/fvm/flutter_sdk
           ~/fvm/versions
-        key: ${{ runner.os }}-fvm-${{ steps.get-version.outputs.version }}-${{ inputs.cache-key-suffix }}
+        key: ${{ runner.os }}-fvm-${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }}-${{ inputs.cache-key-suffix }}
         restore-keys: |
-          ${{ runner.os }}-fvm-${{ steps.get-version.outputs.version }}-
+          ${{ runner.os }}-fvm-${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }}-
           ${{ runner.os }}-fvm-
 
     - name: Install FVM (Unix)
@@ -129,18 +129,18 @@ runs:
       if: runner.os != 'Windows'
       shell: bash
       run: |
-        echo "Installing Flutter ${{ steps.get-version.outputs.version }} via FVM..."
-        fvm install ${{ steps.get-version.outputs.version }}
-        fvm use ${{ steps.get-version.outputs.version }} --force
+        echo "Installing Flutter ${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }} via FVM..."
+        fvm install ${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }}
+        fvm use ${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }} --force
         echo "Flutter installation completed"
 
     - name: Install Flutter via FVM (Windows)
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        Write-Host "Installing Flutter ${{ steps.get-version.outputs.version }} via FVM..."
-        fvm install ${{ steps.get-version.outputs.version }}
-        fvm use ${{ steps.get-version.outputs.version }} --force
+        Write-Host "Installing Flutter ${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }} via FVM..."
+        fvm install ${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }}
+        fvm use ${{ steps.get-version-unix.outputs.version || steps.get-version-windows.outputs.version }} --force
         Write-Host "Flutter installation completed"
 
     - name: Add FVM Flutter to PATH (Unix)
