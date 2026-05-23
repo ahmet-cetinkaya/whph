@@ -14,8 +14,9 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Extract version from pubspec.yaml
+    - name: Extract version from pubspec.yaml (Unix)
       id: extract-version
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         echo "Extracting version from pubspec.yaml..."
@@ -37,3 +38,33 @@ runs:
 
         # Set environment variables for backward compatibility
         echo "APP_VERSION=$FULL_VERSION" >> $GITHUB_ENV
+
+    - name: Extract version from pubspec.yaml (Windows)
+      id: extract-version
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Extracting version from pubspec.yaml..."
+
+        # Get full version (e.g., "0.11.1+49")
+        $pubspecContent = Get-Content "src/pubspec.yaml" -Raw
+        if ($pubspecContent -match 'version:\s*([\d.]+\+\d+)') {
+          $FULL_VERSION = $matches[1]
+          echo "version=$FULL_VERSION" >> $env:GITHUB_OUTPUT
+          Write-Host "Full version: $FULL_VERSION"
+
+          # Split version and build number
+          $VERSION_NUMBER, $BUILD_NUMBER = $FULL_VERSION -split '\+'
+
+          echo "version-number=$VERSION_NUMBER" >> $env:GITHUB_OUTPUT
+          echo "build-number=$BUILD_NUMBER" >> $env:GITHUB_OUTPUT
+
+          Write-Host "Version number: $VERSION_NUMBER"
+          Write-Host "Build number: $BUILD_NUMBER"
+
+          # Set environment variables for backward compatibility
+          echo "APP_VERSION=$FULL_VERSION" >> $env:GITHUB_ENV
+        } else {
+          Write-Host "❌ Failed to extract version from pubspec.yaml"
+          exit 1
+        }

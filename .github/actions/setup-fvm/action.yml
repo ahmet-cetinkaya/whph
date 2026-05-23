@@ -16,8 +16,9 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Get Flutter version from src/.fvmrc
+    - name: Get Flutter version from src/.fvmrc (Unix)
       id: get-version
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         if [ -f "src/.fvmrc" ]; then
@@ -33,6 +34,39 @@ runs:
           echo "Error: .fvmrc file not found in src/ or root"
           exit 1
         fi
+
+    - name: Get Flutter version from src/.fvmrc (Windows)
+      id: get-version
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Getting Flutter version from .fvmrc..."
+
+        if (Test-Path "src/.fvmrc") {
+          $fvmrcContent = Get-Content "src/.fvmrc" -Raw
+          if ($fvmrcContent -match '"flutter":\s*"([^"]+)"') {
+            $VERSION = $matches[1]
+            echo "version=$VERSION" >> $env:GITHUB_OUTPUT
+            Write-Host "Found Flutter version: $VERSION"
+          } else {
+            Write-Host "Error: Could not parse Flutter version from src/.fvmrc"
+            exit 1
+          }
+        } elseif (Test-Path ".fvmrc") {
+          # Fallback for older structure
+          $fvmrcContent = Get-Content ".fvmrc" -Raw
+          if ($fvmrcContent -match '"flutter":\s*"([^"]+)"') {
+            $VERSION = $matches[1]
+            echo "version=$VERSION" >> $env:GITHUB_OUTPUT
+            Write-Host "Found Flutter version: $VERSION (fallback location)"
+          } else {
+            Write-Host "Error: Could not parse Flutter version from .fvmrc"
+            exit 1
+          }
+        } else {
+          Write-Host "Error: .fvmrc file not found in src/ or root"
+          exit 1
+        }
 
     - name: Cache FVM Flutter SDK
       id: cache-fvm
@@ -61,17 +95,53 @@ runs:
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        Write-Host "Installing FVM using Chocolatey..."
-        choco install fvm -y
-        Write-Host "FVM installed successfully"
+        Write-Host "Installing FVM using pub global..."
 
-    - name: Install Flutter via FVM
+        # First, install a standalone Dart SDK to get pub
+        $dartVersion = "stable"
+        $dartUrl = "https://storage.googleapis.com/dart-archive/channels/stable/release/latest/sdk/dartsdk-windows-x64-release.zip"
+        $dartOutput = "$env:TEMP\dart-sdk.zip"
+        $dartInstallDir = "C:\dart-sdk"
+
+        Write-Host "Downloading Dart SDK..."
+        Invoke-WebRequest -Uri $dartUrl -OutFile $dartOutput -UseBasicParsing
+
+        Write-Host "Extracting Dart SDK..."
+        Expand-Archive -Path $dartOutput -DestinationPath $dartInstallDir -Force
+
+        Write-Host "Adding Dart SDK to PATH..."
+        echo "$dartInstallDir\dart-sdk\bin" >> $env:GITHUB_PATH
+        $env:Path = "$dartInstallDir\dart-sdk\bin;$env:Path"
+
+        Write-Host "Installing FVM via pub global..."
+        dart pub global activate fvm
+
+        Write-Host "Adding FVM to PATH..."
+        $localPubBin = Join-Path $env:USERPROFILE "AppData\Local\Pub\Cache\bin"
+        echo $localPubBin >> $env:GITHUB_PATH
+
+        Write-Host "Verifying FVM installation..."
+        fvm --version
+
+        Write-Host "FVM installed successfully via pub global"
+
+    - name: Install Flutter via FVM (Unix)
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         echo "Installing Flutter ${{ steps.get-version.outputs.version }} via FVM..."
         fvm install ${{ steps.get-version.outputs.version }}
         fvm use ${{ steps.get-version.outputs.version }} --force
         echo "Flutter installation completed"
+
+    - name: Install Flutter via FVM (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Installing Flutter ${{ steps.get-version.outputs.version }} via FVM..."
+        fvm install ${{ steps.get-version.outputs.version }}
+        fvm use ${{ steps.get-version.outputs.version }} --force
+        Write-Host "Flutter installation completed"
 
     - name: Add FVM Flutter to PATH (Unix)
       if: runner.os != 'Windows'
@@ -113,9 +183,18 @@ runs:
         fvm flutter --version
         Write-Host "Flutter verification completed"
 
-    - name: Disable Flutter analytics
+    - name: Disable Flutter analytics (Unix)
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         echo "Disabling Flutter analytics..."
         fvm flutter config --no-analytics
         echo "Flutter analytics disabled"
+
+    - name: Disable Flutter analytics (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Disabling Flutter analytics..."
+        fvm flutter config --no-analytics
+        Write-Host "Flutter analytics disabled"
