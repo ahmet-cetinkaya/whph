@@ -119,6 +119,7 @@ runs:
         Write-Host "Adding FVM to PATH..."
         $localPubBin = Join-Path $env:USERPROFILE "AppData\Local\Pub\Cache\bin"
         echo $localPubBin >> $env:GITHUB_PATH
+        $env:Path = "$localPubBin;$env:Path"
 
         Write-Host "Verifying FVM installation..."
         fvm --version
