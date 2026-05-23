@@ -8,9 +8,9 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
-      CMAKE_GENERATOR: Visual Studio 18 2025
+      CMAKE_GENERATOR: Visual Studio 16 2019
 
     steps:
       - name: Checkout code
@@ -200,8 +200,8 @@ jobs:
           Write-Host "🔧 Configuring Windows build environment..."
           cd src
 
-          # Set CMake generator explicitly for Visual Studio 18
-          $env:CMAKE_GENERATOR = "Visual Studio 18 2025"
+          # Set CMake generator explicitly for Visual Studio 16
+          $env:CMAKE_GENERATOR = "Visual Studio 16 2019"
           Write-Host "CMAKE_GENERATOR set to: $env:CMAKE_GENERATOR"
 
           fvm flutter config --enable-windows-desktop
@@ -253,7 +253,7 @@ jobs:
           echo "BUILD_TYPE=$buildType" >> $env:GITHUB_ENV
         env:
           FLUTTER_BUILD_DIR: build
-          CMAKE_GENERATOR: Visual Studio 18 2025
+          CMAKE_GENERATOR: Visual Studio 16 2019
           NUGET_EXECUTABLE: ${{ env.NUGET_PATH }}
 
       - name: Debug build output on failure
