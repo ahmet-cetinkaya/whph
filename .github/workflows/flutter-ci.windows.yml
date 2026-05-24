@@ -24,45 +24,6 @@ jobs:
         with:
           cache-key-suffix: "windows"
 
-      - name: Install Visual Studio C++ Build Tools
-        run: |
-          Write-Host "Installing Visual Studio C++ Build Tools..."
-          # Install Visual Studio Build Tools with C++ workload
-          $vsBuildToolsUrl = "https://aka.ms/vs/17/release/vs_buildtools.exe"
-          $output = "$env:TEMP\vs_buildtools.exe"
-          try {
-            Invoke-WebRequest -Uri $vsBuildToolsUrl -OutFile $output -UseBasicParsing
-
-            # Install with C++ workload and required components
-            $args = @(
-              "--quiet",
-              "--wait",
-              "--norestart",
-              "--nocache",
-              "--add", "Microsoft.VisualStudio.Workload.VCTools",
-              "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
-              "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project"
-            )
-
-            Write-Host "Starting Visual Studio Build Tools installation..."
-            $process = Start-Process -FilePath $output -ArgumentList $args -Wait -PassThru
-            Write-Host "Installation completed with exit code: $($process.ExitCode)"
-
-            if ($process.ExitCode -eq 0 -or $process.ExitCode -eq 3010) {
-              Write-Host "Visual Studio Build Tools installed successfully"
-            } else {
-              Write-Host "Warning: Installation completed with exit code $($process.ExitCode)"
-            }
-          } catch {
-            Write-Host "Failed to install Visual Studio Build Tools: $($_.Exception.Message)"
-            # Don't fail - VS might already be installed
-          }
-
-          # Clean up
-          if (Test-Path $output) {
-            Remove-Item $output -Force
-          }
-
       - name: Install Inno Setup
         run: |
           Write-Host "Installing Inno Setup..."
@@ -201,24 +162,27 @@ jobs:
 
           Write-Host "Build cache cleaned"
 
-      - name: Pre-generate CMake with VS 2022
+      - name: Debug Visual Studio detection
         run: |
-          Write-Host "Pre-generating CMake files with Visual Studio 17 2022..."
-          cd src
+          Write-Host "=== Visual Studio Detection Debug ==="
 
-          # Ensure Windows desktop is enabled
-          fvm flutter config --enable-windows-desktop
+          # Check vswhere output
+          $vswhere = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -format json | ConvertFrom-Json
+          if ($vswhere) {
+            Write-Host "VS DisplayName: $($vswhere.displayName)"
+            Write-Host "VS Installation Version: $($vswhere.installationVersion)"
+            Write-Host "VS Installation Path: $($vswhere.installationPath)"
+            Write-Host "VS isComplete: $($vswhere.isComplete)"
+            Write-Host "VS isLaunchable: $($vswhere.isLaunchable)"
+          } else {
+            Write-Host "ERROR: No Visual Studio found by vswhere"
+          }
 
-          # Get Flutter's Windows project path
-          $windowsPath = "windows"
-          if (Test-Path $windowsPath) {
-            # Pre-generate CMake with the correct generator
-            cmake -S $windowsPath -B "build\windows" -G "Visual Studio 17 2022" -A x64
-            if ($LASTEXITCODE -eq 0) {
-              Write-Host "✅ CMake pre-generation successful with VS 17 2022"
-            } else {
-              Write-Host "⚠️  CMake pre-generation had issues, but continuing..."
-            }
+          # Check for CMake
+          $cmakePath = "$env:ProgramFiles\CMake\bin\cmake.exe"
+          if (Test-Path $cmakePath) {
+            Write-Host "CMake found at: $cmakePath"
+            & $cmakePath --version
           }
 
       - name: Build for Windows
