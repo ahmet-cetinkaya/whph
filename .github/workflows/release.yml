@@ -304,8 +304,8 @@ jobs:
             UserKnownHostsFile ~/.ssh/known_hosts
           EOF
 
-          # Test SSH connection
-          ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no aur@aur.archlinux.org help || echo "SSH setup complete"
+          # Test SSH connection (silent)
+          ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no -o LogLevel=ERROR aur@aur.archlinux.org list-repos > /dev/null 2>&1 && echo "SSH setup complete"
 
       - name: Initialize AUR submodule
         run: |
