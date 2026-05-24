@@ -55,7 +55,7 @@ runs:
         $pubspecContent = Get-Content "src/pubspec.yaml" -Raw
         if ($pubspecContent -match 'version:\s*([\d.]+(?:\+\d+)?)') {
           $FULL_VERSION = $matches[1]
-          echo "version=$FULL_VERSION" >> $env:GITHUB_OUTPUT
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "version=$FULL_VERSION"
           Write-Host "Full version: $FULL_VERSION"
 
           # Split version and build number
@@ -63,14 +63,14 @@ runs:
           $VERSION_NUMBER = $parts[0]
           $BUILD_NUMBER = if ($parts.Length -gt 1) { $parts[1] } else { "" }
 
-          echo "version-number=$VERSION_NUMBER" >> $env:GITHUB_OUTPUT
-          echo "build-number=$BUILD_NUMBER" >> $env:GITHUB_OUTPUT
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "version-number=$VERSION_NUMBER"
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "build-number=$BUILD_NUMBER"
 
           Write-Host "Version number: $VERSION_NUMBER"
           Write-Host "Build number: $BUILD_NUMBER"
 
           # Set environment variables for backward compatibility
-          echo "APP_VERSION=$FULL_VERSION" >> $env:GITHUB_ENV
+          Add-Content -Path $env:GITHUB_ENV -Value "APP_VERSION=$FULL_VERSION"
         } else {
           Write-Host "❌ Failed to extract version from pubspec.yaml"
           exit 1

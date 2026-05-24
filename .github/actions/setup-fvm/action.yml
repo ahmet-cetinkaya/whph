@@ -110,15 +110,16 @@ runs:
         Expand-Archive -Path $dartOutput -DestinationPath $dartInstallDir -Force
 
         Write-Host "Adding Dart SDK to PATH..."
-        echo "$dartInstallDir\dart-sdk\bin" >> $env:GITHUB_PATH
-        $env:Path = "$dartInstallDir\dart-sdk\bin;$env:Path"
+        $dartBin = Join-Path $dartInstallDir "dart-sdk\bin"
+        Add-Content -Path $env:GITHUB_PATH -Value $dartBin
+        $env:Path = "$dartBin;$env:Path"
 
         Write-Host "Installing FVM via pub global..."
         dart pub global activate fvm
 
         Write-Host "Adding FVM to PATH..."
         $localPubBin = Join-Path $env:USERPROFILE "AppData\Local\Pub\Cache\bin"
-        echo $localPubBin >> $env:GITHUB_PATH
+        Add-Content -Path $env:GITHUB_PATH -Value $localPubBin
         $env:Path = "$localPubBin;$env:Path"
 
         Write-Host "Verifying FVM installation..."
@@ -158,8 +159,8 @@ runs:
       shell: pwsh
       run: |
         Write-Host "Adding FVM Flutter to PATH..."
-        echo "$env:USERPROFILE\.fvm\flutter_sdk\bin" >> $env:GITHUB_PATH
-        echo "$env:USERPROFILE\AppData\Local\Pub\Cache\bin" >> $env:GITHUB_PATH
+        Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $env:USERPROFILE ".fvm\flutter_sdk\bin")
+        Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $env:USERPROFILE "AppData\Local\Pub\Cache\bin")
         Write-Host "PATH updated for Windows"
 
     - name: Verify Flutter installation (Unix)
