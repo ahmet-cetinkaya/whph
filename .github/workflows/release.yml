@@ -282,12 +282,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+
+      - name: Add AUR host to known_hosts
+        run: ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+
+      - name: Initialize AUR submodule
+        run: |
+          git submodule init packaging/aur
+          git submodule update --remote packaging/aur
 
       - name: Configure Git
         run: |
