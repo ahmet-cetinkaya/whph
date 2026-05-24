@@ -374,7 +374,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
+
+      - name: Initialize required submodules
+        run: |
+          git submodule init packages/acore-scripts
+          git submodule update --remote packages/acore-scripts
 
       - name: Install Nix
         uses: cachix/install-nix-action@v27
@@ -398,7 +403,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
+
+      - name: Initialize required submodules
+        run: |
+          git submodule init packaging/fdroid
+          git submodule update --remote packaging/fdroid
+          git submodule init packaging/flatpak/flathub
+          git submodule update --remote packaging/flatpak/flathub
+          git submodule init packaging/flatpak/flatpak-flutter
+          git submodule update --remote packaging/flatpak/flatpak-flutter
+          git submodule init packaging/flatpak/shared-modules
+          git submodule update --remote packaging/flatpak/shared-modules
 
       - name: Configure Git
         run: |
