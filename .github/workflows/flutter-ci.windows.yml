@@ -1,10 +1,22 @@
-name: Flutter CI - Windows
+# DISABLED: Flutter 3.38.0 cannot detect Visual Studio 2026 on windows-latest
+# See docs/windows-ci-disabled.md for details
+# To re-enable: Update to Flutter version with VS 2026 support and remove this comment
+#
+# name: Flutter CI - Windows
+#
+# on:
+#   workflow_dispatch: # This is a trigger for manual workflow run
+#   push:
+#     tags:
+#       - "v*.*.*"
+
+name: Flutter CI - Windows (DISABLED - see comments above)
 
 on:
-  workflow_dispatch: # This is a trigger for manual workflow run
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_dispatch:  # Manual trigger only for testing
+  # push:  # Disabled - see comments above
+  #   tags:
+  #     - "v*.*.*"
 
 jobs:
   build:
