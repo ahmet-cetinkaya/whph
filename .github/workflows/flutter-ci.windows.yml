@@ -183,6 +183,14 @@ jobs:
           if (Test-Path $cmakePath) {
             Write-Host "CMake found at: $cmakePath"
             & $cmakePath --version
+            Write-Host "Available CMake generators:"
+            & $cmakePath --help | Select-String -Pattern "Generators" -Context 0,20
+          }
+
+          # Check all VS installations
+          Write-Host "All Visual Studio installations:"
+          & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all -format json | ConvertFrom-Json | ForEach-Object {
+            Write-Host "  - $($_.displayName) [$($_.installationVersion)] at $($_.installationPath)"
           }
 
       - name: Build for Windows
@@ -241,6 +249,7 @@ jobs:
         env:
           FLUTTER_BUILD_DIR: build
           NUGET_EXECUTABLE: ${{ env.NUGET_PATH }}
+          CMAKE_GENERATOR: Visual Studio 17 2022
 
       - name: Debug build output on failure
         if: failure()
