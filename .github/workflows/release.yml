@@ -70,7 +70,7 @@ jobs:
             echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
             
             # Check if all three workflows have completed successfully for this tag
-            WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
+            WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux")  # Windows disabled - see docs/windows-ci-disabled.md
             ALL_SUCCESS=true
             
             for workflow in "${WORKFLOWS[@]}"; do
@@ -146,7 +146,7 @@ jobs:
           echo "Downloading artifacts for tag: $TAG_NAME, app version: $APP_VERSION"
 
           # Download artifacts from each workflow
-          WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
+          WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux")  # Windows disabled - see docs/windows-ci-disabled.md
 
           for workflow in "${WORKFLOWS[@]}"; do
             echo "Downloading artifacts from: $workflow"
@@ -205,24 +205,26 @@ jobs:
           fi
 
           # Create Windows portable zip archive
-          if [[ -d "artifacts/whph-v$APP_VERSION-windows-portable" ]]; then
-            cd "artifacts/whph-v$APP_VERSION-windows-portable"
-            zip -r "../../whph-v$TAG_VERSION-windows-portable.zip" .
-            cd ../..
-            echo "✅ Windows portable zip created"
-          else
-            echo "❌ Windows portable build directory not found"
-            exit 1
-          fi
+          # DISABLED: Windows CI disabled - see docs/windows-ci-disabled.md
+          # if [[ -d "artifacts/whph-v$APP_VERSION-windows-portable" ]]; then
+          #   cd "artifacts/whph-v$APP_VERSION-windows-portable"
+          #   zip -r "../../whph-v$TAG_VERSION-windows-portable.zip" .
+          #   cd ../..
+          #   echo "✅ Windows portable zip created"
+          # else
+          #   echo "❌ Windows portable build directory not found"
+          #   exit 1
+          # fi
 
           # Prepare Windows installer
-          if [[ -f "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" ]]; then
-            cp "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" "whph-v$TAG_VERSION-windows-setup.exe"
-            echo "✅ Windows installer prepared"
-          else
-            echo "❌ Windows installer not found"
-            exit 1
-          fi
+          # DISABLED: Windows CI disabled - see docs/windows-ci-disabled.md
+          # if [[ -f "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" ]]; then
+          #   cp "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" "whph-v$TAG_VERSION-windows-setup.exe"
+          #   echo "✅ Windows installer prepared"
+          # else
+          #   echo "❌ Windows installer not found"
+          #   exit 1
+          # fi
 
           # Prepare Linux Flatpak
           if [[ -f "artifacts/whph-v$APP_VERSION-flatpak/whph-v$TAG_VERSION-linux.flatpak" ]]; then
@@ -235,6 +237,8 @@ jobs:
           echo "📦 All release files prepared:"
           ls -la whph-v$TAG_VERSION-*
 
+          echo "⚠️  Windows builds disabled - see docs/windows-ci-disabled.md"
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         env:
@@ -244,8 +248,8 @@ jobs:
             whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk
             whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz
             whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.flatpak
-            whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip
-            whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe
+            # whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip  # DISABLED
+            # whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe  # DISABLED
           name: ${{ needs.check-workflows.outputs.tag-name }}
           tag_name: ${{ needs.check-workflows.outputs.tag-name }}
           draft: false
@@ -254,11 +258,10 @@ jobs:
           body: |
             ### Downloads:
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk` - Android APK
-            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz` - Linux portable 
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz` - Linux portable
               > 🐧 Linux portable users: See [LINUX-DEPENDENCIES.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/LINUX-DEPENDENCIES.md) for system requirements and installation instructions.
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.flatpak` - Linux Flatpak bundle
-            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip` - Windows portable  
-            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe` - Windows installer
+            - ~~Windows builds~~ - **Temporarily disabled** due to Flutter 3.32.0 / Visual Studio 2026 compatibility issues. See [docs/windows-ci-disabled.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/windows-ci-disabled.md) for details.
 
             > [!NOTE]
             > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes.
