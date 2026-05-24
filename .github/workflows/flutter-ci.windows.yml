@@ -201,6 +201,26 @@ jobs:
 
           Write-Host "Build cache cleaned"
 
+      - name: Pre-generate CMake with VS 2022
+        run: |
+          Write-Host "Pre-generating CMake files with Visual Studio 17 2022..."
+          cd src
+
+          # Ensure Windows desktop is enabled
+          fvm flutter config --enable-windows-desktop
+
+          # Get Flutter's Windows project path
+          $windowsPath = "windows"
+          if (Test-Path $windowsPath) {
+            # Pre-generate CMake with the correct generator
+            cmake -S $windowsPath -B "build\windows" -G "Visual Studio 17 2022" -A x64
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host "✅ CMake pre-generation successful with VS 17 2022"
+            } else {
+              Write-Host "⚠️  CMake pre-generation had issues, but continuing..."
+            }
+          }
+
       - name: Build for Windows
         id: build
         run: |
