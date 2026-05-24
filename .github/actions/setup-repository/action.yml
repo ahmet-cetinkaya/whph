@@ -10,7 +10,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Initialize acore submodule
+    - name: Initialize acore submodule (Unix)
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         echo "Initializing acore submodule..."
@@ -49,3 +50,50 @@ runs:
            echo "❌ acore-scripts verification failed"
            exit 1
         fi
+
+    - name: Initialize acore submodule (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Initializing acore submodule..."
+
+        # Clean any potential submodule issues first
+        git submodule sync; Write-Host "Submodule sync completed"
+
+        # Initialize the acore submodule
+        $submodules = @("packages/acore-flutter", "packages/acore-scripts")
+        $result = git submodule update --init --recursive $submodules
+
+        if ($LASTEXITCODE -eq 0) {
+          Write-Host "✅ ACore submodules initialized successfully"
+        } else {
+          Write-Host "❌ Failed to initialize acore submodules"
+          exit 1
+        }
+
+        # Initialize Flatpak submodules if requested
+        if ("${{ inputs.include-flatpak }}" -eq "true") {
+          Write-Host "📦 Initializing Flatpak submodules..."
+          $flatpakModules = @("packaging/flatpak/flatpak-flutter", "packaging/flatpak/flathub", "packaging/flatpak/shared-modules")
+          $result = git submodule update --init --recursive $flatpakModules
+
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Flatpak submodules initialized successfully"
+          } else {
+            Write-Host "❌ Failed to initialize Flatpak submodules"
+            exit 1
+          }
+        }
+
+        # Verify the submodule was initialized correctly
+        if ((Test-Path "packages/acore-flutter") -and (Test-Path "packages/acore-flutter/pubspec.yaml")) {
+          Write-Host "✅ acore-flutter verification passed"
+        } else {
+          Write-Host "❌ acore-flutter verification failed"
+          exit 1
+        }
+
+        if (-not (Test-Path "packages/acore-scripts")) {
+          Write-Host "❌ acore-scripts verification failed"
+          exit 1
+        }

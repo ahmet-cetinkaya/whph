@@ -1,0 +1,25 @@
+# Ensure shell scripts always use LF line endings
+*.sh text eol=lf
+
+# Ensure other text files use LF
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.dart text eol=lf
+*.gradle text eol=lf
+*.xml text eol=lf
+*.properties text eol=lf
+*.txt text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+
+# Windows-specific files can use CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.iss text eol=crlf
+*.sln text eol=crlf
+*.vcxproj text eol=crlf
+*.csproj text eol=crlf

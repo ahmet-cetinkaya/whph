@@ -29,11 +29,19 @@ runs:
       shell: pwsh
       run: echo "$(Get-Location)\.pub-cache\bin" >> $env:GITHUB_PATH
 
-    - name: Enable platform
-      if: inputs.enable-platform != ''
+    - name: Enable platform (Unix)
+      if: inputs.enable-platform != '' && runner.os != 'Windows'
       shell: bash
       run: |
         echo "Enabling platform: ${{ inputs.enable-platform }}"
+        cd src
+        fvm flutter config --enable-${{ inputs.enable-platform }}
+
+    - name: Enable platform (Windows)
+      if: inputs.enable-platform != '' && runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Enabling platform: ${{ inputs.enable-platform }}"
         cd src
         fvm flutter config --enable-${{ inputs.enable-platform }}
 
@@ -156,10 +164,20 @@ runs:
           exit 1
         }
 
-    - name: Install Flutter dependencies
+    - name: Install Flutter dependencies (Unix)
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         echo "Installing Flutter dependencies..."
         cd src
         fvm flutter pub get
         echo "Flutter dependencies installed successfully"
+
+    - name: Install Flutter dependencies (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Installing Flutter dependencies..."
+        cd src
+        fvm flutter pub get
+        Write-Host "Flutter dependencies installed successfully"

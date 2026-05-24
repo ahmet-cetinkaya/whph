@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "vendor": {
+    "name": "CMake"
+  },
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 14,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default Config",
+      "generator": "Visual Studio 17 2022",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    }
+  ]
+}

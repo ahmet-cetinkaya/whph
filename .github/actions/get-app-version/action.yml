@@ -3,19 +3,20 @@ description: "Extracts application version from pubspec.yaml"
 outputs:
   version:
     description: "The application version"
-    value: ${{ steps.extract-version.outputs.version }}
+    value: ${{ steps.extract-version-unix.outputs.version || steps.extract-version-windows.outputs.version }}
   version-number:
     description: "The version number without build number"
-    value: ${{ steps.extract-version.outputs.version-number }}
+    value: ${{ steps.extract-version-unix.outputs.version-number || steps.extract-version-windows.outputs.version-number }}
   build-number:
     description: "The build number"
-    value: ${{ steps.extract-version.outputs.build-number }}
+    value: ${{ steps.extract-version-unix.outputs.build-number || steps.extract-version-windows.outputs.build-number }}
 
 runs:
   using: "composite"
   steps:
-    - name: Extract version from pubspec.yaml
-      id: extract-version
+    - name: Extract version from pubspec.yaml (Unix)
+      id: extract-version-unix
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         echo "Extracting version from pubspec.yaml..."
@@ -26,8 +27,13 @@ runs:
         echo "Full version: $FULL_VERSION"
 
         # Split version and build number
-        VERSION_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f1)
-        BUILD_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f2)
+        if [[ "$FULL_VERSION" == *"+"* ]]; then
+          VERSION_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f1)
+          BUILD_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f2)
+        else
+          VERSION_NUMBER="$FULL_VERSION"
+          BUILD_NUMBER=""
+        fi
 
         echo "version-number=$VERSION_NUMBER" >> $GITHUB_OUTPUT
         echo "build-number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
@@ -37,3 +43,35 @@ runs:
 
         # Set environment variables for backward compatibility
         echo "APP_VERSION=$FULL_VERSION" >> $GITHUB_ENV
+
+    - name: Extract version from pubspec.yaml (Windows)
+      id: extract-version-windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Write-Host "Extracting version from pubspec.yaml..."
+
+        # Get full version (e.g., "0.11.1+49")
+        $pubspecContent = Get-Content "src/pubspec.yaml" -Raw
+        if ($pubspecContent -match 'version:\s*([\d.]+(?:\+\d+)?)') {
+          $FULL_VERSION = $matches[1]
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "version=$FULL_VERSION"
+          Write-Host "Full version: $FULL_VERSION"
+
+          # Split version and build number
+          $parts = $FULL_VERSION -split '\+'
+          $VERSION_NUMBER = $parts[0]
+          $BUILD_NUMBER = if ($parts.Length -gt 1) { $parts[1] } else { "" }
+
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "version-number=$VERSION_NUMBER"
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "build-number=$BUILD_NUMBER"
+
+          Write-Host "Version number: $VERSION_NUMBER"
+          Write-Host "Build number: $BUILD_NUMBER"
+
+          # Set environment variables for backward compatibility
+          Add-Content -Path $env:GITHUB_ENV -Value "APP_VERSION=$FULL_VERSION"
+        } else {
+          Write-Host "❌ Failed to extract version from pubspec.yaml"
+          exit 1
+        }
