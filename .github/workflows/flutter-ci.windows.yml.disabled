@@ -1,0 +1,419 @@
+name: Flutter CI - Windows
+
+on:
+  workflow_dispatch: # This is a trigger for manual workflow run
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: "windows"
+
+      - name: Install Inno Setup
+        run: |
+          Write-Host "Installing Inno Setup..."
+          $url = "https://jrsoftware.org/download.php/is.exe"
+          $output = "$env:TEMP\innosetup.exe"
+          try {
+            Invoke-WebRequest -Uri $url -OutFile $output -UseBasicParsing
+            Start-Process -FilePath $output -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
+            echo "C:\Program Files (x86)\Inno Setup 6" >> $env:GITHUB_PATH
+            Write-Host "Inno Setup installed successfully"
+          } catch {
+            Write-Host "Failed to install Inno Setup: $($_.Exception.Message)"
+            exit 1
+          }
+
+      - name: Install NuGet CLI
+        run: |
+          Write-Host "Installing NuGet CLI..."
+          $nugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+          $nugetOutput = "$env:TEMP\nuget.exe"
+          try {
+            Invoke-WebRequest -Uri $nugetUrl -OutFile $nugetOutput -UseBasicParsing
+
+            # Add to PATH for current session and future steps
+            echo "$env:TEMP" >> $env:GITHUB_PATH
+            $env:Path = "$env:TEMP;$env:Path"
+
+            # Verify installation - NuGet outputs version info when run without args
+            $nugetInfo = & "$nugetOutput" 2>&1 | Select-String -Pattern "NuGet Version" -Context 0,0
+            if ($nugetInfo) {
+              Write-Host "$nugetInfo"
+            } else {
+              # Just verify the file exists and is executable
+              Write-Host "NuGet CLI file verified at: $nugetOutput"
+              $fileInfo = Get-Item $nugetOutput
+              Write-Host "Size: $($fileInfo.Length) bytes"
+            }
+
+            Write-Host "NuGet CLI installed successfully"
+
+            # Set environment variable for later steps
+            echo "NUGET_PATH=$nugetOutput" >> $env:GITHUB_ENV
+          } catch {
+            Write-Host "Failed to install NuGet CLI: $($_.Exception.Message)"
+            exit 1
+          }
+
+      - name: Verify NuGet Configuration
+        run: |
+          Write-Host "Verifying NuGet package sources..."
+          $nugetPath = "$env:NUGET_PATH"
+          if (-not (Test-Path $nugetPath)) {
+            $nugetPath = "$env:TEMP\nuget.exe"
+          }
+
+          if (-not (Test-Path $nugetPath)) {
+            Write-Host "ERROR: NuGet.exe not found at $nugetPath"
+            exit 1
+          }
+
+          try {
+            # Check if any sources are configured
+            $sourcesList = & "$nugetPath" sources List 2>&1
+            Write-Host "Current NuGet package sources:"
+            Write-Host $sourcesList
+
+            # If no sources found, add nuget.org
+            if ($sourcesList -match "No sources found" -or $sourcesList -match "0 sources") {
+              Write-Host "No NuGet sources configured. Adding nuget.org..."
+              & "$nugetPath" sources Add -Name "nuget.org" -Source "https://api.nuget.org/v3/index.json"
+
+              Write-Host "Updated NuGet package sources:"
+              & "$nugetPath" sources List
+            }
+
+            Write-Host "NuGet configuration verified"
+          } catch {
+            Write-Host "Warning: Could not configure NuGet sources: $($_.Exception.Message)"
+            # Don't fail - try to continue
+          }
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
+        with:
+          enable-platform: windows-desktop
+
+      - name: Run code generation
+        shell: pwsh
+        run: |
+          Write-Host "Running code generation..."
+          cd src
+
+          Write-Host "Cleaning build_runner cache..."
+          fvm flutter pub run build_runner clean
+
+          Write-Host "Running build_runner..."
+          fvm flutter pub run build_runner build --delete-conflicting-outputs
+
+          Write-Host "Generating drift schema helper files..."
+          fvm dart run drift_dev schema generate lib/infrastructure/persistence/shared/contexts/drift/schemas/app_database/ test/drift/app_database/generated
+
+          Write-Host "Code generation completed successfully!"
+
+      - name: Check plugin compatibility
+        run: |
+          Write-Host "Checking for plugin compatibility..."
+          cd src
+          fvm flutter pub deps
+
+      - name: Clean previous builds
+        run: |
+          cd src
+          fvm flutter clean
+
+          # Remove CMake cache files
+          if (Test-Path "build") {
+            Remove-Item -Path "build" -Recurse -Force
+            Write-Host "Removed build directory"
+          }
+
+          if (Test-Path ".flutter-plugins-dependencies") {
+            Remove-Item -Path ".flutter-plugins-dependencies" -Force
+            Write-Host "Removed .flutter-plugins-dependencies"
+          }
+
+          # Remove CMake cache files that may persist
+          if (Test-Path "CMakeCache.txt") {
+            Remove-Item -Path "CMakeCache.txt" -Force
+            Write-Host "Removed CMakeCache.txt"
+          }
+
+          if (Test-Path "CMakeFiles") {
+            Remove-Item -Path "CMakeFiles" -Recurse -Force
+            Write-Host "Removed CMakeFiles directory"
+          }
+
+          Write-Host "Build cache cleaned"
+
+      - name: Debug Visual Studio detection
+        run: |
+          Write-Host "=== Visual Studio Detection Debug ==="
+
+          # Check vswhere output
+          $vswhere = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -format json | ConvertFrom-Json
+          if ($vswhere) {
+            Write-Host "VS DisplayName: $($vswhere.displayName)"
+            Write-Host "VS Installation Version: $($vswhere.installationVersion)"
+            Write-Host "VS Installation Path: $($vswhere.installationPath)"
+            Write-Host "VS isComplete: $($vswhere.isComplete)"
+            Write-Host "VS isLaunchable: $($vswhere.isLaunchable)"
+          } else {
+            Write-Host "ERROR: No Visual Studio found by vswhere"
+          }
+
+          # Check for CMake
+          $cmakePath = "$env:ProgramFiles\CMake\bin\cmake.exe"
+          if (Test-Path $cmakePath) {
+            Write-Host "CMake found at: $cmakePath"
+            & $cmakePath --version
+            Write-Host "Available CMake generators:"
+            & $cmakePath --help | Select-String -Pattern "Generators" -Context 0,20
+          }
+
+          # Check all VS installations
+          Write-Host "All Visual Studio installations:"
+          & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all -format json | ConvertFrom-Json | ForEach-Object {
+            Write-Host "  - $($_.displayName) [$($_.installationVersion)] at $($_.installationPath)"
+          }
+
+      - name: Build for Windows
+        id: build
+        run: |
+          Write-Host "🔧 Configuring Windows build environment..."
+          cd src
+
+          fvm flutter config --enable-windows-desktop
+
+          # Clean thoroughly to remove any CMake cache
+          Write-Host "Cleaning Flutter build..."
+          fvm flutter clean
+
+          # Remove CMake cache files explicitly
+          if (Test-Path "build") {
+            Remove-Item -Path "build" -Recurse -Force
+            Write-Host "Removed build directory"
+          }
+
+          fvm flutter pub get
+
+          # Strategy 1: Standard release build
+          Write-Host "📦 Building Windows application (Release mode)..."
+          fvm flutter build windows --release
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Release build succeeded!"
+            $buildType = "Release"
+            echo "build_type=Release" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Host "❌ Release build failed, trying profile mode..."
+
+            # Strategy 2: Profile build as fallback
+            fvm flutter build windows --profile
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host "✅ Profile build succeeded!"
+              $buildType = "Profile"
+              echo "build_type=Profile" >> $env:GITHUB_OUTPUT
+            } else {
+              Write-Host "❌ Build failed with exit code: $LASTEXITCODE"
+              exit 1
+            }
+          }
+
+          # Verify build_type was set
+          if (-not $buildType) {
+            Write-Host "⚠️  WARNING: build_type not set, defaulting to Release"
+            $buildType = "Release"
+            echo "build_type=Release" >> $env:GITHUB_OUTPUT
+          }
+
+          Write-Host "✅ Build completed successfully (BUILD_TYPE: $buildType)"
+
+          # Also set environment variable for current job
+          echo "BUILD_TYPE=$buildType" >> $env:GITHUB_ENV
+        env:
+          FLUTTER_BUILD_DIR: build
+          NUGET_EXECUTABLE: ${{ env.NUGET_PATH }}
+          CMAKE_GENERATOR: Visual Studio 17 2022
+
+      - name: Debug build output on failure
+        if: failure()
+        run: |
+          Write-Host "Build failed. Checking for build logs..."
+          if (Test-Path "src/build/") {
+            Get-ChildItem -Path "src/build/" -Recurse
+          } else {
+            Write-Host "No build directory found"
+          }
+          if (Test-Path "src/build/windows/") {
+            Get-ChildItem -Path "src/build/windows/" -Recurse
+          } else {
+            Write-Host "No windows build directory found"
+          }
+          Write-Host "Checking for log files..."
+          $logFiles = Get-ChildItem -Path "src/build/" -Recurse -Filter "*.log" -ErrorAction SilentlyContinue
+          if ($logFiles) {
+            foreach ($file in $logFiles) {
+              Write-Host "=== Contents of $($file.FullName) ==="
+              Get-Content $file.FullName
+            }
+          } else {
+            Write-Host "No log files found"
+          }
+
+      # Publish the build artifacts
+      - name: Check build output
+        run: |
+          Write-Host "BUILD_TYPE: ${{ steps.build.outputs.build_type }}"
+          if (Test-Path "src/build/windows/x64/runner/${{ steps.build.outputs.build_type }}") {
+            Write-Host "✅ Build output found"
+          } else {
+            Write-Host "❌ Build output missing"
+            exit 1
+          }
+
+      - name: Verify build output
+        run: |
+          $buildPath = "src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}"
+          if (Test-Path $buildPath) {
+            $fileCount = (Get-ChildItem -Path $buildPath -Recurse -File).Count
+            Write-Host "✅ Build verified: $fileCount files in $buildPath"
+          } else {
+            Write-Host "❌ Build folder not found: $buildPath"
+            exit 1
+          }
+
+      - name: Create Windows Installer
+        run: |
+          Write-Host "Creating Windows installer with Inno Setup..."
+
+          # Get app version for the installer
+          $content = Get-Content 'src/pubspec.yaml'
+          $version = $content | Select-String 'version: (.*)' | ForEach-Object { $_.Matches.Groups[1].Value.Split('+')[0] }
+          Write-Host "App version: $version"
+
+          # Verify the build output exists
+          $buildPath = "src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}"
+          Write-Host "Checking build output at: $buildPath"
+          if (-not (Test-Path $buildPath)) {
+            Write-Host "ERROR: Build output not found at $buildPath"
+            Write-Host "Available build directories:"
+            if (Test-Path "src\build\windows\x64\runner") {
+              Get-ChildItem "src\build\windows\x64\runner" | ForEach-Object { Write-Host "  - $($_.Name)" }
+            }
+            exit 1
+          }
+
+          # Create installer directory in the correct location
+          $installerDir = "src\build\windows\installer"
+          New-Item -ItemType Directory -Force -Path $installerDir
+          Write-Host "Created installer directory: $installerDir"
+
+          # Get absolute paths for debugging
+          $currentDir = Get-Location
+          $absoluteInstallerDir = Join-Path $currentDir $installerDir
+          Write-Host "Working directory: $currentDir"
+          Write-Host "Absolute installer directory: $absoluteInstallerDir"
+
+          # Create a copy of the installer script with dynamic paths
+          $issTemplate = Get-Content 'packaging/inno-setup/installer.iss' -Raw
+          $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
+          $issTemplate = $issTemplate -replace 'Source: "\.\.\\\.\.\\src\\build\\windows\\x64\\runner\\Release\\\*"', "Source: `"..\..\src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}\*`""
+          # Use absolute path for output directory to avoid confusion
+          $issTemplate = $issTemplate -replace 'OutputDir=\.\.\\\.\.\\src\\build\\windows\\installer', "OutputDir=$absoluteInstallerDir"
+
+          # Write the modified script to a temporary file
+          $tempIssFile = "packaging/inno-setup/installer_temp.iss"
+          $issTemplate | Set-Content $tempIssFile
+
+          Write-Host "Installer script configured for build type: ${{ steps.build.outputs.build_type }}"
+
+          # Check if Inno Setup is available
+          $innoSetupPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $innoSetupPath)) {
+            Write-Host "Inno Setup not found at expected location. Searching for ISCC.exe..."
+            $innoSetupPath = Get-Command "ISCC.exe" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+            if (-not $innoSetupPath) {
+              Write-Host "ERROR: Inno Setup (ISCC.exe) not found"
+              exit 1
+            }
+          }
+
+          Write-Host "Using Inno Setup at: $innoSetupPath"
+          Write-Host "Compiling installer with build type: ${{ steps.build.outputs.build_type }}"
+
+          # Compile the installer
+          & "$innoSetupPath" $tempIssFile
+
+          if ($LASTEXITCODE -eq 0) {
+            # Check for the installer
+            $expectedPath = "$installerDir\whph-setup.exe"
+            $alternatePath = "src\build\windows\installer\whph-setup.exe"
+            
+            if (Test-Path $expectedPath) {
+              $installerSize = [math]::Round((Get-Item $expectedPath).Length / 1MB, 1)
+              Write-Host "✅ Installer created successfully ($installerSize MB)"
+            } elseif (Test-Path $alternatePath) {
+              Move-Item $alternatePath $expectedPath
+              $installerSize = [math]::Round((Get-Item $expectedPath).Length / 1MB, 1)
+              Write-Host "✅ Installer created successfully ($installerSize MB)"
+            } else {
+              Write-Host "❌ Installer creation failed - file not found"
+              exit 1
+            }
+          } else {
+            Write-Host "ERROR: Installer creation failed with exit code: $LASTEXITCODE"
+            exit 1
+          }
+
+          # Clean up temporary file
+          if (Test-Path $tempIssFile) {
+            Remove-Item $tempIssFile
+          }
+
+      - name: Get application version
+        id: app_version
+        uses: ./.github/actions/get-app-version
+
+      - name: Upload Windows build artifact (Portable)
+        uses: ./.github/actions/upload-build-artifact
+        if: env.ACTIONS_RUNTIME_TOKEN != ''
+        with:
+          artifact-name: windows-portable
+          artifact-path: src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}\
+          app-version: ${{ steps.app_version.outputs.version }}
+
+      - name: Upload Windows Installer
+        uses: ./.github/actions/upload-build-artifact
+        if: env.ACTIONS_RUNTIME_TOKEN != ''
+        with:
+          artifact-name: windows-installer
+          artifact-path: src\build\windows\installer\whph-setup.exe
+          app-version: ${{ steps.app_version.outputs.version }}
+          compression-level: "0"
+
+      - name: Verify installer artifact exists
+        run: |
+          $installerPath = "src\build\windows\installer\whph-setup.exe"
+          if (Test-Path $installerPath) {
+            $sizeMB = [math]::Round((Get-Item $installerPath).Length / 1MB, 1)
+            Write-Host "✅ Installer ready for upload ($sizeMB MB)"
+          } else {
+            Write-Host "❌ Installer not found"
+            exit 1
+          }
