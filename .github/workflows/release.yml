@@ -297,7 +297,7 @@ jobs:
           ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
 
           # Configure SSH to use the AUR key
-          cat > ~/.ssh/config << EOF
+          cat > ~/.ssh/config << 'EOF'
           Host aur.archlinux.org
             IdentityFile ~/.ssh/aur_key
             StrictHostKeyChecking no
@@ -305,10 +305,13 @@ jobs:
           EOF
 
           # Test SSH connection
-          ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no aur@aur.archlinux.org uname || echo "SSH setup complete"
+          ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no aur@aur.archlinux.org help || echo "SSH setup complete"
 
       - name: Initialize AUR submodule
         run: |
+          # Force Git to use the SSH key via GIT_SSH_COMMAND
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts"
+
           git submodule init packaging/aur
           git submodule update --remote packaging/aur
 
