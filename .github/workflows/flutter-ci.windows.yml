@@ -24,6 +24,45 @@ jobs:
         with:
           cache-key-suffix: "windows"
 
+      - name: Install Visual Studio C++ Build Tools
+        run: |
+          Write-Host "Installing Visual Studio C++ Build Tools..."
+          # Install Visual Studio Build Tools with C++ workload
+          $vsBuildToolsUrl = "https://aka.ms/vs/17/release/vs_buildtools.exe"
+          $output = "$env:TEMP\vs_buildtools.exe"
+          try {
+            Invoke-WebRequest -Uri $vsBuildToolsUrl -OutFile $output -UseBasicParsing
+
+            # Install with C++ workload and required components
+            $args = @(
+              "--quiet",
+              "--wait",
+              "--norestart",
+              "--nocache",
+              "--add", "Microsoft.VisualStudio.Workload.VCTools",
+              "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+              "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project"
+            )
+
+            Write-Host "Starting Visual Studio Build Tools installation..."
+            $process = Start-Process -FilePath $output -ArgumentList $args -Wait -PassThru
+            Write-Host "Installation completed with exit code: $($process.ExitCode)"
+
+            if ($process.ExitCode -eq 0 -or $process.ExitCode -eq 3010) {
+              Write-Host "Visual Studio Build Tools installed successfully"
+            } else {
+              Write-Host "Warning: Installation completed with exit code $($process.ExitCode)"
+            }
+          } catch {
+            Write-Host "Failed to install Visual Studio Build Tools: $($_.Exception.Message)"
+            # Don't fail - VS might already be installed
+          }
+
+          # Clean up
+          if (Test-Path $output) {
+            Remove-Item $output -Force
+          }
+
       - name: Install Inno Setup
         run: |
           Write-Host "Installing Inno Setup..."
