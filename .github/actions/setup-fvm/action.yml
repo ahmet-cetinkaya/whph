@@ -101,7 +101,7 @@ runs:
         $dartVersion = "stable"
         $dartUrl = "https://storage.googleapis.com/dart-archive/channels/stable/release/latest/sdk/dartsdk-windows-x64-release.zip"
         $dartOutput = "$env:TEMP\dart-sdk.zip"
-        $dartInstallDir = "C:\dart-sdk"
+        $dartInstallDir = "$env:RUNNER_TEMP\dart-sdk"
 
         Write-Host "Downloading Dart SDK..."
         Invoke-WebRequest -Uri $dartUrl -OutFile $dartOutput -UseBasicParsing

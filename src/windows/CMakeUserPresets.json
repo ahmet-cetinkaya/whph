@@ -16,12 +16,6 @@
       "architecture": {
         "value": "x64",
         "strategy": "external"
-      },
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": {
-          "type": "FILEPATH",
-          "value": "$env{FlutterRoot}/packages/flutter_tools/gradle/cmake/android.toolchain.cmake"
-        }
       }
     }
   ]

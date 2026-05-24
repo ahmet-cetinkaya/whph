@@ -27,8 +27,13 @@ runs:
         echo "Full version: $FULL_VERSION"
 
         # Split version and build number
-        VERSION_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f1)
-        BUILD_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f2)
+        if [[ "$FULL_VERSION" == *"+"* ]]; then
+          VERSION_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f1)
+          BUILD_NUMBER=$(echo "$FULL_VERSION" | cut -d'+' -f2)
+        else
+          VERSION_NUMBER="$FULL_VERSION"
+          BUILD_NUMBER=""
+        fi
 
         echo "version-number=$VERSION_NUMBER" >> $GITHUB_OUTPUT
         echo "build-number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
@@ -48,13 +53,15 @@ runs:
 
         # Get full version (e.g., "0.11.1+49")
         $pubspecContent = Get-Content "src/pubspec.yaml" -Raw
-        if ($pubspecContent -match 'version:\s*([\d.]+\+\d+)') {
+        if ($pubspecContent -match 'version:\s*([\d.]+(?:\+\d+)?)') {
           $FULL_VERSION = $matches[1]
           echo "version=$FULL_VERSION" >> $env:GITHUB_OUTPUT
           Write-Host "Full version: $FULL_VERSION"
 
           # Split version and build number
-          $VERSION_NUMBER, $BUILD_NUMBER = $FULL_VERSION -split '\+'
+          $parts = $FULL_VERSION -split '\+'
+          $VERSION_NUMBER = $parts[0]
+          $BUILD_NUMBER = if ($parts.Length -gt 1) { $parts[1] } else { "" }
 
           echo "version-number=$VERSION_NUMBER" >> $env:GITHUB_OUTPUT
           echo "build-number=$BUILD_NUMBER" >> $env:GITHUB_OUTPUT

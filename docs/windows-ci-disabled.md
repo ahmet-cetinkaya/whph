@@ -60,7 +60,7 @@ fvm flutter build windows --release
 "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" ..\packaging\inno-setup\installer.iss
 
 # Upload to GitHub Releases
-gh release create v0.22.3+80 \
+gh release create <version> \
   build/windows/x64/runner/Release/whph.exe \
   build/windows/x64/runner/Release/*.dll \
   build/windows/installer/whph-setup.exe
