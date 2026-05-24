@@ -1,6 +1,7 @@
 # DISABLED: Flutter 3.38.0 cannot detect Visual Studio 2026 on windows-latest
 # See docs/windows-ci-disabled.md for details
 # To re-enable: Update to Flutter version with VS 2026 support and remove this comment
+# TODO: Monitor flutter/flutter#176399 for resolution
 #
 # name: Flutter CI - Windows
 #
@@ -258,6 +259,18 @@ jobs:
 
           # Also set environment variable for current job
           echo "BUILD_TYPE=$buildType" >> $env:GITHUB_ENV
+
+          # Validate build_type
+          if ($buildType -notin @("Release", "Profile")) {
+              Write-Host "ERROR: Invalid build_type '$buildType'. Expected 'Release' or 'Profile'."
+              exit 1
+          }
+
+          # Validate build_type
+          if ($buildType -notin @("Release", "Profile")) {
+              Write-Host "ERROR: Invalid build_type '$buildType'. Expected 'Release' or 'Profile'."
+              exit 1
+          }
         env:
           FLUTTER_BUILD_DIR: build
           NUGET_EXECUTABLE: ${{ env.NUGET_PATH }}
@@ -345,9 +358,13 @@ jobs:
           # Create a copy of the installer script with dynamic paths
           $issTemplate = Get-Content 'packaging/inno-setup/installer.iss' -Raw
           $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
-          $issTemplate = $issTemplate -replace 'Source: "\.\.\\\.\.\\src\\build\\windows\\x64\\runner\\Release\\\*"', "Source: `"..\..\src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}\*`""
-          # Use absolute path for output directory to avoid confusion
-          $issTemplate = $issTemplate -replace 'OutputDir=\.\.\\\.\.\\src\\build\\windows\\installer', "OutputDir=$absoluteInstallerDir"
+
+          # Set source path dynamically based on build type
+          $sourcePath = Join-Path $PSScriptRoot "..\..\src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}"
+          $issTemplate = $issTemplate -replace 'Source: "\.\.\\\.\.\\src\\build\\windows\\x64\\runner\\Release\\\*"', "Source:`"$sourcePath\*`""
+
+          # Set output directory using absolute path
+          $issTemplate = $issTemplate -replace 'OutputDir=\.\.\\\.\.\\src\\build\\windows\\installer', "OutputDir=`"$absoluteInstallerDir`""
 
           # Write the modified script to a temporary file
           $tempIssFile = "packaging/inno-setup/installer_temp.iss"
