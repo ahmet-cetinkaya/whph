@@ -284,13 +284,28 @@ jobs:
         with:
           submodules: false
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+      - name: Setup SSH for AUR
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
 
-      - name: Add AUR host to known_hosts
-        run: ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          # Write SSH private key from secret
+          echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/aur_key
+          chmod 600 ~/.ssh/aur_key
+
+          # Add AUR to known_hosts
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+
+          # Configure SSH to use the AUR key
+          cat > ~/.ssh/config << EOF
+          Host aur.archlinux.org
+            IdentityFile ~/.ssh/aur_key
+            StrictHostKeyChecking no
+            UserKnownHostsFile ~/.ssh/known_hosts
+          EOF
+
+          # Test SSH connection
+          ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no aur@aur.archlinux.org uname || echo "SSH setup complete"
 
       - name: Initialize AUR submodule
         run: |
