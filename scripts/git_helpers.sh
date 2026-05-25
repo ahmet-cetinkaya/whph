@@ -39,7 +39,9 @@ git_pull_with_fallback() {
         if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
             git rebase --abort 2>/dev/null || true
         fi
-        git pull --no-recurse-submodules --no-edit
+        # Use merge with allow-unrelated-histories for divergent branches
+        # This handles cases where main branch or tags were added after feature branch creation
+        git pull --no-recurse-submodules --no-edit --allow-unrelated-histories
     fi
 
     # Clean up stash (don't restore, these are temporary build artifacts)
