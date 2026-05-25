@@ -20,7 +20,7 @@
         
         src = pkgs.fetchurl {
           url = "https://github.com/ahmet-cetinkaya/whph/releases/download/v${version}/whph-v${version}-linux.tar.gz";
-          hash = "sha256-FbPQ39vOXfM2QfxneXyoYrgBr09HGZHrdy8O/iZxJvc=";
+          hash = "sha256-tTHuZxCoouPrz3xyaa/Vwuwo22q4iKMJi39e5B3aXqA=";
         };
       in {
         packages.default = pkgs.stdenv.mkDerivation {
