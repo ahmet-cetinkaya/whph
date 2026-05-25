@@ -85,6 +85,9 @@ if ! command -v makepkg &>/dev/null; then
 fi
 sudo -u builduser bash -lc 'makepkg --printsrcinfo > .SRCINFO'
 
+# Clean up downloaded source files
+rm -f whph-v*.tar.gz
+
 # Restore ownership to root for Git operations
 chown -R root:root "$PROJECT_ROOT"
 # Ensure the project root is marked safe after restoring ownership
