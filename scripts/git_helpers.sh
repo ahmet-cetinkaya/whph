@@ -41,7 +41,8 @@ git_pull_with_fallback() {
         fi
         # Use merge with allow-unrelated-histories for divergent branches
         # This handles cases where main branch or tags were added after feature branch creation
-        git pull --no-recurse-submodules --no-edit --allow-unrelated-histories
+        # Use 'theirs' strategy to automatically accept remote changes when conflicts occur
+        git pull --no-recurse-submodules --no-edit --allow-unrelated-histories --strategy-option theirs
     fi
 
     # Clean up stash (don't restore, these are temporary build artifacts)
