@@ -283,12 +283,23 @@ jobs:
             ASSET_NAME=$(echo "$RELEASE_INFO" | jq -r --arg url "$ASSET_URL" '.assets[] | select(.url == $url) | .name')
             echo "Checking $ASSET_NAME..."
             
+            # Skip Windows files (disabled)
+            if [[ "$ASSET_NAME" == *"windows"* ]]; then
+              echo "  ⏭️  Skipping (Windows builds disabled)"
+              continue
+            fi
+            
             # Download asset using gh release download
             if gh release download "$TAG_NAME" --repo "$REPO" --pattern "$ASSET_NAME" --dir "$TEMP_DIR" --clobber 2>/dev/null; then
               # Compare checksums
               if [[ -f "$ASSET_NAME" ]]; then
                 EXISTING_SHA=$(sha256sum "$ASSET_NAME" | awk '{print $1}')
                 LOCAL_SHA=$(cd "$GITHUB_WORKSPACE" && sha256sum "$ASSET_NAME" 2>/dev/null | awk '{print $1}')
+                
+                if [[ -z "$LOCAL_SHA" ]]; then
+                  echo "  ⚠️  $ASSET_NAME not found locally (removed/disabled)"
+                  continue
+                fi
                 
                 if [[ "$EXISTING_SHA" == "$LOCAL_SHA" ]]; then
                   echo "  ✅ $ASSET_NAME checksum matches"
@@ -310,6 +321,10 @@ jobs:
           for LOCAL_FILE in whph-v${{ needs.check-workflows.outputs.tag-version }}-*.{apk,tar.gz,flatpak}; do
             if [[ -f "$LOCAL_FILE" ]]; then
               FILENAME=$(basename "$LOCAL_FILE")
+              # Skip Windows files (disabled)
+              if [[ "$FILENAME" == *"windows"* ]]; then
+                continue
+              fi
               if ! echo "$RELEASE_INFO" | jq -r '.assets[].name' | grep -q "^$FILENAME$"; then
                 echo "  ⚠️  $FILENAME is new (not in existing release)"
                 ALL_MATCH="false"
