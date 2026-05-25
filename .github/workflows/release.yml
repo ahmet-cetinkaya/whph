@@ -394,27 +394,9 @@ jobs:
           if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
             git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
 
-            # Handle any unstaged changes before pulling (including untracked files)
-            if [[ -n "$(git status --porcelain | grep -v packaging/aur)" ]]; then
-              echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
-              git stash push -u -m "Temporary stash before rebase" || true
-            fi
-
-            # Pull with rebase, fallback to merge if it fails
-            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
-              echo "⚠️ Rebase failed, using merge instead..."
-              # Only abort if a rebase is actually in progress
-              if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
-                git rebase --abort 2>/dev/null || true
-              fi
-              git pull --no-recurse-submodules --no-edit
-            fi
-
-            # Clean up any leftover files (don't restore stash, it's not needed)
-            if git stash list | grep -q "Temporary stash before rebase"; then
-              STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
-              git stash drop "$STASH_REF" || true
-            fi
+            # Source git helpers and pull with rebase fallback
+            source scripts/git_helpers.sh
+            git_pull_with_fallback "packaging/aur"
 
             git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated for AUR"

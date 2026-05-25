@@ -12,6 +12,10 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=/dev/null
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
+# Load git helpers
+# shellcheck source=/dev/null
+source "$SCRIPT_DIR/git_helpers.sh"
+
 PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
 NIX_DIR="$PROJECT_ROOT/packaging/nix"
 FLAKE_FILE="$NIX_DIR/flake.nix"
@@ -89,27 +93,8 @@ else
     acore_log_info "Committing and pushing..."
     git commit -m "chore(nix): bump version to v$CURRENT_VERSION"
 
-    # Handle any unstaged changes before pulling (including untracked files)
-    if [[ -n $(git status -s) ]]; then
-        acore_log_warning "Found unstaged/untracked changes, stashing before pull..."
-        git stash push -u -m "Temporary stash before rebase" || true
-    fi
-
-    # Pull with rebase, fallback to merge if it fails
-    if ! git pull --rebase --no-recurse-submodules --no-edit; then
-        acore_log_warning "Rebase failed, using merge instead..."
-        # Only abort if a rebase is actually in progress
-        if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
-            git rebase --abort 2>/dev/null || true
-        fi
-        git pull --no-recurse-submodules --no-edit
-    fi
-
-    # Clean up stash (don't restore, these are temporary files)
-    if git stash list | grep -q "Temporary stash before rebase"; then
-        STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
-        git stash drop "$STASH_REF" || true
-    fi
+    # Pull with rebase fallback using shared helper
+    git_pull_with_fallback
 
     git push --no-recurse-submodules
 fi
