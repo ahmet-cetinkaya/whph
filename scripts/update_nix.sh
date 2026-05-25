@@ -12,10 +12,6 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 # shellcheck source=/dev/null
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
-# Load git helpers
-# shellcheck source=/dev/null
-source "$SCRIPT_DIR/git_helpers.sh"
-
 PUBSPEC_FILE="$PROJECT_ROOT/src/pubspec.yaml"
 NIX_DIR="$PROJECT_ROOT/packaging/nix"
 FLAKE_FILE="$NIX_DIR/flake.nix"
@@ -84,6 +80,28 @@ if command -v nix &>/dev/null; then
 fi
 
 # Git operations
+# Inline pull-with-rebase-fallback to avoid sourcing stale git_helpers.sh
+git_pull_with_fallback() {
+    if [[ -n "$(git status --porcelain)" ]]; then
+        echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
+        git stash push -u -m "Temporary stash before rebase" || true
+    fi
+
+    if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+        echo "⚠️ Rebase failed, using merge instead..."
+        if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
+            git rebase --abort 2>/dev/null || true
+        fi
+        git pull --no-recurse-submodules --no-edit --allow-unrelated-histories --strategy-option theirs
+    fi
+
+    if git stash list | grep -q "Temporary stash before rebase"; then
+        STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
+        git stash drop "$STASH_REF" || true
+    fi
+}
+
+
 acore_log_info "Staging changes..."
 git add "$FLAKE_FILE" "$NIX_DIR/flake.lock"
 
