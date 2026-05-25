@@ -246,12 +246,13 @@ jobs:
         id: check_existing_release
         run: |
           TAG_NAME="${{ needs.check-workflows.outputs.tag-name }}"
+          REPO="${{ github.repository }}"
           SKIP_RELEASE="false"
           
           echo "Checking if release for tag $TAG_NAME already exists..."
           
           # Get release info
-          RELEASE_INFO=$(gh release view "$TAG_NAME" --json assets,name 2>/dev/null || echo "")
+          RELEASE_INFO=$(gh release view "$TAG_NAME" --repo "$REPO" --json assets,name 2>/dev/null || echo "")
           
           if [[ -z "$RELEASE_INFO" ]]; then
             echo "✅ No existing release found, will create new release"
@@ -275,25 +276,28 @@ jobs:
           
           ALL_MATCH="true"
           for ASSET_URL in $ASSET_URLS; do
-            ASSET_NAME=$(basename "$ASSET_URL" | sed 's/\?.*//')
+            ASSET_NAME=$(echo "$RELEASE_INFO" | jq -r --arg url "$ASSET_URL" '.assets[] | select(.url == $url) | .name')
             echo "Checking $ASSET_NAME..."
             
-            # Download asset
-            gh release view "$TAG_NAME" --json assets --jq ".assets[] | select(.name == \"$ASSET_NAME\") | .url" | xargs -I {} curl -L -s -o "$ASSET_NAME" -H "Accept: application/octet-stream" {}
-            
-            # Compare checksums
-            if [[ -f "$ASSET_NAME" ]]; then
-              EXISTING_SHA=$(sha256sum "$ASSET_NAME" | awk '{print $1}')
-              LOCAL_SHA=$(cd "$GITHUB_WORKSPACE" && sha256sum "$ASSET_NAME" 2>/dev/null | awk '{print $1}')
-              
-              if [[ "$EXISTING_SHA" == "$LOCAL_SHA" ]]; then
-                echo "  ✅ $ASSET_NAME checksum matches"
-              else
-                echo "  ❌ $ASSET_NAME checksum differs!"
-                echo "     Existing: $EXISTING_SHA"
-                echo "     Local:    $LOCAL_SHA"
-                ALL_MATCH="false"
+            # Download asset using gh release download
+            if gh release download "$TAG_NAME" --repo "$REPO" --pattern "$ASSET_NAME" --dir "$TEMP_DIR" --clobber 2>/dev/null; then
+              # Compare checksums
+              if [[ -f "$ASSET_NAME" ]]; then
+                EXISTING_SHA=$(sha256sum "$ASSET_NAME" | awk '{print $1}')
+                LOCAL_SHA=$(cd "$GITHUB_WORKSPACE" && sha256sum "$ASSET_NAME" 2>/dev/null | awk '{print $1}')
+                
+                if [[ "$EXISTING_SHA" == "$LOCAL_SHA" ]]; then
+                  echo "  ✅ $ASSET_NAME checksum matches"
+                else
+                  echo "  ❌ $ASSET_NAME checksum differs!"
+                  echo "     Existing: $EXISTING_SHA"
+                  echo "     Local:    $LOCAL_SHA"
+                  ALL_MATCH="false"
+                fi
               fi
+            else
+              echo "  ⚠️  Failed to download $ASSET_NAME"
+              ALL_MATCH="false"
             fi
           done
           
