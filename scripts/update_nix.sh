@@ -48,6 +48,7 @@ if command -v nix-prefetch-url &>/dev/null; then
 fi
 
 if [ -z "$NEW_HASH" ]; then
+    acore_log_warning "nix-prefetch-url unavailable or failed, using curl+sha256sum fallback"
     acore_log_info "Calculating hash via curl and sha256sum..."
     TEMP_FILE=$(mktemp)
     if curl -L -s "$ARTIFACT_URL" -o "$TEMP_FILE"; then
@@ -97,13 +98,17 @@ else
     # Pull with rebase, fallback to merge if it fails
     if ! git pull --rebase --no-recurse-submodules --no-edit; then
         acore_log_warning "Rebase failed, using merge instead..."
-        git rebase --abort 2>/dev/null || true
+        # Only abort if a rebase is actually in progress
+        if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
+            git rebase --abort 2>/dev/null || true
+        fi
         git pull --no-recurse-submodules --no-edit
     fi
 
     # Clean up stash (don't restore, these are temporary files)
     if git stash list | grep -q "Temporary stash before rebase"; then
-        git stash drop stash@{0} || true
+        STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
+        git stash drop "$STASH_REF" || true
     fi
 
     git push --no-recurse-submodules

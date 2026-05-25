@@ -295,8 +295,14 @@ jobs:
           echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/aur_key
           chmod 600 ~/.ssh/aur_key
 
+          # Mask SSH key in logs to prevent accidental exposure
+          echo "::add-mask::${{ secrets.AUR_SSH_PRIVATE_KEY }}"
+
           # Add AUR to known_hosts
-          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          if ! ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts 2>/dev/null; then
+            echo "❌ Failed to add AUR to known_hosts"
+            exit 1
+          fi
 
           # Configure SSH to use the AUR key
           cat > ~/.ssh/config << 'EOF'
@@ -334,6 +340,7 @@ jobs:
             echo "✅ Release assets are ready, proceeding immediately"
           else
             echo "⏳ Release assets not ready yet, waiting 2 minutes..."
+            # GitHub CDN can take up to 2 minutes to propagate release assets globally
             sleep 120
             echo "Retrying asset check..."
             if curl --output /dev/null --silent --head --fail "$RELEASE_URL"; then
@@ -396,13 +403,17 @@ jobs:
             # Pull with rebase, fallback to merge if it fails
             if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
               echo "⚠️ Rebase failed, using merge instead..."
-              git rebase --abort 2>/dev/null || true
+              # Only abort if a rebase is actually in progress
+              if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
+                git rebase --abort 2>/dev/null || true
+              fi
               git pull --no-recurse-submodules --no-edit
             fi
 
             # Clean up any leftover files (don't restore stash, it's not needed)
             if git stash list | grep -q "Temporary stash before rebase"; then
-              git stash drop "Temporary stash before rebase" || true
+              STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
+              git stash drop "$STASH_REF" || true
             fi
 
             git push --no-recurse-submodules
@@ -463,10 +474,16 @@ jobs:
 
           # Initialize flathub's nested submodule (shared-modules)
           # This is required by the flathub manifest
-          cd packaging/flatpak/flathub
-          git submodule init shared-modules
-          git submodule update --remote shared-modules
-          cd "$GITHUB_WORKSPACE"
+          cd packaging/flatpak/flathub || { echo "❌ Failed to cd to flathub"; exit 1; }
+          if ! git submodule init shared-modules; then
+            echo "❌ Failed to init shared-modules submodule"
+            exit 1
+          fi
+          if ! git submodule update --remote shared-modules; then
+            echo "❌ Failed to update shared-modules submodule"
+            exit 1
+          fi
+          cd "$GITHUB_WORKSPACE" || { echo "❌ Failed to cd back to workspace"; exit 1; }
 
       - name: Configure Git
         run: |
@@ -557,13 +574,17 @@ jobs:
             # Pull with rebase, fallback to merge if it fails
             if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
               echo "⚠️ Rebase failed, using merge instead..."
-              git rebase --abort 2>/dev/null || true
+              # Only abort if a rebase is actually in progress
+              if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
+                git rebase --abort 2>/dev/null || true
+              fi
               git pull --no-recurse-submodules --no-edit
             fi
 
             # Clean up any leftover files (don't restore stash, it's not needed)
             if git stash list | grep -q "Temporary stash before rebase"; then
-              git stash drop "Temporary stash before rebase" || true
+              STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
+              git stash drop "$STASH_REF" || true
             fi
 
             git push --no-recurse-submodules

@@ -50,7 +50,10 @@ if [ ! -d ~/.ssh ]; then
     mkdir -p ~/.ssh
     chmod 700 ~/.ssh
 fi
-ssh-keyscan aur.archlinux.org >>~/.ssh/known_hosts
+if ! ssh-keyscan aur.archlinux.org >>~/.ssh/known_hosts 2>/dev/null; then
+    acore_log_error "Failed to add AUR to known_hosts"
+    exit 1
+fi
 
 # Update pkgver and pkgrel in PKGBUILD
 # We use the current version from pubspec.yaml as the target version
