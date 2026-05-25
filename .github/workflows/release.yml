@@ -321,7 +321,23 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: Wait for GitHub release assets to propagate
-        run: sleep 180
+        run: |
+          TAG_VERSION="${{ needs.release.outputs.tag-version }}"
+          RELEASE_URL="https://github.com/ahmet-cetinkaya/whph/releases/download/v$TAG_VERSION/whph-v$TAG_VERSION-linux.tar.gz"
+
+          echo "Checking if release assets are available..."
+          if curl --output /dev/null --silent --head --fail "$RELEASE_URL"; then
+            echo "✅ Release assets are ready, proceeding immediately"
+          else
+            echo "⏳ Release assets not ready yet, waiting 2 minutes..."
+            sleep 120
+            echo "Retrying asset check..."
+            if curl --output /dev/null --silent --head --fail "$RELEASE_URL"; then
+              echo "✅ Release assets are now ready"
+            else
+              echo "⚠️ Release assets still not available, proceeding anyway (may fail later)"
+            fi
+          fi
 
       - name: Verify and update checksums before AUR update
         run: |
