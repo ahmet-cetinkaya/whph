@@ -387,10 +387,10 @@ jobs:
           if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
             git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
 
-            # Handle any unstaged changes before pulling
+            # Handle any unstaged changes before pulling (including untracked files)
             if [[ -n "$(git status --porcelain | grep -v packaging/aur)" ]]; then
-              echo "⚠️ Found unstaged changes, stashing before pull..."
-              git stash push -m "Temporary stash before rebase"
+              echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
+              git stash push -u -m "Temporary stash before rebase" || true
             fi
 
             # Pull with rebase, fallback to merge if it fails
@@ -400,9 +400,9 @@ jobs:
               git pull --no-recurse-submodules --no-edit
             fi
 
-            # Restore stashed changes if any
+            # Clean up any leftover files (don't restore stash, it's not needed)
             if git stash list | grep -q "Temporary stash before rebase"; then
-              git stash pop
+              git stash drop "Temporary stash before rebase" || true
             fi
 
             git push --no-recurse-submodules
@@ -544,10 +544,10 @@ jobs:
           if [[ -n "$(git status --porcelain packaging/flatpak/flathub)" ]]; then
             git commit -m "chore(flatpak): update flathub submodule pointer to $TAG_NAME"
 
-            # Handle any unstaged changes before pulling
+            # Handle any unstaged changes before pulling (including untracked files)
             if [[ -n "$(git status --porcelain | grep -v packaging/flatpak/flathub)" ]]; then
-              echo "⚠️ Found unstaged changes, stashing before pull..."
-              git stash push -m "Temporary stash before rebase"
+              echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
+              git stash push -u -m "Temporary stash before rebase" || true
             fi
 
             # Pull with rebase, fallback to merge if it fails
@@ -557,9 +557,9 @@ jobs:
               git pull --no-recurse-submodules --no-edit
             fi
 
-            # Restore stashed changes if any
+            # Clean up any leftover files (don't restore stash, it's not needed)
             if git stash list | grep -q "Temporary stash before rebase"; then
-              git stash pop
+              git stash drop "Temporary stash before rebase" || true
             fi
 
             git push --no-recurse-submodules
