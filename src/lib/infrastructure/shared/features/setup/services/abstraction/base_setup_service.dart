@@ -15,8 +15,17 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 abstract class BaseSetupService implements ISetupService {
+  bool get isFlatpak => Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID');
+  bool get isNix => Platform.isLinux && Platform.resolvedExecutable.contains('/nix/store');
+  bool get isPackagedDistribution => isFlatpak || isNix;
+
   @override
   Future<void> checkForUpdates(BuildContext context) async {
+    if (isPackagedDistribution) {
+      Logger.info('Update check skipped: updates are managed via package manager.');
+      return;
+    }
+
     try {
       Logger.debug('Checking for updates...');
 
@@ -114,6 +123,11 @@ abstract class BaseSetupService implements ISetupService {
   }
 
   Future<void> _downloadAndInstallUpdate(BuildContext context, String downloadUrl) async {
+    if (isPackagedDistribution) {
+      Logger.info('Automatic update disabled: updates are managed via package manager.');
+      return;
+    }
+
     final translationService = container.resolve<ITranslationService>();
 
     // Close the update dialog
