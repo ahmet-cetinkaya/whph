@@ -386,7 +386,25 @@ jobs:
 
           if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
             git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
-            git pull --rebase --no-recurse-submodules --no-edit
+
+            # Handle any unstaged changes before pulling
+            if [[ -n "$(git status --porcelain | grep -v packaging/aur)" ]]; then
+              echo "⚠️ Found unstaged changes, stashing before pull..."
+              git stash push -m "Temporary stash before rebase"
+            fi
+
+            # Pull with rebase, fallback to merge if it fails
+            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+              echo "⚠️ Rebase failed, using merge instead..."
+              git rebase --abort 2>/dev/null || true
+              git pull --no-recurse-submodules --no-edit
+            fi
+
+            # Restore stashed changes if any
+            if git stash list | grep -q "Temporary stash before rebase"; then
+              git stash pop
+            fi
+
             git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated for AUR"
           else
@@ -525,7 +543,25 @@ jobs:
 
           if [[ -n "$(git status --porcelain packaging/flatpak/flathub)" ]]; then
             git commit -m "chore(flatpak): update flathub submodule pointer to $TAG_NAME"
-            git pull --rebase --no-recurse-submodules --no-edit
+
+            # Handle any unstaged changes before pulling
+            if [[ -n "$(git status --porcelain | grep -v packaging/flatpak/flathub)" ]]; then
+              echo "⚠️ Found unstaged changes, stashing before pull..."
+              git stash push -m "Temporary stash before rebase"
+            fi
+
+            # Pull with rebase, fallback to merge if it fails
+            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+              echo "⚠️ Rebase failed, using merge instead..."
+              git rebase --abort 2>/dev/null || true
+              git pull --no-recurse-submodules --no-edit
+            fi
+
+            # Restore stashed changes if any
+            if git stash list | grep -q "Temporary stash before rebase"; then
+              git stash pop
+            fi
+
             git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated"
           else

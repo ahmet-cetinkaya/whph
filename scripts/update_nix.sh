@@ -87,7 +87,25 @@ if [[ -z $(git status -s "$FLAKE_FILE" "$NIX_DIR/flake.lock") ]]; then
 else
     acore_log_info "Committing and pushing..."
     git commit -m "chore(nix): bump version to v$CURRENT_VERSION"
-    git pull --rebase --no-recurse-submodules --no-edit
+
+    # Handle any unstaged changes before pulling
+    if [[ -n $(git status -s | grep -v "$FLAKE_FILE\|$NIX_DIR/flake.lock") ]]; then
+        acore_log_warning "Found unstaged changes, stashing before pull..."
+        git stash push -m "Temporary stash before rebase"
+    fi
+
+    # Pull with rebase, fallback to merge if it fails
+    if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+        acore_log_warning "Rebase failed, using merge instead..."
+        git rebase --abort 2>/dev/null || true
+        git pull --no-recurse-submodules --no-edit
+    fi
+
+    # Restore stashed changes if any
+    if git stash list | grep -q "Temporary stash before rebase"; then
+        git stash pop
+    fi
+
     git push --no-recurse-submodules
 fi
 
