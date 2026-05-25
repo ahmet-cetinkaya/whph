@@ -89,13 +89,13 @@ else
     git commit -m "chore(nix): bump version to v$CURRENT_VERSION"
 
     # Handle any unstaged changes before pulling (including untracked files)
-    if [[ -n $(git status -s | grep -v "$FLAKE_FILE\|$NIX_DIR/flake.lock") ]]; then
+    if [[ -n $(git status -s) ]]; then
         acore_log_warning "Found unstaged/untracked changes, stashing before pull..."
         git stash push -u -m "Temporary stash before rebase" || true
     fi
 
     # Pull with rebase, fallback to merge if it fails
-    if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+    if ! git pull --rebase --no-recurse-submodules --no-edit; then
         acore_log_warning "Rebase failed, using merge instead..."
         git rebase --abort 2>/dev/null || true
         git pull --no-recurse-submodules --no-edit
@@ -103,7 +103,7 @@ else
 
     # Clean up stash (don't restore, these are temporary files)
     if git stash list | grep -q "Temporary stash before rebase"; then
-        git stash drop "Temporary stash before rebase" || true
+        git stash drop stash@{0} || true
     fi
 
     git push --no-recurse-submodules
