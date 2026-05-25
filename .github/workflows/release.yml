@@ -242,7 +242,88 @@ jobs:
 
           echo "⚠️  Windows builds disabled - see docs/windows-ci-disabled.md"
 
+      - name: Check if release already exists with same artifacts
+        id: check_existing_release
+        run: |
+          TAG_NAME="${{ needs.check-workflows.outputs.tag-name }}"
+          SKIP_RELEASE="false"
+          
+          echo "Checking if release for tag $TAG_NAME already exists..."
+          
+          # Get release info
+          RELEASE_INFO=$(gh release view "$TAG_NAME" --json assets,name 2>/dev/null || echo "")
+          
+          if [[ -z "$RELEASE_INFO" ]]; then
+            echo "✅ No existing release found, will create new release"
+            echo "skip-release=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "⚠️  Release already exists, comparing artifacts..."
+          
+          # Calculate checksums for local files
+          echo "Calculating checksums for local files..."
+          LOCAL_CHECKSUMS=$(sha256sum whph-v${{ needs.check-workflows.outputs.tag-version }}-*.apk whph-v${{ needs.check-workflows.outputs.tag-version }}-*.tar.gz whph-v${{ needs.check-workflows.outputs.tag-version }}-*.flatpak 2>/dev/null | sort)
+          
+          # Download existing assets and compare checksums
+          echo "Downloading existing release assets..."
+          TEMP_DIR=$(mktemp -d)
+          cd "$TEMP_DIR"
+          
+          # Get asset URLs from existing release
+          ASSET_URLS=$(echo "$RELEASE_INFO" | jq -r '.assets[].url')
+          
+          ALL_MATCH="true"
+          for ASSET_URL in $ASSET_URLS; do
+            ASSET_NAME=$(basename "$ASSET_URL" | sed 's/\?.*//')
+            echo "Checking $ASSET_NAME..."
+            
+            # Download asset
+            gh release view "$TAG_NAME" --json assets --jq ".assets[] | select(.name == \"$ASSET_NAME\") | .url" | xargs -I {} curl -L -s -o "$ASSET_NAME" -H "Accept: application/octet-stream" {}
+            
+            # Compare checksums
+            if [[ -f "$ASSET_NAME" ]]; then
+              EXISTING_SHA=$(sha256sum "$ASSET_NAME" | awk '{print $1}')
+              LOCAL_SHA=$(cd "$GITHUB_WORKSPACE" && sha256sum "$ASSET_NAME" 2>/dev/null | awk '{print $1}')
+              
+              if [[ "$EXISTING_SHA" == "$LOCAL_SHA" ]]; then
+                echo "  ✅ $ASSET_NAME checksum matches"
+              else
+                echo "  ❌ $ASSET_NAME checksum differs!"
+                echo "     Existing: $EXISTING_SHA"
+                echo "     Local:    $LOCAL_SHA"
+                ALL_MATCH="false"
+              fi
+            fi
+          done
+          
+          # Check if we have any new local files that aren't in the release
+          cd "$GITHUB_WORKSPACE"
+          for LOCAL_FILE in whph-v${{ needs.check-workflows.outputs.tag-version }}-*.{apk,tar.gz,flatpak}; do
+            if [[ -f "$LOCAL_FILE" ]]; then
+              FILENAME=$(basename "$LOCAL_FILE")
+              if ! echo "$RELEASE_INFO" | jq -r '.assets[].name' | grep -q "^$FILENAME$"; then
+                echo "  ⚠️  $FILENAME is new (not in existing release)"
+                ALL_MATCH="false"
+              fi
+            fi
+          done
+          
+          # Clean up temp directory
+          rm -rf "$TEMP_DIR"
+          
+          if [[ "$ALL_MATCH" == "true" ]]; then
+            echo "✅ All artifacts match existing release, skipping release creation"
+            echo "skip-release=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  Artifacts differ, will update release"
+            echo "skip-release=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
+        if: ${{ steps.check_existing_release.outputs.skip-release != 'true' }}
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -267,7 +348,13 @@ jobs:
             - ~~Windows builds~~ - **Temporarily disabled** due to Flutter 3.32.0 / Visual Studio 2026 compatibility issues. See [docs/windows-ci-disabled.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/windows-ci-disabled.md) for details.
 
             > [!NOTE]
-            > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes.
+            > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/CHANGELOG.md) for detailed changes.
+
+      - name: Release skipped notice
+        if: ${{ steps.check_existing_release.outputs.skip-release == 'true' }}
+        run: |
+          echo "⏭️  Release creation skipped - artifacts identical to existing release"
+          echo "📦 Existing release: ${{ needs.check-workflows.outputs.tag-name }}"
 
   update-aur:
     needs: release
