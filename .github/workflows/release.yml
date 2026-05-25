@@ -461,6 +461,13 @@ jobs:
           git submodule init packaging/flatpak/flathub
           git submodule update --remote packaging/flatpak/flathub
 
+          # Initialize flathub's nested submodule (shared-modules)
+          # This is required by the flathub manifest
+          cd packaging/flatpak/flathub
+          git submodule init shared-modules
+          git submodule update --remote shared-modules
+          cd "$GITHUB_WORKSPACE"
+
       - name: Configure Git
         run: |
           git config --global user.name "${{ github.actor }}"
