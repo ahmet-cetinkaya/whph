@@ -92,7 +92,9 @@ git_pull_with_fallback() {
         if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
             git rebase --abort 2>/dev/null || true
         fi
-        git pull --no-recurse-submodules --no-edit --allow-unrelated-histories --strategy-option theirs
+        # Fetch first, then merge with proper flags
+        git fetch --no-recurse-submodules origin "$(git rev-parse --abbrev-ref HEAD)" 2>/dev/null || true
+        git merge --no-recurse-submodules --no-edit --allow-unrelated-histories -X theirs -X patience
     fi
 
     if git stash list | grep -q "Temporary stash before rebase"; then
