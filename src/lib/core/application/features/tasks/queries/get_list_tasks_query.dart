@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.
 import 'package:acore/acore.dart';
 
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;
@@ -170,7 +171,7 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
     // Set isGroupNameTranslatable on each task
     final itemsWithTranslatableFlag = tasks.items.map((task) {
-      if (task.groupName != null && isGroupTranslatable) {
+      if (task.groupName != null && (isGroupTranslatable || task.groupName == SharedTranslationKeys.none)) {
         return task.copyWith(isGroupNameTranslatable: true);
       }
       return task;
