@@ -119,6 +119,25 @@ if [[ -z "$GIT_SSH_COMMAND" ]]; then
 	export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
 fi
 
-git push origin HEAD:"$AUR_BRANCH"
+# Retry push up to 3 times with exponential backoff (transient SSH failures)
+MAX_RETRIES=3
+RETRY_COUNT=0
+PUSH_SUCCESS=0
+
+while [[ $RETRY_COUNT -lt $MAX_RETRIES && $PUSH_SUCCESS -eq 0 ]]; do
+    if git push origin HEAD:"$AUR_BRANCH"; then
+        PUSH_SUCCESS=1
+    else
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        if [[ $RETRY_COUNT -lt $MAX_RETRIES ]]; then
+            WAIT_TIME=$((2 ** RETRY_COUNT))
+            acore_log_warning "Push failed (attempt $RETRY_COUNT/$MAX_RETRIES), retrying in ${WAIT_TIME}s..."
+            sleep $WAIT_TIME
+        else
+            acore_log_error "Push failed after $MAX_RETRIES attempts"
+            exit 1
+        fi
+    fi
+done
 
 acore_log_success "AUR package updated and pushed successfully."
