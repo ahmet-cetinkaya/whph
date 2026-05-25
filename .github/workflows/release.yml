@@ -406,7 +406,7 @@ jobs:
                 git rebase --abort 2>/dev/null || true
               fi
               git fetch --no-recurse-submodules origin "$(git rev-parse --abbrev-ref HEAD)" 2>/dev/null || true
-              git merge --no-recurse-submodules --no-edit --allow-unrelated-histories -X theirs -X patience
+              git merge --no-edit --allow-unrelated-histories -X theirs -X patience
             fi
 
             if git stash list | grep -q "Temporary stash before rebase"; then
@@ -577,7 +577,7 @@ jobs:
                 git rebase --abort 2>/dev/null || true
               fi
               git fetch --no-recurse-submodules origin "$(git rev-parse --abbrev-ref HEAD)" 2>/dev/null || true
-              git merge --no-recurse-submodules --no-edit --allow-unrelated-histories -X theirs -X patience
+              git merge --no-edit --allow-unrelated-histories -X theirs -X patience
             fi
 
             # Clean up any leftover files (don't restore stash, it's not needed)
