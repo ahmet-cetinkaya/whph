@@ -267,7 +267,7 @@ jobs:
             > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes.
 
   update-aur:
-    needs: [release, update-nix]
+    needs: release
     runs-on: ubuntu-latest
     container: archlinux:latest
     permissions:
@@ -394,7 +394,7 @@ jobs:
           fi
 
   update-nix:
-    needs: [release, update-flathub]
+    needs: [release, update-aur]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -423,7 +423,7 @@ jobs:
         run: ./scripts/update_nix.sh
 
   update-flathub:
-    needs: release
+    needs: [release, update-nix]
     runs-on: ubuntu-latest
     permissions:
       contents: write
