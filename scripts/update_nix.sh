@@ -87,14 +87,8 @@ if [[ -z $(git status -s "$FLAKE_FILE" "$NIX_DIR/flake.lock") ]]; then
 else
     acore_log_info "Committing and pushing..."
     git commit -m "chore(nix): bump version to v$CURRENT_VERSION"
-
-    # Attempt to pull with rebase, but handle conflicts gracefully
-    if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
-        acore_log_warning "Rebase failed, pushing directly..."
-        git push --no-recurse-submodules
-    else
-        git push --no-recurse-submodules
-    fi
+    git pull --rebase --no-recurse-submodules --no-edit
+    git push --no-recurse-submodules
 fi
 
 acore_log_success "Nix package updated successfully."

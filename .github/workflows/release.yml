@@ -267,7 +267,7 @@ jobs:
             > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes.
 
   update-aur:
-    needs: release
+    needs: [release, update-nix]
     runs-on: ubuntu-latest
     container: archlinux:latest
     permissions:
@@ -386,22 +386,15 @@ jobs:
 
           if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
             git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
-
-            # Attempt pull with rebase, handle failures gracefully
-            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
-              echo "⚠️ Rebase failed, aborting and pushing directly..."
-              git rebase --abort 2>/dev/null || true
-              git push --no-recurse-submodules
-            else
-              git push --no-recurse-submodules
-            fi
+            git pull --rebase --no-recurse-submodules --no-edit
+            git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated for AUR"
           else
             echo "ℹ️ No submodule pointer change detected in parent repository for AUR"
           fi
 
   update-nix:
-    needs: release
+    needs: [release, update-flathub]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -515,14 +508,8 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "Update manifest for $TAG_NAME"
-
-            # Handle rebase conflicts gracefully
-            if ! git pull --rebase origin me.ahmetcetinkaya.whph 2>/dev/null; then
-              echo "⚠️ Rebase failed, pushing directly..."
-              git push origin HEAD:me.ahmetcetinkaya.whph
-            else
-              git push origin HEAD:me.ahmetcetinkaya.whph
-            fi
+            git pull --rebase origin me.ahmetcetinkaya.whph --no-edit
+            git push origin HEAD:me.ahmetcetinkaya.whph
             echo "✅ Flathub submodule changes pushed successfully"
           else
             echo "ℹ️ No changes to commit in flathub submodule"
@@ -538,15 +525,8 @@ jobs:
 
           if [[ -n "$(git status --porcelain packaging/flatpak/flathub)" ]]; then
             git commit -m "chore(flatpak): update flathub submodule pointer to $TAG_NAME"
-
-            # Attempt pull with rebase, handle failures gracefully
-            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
-              echo "⚠️ Rebase failed, aborting and pushing directly..."
-              git rebase --abort 2>/dev/null || true
-              git push --no-recurse-submodules
-            else
-              git push --no-recurse-submodules
-            fi
+            git pull --rebase --no-recurse-submodules --no-edit
+            git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated"
           else
             echo "ℹ️ No submodule pointer change detected in parent repository"
