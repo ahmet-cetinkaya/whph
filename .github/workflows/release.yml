@@ -309,9 +309,14 @@ jobs:
 
       - name: Initialize AUR submodule
         run: |
+          # Initialize acore-scripts (needed for update_aur.sh logger)
+          git submodule init packages/acore-scripts
+          git submodule update --remote packages/acore-scripts
+
           # Force Git to use the SSH key via GIT_SSH_COMMAND
           export GIT_SSH_COMMAND="ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts"
 
+          # Initialize AUR submodule (needs SSH)
           git submodule init packaging/aur
           git submodule update --remote packaging/aur
 
