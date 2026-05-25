@@ -50,7 +50,10 @@ if [ ! -d ~/.ssh ]; then
     mkdir -p ~/.ssh
     chmod 700 ~/.ssh
 fi
-ssh-keyscan aur.archlinux.org >>~/.ssh/known_hosts
+if ! ssh-keyscan aur.archlinux.org >>~/.ssh/known_hosts 2>/dev/null; then
+    acore_log_error "Failed to add AUR to known_hosts"
+    exit 1
+fi
 
 # Update pkgver and pkgrel in PKGBUILD
 # We use the current version from pubspec.yaml as the target version
@@ -85,6 +88,9 @@ if ! command -v makepkg &>/dev/null; then
 fi
 sudo -u builduser bash -lc 'makepkg --printsrcinfo > .SRCINFO'
 
+# Clean up downloaded source files
+rm -f whph-v*.tar.gz
+
 # Restore ownership to root for Git operations
 chown -R root:root "$PROJECT_ROOT"
 # Ensure the project root is marked safe after restoring ownership
@@ -107,9 +113,31 @@ git commit -m "chore: bump version to v$CURRENT_VERSION"
 # Only push if we are essentially asked to (implicit in this script usually running in CI or manually for this purpose)
 acore_log_info "Pushing changes..."
 
-# Use a custom SSH command to bypass host key checking and ensure agent usage
-export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+# Don't override GIT_SSH_COMMAND if already set (by CI workflow)
+# Only set it for local runs where it might not be configured
+if [[ -z "$GIT_SSH_COMMAND" ]]; then
+	export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+fi
 
-git push origin HEAD:"$AUR_BRANCH"
+# Retry push up to 3 times with exponential backoff (transient SSH failures)
+MAX_RETRIES=3
+RETRY_COUNT=0
+PUSH_SUCCESS=0
+
+while [[ $RETRY_COUNT -lt $MAX_RETRIES && $PUSH_SUCCESS -eq 0 ]]; do
+    if git push origin HEAD:"$AUR_BRANCH"; then
+        PUSH_SUCCESS=1
+    else
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        if [[ $RETRY_COUNT -lt $MAX_RETRIES ]]; then
+            WAIT_TIME=$((2 ** RETRY_COUNT))
+            acore_log_warning "Push failed (attempt $RETRY_COUNT/$MAX_RETRIES), retrying in ${WAIT_TIME}s..."
+            sleep $WAIT_TIME
+        else
+            acore_log_error "Push failed after $MAX_RETRIES attempts"
+            exit 1
+        fi
+    fi
+done
 
 acore_log_success "AUR package updated and pushed successfully."

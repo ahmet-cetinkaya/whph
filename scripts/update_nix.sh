@@ -48,6 +48,7 @@ if command -v nix-prefetch-url &>/dev/null; then
 fi
 
 if [ -z "$NEW_HASH" ]; then
+    acore_log_warning "nix-prefetch-url unavailable or failed, using curl+sha256sum fallback"
     acore_log_info "Calculating hash via curl and sha256sum..."
     TEMP_FILE=$(mktemp)
     if curl -L -s "$ARTIFACT_URL" -o "$TEMP_FILE"; then
@@ -79,6 +80,29 @@ if command -v nix &>/dev/null; then
 fi
 
 # Git operations
+# Inline pull-with-rebase-fallback to avoid sourcing stale git_helpers.sh
+git_pull_with_fallback() {
+    if [[ -n "$(git status --porcelain)" ]]; then
+        echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
+        git stash push -u -m "Temporary stash before rebase" || true
+    fi
+
+    if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+        echo "⚠️ Rebase failed, using merge instead..."
+        if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
+            git rebase --abort 2>/dev/null || true
+        fi
+        git fetch --no-recurse-submodules origin "$(git rev-parse --abbrev-ref HEAD)" 2>/dev/null || true
+        git merge --no-edit --allow-unrelated-histories -X theirs -X patience
+    fi
+
+    if git stash list | grep -q "Temporary stash before rebase"; then
+        STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
+        git stash drop "$STASH_REF" || true
+    fi
+}
+
+
 acore_log_info "Staging changes..."
 git add "$FLAKE_FILE" "$NIX_DIR/flake.lock"
 
@@ -87,8 +111,11 @@ if [[ -z $(git status -s "$FLAKE_FILE" "$NIX_DIR/flake.lock") ]]; then
 else
     acore_log_info "Committing and pushing..."
     git commit -m "chore(nix): bump version to v$CURRENT_VERSION"
-    git pull --rebase
-    git push
+
+    # Pull with rebase fallback using shared helper
+    git_pull_with_fallback
+
+    git push --no-recurse-submodules
 fi
 
 acore_log_success "Nix package updated successfully."

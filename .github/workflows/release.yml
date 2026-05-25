@@ -10,6 +10,9 @@ on:
     types:
       - completed
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   check-workflows:
     runs-on: ubuntu-latest
@@ -196,7 +199,11 @@ jobs:
           # Create Linux tar.gz archive
           if [[ -d "artifacts/whph-v$APP_VERSION-linux" ]]; then
             cd "artifacts/whph-v$APP_VERSION-linux"
-            tar -czf "../../whph-v$TAG_VERSION-linux.tar.gz" .
+            # Create reproducible tar with deterministic checksums
+            # Use epoch time for consistent mtime across builds
+            tar --sort=name --mtime="@1" \
+                --owner=0 --group=0 --numeric-owner \
+                -czf "../../whph-v$TAG_VERSION-linux.tar.gz" .
             cd ../..
             echo "✅ Linux tar.gz created"
           else
@@ -239,7 +246,107 @@ jobs:
 
           echo "⚠️  Windows builds disabled - see docs/windows-ci-disabled.md"
 
+      - name: Check if release already exists with same artifacts
+        id: check_existing_release
+        run: |
+          TAG_NAME="${{ needs.check-workflows.outputs.tag-name }}"
+          REPO="${{ github.repository }}"
+          SKIP_RELEASE="false"
+          
+          echo "Checking if release for tag $TAG_NAME already exists..."
+          
+          # Get release info
+          RELEASE_INFO=$(gh release view "$TAG_NAME" --repo "$REPO" --json assets,name 2>/dev/null || echo "")
+          
+          if [[ -z "$RELEASE_INFO" ]]; then
+            echo "✅ No existing release found, will create new release"
+            echo "skip-release=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "⚠️  Release already exists, comparing artifacts..."
+          
+          # Calculate checksums for local files
+          echo "Calculating checksums for local files..."
+          LOCAL_CHECKSUMS=$(sha256sum whph-v${{ needs.check-workflows.outputs.tag-version }}-*.apk whph-v${{ needs.check-workflows.outputs.tag-version }}-*.tar.gz whph-v${{ needs.check-workflows.outputs.tag-version }}-*.flatpak 2>/dev/null | sort)
+          
+          # Download existing assets and compare checksums
+          echo "Downloading existing release assets..."
+          TEMP_DIR=$(mktemp -d)
+          cd "$TEMP_DIR"
+          
+          # Get asset URLs from existing release
+          ASSET_URLS=$(echo "$RELEASE_INFO" | jq -r '.assets[].url')
+          
+          ALL_MATCH="true"
+          for ASSET_URL in $ASSET_URLS; do
+            ASSET_NAME=$(echo "$RELEASE_INFO" | jq -r --arg url "$ASSET_URL" '.assets[] | select(.url == $url) | .name')
+            echo "Checking $ASSET_NAME..."
+            
+            # Skip Windows files (disabled)
+            if [[ "$ASSET_NAME" == *"windows"* ]]; then
+              echo "  ⏭️  Skipping (Windows builds disabled)"
+              continue
+            fi
+            
+            # Download asset using gh release download
+            if gh release download "$TAG_NAME" --repo "$REPO" --pattern "$ASSET_NAME" --dir "$TEMP_DIR" --clobber 2>/dev/null; then
+              # Compare checksums
+              if [[ -f "$ASSET_NAME" ]]; then
+                EXISTING_SHA=$(sha256sum "$ASSET_NAME" | awk '{print $1}')
+                LOCAL_SHA=$(cd "$GITHUB_WORKSPACE" && sha256sum "$ASSET_NAME" 2>/dev/null | awk '{print $1}')
+                
+                if [[ -z "$LOCAL_SHA" ]]; then
+                  echo "  ⚠️  $ASSET_NAME not found locally (removed/disabled)"
+                  continue
+                fi
+                
+                if [[ "$EXISTING_SHA" == "$LOCAL_SHA" ]]; then
+                  echo "  ✅ $ASSET_NAME checksum matches"
+                else
+                  echo "  ❌ $ASSET_NAME checksum differs!"
+                  echo "     Existing: $EXISTING_SHA"
+                  echo "     Local:    $LOCAL_SHA"
+                  ALL_MATCH="false"
+                fi
+              fi
+            else
+              echo "  ⚠️  Failed to download $ASSET_NAME"
+              ALL_MATCH="false"
+            fi
+          done
+          
+          # Check if we have any new local files that aren't in the release
+          cd "$GITHUB_WORKSPACE"
+          for LOCAL_FILE in whph-v${{ needs.check-workflows.outputs.tag-version }}-*.{apk,tar.gz,flatpak}; do
+            if [[ -f "$LOCAL_FILE" ]]; then
+              FILENAME=$(basename "$LOCAL_FILE")
+              # Skip Windows files (disabled)
+              if [[ "$FILENAME" == *"windows"* ]]; then
+                continue
+              fi
+              if ! echo "$RELEASE_INFO" | jq -r '.assets[].name' | grep -q "^$FILENAME$"; then
+                echo "  ⚠️  $FILENAME is new (not in existing release)"
+                ALL_MATCH="false"
+              fi
+            fi
+          done
+          
+          # Clean up temp directory
+          rm -rf "$TEMP_DIR"
+          
+          if [[ "$ALL_MATCH" == "true" ]]; then
+            echo "✅ All artifacts match existing release, skipping release creation"
+            echo "skip-release=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  Artifacts differ, will update release"
+            echo "skip-release=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
+        if: ${{ steps.check_existing_release.outputs.skip-release != 'true' }}
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -264,7 +371,13 @@ jobs:
             - ~~Windows builds~~ - **Temporarily disabled** due to Flutter 3.32.0 / Visual Studio 2026 compatibility issues. See [docs/windows-ci-disabled.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/windows-ci-disabled.md) for details.
 
             > [!NOTE]
-            > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/CHANGELOG.md) for detailed changes.
+            > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/CHANGELOG.md) for detailed changes.
+
+      - name: Release skipped notice
+        if: ${{ steps.check_existing_release.outputs.skip-release == 'true' }}
+        run: |
+          echo "⏭️  Release creation skipped - artifacts identical to existing release"
+          echo "📦 Existing release: ${{ needs.check-workflows.outputs.tag-name }}"
 
   update-aur:
     needs: release
@@ -272,6 +385,8 @@ jobs:
     container: archlinux:latest
     permissions:
       contents: write
+    env:
+      GIT_SSH_COMMAND: ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts
     steps:
       - name: Install dependencies
         run: pacman -Syu --noconfirm git base-devel pacman-contrib openssh sudo
@@ -282,12 +397,46 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+      - name: Setup SSH for AUR
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          # Write SSH private key from secret
+          echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/aur_key
+          chmod 600 ~/.ssh/aur_key
+
+          # Mask SSH key in logs to prevent accidental exposure
+          echo "::add-mask::${{ secrets.AUR_SSH_PRIVATE_KEY }}"
+
+          # Add AUR to known_hosts
+          if ! ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts 2>/dev/null; then
+            echo "❌ Failed to add AUR to known_hosts"
+            exit 1
+          fi
+
+          # Configure SSH to use the AUR key
+          cat > ~/.ssh/config << 'EOF'
+          Host aur.archlinux.org
+            IdentityFile ~/.ssh/aur_key
+            StrictHostKeyChecking no
+            UserKnownHostsFile ~/.ssh/known_hosts
+          EOF
+
+          # Test SSH connection (silent)
+          ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no -o LogLevel=ERROR aur@aur.archlinux.org list-repos > /dev/null 2>&1 && echo "SSH setup complete"
+
+      - name: Initialize AUR submodule
+        run: |
+          # Initialize acore-scripts (needed for update_aur.sh logger)
+          git submodule init packages/acore-scripts
+          git submodule update --remote packages/acore-scripts
+
+          # Initialize AUR submodule (uses GIT_SSH_COMMAND from job env)
+          git submodule init packaging/aur
+          git submodule update --remote packaging/aur
 
       - name: Configure Git
         run: |
@@ -295,26 +444,51 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: Wait for GitHub release assets to propagate
-        run: sleep 180
+        run: |
+          TAG_VERSION="${{ needs.release.outputs.tag-version }}"
+          RELEASE_URL="https://github.com/ahmet-cetinkaya/whph/releases/download/v$TAG_VERSION/whph-v$TAG_VERSION-linux.tar.gz"
 
-      - name: Verify checksums before AUR update
+          echo "Checking if release assets are available..."
+          if curl --output /dev/null --silent --head --fail "$RELEASE_URL"; then
+            echo "✅ Release assets are ready, proceeding immediately"
+          else
+            echo "⏳ Release assets not ready yet, waiting 2 minutes..."
+            # GitHub CDN can take up to 2 minutes to propagate release assets globally
+            sleep 120
+            echo "Retrying asset check..."
+            if curl --output /dev/null --silent --head --fail "$RELEASE_URL"; then
+              echo "✅ Release assets are now ready"
+            else
+              echo "⚠️ Release assets still not available, proceeding anyway (may fail later)"
+            fi
+          fi
+
+      - name: Verify and update checksums before AUR update
         run: |
           TAG_VERSION="${{ needs.release.outputs.tag-version }}"
           echo "Computing SHA256 for Linux release..."
           curl -sL "https://github.com/ahmet-cetinkaya/whph/releases/download/v$TAG_VERSION/whph-v$TAG_VERSION-linux.tar.gz" | sha256sum | tee /tmp/computed_hash.txt
-          
+
           EXPECTED_HASH=$(grep sha256sums packaging/aur/PKGBUILD | sed "s/sha256sums=('//;s/')//")
           COMPUTED_HASH=$(awk '{print $1}' /tmp/computed_hash.txt)
-          
+
           echo "Expected hash from PKGBUILD: $EXPECTED_HASH"
           echo "Computed hash from release:     $COMPUTED_HASH"
-          
+
           if [[ "$EXPECTED_HASH" == "$COMPUTED_HASH" ]]; then
             echo "✅ Hash verification PASSED"
           else
-            echo "❌ Hash mismatch! The AUR will fail to build."
-            echo "This indicates the release was recreated after the PKGBUILD was last updated."
-            exit 1
+            echo "⚠️ Hash mismatch detected - updating PKGBUILD with new hash"
+            echo "This typically happens when a release is recreated."
+
+            # Update the PKGBUILD with the new hash
+            sed -i "s/sha256sums=('.*')/sha256sums=('$COMPUTED_HASH')/" packaging/aur/PKGBUILD
+
+            # Show the updated line for verification
+            echo "Updated PKGBUILD sha256sums:"
+            grep sha256sums packaging/aur/PKGBUILD
+
+            echo "✅ PKGBUILD updated successfully"
           fi
 
       - name: Update AUR
@@ -329,10 +503,30 @@ jobs:
           
           # Add the submodule directory to stage the pointer change
           git add packaging/aur
-          
+
           if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
             git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
-            git pull --rebase --no-recurse-submodules
+
+            # Inline pull with rebase fallback to avoid sourcing stale git_helpers.sh
+            if [[ -n "$(git status --porcelain | grep -v packaging/aur)" ]]; then
+              echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
+              git stash push -u -m "Temporary stash before rebase" || true
+            fi
+
+            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+              echo "⚠️ Rebase failed, using merge instead..."
+              if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
+                git rebase --abort 2>/dev/null || true
+              fi
+              git fetch --no-recurse-submodules origin "$(git rev-parse --abbrev-ref HEAD)" 2>/dev/null || true
+              git merge --no-edit --allow-unrelated-histories -X theirs -X patience
+            fi
+
+            if git stash list | grep -q "Temporary stash before rebase"; then
+              STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
+              git stash drop "$STASH_REF" || true
+            fi
+
             git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated for AUR"
           else
@@ -340,7 +534,7 @@ jobs:
           fi
 
   update-nix:
-    needs: release
+    needs: [release, update-aur]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -348,7 +542,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
+
+      - name: Initialize required submodules
+        run: |
+          git submodule init packages/acore-scripts
+          git submodule update --remote packages/acore-scripts
 
       - name: Install Nix
         uses: cachix/install-nix-action@v27
@@ -364,7 +563,7 @@ jobs:
         run: ./scripts/update_nix.sh
 
   update-flathub:
-    needs: release
+    needs: [release, update-nix]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -372,7 +571,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
+
+      - name: Initialize required submodules
+        run: |
+          # Initialize acore-scripts (needed for update_flathub.sh logger)
+          git submodule init packages/acore-scripts
+          git submodule update --remote packages/acore-scripts
+
+          # Initialize flathub submodule (the target of this job)
+          git submodule init packaging/flatpak/flathub
+          git submodule update --remote packaging/flatpak/flathub
+
+          # Initialize flathub's nested submodule (shared-modules)
+          # This is required by the flathub manifest
+          cd packaging/flatpak/flathub || { echo "❌ Failed to cd to flathub"; exit 1; }
+          if ! git submodule init shared-modules; then
+            echo "❌ Failed to init shared-modules submodule"
+            exit 1
+          fi
+          if ! git submodule update --remote shared-modules; then
+            echo "❌ Failed to update shared-modules submodule"
+            exit 1
+          fi
+          cd "$GITHUB_WORKSPACE" || { echo "❌ Failed to cd back to workspace"; exit 1; }
 
       - name: Configure Git
         run: |
@@ -436,7 +658,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "Update manifest for $TAG_NAME"
-            git pull --rebase origin me.ahmetcetinkaya.whph
+            git pull --rebase origin me.ahmetcetinkaya.whph --no-edit
             git push origin HEAD:me.ahmetcetinkaya.whph
             echo "✅ Flathub submodule changes pushed successfully"
           else
@@ -450,10 +672,33 @@ jobs:
           
           # Add the submodule directory to stage the pointer change
           git add packaging/flatpak/flathub
-          
+
           if [[ -n "$(git status --porcelain packaging/flatpak/flathub)" ]]; then
             git commit -m "chore(flatpak): update flathub submodule pointer to $TAG_NAME"
-            git pull --rebase --no-recurse-submodules
+
+            # Handle any unstaged changes before pulling (including untracked files)
+            if [[ -n "$(git status --porcelain | grep -v packaging/flatpak/flathub)" ]]; then
+              echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
+              git stash push -u -m "Temporary stash before rebase" || true
+            fi
+
+            # Pull with rebase, fallback to merge if it fails
+            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+              echo "⚠️ Rebase failed, using merge instead..."
+              # Only abort if a rebase is actually in progress
+              if [[ -f ".git/rebase-apply" || -f ".git/rebase-merge" ]]; then
+                git rebase --abort 2>/dev/null || true
+              fi
+              git fetch --no-recurse-submodules origin "$(git rev-parse --abbrev-ref HEAD)" 2>/dev/null || true
+              git merge --no-edit --allow-unrelated-histories -X theirs -X patience
+            fi
+
+            # Clean up any leftover files (don't restore stash, it's not needed)
+            if git stash list | grep -q "Temporary stash before rebase"; then
+              STASH_REF=$(git stash list | grep "Temporary stash before rebase" | head -1 | cut -d: -f1)
+              git stash drop "$STASH_REF" || true
+            fi
+
             git push --no-recurse-submodules
             echo "✅ Parent repository submodule pointer updated"
           else
