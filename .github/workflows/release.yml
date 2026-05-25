@@ -199,7 +199,11 @@ jobs:
           # Create Linux tar.gz archive
           if [[ -d "artifacts/whph-v$APP_VERSION-linux" ]]; then
             cd "artifacts/whph-v$APP_VERSION-linux"
-            tar -czf "../../whph-v$TAG_VERSION-linux.tar.gz" .
+            # Create reproducible tar with deterministic checksums
+            # Use epoch time for consistent mtime across builds
+            tar --sort=name --mtime="@1" \
+                --owner=0 --group=0 --numeric-owner \
+                -czf "../../whph-v$TAG_VERSION-linux.tar.gz" .
             cd ../..
             echo "✅ Linux tar.gz created"
           else
