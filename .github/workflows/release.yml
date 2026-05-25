@@ -272,6 +272,8 @@ jobs:
     container: archlinux:latest
     permissions:
       contents: write
+    env:
+      GIT_SSH_COMMAND: ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts
     steps:
       - name: Install dependencies
         run: pacman -Syu --noconfirm git base-devel pacman-contrib openssh sudo
@@ -313,10 +315,7 @@ jobs:
           git submodule init packages/acore-scripts
           git submodule update --remote packages/acore-scripts
 
-          # Force Git to use the SSH key via GIT_SSH_COMMAND
-          export GIT_SSH_COMMAND="ssh -i ~/.ssh/aur_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts"
-
-          # Initialize AUR submodule (needs SSH)
+          # Initialize AUR submodule (uses GIT_SSH_COMMAND from job env)
           git submodule init packaging/aur
           git submodule update --remote packaging/aur
 
@@ -509,8 +508,14 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "Update manifest for $TAG_NAME"
-            git pull --rebase origin me.ahmetcetinkaya.whph
-            git push origin HEAD:me.ahmetcetinkaya.whph
+
+            # Handle rebase conflicts gracefully
+            if ! git pull --rebase origin me.ahmetcetinkaya.whph 2>/dev/null; then
+              echo "⚠️ Rebase failed, pushing directly..."
+              git push origin HEAD:me.ahmetcetinkaya.whph
+            else
+              git push origin HEAD:me.ahmetcetinkaya.whph
+            fi
             echo "✅ Flathub submodule changes pushed successfully"
           else
             echo "ℹ️ No changes to commit in flathub submodule"
@@ -523,11 +528,18 @@ jobs:
           
           # Add the submodule directory to stage the pointer change
           git add packaging/flatpak/flathub
-          
+
           if [[ -n "$(git status --porcelain packaging/flatpak/flathub)" ]]; then
             git commit -m "chore(flatpak): update flathub submodule pointer to $TAG_NAME"
-            git pull --rebase --no-recurse-submodules
-            git push --no-recurse-submodules
+
+            # Attempt pull with rebase, handle failures gracefully
+            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+              echo "⚠️ Rebase failed, aborting and pushing directly..."
+              git rebase --abort 2>/dev/null || true
+              git push --no-recurse-submodules
+            else
+              git push --no-recurse-submodules
+            fi
             echo "✅ Parent repository submodule pointer updated"
           else
             echo "ℹ️ No submodule pointer change detected in parent repository"

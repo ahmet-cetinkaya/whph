@@ -107,8 +107,11 @@ git commit -m "chore: bump version to v$CURRENT_VERSION"
 # Only push if we are essentially asked to (implicit in this script usually running in CI or manually for this purpose)
 acore_log_info "Pushing changes..."
 
-# Use a custom SSH command to bypass host key checking and ensure agent usage
-export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+# Don't override GIT_SSH_COMMAND if already set (by CI workflow)
+# Only set it for local runs where it might not be configured
+if [[ -z "$GIT_SSH_COMMAND" ]]; then
+	export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+fi
 
 git push origin HEAD:"$AUR_BRANCH"
 
