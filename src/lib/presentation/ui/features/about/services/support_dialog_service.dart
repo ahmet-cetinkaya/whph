@@ -8,6 +8,7 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/features/about/components/support_dialog.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
+import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 
@@ -25,7 +26,7 @@ class SupportDialogService implements ISupportDialogService {
       GetListByTopAppUsagesQuery(
         pageIndex: 0,
         pageSize: 1,
-        searchByProcessName: "whph",
+        searchByProcessName: AppInfo.shortName.toLowerCase(),
       ),
     );
     if (appUsageResponse.items.isEmpty) return;
