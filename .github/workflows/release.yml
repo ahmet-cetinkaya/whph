@@ -383,11 +383,18 @@ jobs:
           
           # Add the submodule directory to stage the pointer change
           git add packaging/aur
-          
+
           if [[ -n "$(git status --porcelain packaging/aur)" ]]; then
             git commit -m "chore(aur): update aur submodule pointer to v$CURRENT_VERSION"
-            git pull --rebase --no-recurse-submodules
-            git push --no-recurse-submodules
+
+            # Attempt pull with rebase, handle failures gracefully
+            if ! git pull --rebase --no-recurse-submodules --no-edit 2>/dev/null; then
+              echo "⚠️ Rebase failed, aborting and pushing directly..."
+              git rebase --abort 2>/dev/null || true
+              git push --no-recurse-submodules
+            else
+              git push --no-recurse-submodules
+            fi
             echo "✅ Parent repository submodule pointer updated for AUR"
           else
             echo "ℹ️ No submodule pointer change detected in parent repository for AUR"
