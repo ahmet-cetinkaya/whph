@@ -453,16 +453,13 @@ jobs:
 
       - name: Initialize required submodules
         run: |
+          # Initialize acore-scripts (needed for update_flathub.sh logger)
           git submodule init packages/acore-scripts
           git submodule update --remote packages/acore-scripts
-          git submodule init packaging/fdroid
-          git submodule update --remote packaging/fdroid
+
+          # Initialize flathub submodule (the target of this job)
           git submodule init packaging/flatpak/flathub
           git submodule update --remote packaging/flatpak/flathub
-          git submodule init packaging/flatpak/flatpak-flutter
-          git submodule update --remote packaging/flatpak/flatpak-flutter
-          git submodule init packaging/flatpak/shared-modules
-          git submodule update --remote packaging/flatpak/shared-modules
 
       - name: Configure Git
         run: |
