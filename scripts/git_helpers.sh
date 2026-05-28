@@ -21,12 +21,12 @@ git_pull_with_fallback() {
 
     # Handle any unstaged changes before pulling (including untracked files)
     if [[ -n "$filter_pattern" ]]; then
-        if [[ -n "$(git status --porcelain | grep -v "$filter_pattern")" ]]; then
+        if git status --porcelain | grep -qv "$filter_pattern"; then
             echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
             git stash push -u -m "Temporary stash before rebase" || true
         fi
     else
-        if [[ -n "$(git status --porcelain)" ]]; then
+        if git status --porcelain | grep -q .; then
             echo "⚠️ Found unstaged/untracked changes, stashing before pull..."
             git stash push -u -m "Temporary stash before rebase" || true
         fi
