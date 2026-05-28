@@ -11,6 +11,8 @@ import 'package:whph/core/application/features/habits/queries/get_list_habit_rec
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
 import 'package:whph/presentation/ui/shared/services/app_bootstrap_service.dart';
+import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
+import 'package:whph/main.dart' as app_main;
 import '../widget_service.dart';
 
 /// Background callback function for HomeWidget interactive widgets.
@@ -47,6 +49,12 @@ FutureOr<void> widgetBackgroundCallback(Uri? data) async {
           return;
         }
       }
+
+      // Assign to global so BackgroundTranslationService can resolve dependencies
+      app_main.container = container;
+
+      // Reset translation cache so it re-initializes with the correct locale
+      BackgroundTranslationService().resetCache();
 
       Mediator mediator;
       try {

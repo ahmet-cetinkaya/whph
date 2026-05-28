@@ -15,23 +15,35 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.da
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 
 /// Aggregates widget data (tasks and habits) for the home widget display.
 class WidgetDataAggregator {
   final Mediator _mediator;
   final IContainer _container;
   final FilterSettingsManager _filterSettingsManager;
+  final BackgroundTranslationService _translationService;
 
   WidgetDataAggregator({
     required Mediator mediator,
     required IContainer container,
     required FilterSettingsManager filterSettingsManager,
+    BackgroundTranslationService? translationService,
   })  : _mediator = mediator,
         _container = container,
-        _filterSettingsManager = filterSettingsManager;
+        _filterSettingsManager = filterSettingsManager,
+        _translationService = translationService ?? BackgroundTranslationService();
 
   /// Fetches and aggregates widget data including tasks and habits.
   Future<WidgetData> getWidgetData() async {
+    // Initialize translation service if not already initialized
+    if (_translationService.translationCache == null) {
+      await _translationService.initialize();
+    }
+
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
     final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
@@ -67,9 +79,7 @@ class WidgetDataAggregator {
 
       if (savedTaskSettings != null) {
         final taskSettings = TaskListOptionSettings.fromJson(savedTaskSettings);
-        if (taskSettings.sortConfig != null) {
-          taskSortConfig = taskSettings.sortConfig!;
-        }
+        taskSortConfig = taskSettings.sortConfig?.copyWith(enableGrouping: false) ?? taskSortConfig;
       }
 
       // 3. Load Habit Settings
@@ -79,9 +89,7 @@ class WidgetDataAggregator {
 
       if (savedHabitSettings != null) {
         final habitSettings = HabitListOptionSettings.fromJson(savedHabitSettings);
-        if (habitSettings.sortConfig != null) {
-          habitSortConfig = habitSettings.sortConfig!;
-        }
+        habitSortConfig = habitSettings.sortConfig ?? habitSortConfig;
       }
     } catch (e) {
       developer.log('Error loading settings for widget: $e', name: 'WidgetDataAggregator');
@@ -90,10 +98,25 @@ class WidgetDataAggregator {
     final tasks = await _getTasksData(startOfDay, endOfDay, selectedTagIds, showNoTagsFilter, taskSortConfig);
     final habits = await _getHabitsData(startOfDay, endOfDay, selectedTagIds, showNoTagsFilter, habitSortConfig);
 
+    // Get translations
+    final tasksTitle = _translationService.translateWithFallback(TaskTranslationKeys.tasksPageTitle, 'Tasks');
+    final habitsTitle = _translationService.translateWithFallback(HabitTranslationKeys.pageTitle, 'Habits');
+    final noPendingTasks = _translationService.translateWithFallback(TaskTranslationKeys.noTasks, 'No tasks');
+    final noPendingHabits = _translationService.translateWithFallback(HabitTranslationKeys.noHabitsFound, 'No habits');
+    final todayLabel = _translationService.translateWithFallback(SharedTranslationKeys.today, 'Today');
+
+    developer.log('Widget translations: tasksTitle=$tasksTitle, habitsTitle=$habitsTitle, todayLabel=$todayLabel',
+        name: 'WidgetDataAggregator');
+
     return WidgetData(
       tasks: tasks,
       habits: habits,
       lastUpdated: DateTime.now(),
+      tasksTitle: tasksTitle,
+      habitsTitle: habitsTitle,
+      noPendingTasks: noPendingTasks,
+      noPendingHabits: noPendingHabits,
+      todayLabel: todayLabel,
     );
   }
 

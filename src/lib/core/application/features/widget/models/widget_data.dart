@@ -51,11 +51,21 @@ class WidgetData {
   final List<WidgetTaskData> tasks;
   final List<WidgetHabitData> habits;
   final DateTime lastUpdated;
+  final String tasksTitle;
+  final String habitsTitle;
+  final String noPendingTasks;
+  final String noPendingHabits;
+  final String todayLabel;
 
   WidgetData({
     required this.tasks,
     required this.habits,
     required this.lastUpdated,
+    this.tasksTitle = 'Tasks',
+    this.habitsTitle = 'Habits',
+    this.noPendingTasks = 'No pending tasks',
+    this.noPendingHabits = 'No pending habits',
+    this.todayLabel = 'Today',
   });
 
   Map<String, dynamic> toJson() {
@@ -85,6 +95,13 @@ class WidgetData {
               })
           .toList(),
       'lastUpdated': lastUpdated.toIso8601String(),
+      'localizedStrings': {
+        'tasksTitle': tasksTitle,
+        'habitsTitle': habitsTitle,
+        'noPendingTasks': noPendingTasks,
+        'noPendingHabits': noPendingHabits,
+        'todayLabel': todayLabel,
+      },
     };
   }
 }

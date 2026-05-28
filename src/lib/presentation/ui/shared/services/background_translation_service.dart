@@ -4,9 +4,9 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
-import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/features/settings/setting.dart';
 
 /// Service for handling background translation when EasyLocalization is not available
 class BackgroundTranslationService {
@@ -55,8 +55,6 @@ class BackgroundTranslationService {
         ),
       );
       _currentLocale = locale;
-
-      // Reload translations for new locale
       await _loadTranslations();
     } catch (e) {
       Logger.error('BackgroundTranslationService: Failed to save locale: $e');
@@ -278,6 +276,15 @@ class BackgroundTranslationService {
   /// Get the current locale
   String get currentLocale => _currentLocale ?? 'en';
 
+  /// Get the translation cache (for testing and initialization checks)
+  Map<String, Map<String, String>>? get translationCache => _translationCache;
+
+  /// Resets the translation cache and locale, forcing re-initialization on next use.
+  void resetCache() {
+    _translationCache = null;
+    _currentLocale = null;
+  }
+
   // Test helper methods - only available in test mode
   @visibleForTesting
   Map<String, dynamic> parseSimpleYamlForTest(String yamlContent) {
@@ -301,7 +308,6 @@ class BackgroundTranslationService {
 
   @visibleForTesting
   void clearCacheForTest() {
-    _translationCache = null;
-    _currentLocale = null;
+    resetCache();
   }
 }

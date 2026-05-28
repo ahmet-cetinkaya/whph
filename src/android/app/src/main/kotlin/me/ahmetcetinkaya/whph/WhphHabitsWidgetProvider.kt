@@ -9,9 +9,6 @@ import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetPlugin
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import org.json.JSONObject
 
 class WhphHabitsWidgetProvider : AppWidgetProvider() {
@@ -77,6 +74,10 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
       val dataString = widgetData?.getString("widget_data", null)
 
       var showCompletedIcon = false
+      var habitsTitle = "Habits"
+      var noPendingHabits = "No pending habits"
+      var todayLabel = "Today"
+
       if (dataString != null) {
         val data = JSONObject(dataString)
         val habits = data.optJSONArray("habits")
@@ -84,6 +85,14 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
 
         if (habitCount == 0) {
           showCompletedIcon = true
+        }
+
+        // Read localized strings from widget data
+        val localizedStrings = data.optJSONObject("localizedStrings")
+        if (localizedStrings != null) {
+          habitsTitle = localizedStrings.optString("habitsTitle", "Habits")
+          noPendingHabits = localizedStrings.optString("noPendingHabits", "No pending habits")
+          todayLabel = localizedStrings.optString("todayLabel", "Today")
         }
       }
 
@@ -94,6 +103,11 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
         views.setViewVisibility(R.id.habits_empty_state_container, android.view.View.GONE)
         views.setViewVisibility(R.id.habits_widget_list, android.view.View.VISIBLE)
       }
+
+      // Set localized text
+      views.setTextViewText(R.id.habits_widget_title, habitsTitle)
+      views.setTextViewText(R.id.habits_empty_view, noPendingHabits)
+      views.setTextViewText(R.id.habits_widget_timestamp, todayLabel)
 
       // Set up click to open app only on header area
       val mainIntent = Intent(context, MainActivity::class.java)
@@ -136,10 +150,6 @@ class WhphHabitsWidgetProvider : AppWidgetProvider() {
           PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
         )
       views.setPendingIntentTemplate(R.id.habits_widget_list, pendingIntentTemplate)
-
-      // Set timestamp
-      val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-      views.setTextViewText(R.id.habits_widget_timestamp, currentTime)
 
       appWidgetManager.updateAppWidget(appWidgetId, views)
       appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.habits_widget_list)

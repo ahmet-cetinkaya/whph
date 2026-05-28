@@ -54,6 +54,9 @@ class WidgetService {
       final widgetData = await _dataAggregator.getWidgetData();
       final jsonData = jsonEncode(widgetData.toJson());
 
+      developer.log('=== Sending to Android widget ===', name: 'WidgetService');
+      developer.log('Widget data JSON: $jsonData', name: 'WidgetService');
+
       await HomeWidget.saveWidgetData(_dataKey, jsonData);
       await HomeWidget.updateWidget(
         name: _tasksWidgetName,
