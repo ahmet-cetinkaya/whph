@@ -47,7 +47,6 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
     });
 
     bool isIgnoring = false;
-    bool success = false;
 
     for (int attempt = 0; attempt < _maxRetries; attempt++) {
       if (attempt > 0) {
@@ -59,7 +58,6 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
         try {
           final result = await platform.invokeMethod<bool>('isIgnoringBatteryOptimizations');
           isIgnoring = result ?? false;
-          success = true;
           break;
         } catch (e) {
           // Fallback: Check via package name intent
@@ -72,11 +70,14 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
             // If intent is resolvable, optimizations are NOT being ignored
             final canResolve = await checkIntent.canResolveActivity();
             isIgnoring = canResolve != null ? !canResolve : false;
-            success = true;
             break;
-          } catch (e2) {}
+          } catch (e2) {
+            // Fallback methods exhausted, continue to retry
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        // MethodChannel error, retry with delay
+      }
     }
 
     if (mounted) {
@@ -142,7 +143,9 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
                 data: 'package:${AndroidAppConstants.packageName}',
               );
               await appDetailsIntent.launch();
-            } catch (e4) {}
+            } catch (e4) {
+              // Last intent option failed, will fallback to URL launcher
+            }
           }
         }
       }
@@ -153,7 +156,9 @@ class _BatteryOptimizationState extends State<BatteryOptimization> {
         if (await canLaunchUrl(appSettingsUri)) {
           await launchUrl(appSettingsUri);
         }
-      } catch (urlError) {}
+      } catch (urlError) {
+        // URL launcher also failed, all options exhausted
+      }
     }
 
     // Give time for permission to propagate before checking status
