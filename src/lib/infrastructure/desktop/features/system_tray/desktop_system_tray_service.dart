@@ -18,7 +18,6 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
 
       await setIcon(TrayIconType.default_);
 
-      // Add default menu items
       await setMenuItems([
         TrayMenuItem(key: 'show_window', label: 'Show Window', onClicked: _showWindow),
         TrayMenuItem(key: 'hide_window', label: 'Hide Window', onClicked: _hideWindow),
@@ -59,9 +58,7 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
   }
 
   @override
-  Future<void> setBody(String body) async {
-    // Not applicable for desktop
-  }
+  Future<void> setBody(String body) async {} // Not applicable for desktop
 
   // Menu management methods
   @override

@@ -22,11 +22,9 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       final lockFile = await _getLockFile();
 
       if (!await portFile.exists()) {
-        // If port file missing but lock file exists, another instance might be starting or it might be a stale lock.
         if (await lockFile.exists()) {
           Logger.debug('Lock file exists but port file missing. Checking if instance is starting...');
 
-          // Wait for a short moment to see if the port file appears (handling instances that are currently starting)
           for (int i = 0; i < 5; i++) {
             await Future.delayed(const Duration(milliseconds: 100));
             if (await portFile.exists()) {
@@ -46,12 +44,10 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       final port = int.tryParse(portContent);
       if (port == null) {
         Logger.warning('Invalid port file content');
-        // If content invalid but lock exists, assume running/bad state.
         if (await lockFile.exists()) return true;
         return false;
       }
 
-      // Try to connect to the existing instance
       try {
         final socket =
             await Socket.connect(InternetAddress.loopbackIPv4, port, timeout: const Duration(milliseconds: 500));
@@ -59,8 +55,6 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         return true;
       } catch (e) {
         Logger.debug('Failed to connect to existing port, instance likely dead: $e');
-        // If connection failed, but lock exists, it might be zombie or hung.
-        // If we return false, we proceed to try to take lock.
         return false;
       }
     } catch (e) {
@@ -74,7 +68,6 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
     try {
       _lockFile = await _getLockFile();
 
-      // Create the lock file if it doesn't exist
       if (!await _lockFile!.exists()) {
         await _lockFile!.create(recursive: true);
       }
@@ -82,7 +75,6 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
       _lockHandle = await _lockFile!.open(mode: FileMode.write);
       await _lockHandle!.lock(FileLock.exclusive);
 
-      // Write current process ID
       await _lockHandle!.writeString(pid.toString());
       await _lockHandle!.flush();
 
@@ -178,11 +170,9 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
         timeout: const Duration(milliseconds: 500),
       );
 
-      // Send command
       socket.write('$command\n');
       await socket.flush();
 
-      // Listen for updates
       final Completer<void> completer = Completer<void>();
       String buffer = '';
 
@@ -233,10 +223,8 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
     _onCommandReceived = onCommandReceived;
 
     try {
-      // Bind to any available port on loopback
       _serverSocket = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
 
-      // Write port to file
       final portFile = await _getPortFile();
       await portFile.writeAsString(_serverSocket!.port.toString());
 
@@ -261,7 +249,6 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
                 _onCommandReceived!(message);
               }
 
-              // If it's just a focus command, we can close connection immediately
               if (message == 'FOCUS') {
                 socket.destroy();
               }
@@ -313,7 +300,6 @@ class DesktopSingleInstanceService implements ISingleInstanceService {
     }
 
     final data = '$message\n';
-    // Create a copy list to iterate safely
     final clients = List<Socket>.from(_connectedClients);
     bool success = false;
 

@@ -95,7 +95,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       {bool includeDeleted = false,
       acore.CustomWhereFilter? customWhereFilter,
       List<acore.CustomOrder>? customOrder}) async {
-    // Check if sorting by actualTime or name is requested
     final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
     final hasNameSort = customOrder?.any((order) => order.field == "name") == true;
 
@@ -117,7 +116,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
         ? "LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL"
         : "";
 
-    // Build ORDER BY clause with special handling for actual_time and name
     String? orderByClause;
     if (customOrder?.isNotEmpty == true) {
       final orderClauses = customOrder!.map((order) {
@@ -157,7 +155,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     ).map((row) => table.map(row.data));
     final result = await query.get();
 
-    // Get count using the same JOIN logic
     final count = await database.customSelect(
       """
       SELECT COUNT(DISTINCT h.id) AS count
@@ -197,7 +194,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     acore.CustomWhereFilter? customWhereFilter,
     List<acore.CustomOrder>? customOrder,
   }) async {
-    // Build WHERE clause
     List<String> whereClauses = [
       if (customWhereFilter != null) "(${customWhereFilter.query.replaceAll('habit_table.', 'h.')})",
       if (!includeDeleted) 'h.deleted_date IS NULL',
@@ -212,7 +208,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
         ? "LEFT JOIN habit_time_record_table htr ON h.id = htr.habit_id AND htr.deleted_date IS NULL"
         : "";
 
-    // Build ORDER BY clause
     String? orderByClause;
     if (customOrder?.isNotEmpty == true) {
       final orderClauses = customOrder!.map((order) {
@@ -233,7 +228,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       orderByClause = ' ORDER BY $orderClauses ';
     }
 
-    // Main Query
     final query = database.customSelect(
       """
       SELECT h.* ${hasActualTimeSort ? ', COALESCE(TOTAL(htr.duration), 0) as total_duration' : ''}
@@ -284,7 +278,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       );
     }));
 
-    // Get count
     final count = await database.customSelect(
       """
       SELECT COUNT(DISTINCT h.id) AS count

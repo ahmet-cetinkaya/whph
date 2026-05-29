@@ -75,7 +75,6 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_devic
 import 'package:whph/core/application/features/sync/services/device_id_service.dart';
 
 void registerInfrastructure(IContainer container) {
-  // Register Logger Service
   container.registerSingleton<ILogger>((_) => const ConsoleLogger());
 
   final settingRepository = container.resolve<ISettingRepository>();
@@ -84,7 +83,6 @@ void registerInfrastructure(IContainer container) {
   final appUsageFilterService = AppUsageFilterService(appUsageIgnoreRuleRepository);
   container.registerSingleton<IAppUsageFilterService>((_) => appUsageFilterService);
 
-  // Register platform-specific application directory service
   container.registerSingleton<IApplicationDirectoryService>((_) {
     if (Platform.isAndroid) {
       return AndroidApplicationDirectoryService();
@@ -98,15 +96,12 @@ void registerInfrastructure(IContainer container) {
     throw Exception('Unsupported platform for application directory service.');
   });
 
-  // Register DeviceIdService after IApplicationDirectoryService is registered
   container.registerSingleton<IDeviceIdService>((_) => DeviceIdService(
         applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
       ));
 
-  // Register DeviceInfoPlugin for device-specific information
   container.registerSingleton<DeviceInfoPlugin>((_) => DeviceInfoPlugin());
 
-  // Register WindowManagerInterface
   container.registerSingleton<IWindowManager>((_) {
     if (Platform.isLinux) return LinuxWindowManager();
     return WindowManager();
@@ -145,13 +140,11 @@ void registerInfrastructure(IContainer container) {
 
   container.registerSingleton<ISystemTrayService>((_) {
     if (PlatformUtils.isMobile) {
-      // Share the FlutterLocalNotificationsPlugin instance from MobileNotificationService
-      // to avoid a second .initialize() call that would overwrite notification callbacks.
+      // Reuse MobileNotificationService plugin to prevent second .initialize() call
       final notificationService = container.resolve<INotificationService>() as MobileNotificationService;
       return MobileSystemTrayService(notificationService.plugin);
     }
 
-    // Check for Flatpak environment on Linux
     if (Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID')) {
       return FlatpakSystemTrayService();
     }
@@ -159,7 +152,6 @@ void registerInfrastructure(IContainer container) {
     return DesktopSystemTrayService();
   });
 
-  // Register single instance service (desktop only)
   if (PlatformUtils.isDesktop) {
     container.registerSingleton<ISingleInstanceService>((_) => DesktopSingleInstanceService());
   }
@@ -198,7 +190,6 @@ void registerInfrastructure(IContainer container) {
     throw Exception('Unsupported platform for startup settings service.');
   });
 
-  // Register Windows-specific setup services
   if (Platform.isWindows) {
     container.registerSingleton<IWindowsElevationService>((_) => WindowsElevationService());
     container.registerSingleton<IWindowsFirewallService>(
@@ -210,7 +201,6 @@ void registerInfrastructure(IContainer container) {
     container.registerSingleton<IWindowsUpdateService>((_) => WindowsUpdateService());
   }
 
-  // Register Linux-specific setup services
   if (Platform.isLinux) {
     container.registerSingleton<ILinuxFirewallService>((_) => LinuxFirewallService());
 
@@ -285,8 +275,7 @@ void registerInfrastructure(IContainer container) {
     throw Exception('Unsupported platform for reminder service.');
   });
 
-  // Register DesktopSyncService explicitly for desktop platforms
-  // This is needed because AppBootstrapService resolves it directly for clean-up
+  // Registered explicitly for AppBootstrapService cleanup resolution
   if (PlatformUtils.isDesktop) {
     container.registerSingleton<DesktopSyncService>((_) {
       final mediator = container.resolve<Mediator>();
@@ -295,12 +284,10 @@ void registerInfrastructure(IContainer container) {
     });
   }
 
-  // Register ISyncService with platform-specific implementations
   container.registerSingleton<ISyncService>((_) {
     final mediator = container.resolve<Mediator>();
 
     if (PlatformUtils.isDesktop) {
-      // Reuse the already registered DesktopSyncService
       return container.resolve<DesktopSyncService>();
     }
 
@@ -311,7 +298,6 @@ void registerInfrastructure(IContainer container) {
     throw Exception('Unsupported platform for sync service.');
   });
 
-  // Register AndroidServerSyncService as a separate service for mobile server mode
   container.registerSingleton<AndroidServerSyncService>((_) {
     final mediator = container.resolve<Mediator>();
     final deviceIdService = container.resolve<IDeviceIdService>();

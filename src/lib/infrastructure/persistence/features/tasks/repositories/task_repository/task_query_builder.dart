@@ -42,7 +42,6 @@ class TaskQueryBuilder {
     FROM task_table
   ''';
 
-  /// Builds ORDER BY clause from custom order list.
   String? buildOrderByClause(List<CustomOrder>? customOrder,
       {bool useCustomSort = false, List<String>? customTagSortOrder}) {
     if (customOrder == null || customOrder.isEmpty) return null;
@@ -116,7 +115,6 @@ class TaskQueryBuilder {
     }).join(', ')} ';
   }
 
-  /// Builds date filter conditions (planned and deadline dates).
   /// Builds date filter conditions (planned and deadline dates).
   QueryConditionResult buildDateCondition({
     DateTime? filterByPlannedStartDate,
@@ -243,7 +241,6 @@ class TaskQueryBuilder {
     return (condition: condition, variables: variables);
   }
 
-  /// Builds search filter condition.
   QueryConditionResult buildSearchCondition({
     String? filterBySearch,
     bool areParentAndSubTasksIncluded = false,
@@ -268,7 +265,6 @@ class TaskQueryBuilder {
     return (condition: '1=1', variables: <Variable>[]);
   }
 
-  /// Builds completion status filter condition.
   QueryConditionResult buildCompletionCondition({
     bool? filterByCompleted,
     required bool areParentAndSubTasksIncluded,
@@ -311,7 +307,6 @@ class TaskQueryBuilder {
     }
   }
 
-  /// Builds combined filter condition for parent and subtask queries.
   QueryConditionResult buildParentAndSubtaskFilterCondition({
     required String searchCondition,
     required String dateCondition,
@@ -334,7 +329,6 @@ class TaskQueryBuilder {
     return (condition: '(${conditions.join(' AND ')})', variables: variables);
   }
 
-  /// Builds tag filter condition.
   QueryConditionResult buildTagCondition({
     List<String>? filterByTags,
     bool filterNoTags = false,
@@ -361,7 +355,6 @@ class TaskQueryBuilder {
     return (condition: conditions.join(' AND '), variables: variables);
   }
 
-  /// Builds archived tag visibility condition.
   String buildArchivedTagVisibilityCondition() {
     return '''
       task_table.id NOT IN (
@@ -380,7 +373,6 @@ class TaskQueryBuilder {
     ''';
   }
 
-  /// Builds completed date range filter condition.
   QueryConditionResult buildCompletedDateRangeCondition({
     DateTime? filterByCompletedStartDate,
     DateTime? filterByCompletedEndDate,

@@ -35,13 +35,10 @@ class TaskDataMapper {
     return null;
   }
 
-  /// Maps a database row to a Task entity.
   Task mapTaskFromRow(Map<String, dynamic> data) {
-    // Convert dates
     final plannedDate = convertToDateTime(data['planned_date']);
     final deadlineDate = convertToDateTime(data['deadline_date']);
 
-    // Create a task with the base data
     final task = Task(
       id: data['id'] as String,
       createdDate: convertToDateTime(data['created_date']) ?? DateTime.now().toUtc(),
@@ -75,7 +72,6 @@ class TaskDataMapper {
       }
     }
 
-    // Set recurrence values
     if (data['recurrence_type'] != null) {
       final recurrenceTypeValue = data['recurrence_type'] as int;
       if (recurrenceTypeValue >= 0 && recurrenceTypeValue < RecurrenceType.values.length) {
@@ -90,7 +86,6 @@ class TaskDataMapper {
     task.recurrenceCount = data['recurrence_count'] as int?;
     task.recurrenceParentId = data['recurrence_parent_id'] as String?;
 
-    // RecurrenceConfiguration
     if (data['recurrence_configuration'] != null && (data['recurrence_configuration'] as String).isNotEmpty) {
       try {
         task.recurrenceConfiguration = RecurrenceConfiguration.fromJson(
@@ -110,7 +105,6 @@ class TaskDataMapper {
     return task;
   }
 
-  /// Converts a Task entity to a database companion for insertion/update.
   TaskTableCompanion toCompanion(Task entity) {
     // Ensure all DateTime values are in UTC format
     DateTime? plannedDate = entity.plannedDate?.toUtc();

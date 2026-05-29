@@ -76,9 +76,6 @@ class LinuxApplicationDirectoryService implements IApplicationDirectoryService {
         if (kDebugMode) {
           print('LinuxApplicationDirectoryService: Migration completed successfully');
         }
-
-        // Optionally, you can delete the old directory after successful migration
-        // await oldAppDir.delete(recursive: true);
       }
     } catch (e) {
       // Migration failure is not critical - app can continue with new location

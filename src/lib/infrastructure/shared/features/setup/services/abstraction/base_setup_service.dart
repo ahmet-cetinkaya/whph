@@ -53,7 +53,6 @@ abstract class BaseSetupService implements ISetupService {
       }
     } catch (e) {
       Logger.error('Failed to check for updates: $e');
-      // In debug mode, also show a brief notification about the failure
       if (kDebugMode && context.mounted) {
         OverlayNotificationHelper.showError(
           context: context,
@@ -130,10 +129,8 @@ abstract class BaseSetupService implements ISetupService {
 
     final translationService = container.resolve<ITranslationService>();
 
-    // Close the update dialog
     Navigator.of(context).pop();
 
-    // Show loading overlay
     if (context.mounted) {
       OverlayNotificationHelper.showLoading(
         context: context,
@@ -145,7 +142,6 @@ abstract class BaseSetupService implements ISetupService {
     try {
       await downloadAndInstallUpdate(downloadUrl);
 
-      // Hide loading overlay and show success (though this might not be seen if app exits)
       OverlayNotificationHelper.hideNotification();
       if (context.mounted) {
         OverlayNotificationHelper.showSuccess(
@@ -154,7 +150,6 @@ abstract class BaseSetupService implements ISetupService {
         );
       }
     } catch (e) {
-      // Hide loading overlay
       OverlayNotificationHelper.hideNotification();
 
       if (context.mounted) {
@@ -166,7 +161,6 @@ abstract class BaseSetupService implements ISetupService {
     }
   }
 
-  // Common file and directory operations
   Future<void> createDirectories(List<String> dirs) async {
     for (final dir in dirs) {
       await Directory(dir).create(recursive: true);
@@ -183,11 +177,9 @@ abstract class BaseSetupService implements ISetupService {
     await File(filePath).writeAsString(content);
   }
 
-  // Common paths
   String getExecutablePath() => Platform.resolvedExecutable;
   String getApplicationDirectory() => path.dirname(getExecutablePath());
 
-  // Common update related operations
   Future<void> downloadFile(String url, String savePath) async {
     final response = await http.get(
       Uri.parse(url),
@@ -211,10 +203,8 @@ abstract class BaseSetupService implements ISetupService {
     }
   }
 
-  // Firewall rule management methods with default implementations
   @override
   Future<bool> checkFirewallRule({required String ruleName, String protocol = 'TCP'}) async {
-    // Default implementation - platforms should override this
     Logger.debug('checkFirewallRule not implemented for this platform');
     return false;
   }
@@ -227,7 +217,6 @@ abstract class BaseSetupService implements ISetupService {
     String protocol = 'TCP',
     String direction = 'in',
   }) async {
-    // Default implementation - platforms should override this
     Logger.debug('addFirewallRule not implemented for this platform');
   }
 
@@ -238,8 +227,6 @@ abstract class BaseSetupService implements ISetupService {
     required String port,
     String protocol = 'TCP',
   }) async {
-    // Default implementation - call addFirewallRule twice
-    // Platforms can override this for more efficient batch operations
     await addFirewallRule(
       ruleName: '$ruleNamePrefix (Inbound)',
       appPath: appPath,
@@ -259,7 +246,6 @@ abstract class BaseSetupService implements ISetupService {
 
   @override
   Future<void> removeFirewallRule({required String ruleName}) async {
-    // Default implementation - platforms should override this
     Logger.debug('removeFirewallRule not implemented for this platform');
   }
 }

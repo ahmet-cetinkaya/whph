@@ -159,7 +159,6 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       readsFrom: {table, database.noteTagTable, database.tagTable},
     ).get();
 
-    // Grouping Logic
     final Map<String, Note> noteMap = {};
 
     for (final row in rows) {

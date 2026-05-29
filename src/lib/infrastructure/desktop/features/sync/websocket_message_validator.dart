@@ -19,7 +19,6 @@ const validMessageTypes = {
 class WebSocketMessageValidator {
   const WebSocketMessageValidator();
 
-  /// Validate message size
   bool isMessageSizeValid(String message) {
     if (message.length > maxMessageSizeBytes) {
       Logger.warning('Message rejected: size ${message.length} exceeds limit $maxMessageSizeBytes');
@@ -28,7 +27,6 @@ class WebSocketMessageValidator {
     return true;
   }
 
-  /// Validate WebSocket message structure
   bool isValidWebSocketMessage(WebSocketMessage message) {
     if (message.type.isEmpty) return false;
 

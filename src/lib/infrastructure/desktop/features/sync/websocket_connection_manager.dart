@@ -49,7 +49,6 @@ class WebSocketConnectionManager {
       _connectionLastActivity.isNotEmpty ||
       _ipConnectionCounts.isNotEmpty;
 
-  /// Register a new connection
   void registerConnection(WebSocket socket, String clientIP) {
     final now = DateTime.now();
     _activeConnections.add(socket);
@@ -59,15 +58,12 @@ class WebSocketConnectionManager {
     _ipConnectionCounts[clientIP] = (_ipConnectionCounts[clientIP] ?? 0) + 1;
   }
 
-  /// Update last activity time for a connection
   void updateActivity(WebSocket socket) {
     _connectionLastActivity[socket] = DateTime.now();
   }
 
-  /// Get client IP for a socket
   String? getClientIP(WebSocket socket) => _connectionIPs[socket];
 
-  /// Check if a new connection can be accepted based on limits
   bool canAcceptNewConnection(String clientIP) {
     if (clientIP.isEmpty) {
       Logger.warning('Invalid empty client IP in connection check');
@@ -88,7 +84,6 @@ class WebSocketConnectionManager {
     return true;
   }
 
-  /// Check if a connection has exceeded the timeout
   bool isConnectionExpired(WebSocket socket) {
     final connectionTime = _connectionTimes[socket];
     if (connectionTime == null) return false;
@@ -147,7 +142,6 @@ class WebSocketConnectionManager {
     }
   }
 
-  /// Clean up connection tracking data
   void cleanupConnection(WebSocket socket) {
     try {
       final clientIP = _connectionIPs[socket];
@@ -169,7 +163,6 @@ class WebSocketConnectionManager {
     }
   }
 
-  /// Forces cleanup of all connections
   Future<void> forceCleanupAllConnections() async {
     try {
       final closeFutures = <Future>[];
@@ -199,7 +192,6 @@ class WebSocketConnectionManager {
     }
   }
 
-  /// Gracefully close a WebSocket connection
   Future<void> closeSocketGracefully(WebSocket socket, int code, String reason) async {
     try {
       if (socket.readyState == WebSocket.closed || socket.readyState == WebSocket.closing) {

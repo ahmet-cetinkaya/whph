@@ -34,21 +34,17 @@ class DesktopNotificationService extends BaseNotificationService {
 
   @override
   Future<void> init() async {
-    // Initialize the plugin with platform-specific settings
     final initializationSettings = InitializationSettings(
-      // For Linux
       linux: LinuxInitializationSettings(
         defaultActionName: 'Open',
         defaultIcon: AssetsLinuxIcon(AppAssets.logoAdaptiveFg),
       ),
-      // For Windows
       windows: WindowsInitializationSettings(
         appName: AppInfo.name,
         appUserModelId: WindowsAppConstants.notifications.appUserModelId,
         guid: WindowsAppConstants.notifications.guid,
         iconPath: AppAssets.logoAdaptiveFgIco,
       ),
-      // For macOS
       macOS: const DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
@@ -56,7 +52,6 @@ class DesktopNotificationService extends BaseNotificationService {
       ),
     );
 
-    // Initialize the plugin with notification click handler
     await _flutterLocalNotifications.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
@@ -65,9 +60,7 @@ class DesktopNotificationService extends BaseNotificationService {
     );
   }
 
-  /// Handle notification click events using the notification payload handler
   Future<void> _handleNotificationResponse(NotificationResponse response) async {
-    // Handle action button clicks (e.g., complete task)
     if (response.actionId == 'complete_task') {
       final payload = response.payload;
       if (payload != null) {
@@ -79,10 +72,8 @@ class DesktopNotificationService extends BaseNotificationService {
       return;
     }
 
-    // Handle default notification click (navigate to task)
     if (response.payload == null || response.payload!.isEmpty) return;
 
-    // Ensure the app window is visible and focused
     if (!await _windowManager.isVisible()) {
       await _windowManager.show();
     }
@@ -90,15 +81,11 @@ class DesktopNotificationService extends BaseNotificationService {
       await _windowManager.focus();
     }
 
-    // Use the injected notification payload handler to process the payload
     await _payloadHandler.handlePayload(response.payload!);
   }
 
-  /// Extract task ID from notification payload
   String? _extractTaskIdFromPayload(String payload) {
     try {
-      // Payload format: {"route":"/tasks","arguments":{"taskId":"xxx"}}
-      // Use regex to extract taskId
       final taskIdRegex = RegExp(r'"taskId"\s*:\s*"([^"]+)"');
       final match = taskIdRegex.firstMatch(payload);
       return match?.group(1);
@@ -125,9 +112,7 @@ class DesktopNotificationService extends BaseNotificationService {
     try {
       final isTaskNotification = payload != null && _isTaskCompletionPayload(payload);
 
-      // Define platform-specific notification details
       final notificationDetails = NotificationDetails(
-        // For Linux - add action button for task completion
         linux: LinuxNotificationDetails(
           urgency: LinuxNotificationUrgency.critical,
           actions: isTaskNotification && options?.actionButtonText != null
@@ -139,9 +124,7 @@ class DesktopNotificationService extends BaseNotificationService {
                 ]
               : [],
         ),
-        // For Windows - add action button for task completion
         windows: WindowsNotificationDetails(),
-        // For macOS
         macOS: const DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
@@ -149,7 +132,6 @@ class DesktopNotificationService extends BaseNotificationService {
         ),
       );
 
-      // Show the notification
       await _flutterLocalNotifications.show(
         id ?? KeyHelper.generateNumericId(),
         title,
@@ -166,10 +148,8 @@ class DesktopNotificationService extends BaseNotificationService {
     }
   }
 
-  /// Check if the payload indicates a task completion notification
   bool _isTaskCompletionPayload(String payload) {
-    // Task completion payloads have format like: {"route":"/tasks","arguments":{"taskId":"xxx"}}
-    // or contain taskId in the JSON
+    // Task completion payloads contain taskId in the JSON
     return payload.contains('taskId');
   }
 
@@ -180,10 +160,6 @@ class DesktopNotificationService extends BaseNotificationService {
 
   @override
   Future<bool> checkPermissionStatus() async {
-    // For desktop platforms, we can't programmatically check permission status
-    // in most cases, so we'll rely on the app's notification settings
-
-    // For macOS, we can check the permission status
     if (Platform.isMacOS) {
       try {
         final macOSImplementation =
@@ -210,8 +186,7 @@ class DesktopNotificationService extends BaseNotificationService {
       }
     }
 
-    // For Linux/Windows, we assume permission is granted
-    // as there's no standardized API to check it
+    // Linux/Windows: no standardized API; assume granted
     return true;
   }
 
@@ -219,7 +194,6 @@ class DesktopNotificationService extends BaseNotificationService {
   Future<bool> requestPermission() async {
     bool permissionGranted = false;
 
-    // For macOS, we can programmatically request permission
     if (Platform.isMacOS) {
       try {
         final macOSImplementation =
@@ -241,12 +215,9 @@ class DesktopNotificationService extends BaseNotificationService {
         permissionGranted = false;
       }
     } else {
-      // For Windows and Linux, permissions are typically managed at the OS level
-      // and not programmatically by the app. We'll assume granted.
       permissionGranted = true;
     }
 
-    // Update the app's notification settings if permission is granted
     if (permissionGranted) {
       await setEnabled(true);
     }

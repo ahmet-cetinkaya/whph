@@ -25,7 +25,6 @@ class WindowsFirewallService implements IWindowsFirewallService {
     try {
       Logger.info('Starting Windows firewall rule addition for port $port/$protocol', component: _componentName);
 
-      // Check if rules already exist
       final inboundRuleName = '$ruleNamePrefix (Inbound)';
       final outboundRuleName = '$ruleNamePrefix (Outbound)';
 
@@ -38,11 +37,9 @@ class WindowsFirewallService implements IWindowsFirewallService {
         return;
       }
 
-      // Check if running as admin
       final isAdmin = await _elevationService.isRunningAsAdmin();
       Logger.info('Running as administrator: $isAdmin', component: _componentName);
 
-      // Build netsh commands for both rules
       final commands = <String>[];
 
       if (!inboundExists) {
@@ -67,8 +64,6 @@ class WindowsFirewallService implements IWindowsFirewallService {
       ProcessResult result;
 
       if (isAdmin) {
-        // Running as admin - execute commands directly
-        Logger.info('Executing netsh commands directly with admin privileges', component: _componentName);
         for (final cmd in commands) {
           result = await Process.run('cmd', ['/c', cmd], runInShell: true);
           if (result.exitCode != 0) {
@@ -83,7 +78,6 @@ class WindowsFirewallService implements IWindowsFirewallService {
         Logger.info('Firewall rules added successfully', component: _componentName);
         result = ProcessResult(0, 0, '', ''); // Success
       } else {
-        // Request elevation using a single PowerShell session for all commands
         Logger.info('Requesting single elevation to run ${commands.length} netsh commands', component: _componentName);
         result = await _elevationService.runMultipleCommandsWithElevatedPrivileges(commands);
       }
@@ -133,7 +127,6 @@ class WindowsFirewallService implements IWindowsFirewallService {
       Logger.debug('Attempting to add Windows firewall rule: $ruleName for port $port/$protocol',
           component: _componentName);
 
-      // Enhanced input validation
       if (port.isEmpty) {
         final error = 'WindowsFirewallRuleError: Port cannot be empty';
         Logger.error(error, component: _componentName);
@@ -153,7 +146,6 @@ class WindowsFirewallService implements IWindowsFirewallService {
         throw WindowsFirewallRuleException(error, invalidValue: port);
       }
 
-      // Validate protocol
       final upperProtocol = protocol.trim().toUpperCase();
       if (upperProtocol != 'TCP' && upperProtocol != 'UDP') {
         final error = 'WindowsFirewallRuleError: Protocol must be TCP or UDP, received: "$protocol"';
@@ -161,14 +153,12 @@ class WindowsFirewallService implements IWindowsFirewallService {
         throw WindowsFirewallRuleException(error, invalidValue: protocol);
       }
 
-      // First check if the rule already exists
       final ruleExists = await checkFirewallRule(ruleName: ruleName);
       if (ruleExists) {
         Logger.debug('Windows firewall rule "$ruleName" already exists', component: _componentName);
         return;
       }
 
-      // Check if running as admin
       final isAdmin = await _elevationService.isRunningAsAdmin();
       Logger.debug('Running as administrator: $isAdmin', component: _componentName);
 
@@ -188,12 +178,8 @@ class WindowsFirewallService implements IWindowsFirewallService {
       ProcessResult result;
 
       if (isAdmin) {
-        // If already running as admin, execute directly
-        Logger.debug('Executing netsh command directly with admin privileges', component: _componentName);
         result = await Process.run('netsh', netshArgs, runInShell: true);
       } else {
-        // Request elevation using PowerShell
-        Logger.debug('Requesting elevation to run netsh command', component: _componentName);
         result = await _elevationService.runWithElevatedPrivileges('netsh', netshArgs);
       }
 
@@ -205,7 +191,6 @@ class WindowsFirewallService implements IWindowsFirewallService {
         final stderr = result.stderr.toString().trim();
         final stdout = result.stdout.toString().trim();
 
-        // Provide specific error context
         String errorContext = '';
         bool isPermissionIssue = false;
 
@@ -253,7 +238,6 @@ class WindowsFirewallService implements IWindowsFirewallService {
     try {
       Logger.debug('Checking Windows firewall rule: $ruleName (protocol: $protocol)', component: _componentName);
 
-      // First, try using netsh as primary method (more reliable for exact name matching)
       final result = await Process.run(
         'netsh',
         ['advfirewall', 'firewall', 'show', 'rule', 'name=$ruleName'],
@@ -263,7 +247,6 @@ class WindowsFirewallService implements IWindowsFirewallService {
       final output = result.stdout.toString();
       final exitCode = result.exitCode;
 
-      // For netsh, if the rule exists, the output should contain the rule name and exit code is 0
       final ruleExists = output.contains(ruleName) && exitCode == 0;
 
       Logger.info('Firewall rule "$ruleName" exists: $ruleExists', component: _componentName);
@@ -272,7 +255,7 @@ class WindowsFirewallService implements IWindowsFirewallService {
         return true;
       }
 
-      // If netsh didn't find it, try PowerShell as fallback
+      // netsh didn't find it; try PowerShell as fallback (less reliable for exact name matching)
       Logger.debug('Netsh did not find rule, attempting PowerShell fallback', component: _componentName);
 
       try {

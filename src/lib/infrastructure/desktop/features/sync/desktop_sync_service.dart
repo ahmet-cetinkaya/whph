@@ -19,27 +19,21 @@ class DesktopSyncService extends SyncService {
 
   final IDeviceIdService _deviceIdService;
 
-  // State guards to prevent concurrent operations
   bool _isModeSwitching = false;
 
   DesktopSyncService(super.mediator, this._deviceIdService) {
-    // Validate and recover from any interrupted sync state at construction
     _validateAndRecoverSyncState();
   }
 
-  /// Validates and recovers from any interrupted sync state from previous app instances
-  /// This prevents crashes caused by leftover sync operations
   void _validateAndRecoverSyncState() {
     try {
-      // Check if we're in an inconsistent state
       if (_isModeSwitching) {
         Logger.warning('Desktop sync service was in mode-switching state at startup - this indicates a crash',
             component: 'DesktopSyncService');
-        _isModeSwitching = false; // Reset the flag
+        _isModeSwitching = false;
         Logger.info('Reset mode-switching flag to prevent deadlocks', component: 'DesktopSyncService');
       }
 
-      // Validate that internal state is consistent
       final hasServerService = _serverService != null;
       final hasClientService = _clientService != null;
 
@@ -53,56 +47,43 @@ class DesktopSyncService extends SyncService {
         _currentMode = DesktopSyncMode.disabled;
       }
 
-      // Log consolidated state for debugging
       Logger.info(
           'Sync service initialized: mode=${_currentMode.name}, services=server:$hasServerService,client:$hasClientService',
           component: 'DesktopSyncService');
       Logger.info('Sync state validation and recovery completed', component: 'DesktopSyncService');
     } catch (e) {
       Logger.error('Error during sync state recovery: $e');
-      // Force safe state if recovery fails
       _currentMode = DesktopSyncMode.disabled;
       _isModeSwitching = false;
       Logger.info('Forced safe state due to recovery error', component: 'DesktopSyncService');
     }
   }
 
-  /// Get current sync mode
   DesktopSyncMode get currentMode => _currentMode;
 
-  /// Get current settings
   DesktopSyncSettings get settings => _settings;
 
-  /// Check if connected as client
   bool get isConnectedAsClient => _clientService?.isConnectedToServer ?? false;
 
-  /// Check if server is active
   bool get isServerActive => _serverService?.isServerMode ?? false;
 
-  /// Get server connection count
   int get serverConnectionCount => _serverService?.activeConnectionCount ?? 0;
 
-  /// Get client connection info
   Map<String, dynamic>? get clientConnectionInfo => _clientService?.connectedServerInfo;
 
-  /// Update sync settings
   Future<void> updateSettings(DesktopSyncSettings newSettings) async {
     _settings = newSettings;
 
-    // If mode changed, switch to new mode
     if (_currentMode != newSettings.preferredMode) {
       await switchToMode(newSettings.preferredMode);
     }
   }
 
-  /// Switch to server mode
   Future<void> switchToServerMode() async {
     await switchToMode(DesktopSyncMode.server);
   }
 
-  /// Switch to client mode with server connection
   Future<void> switchToClientMode(String serverAddress, int serverPort) async {
-    // Update settings with server connection info
     _settings = _settings.copyWith(
       preferredMode: DesktopSyncMode.client,
       lastServerAddress: serverAddress,
@@ -112,9 +93,7 @@ class DesktopSyncService extends SyncService {
     await switchToMode(DesktopSyncMode.client);
   }
 
-  /// Switch to specified sync mode
   Future<void> switchToMode(DesktopSyncMode mode) async {
-    // Prevent concurrent mode switches
     if (_isModeSwitching) {
       Logger.warning('Mode switch already in progress, ignoring request');
       return;
@@ -124,7 +103,6 @@ class DesktopSyncService extends SyncService {
       return; // Already in requested mode
     }
 
-    // Additional safety check: validate current state before switching
     if (!_isCurrentStateValid()) {
       Logger.warning('Current sync state is invalid, forcing cleanup before mode switch');
       await _forceCleanupAndReset();
@@ -135,30 +113,25 @@ class DesktopSyncService extends SyncService {
     try {
       Logger.info('Switching desktop sync from ${_currentMode.name} to ${mode.name} mode');
 
-      // Stop current mode with explicit cleanup and timeout protection
       await _stopCurrentModeWithTimeout();
 
       _currentMode = mode;
 
-      // Start new mode with error recovery
       await _startCurrentModeWithRecovery();
 
       Logger.info('Successfully switched to ${mode.name} mode');
     } catch (e) {
       Logger.error('Error during mode switch: $e');
 
-      // Recovery: try to get back to a safe state
       Logger.warning('Attempting recovery after mode switch error...');
       await _recoverFromModeSwitchError();
 
-      // Re-throw the error so the caller knows the switch failed
       rethrow;
     } finally {
       _isModeSwitching = false;
     }
   }
 
-  /// Validates that the current sync state is consistent
   bool _isCurrentStateValid() {
     switch (_currentMode) {
       case DesktopSyncMode.server:
@@ -170,28 +143,23 @@ class DesktopSyncService extends SyncService {
     }
   }
 
-  /// Forces cleanup and reset to a safe state
   Future<void> _forceCleanupAndReset() async {
     Logger.info('Forcing cleanup and reset of sync service...');
 
     try {
-      // Stop everything aggressively
       await _stopCurrentModeAggressive();
 
-      // Reset state
       _currentMode = DesktopSyncMode.disabled;
       _isModeSwitching = false;
 
       Logger.info('Forced cleanup and reset completed');
     } catch (e) {
       Logger.error('Error during forced cleanup: $e');
-      // Ensure we're in a safe state even if cleanup fails
       _currentMode = DesktopSyncMode.disabled;
       _isModeSwitching = false;
     }
   }
 
-  /// Stops current mode with timeout protection
   Future<void> _stopCurrentModeWithTimeout() async {
     try {
       await _stopCurrentMode().timeout(
@@ -207,15 +175,12 @@ class DesktopSyncService extends SyncService {
     }
   }
 
-  /// Aggressively stops current mode with error tolerance
   Future<void> _stopCurrentModeAggressive() async {
     Logger.info('Performing aggressive sync mode stop', component: 'DesktopSyncService');
 
-    // Stop periodic timer
     _periodicTimer?.cancel();
     _periodicTimer = null;
 
-    // Stop server service with error tolerance
     if (_serverService != null) {
       try {
         await _serverService!.stopServer();
@@ -227,7 +192,6 @@ class DesktopSyncService extends SyncService {
       }
     }
 
-    // Stop client service with error tolerance
     if (_clientService != null) {
       try {
         await _clientService!.disconnectFromServer();
@@ -242,7 +206,6 @@ class DesktopSyncService extends SyncService {
     Logger.debug('Aggressive mode stop completed');
   }
 
-  /// Starts current mode with error recovery
   Future<void> _startCurrentModeWithRecovery() async {
     try {
       await _startCurrentMode().timeout(
@@ -255,30 +218,24 @@ class DesktopSyncService extends SyncService {
     } catch (e) {
       Logger.error('Error starting current mode: $e');
 
-      // Try to recover by stopping and cleaning up
       await _stopCurrentModeAggressive();
       _currentMode = DesktopSyncMode.disabled;
 
-      // Re-throw the error
       rethrow;
     }
   }
 
-  /// Recovers from a mode switch error
   Future<void> _recoverFromModeSwitchError() async {
     Logger.info('Recovering from mode switch error...');
 
     try {
-      // Force cleanup to get back to a known good state
       await _stopCurrentModeAggressive();
 
-      // Reset to disabled mode
       _currentMode = DesktopSyncMode.disabled;
 
       Logger.info('Recovery completed, sync service is now in disabled mode');
     } catch (e) {
       Logger.error('Error during recovery: $e');
-      // Last resort: ensure we're in disabled mode even if cleanup fails
       _currentMode = DesktopSyncMode.disabled;
     }
   }
@@ -286,11 +243,9 @@ class DesktopSyncService extends SyncService {
   Future<void> _stopCurrentMode() async {
     Logger.debug('Stopping current sync mode: ${_currentMode.name}');
 
-    // Stop periodic sync
     _periodicTimer?.cancel();
     _periodicTimer = null;
 
-    // Stop server service with proper cleanup
     if (_serverService != null) {
       try {
         Logger.debug('Stopping server service...');
@@ -304,7 +259,6 @@ class DesktopSyncService extends SyncService {
       }
     }
 
-    // Stop client service with proper cleanup
     if (_clientService != null) {
       try {
         Logger.debug('Disconnecting client service...');
@@ -340,15 +294,12 @@ class DesktopSyncService extends SyncService {
 
     _serverService = DesktopServerSyncService(mediator, _deviceIdService);
 
-    // Try to start as server
     final serverStarted = await _serverService!.startAsServer();
     if (!serverStarted) {
       Logger.error('Failed to start server - server mode requires successful server startup');
       throw Exception('Failed to start desktop server');
     }
 
-    // Server mode should be passive - no periodic sync needed
-    // Servers only respond to sync requests from clients
     Logger.info('Desktop server mode started - waiting for client connections');
   }
 
@@ -357,7 +308,6 @@ class DesktopSyncService extends SyncService {
 
     _clientService = DesktopClientSyncService(mediator, _deviceIdService);
 
-    // Try to connect to server if settings available
     if (_settings.hasValidClientSettings && _settings.autoReconnectToServer) {
       final connected = await _clientService!.connectToServer(
         _settings.lastServerAddress!,
@@ -366,7 +316,6 @@ class DesktopSyncService extends SyncService {
 
       if (!connected) {
         Logger.warning('Failed to connect to server: ${_settings.lastServerAddress}:${_settings.lastServerPort}');
-        // Could implement retry logic here based on settings
       }
     } else {
       Logger.info('Client mode started, but no server connection configured');
@@ -380,8 +329,7 @@ class DesktopSyncService extends SyncService {
 
   @override
   void stopSync() {
-    // Run the async cleanup in a background task
-    // Note: This means the caller can't wait for cleanup to complete
+    // Runs async; caller cannot wait for completion
     _stopCurrentMode();
   }
 
@@ -396,6 +344,5 @@ class DesktopSyncService extends SyncService {
     super.dispose();
   }
 
-  /// Check if the service is currently switching modes
   bool get isModeSwitching => _isModeSwitching;
 }

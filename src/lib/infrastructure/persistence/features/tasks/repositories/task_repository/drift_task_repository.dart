@@ -226,11 +226,9 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   }) async {
     final allResults = <Task>[];
 
-    // Build the query
     String query = 'SELECT * FROM ${table.actualTableName}';
     final variables = <Variable>[];
 
-    // Add where clause if needed
     if (!includeDeleted || customWhereFilter != null) {
       query += ' WHERE ';
 
@@ -247,7 +245,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       }
     }
 
-    // Add order by clause if needed
     if (customOrder != null && customOrder.isNotEmpty) {
       query += ' ORDER BY ';
       query += customOrder.map((order) {
@@ -256,7 +253,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       }).join(', ');
     }
 
-    // Execute the query
     final result = await database
         .customSelect(
           query,
@@ -270,7 +266,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     return allResults;
   }
 
-  // Helper method to convert values to query variables
   Variable<Object> _convertToQueryVariable(dynamic object) {
     if (object is String) {
       return Variable.withString(object);
@@ -324,9 +319,8 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
     final result = await query.get();
 
-    // Count total records (without pagination)
     final countQuery = '''
-      SELECT COUNT(*) as count 
+      SELECT COUNT(*) as count
       FROM ${table.actualTableName} task_table
       ${whereClause ?? ''}
     ''';
@@ -368,7 +362,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     final conditions = <String>[];
     final variables = <Variable>[];
 
-    // Build tag filter
     final tagResult = _queryBuilder.buildTagCondition(
       filterByTags: f.tags,
       filterNoTags: f.noTags,
@@ -383,7 +376,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       conditions.add(_queryBuilder.buildArchivedTagVisibilityCondition());
     }
 
-    // Completed date range filter
     final completedDateResult = _queryBuilder.buildCompletedDateRangeCondition(
       filterByCompletedStartDate: f.completedStartDate,
       filterByCompletedEndDate: f.completedEndDate,
@@ -449,12 +441,10 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         variables.addAll(searchResult.variables);
       }
 
-      // Completed filter
       if (f.completed != null) {
         conditions.add(f.completed! ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL');
       }
 
-      // Parent task filter
       if (f.parentTaskId != null) {
         conditions.add('task_table.parent_task_id = ?');
         variables.add(Variable.withString(f.parentTaskId!));
@@ -486,7 +476,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
     final result = await query.get();
 
-    // Count total records (without pagination)
     final countQuery = '''
       SELECT COUNT(*) as count 
       FROM ${table.actualTableName} task_table
@@ -510,7 +499,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     );
   }
 
-  /// Helper to map row data to TaskWithTotalDuration.
   TaskWithTotalDuration _mapToTaskWithTotalDuration(Map<String, dynamic> data) {
     final taskData = Map<String, dynamic>.from(data);
     final totalDuration = taskData['total_duration'] as int? ?? 0;
@@ -711,7 +699,6 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         deadlineDateReminderTime: task.deadlineDateReminderTime,
       );
 
-      // Add grouping
       final groupName =
           filter?.enableGrouping == true ? TaskGroupingHelper.getGroupName(tItem, primarySortField) : null;
 

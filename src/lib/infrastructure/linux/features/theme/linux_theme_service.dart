@@ -17,9 +17,7 @@ class LinuxThemeService extends ThemeService {
   Future<void> initialize() async {
     await super.initialize();
 
-    // Initial sync with Linux window
-    // We need to wait for the first frame or ensure the window is ready?
-    // Usually safe to call immediately after initialization
+    // Initial sync with Linux window is safe immediately after initialization
     notifyThemeChanged();
 
     // Poll for theme changes on Linux since WidgetsBindingObserver might not fire
@@ -47,24 +45,13 @@ class LinuxThemeService extends ThemeService {
 
     // Sync theme with Linux window (GTK)
     try {
-      // Actually we need the resolved mode. ThemeService has _currentThemeMode but it's private.
-      // However, ThemeService calls notifyThemeChanged AFTER updating _currentThemeMode.
-      // But we can't access _currentThemeMode directly.
-      // We can check themeData.brightness or similar.
-      // Or we can expose the resolved theme mode protectedly.
-
-      // Let's use themeData.brightness as a proxy for the resolved theme
+      // Use themeData.brightness as proxy since _currentThemeMode is private in ThemeService
       final brightness = themeData.brightness;
       final isDarkMode = brightness == Brightness.dark;
 
       _windowManagementChannel.invokeMethod('setTheme', isDarkMode ? 'dark' : 'light');
     } catch (e) {
-      // Logger is private in base class... we passed it in constructor but didn't keep reference?
-      // Base class keeps it. We should probably make logger protected in base class or just ignore debug log here
-      // or use a static logger if available.
-      // For now, let's assume we can't easily log unless we change base class visibility.
-      // Wait, we passed logger to super.
-      logger.error('Failed to sync theme with Linux window', e); // Fallback logging
+      logger.error('Failed to sync theme with Linux window', e);
     }
   }
 

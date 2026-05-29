@@ -101,11 +101,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     bool sortByCustomOrder = false,
     List<String>? customTagSortOrder,
   }) async {
-    // Helper function to generate sort clause for a given table alias
     String getSortClauseForAlias(String alias) {
       final List<String> clauses = [];
 
-      /// Helper function to generate tag sort clause
       String getTagSortClause(String direction) {
         if (customTagSortOrder != null && customTagSortOrder.isNotEmpty) {
           final caseStatements = StringBuffer();
@@ -123,7 +121,6 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         }
       }
 
-      // Prioritize grouping field if exists
       if (groupBy != null) {
         final direction = groupBy.direction == SortDirection.desc ? 'DESC' : 'ASC';
         switch (groupBy.field) {
@@ -144,10 +141,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         }
       }
 
-      // Add other sort options
       if (sortBy != null) {
         for (final s in sortBy) {
-          // Skip if it's the same as group field (already added)
           if (groupBy != null && s.field == groupBy.field) continue;
 
           final direction = s.direction == SortDirection.desc ? 'DESC' : 'ASC';
@@ -242,7 +237,6 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
 
     final totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
 
-    // Check if the requested page is beyond available data
     if (pageIndex * pageSize >= totalCount) {
       return PaginatedList<AppUsageTimeRecordWithDetails>(
         items: [],
@@ -252,7 +246,6 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       );
     }
 
-    // Get paginated data with proper app usage-level pagination
     final outerSortClause = getSortClauseForAlias('fau');
 
     final dataQuery = database.customSelect(
@@ -343,7 +336,6 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
 
     final rows = await dataQuery.get();
 
-    // Group rows by app usage and collect tags
     final Map<String, AppUsageTimeRecordWithDetails> appUsageMap = {};
 
     for (final row in rows) {
@@ -361,13 +353,11 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         );
       }
 
-      // Add tag if it exists
       final tagAppUsageTagId = row.read<String?>('tag_app_usage_tag_id');
       if (tagAppUsageTagId != null) {
         final tagId = row.read<String?>('tag_id');
         final tagName = row.read<String?>('tag_name');
 
-        // Only add the tag if we have valid tag data
         if (tagId != null && tagName != null) {
           final tagTypeInt = row.read<int?>('tag_type') ?? 0;
           final tagType =
@@ -389,7 +379,6 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     // Convert to list - no need for additional pagination since SQL already handles it
     final allResults = appUsageMap.values.toList();
 
-    // Fetch comparison data if needed
     if (compareStartDate != null && compareEndDate != null && allResults.isNotEmpty) {
       final appUsageIds = allResults.map((e) => e.id).toList();
       final comparisonDurations = await getAppUsageDurations(
@@ -398,7 +387,6 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         endDate: compareEndDate,
       );
 
-      // Merge comparison durations
       for (var i = 0; i < allResults.length; i++) {
         final item = allResults[i];
         if (comparisonDurations.containsKey(item.id)) {
