@@ -6,9 +6,8 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final Map<String, Uint8List> _soundCache = {};
   bool _isInitialized = false;
-  double _currentVolume = 1.0; // Track current volume setting
+  double _currentVolume = 1.0;
 
-  // Loop context preservation
   bool _wasLooping = false;
   String? _loopingSoundPath;
   bool _isPlayingOneTimeSound = false;
@@ -126,7 +125,6 @@ class AudioPlayerSoundPlayer implements ISoundPlayer {
     _audioPlayer.setVolume(volume);
   }
 
-  // Getter for current volume
   double get currentVolume => _currentVolume;
 
   @override

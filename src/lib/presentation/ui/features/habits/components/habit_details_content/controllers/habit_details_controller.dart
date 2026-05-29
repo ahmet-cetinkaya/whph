@@ -24,20 +24,16 @@ import 'helpers/habit_tag_operations.dart';
 import 'helpers/habit_record_operations.dart';
 import 'helpers/habit_dialog_helper.dart';
 
-/// Controller for habit details business logic.
-/// Separates data management and operations from UI concerns.
 class HabitDetailsController extends ChangeNotifier {
   final Mediator _mediator;
   final HabitsService _habitsService;
   final ITranslationService _translationService;
 
-  // Helpers
   late final HabitDataLoader _dataLoader;
   late final HabitTagOperations _tagOperations;
   late final HabitRecordOperations _recordOperations;
   late final HabitDialogHelper _dialogHelper;
 
-  // Habit state
   GetHabitQueryResponse? _habit;
   GetListHabitRecordsQueryResponse? _habitRecords;
   GetListHabitTagsQueryResponse? _habitTags;
@@ -50,10 +46,8 @@ class HabitDetailsController extends ChangeNotifier {
   bool _isThreeStateEnabled = false;
   bool _isDisposed = false;
 
-  // Optional field visibility
   final Set<String> _visibleOptionalFields = {};
 
-  // Field keys
   static const String keyTags = 'tags';
   static const String keyEstimatedTime = 'estimatedTime';
   static const String keyElapsedTime = 'elapsedTime';
@@ -62,7 +56,6 @@ class HabitDetailsController extends ChangeNotifier {
   static const String keyReminder = 'reminder';
   static const String keyGoal = 'goal';
 
-  // Callbacks
   VoidCallback? onHabitUpdated;
   Function(String)? onNameUpdated;
 
@@ -91,7 +84,6 @@ class HabitDetailsController extends ChangeNotifier {
     _dialogHelper = HabitDialogHelper(translationService: _translationService);
   }
 
-  // Getters
   GetHabitQueryResponse? get habit => _habit;
   GetListHabitRecordsQueryResponse? get habitRecords => _habitRecords;
   GetListHabitTagsQueryResponse? get habitTags => _habitTags;
@@ -125,7 +117,7 @@ class HabitDetailsController extends ChangeNotifier {
       }
       notifyListeners();
     } catch (_) {
-      // Ignore errors, default is false
+      // Silently ignore errors; default value is false
     }
   }
 
@@ -137,6 +129,7 @@ class HabitDetailsController extends ChangeNotifier {
 
   void _handleHabitUpdated(String habitId, BuildContext context) {
     if (_habitsService.onHabitUpdated.value != habitId) return;
+    // Skip if fields are being edited to avoid overwriting user input
     if (_isNameFieldActive || _isDescriptionFieldActive) return;
     loadHabit(habitId, context);
     loadHabitTags(habitId, context);
@@ -170,13 +163,11 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Data loading methods (delegated to helper)
   Future<void> loadHabit(String habitId, BuildContext context) async {
     final result = await _dataLoader.loadHabit(habitId, context);
     if (_isDisposed) return;
 
     if (result != null) {
-      // Check if fields became active during the async operation
       if (_isNameFieldActive || _isDescriptionFieldActive) return;
 
       if (_habit == null) {
@@ -266,7 +257,6 @@ class HabitDetailsController extends ChangeNotifier {
     }
   }
 
-  // Field visibility
   void _processFieldVisibility() {
     if (_habit == null) return;
 
@@ -314,7 +304,6 @@ class HabitDetailsController extends ChangeNotifier {
   bool isFieldVisible(String fieldKey) => _visibleOptionalFields.contains(fieldKey);
   bool shouldShowAsChip(String fieldKey) => !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
 
-  // Save operations
   void saveHabitDebounced(String habitId, BuildContext context, {String? name}) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(SharedUiConstants.contentSaveDebounceTime, () {
@@ -375,7 +364,6 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
-  // Field updates
   void updateName(String value, String habitId, BuildContext context) {
     _isNameFieldActive = true;
     _habit?.name = value;
@@ -394,7 +382,6 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Tag operations (delegated to helper)
   Future<bool> addTag(String tagId, String habitId, BuildContext context) async {
     final success = await _tagOperations.addTag(tagId, habitId, context);
     if (success) {
@@ -427,7 +414,6 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
-  // Record operations (delegated to helper)
   Future<void> toggleHabitRecordForDay(DateTime date, String habitId, BuildContext context) async {
     await _recordOperations.toggleHabitRecord(
       habitId: habitId,
@@ -468,7 +454,6 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
-  // Navigation
   void previousMonth(String habitId, BuildContext context) {
     _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1, 1);
     loadHabitRecordsForMonth(_currentMonth, habitId, context);
@@ -485,7 +470,6 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Timer operations (delegated to helper)
   void onTimerStop(Duration totalElapsed, String habitId) {
     if (_habit?.id == null) return;
     _recordOperations.onTimerStop(totalElapsed, habitId);
@@ -524,7 +508,6 @@ class HabitDetailsController extends ChangeNotifier {
     return todayRecord?.status ?? HabitRecordStatus.skipped;
   }
 
-  // Dialog operations (delegated to helper)
   String getReminderSummaryText() => _dialogHelper.getReminderSummaryText(_habit);
 
   Future<void> openReminderDialog(BuildContext context, String habitId) async {

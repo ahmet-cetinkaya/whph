@@ -4,21 +4,10 @@ import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
-/// A utility class that provides methods to handle asynchronous operations with error handling.
-///
-/// This class helps reduce repetitive try-catch blocks throughout the codebase by
-/// providing a consistent way to execute async operations and handle errors.
+/// Consistent error handling for async operations across the codebase
 class AsyncErrorHandler {
-  /// Executes an asynchronous operation and handles any errors that occur.
-  ///
-  /// - [context] - The BuildContext used for showing error messages
-  /// - [operation] - The async operation to execute
-  /// - [onSuccess] - Optional callback for successful operation
-  /// - [onError] - Optional callback for handling errors
-  /// - [finallyAction] - Optional callback that runs regardless of success or failure
-  /// - [errorMessage] - Custom error message for unexpected errors
-  /// - [checkMounted] - Whether to check if the widget is still mounted before showing errors
-  /// - [errorPosition] - Position of the error notification (default: bottom)
+  /// Executes an async operation with error handling, optional success/error callbacks,
+  /// and automatic error display via [ErrorHelper].
   static Future<T?> execute<T>({
     required BuildContext context,
     required Future<T> Function() operation,
@@ -32,7 +21,6 @@ class AsyncErrorHandler {
     try {
       final result = await operation();
 
-      // Only proceed if widget is still mounted when requested
       if (checkMounted && !context.mounted) return null;
 
       if (onSuccess != null) {
@@ -73,16 +61,7 @@ class AsyncErrorHandler {
     return null;
   }
 
-  /// Executes an asynchronous operation that doesn't return a result and handles any errors.
-  ///
-  /// - [context] - The BuildContext used for showing error messages
-  /// - [operation] - The async operation to execute
-  /// - [onSuccess] - Optional callback for successful operation
-  /// - [onError] - Optional callback for handling errors
-  /// - [finallyAction] - Optional callback that runs regardless of success or failure
-  /// - [errorMessage] - Custom error message for unexpected errors
-  /// - [checkMounted] - Whether to check if the widget is still mounted before showing errors
-  /// - [errorPosition] - Position of the error notification (default: bottom)
+  /// Same as [execute] but for void operations (no return value).
   static Future<void> executeVoid({
     required BuildContext context,
     required Future<void> Function() operation,
@@ -96,7 +75,6 @@ class AsyncErrorHandler {
     try {
       await operation();
 
-      // Only proceed if widget is still mounted when requested
       if (checkMounted && !context.mounted) return;
 
       if (onSuccess != null) {
@@ -133,19 +111,8 @@ class AsyncErrorHandler {
     }
   }
 
-  /// Executes an asynchronous operation with the setState pattern common in StatefulWidget components.
-  ///
-  /// This method handles the common pattern of setting a loading state before the operation
-  /// and resetting it after completion, while properly handling errors.
-  ///
-  /// - [context] - The BuildContext used for showing error messages
-  /// - [operation] - The async operation to execute
-  /// - [setLoading] - Function to set the loading state
-  /// - [onSuccess] - Optional callback for successful operation
-  /// - [onError] - Optional callback for handling errors
-  /// - [finallyAction] - Optional callback that runs regardless of success or failure (after setLoading(false))
-  /// - [errorMessage] - Custom error message for unexpected errors
-  /// - [errorPosition] - Position of the error notification (default: bottom)
+  /// Executes an async operation with a loading state toggle.
+  /// Sets [setLoading](true) before and (false) after the operation.
   static Future<T?> executeWithLoading<T>({
     required BuildContext context,
     required Future<T> Function() operation,
@@ -161,7 +128,6 @@ class AsyncErrorHandler {
     try {
       final result = await operation();
 
-      // Only proceed if widget is still mounted
       if (!context.mounted) return null;
 
       if (onSuccess != null) {
@@ -206,10 +172,7 @@ class AsyncErrorHandler {
     return null;
   }
 
-  /// Executes a chain of async operations that depend on BuildContext, ensuring proper mounted checks.
-  ///
-  /// This is particularly useful for scenarios where you need to perform multiple async operations
-  /// in sequence while checking context.mounted between each step.
+  /// Chains async operations while checking context.mounted between each step.
   static Future<T?> executeChain<T>({
     required BuildContext context,
     required Future<T> Function() operation,

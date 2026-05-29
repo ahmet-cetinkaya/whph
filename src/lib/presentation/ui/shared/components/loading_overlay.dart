@@ -72,10 +72,8 @@ class _LoadingOverlayState extends State<LoadingOverlay> with SingleTickerProvid
   void didUpdateWidget(LoadingOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isLoading && !widget.isLoading) {
-      // Start fade out animation
       _animationController.forward();
     } else if (!oldWidget.isLoading && widget.isLoading) {
-      // Reset overlay to visible state
       _animationController.reset();
       setState(() {
         _showOverlay = true;

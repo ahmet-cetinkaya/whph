@@ -77,7 +77,6 @@ class _NoteAddButtonState extends State<NoteAddButton> {
         return response;
       },
       onSuccess: (response) {
-        // Notify the app that a note was created
         _notesService.notifyNoteCreated(response.id);
 
         if (widget.onNoteCreated != null) {

@@ -260,13 +260,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     final isFilterChanged = _isFilterChanged(oldWidget);
 
     if ((isLayoutChanged || isFilterChanged) && mounted) {
-      // Cancel any pending refresh operations
       _refreshDebounce?.cancel();
       _pendingRefresh = false;
 
-      // For ALL changes including layout and filters, force immediate rebuild to prevent visual corruption
       setState(() {
-        // Recreate the tasks list to force complete rebuild
         if (_tasks != null) {
           _tasks = GetListTasksQueryResponse(
             items: _tasks!.items,
@@ -275,13 +272,11 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             pageSize: _tasks!.pageSize,
           );
 
-          // Invalidate cache
           _cachedGroupedTasks = null;
           _cachedVisualItems = null;
         }
       });
 
-      // Also trigger a data refresh to get updated filtered results
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           refresh();
@@ -382,7 +377,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           setState(() {
             if (_tasks == null || isRefresh) {
               _tasks = result;
-              _cachedGroupedTasks = null; // Invalidate cache
+              _cachedGroupedTasks = null;
               _cachedVisualItems = null;
             } else {
               // Deduplicate items to ensure uniqueness
@@ -395,7 +390,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                 pageIndex: result.pageIndex,
                 pageSize: result.pageSize,
               );
-              _cachedGroupedTasks = null; // Invalidate cache
+              _cachedGroupedTasks = null;
               _cachedVisualItems = null;
             }
           });
@@ -775,7 +770,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
-        // Count: groups + load more
         itemCount: groupEntries.length + (showLoadMore || showInfinityLoading ? 1 : 0),
         itemBuilder: (context, index) {
           if (index < groupEntries.length) {

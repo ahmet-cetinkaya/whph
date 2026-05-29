@@ -4,22 +4,16 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 /// A flexible overlay component that displays an icon with an optional message.
 /// Used to show empty states or completion indicators throughout the app.
 class IconOverlay extends StatelessWidget {
-  /// The icon to display in the overlay. Required.
   final IconData icon;
 
-  /// Optional message to display below the icon
   final String? message;
 
-  /// Size of the icon
   final double iconSize;
 
-  /// Color of the icon (defaults to surface3 if not provided)
   final Color? iconColor;
 
-  /// Style for the message text
   final TextStyle? messageStyle;
 
-  /// Optional text size for the message
   final double? textSize;
 
   const IconOverlay({
@@ -44,14 +38,11 @@ class IconOverlay extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Icon
           Icon(
             icon,
             size: iconSize,
             color: iconColor ?? defaultColor,
           ),
-
-          //
           if (message != null) ...[
             const SizedBox(height: AppTheme.sizeSmall),
             Text(

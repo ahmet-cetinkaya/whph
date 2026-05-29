@@ -21,7 +21,6 @@ class DateRangeFilterController extends ChangeNotifier {
   bool _justCleared = false;
   bool _includeNullDates = false;
 
-  // Getters
   DateTime? get selectedStartDate => _selectedStartDate;
   DateTime? get selectedEndDate => _selectedEndDate;
   DateFilterSetting? get dateFilterSetting => _dateFilterSetting;

@@ -15,10 +15,8 @@ class GlobalErrorHandlerService {
   static void setupErrorHandling(GlobalKey<NavigatorState> navigatorKey) {
     Logger.debug('GlobalErrorHandlerService: Setting up global error handling...');
 
-    // Store original builder if not already stored (to allow multiple calls)
     _originalErrorWidgetBuilder ??= ErrorWidget.builder;
 
-    // Configure custom error widget for Flutter rendering errors
     ErrorWidget.builder = _buildErrorWidget;
 
     Logger.debug('GlobalErrorHandlerService: Error handling setup completed');

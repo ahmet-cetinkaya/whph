@@ -20,7 +20,6 @@ class TagListOptionSettings {
   /// Current sort configuration
   final SortConfig<TagSortFields>? sortConfig;
 
-  /// Default constructor
   TagListOptionSettings({
     this.selectedTagIds,
     this.showNoTagsFilter = false,

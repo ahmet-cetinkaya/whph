@@ -96,13 +96,11 @@ class MarkdownRenderer extends StatelessWidget {
     );
   }
 
-  /// Launches the provided URL using the url_launcher package
   void _launchUrl(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      // Handle error - could show a snackbar or log the error
       Logger.error('Could not launch $url');
     }
   }

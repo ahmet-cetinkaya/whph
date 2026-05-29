@@ -45,7 +45,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         ServerModeMixin,
         DesktopSyncModeMixin,
         SyncStatusMixin {
-  // Services
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _settingRepository = container.resolve<ISettingRepository>();
@@ -53,7 +52,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   AndroidServerSyncService? _serverSyncService;
   DesktopSyncService? _desktopSyncService;
 
-  // State
   GetListSyncDevicesQueryResponse? _list;
   SyncStatus _currentSyncStatus = const SyncStatus(state: SyncState.idle);
   late AnimationController _syncIconAnimationController;

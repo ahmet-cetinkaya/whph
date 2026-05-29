@@ -44,7 +44,6 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
 
-    // Initialize services with dependencies from container
     _initializationService = AppInitializationService(
       widget.container.resolve<Mediator>(),
       widget.container.resolve<ISupportDialogService>(),
@@ -83,12 +82,10 @@ class _AppState extends State<App> {
       return;
     }
 
-    // Use addPostFrameCallback to wait for the next frame when context should be available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && widget.navigatorKey.currentContext != null) {
         _runInitialization();
       } else {
-        // Schedule another check in the next frame if still not available
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted && widget.navigatorKey.currentContext != null) {
             _runInitialization();
@@ -100,7 +97,6 @@ class _AppState extends State<App> {
 
   /// Run initialization once context is available
   Future<void> _runInitialization() async {
-    // Store the app context for global access (for overlay notifications, etc.)
     final navContext = widget.navigatorKey.currentContext;
     if (navContext != null) {
       ContextManager.setContext(navContext);
@@ -121,7 +117,6 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    // Check for startup errors
     final startupErrorState = widget.startupErrorState ?? AppStartupErrorState();
     if (startupErrorState.hasStartupError) {
       final backgroundTranslationService = BackgroundTranslationService();

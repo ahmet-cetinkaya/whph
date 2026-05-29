@@ -869,7 +869,7 @@ void main() {
       final command = SaveTaskCommand(
         id: taskId,
         title: 'Task',
-        plannedDate: newDate, // Changed date
+        plannedDate: newDate,
       );
 
       final setting = Setting(

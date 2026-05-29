@@ -16,12 +16,6 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:acore/acore.dart' hide Container;
 
-/// Controller for managing firewall permission state and operations.
-///
-/// Handles:
-/// - Firewall permission checking and verification
-/// - Manual confirmation for Linux platforms
-/// - Automatic firewall rule addition for Windows
 class FirewallPermissionController extends ChangeNotifier {
   static final String _linuxFirewallManualConfirmationKey = 'linux_firewall_manually_confirmed_$webSocketPort';
 
@@ -36,7 +30,6 @@ class FirewallPermissionController extends ChangeNotifier {
   bool _isManuallyConfirmed = false;
   bool _shouldHideCard = false;
 
-  // Getters
   bool get isFirewallPermissionGranted => _isFirewallPermissionGranted;
   bool get isCheckingFirewallPermission => _isCheckingFirewallPermission;
   bool get isVerifyingPermission => _isVerifyingPermission;

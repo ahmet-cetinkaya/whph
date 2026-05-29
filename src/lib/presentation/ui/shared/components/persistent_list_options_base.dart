@@ -4,21 +4,11 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dart';
 
-/// Base class for list option widgets that need to save filter settings
 abstract class PersistentListOptionsBase extends StatefulWidget {
-  /// Whether to show the save button
   final bool showSaveButton;
-
-  /// Whether current filter settings differ from saved/default settings
   final bool hasUnsavedChanges;
-
-  /// Key for storing settings in persistent storage
   final String? settingKeyVariantSuffix;
-
-  /// Callback when settings are loaded
   final VoidCallback? onSettingsLoaded;
-
-  /// Callback when filter/sort settings are saved
   final Function()? onSaveSettings;
 
   const PersistentListOptionsBase({
@@ -31,36 +21,16 @@ abstract class PersistentListOptionsBase extends StatefulWidget {
   });
 }
 
-/// Base state class for persistent list option widgets
 abstract class PersistentListOptionsBaseState<T extends PersistentListOptionsBase> extends State<T> {
-  /// Filter settings manager instance
   late final FilterSettingsManager filterSettingsManager;
-
-  /// Flag indicating if settings have been loaded
   bool isSettingLoaded = false;
-
-  /// Flag indicating if settings are currently being loaded
   bool isLoadingSettings = false;
-
-  /// Timer for debouncing search input
   Timer? searchDebounce;
-
-  /// Timer for showing saved message
   Timer? savedMessageTimer;
-
-  /// Timer for checking search state
   Timer? searchStateCheckTimer;
-
-  /// Flag indicating if there are unsaved changes
   bool hasUnsavedChanges = false;
-
-  /// Flag indicating if saved message should be shown
   bool showSavedMessage = false;
-
-  /// Last search query
   String? lastSearchQuery;
-
-  /// Key used for storing settings
   late final String settingKey;
 
   /// Mediator instance for filter settings manager

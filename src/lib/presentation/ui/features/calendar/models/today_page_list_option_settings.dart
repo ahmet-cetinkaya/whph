@@ -6,7 +6,6 @@ class TodayPageListOptionSettings {
   /// Flag to indicate if "None" (no tags) filter is selected
   final bool showNoTagsFilter;
 
-  /// Default constructor
   TodayPageListOptionSettings({
     this.selectedTagIds,
     this.showNoTagsFilter = false,

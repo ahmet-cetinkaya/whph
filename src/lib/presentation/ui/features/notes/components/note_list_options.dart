@@ -28,37 +28,26 @@ import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'dart:async';
 
 class NoteListOptions extends PersistentListOptionsBase {
-  /// Selected tag IDs for filtering
   final List<String>? selectedTagIds;
 
-  /// Flag to indicate if "None" (no tags) filter is selected
   final bool showNoTagsFilter;
 
-  /// Search query
   final String? search;
 
-  /// Current sort configuration
   final SortConfig<NoteSortFields>? sortConfig;
 
-  /// Callback when tag filter changes
   final Function(List<DropdownOption<String>>, bool)? onTagFilterChange;
 
-  /// Callback when search filter changes
   final Function(String?)? onSearchChange;
 
-  /// Callback when sort changes
   final Function(SortConfig<NoteSortFields>)? onSortChange;
 
-  /// Whether to show the tag filter button
   final bool showTagFilter;
 
-  /// Whether to show the search filter button
   final bool showSearchFilter;
 
-  /// Whether to show the sort button
   final bool showSortButton;
 
-  /// Whether there are items to filter
   final bool hasItems;
 
   const NoteListOptions({
@@ -105,12 +94,10 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
     if (savedSettings != null && mounted) {
       final filterSettings = NoteListOptionSettings.fromJson(savedSettings);
 
-      // Set search state
       setState(() {
         lastSearchQuery = filterSettings.search;
       });
 
-      // Apply tag filters
       if (widget.onTagFilterChange != null) {
         final tagIds = filterSettings.selectedTagIds ?? [];
         final showNoTags = filterSettings.showNoTagsFilter;
@@ -121,12 +108,10 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
         );
       }
 
-      // Apply search filter
       if (widget.onSearchChange != null && filterSettings.search != null) {
         widget.onSearchChange!(filterSettings.search);
       }
 
-      // Apply sort configuration
       if (widget.onSortChange != null && filterSettings.sortConfig != null) {
         widget.onSortChange!(filterSettings.sortConfig!);
       }
@@ -194,7 +179,6 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
   void _onSearchChanged(String? query) {
     searchDebounce?.cancel();
 
-    // Store the query locally for comparison
     setState(() {
       lastSearchQuery = query;
     });
@@ -285,7 +269,6 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Filter by tags
                 if (widget.showTagFilter && widget.onTagFilterChange != null)
                   TagSelectDropdown(
                     isMultiSelect: true,
@@ -306,8 +289,6 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                         : [],
                     initialNoneSelected: widget.showNoTagsFilter,
                   ),
-
-                // Search filter
                 if (widget.showSearchFilter && widget.onSearchChange != null)
                   SearchFilter(
                     initialValue: lastSearchQuery ?? widget.search,
@@ -318,8 +299,6 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                     expandedWidth: 200,
                     isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
                   ),
-
-                // Sort button
                 if (widget.showSortButton && widget.onSortChange != null)
                   SortDialogButton<NoteSortFields>(
                     iconColor: Theme.of(context).primaryColor,
@@ -373,8 +352,6 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                       ),
                     ],
                   ),
-
-                // Group button
                 if (widget.showSortButton && widget.onSortChange != null)
                   GroupDialogButton<NoteSortFields>(
                     iconColor: Theme.of(context).primaryColor,
@@ -413,8 +390,6 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                       ),
                     ],
                   ),
-
-                // Save button
                 if (widget.showSaveButton)
                   SaveButton(
                     hasUnsavedChanges: hasUnsavedChanges,

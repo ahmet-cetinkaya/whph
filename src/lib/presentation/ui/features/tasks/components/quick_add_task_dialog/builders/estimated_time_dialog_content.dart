@@ -133,11 +133,10 @@ class EstimatedTimeDialogContent extends StatelessWidget {
               acore.NumericInput(
                 value: selectedTime,
                 minValue: 0,
-                maxValue: 480, // 8 hours maximum
+                maxValue: 480,
                 incrementValue: 10,
                 decrementValue: 10,
                 onValueChanged: onTimeSelected,
-                valueSuffix: '', // Removed suffix as it's now in the description
                 iconSize: AppTheme.iconSizeMedium,
                 iconColor: theme.colorScheme.primary,
               ),

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 class HabitsService extends ChangeNotifier {
-  // Event notifiers for habit-related events
   final ValueNotifier<String?> onHabitCreated = ValueNotifier<String?>(null);
   final ValueNotifier<String?> onHabitUpdated = ValueNotifier<String?>(null);
   final ValueNotifier<String?> onHabitDeleted = ValueNotifier<String?>(null);
@@ -9,7 +8,6 @@ class HabitsService extends ChangeNotifier {
   final ValueNotifier<String?> onHabitRecordRemoved = ValueNotifier<String?>(null);
   final ValueNotifier<void> onSettingsChanged = ValueNotifier<void>(null);
 
-  // Notification methods for habit events
   void notifyHabitCreated(String habitId) {
     onHabitCreated.value = habitId;
     onHabitCreated.notifyListeners();

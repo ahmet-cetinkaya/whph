@@ -87,9 +87,7 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
       margin: EdgeInsets.zero,
       child: InkWell(
         borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-        onTap: () {
-          // Future: Show details
-        },
+        onTap: () {},
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.sizeMedium),
           child: ConstrainedBox(

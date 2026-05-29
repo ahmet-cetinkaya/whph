@@ -37,17 +37,13 @@ class BarChart extends StatelessWidget {
       finalBarColor = finalBarColor.withValues(alpha: 0.5);
     }
 
-    // Calculate bar width safely
     final screenWidth = MediaQuery.sizeOf(context).width;
     final baseWidth = screenWidth - 100;
 
-    // Use a minimum of 1.0 for maxValue to avoid division by zero
     final safeMaxValue = maxValue > 0 ? maxValue : 1.0;
-    // Ensure ratio is between 0 and 1
     final ratio = (value / safeMaxValue).clamp(0.0, 1.0);
     final barWidth = baseWidth * ratio;
 
-    // Calculate comparison bar width
     double? compareBarWidth;
     if (compareValue != null && compareMaxValue != null) {
       final safeCompareMaxValue = compareMaxValue! > 0 ? compareMaxValue! : 1.0;

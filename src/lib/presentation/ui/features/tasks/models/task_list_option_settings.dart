@@ -36,7 +36,6 @@ class TaskListOptionSettings {
   /// Show subtasks toggle
   final bool showSubTasks;
 
-  /// Default constructor
   TaskListOptionSettings({
     this.selectedTagIds,
     this.showNoTagsFilter = false,

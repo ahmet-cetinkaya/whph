@@ -95,11 +95,9 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   late FilterContext _currentFilters;
   double? _savedScrollPosition;
 
-  // Cache for performance optimization
   Map<String, List<HabitListItem>>? _cachedGroupedHabits;
   List<VisualItem>? _cachedVisualItems;
 
-  // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
 
   @override
@@ -155,8 +153,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   void _handleHabitRecordChange() {
     if (!mounted) return;
 
-    // When 3-state tracking is enabled, delay the refresh (which hides completed items)
-    // by 1 minute to allow the user to toggle through states (Undo/Not Done) without the item vanishing.
+    // Delay refresh in 3-state mode to allow user to toggle states without item vanishing.
     if (widget.isThreeStateEnabled) {
       refresh(delay: const Duration(minutes: 1));
     } else {
@@ -174,15 +171,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     if (_isFilterChanged(oldFilters: _currentFilters, newFilters: newFilters)) {
       _currentFilters = newFilters;
 
-      // For ALL filter changes including style, force immediate rebuild to prevent visual corruption
       if (mounted) {
-        // Cancel any pending refresh operations
         _refreshDebounce?.cancel();
         _pendingRefresh = false;
 
-        // Force immediate state update to prevent visual corruption during filter changes
         setState(() {
-          // Recreate the habit list to force complete rebuild
           if (_habitList != null) {
             _habitList = GetListHabitsQueryResponse(
               items: _habitList!.items,
@@ -191,13 +184,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               pageSize: _habitList!.pageSize,
             );
 
-            // Invalidate cache
             _cachedGroupedHabits = null;
             _cachedVisualItems = null;
           }
         });
 
-        // Also trigger a data refresh to get updated filtered results
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             refresh();
@@ -212,7 +203,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         dateRange: widget.dateRange,
         filterByTags: widget.filterByTags,
         filterNoTags: widget.filterNoTags,
-        filterByArchived: widget.filterByArchived, // Changed from showArchived
+        filterByArchived: widget.filterByArchived,
         search: widget.search,
         sortConfig: widget.sortConfig,
         excludeCompletedForDate: widget.excludeCompletedForDate,
@@ -280,7 +271,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
       if (_pendingRefresh) {
         _pendingRefresh = false;
-        refresh();
+        refresh(); // Refresh again if refresh was requested during the debounce
       }
     });
   }
@@ -316,7 +307,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         setState(() {
           if (_habitList == null || isRefresh) {
             _habitList = result;
-            _cachedGroupedHabits = null; // Invalidate cache
+            _cachedGroupedHabits = null;
             _cachedVisualItems = null;
           } else {
             _habitList = GetListHabitsQueryResponse(
@@ -325,15 +316,13 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
-            _cachedGroupedHabits = null; // Invalidate cache
+            _cachedGroupedHabits = null;
             _cachedVisualItems = null;
           }
 
-          // Notify about listing count
           widget.onListing?.call(_habitList?.items.length ?? 0);
         });
 
-        // For infinity scroll: check if viewport needs more content
         if (widget.paginationMode == PaginationMode.infinityScroll && _habitList!.hasNext) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             checkAndFillViewport();
@@ -352,10 +341,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
     if (_cachedGroupedHabits == null) {
       _cachedGroupedHabits = _groupHabits();
-
-      // Also update visual items when grouping changes
-      // only if we are in grid mode (which uses sliver layout builder)
-      // or if we want to support sliver list mode later
       _cachedVisualItems = null;
     }
   }
@@ -395,11 +380,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
             final crossAxisExtent = constraints.crossAxisExtent;
             const maxCrossAxisExtent = 300.0;
             final gridColumns = (crossAxisExtent / maxCrossAxisExtent).ceil();
-
-            // Calculate visual items if needed (dependent on gridColumns)
-            // Note: Visual items depend on gridColumns, so we can't fully cache outside LayoutBuilder
-            // unless we cache map<columns, items>, but simple check is enough here
-            // since grouping is the expensive part which is already cached.
 
             final visualItems = VisualItemUtils.getVisualItems<HabitListItem>(
               groupedItems: _cachedGroupedHabits!,
@@ -454,9 +434,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   }
 
   Widget _buildGridList() {
-    // Note: When custom order is active, _effectiveStyle becomes list mode, so grid mode
-    // never has reordering. The GridView below is the only path for grid layout.
-    // Calculate the total item count including load more button
     final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
 
     return GridView.builder(
@@ -472,7 +449,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       ),
       itemCount: totalItemCount,
       itemBuilder: (context, index) {
-        // Load more button at the end
         if (index == _habitList!.items.length && widget.paginationMode == PaginationMode.loadMore) {
           return Center(
             child: Padding(
@@ -520,7 +496,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
     final groupedHabits = <String, List<HabitListItem>>{};
 
-    // Check grouping settings
     final bool showHeaders =
         ((widget.sortConfig?.orderOptions.isNotEmpty ?? false) || (widget.sortConfig?.groupOption != null)) &&
             (widget.sortConfig?.enableGrouping ?? false);
@@ -530,7 +505,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       return groupedHabits;
     }
 
-    // Preserve order from GetListHabitsQuery
     for (var habit in _habitList!.items) {
       final groupName = habit.groupName ?? '';
       if (!groupedHabits.containsKey(groupName)) {
@@ -559,7 +533,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final habit = groupHabits[oldIndex];
     final originalOrder = habit.order ?? 0.0;
 
-    // Update local state visually
     setState(() {
       final reorderedAllItems = List<HabitListItem>.from(_habitList!.items);
       final globalIndex = reorderedAllItems.indexWhere((h) => h.id == habit.id);
@@ -567,36 +540,24 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       if (globalIndex != -1) {
         reorderedAllItems.removeAt(globalIndex);
 
-        // Find the correct global insertion index based on local group targetIndex
         int globalNewIndex;
         final reducedGroup = List<HabitListItem>.from(groupHabits)..removeAt(oldIndex);
 
         if (targetIndex < reducedGroup.length) {
-          // Inserting before an item in the group
           final anchorItem = reducedGroup[targetIndex];
           globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == anchorItem.id);
+        } else if (reducedGroup.isNotEmpty) {
+          final lastItem = reducedGroup.last;
+          globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == lastItem.id) + 1;
         } else {
-          // Inserting at the end of the group
-          if (reducedGroup.isNotEmpty) {
-            final lastItem = reducedGroup.last;
-            globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == lastItem.id) + 1;
-          } else {
-            // Group became empty (except this item), put it back at original relative position locally?
-            // Actually if group is empty, logic implies globalNewIndex is tricky without group context.
-            // But reducedGroup empty means groupHabits had 1 item.
-            // So we just want to put it back where it was (globalIndex).
-            globalNewIndex = globalIndex;
-          }
+          globalNewIndex = globalIndex;
         }
 
         if (globalNewIndex != -1) {
-          // Clamp checks just in case
           if (globalNewIndex < 0) globalNewIndex = 0;
           if (globalNewIndex > reorderedAllItems.length) globalNewIndex = reorderedAllItems.length;
-
           reorderedAllItems.insert(globalNewIndex, habit);
         } else {
-          // Fallback if anchor not found (should not happen in consistent state)
           reorderedAllItems.insert(globalIndex, habit);
         }
 
@@ -613,7 +574,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       final existingOrders = groupHabits.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
       double targetOrder;
 
-      // Calculate target order based on targetIndex
       if (targetIndex == 0) {
         final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
         targetOrder = firstOrder - OrderRank.initialStep;
@@ -653,7 +613,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       );
     } catch (e) {
       if (e is RankGapTooSmallException && mounted) {
-        // Normalize all habit orders to resolve ranking conflicts
         await AsyncErrorHandler.executeVoid(
           context: context,
           errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
@@ -664,7 +623,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           },
           onSuccess: () {
             _dragStateNotifier.stopDragging();
-            widget.onReorderComplete?.call(); // Refresh to show normalized order
+            widget.onReorderComplete?.call();
           },
           onError: (_) {
             _dragStateNotifier.stopDragging();
@@ -680,7 +639,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
   @override
   void onGroupCollapseChanged() {
-    // Invalidate visual items cache as visibility changes affects the flattened list
     _cachedVisualItems = null;
   }
 
@@ -812,13 +770,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   }
 
   void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<HabitListItem>> visualItems) {
-    // Validate bounds before index manipulation
     if (oldIndex < 0 || oldIndex >= visualItems.length) return;
     if (newIndex < 0 || newIndex >= visualItems.length) return;
 
-    // Adjust newIndex when moving item downward (as per SliverReorderableList behavior)
     if (oldIndex < newIndex) {
-      newIndex -= 1;
+      newIndex -= 1; // Adjust for downward move per SliverReorderableList behavior
     }
 
     final oldItem = visualItems[oldIndex];
@@ -834,7 +790,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final habitGroupIndex = groupHabits.indexWhere((h) => h.id == habit.id);
     if (habitGroupIndex == -1) return;
 
-    // Calculate target index within the group by counting preceding items of the same group
     int targetGroupIndex = 0;
     for (int i = 0; i < newIndex; i++) {
       if (i == oldIndex) continue;
@@ -948,13 +903,10 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     if (precalculatedItems != null) {
       visualItems = precalculatedItems;
     } else {
-      // Ensure grouping is cached
       _cachedGroupedHabits ??= _groupHabits();
-
-      // Ensure visual items are cached
       _cachedVisualItems ??= VisualItemUtils.getVisualItems<HabitListItem>(
         groupedItems: _cachedGroupedHabits!,
-        gridColumns: 1, // List mode is always 1 column
+        gridColumns: 1,
         groupTranslatable: _getGroupTranslatableMap(),
       );
       visualItems = _cachedVisualItems!.cast<VisualItem<HabitListItem>>();

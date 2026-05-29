@@ -56,10 +56,8 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
 
   final _translationService = container.resolve<ITranslationService>();
 
-  // Field visibility management
   final Set<String> _visibleOptionalFields = {};
 
-  // Define optional field keys
   static const String keyTags = 'tags';
 
   @override
@@ -67,7 +65,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     super.initState();
     _notesService.onNoteUpdated.addListener(_handleNoteUpdated);
 
-    // Track focus state to prevent text selection conflicts
     _titleFocusNode.addListener(_handleTitleFocusChange);
     _contentFocusNode.addListener(_handleContentFocusChange);
 
@@ -80,7 +77,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     _titleFocusNode.removeListener(_handleTitleFocusChange);
     _contentFocusNode.removeListener(_handleContentFocusChange);
 
-    // Notify parent about title changes before disposing
     if (widget.onTitleUpdated != null && _titleController.text.isNotEmpty) {
       widget.onTitleUpdated!(_titleController.text);
     }
@@ -96,7 +92,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   void _handleNoteUpdated() {
     if (!mounted || _notesService.onNoteUpdated.value != widget.noteId) return;
 
-    // Skip refresh if any field is actively being edited to prevent input conflicts
     if (_isTitleFieldActive || _isContentFieldActive) return;
 
     _getNote();
@@ -125,25 +120,19 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         return await _mediator.send<GetNoteQuery, GetNoteQueryResponse>(query);
       },
       onSuccess: (response) {
-        // Skip update if fields became active during the async operation
         if (_isTitleFieldActive || _isContentFieldActive) return;
 
         setState(() {
-          // Check if local content has modifications compared to LAST LOADED content
-          // This protects unsaved changes even if the field is not currently active
           final bool isTitleDirty = _titleController.text != (_note?.title ?? '');
           final bool isContentDirty = _contentController.text != (_note?.content ?? '');
 
           _note = response;
 
-          // Update title if it's different and NOT dirty and NOT active
           if (!isTitleDirty && _titleController.text != response.title) {
             _titleController.text = response.title;
           }
 
-          // Auto-focus if title is empty (newly created note)
           if (response.title.isEmpty) {
-            // Use a small delay to ensure the UI is fully built
             Future.delayed(const Duration(milliseconds: 100), () {
               if (mounted) {
                 _titleFocusNode.requestFocus();
@@ -151,36 +140,29 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
             });
           }
 
-          // Update content if it's different and NOT dirty and NOT active
           final content = response.content ?? '';
           if (!isContentDirty && _contentController.text != content) {
             _contentController.text = content;
           }
         });
 
-        // Process field visibility after loading note
         _processFieldVisibility();
       },
     );
   }
 
-  // Process field content and update UI after note data is loaded
   void _processFieldVisibility() {
     if (_note == null) return;
 
     setState(() {
-      // Make fields with content automatically visible
       if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
     });
   }
 
-  // Check if the field should be displayed in the chips section
   bool _shouldShowAsChip(String fieldKey) {
-    // Don't show chip if field is already visible OR if it has content
     return !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
   }
 
-  // Method to determine if a field has content
   bool _hasFieldContent(String fieldKey) {
     if (_note == null) return false;
 
@@ -191,8 +173,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         return false;
     }
   }
-
-  // Remove unused _addTag and _removeTag methods since we have _addTagToNote and _removeTagFromNote
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) {
     if (_note == null) return;
@@ -205,37 +185,30 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     final tagsToRemove =
         _note!.tags.where((noteTag) => !tagOptions.map((tag) => tag.value).contains(noteTag.tagId)).toList();
 
-    // Batch process all tag operations
     Future<void> processTags() async {
-      // Add all tags
       for (final tagId in tagsToAdd) {
         await _addTagToNote(tagId);
       }
 
-      // Remove all tags
       for (final noteTag in tagsToRemove) {
         await _removeTagFromNote(noteTag.id);
       }
 
-      // Update Order
       if (tagOptions.isNotEmpty) {
         final tagOrders = {for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i};
         final orderCommand = UpdateNoteTagsOrderCommand(noteId: widget.noteId, tagOrders: tagOrders);
         await _mediator.send(orderCommand);
       }
 
-      // Notify only once after all tag operations are complete
       if (tagsToAdd.isNotEmpty || tagsToRemove.isNotEmpty || tagOptions.isNotEmpty) {
         await _getNote();
         _notesService.notifyNoteUpdated(widget.noteId);
       }
     }
 
-    // Execute the tag operations
     processTags();
   }
 
-  // Helper methods for repeated patterns
   void _forceImmediateUpdate() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
   }
@@ -258,15 +231,12 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     onUpdate?.call();
   }
 
-  // Event handler methods
   void _onTitleChanged(String value) {
-    // Update active state to prevent data refresh conflicts during typing
     _isTitleFieldActive = true;
     _handleFieldChange(value, () => widget.onTitleUpdated?.call(value));
   }
 
   void _onContentChanged(String value) {
-    // Update active state to prevent data refresh conflicts during typing
     _isContentFieldActive = true;
     _handleFieldChange<String>(value, null);
   }
@@ -282,7 +252,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         errorMessage: _translationService.translate(NoteTranslationKeys.savingError),
         operation: _executeSaveCommand,
         onSuccess: () {
-          // Notify the app that a note was updated
           _notesService.notifyNoteUpdated(widget.noteId);
 
           if (widget.onNoteUpdated != null) {
@@ -293,7 +262,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     });
   }
 
-  // Add tag operations helper methods
   Future<bool> _addTagToNote(String tagId) async {
     final result = await AsyncErrorHandler.execute<AddNoteTagCommandResponse>(
       context: context,
@@ -307,7 +275,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
       },
     );
 
-    // Return true if operation was successful (non-null result), false otherwise
     return result != null;
   }
 
@@ -324,16 +291,13 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
       },
     );
 
-    // Return true if operation was successful (non-null result), false otherwise
     return result != null;
   }
 
-  // Helper method to check if a field should be displayed as a chip
   bool _isFieldVisible(String fieldKey) {
     return _visibleOptionalFields.contains(fieldKey);
   }
 
-  // Build a chip for toggling optional fields
   Widget _buildOptionalFieldChip(String fieldKey, bool selected) {
     return OptionalFieldChip(
       label: _getFieldLabel(fieldKey),
@@ -378,7 +342,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Note Title (always visible)
         TextFormField(
           controller: _titleController,
           focusNode: _titleFocusNode,
@@ -392,8 +355,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           style: theme.textTheme.bodyLarge,
         ),
         const SizedBox(height: AppTheme.size2XSmall),
-
-        // Optional fields (Tags)
         if (_isFieldVisible(keyTags)) ...[
           DetailTable(
             rowData: [_buildTagsSection()],
@@ -401,8 +362,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           ),
           const SizedBox(height: AppTheme.size2XSmall),
         ],
-
-        // Optional field chips at the bottom
         if (availableChipFields.isNotEmpty) ...[
           Wrap(
             spacing: 4,
@@ -411,8 +370,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           ),
           const SizedBox(height: AppTheme.size2XSmall),
         ],
-
-        // Note Content fills remaining page height.
         Expanded(
           child: MarkdownEditor.simple(
             controller: _contentController,

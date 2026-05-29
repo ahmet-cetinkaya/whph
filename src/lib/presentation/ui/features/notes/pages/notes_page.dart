@@ -51,12 +51,11 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
   SortConfig<NoteSortFields>? _sortConfig;
 
   @override
-  bool get wantKeepAlive => true; // Keep the state alive when navigating away
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    // Auto-start tour if multi-page tour is active
     _checkAndStartTour();
   }
 
@@ -162,7 +161,6 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
           key: _mainContentKey,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Filters section with consistent padding
             NoteListOptions(
               key: _noteFiltersKey,
               selectedTagIds: _selectedTagIds,
@@ -187,13 +185,10 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
               },
               onSettingsLoaded: _handleSettingsLoaded,
               onSaveSettings: () {
-                // Force refresh the list when settings are saved
                 setState(() {});
               },
               settingKeyVariantSuffix: noteListSettingKeySuffix,
             ),
-
-            // Notes list
             if (_isListVisible)
               Expanded(
                 child: NotesList(
@@ -215,7 +210,6 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
 
   void _startTour({bool isMultiPageTour = false}) {
     final tourSteps = [
-      // 1. Page introduce
       TourStep(
         title: _translationService.translate(NoteTranslationKeys.tourNoteTakingTitle),
         description: _translationService.translate(NoteTranslationKeys.tourNoteTakingDescription),
@@ -223,21 +217,18 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
         targetKey: _mainContentKey,
         position: TourPosition.bottom,
       ),
-      // 2. Note list introduce
       TourStep(
         title: _translationService.translate(NoteTranslationKeys.tourYourNotesTitle),
         description: _translationService.translate(NoteTranslationKeys.tourYourNotesDescription),
         targetKey: _notesListKey,
         position: TourPosition.top,
       ),
-      // 3. List options introduce
       TourStep(
         title: _translationService.translate(NoteTranslationKeys.tourFilterSearchTitle),
         description: _translationService.translate(NoteTranslationKeys.tourFilterSearchDescription),
         targetKey: _noteFiltersKey,
         position: TourPosition.bottom,
       ),
-      // 4. Add button introduce
       TourStep(
         title: _translationService.translate(NoteTranslationKeys.tourCreateNotesTitle),
         description: _translationService.translate(NoteTranslationKeys.tourCreateNotesDescription),
@@ -268,7 +259,7 @@ class _NotesPageState extends State<NotesPage> with AutomaticKeepAliveClientMixi
             ? () => TourNavigationService.navigateBackInTour(overlayContext)
             : null,
         showBackButton: isMultiPageTour,
-        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5, // Notes page is final
+        isFinalPageOfTour: !isMultiPageTour || TourNavigationService.currentTourIndex == 5,
         translationService: _translationService,
       ),
     );

@@ -17,13 +17,8 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.da
 import 'package:whph/presentation/ui/features/calendar/models/today_page_list_option_settings.dart';
 
 class TodayPageListOptions extends PersistentListOptionsBase {
-  /// Selected tag IDs for filtering
   final List<String>? selectedTagIds;
-
-  /// Flag to indicate if "None" (no tags) filter is selected
   final bool showNoTagsFilter;
-
-  /// Callback when tag filter changes
   final Function(List<String>?, bool)? onFilterChange;
 
   const TodayPageListOptions({
@@ -62,7 +57,6 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
       final filterSettings = TodayPageListOptionSettings.fromJson(savedSettings);
 
       if (filterSettings.selectedTagIds != null && filterSettings.selectedTagIds!.isNotEmpty) {
-        // Fetch actual tag data to populate the dropdown
         final query = GetListTagsQuery(
           pageIndex: 0,
           pageSize: filterSettings.selectedTagIds!.length,
@@ -71,12 +65,10 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
 
         final tagResult = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
 
-        // Only update if we have valid tags
         if (tagResult.items.isNotEmpty) {
           widget.onFilterChange?.call(filterSettings.selectedTagIds, filterSettings.showNoTagsFilter);
         }
       } else if (filterSettings.showNoTagsFilter) {
-        // Handle "None" filter case
         widget.onFilterChange?.call(null, true);
       }
     }
@@ -172,7 +164,6 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                // Tag Filter
                 TagSelectDropdown(
                   isMultiSelect: true,
                   showNoneOption: true,
@@ -196,8 +187,6 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
                       : [],
                   showLength: true,
                 ),
-
-                // Save Button
                 if (widget.showSaveButton)
                   SaveButton(
                     hasUnsavedChanges: hasUnsavedChanges,

@@ -27,7 +27,7 @@ void main() {
     });
 
     test('getGroupInfo groups by Created Date', () {
-      final now = DateTime(2023, 1, 10, 10, 0); // Fixed "now"
+      final now = DateTime(2023, 1, 10, 10, 0);
 
       final today = NoteListItem(id: '1', title: 'Today', createdDate: DateTime(2023, 1, 10, 9, 0));
       final yesterday = NoteListItem(id: '2', title: 'Yesterday', createdDate: DateTime(2023, 1, 9, 10, 0));
@@ -47,7 +47,6 @@ void main() {
     test('getGroupInfo groups by Modified Date', () {
       final now = DateTime(2023, 1, 10, 10, 0);
 
-      // Note: Modified Date logic is almost same as Created Date, testing basic case
       final today = NoteListItem(
           id: '1', title: 'Today', createdDate: DateTime(2023, 1, 1), modifiedDate: DateTime(2023, 1, 10, 9, 0));
       final none = NoteListItem(id: '2', title: 'None', createdDate: DateTime(2023, 1, 1)); // modifiedDate is null

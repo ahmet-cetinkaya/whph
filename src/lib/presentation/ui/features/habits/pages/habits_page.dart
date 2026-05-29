@@ -42,8 +42,6 @@ class HabitsPage extends StatefulWidget {
 }
 
 class _HabitsPageState extends State<HabitsPage> {
-  // Calendar layout constants
-  // static const double _calendarDayWidth = 46.0; // Moved to dynamic calculation
   static double get _dragHandleWidth => HabitUiConstants.dragHandleTotalWidth;
   final _translationService = container.resolve<ITranslationService>();
   final _habitsService = container.resolve<HabitsService>();
@@ -57,7 +55,6 @@ class _HabitsPageState extends State<HabitsPage> {
   void initState() {
     super.initState();
     _loadSettings();
-    // Auto-start tour if multi-page tour is active
     _checkAndStartTour();
     _habitsService.onSettingsChanged.addListener(_onHabitSettingsChanged);
   }
@@ -94,7 +91,6 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
-  // Tour keys
   final GlobalKey _addHabitButtonKey = GlobalKey();
   final GlobalKey _habitFiltersKey = GlobalKey();
   final GlobalKey _calendarKey = GlobalKey();
@@ -171,7 +167,6 @@ class _HabitsPageState extends State<HabitsPage> {
     });
   }
 
-  // Handle sort configuration changes
   void _onSortConfigChange(SortConfig<HabitSortFields> newConfig) {
     if (mounted) {
       setState(() {
@@ -180,7 +175,6 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
-  // Handle layout toggle changes
   void _onLayoutToggleChange(bool forceOriginalLayout) {
     if (mounted) {
       setState(() {
@@ -238,16 +232,12 @@ class _HabitsPageState extends State<HabitsPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Check if we have arguments to show habit details
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map<String, dynamic> && (args.containsKey('habitId'))) {
       final habitId = args['habitId'] as String;
 
-      // Only handle the habit if we haven't already handled it
       if (_handledHabitId != habitId) {
         _handledHabitId = habitId;
-
-        // Schedule the dialog to open after the build is complete
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
             _openDetails(habitId, context);
@@ -255,16 +245,12 @@ class _HabitsPageState extends State<HabitsPage> {
         });
       }
     } else {
-      // Check if we have a route name that includes a habit ID
       final routeName = ModalRoute.of(context)?.settings.name;
       if (routeName != null && routeName.startsWith('/habits/') && routeName != '/habits/details') {
         final habitId = routeName.substring('/habits/'.length);
 
-        // Only handle the habit if we haven't already handled it
         if (_handledHabitId != habitId) {
           _handledHabitId = habitId;
-
-          // Schedule the dialog to open after the build is complete
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               _openDetails(habitId, context);
@@ -275,13 +261,9 @@ class _HabitsPageState extends State<HabitsPage> {
     }
   }
 
-  /// Calculate calendar spacing width to align with habit cards
   double _calculateCalendarSpacingWidth(bool isCompactView) {
-    // Match HabitCard content padding + trailing padding + wrapper padding
     final rightPadding =
         isCompactView ? HabitUiConstants.calendarPaddingMobile : HabitUiConstants.calendarPaddingDesktop;
-    // Base spacing = Right Padding + Calendar Trailing Spacer (2.0) + Wrapper Padding (1.0)
-    // The wrapper padding (AppTheme.size4XSmall) accounts for the padding applied to HabitCard in HabitsList
     final baseSpacing = HabitUiConstants.calendarTrailingSpacer + rightPadding + AppTheme.size4XSmall;
     final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
 
@@ -312,10 +294,7 @@ class _HabitsPageState extends State<HabitsPage> {
           key: _addHabitButtonKey,
           onHabitCreated: (String habitId) {
             if (!mounted) return;
-
-            // Notify the service that a habit was created
             _habitsService.notifyHabitCreated(habitId);
-
             _openDetails(habitId, context);
           },
           buttonColor: _themeService.primaryColor,
@@ -339,12 +318,10 @@ class _HabitsPageState extends State<HabitsPage> {
           key: _mainContentKey,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Filters and Calendar row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Filters and sorting
                 Expanded(
                   child: HabitListOptions(
                     key: _habitFiltersKey,
@@ -366,17 +343,13 @@ class _HabitsPageState extends State<HabitsPage> {
                     onSettingsLoaded: _onSettingsLoaded,
                   ),
                 ),
-
-                // Calendar
                 if (_isHabitListVisible &&
                     _habitListStyle == HabitListStyle.calendar &&
                     AppThemeHelper.isScreenGreaterThan(context, AppTheme.screenSmall) &&
                     !_filterByArchived) ...[
                   Builder(builder: (context) {
                     final isMobile = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
-                    // Use 36.0 for mobile to match HabitCard, 46.0 otherwise
                     final daySize = isMobile ? 36.0 : HabitUiConstants.calendarDaySize;
-                    // Calculate spacing based on view compactness
                     final spacing = _calculateCalendarSpacingWidth(isMobile);
 
                     return SizedBox(
@@ -392,10 +365,7 @@ class _HabitsPageState extends State<HabitsPage> {
                               _buildCalendarDay(date, today, daySize),
                             ];
                           }),
-                          // Add spacing to match calendar right padding and drag handle width
-                          SizedBox(
-                            width: spacing,
-                          ),
+                          SizedBox(width: spacing),
                         ],
                       ),
                     );
@@ -403,8 +373,6 @@ class _HabitsPageState extends State<HabitsPage> {
                 ],
               ],
             ),
-
-            // List
             if (_isHabitListVisible)
               Expanded(
                 child: HabitsList(
@@ -427,7 +395,6 @@ class _HabitsPageState extends State<HabitsPage> {
                   },
                   onListing: _onHabitsListed,
                   onReorderComplete: () {
-                    // Refresh the habits list to ensure correct order
                     setState(() {});
                   },
                 ),

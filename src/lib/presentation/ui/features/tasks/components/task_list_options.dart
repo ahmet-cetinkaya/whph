@@ -395,9 +395,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         return false;
       }
 
-      // REMOVED: _isSettingsLoadingPattern check because it was blocking genuine user interactions
-      // The isLoadingSettings flag should be sufficient to prevent false positives during actual loading
-
       return true;
     }
 
@@ -447,7 +444,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
   void didUpdateWidget(TaskListOptions oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Skip change detection while loading settings to prevent false unsaved changes
     if (isLoadingSettings) {
       return;
     }
@@ -457,7 +453,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     final isFromSearchCallback = searchDebounce?.isActive == true || searchStateCheckTimer?.isActive == true;
 
     if (hasFilterChanges || (hasSearchChanges && !isFromSearchCallback)) {
-      // Force immediate check for unsaved changes
       Future.microtask(handleFilterChange);
     }
   }
@@ -476,10 +471,8 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
       // Call parent widget's callback
       widget.onSearchChange?.call(query);
 
-      // Force immediate check for unsaved changes
       handleFilterChange();
 
-      // Keep monitoring for state changes to update the UI when parent updates
       searchStateCheckTimer?.cancel();
       searchStateCheckTimer = Timer.periodic(SharedUiConstants.searchDebounceTime, (timer) {
         if (!mounted) {

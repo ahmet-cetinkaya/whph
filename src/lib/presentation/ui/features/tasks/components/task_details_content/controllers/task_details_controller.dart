@@ -34,24 +34,19 @@ class TaskDetailsController extends ChangeNotifier {
   final ITaskRecurrenceService _taskRecurrenceService;
   final TagsService _tagsService;
 
-  // Task state
   GetTaskQueryResponse? _task;
   GetListTaskTagsQueryResponse? _taskTags;
   Timer? _debounce;
 
-  // Track date picker interaction state
   bool _isPlannedDatePickerActive = false;
   bool _isDeadlineDatePickerActive = false;
   bool _isTitleFieldActive = false;
   bool _isDescriptionFieldActive = false;
 
-  // Time tracking
   Duration _timeSinceLastSave = Duration.zero;
 
-  // Optional field visibility
   final Set<String> _visibleOptionalFields = {};
 
-  // Field keys
   static const String keyTags = 'tags';
   static const String keyPriority = 'priority';
   static const String keyEstimatedTime = 'estimatedTime';
@@ -65,7 +60,6 @@ class TaskDetailsController extends ChangeNotifier {
   static const String keyParentTask = 'parentTask';
   static const String keyTimer = 'timer';
 
-  // Callbacks
   VoidCallback? onTaskUpdated;
   Function(String)? onTitleUpdated;
   Function(bool)? onCompletedChanged;
@@ -83,7 +77,6 @@ class TaskDetailsController extends ChangeNotifier {
         _taskRecurrenceService = taskRecurrenceService ?? container.resolve<ITaskRecurrenceService>(),
         _tagsService = tagsService ?? container.resolve<TagsService>();
 
-  // Getters
   GetTaskQueryResponse? get task => _task;
   GetListTaskTagsQueryResponse? get taskTags => _taskTags;
   Set<String> get visibleOptionalFields => _visibleOptionalFields;

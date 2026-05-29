@@ -344,7 +344,7 @@ void main() {
         expect(result.title, equals('Updated Title'));
         expect(result.description, equals('Updated Description'));
         expect(result.priority, equals(EisenhowerPriority.urgentNotImportant));
-        expect(result.modifiedDate, isNotNull); // Modified date should be set automatically
+        expect(result.modifiedDate, isNotNull);
       });
 
       test('should update task completion status', () async {
@@ -777,7 +777,7 @@ void main() {
           Task(
             id: 'multi-filter-3',
             createdDate: DateTime.utc(2024, 1, 3),
-            title: 'Crucial Task', // Changed to not contain "Important" but still high priority
+            title: 'Crucial Task',
             priority: EisenhowerPriority.urgentImportant,
             completedAt: null, // This is not completed
             plannedDate: DateTime.utc(2024, 1, 10),

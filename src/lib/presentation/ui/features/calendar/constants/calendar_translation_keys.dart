@@ -7,7 +7,6 @@ class CalendarTranslationKeys extends application.CalendarTranslationKeys {
   static const String habitsTitle = 'calendar.sections.habits';
   static const String tasksTitle = 'calendar.sections.tasks';
 
-  // Tour translation keys
   static const String tourWelcomeTitle = 'calendar.tour.today.welcome.title';
   static const String tourWelcomeDescription = 'calendar.tour.today.welcome.description';
   static const String tourTagFilterTitle = 'calendar.tour.today.tag_filter.title';

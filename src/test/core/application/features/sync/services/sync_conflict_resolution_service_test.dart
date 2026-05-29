@@ -603,17 +603,17 @@ void main() {
           completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
           plannedDateReminderTime: ReminderTime.custom,
-          plannedDateReminderCustomOffset: 30, // Local has value
+          plannedDateReminderCustomOffset: 30,
         );
         final remoteTask = Task(
-          id: 'existing-id', // Same ID for copying
+          id: 'existing-id',
           createdDate: DateTime.now().subtract(const Duration(days: 1)),
           modifiedDate: DateTime.now(),
           title: 'Task',
           completedAt: null,
           priority: EisenhowerPriority.notUrgentNotImportant,
-          plannedDateReminderTime: ReminderTime.none, // Remote changed to none
-          plannedDateReminderCustomOffset: null, // Remote has null
+          plannedDateReminderTime: ReminderTime.none,
+          plannedDateReminderCustomOffset: null,
         );
 
         // Act

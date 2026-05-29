@@ -14,7 +14,7 @@ class ServerPaginationHandler {
   // Server pagination tracking
   final Map<String, int> _serverTotalPages = {};
   final Map<String, int> _serverTotalItems = {};
-  final Map<String, Map<String, int>> _serverLastSentPage = {}; // {deviceId: {entityType: lastSentPage}}
+  final Map<String, Map<String, int>> _serverLastSentPage = {};
 
   // Pending response data from bidirectional sync
   final Map<String, PaginatedSyncDataDto> _pendingResponseData = {};

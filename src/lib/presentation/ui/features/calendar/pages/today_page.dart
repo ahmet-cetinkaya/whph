@@ -275,7 +275,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   }
 
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
-    // Use ResponsiveDialogHelper to show task details
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: TaskDetailsPage(
@@ -287,7 +286,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   }
 
   Future<void> _openHabitDetails(BuildContext context, String id) async {
-    // Use ResponsiveDialogHelper to show habit details
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
       child: HabitDetailsPage(
@@ -348,11 +346,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   }
 
   void _checkIfLastItemCompleted() {
-    // Use a delay to allow the lists to refresh after completion
     Future.delayed(const Duration(milliseconds: 100), () {
       if (!mounted || _confettiShownToday) return;
 
-      // Check if both lists are loaded and both have 0 remaining items
       if (_habitsLoaded && _tasksLoaded && _remainingHabits == 0 && _remainingTasks == 0) {
         _confettiShownToday = true;
         _confettiAnimationService.showConfettiFromBottomOfScreen(context);
@@ -403,7 +399,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
           onStartTour: _startIndividualTour,
         ),
       ],
-      // Add floating action button for mobile devices
       floatingActionButton: TaskAddFloatingButton(
         key: _addTaskButtonKey,
         initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
@@ -416,7 +411,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         child: CustomScrollView(
           key: _mainContentKey,
           slivers: [
-            // Page list options
             SliverToBoxAdapter(
               child: TodayPageListOptions(
                 key: _mainListOptionsKey,
@@ -426,9 +420,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 onFilterChange: _onMainListOptionChange,
               ),
             ),
-
             if (_mainListOptionSettingsLoaded) ...[
-              // Habits Header
               SliverToBoxAdapter(
                 child: Column(
                   key: _habitsSectionKey,
@@ -466,8 +458,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   ],
                 ),
               ),
-
-              // Habits List
               if (_habitListOptionSettingsLoaded)
                 HabitsList(
                   key: ValueKey(
@@ -491,10 +481,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   showDoneOverlayWhenEmpty: true,
                   useSliver: true,
                 ),
-
               SliverToBoxAdapter(child: const SizedBox(height: AppTheme.sizeMedium)),
-
-              // Tasks Header
               SliverToBoxAdapter(
                 child: Column(
                   key: _tasksSectionKey,
@@ -506,7 +493,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            // Task filters
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
@@ -542,8 +528,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                 ),
                               ),
                             ),
-
-                            // Add button
                             TaskAddButton(
                               initialTagIds: _showNoTagsFilter ? [] : _selectedTagFilter,
                               initialPlannedDate: DateTime.now(),
@@ -557,8 +541,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   ],
                 ),
               ),
-
-              // Tasks List
               if (_taskListOptionSettingsLoaded)
                 TaskList(
                   key: ValueKey(
@@ -585,10 +567,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   sortConfig: _taskSortConfig,
                   useSliver: true,
                 ),
-
               SliverToBoxAdapter(child: const SizedBox(height: AppTheme.size2Small)),
-
-              // Time Chart
               SliverToBoxAdapter(
                 child: Column(
                   key: _timeChartSectionKey,
@@ -631,7 +610,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
 
   void _startTour({bool isMultiPageTour = false}) {
     final tourSteps = [
-      // 1. Page introduce
       TourStep(
         title: _translationService.translate(CalendarTranslationKeys.tourWelcomeTitle),
         description: _translationService.translate(CalendarTranslationKeys.tourWelcomeDescription),
@@ -639,35 +617,30 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         targetKey: _mainContentKey,
         position: TourPosition.bottom,
       ),
-      // 2. General list options (tag filter)
       TourStep(
         title: _translationService.translate(CalendarTranslationKeys.tourTagFilterTitle),
         description: _translationService.translate(CalendarTranslationKeys.tourTagFilterDescription),
         targetKey: _mainListOptionsKey,
         position: TourPosition.bottom,
       ),
-      // 3. Habits section introduce
       TourStep(
         title: _translationService.translate(CalendarTranslationKeys.tourHabitsTitle),
         description: _translationService.translate(CalendarTranslationKeys.tourHabitsDescription),
         targetKey: _habitsSectionKey,
         position: TourPosition.bottom,
       ),
-      // 4. Tasks section introduce
       TourStep(
         title: _translationService.translate(CalendarTranslationKeys.tourTasksTitle),
         description: _translationService.translate(CalendarTranslationKeys.tourTasksDescription),
         targetKey: _tasksSectionKey,
         position: TourPosition.bottom,
       ),
-      // 5. Time distribution introduce
       TourStep(
         title: _translationService.translate(CalendarTranslationKeys.tourTimeDistributionTitle),
         description: _translationService.translate(CalendarTranslationKeys.tourTimeDistributionDescription),
         targetKey: _timeChartSectionKey,
         position: TourPosition.top,
       ),
-      // 6. Marathon page button introduce
       TourStep(
         title: _translationService.translate(CalendarTranslationKeys.tourMarathonModeTitle),
         description: _translationService.translate(CalendarTranslationKeys.tourMarathonModeDescription),

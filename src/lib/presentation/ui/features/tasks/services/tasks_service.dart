@@ -14,7 +14,6 @@ class TasksService extends ChangeNotifier {
 
   TasksService(this._taskRecurrenceService, this._mediator, this._logger);
 
-  // Event listeners for task-related events - keeping nullable for the value
   final ValueNotifier<String?> onTaskCreated = ValueNotifier<String?>(null);
   final ValueNotifier<String?> onTaskUpdated = ValueNotifier<String?>(null);
   final ValueNotifier<String?> onTaskDeleted = ValueNotifier<String?>(null);
@@ -73,7 +72,6 @@ class TasksService extends ChangeNotifier {
         try {
           final nextTaskId = await _taskRecurrenceService.handleCompletedRecurringTask(taskId, _mediator);
           if (nextTaskId != null) {
-            // Notify about the newly created recurring task
             notifyTaskCreated(nextTaskId);
           }
           success = true;

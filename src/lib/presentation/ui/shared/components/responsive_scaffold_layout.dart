@@ -21,22 +21,11 @@ class RouteOptions {
   RouteOptions({required this.builder, this.fullScreen = false});
 }
 
-/// Represents a navigation item with its properties
-/// Used for both sidebar and bottom navigation
 class NavItem {
-  /// Translation key for the item's display title
   final String titleKey;
-
-  /// Icon to display next to the item (optional)
   final IconData? icon;
-
-  /// Custom widget to replace the default text (optional)
   final Widget? widget;
-
-  /// Route name to navigate to when clicked
   final String? route;
-
-  /// Custom action to perform instead of navigation (optional)
   final Function(BuildContext context)? onTap;
 
   NavItem({
@@ -50,9 +39,6 @@ class NavItem {
 
 /// A responsive scaffold layout that adapts to different screen sizes
 /// providing appropriate navigation patterns (drawer, bottom nav) for each.
-///
-/// On large screens (tablets, desktops), it shows a side drawer.
-/// On small screens (phones), it shows a bottom navigation bar.
 class ResponsiveScaffoldLayout extends StatefulWidget {
   final String? title;
   final Widget? appBarLeading;
@@ -101,7 +87,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     _initializeCurrentPageIndex();
   }
 
-  /// Initialize the current page index based on the current route
   void _initializeCurrentPageIndex() {
     final currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute != null) {
@@ -117,7 +102,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  /// Navigates to the given route with proper transition
   void _navigateTo(String routeName) {
     if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
       Navigator.of(context).pop();
@@ -131,7 +115,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     });
   }
 
-  /// Handles navigation item clicks with proper state updates
   void _onClickNavItem(NavItem navItem) {
     String? currentRoute = ModalRoute.of(context)?.settings.name;
 
@@ -141,14 +124,12 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     }
 
     if (navItem.route != null && navItem.route == currentRoute) {
-      // Close drawer if open and return early if we're already on this page
       if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
         Navigator.of(context).pop();
       }
       return;
     }
 
-    // Check if this is a navigation item from the "More" menu that should be tracked
     final screenWidth = MediaQuery.sizeOf(context).width;
     final maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
 
@@ -290,12 +271,10 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     );
   }
 
-  /// Builds a navigation item for the side drawer
   ListTile _buildNavItem(NavItem navItem) {
     final translationService = container.resolve<ITranslationService>();
     String? currentRoute = ModalRoute.of(context)?.settings.name;
 
-    // Collect all available routes from both top and bottom navigation
     final List<String> navRoutes = [
       ...NavigationItems.topNavItems.map((e) => e.route).whereType<String>(),
       ...NavigationItems.bottomNavItems.map((e) => e.route).whereType<String>()
@@ -329,14 +308,12 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     );
   }
 
-  /// Determines whether to show the bottom navigation bar based on screen size and layout options
   bool _shouldShowBottomNavBar() {
     return AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) &&
         !widget.showBackButton &&
         !widget.hideSidebar;
   }
 
-  /// Determines whether to show the floating action button based on screen size and widget availability
   bool _shouldShowFloatingActionButton() {
     return widget.floatingActionButton != null && (PlatformUtils.isMobile);
   }
@@ -361,7 +338,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
       currentIndex: _getCurrentBottomNavIndex(mainNavItems),
       onTap: (index) {
         if (needsMoreButton && index == mainNavItems.length) {
-          // Handle "More" button tap
           _showMoreBottomSheet(context);
         } else {
           setState(() {});
@@ -388,21 +364,17 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   void _showMoreBottomSheet(BuildContext context) {
     container.resolve<ITranslationService>();
 
-    // Calculate how many items can fit in the bottom navigation
     final screenWidth = MediaQuery.sizeOf(context).width;
     final int maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
 
-    // Get items that don't fit in the bottom navigation
     NavigationItems.topNavItems.take(maxVisibleItems).toList();
     final List<NavItem> remainingTopItems = NavigationItems.topNavItems.length > maxVisibleItems
         ? NavigationItems.topNavItems.sublist(maxVisibleItems)
         : [];
 
-    // Add all bottom nav items
     final List<NavItem> moreItems = [...remainingTopItems];
     final List<NavItem> bottomItems = [...NavigationItems.bottomNavItems];
 
-    // Get current route to highlight the active item in the More menu
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     ResponsiveDialogHelper.showResponsiveDialog(
@@ -414,7 +386,6 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Title
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -430,20 +401,13 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
             ),
             const Divider(),
             const SizedBox(height: AppTheme.sizeSmall),
-
-            // Remaining top navigation items
             ...moreItems.map((item) => _buildMoreMenuItem(context, item, currentRoute)),
-
-            // Add divider before bottom navigation items if there are any
             if (bottomItems.isNotEmpty) ...[
               const SizedBox(height: AppTheme.sizeSmall),
               const Divider(),
               const SizedBox(height: AppTheme.size2XSmall),
             ],
-
-            // Bottom navigation items
             ...bottomItems.map((item) => _buildMoreMenuItem(context, item, currentRoute)),
-
             const SizedBox(height: 8),
           ],
         ),
@@ -451,10 +415,8 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     );
   }
 
-  /// Builds a menu item for the More bottom sheet
   Widget _buildMoreMenuItem(BuildContext context, NavItem item, String? currentRoute) {
     final translationService = container.resolve<ITranslationService>();
-    // Handle both direct route comparison and ensuring bottom nav items can be active
     final bool isActive = item.route != null && item.route == currentRoute;
 
     return Padding(
@@ -485,51 +447,39 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
   int _calculateMaxVisibleItems(double screenWidth) {
     const double minItemWidth = 80.0;
 
-    // Calculate how many items we can fit
     int maxItems = ((screenWidth - 16) / minItemWidth).floor();
 
-    // If we have more items than can fit, we need a "More" button
     bool needsMoreButton = NavigationItems.topNavItems.length > maxItems;
 
-    // Limit to reasonable range and account for "More" button if needed
     maxItems = maxItems.clamp(2, 5);
 
-    // If we need a "More" button, reserve space for it
     return needsMoreButton ? maxItems - 1 : maxItems;
   }
 
-  /// Gets the correct index for the bottom navigation bar based on the current page
   int _getCurrentBottomNavIndex(List<NavItem> visibleItems) {
-    // Get the current route
     final currentRoute = ModalRoute.of(context)?.settings.name;
     if (currentRoute == null) return 0;
 
-    // Find the index of the current route in the visible items
     for (int i = 0; i < visibleItems.length; i++) {
       if (visibleItems[i].route == currentRoute) {
         return i;
       }
     }
 
-    // If route not found in visible items, check if it's a "More" menu item
     final screenWidth = MediaQuery.sizeOf(context).width;
     final maxVisibleItems = _calculateMaxVisibleItems(screenWidth);
 
-    // Check if current route is in items that would be in the "More" menu
     final List<NavItem> remainingTopItems = NavigationItems.topNavItems.length > maxVisibleItems
         ? NavigationItems.topNavItems.sublist(maxVisibleItems)
         : [];
     final moreItems = [...remainingTopItems, ...NavigationItems.bottomNavItems];
 
-    // Check if the current route matches any item in the More menu
     final bool isMoreMenuItem = moreItems.any((item) => item.route != null && item.route == currentRoute);
 
     if (isMoreMenuItem) {
-      // If it's a "More" menu item, return the index of the "More" button
       return visibleItems.length;
     }
 
-    // If not found anywhere, return 0 as default
     return 0;
   }
 }

@@ -8,74 +8,35 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/settings/components/permission_dialog.dart';
 
-/// A shared card component for displaying permission settings with consistent UI
 class PermissionCard extends StatelessWidget {
   final ITranslationService _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
 
-  /// Icon to display for this permission
   final IconData icon;
-
-  /// Title of the permission
   final String title;
-
-  /// Description of why this permission is needed
   final String description;
-
-  /// Whether the permission is granted
   final bool isGranted;
-
-  /// Whether the permission check is in progress
   final bool isLoading;
-
-  /// Whether to show error status
   final bool showError;
-
-  /// Called when the request permission button is pressed
   final VoidCallback onRequestPermission;
 
   /// Required - Dialog description for the "Fix Permission" dialog
   final String learnMoreDialogDescription;
 
-  /// Optional - Instructions steps for the "Fix Permission" dialog
-  /// DEPRECATED: Use learnMoreDialogSections instead
   final List<String>? learnMoreDialogSteps;
 
-  /// Optional - Multiple instruction sections for the "Fix Permission" dialog
-  /// Each section contains a title and a list of steps
   final List<PermissionInstructionSection>? learnMoreDialogSections;
-
-  /// Optional - Additional info text for the "Fix Permission" dialog
   final String? learnMoreDialogInfoText;
 
-  /// Optional - Commands that should have copy buttons in the dialog
-  /// DEPRECATED: Use copyableCommands in PermissionInstructionSection instead
   final List<String>? copyableCommands;
 
-  /// Optional - Custom text for the action button (defaults to "Open Settings")
   final String? actionButtonText;
-
-  /// Optional - Automatic action callback (e.g., for Windows firewall rule addition)
   final Future<void> Function()? onAutomaticAction;
-
-  /// Optional - Text for the automatic action button
   final String? automaticActionButtonText;
-
-  /// Optional - Whether to automatically close the dialog after performing the automatic action
-  /// If false, the action is responsible for closing the dialog
   final bool autoCloseAfterAutomaticAction;
-
-  /// Optional - Secondary action callback (e.g., for Linux firewall manual confirmation)
   final VoidCallback? onSecondaryAction;
-
-  /// Optional - Text for the secondary action button
   final String? secondaryActionButtonText;
-
-  /// Optional - Additional content to display in the dialog
   final Widget? additionalDialogContent;
-
-  /// Optional - Whether to show the warning/info instructions box in the dialog
-  /// Defaults to true. Set to false when using additionalDialogContent with custom instructions.
   final bool showInstructionsAlertBox;
 
   PermissionCard({
@@ -95,11 +56,11 @@ class PermissionCard extends StatelessWidget {
     this.actionButtonText,
     this.onAutomaticAction,
     this.automaticActionButtonText,
-    this.autoCloseAfterAutomaticAction = true, // Default to true for backward compatibility
+    this.autoCloseAfterAutomaticAction = true,
     this.onSecondaryAction,
     this.secondaryActionButtonText,
     this.additionalDialogContent,
-    this.showInstructionsAlertBox = true, // Default to true for backward compatibility
+    this.showInstructionsAlertBox = true,
   });
 
   @override
@@ -113,10 +74,8 @@ class PermissionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title and status icon
             Row(
               children: [
-                // Title
                 Icon(icon),
                 const SizedBox(width: AppTheme.sizeMedium),
                 Expanded(
@@ -125,8 +84,6 @@ class PermissionCard extends StatelessWidget {
                     style: theme.textTheme.titleMedium,
                   ),
                 ),
-
-                // Status icon
                 if (isLoading)
                   SizedBox(
                     width: AppTheme.iconSizeMedium,
@@ -143,15 +100,11 @@ class PermissionCard extends StatelessWidget {
                   ),
               ],
             ),
-
-            // Description
             const SizedBox(height: AppTheme.sizeSmall),
             Text(
               description,
               style: theme.textTheme.bodyMedium,
             ),
-
-            // Action button
             if (!isGranted && !isLoading) ...[
               const SizedBox(height: 12),
               Row(

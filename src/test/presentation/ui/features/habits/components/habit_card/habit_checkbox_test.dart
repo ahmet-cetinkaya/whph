@@ -96,13 +96,6 @@ void main() {
 
       await pumpWidget(tester, habit: habit, habitRecords: records);
 
-      // We expect the checkbox to be filled (check for color or icon)
-      // Since it's hard to check color directly without extracting Container, we can check for logic results
-      // e.g. finding Check icon if implemented, or just ensuring it renders without crashing.
-      // In HabitCheckbox, if completed, it might show a check icon or just fill color.
-      // Looking at implementation:
-      // if (isCompleted) Icon(Icons.check, ...)
-
       expect(find.byIcon(Icons.link), findsOneWidget);
     });
 
@@ -128,12 +121,7 @@ void main() {
 
       await pumpWidget(tester, habit: habit, habitRecords: records);
 
-      // Should show "2" in the badge
       expect(find.text('2'), findsOneWidget);
-      // Or "2 / 5" depending on implementation.
-      // Note: HabitCheckbox implementation logic:
-      // if (hasCustomGoals && !isCompleted) -> Text('${todayCount}')
-      // if completed -> check icon
     });
   });
 }

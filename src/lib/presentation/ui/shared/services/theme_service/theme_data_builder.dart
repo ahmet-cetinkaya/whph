@@ -4,7 +4,6 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/theme_service/page_padding_theme.dart';
 
 /// Builds ThemeData based on current theme settings.
-/// Extracted from ThemeService to separate theme configuration from settings management.
 class ThemeDataBuilder {
   final bool isDark;
   final Color primaryColor;

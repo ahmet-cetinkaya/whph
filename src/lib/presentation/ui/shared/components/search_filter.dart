@@ -40,12 +40,10 @@ class _SearchFilterState extends State<SearchFilter> {
   void initState() {
     super.initState();
 
-    // Set the initial text with cursor at the end
     final initialText = widget.initialValue ?? '';
     _controller.text = initialText;
     _controller.selection = TextSelection.collapsed(offset: initialText.length);
 
-    // If initial value is provided, expand the search field
     _isExpanded = (widget.initialValue != null && widget.initialValue!.isNotEmpty);
   }
 
@@ -60,22 +58,17 @@ class _SearchFilterState extends State<SearchFilter> {
   void didUpdateWidget(SearchFilter oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Only update text controller when initialValue changes from parent AND the user isn't currently typing
     if (widget.initialValue != oldWidget.initialValue && widget.initialValue != _controller.text && !_isExpanded) {
-      // Only update when search is collapsed to avoid interfering with user input
       _controller.text = widget.initialValue ?? '';
     }
   }
 
   void _onSearchTextChanged(String value) {
-    // Cancel any existing timer
     _debounceTimer?.cancel();
 
-    // Set up a new timer for debouncing
     _debounceTimer = Timer(const Duration(milliseconds: 400), () {
       if (!mounted) return;
 
-      // Only search if the text has at least 2 characters or is empty (for clearing)
       if (value.isEmpty) {
         widget.onSearch(null);
       } else if (value.length >= 2) {
@@ -88,12 +81,10 @@ class _SearchFilterState extends State<SearchFilter> {
     setState(() {
       _isExpanded = !_isExpanded;
       if (_isExpanded) {
-        // When expanding, if there's an initial value, trigger search
         if (_controller.text.isNotEmpty) {
           _onSearchTextChanged(_controller.text);
         }
       } else {
-        // When collapsing, clear the search
         _debounceTimer?.cancel();
         _controller.clear();
         widget.onSearch(null);

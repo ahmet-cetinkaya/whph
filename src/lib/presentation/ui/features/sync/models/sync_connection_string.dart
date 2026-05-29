@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 /// Model for WHPH sync connection strings
-/// Supports format: whph://192.168.1.100:44040?name=Desktop-Server&id=uuid&token=access-token
 class SyncConnectionString {
   final String deviceId;
   final String deviceName;
@@ -23,7 +22,6 @@ class SyncConnectionString {
   /// Format: whph://192.168.1.100:44040?name=Desktop-Server&id=uuid&token=access-token
   static SyncConnectionString? fromString(String connectionString) {
     try {
-      // Validate and parse the URI
       final uri = Uri.parse(connectionString);
 
       if (uri.scheme != 'whph') {
@@ -34,7 +32,7 @@ class SyncConnectionString {
         return null;
       }
 
-      final port = uri.port != 0 ? uri.port : 44040; // Default port
+      final port = uri.port != 0 ? uri.port : 44040;
       final queryParams = uri.queryParameters;
 
       final deviceName = queryParams['name'];
@@ -46,7 +44,6 @@ class SyncConnectionString {
 
       final accessToken = queryParams['token'];
 
-      // Extract additional parameters (excluding known ones)
       final additionalParams = Map<String, String>.from(queryParams);
       additionalParams.removeWhere((key, value) => ['name', 'id', 'token'].contains(key));
 

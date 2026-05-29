@@ -73,7 +73,6 @@ class _NoteDeleteButtonState extends State<NoteDeleteButton> {
         return true;
       },
       onSuccess: (_) {
-        // Notify note deleted
         _notesService.notifyNoteDeleted(widget.noteId);
 
         if (widget.onDeleted != null) {

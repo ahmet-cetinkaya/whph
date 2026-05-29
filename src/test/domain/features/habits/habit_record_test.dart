@@ -48,7 +48,7 @@ void main() {
           'createdDate': '2026-01-13T00:00:00.000Z',
           'habitId': 'habit-1',
           'occurredAt': '2026-01-13T00:00:00.000Z',
-          'status': 0, // int from database
+          'status': 0,
         };
 
         final jsonInt1 = {
@@ -129,12 +129,11 @@ void main() {
           'createdDate': '2026-01-13T00:00:00.000Z',
           'habitId': 'habit-1',
           'occurredAt': '2026-01-13T00:00:00.000Z',
-          'status': true, // bool - invalid type
+          'status': true,
         };
 
         final result = HabitRecord.fromJson(jsonInvalidType);
 
-        // Should fallback to default (complete)
         expect(result.status, HabitRecordStatus.complete);
       });
     });
@@ -186,7 +185,7 @@ void main() {
           'createdDate': '2026-01-13T00:00:00.000Z',
           'habitId': 'habit-migration',
           'occurredAt': '2026-01-13T00:00:00.000Z',
-          'status': 0, // int from EnumIndexConverter
+          'status': 0,
         };
 
         final record = HabitRecord.fromJson(dbJson);
@@ -202,7 +201,7 @@ void main() {
           'createdDate': '2026-01-13T00:00:00.000Z',
           'habitId': 'habit-api',
           'occurredAt': '2026-01-13T00:00:00.000Z',
-          'status': 'skipped', // String from JSON
+          'status': 'skipped',
         };
 
         final record = HabitRecord.fromJson(apiJson);

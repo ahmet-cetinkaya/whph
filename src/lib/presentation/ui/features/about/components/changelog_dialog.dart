@@ -52,20 +52,15 @@ class ChangelogDialog extends StatelessWidget {
                 child: Column(
                   spacing: AppTheme.sizeMedium,
                   children: [
-                    // Logo
                     const Image(
                       image: AssetImage(AppInfo.logoPath),
                       width: 80,
                       height: 80,
                     ),
-
-                    // App name
                     Text(
                       AppInfo.name,
                       style: AppTheme.headlineMedium.copyWith(fontWeight: FontWeight.bold),
                     ),
-
-                    // Version
                     Text(
                       translationService.translate(
                         AboutTranslationKeys.version,
@@ -77,7 +72,7 @@ class ChangelogDialog extends StatelessWidget {
                 ),
               ),
 
-              // Changelog content - using MarkdownBody instead of Markdown to avoid unbounded height
+              // MarkdownBody instead of Markdown to avoid unbounded height issues
               MarkdownBody(
                 data: changelogEntry.content,
                 onTapLink: (text, href, title) {
@@ -116,7 +111,6 @@ class ChangelogDialog extends StatelessWidget {
                 ),
               ),
 
-              // Read more button
               TextButton(
                 onPressed: () => _launchUrl(AppInfo.changelogUrl),
                 child: Text(
@@ -134,7 +128,6 @@ class ChangelogDialog extends StatelessWidget {
     );
   }
 
-  /// Launches the provided URL using the url_launcher package
   void _launchUrl(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {

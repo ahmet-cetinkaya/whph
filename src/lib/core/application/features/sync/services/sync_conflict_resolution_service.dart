@@ -94,8 +94,6 @@ class SyncConflictResolutionService {
   ///
   /// Used during sync conflict resolution when accepting remote changes for a recurring task.
   /// Leverages Task.copyWith's sentinel pattern to properly handle nullable fields.
-  /// **Issue #257:** Prior to this fix, plannedDateReminderCustomOffset, deadlineDateReminderCustomOffset,
-  /// and recurrenceConfiguration were missing from the copy operation, causing reminders to drop after sync.
   T copyRemoteDataToExistingTask<T extends BaseEntity<String>>(
     T existingTask,
     T remoteTask,

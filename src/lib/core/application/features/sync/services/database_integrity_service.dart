@@ -262,13 +262,11 @@ class DatabaseIntegrityService {
         Logger.warning('Found ${duplicateSyncDevices.length} duplicate sync device pairs');
       }
 
-      // Check for sync devices with extremely old creation dates (possible corruption)
-      // Changed from 1 year to 5 years to be less aggressive with cleanup
       final oldSyncDevices = await _database.customSelect('''
-        SELECT COUNT(*) as count, MIN(created_date) as oldest_date, MAX(created_date) as newest_date
-        FROM sync_device_table
-        WHERE deleted_date IS NULL
-      ''').getSingleOrNull();
+         SELECT COUNT(*) as count, MIN(created_date) as oldest_date, MAX(created_date) as newest_date
+         FROM sync_device_table
+         WHERE deleted_date IS NULL
+       ''').getSingleOrNull();
 
       if (oldSyncDevices != null) {
         final totalCount = oldSyncDevices.data['count'] as int? ?? 0;

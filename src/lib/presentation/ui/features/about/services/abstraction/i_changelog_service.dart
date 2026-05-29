@@ -1,4 +1,3 @@
-/// Data model for a changelog entry
 class ChangelogEntry {
   final String version;
   final String content;
@@ -9,9 +8,7 @@ class ChangelogEntry {
   });
 }
 
-/// Interface for changelog service
 abstract class IChangelogService {
-  /// Fetches changelog for the current build number and specified locale
-  /// Falls back to English if locale-specific changelog not found
+  /// Fetches changelog for the current build number and specified locale, falling back to English if not found
   Future<ChangelogEntry?> fetchChangelog(String localeCode);
 }

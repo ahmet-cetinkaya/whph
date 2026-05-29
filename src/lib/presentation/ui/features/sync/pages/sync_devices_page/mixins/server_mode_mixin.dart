@@ -20,7 +20,6 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
   ISettingRepository get settingRepository;
   AndroidServerSyncService? get serverSyncService;
 
-  // State
   bool _isServerMode = false;
   bool get isServerMode => _isServerMode;
   set isServerMode(bool value) => _isServerMode = value;

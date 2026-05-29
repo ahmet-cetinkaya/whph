@@ -70,7 +70,7 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
   @override
   void initState() {
     super.initState();
-    _currentFilters = _captureCurrentFilters(); // Initialize _currentFilters first
+    _currentFilters = _captureCurrentFilters();
     _getNotes();
     _setupEventListeners();
   }
@@ -163,16 +163,13 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
   void _refresh() {
     if (!mounted) return;
 
-    // Always refresh on note creation
     if (_notesService.onNoteCreated.value != null) {
       refresh();
       return;
     }
 
-    // Check which note was updated or deleted
     String? noteId = _notesService.onNoteUpdated.value ?? _notesService.onNoteDeleted.value;
 
-    // Refresh if noteId is null or if the note is in our list
     if (_noteList?.items.any((n) => n.id == noteId) == true) {
       refresh();
     }
@@ -217,10 +214,8 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
           }
         });
 
-        // Notify about list count
         widget.onList?.call(_noteList?.items.length ?? 0);
 
-        // For infinity scroll: check if viewport needs more content
         if (widget.paginationMode == PaginationMode.infinityScroll && _noteList!.hasNext) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             checkAndFillViewport();
@@ -233,7 +228,6 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
   @override
   Widget build(BuildContext context) {
     if (_noteList == null) {
-      // No loading indicator since local DB is fast
       return const SizedBox.shrink();
     }
 
@@ -267,7 +261,6 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
             child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
           );
         } else if (index < noteItems.length + extraItemCount) {
-          // Correct logic for loading indicator
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
             child: Center(child: CircularProgressIndicator()),
@@ -282,9 +275,6 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
     final List<Widget> listItems = [];
     String? currentGroup;
 
-    // Check if we should show headers
-    // Only show headers if we are sorting by something that produces groups (Name, Date)
-    // and if we are not in custom sort mode AND grouping is enabled
     final bool showHeaders =
         ((widget.sortConfig?.orderOptions.isNotEmpty ?? false) || (widget.sortConfig?.groupOption != null)) &&
             (widget.sortConfig?.enableGrouping ?? false);
@@ -292,10 +282,8 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
     for (var i = 0; i < _noteList!.items.length; i++) {
       final note = _noteList!.items[i];
 
-      // Add header if group changed
       if (showHeaders && note.groupName != null && note.groupName != currentGroup) {
         currentGroup = note.groupName;
-        // Add spacing before header if it's not the first item
         if (i > 0) {
           listItems.add(const SizedBox(height: AppTheme.sizeSmall));
         }
@@ -306,8 +294,6 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
           onTap: () => toggleGroupCollapse(note.groupName!),
         ));
       } else if (i > 0 && !(showHeaders && currentGroup != null && collapsedGroups.contains(currentGroup))) {
-        // Add separator if it's not the first item, we didn't just add a header,
-        // AND we are not skipping the current item due to collapse
         listItems.add(const SizedBox(height: AppTheme.sizeSmall));
       }
 
@@ -317,7 +303,7 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
 
       listItems.add(Padding(
         key: ValueKey('note_${note.id}'),
-        padding: const EdgeInsets.symmetric(vertical: 0), // Separator handles spacing
+        padding: const EdgeInsets.symmetric(vertical: 0),
         child: NoteCard(
           note: note,
           onOpenDetails: () => _onNoteSelected(note.id),

@@ -6,16 +6,11 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/main.dart';
 import 'package:acore/acore.dart' hide Container;
 
-/// Enum for notification position
 enum NotificationPosition { top, bottom }
 
-/// A helper class for showing overlay notifications that appear above all content,
-/// independent of Scaffold widgets. These notifications appear at the top of the screen
-/// and automatically dismiss after a specified duration.
 class OverlayNotificationHelper {
   static OverlayEntry? _currentOverlay;
 
-  /// Shows an overlay notification at the top of the screen
   static void showNotification({
     required BuildContext context,
     required String message,
@@ -26,22 +21,15 @@ class OverlayNotificationHelper {
     Widget? actionWidget,
     NotificationPosition position = NotificationPosition.bottom,
   }) {
-    // Remove any existing overlay first
     hideNotification();
 
-    // Try to get the overlay state from the Navigator directly
     OverlayState? overlayState;
-
-    // First try: Get overlay state from the NavigatorState directly
     final navigatorState = navigatorKey.currentState;
     if (navigatorState != null) {
       overlayState = navigatorState.overlay;
     }
-
-    // Fallback: if navigator overlay is not available yet, try from the passed-in context
     overlayState ??= Overlay.maybeOf(context);
 
-    // If still no overlay state, we can't show the notification
     if (overlayState == null) {
       return;
     }
@@ -62,7 +50,6 @@ class OverlayNotificationHelper {
     overlayState.insert(_currentOverlay!);
   }
 
-  /// Shows an error notification with predefined styling
   static void showError({
     required BuildContext context,
     required String message,
@@ -83,7 +70,6 @@ class OverlayNotificationHelper {
     );
   }
 
-  /// Shows a success notification with predefined styling
   static void showSuccess({
     required BuildContext context,
     required String message,
@@ -104,7 +90,6 @@ class OverlayNotificationHelper {
     );
   }
 
-  /// Shows an info notification with predefined styling
   static void showInfo({
     required BuildContext context,
     required String message,
@@ -126,7 +111,6 @@ class OverlayNotificationHelper {
     );
   }
 
-  /// Shows a loading notification with a progress indicator
   static void showLoading({
     required BuildContext context,
     required String message,
@@ -157,14 +141,12 @@ class OverlayNotificationHelper {
     );
   }
 
-  /// Hides the current overlay notification if one is showing
   static void hideNotification() {
     _currentOverlay?.remove();
     _currentOverlay = null;
   }
 }
 
-/// The actual overlay widget that displays the notification
 class _NotificationOverlay extends StatefulWidget {
   const _NotificationOverlay({
     required this.message,

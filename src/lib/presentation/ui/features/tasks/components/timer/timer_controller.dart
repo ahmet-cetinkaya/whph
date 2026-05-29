@@ -24,8 +24,6 @@ void _safeInvokeWithArg<T>(FutureOr<void> Function(T) callback, T arg, String na
   });
 }
 
-/// Controller for timer business logic and state management.
-/// Handles timer lifecycle, settings persistence, and session tracking.
 class TimerController extends ChangeNotifier {
   final Mediator _mediator;
   final IReminderService _reminderService;
@@ -40,7 +38,6 @@ class TimerController extends ChangeNotifier {
   })  : _mediator = mediator,
         _reminderService = reminderService;
 
-  // Timer state
   Timer? _timer;
   Duration _remainingTime = const Duration();
   Duration _elapsedTime = const Duration();
@@ -54,7 +51,6 @@ class TimerController extends ChangeNotifier {
   bool _isLongBreak = false;
   int _completedSessions = 0;
 
-  // Settings
   TimerMode _timerMode = TimerMode.pomodoro;
   int _workDuration = 25;
   int _breakDuration = 5;
@@ -67,7 +63,6 @@ class TimerController extends ChangeNotifier {
   int _tickingVolume = 50;
   int _tickingSpeed = 1;
 
-  // Getters for state
   bool get isRunning => _isRunning;
   bool get isWorking => _isWorking;
   bool get isAlarmPlaying => _isAlarmPlaying;

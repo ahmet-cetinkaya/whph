@@ -27,7 +27,6 @@ class HabitProgress extends StatelessWidget {
     final isComplete = currentCount >= dailyTarget;
     final double iconSize = useLargeSize ? 24.0 : AppTheme.iconSizeMedium;
 
-    // Determine icon and color based on status and count
     IconData mainIcon;
     Color mainColor;
     Color badgeColor;
@@ -48,23 +47,19 @@ class HabitProgress extends StatelessWidget {
       mainIcon = Icons.add;
       mainColor = Colors.blue;
       badgeColor = Colors.orange;
+    } else if (isThreeStateEnabled) {
+      mainIcon = Icons.question_mark;
+      mainColor = Colors.grey;
+      badgeColor = Colors.grey;
     } else {
-      // Skipped status - Check 3-state setting
-      if (isThreeStateEnabled) {
-        mainIcon = Icons.question_mark;
-        mainColor = Colors.grey;
-        badgeColor = Colors.grey;
-      } else {
-        // If 3-state disabled, Skipped/Empty acts like Not Done (visual only)
-        mainIcon = Icons.close;
-        mainColor = Colors.red.withValues(alpha: 0.7);
-        badgeColor = Colors.transparent;
-      }
+      mainIcon = Icons.close;
+      mainColor = Colors.red.withValues(alpha: 0.7);
+      badgeColor = Colors.transparent;
     }
 
     return SizedBox(
-      width: 36, // Fixed width
-      height: 36, // Fixed height
+      width: 36,
+      height: 36,
       child: InkWell(
         onTap: isDisabled ? null : onTap,
         borderRadius: BorderRadius.circular(12),
@@ -73,13 +68,11 @@ class HabitProgress extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Main icon in center
               Icon(
                 mainIcon,
                 size: iconSize,
                 color: mainColor,
               ),
-              // Count badge in bottom right
               if (currentCount > 0 && badgeColor != Colors.transparent)
                 Positioned(
                   bottom: 0,

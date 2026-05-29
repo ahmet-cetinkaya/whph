@@ -189,12 +189,10 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
     setState(() {
       final newOptions = List<SortOptionWithTranslationKey<T>>.from(_currentConfig.orderOptions);
 
-      // Adjust newIndex for ReorderableListView behavior
       if (oldIndex < newIndex) {
         newIndex -= 1;
       }
 
-      // Safety check: newIndex must be within valid range
       newIndex = newIndex.clamp(0, newOptions.length - 1);
 
       final option = newOptions.removeAt(oldIndex);
@@ -226,7 +224,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Header (mimicking AppBar)
         AppBar(
           title: Text(
             widget.translationService.translate(SharedTranslationKeys.sort),
@@ -254,8 +251,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
           ],
           elevation: 0,
         ),
-
-        // Body
         Expanded(
           child: ReorderableListView.builder(
             padding: const EdgeInsets.all(AppTheme.sizeLarge),
@@ -460,7 +455,6 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                 onPressed: () => _removeCriteria(index),
                 tooltip: widget.translationService.translate(SharedTranslationKeys.sortRemoveCriteria),
               ),
-            // Drag handle for reordering
             ReorderableDragStartListener(
               key: ValueKey('drag_handle_${option.field}'),
               index: index,

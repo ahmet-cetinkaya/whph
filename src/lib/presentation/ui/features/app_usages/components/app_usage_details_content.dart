@@ -58,7 +58,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
 
-  // Define optional field keys
   static const String keyTags = 'tags';
   static const String keyColor = 'color';
 
@@ -352,7 +351,6 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     }
   }
 
-  // Widget to build optional field chips
   Widget _buildOptionalFieldChip(String fieldKey, bool hasContent) {
     return FilterChip(
       label: Row(

@@ -33,7 +33,6 @@ class AddSyncDeviceController extends ChangeNotifier {
   String? _errorMessage;
   String? _scanProgress;
 
-  // Getters
   bool get isScanning => _isScanning;
   List<DiscoveredDevice> get discoveredDevices => List.unmodifiable(_discoveredDevices);
   String? get errorMessage => _errorMessage;

@@ -468,7 +468,6 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
     );
   }
 
-  // Widget to build optional field chips
   Widget _buildOptionalFieldChip(String fieldKey) {
     return FilterChip(
       label: Row(

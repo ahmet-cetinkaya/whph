@@ -60,7 +60,6 @@ void main() {
   late GetHabitQueryHandler handler;
 
   final habitId = 'habit-1';
-  // Fixed date at noon to avoid timezone issues with UTC conversion
   final testDate = DateTime(2026, 1, 21, 12, 0, 0);
   final habit = Habit(
     id: habitId,

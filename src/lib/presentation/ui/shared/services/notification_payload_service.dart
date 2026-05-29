@@ -29,13 +29,13 @@ void whphBackgroundNotificationHandler(NotificationResponse response) {
   }
 }
 
-/// Callback type for handling task completion from notification
+/// Callback for handling task completion from notification
 typedef TaskCompletionCallback = Future<void> Function(String taskId);
 
-/// Callback type for handling habit completion from notification
+/// Callback for handling habit completion from notification
 typedef HabitCompletionCallback = Future<void> Function(String habitId);
 
-/// Service responsible for handling notification payloads and platform channel communication
+/// Handles notification payloads and platform channel communication
 class NotificationPayloadService {
   static const String actionPortName = 'whph_notification_action_port';
   static const Duration _initialPayloadDelay = Duration(milliseconds: 1500);
@@ -43,12 +43,12 @@ class NotificationPayloadService {
   static const Duration _platformHandlerDelay = Duration(milliseconds: 500);
   static const int _maxRetries = 3;
 
-  // Retry count tracking constants
+  // Tracks retry attempts per entity to prevent infinite retry loops
   static const String _retryCountTaskPrefix = 'retry_count_task_';
   static const String _retryCountHabitPrefix = 'retry_count_habit_';
   static const int _maxPendingRetries = 5;
 
-  /// Override for testing purposes to simulate Android platform
+  /// Override for testing to simulate Android platform
   static bool forceAndroid = false;
 
   static final StreamController<String> _actionStreamController = StreamController<String>.broadcast();
@@ -83,18 +83,12 @@ class NotificationPayloadService {
     _actionStreamController.add(actionId);
   }
 
-  /// Sets up notification click listener for Android platform
   static void setupNotificationListener(
     INotificationPayloadHandler payloadHandler, {
     TaskCompletionCallback? onTaskCompletion,
     HabitCompletionCallback? onHabitCompletion,
   }) {
-    if (!Platform.isAndroid && !forceAndroid) {
-      Logger.debug('NotificationPayloadService: Not Android platform, skipping notification listener setup');
-      return;
-    }
-
-    Logger.debug('NotificationPayloadService: Setting up Android notification listener...');
+    if (!Platform.isAndroid && !forceAndroid) return;
 
     final platform = MethodChannel(AndroidAppConstants.channels.notification);
     platform.setMethodCallHandler((call) async {
@@ -120,82 +114,58 @@ class NotificationPayloadService {
       }
       return null;
     });
-
-    Logger.debug('NotificationPayloadService: Android notification listener setup completed');
   }
 
-  /// Handles the initial notification payload when the app is launched from a notification
+  /// Retrieves and processes the notification payload that launched the app
   static Future<void> handleInitialNotificationPayload(INotificationPayloadHandler payloadHandler) async {
-    Logger.debug('NotificationPayloadService: Checking for initial notification payload...');
-
-    // Track if we've already handled a notification payload
     bool hasHandledPayload = false;
 
-    // Try multiple times to get the initial notification payload
-    // This helps with race conditions when the app is cold-started from a notification
+    // Retry to handle race conditions on cold start from notification
     for (int i = 0; i < _maxRetries; i++) {
       try {
-        // Skip if we've already handled a payload
         if (hasHandledPayload) break;
 
         final notificationPayload = await _getInitialNotificationPayload();
 
         if (notificationPayload != null && notificationPayload.isNotEmpty) {
-          // Wait for app to be fully initialized before handling the payload
+          // Wait for app to be fully initialized before processing
           await Future.delayed(_initialPayloadDelay);
 
-          // Check again if a payload has been handled during this delay
-          // (could happen via the method channel handler)
           if (hasHandledPayload) break;
 
           await payloadHandler.handlePayload(notificationPayload);
-
-          // Acknowledge receipt of payload to native side
           await _acknowledgePayload(notificationPayload);
 
           hasHandledPayload = true;
-          Logger.debug('NotificationPayloadService: Initial notification payload handled successfully');
-          break; // Exit the retry loop if successful
+          break;
         }
 
-        // If no payload found, wait before trying again
         await Future.delayed(_retryDelay);
       } catch (e) {
         Logger.error('NotificationPayloadService: Error handling initial notification payload: $e');
         await Future.delayed(_retryDelay);
       }
     }
-
-    Logger.debug('NotificationPayloadService: Initial notification payload check completed');
   }
 
-  /// Handles a notification payload from the platform channel
   static Future<void> _handleNotificationPayload(
     String payload,
     INotificationPayloadHandler payloadHandler,
     MethodChannel platform,
   ) async {
     try {
-      Logger.debug('NotificationPayloadService: Handling notification payload: $payload');
-
-      // Delay to ensure the app is fully initialized before handling the payload
+      // Delay ensures the app is fully initialized before handling the payload
       await Future.delayed(_platformHandlerDelay);
       await payloadHandler.handlePayload(payload);
-
-      // Acknowledge receipt of payload to native side
       await platform.invokeMethod('acknowledgePayload', payload);
-
-      Logger.debug('NotificationPayloadService: Notification payload handled and acknowledged');
     } catch (e) {
       Logger.error('NotificationPayloadService: Error handling notification payload: $e');
     }
   }
 
-  /// Gets the initial notification payload if the app was launched from a notification
   static Future<String?> _getInitialNotificationPayload() async {
     try {
       if (Platform.isAndroid || forceAndroid) {
-        // Get the initial notification payload from the platform channel
         final platform = MethodChannel(AndroidAppConstants.channels.notification);
         final payload = await platform.invokeMethod<String>('getInitialNotificationPayload');
         return payload;
@@ -206,7 +176,6 @@ class NotificationPayloadService {
     return null;
   }
 
-  /// Acknowledges receipt of payload to the native side
   static Future<void> _acknowledgePayload(String payload) async {
     try {
       if (Platform.isAndroid || forceAndroid) {
@@ -218,27 +187,17 @@ class NotificationPayloadService {
     }
   }
 
-  /// Processes any pending task completions that were stored while app was not running
-  /// Should be called on app startup after the task completion callback is registered
+  /// Processes pending task completions stored while the app was not running.
+  /// Call on startup after registering the completion callback.
   static Future<void> processPendingTaskCompletions(TaskCompletionCallback onTaskCompletion) async {
-    if (!Platform.isAndroid && !forceAndroid) {
-      return;
-    }
+    if (!Platform.isAndroid && !forceAndroid) return;
 
     try {
-      Logger.debug('NotificationPayloadService: Checking for pending task completions...');
-
       final platform = MethodChannel(AndroidAppConstants.channels.notification);
       final pendingTaskIds = await platform.invokeMethod<List<dynamic>>('getPendingTaskCompletions');
 
-      if (pendingTaskIds == null || pendingTaskIds.isEmpty) {
-        Logger.debug('NotificationPayloadService: No pending task completions found');
-        return;
-      }
+      if (pendingTaskIds == null || pendingTaskIds.isEmpty) return;
 
-      Logger.debug('NotificationPayloadService: Found ${pendingTaskIds.length} pending task completions');
-
-      // Process each pending task completion
       for (final taskId in pendingTaskIds) {
         if (taskId is String && taskId.isNotEmpty) {
           await _processPendingCompletionWithRetry(
@@ -262,27 +221,17 @@ class NotificationPayloadService {
     }
   }
 
-  /// Processes any pending habit completions that were stored while app was not running
-  /// Should be called on app startup after the habit completion callback is registered
+  /// Processes pending habit completions stored while the app was not running.
+  /// Call on startup after registering the completion callback.
   static Future<void> processPendingHabitCompletions(HabitCompletionCallback onHabitCompletion) async {
-    if (!Platform.isAndroid && !forceAndroid) {
-      return;
-    }
+    if (!Platform.isAndroid && !forceAndroid) return;
 
     try {
-      Logger.debug('NotificationPayloadService: Checking for pending habit completions...');
-
       final platform = MethodChannel(AndroidAppConstants.channels.notification);
       final pendingHabitIds = await platform.invokeMethod<List<dynamic>>('getPendingHabitCompletions');
 
-      if (pendingHabitIds == null || pendingHabitIds.isEmpty) {
-        Logger.debug('NotificationPayloadService: No pending habit completions found');
-        return;
-      }
+      if (pendingHabitIds == null || pendingHabitIds.isEmpty) return;
 
-      Logger.debug('NotificationPayloadService: Found ${pendingHabitIds.length} pending habit completions');
-
-      // Process each pending habit completion
       for (final habitId in pendingHabitIds) {
         if (habitId is String && habitId.isNotEmpty) {
           await _processPendingCompletionWithRetry(
@@ -306,8 +255,8 @@ class NotificationPayloadService {
     }
   }
 
-  /// Generic method to process a pending completion with retry limit enforcement
-  /// Reduces code duplication between task and habit completion handlers
+  /// Processes a pending completion with retry limit enforcement.
+  /// Reduces duplication between task and habit completion handlers.
   static Future<void> _processPendingCompletionWithRetry({
     required MethodChannel platform,
     required String entityId,
@@ -318,32 +267,23 @@ class NotificationPayloadService {
     required String processingErrorId,
     required Future<void> Function() completionCallback,
   }) async {
-    // Get current retry count from SharedPreferences
     final retryCountKey = '$retryCountPrefix$entityId';
     final currentRetryCount = await _getRetryCount(platform, retryCountKey);
 
-    // Check if max retries exceeded
     if (currentRetryCount >= _maxPendingRetries) {
       Logger.error(
         '[$maxRetriesErrorId] NotificationPayloadService: Max retries ($_maxPendingRetries) exceeded for $entityName $entityId, clearing pending entry',
       );
-      // Clear both the pending entry and the retry count
       await platform.invokeMethod(clearMethod, entityId);
       await _clearRetryCount(platform, retryCountKey);
       return;
     }
 
     try {
-      // Complete the action
       await completionCallback();
-
-      // Success: clear the pending action and retry count
       await platform.invokeMethod(clearMethod, entityId);
       await _clearRetryCount(platform, retryCountKey);
-
-      Logger.debug('NotificationPayloadService: Processed pending $entityName completion: $entityId');
     } catch (e, stackTrace) {
-      // Increment retry count
       final newRetryCount = currentRetryCount + 1;
       await _setRetryCount(platform, retryCountKey, newRetryCount);
 
@@ -355,7 +295,6 @@ class NotificationPayloadService {
     }
   }
 
-  /// Get the retry count for a task from SharedPreferences
   static Future<int> _getRetryCount(MethodChannel platform, String key) async {
     try {
       final result = await platform.invokeMethod<int>('getRetryCount', key);
@@ -366,7 +305,6 @@ class NotificationPayloadService {
     }
   }
 
-  /// Set the retry count for a task in SharedPreferences
   static Future<void> _setRetryCount(MethodChannel platform, String key, int count) async {
     try {
       await platform.invokeMethod('setRetryCount', {'key': key, 'count': count});
@@ -375,7 +313,6 @@ class NotificationPayloadService {
     }
   }
 
-  /// Clear the retry count for a task from SharedPreferences
   static Future<void> _clearRetryCount(MethodChannel platform, String key) async {
     try {
       await platform.invokeMethod('clearRetryCount', key);

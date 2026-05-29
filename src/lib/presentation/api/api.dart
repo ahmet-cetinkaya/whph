@@ -16,7 +16,6 @@ import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 
 const int webSocketPort = 44040;
 
-// Web socket server events
 final streamController = StreamController<Map<String, dynamic>>.broadcast();
 Stream<Map<String, dynamic>> get serverEvents => streamController.stream;
 
@@ -34,7 +33,6 @@ void startWebSocketServer() async {
     Logger.info('WebSocket Server listening on all IPv4 interfaces (0.0.0.0:$webSocketPort)');
     Logger.info('Ready to receive sync requests from other devices');
 
-    // Handle incoming connections
     await for (HttpRequest req in server) {
       try {
         if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
@@ -89,7 +87,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
 
     switch (parsedMessage.type) {
       case 'test':
-        // Send test response
         socket.add(JsonMapper.serialize(WebSocketMessage(
           type: 'test_response',
           data: {
@@ -100,7 +97,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
 
       case 'device_info':
-        // Send device information for handshake
         Logger.info('Processing device info request...');
         try {
           final deviceIdService = container.resolve<IDeviceIdService>();
@@ -142,7 +138,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         break;
 
       case 'connection_test':
-        // Send connection test response
         socket.add(JsonMapper.serialize(WebSocketMessage(
           type: 'connection_test_response',
           data: {
@@ -155,12 +150,11 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
       case 'paginated_sync':
         Logger.info('Processing paginated sync request...');
 
-        // Notify sync service that sync has started (for UI feedback)
         try {
           syncService = container.resolve<ISyncService>();
           syncService.updateSyncStatus(SyncStatus(
             state: SyncState.syncing,
-            isManual: false, // Server-side sync is typically not manually initiated
+            isManual: false,
             lastSyncTime: DateTime.now(),
           ));
         } catch (e) {
@@ -181,7 +175,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
           Logger.info('Paginated sync processing completed successfully');
 
-          // Update lastSyncDate for the sync device on server-side completion
           try {
             await _updateServerSideLastSyncDate(paginatedSyncData);
           } catch (e) {
@@ -197,14 +190,12 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           socket.add(JsonMapper.serialize(responseMessage));
           Logger.info('Paginated sync response sent to client');
 
-          // CRITICAL FIX: Add proper delay to ensure response is fully transmitted before close
+          // Ensure response is fully transmitted before closing the socket
           await Future.delayed(const Duration(milliseconds: 1000));
           await socket.close();
 
-          // Notify sync service that sync completed successfully - go directly to idle after socket close
           if (syncService != null) {
             try {
-              // Wait a bit more to ensure socket is fully closed, then reset to idle
               Timer(const Duration(seconds: 1), () {
                 syncService!.updateSyncStatus(SyncStatus(
                   state: SyncState.idle,
@@ -219,7 +210,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           Logger.error('Paginated sync processing failed: $e');
           Logger.error('Stack trace: $stackTrace');
 
-          // Enhanced error response with debugging information (excluding stack trace for security)
           final errorData = <String, dynamic>{
             'success': false,
             'message': e.toString(),
@@ -231,7 +221,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             'metadata': <String, dynamic>{},
           };
 
-          // Add specific error details based on error type
           if (e is FormatException) {
             errorData['metadata']['errorCategory'] = 'JSON_PARSING';
             errorData['metadata']['source'] = e.source;
@@ -244,7 +233,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             errorData['metadata']['errorCategory'] = 'STATE_ERROR';
           } else if (e.toString().contains('Unable to instantiate')) {
             errorData['metadata']['errorCategory'] = 'ENTITY_INSTANTIATION';
-            // Try to extract entity name and missing arguments
             final instantiationMatch = RegExp(r"Unable to instantiate class '(\w+)'").firstMatch(e.toString());
             if (instantiationMatch != null) {
               errorData['metadata']['failedEntityClass'] = instantiationMatch.group(1);
@@ -257,7 +245,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
             errorData['metadata']['errorCategory'] = 'UNKNOWN';
           }
 
-          // Try to capture the problematic entity data if available
           try {
             final paginatedSyncData = parsedMessage.data;
             if (paginatedSyncData is Map<String, dynamic>) {
@@ -265,7 +252,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
               errorData['metadata']['pageSize'] = paginatedSyncData['pageSize'];
               errorData['metadata']['totalItems'] = paginatedSyncData['totalItems'];
 
-              // Try to identify the first problematic entity
               final entityTypeKey = '${paginatedSyncData['entityType']}sSyncData';
               final syncDataMap = paginatedSyncData[entityTypeKey] as Map<String, dynamic>?;
               if (syncDataMap?['data'] is Map<String, dynamic>) {
@@ -285,13 +271,10 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
 
           WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
           socket.add(JsonMapper.serialize(errorMessage));
-          // Close the socket after sending an error to clean up resources
           await socket.close();
 
-          // Notify sync service that sync failed - go directly to idle after socket close
           if (syncService != null) {
             try {
-              // Wait a bit more to ensure socket is fully closed, then reset to idle
               Timer(const Duration(seconds: 2), () {
                 syncService!.updateSyncStatus(SyncStatus(
                   state: SyncState.idle,
@@ -315,7 +298,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
     socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
     await socket.close();
 
-    // Reset sync status to idle on any error
     if (syncService != null) {
       try {
         Timer(const Duration(seconds: 1), () {
@@ -332,10 +314,8 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
   }
 }
 
-/// Updates lastSyncDate for the sync device on server-side after successful sync
 Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncData) async {
   try {
-    // Extract syncDevice from client data to get the same lastSyncDate
     final syncDeviceData = paginatedSyncData['syncDevice'] as Map<String, dynamic>?;
     if (syncDeviceData == null) {
       Logger.debug('Cannot update lastSyncDate: missing syncDevice information');
@@ -348,12 +328,10 @@ Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncDat
       return;
     }
 
-    // Parse the timestamp from client
     final DateTime clientSyncTimestamp = DateTime.parse(clientLastSyncDate);
 
     final mediator = container.resolve<Mediator>();
 
-    // Find the sync device by IP pair
     final clientIp = syncDeviceData['fromIp'] as String?;
     final serverIp = syncDeviceData['toIp'] as String?;
 
@@ -371,7 +349,6 @@ Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncDat
     final syncResponse = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(getSyncQuery);
 
     if (syncResponse != null) {
-      // Use the SAME timestamp from client to ensure consistency
       final updateCommand = SaveSyncDeviceCommand(
         id: syncResponse.id,
         name: syncResponse.name,
@@ -379,7 +356,7 @@ Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncDat
         toIP: syncResponse.toIp,
         fromDeviceId: syncResponse.fromDeviceId,
         toDeviceId: syncResponse.toDeviceId,
-        lastSyncDate: clientSyncTimestamp, // Use client's timestamp!
+        lastSyncDate: clientSyncTimestamp,
       );
 
       await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(updateCommand);

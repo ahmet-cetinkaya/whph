@@ -2,19 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 
-/// Interface for widgets that support pagination mode
 abstract class IPaginatedWidget {
   PaginationMode get paginationMode;
 }
 
-/// Mixin to handle infinity scroll pagination logic
 mixin PaginationMixin<T extends StatefulWidget> on State<T> {
-  // Required dependencies to be implemented by the host state
   ScrollController get scrollController;
   Future<void> onLoadMore();
   bool get hasNextPage;
 
-  // Internal state
   bool _isLoadingMore = false;
   bool get isLoadingMore => _isLoadingMore;
 
@@ -73,8 +69,6 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
 
     if (!scrollController.hasClients) return;
 
-    // In Flutter 3.32.0+, position is non-nullable when hasClients is true
-    // but we wrap it in try-catch for additional safety
     try {
       final maxScroll = scrollController.position.maxScrollExtent;
       final currentScroll = scrollController.position.pixels;
@@ -93,16 +87,13 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
     if (widget is IPaginatedWidget && (widget as IPaginatedWidget).paginationMode != PaginationMode.infinityScroll) {
       return false;
     }
-    // Prevent race condition: do not load if already loading
     if (_isLoadingMore || !hasNextPage) return false;
     return true;
   }
 
   Future<void> loadMoreInfinityScroll() async {
-    // Synchronized access to prevent race condition
     if (_isLoadingMore || !hasNextPage) return;
 
-    // Use a completer to ensure only one operation at a time
     if (_loadCompleter != null) {
       await _loadCompleter!.future;
       return;
@@ -115,7 +106,6 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
       await onLoadMore();
       _loadCompleter!.complete();
     } catch (e) {
-      // Robust error handling: Log error or allow retry
       debugPrint('Error in infinity scroll load: $e');
       _loadCompleter!.completeError(e);
     } finally {
@@ -126,35 +116,23 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  // Completer for synchronization
   Completer<void>? _loadCompleter;
 
-  /// Checks if viewport is full and loads more if needed.
-  /// Should be called after data load.
   void checkAndFillViewport() {
     if (!mounted || _isLoadingMore || !hasNextPage) return;
     if (!scrollController.hasClients) return;
 
-    // Prevent duplicate calls during the same frame cycle
     if (_isCheckingViewport) return;
     _isCheckingViewport = true;
 
-    // Schedule the check for the next frame to avoid race conditions
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isCheckingViewport = false;
     });
 
-    // In Flutter 3.32.0+, position is non-nullable when hasClients is true
-    // but we wrap it in try-catch for additional safety
     try {
       final maxScrollExtent = scrollController.position.maxScrollExtent;
 
-      // Use extentAfter/maxScrollExtent to determine if content fills the viewport.
-      // If maxScrollExtent is very small, it means the content fits in the viewport
-      // and we might need to load more to trigger the scroll capability.
-      // The threshold is a small epsilon to account for potential minor layout variations.
       if (maxScrollExtent <= _viewportFillThreshold) {
-        // Use Future.microtask to defer the call and avoid immediate recursion
         Future.microtask(() {
           if (mounted && !_isLoadingMore && hasNextPage) {
             loadMoreInfinityScroll();
@@ -167,6 +145,5 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  // Flag to prevent duplicate viewport checks
   bool _isCheckingViewport = false;
 }

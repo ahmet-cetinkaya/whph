@@ -17,13 +17,11 @@ class BackgroundTranslationService {
   Map<String, Map<String, String>>? _translationCache;
   String? _currentLocale;
 
-  /// Initialize the service with current locale and cache translations
   Future<void> initialize() async {
     await _loadCurrentLocale();
     await _loadTranslations();
   }
 
-  /// Load the current locale from settings
   Future<void> _loadCurrentLocale() async {
     try {
       final mediator = container.resolve<Mediator>();
@@ -36,14 +34,13 @@ class BackgroundTranslationService {
         return;
       }
 
-      _currentLocale = response.value.isNotEmpty ? response.value : 'en'; // Default to English
+      _currentLocale = response.value.isNotEmpty ? response.value : 'en';
     } catch (e) {
-      _currentLocale = 'en'; // Fallback to English
+      _currentLocale = 'en';
       Logger.error('BackgroundTranslationService: Failed to load locale, using default: $e');
     }
   }
 
-  /// Save the current locale to settings
   Future<void> saveCurrentLocale(String locale) async {
     try {
       final mediator = container.resolve<Mediator>();
@@ -61,14 +58,12 @@ class BackgroundTranslationService {
     }
   }
 
-  /// Load translations from asset files for current locale
   Future<void> _loadTranslations() async {
     if (_currentLocale == null) return;
 
     try {
       _translationCache = {_currentLocale!: {}};
 
-      // List of all locale directories in the project
       final localeDirectories = [
         'lib/presentation/ui/features/about/assets/locales',
         'lib/presentation/ui/features/app_usages/assets/locales',
@@ -82,32 +77,27 @@ class BackgroundTranslationService {
         'lib/presentation/ui/shared/assets/locales',
       ];
 
-      // Load all translation files for current locale
       for (final directory in localeDirectories) {
         await _loadTranslationFile(directory, _currentLocale!);
       }
 
-      // Also try to load English as fallback
+      // Also load English as fallback for non-English locales
       if (_currentLocale != 'en') {
         _translationCache!['en'] = {};
         for (final directory in localeDirectories) {
           await _loadTranslationFile(directory, 'en');
         }
       }
-
-      Logger.debug('BackgroundTranslationService: Loaded translations for locale: $_currentLocale');
     } catch (e) {
       Logger.error('BackgroundTranslationService: Failed to load translations: $e');
     }
   }
 
-  /// Load a specific translation file
   Future<void> _loadTranslationFile(String path, String locale) async {
     try {
       final yamlContent = await rootBundle.loadString('$path/$locale.yaml');
       final Map<String, dynamic> yamlMap = _parseSimpleYaml(yamlContent);
 
-      // Flatten the nested structure to dot notation
       final flatMap = _flattenMap(yamlMap);
 
       if (_translationCache![locale] == null) {
@@ -116,7 +106,6 @@ class BackgroundTranslationService {
 
       _translationCache![locale]!.addAll(flatMap);
     } catch (e) {
-      // File might not exist for this locale, continue silently
       if (kDebugMode) {
         Logger.debug('BackgroundTranslationService: Could not load $path/$locale.yaml: $e');
       }
@@ -127,57 +116,43 @@ class BackgroundTranslationService {
   Map<String, dynamic> _parseSimpleYaml(String yamlContent) {
     final Map<String, dynamic> result = {};
     final lines = yamlContent.split('\n');
-    final List<MapEntry<int, String>> indentStack = []; // Track indent level and key
+    final List<MapEntry<int, String>> indentStack = [];
 
     for (int i = 0; i < lines.length; i++) {
       final line = lines[i];
       if (line.trim().isEmpty || line.trim().startsWith('#')) continue;
 
-      // Get indentation level (count leading spaces)
       final indentLevel = line.length - line.trimLeft().length;
       final trimmed = line.trim();
 
       final colonIndex = trimmed.indexOf(':');
-      if (colonIndex == -1) {
-        // Skip malformed lines without colons
-        continue;
-      }
+      if (colonIndex == -1) continue;
 
       final key = trimmed.substring(0, colonIndex).trim();
       final value = trimmed.substring(colonIndex + 1).trim();
 
-      // Clean the indent stack - remove entries with higher or equal indent levels
       indentStack.removeWhere((entry) => entry.key >= indentLevel);
-
-      // Add current key to stack
       indentStack.add(MapEntry(indentLevel, key));
 
-      // Build the full path
       final pathParts = indentStack.map((entry) => entry.value).toList();
       final currentPath = pathParts.join('.');
 
-      // Handle multiline strings (|)
       if (value == '|' || value == '>') {
         final multilineBuffer = StringBuffer();
 
-        // Collect all following lines that are part of this multiline string
         int j = i + 1;
         while (j < lines.length) {
           final nextLine = lines[j];
           final nextTrimmed = nextLine.trim();
 
-          // Stop if we hit an empty line or a line with same/less indentation (new key)
           if (nextTrimmed.isEmpty) {
             j++;
             continue;
           }
 
           final nextIndent = nextLine.length - nextLine.trimLeft().length;
-          if (nextIndent <= indentLevel) {
-            break; // New key at same or higher level
-          }
+          if (nextIndent <= indentLevel) break;
 
-          // Add line to multiline content
           if (multilineBuffer.isNotEmpty) {
             multilineBuffer.write('\n');
           }
@@ -185,10 +160,8 @@ class BackgroundTranslationService {
           j++;
         }
 
-        i = j - 1; // Update loop counter to skip processed lines
-      }
-      // Store value if it's not empty
-      else if (value.isNotEmpty) {
+        i = j - 1;
+      } else if (value.isNotEmpty) {
         final cleanValue = value.replaceAll('"', '').replaceAll("'", '');
         result[currentPath] = cleanValue;
       }
@@ -197,7 +170,6 @@ class BackgroundTranslationService {
     return result;
   }
 
-  /// Flatten nested map to dot notation
   Map<String, String> _flattenMap(Map<String, dynamic> map, [String prefix = '']) {
     final Map<String, String> result = {};
 
@@ -223,7 +195,6 @@ class BackgroundTranslationService {
     String? translation = _translationCache![_currentLocale]?[key];
 
     if (translation == null) {
-      // Try fallback to English if current locale fails
       if (_currentLocale != 'en') {
         translation = _translationCache!['en']?[key];
       }
@@ -234,7 +205,6 @@ class BackgroundTranslationService {
       }
     }
 
-    // Handle named arguments
     if (namedArgs != null && namedArgs.isNotEmpty) {
       namedArgs.forEach((argKey, argValue) {
         translation = translation!.replaceAll('{$argKey}', argValue);
@@ -244,7 +214,7 @@ class BackgroundTranslationService {
     return translation!;
   }
 
-  /// Translate with fallback - if key is not found, return the fallback text
+  /// Returns [fallback] if the key is not found
   String translateWithFallback(String key, String fallback, {Map<String, String>? namedArgs}) {
     if (_translationCache == null || _currentLocale == null) {
       return fallback;
@@ -253,7 +223,6 @@ class BackgroundTranslationService {
     String? translation = _translationCache![_currentLocale]?[key];
 
     if (translation == null) {
-      // Try fallback to English if current locale fails
       if (_currentLocale != 'en') {
         translation = _translationCache!['en']?[key];
       }
@@ -263,7 +232,6 @@ class BackgroundTranslationService {
       }
     }
 
-    // Handle named arguments
     if (namedArgs != null && namedArgs.isNotEmpty) {
       namedArgs.forEach((argKey, argValue) {
         translation = translation!.replaceAll('{$argKey}', argValue);
@@ -273,10 +241,9 @@ class BackgroundTranslationService {
     return translation!;
   }
 
-  /// Get the current locale
   String get currentLocale => _currentLocale ?? 'en';
 
-  /// Get the translation cache (for testing and initialization checks)
+  /// Returns the translation cache (for testing and initialization checks)
   Map<String, Map<String, String>>? get translationCache => _translationCache;
 
   /// Resets the translation cache and locale, forcing re-initialization on next use.
@@ -285,7 +252,7 @@ class BackgroundTranslationService {
     _currentLocale = null;
   }
 
-  // Test helper methods - only available in test mode
+  // Test helper methods
   @visibleForTesting
   Map<String, dynamic> parseSimpleYamlForTest(String yamlContent) {
     return _parseSimpleYaml(yamlContent);

@@ -136,7 +136,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   ThemeData get themeData {
     final isDark = _currentThemeMode == AppThemeMode.dark;
 
-    // Create color scheme with consistent surface colors
     ColorScheme colorScheme;
     if (_isDynamicAccentColorEnabled) {
       final dynamicScheme = isDark ? _dynamicDarkColorScheme : _dynamicLightColorScheme;
@@ -149,7 +148,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       colorScheme = _createFixedColorScheme(isDark, _primaryColor);
     }
 
-    // Use ThemeDataBuilder to construct the ThemeData
     final builder = ThemeDataBuilder(
       isDark: isDark,
       primaryColor: _primaryColor,
@@ -192,7 +190,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   Future<void> setThemeMode(AppThemeMode mode) async {
     _storedThemeMode = mode;
 
-    // Save the user's preference
     String valueToSave;
     switch (mode) {
       case AppThemeMode.light:
@@ -212,10 +209,8 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       valueType: SettingValueType.string,
     ));
 
-    // Update the actual theme mode based on user preference
     await updateActualThemeMode();
 
-    // Update primary color if dynamic colors are enabled
     if (_isDynamicAccentColorEnabled) {
       await _loadDynamicAccentColor();
     }
@@ -233,7 +228,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     ));
 
     if (enabled) {
-      // Disable custom accent color when enabling dynamic
       _isCustomAccentColorEnabled = false;
       await _loadDynamicAccentColor();
     } else {
@@ -248,7 +242,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     _customAccentColor = color;
     _isCustomAccentColorEnabled = color != null;
 
-    // Always save the custom accent color value (empty string when disabled)
     await _mediator.send(SaveSettingCommand(
       key: SettingKeys.customAccentColor,
       value: color != null ? color.toARGB32().toString() : '',
@@ -256,7 +249,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     ));
 
     if (color != null) {
-      // Disable dynamic accent color when enabling custom
       _isDynamicAccentColorEnabled = false;
       await _mediator.send(SaveSettingCommand(
         key: SettingKeys.dynamicAccentColor,
@@ -296,7 +288,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   }
 
   Future<void> _loadThemeSettings() async {
-    // Load theme mode preference
     try {
       final themeResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.themeMode),
@@ -323,10 +314,8 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       _storedThemeMode = AppThemeMode.auto;
     }
 
-    // Update the actual theme mode based on user preference
     await updateActualThemeMode();
 
-    // Load dynamic accent color
     try {
       final dynamicResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.dynamicAccentColor),
@@ -340,7 +329,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       _isDynamicAccentColorEnabled = false;
     }
 
-    // Load custom accent color
     try {
       final customResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.customAccentColor),
@@ -359,7 +347,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       _isCustomAccentColorEnabled = false;
     }
 
-    // Load UI density
     try {
       final densityResponse = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.uiDensity),
@@ -377,11 +364,51 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       _currentUiDensity = domain.AppTheme.defaultUiDensity;
     }
 
-    // Update primary color based on loaded settings
     await _updatePrimaryColor();
   }
 
-  /// Updates the primary color based on current settings
+  Future<void> _loadDynamicAccentColor() async {
+    try {
+      final ColorScheme defaultLightScheme = ColorScheme.fromSeed(
+        seedColor: domain.AppTheme.primaryColor,
+        brightness: Brightness.light,
+      );
+
+      final ColorScheme defaultDarkScheme = ColorScheme.fromSeed(
+        seedColor: domain.AppTheme.primaryColor,
+        brightness: Brightness.dark,
+      );
+
+      final Map<Brightness, ColorScheme>? colorSchemes =
+          await DynamicColorPlugin.getCorePalette().then((corePalette) => corePalette != null
+              ? {
+                  Brightness.light: corePalette.toColorScheme(brightness: Brightness.light),
+                  Brightness.dark: corePalette.toColorScheme(brightness: Brightness.dark),
+                }
+              : null);
+
+      if (colorSchemes != null &&
+          colorSchemes.containsKey(Brightness.light) &&
+          colorSchemes.containsKey(Brightness.dark)) {
+        final ColorScheme lightColorScheme = colorSchemes[Brightness.light]!;
+        final ColorScheme darkColorScheme = colorSchemes[Brightness.dark]!;
+
+        _dynamicLightColorScheme = lightColorScheme;
+        _dynamicDarkColorScheme = darkColorScheme;
+
+        _primaryColor = _currentThemeMode == AppThemeMode.light ? lightColorScheme.primary : darkColorScheme.primary;
+      } else {
+        _dynamicLightColorScheme = defaultLightScheme;
+        _dynamicDarkColorScheme = defaultDarkScheme;
+
+        _primaryColor =
+            _currentThemeMode == AppThemeMode.light ? defaultLightScheme.primary : defaultDarkScheme.primary;
+      }
+    } catch (e) {
+      _resetToDefaultColors();
+    }
+  }
+
   Future<void> _updatePrimaryColor() async {
     if (_isCustomAccentColorEnabled && _customAccentColor != null) {
       _primaryColor = _customAccentColor!;
@@ -514,58 +541,6 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     return window.platformBrightness;
   }
 
-  Future<void> _loadDynamicAccentColor() async {
-    try {
-      // Create default color schemes as fallbacks
-      final ColorScheme defaultLightScheme = ColorScheme.fromSeed(
-        seedColor: domain.AppTheme.primaryColor,
-        brightness: Brightness.light,
-      );
-
-      final ColorScheme defaultDarkScheme = ColorScheme.fromSeed(
-        seedColor: domain.AppTheme.primaryColor,
-        brightness: Brightness.dark,
-      );
-
-      // Get dynamic color schemes from the system using Material You
-      final Map<Brightness, ColorScheme>? colorSchemes =
-          await DynamicColorPlugin.getCorePalette().then((corePalette) => corePalette != null
-              ? {
-                  Brightness.light: corePalette.toColorScheme(brightness: Brightness.light),
-                  Brightness.dark: corePalette.toColorScheme(brightness: Brightness.dark),
-                }
-              : null);
-
-      if (colorSchemes != null &&
-          colorSchemes.containsKey(Brightness.light) &&
-          colorSchemes.containsKey(Brightness.dark)) {
-        // Extract color schemes with explicit typing and null safety
-        final ColorScheme lightColorScheme = colorSchemes[Brightness.light]!;
-        final ColorScheme darkColorScheme = colorSchemes[Brightness.dark]!;
-
-        // Store the dynamic color schemes directly
-        // We'll override their surface colors when building the theme
-        _dynamicLightColorScheme = lightColorScheme;
-        _dynamicDarkColorScheme = darkColorScheme;
-
-        // Use the appropriate primary color based on current theme mode
-        _primaryColor = _currentThemeMode == AppThemeMode.light ? lightColorScheme.primary : darkColorScheme.primary;
-      } else {
-        // Use the default color schemes we created
-        _dynamicLightColorScheme = defaultLightScheme;
-        _dynamicDarkColorScheme = defaultDarkScheme;
-
-        // Set primary color based on the default schemes
-        _primaryColor =
-            _currentThemeMode == AppThemeMode.light ? defaultLightScheme.primary : defaultDarkScheme.primary;
-      }
-    } catch (e) {
-      // Fallback to default color on any error
-      _resetToDefaultColors();
-    }
-  }
-
-  // Helper method to create a color scheme with fixed surface colors
   ColorScheme _createFixedColorScheme(bool isDark, Color primaryColor) {
     return isDark
         ? ColorScheme.dark(

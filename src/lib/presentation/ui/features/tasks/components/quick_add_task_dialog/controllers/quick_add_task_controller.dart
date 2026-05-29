@@ -21,7 +21,6 @@ import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.da
 /// Controller for QuickAddTaskDialog business logic.
 /// Separates data management and operations from UI concerns.
 class QuickAddTaskController extends ChangeNotifier {
-  // Services
   final Mediator _mediator;
   final ITagRepository _tagRepository;
   final TasksService _tasksService;
@@ -29,7 +28,6 @@ class QuickAddTaskController extends ChangeNotifier {
   final IThemeService _themeService;
   final IDefaultTaskSettingsService _defaultSettingsService;
 
-  // Initial values (stored for reset)
   final List<String>? _initialTagIds;
   final DateTime? _initialPlannedDate;
   final DateTime? _initialDeadlineDate;
@@ -40,7 +38,6 @@ class QuickAddTaskController extends ChangeNotifier {
   final bool? _initialCompleted;
   final String? _initialParentTaskId;
 
-  // Task state
   EisenhowerPriority? _selectedPriority;
   int? _estimatedTime;
   DateTime? _plannedDate;
@@ -54,21 +51,17 @@ class QuickAddTaskController extends ChangeNotifier {
   bool _isReminderSetByUser = false;
   bool _isLoading = false;
 
-  // Lock state
   bool _lockTags = false;
   bool _lockPriority = false;
   bool _lockEstimatedTime = false;
   bool _lockPlannedDate = false;
   bool _lockDeadlineDate = false;
 
-  // UI visibility state
   bool _showEstimatedTimeSection = false;
   bool _showDescriptionSection = false;
 
-  // Callbacks
   Function(String taskId, TaskData taskData)? onTaskCreated;
 
-  // Getters
   EisenhowerPriority? get selectedPriority => _selectedPriority;
   int? get estimatedTime => _estimatedTime;
   DateTime? get plannedDate => _plannedDate;
@@ -195,7 +188,6 @@ class QuickAddTaskController extends ChangeNotifier {
     }
   }
 
-  // State setters
   void setSelectedPriority(EisenhowerPriority? priority) {
     _selectedPriority = priority;
     notifyListeners();

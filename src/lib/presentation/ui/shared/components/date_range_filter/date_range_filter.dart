@@ -74,7 +74,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   void _onControllerChanged() {
     if (mounted) {
       setState(() {});
-      // Notify parent of auto-refresh changes
       if (_controller.isAutoRefreshActive()) {
         widget.onAutoRefresh?.call(
           _controller.selectedStartDate,
@@ -152,17 +151,10 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
       final endDate = result.endDate;
       final refreshEnabled = result.isRefreshEnabled;
 
-      // Detect quick selection
       String? quickSelectionKey = result.quickSelectionKey;
 
-      // Try to detect injected custom ranges first
       if (quickSelectionKey == null && startDate != null && endDate != null && widget.additionalQuickRanges != null) {
         for (final range in widget.additionalQuickRanges!) {
-          // We need exact match logic here. Since we can't easily reuse the helper's private logic,
-          // and QuickDateRange from acore doesn't expose a matcher, we rely on the specific implementation knowledge
-          // or we can invoke the calculator.
-
-          // Actually, we can just replicate the basic check:
           final qStart = range.startDateCalculator();
           final qEnd = range.endDateCalculator();
 
@@ -177,7 +169,6 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
         quickSelectionKey = _quickRangeHelper.detectQuickSelectionKey(startDate, endDate);
       }
 
-      // Check if only refresh toggle changed
       final hasOnlyRefreshChanged = startDate == _controller.selectedStartDate &&
           endDate == _controller.selectedEndDate &&
           _controller.activeQuickSelectionKey != null &&
