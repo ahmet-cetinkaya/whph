@@ -174,7 +174,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             if (_tags == null) {
               _tags = result;
             } else {
-              _tags!.items.addAll(result.items);
+              final existingIds = _tags!.items.map((t) => t.id).toSet();
+              final newItems = result.items.where((t) => !existingIds.contains(t.id)).toList();
+              _tags!.items.addAll(newItems);
               _tags!.pageIndex = result.pageIndex;
             }
           });

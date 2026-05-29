@@ -61,6 +61,7 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
 
   bool _hasExplicitlySelectedNone = false;
   bool _isDisposed = false;
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -122,6 +123,7 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
       onSuccess: (result) {
         if (mounted) {
           setState(() {
+            _isLoadingMore = false;
             if (widget.excludeTagIds.isNotEmpty) {
               result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
             }
@@ -129,7 +131,9 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
             if (_tags == null) {
               _tags = result;
             } else {
-              _tags!.items.addAll(result.items);
+              final existingIds = _tags!.items.map((t) => t.id).toSet();
+              final newItems = result.items.where((t) => !existingIds.contains(t.id)).toList();
+              _tags!.items.addAll(newItems);
               _tags!.pageIndex = result.pageIndex;
             }
             _buildDisplayList();
@@ -205,7 +209,9 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
   }
 
   void _scrollListener() {
+    if (_isLoadingMore || _tags == null) return;
     if (_scrollController.position.extentAfter < 500) {
+      _isLoadingMore = true;
       _getTags(pageIndex: _tags!.pageIndex + 1);
     }
   }
@@ -285,6 +291,7 @@ class _TagSelectDialogState extends State<TagSelectDialog> {
                     if (!mounted) return;
 
                     setState(() {
+                      _isLoadingMore = false;
                       _tags = null;
                       _displayList.clear();
                     });
