@@ -23,7 +23,6 @@ class TaskTimeRecord extends BaseEntity<String> {
       };
 
   factory TaskTimeRecord.fromJson(Map<String, dynamic> json) {
-    // Handle duration: might come as int, double, or num
     int duration = 0;
     final durationValue = json['duration'];
     if (durationValue is num) {

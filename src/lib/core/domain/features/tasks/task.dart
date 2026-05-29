@@ -14,7 +14,7 @@ enum EisenhowerPriority {
   urgentImportant,
 }
 
-/// Reminder time options for tasks
+/// Options for task reminder timing.
 enum ReminderTime {
   none,
   atTime,
@@ -25,10 +25,7 @@ enum ReminderTime {
   custom,
 }
 
-/// Extension for ReminderTime enum to provide parsing functionality
 extension ReminderTimeExtension on ReminderTime {
-  /// Parses a string value into a ReminderTime enum.
-  /// Returns the default reminder time if the value is invalid or not found.
   static ReminderTime fromString(String? value) {
     return ReminderTime.values.firstWhere(
       (e) => e.name == value || e.toString() == value,
@@ -37,7 +34,7 @@ extension ReminderTimeExtension on ReminderTime {
   }
 }
 
-/// Recurrence type options for recurring tasks
+/// Recurrence type options for recurring tasks.
 enum RecurrenceType {
   none,
   daily,
@@ -96,15 +93,12 @@ class Task extends BaseEntity<String> {
   // Advanced Recurrence Configuration
   RecurrenceConfiguration? recurrenceConfiguration;
 
-  // Computed getter for backward compatibility
   bool get isCompleted => completedAt != null;
 
-  // Convenience method to mark task as completed
   void markCompleted() {
     completedAt = DateTime.now().toUtc();
   }
 
-  // Convenience method to mark task as not completed
   void markNotCompleted() {
     completedAt = null;
   }
@@ -249,25 +243,18 @@ class Task extends BaseEntity<String> {
     );
   }
 
-  // Helper method to parse enums with error handling
   static T _parseEnum<T>(List<T> values, String? value, T defaultValue, String enumName) {
     if (value == null) return defaultValue;
     return values.cast<T>().firstWhere(
       (e) {
         if (e.toString() == value) return true;
         try {
-          // Verify if e is dynamic or needs casting to access .name
-          // In most cases with enums, e.toString() is sufficient, but for safety:
           return (e as dynamic).name == value;
         } catch (_) {
           return false;
         }
       },
       orElse: () {
-        // Only log warning if the value is strictly invalid (not just a mismatch that leads to default)
-        // AND it's not one of the expected "empty/none" values that might be passed casually.
-        // For "none" specifically, it's often used as a string equivalent for RecurrenceType.none or ReminderTime.none
-        // so we shouldn't warn if it simply resolves to the default which is also none.
         bool matchesName = false;
         try {
           matchesName = value == (defaultValue as dynamic).name;
@@ -290,38 +277,30 @@ class Task extends BaseEntity<String> {
 
   factory Task.fromJson(Map<String, dynamic> json) {
     try {
-      // CRITICAL FIX: Handle type conversion for numeric fields that might come as different types
-      // This ensures robust deserialization regardless of JSON source (database, API, sync, etc.)
-
-      // Handle estimatedTime: might come as int, double, or null
       int? estimatedTime;
       final estimatedTimeValue = json['estimatedTime'];
       if (estimatedTimeValue is num) {
         estimatedTime = estimatedTimeValue.toInt();
       }
 
-      // Handle order: might come as int, double, or null
       double order = 0.0;
       final orderValue = json['order'];
       if (orderValue is num) {
         order = orderValue.toDouble();
       }
 
-      // Handle recurrenceInterval: ensure it's int
       int? recurrenceInterval;
       final intervalValue = json['recurrenceInterval'];
       if (intervalValue is num) {
         recurrenceInterval = intervalValue.toInt();
       }
 
-      // Handle recurrenceCount: ensure it's int
       int? recurrenceCount;
       final countValue = json['recurrenceCount'];
       if (countValue is num) {
         recurrenceCount = countValue.toInt();
       }
 
-      // Handle custom reminder offsets with validation
       int? plannedDateReminderCustomOffset;
       final plannedOffsetValue = json['plannedDateReminderCustomOffset'];
       if (plannedOffsetValue is num) {
@@ -346,7 +325,6 @@ class Task extends BaseEntity<String> {
         }
       }
 
-      // Handle enum parsing with better error handling
       final priority = json['priority'] != null
           ? _parseEnum<EisenhowerPriority?>(EisenhowerPriority.values, json['priority'], null, 'priority')
           : null;
@@ -360,12 +338,11 @@ class Task extends BaseEntity<String> {
       final recurrenceType =
           _parseEnum(RecurrenceType.values, json['recurrenceType'], RecurrenceType.none, 'recurrenceType');
 
-      // Handle backward compatibility for isCompleted -> completedAt migration
+      // Backward compatibility: migrate isCompleted -> completedAt
       DateTime? completedAt;
       if (json['completedAt'] != null) {
         completedAt = DateTime.parse(json['completedAt'] as String);
       } else if (json['isCompleted'] == true) {
-        // Migrate old isCompleted=true to a default completed timestamp
         completedAt = json['modifiedDate'] != null
             ? DateTime.parse(json['modifiedDate'] as String)
             : json['createdDate'] != null
@@ -373,7 +350,6 @@ class Task extends BaseEntity<String> {
                 : DateTime.now();
       }
 
-      // Handle recurrence configuration deserialization manually
       RecurrenceConfiguration? recurrenceConfiguration;
       if (json['recurrenceConfiguration'] != null) {
         try {

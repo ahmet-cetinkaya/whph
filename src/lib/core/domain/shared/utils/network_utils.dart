@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class NetworkUtils {
-  /// Check if an IP is from a private network
   static bool isPrivateIP(String ip) {
     try {
       final address = InternetAddress(ip);

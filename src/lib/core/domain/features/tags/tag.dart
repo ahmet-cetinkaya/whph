@@ -58,12 +58,10 @@ class Tag extends BaseEntity<String> {
     TagType type = TagType.label;
 
     if (typeValue is int) {
-      // Type is stored as int in database (enum index: 0=label, 1=context, 2=project)
       if (typeValue >= 0 && typeValue < TagType.values.length) {
         type = TagType.values[typeValue];
       }
     } else if (typeValue is String) {
-      // Type is a String from JSON serialization
       type = TagType.fromString(typeValue);
     }
 

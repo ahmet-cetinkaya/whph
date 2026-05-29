@@ -68,13 +68,11 @@ class WeeklySchedule {
     }
   }
 
-  /// Creates a validated WeeklySchedule from JSON
   factory WeeklySchedule.fromJson(Map<String, dynamic> json) {
     final dayOfWeek = json['dayOfWeek'] as int;
     final hour = json['hour'] as int;
     final minute = json['minute'] as int;
 
-    // Validate before constructing
     _validate(dayOfWeek, hour, minute);
 
     return WeeklySchedule(
@@ -84,7 +82,6 @@ class WeeklySchedule {
     );
   }
 
-  /// Creates a validated WeeklySchedule with runtime validation
   factory WeeklySchedule.validated({
     required int dayOfWeek,
     required int hour,
@@ -116,7 +113,6 @@ class WeeklySchedule {
   int get hashCode => Object.hash(dayOfWeek, hour, minute);
 }
 
-/// Validation constants for RecurrenceConfiguration
 class RecurrenceConfigurationValidation {
   static const int minInterval = 1;
   static const int maxInterval = 365; // One year maximum
@@ -180,9 +176,8 @@ class RecurrenceConfiguration {
     _validate();
   }
 
-  /// Creates a RecurrenceConfiguration for testing purposes without validation.
-  /// This should ONLY be used in tests to create configurations with intentionally
-  /// invalid dates (e.g., past dates) to test edge cases.
+  /// Creates a configuration for testing without validation.
+  /// Should ONLY be used in tests with intentionally invalid dates.
   factory RecurrenceConfiguration.test({
     required RecurrenceFrequency frequency,
     int interval = 1,
@@ -215,8 +210,7 @@ class RecurrenceConfiguration {
     );
   }
 
-  /// Creates a safe default RecurrenceConfiguration for error recovery.
-  /// This bypasses validation and is used when deserialization fails.
+  /// Creates a safe default for error recovery. Bypasses validation.
   /// Should only be used as a fallback when data corruption is detected.
   factory RecurrenceConfiguration.safeDefault() {
     return RecurrenceConfiguration._internal(
@@ -227,7 +221,6 @@ class RecurrenceConfiguration {
     );
   }
 
-  /// Private constructor that bypasses validation.
   RecurrenceConfiguration._internal({
     required this.frequency,
     required this.interval,
@@ -244,11 +237,6 @@ class RecurrenceConfiguration {
     required this.fromPolicy,
   });
 
-  /// Creates a copy of this RecurrenceConfiguration with the given fields replaced.
-  /// Any field not provided will retain its current value.
-  ///
-  /// The copy will be validated, so attempting to create an invalid configuration
-  /// will throw an ArgumentError.
   RecurrenceConfiguration copyWith({
     RecurrenceFrequency? frequency,
     int? interval,
@@ -281,9 +269,7 @@ class RecurrenceConfiguration {
     );
   }
 
-  /// Validates configuration parameters and throws ArgumentError if invalid
   void _validate() {
-    // Validate interval
     if (interval < RecurrenceConfigurationValidation.minInterval) {
       throw ArgumentError('Interval must be at least ${RecurrenceConfigurationValidation.minInterval}');
     }
@@ -291,7 +277,6 @@ class RecurrenceConfiguration {
       throw ArgumentError('Interval cannot exceed ${RecurrenceConfigurationValidation.maxInterval}');
     }
 
-    // Validate dayOfMonth
     if (dayOfMonth != null) {
       if (dayOfMonth! < RecurrenceConfigurationValidation.minDayOfMonth ||
           dayOfMonth! > RecurrenceConfigurationValidation.maxDayOfMonth) {
@@ -300,7 +285,6 @@ class RecurrenceConfiguration {
       }
     }
 
-    // Validate dayOfWeek
     if (dayOfWeek != null) {
       if (dayOfWeek! < RecurrenceConfigurationValidation.minDayOfWeek ||
           dayOfWeek! > RecurrenceConfigurationValidation.maxDayOfWeek) {
@@ -309,7 +293,6 @@ class RecurrenceConfiguration {
       }
     }
 
-    // Validate weekOfMonth
     if (weekOfMonth != null) {
       if (weekOfMonth! < RecurrenceConfigurationValidation.minWeekOfMonth ||
           weekOfMonth! > RecurrenceConfigurationValidation.maxWeekOfMonth) {
@@ -318,7 +301,6 @@ class RecurrenceConfiguration {
       }
     }
 
-    // Validate monthOfYear
     if (monthOfYear != null) {
       if (monthOfYear! < RecurrenceConfigurationValidation.minMonthOfYear ||
           monthOfYear! > RecurrenceConfigurationValidation.maxMonthOfYear) {
@@ -327,7 +309,6 @@ class RecurrenceConfiguration {
       }
     }
 
-    // Validate occurrenceCount
     if (occurrenceCount != null) {
       if (occurrenceCount! <= 0 || occurrenceCount! > RecurrenceConfigurationValidation.maxOccurrenceCount) {
         throw ArgumentError(
@@ -335,15 +316,11 @@ class RecurrenceConfiguration {
       }
     }
 
-    // Validate endDate is in the future if provided
-    // Allow a 1-second tolerance to account for timing differences between date creation and validation
-    // This ensures tests can use DateTime.now() as endDate without flaky failures
-    // Use UTC to ensure consistent timezone handling
+    // Allow 1-second tolerance so tests using DateTime.now() as endDate don't flake
     if (endDate != null && endDate!.isBefore(DateTime.now().toUtc().subtract(const Duration(seconds: 1)))) {
       throw ArgumentError('endDate must be in the future or at the current time');
     }
 
-    // Validate endCondition consistency
     if (endCondition == RecurrenceEndCondition.date && endDate == null) {
       throw ArgumentError('Date end condition requires endDate to be specified');
     }
@@ -351,7 +328,6 @@ class RecurrenceConfiguration {
       throw ArgumentError('Count end condition requires occurrenceCount to be specified');
     }
 
-    // Validate daysOfWeek contains valid values
     if (daysOfWeek != null && daysOfWeek!.isNotEmpty) {
       for (final day in daysOfWeek!) {
         if (day < RecurrenceConfigurationValidation.minDayOfWeek ||
@@ -362,30 +338,24 @@ class RecurrenceConfiguration {
       }
     }
 
-    // Validate weeklySchedule
     if (weeklySchedule != null && weeklySchedule!.isNotEmpty) {
-      // Check for duplicate days
       final seenDays = <int>{};
       for (final schedule in weeklySchedule!) {
-        // Validate dayOfWeek
         if (schedule.dayOfWeek < RecurrenceConfigurationValidation.minDayOfWeek ||
             schedule.dayOfWeek > RecurrenceConfigurationValidation.maxDayOfWeek) {
           throw ArgumentError(
               'weeklySchedule dayOfWeek must be between ${RecurrenceConfigurationValidation.minDayOfWeek} and ${RecurrenceConfigurationValidation.maxDayOfWeek}');
         }
-        // Validate hour
         if (schedule.hour < RecurrenceConfigurationValidation.minHour ||
             schedule.hour > RecurrenceConfigurationValidation.maxHour) {
           throw ArgumentError(
               'weeklySchedule hour must be between ${RecurrenceConfigurationValidation.minHour} and ${RecurrenceConfigurationValidation.maxHour}');
         }
-        // Validate minute
         if (schedule.minute < RecurrenceConfigurationValidation.minMinute ||
             schedule.minute > RecurrenceConfigurationValidation.maxMinute) {
           throw ArgumentError(
               'weeklySchedule minute must be between ${RecurrenceConfigurationValidation.minMinute} and ${RecurrenceConfigurationValidation.maxMinute}');
         }
-        // Check for duplicate days
         if (seenDays.contains(schedule.dayOfWeek)) {
           throw ArgumentError('weeklySchedule cannot contain duplicate days');
         }
@@ -393,7 +363,6 @@ class RecurrenceConfiguration {
       }
     }
 
-    // Validate monthly pattern consistency
     if (monthlyPatternType != null) {
       if (monthlyPatternType == MonthlyPatternType.relativeDay) {
         if (weekOfMonth == null || dayOfWeek == null) {
@@ -426,20 +395,16 @@ class RecurrenceConfiguration {
     };
   }
 
-  /// Helper function to deserialize enum from both name (new) and index (old)
   static T _deserializeEnum<T extends Enum>(List<T> values, dynamic value, T defaultValue) {
     if (value == null) return defaultValue;
 
-    // Try name first (new format)
     if (value is String) {
       try {
         return values.firstWhere((e) => e.name == value);
-      } catch (_) {
-        // Fall back to index if name lookup fails
-      }
+      } catch (_) {}
     }
 
-    // Try index (old format) for backward compatibility
+    // Backward compatibility: try index (old format)
     if (value is int) {
       if (value >= 0 && value < values.length) {
         return values[value];
@@ -449,7 +414,6 @@ class RecurrenceConfiguration {
     return defaultValue;
   }
 
-  /// Helper function to parse endDate with better error messages
   static DateTime? _parseEndDate(dynamic value) {
     if (value == null) return null;
     try {
@@ -462,13 +426,8 @@ class RecurrenceConfiguration {
     }
   }
 
-  /// Deserializes a [RecurrenceConfiguration] from JSON.
-  ///
-  /// Uses the [_internal] constructor to bypass validation that would reject
-  /// recurrence end dates in the past. This is intentional to allow proper
-  /// deserialization of historical tasks during sync - tasks that were created
-  /// in the past may have recurrence configurations with end dates that are now
-  /// in the past, and these should still be valid for historical data integrity.
+  /// Bypasses validation to allow deserialization of historical tasks
+  /// with past end dates during sync.
   factory RecurrenceConfiguration.fromJson(Map<String, dynamic> json) {
     return RecurrenceConfiguration._internal(
       frequency: _deserializeEnum(RecurrenceFrequency.values, json['frequency'], RecurrenceFrequency.daily),

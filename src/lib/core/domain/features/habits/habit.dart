@@ -16,7 +16,7 @@ class Habit extends BaseEntity<String> {
 
   // Goal settings
   bool hasGoal = false;
-  int targetFrequency = 1; // How many times the habit should be performed
+  int targetFrequency = 1;
   int periodDays = 1; // Over how many days (e.g., 1 time in 1 day)
 
   // Daily target settings for multiple occurrences per day
@@ -46,44 +46,33 @@ class Habit extends BaseEntity<String> {
 
   // REMINDER RELATED METHODS
 
-  // Getter to convert reminderDays string to List<int>
+  // Allows the UI to show no days selected, which is a valid state
   List<int> getReminderDaysAsList() {
-    // If reminder is not enabled, return empty list
     if (!hasReminder) {
       return [];
     }
 
-    // If reminderDays is empty but reminder is enabled, return empty list
-    // This allows the UI to show no days selected, which is a valid state
     if (reminderDays.isEmpty) {
       return [];
     }
 
     try {
-      // Split by comma and parse each value as int
       final result = reminderDays.split(',').where((s) => s.isNotEmpty).map((s) {
         final trimmed = s.trim();
         return int.parse(trimmed);
       }).toList();
 
-      // Return the parsed result, even if empty
-      // This allows the UI to show no days selected, which is a valid state
       return result;
     } catch (e) {
-      // Log parsing errors and return empty list
       return [];
     }
   }
 
-  // Helper method to set reminderDays from a List<int>
   void setReminderDaysFromList(List<int> days) {
-    // Always use the provided days list, even if it's empty
-    // This allows the UI to show no days selected, which is a valid state
     final newValue = days.isEmpty ? '' : days.join(',');
     reminderDays = newValue;
   }
 
-  // Helper method to get the reminder time as TimeOfDay
   TimeOfDay? getReminderTimeOfDay() {
     if (reminderTime == null) {
       return null;
@@ -103,7 +92,6 @@ class Habit extends BaseEntity<String> {
     }
   }
 
-  // Helper method to set the reminder time from TimeOfDay
   void setReminderTimeOfDay(TimeOfDay time) {
     final formattedTime = '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
     reminderTime = formattedTime;
@@ -111,12 +99,10 @@ class Habit extends BaseEntity<String> {
 
   // GOAL RELATED METHODS
 
-  /// Checks if the habit has an active goal
   bool hasActiveGoal() {
     return hasGoal;
   }
 
-  /// Returns the goal description parameters
   Map<String, int> getGoalDescriptionParams() {
     if (!hasGoal) {
       return {};
@@ -124,7 +110,6 @@ class Habit extends BaseEntity<String> {
     return {'targetFrequency': targetFrequency, 'periodDays': periodDays};
   }
 
-  /// Checks if the goal has been met based on the provided completed count
   bool isGoalMet(int completedCount) {
     if (!hasGoal) {
       return true; // No goal means always met
@@ -132,30 +117,25 @@ class Habit extends BaseEntity<String> {
     return completedCount >= targetFrequency;
   }
 
-  /// Calculates the percentage of goal completion (0.0 to 1.0)
   double getGoalCompletionPercentage(int completedCount) {
     if (!hasGoal || targetFrequency <= 0) {
       return 1.0; // No goal or invalid target means 100% completion
     }
 
     final percentage = completedCount / targetFrequency;
-    // Cap at 100% even if overachieved
-    return percentage > 1.0 ? 1.0 : percentage;
+    return percentage > 1.0 ? 1.0 : percentage; // Cap at 100% even if overachieved
   }
 
   // DAILY TARGET RELATED METHODS
 
-  /// Gets the daily target (defaults to 1 if not set for backward compatibility)
   int getDailyTarget() {
     return dailyTarget ?? 1;
   }
 
-  /// Checks if the daily target has been met based on the provided count
   bool isDailyTargetMet(int dailyCount) {
     return dailyCount >= getDailyTarget();
   }
 
-  /// Calculates the percentage of daily target completion (0.0 to 1.0)
   double getDailyCompletionPercentage(int dailyCount) {
     final target = getDailyTarget();
     if (target <= 0) {
@@ -163,26 +143,21 @@ class Habit extends BaseEntity<String> {
     }
 
     final percentage = dailyCount / target;
-    // Cap at 100% even if overachieved
-    return percentage > 1.0 ? 1.0 : percentage;
+    return percentage > 1.0 ? 1.0 : percentage; // Cap at 100% even if overachieved
   }
 
   // ARCHIVE RELATED METHODS
 
-  /// Checks if the habit is archived
   bool get isArchived => archivedDate != null;
 
-  /// Archives the habit by setting archivedDate to current DateTime
   void setArchived() {
     archivedDate = DateTime.now().toUtc();
   }
 
-  /// Unarchives the habit by setting archivedDate to null
   void setUnarchived() {
     archivedDate = null;
   }
 
-  /// Returns the archivedDate value from entity in local time zone
   DateTime? getLocalArchivedDate() {
     return archivedDate != null ? DateTimeHelper.toLocalDateTime(archivedDate!) : null;
   }
@@ -205,35 +180,30 @@ class Habit extends BaseEntity<String> {
       };
 
   factory Habit.fromJson(Map<String, dynamic> json) {
-    // Handle estimatedTime: might come as int, double, or num
     int? estimatedTime;
     final estimatedTimeValue = json['estimatedTime'];
     if (estimatedTimeValue is num) {
       estimatedTime = estimatedTimeValue.toInt();
     }
 
-    // Handle targetFrequency: might come as int, double, or num
     int targetFrequency = 1;
     final targetFrequencyValue = json['targetFrequency'];
     if (targetFrequencyValue is num) {
       targetFrequency = targetFrequencyValue.toInt();
     }
 
-    // Handle periodDays: might come as int, double, or num
     int periodDays = 1;
     final periodDaysValue = json['periodDays'];
     if (periodDaysValue is num) {
       periodDays = periodDaysValue.toInt();
     }
 
-    // Handle order: might come as int, double, or num
     double order = 0.0;
     final orderValue = json['order'];
     if (orderValue is num) {
       order = orderValue.toDouble();
     }
 
-    // Handle dailyTarget: might come as int, double, or num
     int? dailyTarget;
     final dailyTargetValue = json['dailyTarget'];
     if (dailyTargetValue is num) {

@@ -29,7 +29,6 @@ class HabitTimeRecord extends BaseEntity<String> {
       };
 
   factory HabitTimeRecord.fromJson(Map<String, dynamic> json) {
-    // Handle duration: might come as int, double, or num
     int duration = 0;
     final durationValue = json['duration'];
     if (durationValue is num) {

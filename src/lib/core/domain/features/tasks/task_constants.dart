@@ -6,6 +6,5 @@ class TaskConstants {
   static const ReminderTime defaultReminderTime = ReminderTime.atTime;
   static const bool defaultSkipQuickAdd = false;
 
-  // Prevent instantiation
   TaskConstants._();
 }

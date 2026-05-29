@@ -7,7 +7,7 @@ class NoteTag extends BaseEntity<String> {
   String noteId;
   String tagId;
   int tagOrder;
-  Tag? tag; // Reference to the associated tag
+  Tag? tag;
 
   NoteTag({
     required super.id,
