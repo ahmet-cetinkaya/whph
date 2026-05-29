@@ -307,6 +307,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                     estimatedTime: task.estimatedTime,
                     plannedDate: task.plannedDate,
                     priority: task.priority,
+                    subTasksCompletionPercentage: task.subTasksCompletionPercentage,
                     tags: taskTags.items
                         .map((e) => TagListItem(
                             id: e.id,
@@ -373,6 +374,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                       type: e.tagType))
                   .toList(),
               subTasks: subTasks.items,
+              subTasksCompletionPercentage: task.subTasksCompletionPercentage,
             );
           });
         }

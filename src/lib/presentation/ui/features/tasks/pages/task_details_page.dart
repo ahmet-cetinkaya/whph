@@ -195,9 +195,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         CompleteTaskCommand(id: taskId),
       );
 
-      // Hide completed tasks and reload details
+      _tasksService.notifyTaskCompleted(taskId);
       _hideCompletedTasks();
-      // TasksList will auto-refresh, just update completion percentage
       _loadTaskDetails();
     } catch (e, stackTrace) {
       Logger.error(

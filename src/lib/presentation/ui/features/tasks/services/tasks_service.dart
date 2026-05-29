@@ -24,26 +24,31 @@ class TasksService extends ChangeNotifier {
   void notifyTaskCreated(String taskId) {
     onTaskCreated.value = taskId;
     onTaskCreated.notifyListeners();
+    notifyListeners();
   }
 
   void notifyTaskUpdated(String taskId) {
     onTaskUpdated.value = taskId;
     onTaskUpdated.notifyListeners();
+    notifyListeners();
   }
 
   void notifyTaskDeleted(String taskId) {
     onTaskDeleted.value = taskId;
     onTaskDeleted.notifyListeners();
+    notifyListeners();
   }
 
   void notifyTaskTimeRecordUpdated(String taskId) {
     onTaskTimeRecordUpdated.value = taskId;
     onTaskTimeRecordUpdated.notifyListeners();
+    notifyListeners();
   }
 
   void notifyTaskCompleted(String taskId) async {
     onTaskCompleted.value = taskId;
     onTaskCompleted.notifyListeners();
+    notifyListeners();
 
     // When a task is completed, check if it's a recurring task and create the next instance if needed
     // Handle this asynchronously but don't wait for completion to avoid blocking the UI

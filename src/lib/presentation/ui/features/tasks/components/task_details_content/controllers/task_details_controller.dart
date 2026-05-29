@@ -102,13 +102,15 @@ class TaskDetailsController extends ChangeNotifier {
 
   void _setupEventListeners() {
     _tasksService.onTaskUpdated.addListener(_handleTaskServiceUpdate);
+    _tasksService.onTaskCompleted.addListener(_handleTaskServiceUpdate);
     _tasksService.onTaskDeleted.addListener(_handleTaskDeleted);
     _tagsService.onTagUpdated.addListener(_handleTagUpdated);
   }
 
   void _handleTaskServiceUpdate() {
-    // This will be called when task is updated externally
-    notifyListeners();
+    if (_task != null && !_isDeleted) {
+      loadTask(_task!.id);
+    }
   }
 
   void _handleTaskDeleted() {
@@ -129,6 +131,7 @@ class TaskDetailsController extends ChangeNotifier {
   void dispose() {
     _debounce?.cancel();
     _tasksService.onTaskUpdated.removeListener(_handleTaskServiceUpdate);
+    _tasksService.onTaskCompleted.removeListener(_handleTaskServiceUpdate);
     _tasksService.onTaskDeleted.removeListener(_handleTaskDeleted);
     _tagsService.onTagUpdated.removeListener(_handleTagUpdated);
     super.dispose();
