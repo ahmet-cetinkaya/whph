@@ -104,25 +104,21 @@ class GetElementsByTimeQueryHandler implements IRequestHandler<GetElementsByTime
     final categoriesToQuery = request.categories ?? [TagTimeCategory.all];
 
     try {
-      // Get app usages with time records in the date range
       if (categoriesToQuery.contains(TagTimeCategory.all) || categoriesToQuery.contains(TagTimeCategory.appUsage)) {
         final appUsageTimes = await _getAppUsageTimes(request);
         allElementTimes.addAll(appUsageTimes);
       }
 
-      // Get tasks with time records in the date range
       if (categoriesToQuery.contains(TagTimeCategory.all) || categoriesToQuery.contains(TagTimeCategory.tasks)) {
         final taskTimes = await _getTaskTimes(request);
         allElementTimes.addAll(taskTimes);
       }
 
-      // Get habits with records in the date range
       if (categoriesToQuery.contains(TagTimeCategory.all) || categoriesToQuery.contains(TagTimeCategory.habits)) {
         final habitTimes = await _getHabitTimes(request);
         allElementTimes.addAll(habitTimes);
       }
 
-      // Sort by duration and take top limit
       allElementTimes.sort((a, b) => b.duration.compareTo(a.duration));
       if (request.limit != null && allElementTimes.length > request.limit!) {
         allElementTimes = allElementTimes.sublist(0, request.limit!);

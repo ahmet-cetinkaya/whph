@@ -63,7 +63,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
 
   @override
   Future<GetListHabitsQueryResponse> call(GetListHabitsQuery request) async {
-    // 1. Fetch habits with aggregated actualTime in a single query
     PaginatedList<HabitListItem> habits = await _habitRepository.getHabitListItems(
       request.pageIndex,
       request.pageSize,
@@ -71,7 +70,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       customOrder: _getCustomOrders(request),
     );
 
-    // Apply period-aware filtering if excludeCompletedForDate is specified
     List<HabitListItem> filteredHabits = habits.items;
     if (request.excludeCompletedForDate != null) {
       filteredHabits = await _filterHabitsWithPeriodAwareness(habits.items, request.excludeCompletedForDate!);
@@ -86,12 +84,9 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       );
     }
 
-    // 2. Fetch tags for the retrieved habits in a single batch query
     final habitIds = filteredHabits.map((h) => h.id).toList();
     final habitTagsMap = await _habitTagsRepository.getTagsForHabitIds(habitIds);
 
-    // 3. Populate tags and calculate group names
-    // Determine sort field for grouping
     HabitSortFields? primarySortField;
     if (request.groupBy != null) {
       primarySortField = request.groupBy!.field;
@@ -100,14 +95,12 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     }
 
     final resultItems = filteredHabits.map((habitItem) {
-      // Assign tags
       List<TagListItem> tags = habitItem.tags;
       if (habitTagsMap.containsKey(habitItem.id)) {
         tags = List<TagListItem>.from(habitTagsMap[habitItem.id]!);
       }
 
-      // Sort tags of the habit based on the same criteria as sorting/grouping
-      // This ensures the "best" tag is first for HabitGroupingHelper.getGroupName
+      // Ensure the best tag is first for HabitGroupingHelper.getGroupName
       if (tags.isNotEmpty) {
         if (request.customTagSortOrder != null && request.customTagSortOrder!.isNotEmpty) {
           final orderMap = {
@@ -122,7 +115,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         }
       }
 
-      // Assign group name
       final groupInfo = HabitGroupingHelper.getGroupInfo(habitItem.copyWith(tags: tags), primarySortField);
 
       return habitItem.copyWith(
@@ -219,7 +211,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   List<CustomOrder>? _getCustomOrders(GetListHabitsQuery request) {
     List<CustomOrder> customOrders = [];
 
-    // Prioritize grouping field if exists
     if (request.groupBy != null) {
       _addCustomOrder(customOrders, request.groupBy!, request);
     }
@@ -233,10 +224,8 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
       return customOrders.isEmpty ? null : customOrders;
     }
 
-    // Add other sort options from list
     if (request.sortBy != null) {
       for (var option in request.sortBy!) {
-        // Avoid duplicate if group by is same as first sort option
         if (request.groupBy != null && option.field == request.groupBy!.field) {
           continue;
         }
@@ -257,18 +246,12 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     } else if (option.field == HabitSortFields.estimatedTime) {
       orders.add(CustomOrder(field: "estimated_time", direction: option.direction));
     } else if (option.field == HabitSortFields.actualTime) {
-      // actualTime sorting is now handled at the database level with LEFT JOIN
       orders.add(CustomOrder(field: "actual_time", direction: option.direction));
     } else if (option.field == HabitSortFields.archivedDate) {
       orders.add(CustomOrder(field: "archived_date", direction: option.direction));
     } else if (option.field == HabitSortFields.tag) {
-      // Sort by the first tag
-      // Logic:
-      // 1. Get the "best" tag for each habit based on custom order or name
-      // 2. Sort habits by that tag
-
+      // Sort by the best tag (custom order first, then name)
       if (request.customTagSortOrder != null && request.customTagSortOrder!.isNotEmpty) {
-        // Create a CASE statement for custom ordering
         final caseStatements = StringBuffer();
         for (int i = 0; i < request.customTagSortOrder!.length; i++) {
           final safeId = sanitizeAndValidateId(request.customTagSortOrder![i]);
@@ -288,7 +271,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
           direction: option.direction,
         ));
       } else {
-        // Default sort by first tag order, then name
         orders.add(CustomOrder(
           field: '''(
             SELECT t.name

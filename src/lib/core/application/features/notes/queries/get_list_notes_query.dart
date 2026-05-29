@@ -58,17 +58,14 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
   Future<GetListNotesQueryResponse> call(GetListNotesQuery request) async {
     CustomWhereFilter? filter;
 
-    // Combine search and tag filters
     List<String> conditions = [];
     List<Object> variables = [];
 
-    // Add search condition
     if (request.search?.isNotEmpty ?? false) {
       conditions.add('(title LIKE ? OR content LIKE ?)');
       variables.addAll(['%${request.search}%', '%${request.search}%']);
     }
 
-    // Add tag filter conditions
     if (request.filterByTags?.isNotEmpty ?? false) {
       conditions.add('''
         id IN (
@@ -89,7 +86,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
       ''');
     }
 
-    // Exclude notes only if ALL their tags are archived (show if at least one tag is not archived)
+    // Exclude notes where all tags are archived (show if at least one is not archived)
     if (!request.ignoreArchivedTagVisibility) {
       conditions.add('''
         id NOT IN (
@@ -108,7 +105,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
       ''');
     }
 
-    // Combine all conditions
     if (conditions.isNotEmpty) {
       filter = CustomWhereFilter(
         conditions.join(' AND '),
@@ -116,7 +112,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
       );
     }
 
-    // Get paginated notes with sorting and filtering
     final notesPaginated = await _noteRepository.getList(
       request.pageIndex,
       request.pageSize,
@@ -126,7 +121,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
 
     final now = request.now ?? DateTime.now();
 
-    // Map notes to list items with their tags
     final items = notesPaginated.items.map((note) {
       final tags = note.tags.map((noteTag) {
         return TagListItem(
@@ -188,7 +182,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
   List<CustomOrder> _getCustomOrders(GetListNotesQuery request) {
     List<CustomOrder> customOrders = [];
 
-    // Prioritize grouping field if exists
     if (request.groupBy != null) {
       _addCustomOrder(customOrders, request.groupBy!, request);
     }
@@ -199,7 +192,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     }
 
     if (request.sortBy == null || request.sortBy!.isEmpty) {
-      // If no sort is specified, return default sort unless grouping is active.
       if (customOrders.isEmpty) {
         return [
           CustomOrder(
@@ -208,11 +200,9 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
           ),
         ];
       }
-      // If only grouping is specified, just use that.
       return customOrders;
     }
 
-    // Add other sort options, avoiding duplicates
     for (var option in request.sortBy!) {
       if (request.groupBy != null && option.field == request.groupBy!.field) {
         continue;
@@ -231,13 +221,7 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
     } else if (option.field == NoteSortFields.modifiedDate) {
       orders.add(CustomOrder(field: "modified_date", direction: option.direction));
     } else if (option.field == NoteSortFields.tag) {
-      // Sort by the first tag
-      // Logic:
-      // 1. Get the "best" tag for each note based on custom order or name
-      // 2. Sort notes by that tag
-
       if (request.customTagSortOrder != null && request.customTagSortOrder!.isNotEmpty) {
-        // Create a CASE statement for custom ordering
         final caseStatements = StringBuffer();
         for (int i = 0; i < request.customTagSortOrder!.length; i++) {
           final safeId = sanitizeAndValidateId(request.customTagSortOrder![i]);
@@ -257,7 +241,6 @@ class GetListNotesQueryHandler implements IRequestHandler<GetListNotesQuery, Get
           direction: option.direction,
         ));
       } else {
-        // Default alphabetical sort by first tag name
         orders.add(CustomOrder(
           field: '''(
             SELECT t.name 

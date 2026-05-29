@@ -13,10 +13,8 @@ enum TaskImportType {
   todoist,
 }
 
-/// Maximum file size for CSV import (10MB)
 const int _maxFileSizeBytes = 10 * 1024 * 1024;
 
-/// Maximum number of errors to collect during import
 const int _maxErrorCount = 100;
 
 /// Error ID constants for CSV import
@@ -60,16 +58,12 @@ class ImportTasksCommandResponse {
     }
   }
 
-  /// Total number of processed rows
   int get totalCount => successCount + failureCount;
 
-  /// Whether the import had any failures
   bool get hasFailures => failureCount > 0;
 
-  /// Whether the import was completely successful
   bool get isCompleteSuccess => failureCount == 0 && successCount > 0;
 
-  /// Whether the import was a partial success (some rows succeeded)
   bool get isPartialSuccess => successCount > 0 && failureCount > 0;
 }
 
@@ -93,12 +87,10 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
   ImportTasksCommandHandler(this._mediator);
 
   /// Cache for resolved tag IDs during a single import run
-  /// Key: normalized tag name (lowercase), Value: tag ID
   final Map<String, String> _tagIdCache = {};
 
   @override
   Future<ImportTasksCommandResponse> call(ImportTasksCommand request) async {
-    // Validate file path
     final pathValidation = _validateFilePath(request.filePath);
     if (pathValidation != null) {
       return ImportTasksCommandResponse(
@@ -117,7 +109,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       );
     }
 
-    // Check file size
     try {
       final fileSize = await file.length();
       if (fileSize > _maxFileSizeBytes) {
@@ -140,7 +131,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       );
     }
 
-    // Read file content with error handling
     final String input;
     try {
       input = await file.readAsString();
@@ -168,7 +158,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       );
     }
 
-    // Check for empty file before attempting CSV parsing
     if (input.trim().isEmpty) {
       return ImportTasksCommandResponse(
         successCount: 0,
@@ -177,7 +166,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       );
     }
 
-    // Detect EOL
     String? eol;
     if (input.contains('\r\n')) {
       eol = '\r\n';
@@ -185,7 +173,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       eol = '\n';
     }
 
-    // Parse CSV with error handling
     final List<List<dynamic>> rows;
     try {
       rows = CsvToListConverter(
@@ -229,14 +216,13 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     int failureCount = 0;
     final List<String> errors = [];
 
-    // Find header indices (Todoist may change order)
+    // Todoist may change column order - find by header name
     final header = rows.first.map((e) => e.toString().toUpperCase()).toList();
     final colIndices = _getColumnIndices(header, request.importType);
 
-    // Track parents for hierarchy (Indent level -> Task ID)
+    // Track parents for hierarchy: Indent level → Task ID
     final Map<int, String> parentIdsByIndent = {};
 
-    // Skip header row
     final dataRows = rows.skip(1);
 
     var i = 0;
@@ -252,7 +238,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
           successCount++;
         }
       } on FormatException catch (e, stackTrace) {
-        // Data format errors in CSV row
         failureCount++;
         final errorMsg = 'Row ${i + 2}: Invalid data format - ${e.message}';
         _addError(errors, errorMsg);
@@ -262,7 +247,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
           stackTrace: stackTrace,
         );
       } on ArgumentError catch (e, stackTrace) {
-        // Invalid argument errors (e.g., invalid column values)
         failureCount++;
         final errorMsg = 'Row ${i + 2}: ${e.message}';
         _addError(errors, errorMsg);
@@ -272,7 +256,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
           stackTrace: stackTrace,
         );
       } on StateError catch (e, stackTrace) {
-        // State errors from mediator
         failureCount++;
         final errorMsg = 'Row ${i + 2}: ${ImportErrorMessages.mediatorError} - ${e.message}';
         _addError(errors, errorMsg);
@@ -282,7 +265,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
           stackTrace: stackTrace,
         );
       } on Exception catch (e, stackTrace) {
-        // Known exceptions during row import
         failureCount++;
         final errorMsg = 'Row ${i + 2}: ${ImportErrorMessages.rowImportError} - $e';
         _addError(errors, errorMsg);
@@ -292,8 +274,7 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
           stackTrace: stackTrace,
         );
       } catch (e, stackTrace) {
-        // Don't catch Exception - let truly unexpected errors propagate
-        // Only catch specific exceptions we know how to handle
+        // Don't catch Exception - let unexpected errors propagate
         failureCount++;
         final errorMsg = 'Row ${i + 2}: Unexpected error - ${e.runtimeType}: $e';
         _addError(errors, errorMsg);
@@ -303,7 +284,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
           stackTrace: stackTrace,
         );
 
-        // Rethrow programming errors that should fail fast
         if (e is NoSuchMethodError || e is TypeError) {
           rethrow;
         }
@@ -318,7 +298,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
     );
   }
 
-  /// Validates file path to prevent directory traversal attacks
   String? _validateFilePath(String filePath) {
     if (filePath.trim().isEmpty) {
       return ImportErrorMessages.emptyFilePath;
@@ -478,7 +457,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       final val = row[priorityIdx];
       final valStr = val.toString().trim();
 
-      // Attempt robust numeric parsing first
       int? pVal;
       if (val is num) {
         pVal = val.toInt();
@@ -489,7 +467,6 @@ class ImportTasksCommandHandler implements IRequestHandler<ImportTasksCommand, I
       if (pVal != null && pVal >= 0 && pVal < EisenhowerPriority.values.length) {
         priority = EisenhowerPriority.values[pVal];
       } else {
-        // Fallback to string text parsing
         priority = _parsePriorityString(valStr);
       }
     }

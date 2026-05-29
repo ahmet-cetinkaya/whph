@@ -18,7 +18,6 @@ class SyncConflictResolutionService {
     final bool localIsDeleted = localEntity.deletedDate != null;
     final bool remoteIsDeleted = remoteEntity.deletedDate != null;
 
-    // Enhanced logging and special handling for habit records to help debug sync issues
     if (localEntity is HabitRecord && remoteEntity is HabitRecord) {
       final localRecord = localEntity as HabitRecord;
       final remoteRecord = remoteEntity as HabitRecord;
@@ -29,18 +28,14 @@ class SyncConflictResolutionService {
           '   Remote: deleted=$remoteIsDeleted, timestamp=$remoteTimestamp, occurredAt=${remoteRecord.occurredAt}');
       Logger.debug('habitId: local=${localRecord.habitId}, remote=${remoteRecord.habitId}');
 
-      // Special handling for habit records with same occurredAt but different habitId (edge case)
       if (localRecord.occurredAt == remoteRecord.occurredAt && localRecord.habitId != remoteRecord.habitId) {
         Logger.warning('Habit record with same occurredAt but different habitId - potential data corruption');
       }
 
-      // For habit records with same habitId and occurredAt, treat as same record regardless of modification date
       if (localRecord.habitId == remoteRecord.habitId && localRecord.occurredAt == remoteRecord.occurredAt) {
         Logger.debug('Same habit occurrence detected, using latest timestamp');
 
-        // If both have same deletion status, use timestamp-based resolution
         if (localIsDeleted == remoteIsDeleted) {
-          // Special case: if timestamps are identical, use acceptRemoteForceUpdate for consistency
           if (localTimestamp.isAtSameMomentAs(remoteTimestamp)) {
             return ConflictResolutionResult(
               action: ConflictAction.acceptRemoteForceUpdate,
@@ -50,7 +45,6 @@ class SyncConflictResolutionService {
             );
           }
 
-          // In this case, use the latest modification timestamp as the deciding factor
           return localTimestamp.isAfter(remoteTimestamp)
               ? ConflictResolutionResult(
                   action: ConflictAction.keepLocal,
@@ -65,11 +59,9 @@ class SyncConflictResolutionService {
                       'Same habit occurrence, remote timestamp ($remoteTimestamp) is newer than local ($localTimestamp)',
                 );
         }
-        // If deletion status differs, let general deletion conflict resolution handle it below
       }
     }
 
-    // Handle deletion conflicts specially
     final deletionConflict = _resolveDeletionConflict(
       localEntity,
       remoteEntity,
@@ -80,7 +72,6 @@ class SyncConflictResolutionService {
       return deletionConflict;
     }
 
-    // Handle recurring task conflicts with special logic
     final recurringTaskConflict = _resolveRecurringTaskConflict(
       localEntity,
       remoteEntity,
@@ -91,7 +82,6 @@ class SyncConflictResolutionService {
       return recurringTaskConflict;
     }
 
-    // Standard timestamp-based resolution
     return _resolveByTimestamp(
       localEntity,
       remoteEntity,
@@ -103,18 +93,9 @@ class SyncConflictResolutionService {
   /// Copies all remote task data to an existing task while preserving the existing task's ID.
   ///
   /// Used during sync conflict resolution when accepting remote changes for a recurring task.
-  /// This method leverages Task.copyWith's sentinel pattern to properly handle nullable fields:
-  /// - Remote null values are copied (e.g., clearing a reminder)
-  /// - Remote non-null values override local values
-  /// - ID is always preserved to maintain task identity
-  ///
-  /// Only applicable to Task entities; returns other entity types unchanged.
-  ///
-  /// **Issue #257 Context:** Prior to this fix, three fields were missing from the copy operation:
-  /// - plannedDateReminderCustomOffset
-  /// - deadlineDateReminderCustomOffset
-  /// - recurrenceConfiguration
-  /// This caused task reminders to be removed after syncing between devices.
+  /// Leverages Task.copyWith's sentinel pattern to properly handle nullable fields.
+  /// **Issue #257:** Prior to this fix, plannedDateReminderCustomOffset, deadlineDateReminderCustomOffset,
+  /// and recurrenceConfiguration were missing from the copy operation, causing reminders to drop after sync.
   T copyRemoteDataToExistingTask<T extends BaseEntity<String>>(
     T existingTask,
     T remoteTask,
@@ -132,7 +113,6 @@ class SyncConflictResolutionService {
     final existing = existingTask as Task;
     final remote = remoteTask as Task;
 
-    // Safety: Validate IDs match before copying - throw if mismatched
     if (existing.id != remote.id) {
       throw StateError(
         'copyRemoteDataToExistingTask: ID mismatch - existing=${existing.id}, remote=${remote.id}. '
@@ -140,10 +120,6 @@ class SyncConflictResolutionService {
       );
     }
 
-    // Copy remote data to existing task.
-    // Note: copyWith uses sentinel pattern where null means "set to null" and
-    // sentinel means "keep existing". Since remoteTask came from a sync source,
-    // we want to copy all fields including nulls (which may represent cleared data).
     final updatedTask = existing.copyWith(
       createdDate: remote.createdDate,
       modifiedDate: remote.modifiedDate,
@@ -171,8 +147,6 @@ class SyncConflictResolutionService {
       recurrenceConfiguration: remote.recurrenceConfiguration,
     );
 
-    // Safety: Verify the updated task was created successfully with correct ID
-    // This should never happen if copyWith works correctly, but we verify to fail fast
     if (updatedTask.id != existing.id) {
       throw StateError(
         'copyRemoteDataToExistingTask: Critical - ID changed during copy! '
@@ -181,7 +155,6 @@ class SyncConflictResolutionService {
       );
     }
 
-    // Safety: Verify critical invariants are maintained - throw for data corruption
     if (updatedTask.completedAt != null && updatedTask.completedAt!.isBefore(updatedTask.createdDate)) {
       throw StateError(
         'copyRemoteDataToExistingTask: completedAt (${updatedTask.completedAt}) is before createdDate (${updatedTask.createdDate}). '
@@ -207,25 +180,23 @@ class SyncConflictResolutionService {
     final bool localIsDeleted = localEntity.deletedDate != null;
     final bool remoteIsDeleted = remoteEntity.deletedDate != null;
 
-    // Only handle cases where deletion status differs
     if (localIsDeleted == remoteIsDeleted) {
       return null;
     }
 
-    // Determine appropriate grace periods based on entity type and which side is deleted
     Duration determineLocalDeletionGracePeriod() {
       if (localEntity is HabitRecord || remoteEntity is HabitRecord) {
-        return const Duration(minutes: 8); // Very conservative for habit records
+        return const Duration(minutes: 8);
       } else {
-        return const Duration(minutes: 5); // Higher threshold for local deletions in general
+        return const Duration(minutes: 5);
       }
     }
 
     Duration determineRemoteDeletionGracePeriod() {
       if (localEntity is HabitRecord || remoteEntity is HabitRecord) {
-        return const Duration(minutes: 8); // Very conservative for habit records
+        return const Duration(minutes: 8);
       } else {
-        return const Duration(minutes: 1, seconds: 30); // 1.5 minutes for remote deletions
+        return const Duration(minutes: 1, seconds: 30);
       }
     }
 
@@ -235,7 +206,6 @@ class SyncConflictResolutionService {
     if (localIsDeleted && !remoteIsDeleted) {
       final timeDifference = localTimestamp.difference(remoteTimestamp);
       if (timeDifference.abs() > localDeletionGracePeriod) {
-        // Local deletion occurred significantly later, so keep the local deletion
         return ConflictResolutionResult(
           action: ConflictAction.keepLocal,
           winningEntity: localEntity,
@@ -243,7 +213,6 @@ class SyncConflictResolutionService {
               'Local deletion ($localTimestamp) occurred significantly after remote modification ($remoteTimestamp)',
         );
       } else {
-        // Local deletion is recent relative to remote's modification, prefer the non-deleted remote entity
         return ConflictResolutionResult(
           action: ConflictAction.acceptRemote,
           winningEntity: remoteEntity,
@@ -254,7 +223,6 @@ class SyncConflictResolutionService {
     } else if (remoteIsDeleted && !localIsDeleted) {
       final timeDifference = remoteTimestamp.difference(localTimestamp);
       if (timeDifference.abs() > remoteDeletionGracePeriod) {
-        // Remote deletion occurred significantly later, so accept the remote deletion
         return ConflictResolutionResult(
           action: ConflictAction.acceptRemote,
           winningEntity: remoteEntity,
@@ -262,7 +230,6 @@ class SyncConflictResolutionService {
               'Remote deletion ($remoteTimestamp) occurred significantly after local modification ($localTimestamp)',
         );
       } else {
-        // Remote deletion is recent relative to local's modification, prefer the non-deleted local entity
         return ConflictResolutionResult(
           action: ConflictAction.keepLocal,
           winningEntity: localEntity,
@@ -282,7 +249,6 @@ class SyncConflictResolutionService {
     DateTime localTimestamp,
     DateTime remoteTimestamp,
   ) {
-    // Only apply to Task entities with the same recurrence parent
     if (localEntity is! Task || remoteEntity is! Task) {
       return null;
     }
@@ -310,7 +276,6 @@ class SyncConflictResolutionService {
           reason: 'Remote recurring task has earlier planned date ($remotePlannedDate vs $localPlannedDate)',
         );
       }
-      // If planned dates are the same, fall through to timestamp resolution
     }
 
     return null;
@@ -336,8 +301,6 @@ class SyncConflictResolutionService {
         reason: 'Remote timestamp ($remoteTimestamp) is newer than local ($localTimestamp)',
       );
     } else {
-      // For identical timestamps, check if these are tasks with different recurrence parents
-      // In such cases, use force update to ensure proper handling
       if (localEntity is Task && remoteEntity is Task) {
         final localTask = localEntity as Task;
         final remoteTask = remoteEntity as Task;
@@ -354,8 +317,7 @@ class SyncConflictResolutionService {
         }
       }
 
-      // For other identical timestamp cases, use entity ID for deterministic resolution
-      // This prevents random behavior when syncing between devices
+      // Use entity ID for deterministic resolution to prevent random behavior when syncing
       final useLocal = localEntity.id.compareTo(remoteEntity.id) > 0;
       return ConflictResolutionResult(
         action: useLocal ? ConflictAction.keepLocal : ConflictAction.acceptRemote,

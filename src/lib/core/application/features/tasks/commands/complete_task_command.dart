@@ -10,27 +10,15 @@ import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart'
 
 /// Command to complete a task by ID.
 ///
-/// This command consolidates the task completion logic that was previously
-/// duplicated across multiple locations (task_complete_button, notification services,
-/// and various pages). By centralizing this logic, we ensure consistent behavior
-/// and make maintenance easier.
-///
-/// The command:
-/// 1. Fetches the task from the repository (not via Query - proper CQRS)
-/// 2. Sets completedAt to now (UTC)
-/// 3. Preserves all existing task properties
-/// 4. Handles recurrence days via ITaskRecurrenceService
-/// 5. Auto-adds time record if task has estimated time (matching SaveTaskCommand behavior)
-/// 6. Notifies TasksService to trigger UI updates and recurring task creation
+/// Consolidates task completion logic previously duplicated across UI and notification code.
+/// Handles: completion, recurrence, auto time records, and UI notification.
 class CompleteTaskCommand implements IRequest<CompleteTaskCommandResponse> {
-  /// The ID of the task to complete
   final String id;
 
   CompleteTaskCommand({required this.id});
 }
 
 class CompleteTaskCommandResponse {
-  /// The ID of the completed task
   final String taskId;
 
   CompleteTaskCommandResponse({required this.taskId});
@@ -51,7 +39,6 @@ class CompleteTaskCommandHandler implements IRequestHandler<CompleteTaskCommand,
 
   @override
   Future<CompleteTaskCommandResponse> call(CompleteTaskCommand command) async {
-    // Step 1: Fetch the task from repository (proper CQRS - not calling a Query)
     final task = await _taskRepository.getById(command.id);
     if (task == null) {
       throw BusinessException(
@@ -60,27 +47,23 @@ class CompleteTaskCommandHandler implements IRequestHandler<CompleteTaskCommand,
       );
     }
 
-    // Step 2: Set completedAt to now (UTC)
     task.completedAt = DateTime.now().toUtc();
 
-    // Update recurrence days if needed (preserves existing behavior)
     if (task.recurrenceType != RecurrenceType.none) {
       task.setRecurrenceDays(_recurrenceService.getRecurrenceDays(task));
     }
 
-    // Step 3: Update the task in repository (proper CQRS - not calling another Command)
     await _taskRepository.update(task);
 
-    // Step 4: Auto-add time record if task has estimated time (matching SaveTaskCommand behavior)
-    // This ensures time tracking consistency whether completing via SaveTaskCommand or CompleteTaskCommand
+    // Auto-add time record if task has estimated time but no existing time records
+    // (matching SaveTaskCommand behavior for consistency)
     if (task.estimatedTime != null && task.estimatedTime! > 0) {
-      // Check if there are already time records for this task
       final existingTimeRecords = await _taskTimeRecordRepository.getList(
-        0, 1, // Only need to check if any exist
+        0,
+        1,
         customWhereFilter: CustomWhereFilter('task_id = ? AND deleted_date IS NULL', [task.id]),
       );
 
-      // If no time records exist, create one with the estimated time
       if (existingTimeRecords.items.isEmpty) {
         final now = DateTime.now().toUtc();
 
@@ -88,14 +71,12 @@ class CompleteTaskCommandHandler implements IRequestHandler<CompleteTaskCommand,
           repository: _taskTimeRecordRepository,
           taskId: task.id,
           targetDate: now,
-          durationToAdd: task.estimatedTime! * 60, // Convert minutes to seconds
+          durationToAdd: task.estimatedTime! * 60,
         );
       }
     }
 
-    // Step 5: Notify listeners about task completion
-    // This triggers UI updates and recurring task creation
-    // Note: This is a void method, so we don't await it
+    // Notify UI to update and trigger recurring task creation
     _tasksService.notifyTaskCompleted(command.id);
 
     return CompleteTaskCommandResponse(taskId: command.id);

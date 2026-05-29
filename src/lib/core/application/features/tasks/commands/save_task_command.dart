@@ -44,9 +44,8 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
 
   /// Creates a command to save or update a task.
   ///
-  /// Date fields (plannedDate, deadlineDate) are automatically normalized:
-  /// - Date-only values (time component is 00:00:00 in local timezone) are converted to UTC start of that local day
-  /// - Values with explicit times preserve their time component in UTC
+  /// Date fields are automatically normalized: date-only values (time 00:00:00 in local timezone)
+  /// become UTC start of that local day; values with explicit times preserve their time component.
   ///
   /// Throws [BusinessException] if deadlineDate is before plannedDate.
   SaveTaskCommand({
@@ -108,21 +107,18 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         _taskTimeRecordRepository = taskTimeRecordRepository,
         _settingRepository = settingRepository;
 
-  /// Gets the default estimated time from user settings
-  /// Returns null if user has disabled default estimated time
+  /// Gets the default estimated time from user settings.
+  /// Returns null if user has disabled default estimated time.
   Future<int?> _getDefaultEstimatedTime() async {
     try {
       final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime);
       if (setting == null) {
-        // Setting not found, use current default behavior (20 minutes)
         return TaskConstants.defaultEstimatedTime;
       }
 
       final value = setting.getValue<int?>();
-      // Return null if user set to 0 (disabled), otherwise return the value
       return value == 0 ? null : value;
     } on FormatException catch (e, stackTrace) {
-      // Handle parsing errors specifically
       Logger.error(
         'SaveTaskCommand: Failed to parse default estimated time setting [$TaskErrorIds.saveCommandDefaultEstimatedTimeFailed]',
         error: e,
@@ -131,7 +127,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       );
       return TaskConstants.defaultEstimatedTime;
     } catch (e, stackTrace) {
-      // Handle any other unexpected errors (database errors, etc.)
       Logger.error(
         'SaveTaskCommand: Unexpected error getting default estimated time [$TaskErrorIds.saveCommandDefaultEstimatedTimeFailed]',
         error: e,
@@ -143,7 +138,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
   }
 
   Future<(ReminderTime, int?)> _getDefaultPlannedDateReminder() async {
-    String? value; // Declare outside try block for error logging
+    String? value;
     try {
       final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder);
       if (setting == null) return (TaskConstants.defaultReminderTime, null);
@@ -158,7 +153,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       final reminderTime = ReminderTimeExtension.fromString(value);
 
-      // Fetch custom offset if type is custom
       if (reminderTime == ReminderTime.custom) {
         final offset = await _getDefaultPlannedDateReminderCustomOffset();
         if (offset == null) {
@@ -172,7 +166,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       return (reminderTime, null);
     } on ArgumentError catch (e, stackTrace) {
-      // Handle invalid enum values specifically
       Logger.error(
         'SaveTaskCommand: Invalid reminder time value: "$value" [$TaskErrorIds.saveCommandDefaultPlannedDateReminderFailed]',
         error: e,
@@ -181,7 +174,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       );
       return (TaskConstants.defaultReminderTime, null);
     } on FormatException catch (e, stackTrace) {
-      // Handle parsing errors for reminder time string
       Logger.error(
         'SaveTaskCommand: Failed to parse default planned date reminder setting [$TaskErrorIds.saveCommandDefaultPlannedDateReminderFailed]',
         error: e,
@@ -212,7 +204,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       }
       return value;
     } on FormatException catch (e, stackTrace) {
-      // Handle parsing errors specifically
       Logger.error(
         'SaveTaskCommand: Failed to parse default reminder custom offset setting [$TaskErrorIds.saveCommandDefaultReminderCustomOffsetFailed]',
         error: e,
@@ -233,7 +224,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
   @override
   Future<SaveTaskCommandResponse> call(SaveTaskCommand request) async {
-    // Validate date range at handler level for proper error handling
     final plannedDate = request.plannedDate;
     final deadlineDate = request.deadlineDate;
     if (plannedDate != null && deadlineDate != null && deadlineDate.isBefore(plannedDate)) {
@@ -255,31 +245,26 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.description = request.description;
       task.priority = request.priority;
 
-      // Check if planned date is being changed
       final bool isPlannedDateChanged = request.plannedDate != task.plannedDate;
       task.plannedDate = request.plannedDate;
 
       task.deadlineDate = request.deadlineDate;
       task.estimatedTime = request.estimatedTime != null && request.estimatedTime! > 0 ? request.estimatedTime : null;
 
-      // Handle completion status
       task.completedAt = request.completedAt;
 
       task.order = request.order ?? task.order;
 
-      // Update reminder settings
       if (request.plannedDateReminderTime != null) {
-        // Explicit reminder setting provided
         task.plannedDateReminderTime = request.plannedDateReminderTime!;
         task.plannedDateReminderCustomOffset = request.plannedDateReminderCustomOffset;
       } else if (isPlannedDateChanged) {
         if (task.plannedDate != null) {
-          // When the date changes, the default reminder policy is applied.
+          // Apply default reminder when date changes
           final (defaultReminder, customOffset) = await _getDefaultPlannedDateReminder();
           task.plannedDateReminderTime = defaultReminder;
           task.plannedDateReminderCustomOffset = customOffset;
         } else {
-          // Date cleared -> clear reminder
           task.plannedDateReminderTime = ReminderTime.none;
           task.plannedDateReminderCustomOffset = null;
         }
@@ -290,12 +275,10 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.deadlineDateReminderCustomOffset = request.deadlineDateReminderCustomOffset;
       }
 
-      // Update recurrence settings if provided
       if (request.recurrenceType != null) {
         task.recurrenceType = request.recurrenceType!;
       }
 
-      // Only update these if recurrence type is not none
       if (task.recurrenceType != RecurrenceType.none) {
         task.recurrenceInterval = request.recurrenceInterval;
         task.setRecurrenceDays(request.recurrenceDays);
@@ -303,7 +286,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.recurrenceEndDate = request.recurrenceEndDate;
         task.recurrenceCount = request.recurrenceCount;
       } else {
-        // Clear recurrence settings if type is none
         task.recurrenceInterval = null;
         task.setRecurrenceDays(null);
         task.recurrenceStartDate = null;
@@ -312,8 +294,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         task.recurrenceConfiguration = null;
       }
 
-      // Only update recurrenceParentId if explicitly provided in the request.
-      // This preserves the existing value when updating for completion toggle or other changes.
+      // Preserve existing recurrenceParentId when not explicitly provided
       if (request.recurrenceParentId != null) {
         task.recurrenceParentId = request.recurrenceParentId;
       }
@@ -324,7 +305,6 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       await _taskRepository.update(task);
     } else {
-      // Get the last task to determine the order
       final lastTasks = await _taskRepository.getList(
         0,
         1,
@@ -386,16 +366,15 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       await _taskRepository.add(task);
     }
 
-    // Auto-add time record when task is completed and has estimated time but no existing time records
+    // Auto-add time record when completing a task with estimated time but no existing time records
     final bool isTaskCompleted = request.completedAt != null;
     if (isTaskCompleted && task.estimatedTime != null && task.estimatedTime! > 0) {
-      // Check if there are already time records for this task
       final existingTimeRecords = await _taskTimeRecordRepository.getList(
-        0, 1, // Only need to check if any exist
+        0,
+        1,
         customWhereFilter: CustomWhereFilter('task_id = ? AND deleted_date IS NULL', [task.id]),
       );
 
-      // If no time records exist, create one with the estimated time
       if (existingTimeRecords.items.isEmpty) {
         final now = DateTime.now().toUtc();
 
@@ -403,12 +382,11 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           repository: _taskTimeRecordRepository,
           taskId: task.id,
           targetDate: now,
-          durationToAdd: task.estimatedTime! * 60, // Convert minutes to seconds
+          durationToAdd: task.estimatedTime! * 60,
         );
       }
     }
 
-    // Add initial tags if provided
     if (request.tagIdsToAdd != null) {
       for (final tagId in request.tagIdsToAdd!) {
         final taskTag = TaskTag(
