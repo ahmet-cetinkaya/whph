@@ -1,20 +1,24 @@
 # Windows CI Disabled - Visual Studio 2026 Compatibility Issue
 
-**Status**: ⚠️ Windows CI temporarily disabled
-**Date**: 2026-05-24
-**Reason**: Flutter 3.38.0 cannot detect Visual Studio 2026 on GitHub Actions `windows-latest` runner
+**Status**: ⚠️ Windows CI temporarily disabled **Date**: 2026-05-24 **Reason**:
+Flutter 3.38.0 cannot detect Visual Studio 2026 on GitHub Actions
+`windows-latest` runner
 
 ---
 
 ## Problem
 
-GitHub Actions `windows-latest` runner now redirects to `windows-2025-vs2026` which includes:
+GitHub Actions `windows-latest` runner now redirects to `windows-2025-vs2026`
+which includes:
+
 - Visual Studio 2026 (version 18.x)
 - No Visual Studio 2019 or 2022
 
-Flutter 3.38.0's `vswhere` detection cannot find VS 2026, causing it to fall back to "Visual Studio 16 2019" generator which doesn't exist on the runner.
+Flutter 3.38.0's `vswhere` detection cannot find VS 2026, causing it to fall
+back to "Visual Studio 16 2019" generator which doesn't exist on the runner.
 
 **Error**:
+
 ```
 CMake Error at CMakeLists.txt:3 (project):
   Generator: Visual Studio 16 2019
@@ -25,12 +29,15 @@ CMake Error at CMakeLists.txt:3 (project):
 
 ## Root Cause
 
-**Flutter Issue**: [flutter/flutter#176399](https://github.com/flutter/flutter/issues/176399)
+**Flutter Issue**:
+[flutter/flutter#176399](https://github.com/flutter/flutter/issues/176399)
+
 - Flutter's `visual_studio.dart` maps VS versions to CMake generators
 - VS 18 (2026) mapping exists but detection fails
 - Flutter ignores `CMAKE_GENERATOR` environment variable
 
 **GitHub Actions Notice**:
+
 - `windows-latest` redirects to `windows-2025-vs2026` by June 15, 2026
 - Free tier doesn't have access to `windows-2019` runner
 
@@ -87,10 +94,13 @@ gh release create <version> \
 
 ## Commits Related to This Issue
 
-- `9afaa65b` fix(ci): use windows-2019 runner for Visual Studio 2019 compatibility
-- `bd7c4b31` fix(ci): correct Select-Object parameter name  
+- `9afaa65b` fix(ci): use windows-2019 runner for Visual Studio 2019
+  compatibility
+- `bd7c4b31` fix(ci): correct Select-Object parameter name
 - `e54fccd4` fix(ci): correct PowerShell syntax error in Flutter SDK check
 - `96e32c4f` debug(ci): add checks for Flutter SDK hardcoded CMake generator
-- `7a50c18f` fix(ci): use Visual Studio 18 2026 generator (matches windows-latest runner)
-- `4ed56c2c` fix(ci): add intl dependency override for Flutter 3.38.0 compatibility
+- `7a50c18f` fix(ci): use Visual Studio 18 2026 generator (matches
+  windows-latest runner)
+- `4ed56c2c` fix(ci): add intl dependency override for Flutter 3.38.0
+  compatibility
 - `77648301` fix(ci): force CMake generator to Visual Studio 17 2022
