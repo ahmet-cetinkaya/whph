@@ -695,6 +695,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         priority: task.priority,
         // Assuming TaskWithTotalDuration has completedAt and logic for isCompleted
         isCompleted: task.completedAt != null,
+        completedAt: task.completedAt,
         plannedDate: task.plannedDate,
         deadlineDate: task.deadlineDate,
         modifiedDate: task.modifiedDate,

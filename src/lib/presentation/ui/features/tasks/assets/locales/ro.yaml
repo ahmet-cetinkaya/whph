@@ -25,6 +25,8 @@ tasks:
     message: Ești sigur că vrei să ștergi această sarcină?
     title: Șterge Sarcină
   details:
+    completed_date:
+      label: Data finalizării
     deadline_date:
       label: Data Limită
     description:

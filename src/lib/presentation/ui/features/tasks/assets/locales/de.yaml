@@ -25,6 +25,8 @@ tasks:
     message: Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?
     title: Aufgabe löschen
   details:
+    completed_date:
+      label: Abschlussdatum
     deadline_date:
       label: Fälligkeitsdatum
     description:

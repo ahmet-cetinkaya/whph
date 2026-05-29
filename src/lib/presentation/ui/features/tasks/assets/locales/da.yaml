@@ -25,6 +25,8 @@ tasks:
     message: Er du sikker på, at du vil slette denne opgave?
     title: Slet opgave
   details:
+    completed_date:
+      label: Afslutningsdato
     deadline_date:
       label: Fristdato
     description:

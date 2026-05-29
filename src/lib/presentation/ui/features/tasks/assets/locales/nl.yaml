@@ -25,6 +25,8 @@ tasks:
     message: Weet je zeker dat je deze taak wilt verwijderen?
     title: Taak Verwijderen
   details:
+    completed_date:
+      label: Voltooiingsdatum
     deadline_date:
       label: Deadline Datum
     description:

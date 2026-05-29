@@ -25,6 +25,8 @@ tasks:
     message: Sei sicuro di voler eliminare questa attività?
     title: Elimina attività
   details:
+    completed_date:
+      label: Data di completamento
     deadline_date:
       label: Data di scadenza
     description:

@@ -26,6 +26,8 @@ tasks:
     message: Bu görevi silmek istediğinize emin misiniz?
     title: Görevi Sil
   details:
+    completed_date:
+      label: Tamamlanma Tarihi
     deadline_date:
       label: Son Tarih
     description:

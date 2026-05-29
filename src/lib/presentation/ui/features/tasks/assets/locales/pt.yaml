@@ -25,6 +25,8 @@ tasks:
     message: Tem certeza de que deseja excluir esta tarefa?
     title: Excluir Tarefa
   details:
+    completed_date:
+      label: Data de conclusão
     deadline_date:
       label: Data Limite
     description:

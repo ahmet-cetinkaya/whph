@@ -9,6 +9,7 @@ class TaskListItem {
   final DateTime? deadlineDate;
   final DateTime? modifiedDate;
   final DateTime? createdDate;
+  final DateTime? completedAt;
   final bool isCompleted;
   final List<TagListItem> tags;
   final int? estimatedTime;
@@ -31,6 +32,7 @@ class TaskListItem {
     this.deadlineDate,
     this.modifiedDate,
     this.createdDate,
+    this.completedAt,
     this.tags = const [],
     this.estimatedTime,
     this.parentTaskId,
@@ -52,6 +54,7 @@ class TaskListItem {
     DateTime? deadlineDate,
     DateTime? modifiedDate,
     DateTime? createdDate,
+    DateTime? completedAt,
     bool? isCompleted,
     List<TagListItem>? tags,
     int? estimatedTime,
@@ -73,6 +76,7 @@ class TaskListItem {
       deadlineDate: deadlineDate ?? this.deadlineDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
       createdDate: createdDate ?? this.createdDate,
+      completedAt: completedAt ?? this.completedAt,
       isCompleted: isCompleted ?? this.isCompleted,
       tags: tags ?? this.tags,
       estimatedTime: estimatedTime ?? this.estimatedTime,

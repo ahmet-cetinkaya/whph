@@ -25,6 +25,8 @@ tasks:
     message: ¿Estás seguro de que quieres eliminar esta tarea?
     title: Eliminar tarea
   details:
+    completed_date:
+      label: Fecha de finalización
     deadline_date:
       label: Fecha límite
     description:

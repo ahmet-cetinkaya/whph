@@ -12,6 +12,8 @@ class TaskGroupingHelper {
     switch (sortField) {
       case TaskSortFields.createdDate:
         return GroupingUtils.getForwardDateGroup(task.createdDate, now: now);
+      case TaskSortFields.completedDate:
+        return GroupingUtils.getForwardDateGroup(task.completedAt, now: now);
       case TaskSortFields.deadlineDate:
         return GroupingUtils.getForwardDateGroup(task.deadlineDate, now: now);
       case TaskSortFields.modifiedDate:
@@ -38,6 +40,7 @@ class TaskGroupingHelper {
     switch (sortField) {
       case TaskSortFields.priority:
       case TaskSortFields.createdDate:
+      case TaskSortFields.completedDate:
       case TaskSortFields.deadlineDate:
       case TaskSortFields.modifiedDate:
       case TaskSortFields.plannedDate:

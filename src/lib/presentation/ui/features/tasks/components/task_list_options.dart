@@ -648,6 +648,11 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         translationKey: SharedTranslationKeys.createdDateLabel,
                       ),
                       SortOptionWithTranslationKey(
+                        field: TaskSortFields.completedDate,
+                        direction: SortDirection.desc,
+                        translationKey: TaskTranslationKeys.completedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
                         field: TaskSortFields.modifiedDate,
                         direction: SortDirection.desc,
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
@@ -699,6 +704,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.createdDate,
                         translationKey: SharedTranslationKeys.createdDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.completedDate,
+                        translationKey: TaskTranslationKeys.completedDateLabel,
                       ),
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.modifiedDate,

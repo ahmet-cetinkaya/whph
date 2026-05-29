@@ -58,6 +58,8 @@ class FakeTasksService extends Fake implements TasksService {
   @override
   ValueNotifier<String?> get onTaskDeleted => ValueNotifier(null);
   @override
+  ValueNotifier<String?> get onTaskCompleted => ValueNotifier(null);
+  @override
   void notifyTaskUpdated(String taskId) {}
   @override
   void notifyTaskCompleted(String taskId) {}

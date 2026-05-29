@@ -25,6 +25,8 @@ tasks:
     message: Är du säker på att du vill ta bort denna uppgift?
     title: Ta Bort Uppgift
   details:
+    completed_date:
+      label: Slutförandedatum
     deadline_date:
       label: Förfallodatum
     description:

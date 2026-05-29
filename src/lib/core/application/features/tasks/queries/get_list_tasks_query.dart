@@ -218,6 +218,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   void _addCustomOrder(List<CustomOrder> orders, SortOption<TaskSortFields> option) {
     if (option.field == TaskSortFields.createdDate) {
       orders.add(CustomOrder(field: "created_date", direction: option.direction));
+    } else if (option.field == TaskSortFields.completedDate) {
+      orders.add(CustomOrder(field: "completed_at", direction: option.direction));
     } else if (option.field == TaskSortFields.deadlineDate) {
       orders.add(CustomOrder(field: "deadline_date", direction: option.direction));
     } else if (option.field == TaskSortFields.totalDuration) {

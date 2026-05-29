@@ -25,6 +25,8 @@ tasks:
     message: このタスクを削除してもよろしいですか？
     title: タスクを削除
   details:
+    completed_date:
+      label: 完了日
     deadline_date:
       label: 期限日
     description:

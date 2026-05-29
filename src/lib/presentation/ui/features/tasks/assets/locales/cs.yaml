@@ -25,6 +25,8 @@ tasks:
     message: Jste si jisti, že chcete smazat tento úkol?
     title: Smazat úkol
   details:
+    completed_date:
+      label: Datum dokončení
     deadline_date:
       label: Datum splatnosti
     description:

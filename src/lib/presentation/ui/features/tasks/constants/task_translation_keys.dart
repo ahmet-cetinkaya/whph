@@ -101,6 +101,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String priorityLabel = 'tasks.details.priority.label';
   static const String plannedDateLabel = 'tasks.details.planned_date.label';
   static const String deadlineDateLabel = 'tasks.details.deadline_date.label';
+  static const String completedDateLabel = 'tasks.details.completed_date.label';
   static const String descriptionLabel = 'tasks.details.description.label';
   static const String addDescriptionHint = 'tasks.details.description.hint';
   static const String descriptionContext = 'tasks.details.description.context';

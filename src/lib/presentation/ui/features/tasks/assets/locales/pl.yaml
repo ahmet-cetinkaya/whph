@@ -25,6 +25,8 @@ tasks:
     message: Czy na pewno chcesz usunąć to zadanie?
     title: Usuń zadanie
   details:
+    completed_date:
+      label: Data ukończenia
     deadline_date:
       label: Data terminu
     description:

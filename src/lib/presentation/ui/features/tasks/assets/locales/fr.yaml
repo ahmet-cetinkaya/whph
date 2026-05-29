@@ -25,6 +25,8 @@ tasks:
     message: Êtes-vous sûr de vouloir supprimer cette tâche ?
     title: Supprimer la tâche
   details:
+    completed_date:
+      label: Date de complétion
     deadline_date:
       label: Date d'échéance
     description:

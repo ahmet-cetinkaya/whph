@@ -25,6 +25,8 @@ tasks:
     message: Ste prepričani, da želite izbrisati to nalogo?
     title: Izbriši Nalogo
   details:
+    completed_date:
+      label: Datum dokončanja
     deadline_date:
       label: Rok
     description:

@@ -25,6 +25,8 @@ tasks:
     message: 您确定要删除此任务吗？
     title: 删除任务
   details:
+    completed_date:
+      label: 完成日期
     deadline_date:
       label: 截止日期
     description:

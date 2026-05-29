@@ -1,5 +1,6 @@
 enum TaskSortFields {
   createdDate,
+  completedDate,
   deadlineDate,
   totalDuration,
   estimatedTime,

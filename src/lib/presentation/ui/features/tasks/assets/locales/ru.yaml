@@ -25,6 +25,8 @@ tasks:
     message: Вы уверены, что хотите удалить эту задачу?
     title: Удалить задачу
   details:
+    completed_date:
+      label: Дата завершения
     deadline_date:
       label: Дата срока
     description:

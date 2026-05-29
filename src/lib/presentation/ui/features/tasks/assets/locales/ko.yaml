@@ -25,6 +25,8 @@ tasks:
     message: 이 작업을 삭제하시겠습니까?
     title: 작업 삭제
   details:
+    completed_date:
+      label: 완료 날짜
     deadline_date:
       label: 마감일
     description:

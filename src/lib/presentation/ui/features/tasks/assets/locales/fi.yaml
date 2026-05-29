@@ -25,6 +25,8 @@ tasks:
     message: Oletko varma että haluat poistaa tämän tehtävän?
     title: Poista Tehtävä
   details:
+    completed_date:
+      label: Valmistumispäivä
     deadline_date:
       label: Eräpäivä
     description:

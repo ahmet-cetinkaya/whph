@@ -25,6 +25,8 @@ tasks:
     message: Ви впевнені, що хочете видалити це завдання?
     title: Видалити завдання
   details:
+    completed_date:
+      label: Дата завершення
     deadline_date:
       label: Дата дедлайну
     description:

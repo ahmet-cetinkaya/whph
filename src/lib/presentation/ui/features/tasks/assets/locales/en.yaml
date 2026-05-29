@@ -25,6 +25,8 @@ tasks:
     message: Are you sure you want to delete this task?
     title: Delete Task
   details:
+    completed_date:
+      label: Completed Date
     deadline_date:
       label: Deadline Date
     description:
