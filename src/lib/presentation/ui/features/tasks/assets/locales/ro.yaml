@@ -507,3 +507,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Data limită trebuie să fie după data planificată
     deadline_time_invalid: Ora termenului limită este invalidă
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Mutarea sarcinilor între coloane nu este acceptată

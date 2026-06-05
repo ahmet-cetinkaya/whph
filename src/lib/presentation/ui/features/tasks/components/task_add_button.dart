@@ -8,6 +8,7 @@ import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_draft.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
@@ -124,14 +125,16 @@ class _TaskAddButtonState extends State<TaskAddButton> {
     if (context.mounted) {
       await TaskCreationHelper.createTask(
         context: context,
-        initialTagIds: parentData.tagIds.isNotEmpty ? parentData.tagIds : null,
-        initialPriority: parentData.priority,
-        initialPlannedDate: widget.initialPlannedDate,
-        initialDeadlineDate: widget.initialDeadlineDate,
-        initialEstimatedTime: widget.initialEstimatedTime,
-        initialTitle: widget.initialTitle,
-        initialCompleted: widget.initialCompleted,
-        initialParentTaskId: widget.initialParentTaskId,
+        draft: TaskDraft(
+          tagIds: parentData.tagIds.isNotEmpty ? parentData.tagIds : null,
+          priority: parentData.priority,
+          plannedDate: widget.initialPlannedDate,
+          deadlineDate: widget.initialDeadlineDate,
+          estimatedTime: widget.initialEstimatedTime,
+          title: widget.initialTitle,
+          completed: widget.initialCompleted,
+          parentTaskId: widget.initialParentTaskId,
+        ),
         onTaskCreated: (taskId, taskData) {
           if (widget.onTaskCreated != null) {
             widget.onTaskCreated!(taskId, taskData);

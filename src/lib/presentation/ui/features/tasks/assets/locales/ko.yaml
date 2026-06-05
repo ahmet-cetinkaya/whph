@@ -546,3 +546,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: 마감일이 계획일 이후여야 합니다
     deadline_time_invalid: 마감 시간이 잘못되었습니다
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: 열 간에 작업을 이동하는 것은 지원되지 않습니다

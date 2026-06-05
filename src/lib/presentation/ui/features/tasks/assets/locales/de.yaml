@@ -589,3 +589,8 @@ tasks:
       Das Fälligkeitsdatum darf nicht vor dem geplanten
       Datum liegen
     deadline_time_invalid: Termin-Uhrzeit ist ungültig
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Das Verschieben von Aufgaben zwischen Spalten wird nicht unterstützt

@@ -587,3 +587,8 @@ tasks:
       Крайний срок должен быть после запланированной
       даты
     deadline_time_invalid: Неверное время крайнего срока
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Перемещение задач между столбцами не поддерживается

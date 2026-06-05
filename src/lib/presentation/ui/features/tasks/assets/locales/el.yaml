@@ -515,3 +515,8 @@ tasks:
       Η ημερομηνία προθεσμίας πρέπει να είναι μετά
       την προγραμματισμένη ημερομηνία
     deadline_time_invalid: Παρακαλώ εισαγάγετε έγκυρη ώρα προθεσμίας
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Η μετακίνηση εργασιών μεταξύ στηλών δεν υποστηρίζεται

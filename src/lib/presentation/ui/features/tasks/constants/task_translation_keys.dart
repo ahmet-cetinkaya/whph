@@ -307,4 +307,9 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String importGenericInfoDescription = 'tasks.import.generic_info_description';
   static const String importTodoistInfoTitle = 'tasks.import.todoist_info_title';
   static const String importTodoistInfoDescription = 'tasks.import.todoist_info_description';
+
+  // View Mode
+  static const String viewModeListTooltip = 'tasks.view_mode.list_tooltip';
+  static const String viewModeBoardTooltip = 'tasks.view_mode.board_tooltip';
+  static const String boardCrossColumnMoveNotSupported = 'tasks.board.cross_column_move_not_supported';
 }

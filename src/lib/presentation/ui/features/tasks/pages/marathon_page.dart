@@ -24,6 +24,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
+import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
@@ -73,6 +74,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   String? _taskSearchQuery;
   bool _showCompletedTasks = false;
   bool _showSubTasks = false;
+  TaskViewMode _viewMode = TaskViewMode.list;
 
   @override
   bool get wantKeepAlive => true;
@@ -391,6 +393,14 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     }
   }
 
+  void _onViewModeChange(TaskViewMode mode) {
+    if (mounted) {
+      setState(() {
+        _viewMode = mode;
+      });
+    }
+  }
+
   void _startDimmingTimer() {
     _dimmingTimer?.cancel();
     _dimmingTimer = Timer(_dimmingDelay, () {
@@ -556,6 +566,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                       showSubTasksToggle: true,
                                       sortConfig: _sortConfig,
                                       onSortChange: _onSortConfigChange,
+                                      viewMode: _viewMode,
+                                      onViewModeChange: _onViewModeChange,
                                       settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
                                     ),
                                   ),
@@ -574,34 +586,74 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                           AnimatedOpacity(
                             opacity: _isDimmed ? _dimmingOpacity : 1.0,
                             duration: const Duration(milliseconds: 500),
-                            child: TaskList(
-                              key: _taskListKey,
-                              filterByCompleted: _showCompletedTasks,
-                              filterByTags: _selectedTaskTagIds,
-                              filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
-                              filterByPlannedEndDate:
-                                  _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
-                              filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
-                              filterByDeadlineEndDate:
-                                  _showCompletedTasks ? null : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
-                              filterDateOr: true,
-                              filterByCompletedStartDate:
-                                  _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
-                              filterByCompletedEndDate:
-                                  _showCompletedTasks ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999) : null,
-                              search: _taskSearchQuery,
-                              includeSubTasks: _showSubTasks,
-                              onTaskCompleted: _onTaskCompleted,
-                              onClickTask: (task) => _showTaskDetails(task.id),
-                              onSelectTask: _onSelectTask,
-                              onScheduleTask: (_, __) => _onTasksChanged(),
-                              onTasksLoaded: _onTasksLoaded,
-                              selectedTask: _selectedTask,
-                              showSelectButton: true,
-                              transparentCards: true,
-                              enableReordering: _sortConfig.useCustomOrder,
-                              sortConfig: _sortConfig,
-                            ),
+                            child: _viewMode == TaskViewMode.board
+                                ? SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.6,
+                                    child: TaskList(
+                                      key: _taskListKey,
+                                      filterByCompleted: _showCompletedTasks,
+                                      filterByTags: _selectedTaskTagIds,
+                                      filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                                      filterByPlannedEndDate: _showCompletedTasks
+                                          ? null
+                                          : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                                      filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                                      filterByDeadlineEndDate: _showCompletedTasks
+                                          ? null
+                                          : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                                      filterDateOr: true,
+                                      filterByCompletedStartDate:
+                                          _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
+                                      filterByCompletedEndDate: _showCompletedTasks
+                                          ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
+                                          : null,
+                                      search: _taskSearchQuery,
+                                      includeSubTasks: _showSubTasks,
+                                      onTaskCompleted: _onTaskCompleted,
+                                      onClickTask: (task) => _showTaskDetails(task.id),
+                                      onSelectTask: _onSelectTask,
+                                      onScheduleTask: (_, __) => _onTasksChanged(),
+                                      onTasksLoaded: _onTasksLoaded,
+                                      selectedTask: _selectedTask,
+                                      showSelectButton: true,
+                                      transparentCards: true,
+                                      enableReordering: _sortConfig.useCustomOrder,
+                                      sortConfig: _sortConfig,
+                                      viewMode: _viewMode,
+                                    ),
+                                  )
+                                : TaskList(
+                                    key: _taskListKey,
+                                    filterByCompleted: _showCompletedTasks,
+                                    filterByTags: _selectedTaskTagIds,
+                                    filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                                    filterByPlannedEndDate: _showCompletedTasks
+                                        ? null
+                                        : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                                    filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                                    filterByDeadlineEndDate: _showCompletedTasks
+                                        ? null
+                                        : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                                    filterDateOr: true,
+                                    filterByCompletedStartDate:
+                                        _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
+                                    filterByCompletedEndDate: _showCompletedTasks
+                                        ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
+                                        : null,
+                                    search: _taskSearchQuery,
+                                    includeSubTasks: _showSubTasks,
+                                    onTaskCompleted: _onTaskCompleted,
+                                    onClickTask: (task) => _showTaskDetails(task.id),
+                                    onSelectTask: _onSelectTask,
+                                    onScheduleTask: (_, __) => _onTasksChanged(),
+                                    onTasksLoaded: _onTasksLoaded,
+                                    selectedTask: _selectedTask,
+                                    showSelectButton: true,
+                                    transparentCards: true,
+                                    enableReordering: _sortConfig.useCustomOrder,
+                                    sortConfig: _sortConfig,
+                                    viewMode: _viewMode,
+                                  ),
                           ),
                         ],
                       ),

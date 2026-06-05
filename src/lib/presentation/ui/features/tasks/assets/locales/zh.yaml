@@ -537,3 +537,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: 截止日期必须在计划日期之后
     deadline_time_invalid: 截止时间无效
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: 不支持在列之间移动任务

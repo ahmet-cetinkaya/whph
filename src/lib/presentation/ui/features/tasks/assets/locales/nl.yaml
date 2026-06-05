@@ -505,3 +505,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Deadline moet na de geplande datum zijn
     deadline_time_invalid: Deadline tijd is ongeldig
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Het verplaatsen van taken tussen kolommen wordt niet ondersteund

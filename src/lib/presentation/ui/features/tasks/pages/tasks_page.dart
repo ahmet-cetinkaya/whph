@@ -9,6 +9,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart
 import 'package:whph/presentation/ui/features/tasks/components/task_add_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_add_floating_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
+import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
@@ -27,6 +28,7 @@ import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dar
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_group_creation_handler.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -67,6 +69,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   bool _showNoTagsFilter = false;
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
   bool _forceOriginalLayout = false;
+  TaskViewMode _viewMode = TaskViewMode.list;
 
   String? _handledTaskId;
   Timer? _autoRefreshUITimer;
@@ -233,6 +236,13 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     });
   }
 
+  void _onViewModeChange(TaskViewMode mode) {
+    if (!mounted) return;
+    setState(() {
+      _viewMode = mode;
+    });
+  }
+
   void _onSettingsLoaded() {
     if (!mounted) return;
     setState(() {
@@ -264,6 +274,21 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         stackTrace: stackTrace,
       );
     }
+  }
+
+  void _onAddToGroup(String groupKey) {
+    TaskGroupCreationHandler.handle(
+      context: context,
+      input: TaskGroupCreationInput(
+        groupKey: groupKey,
+        groupField: _sortConfig.groupOption?.field ?? _sortConfig.orderOptions.firstOrNull?.field,
+        searchQuery: _searchQuery,
+        defaultTagIds: _selectedTagIds,
+        showNoTagsFilter: _showNoTagsFilter,
+        defaultPlannedDate: _filterStartDate,
+        defaultDeadlineDate: _filterEndDate,
+      ),
+    );
   }
 
   bool get _isPageFullyLoaded {
@@ -411,6 +436,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
               onLayoutToggleChange: _onLayoutToggleChange,
               settingKeyVariantSuffix: tasksListOptionsSettingsKeySuffix,
               onSettingsLoaded: _onSettingsLoaded,
+              viewMode: _viewMode,
+              onViewModeChange: _onViewModeChange,
             ),
 
             // Task List
@@ -437,6 +464,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                   sortConfig: _sortConfig,
                   useParentScroll: false,
                   paginationMode: PaginationMode.infinityScroll,
+                  viewMode: _viewMode,
+                  onAddToGroup: _onAddToGroup,
                 ),
               ),
           ],

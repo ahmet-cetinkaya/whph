@@ -504,3 +504,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: A data limite deve ser posterior à data planejada
     deadline_time_invalid: Hora limite inválida
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Mover tarefas entre colunas não é suportado

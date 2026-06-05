@@ -21,11 +21,12 @@ class ListGroupHeader extends StatelessWidget {
     Widget header = SectionHeader(
       title: title,
       trailing: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           const Expanded(child: Divider()),
           if (actions != null) ...[
             const SizedBox(width: AppTheme.sizeSmall),
-            Flexible(child: actions!),
+            actions!,
           ],
           if (onTap != null) ...[
             const SizedBox(width: AppTheme.sizeSmall),

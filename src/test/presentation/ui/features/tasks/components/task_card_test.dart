@@ -153,6 +153,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) => completedCalled = true,
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -186,6 +187,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) => completedCalled = true,
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -216,6 +218,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -236,12 +239,12 @@ void main() {
       expect(find.byType(TaskCard), findsOneWidget);
     });
 
-    testWidgets('should not enable swipe when task is already completed', (tester) async {
+    testWidgets('should not enable swipe on completed tasks', (tester) async {
       // Arrange
       final completedTask = TaskListItem(
         id: 'completed-task-id',
         title: 'Completed Task',
-        isCompleted: true,
+        isCompleted: true, // Already completed
         priority: EisenhowerPriority.urgentImportant,
         tags: [],
         subTasks: [],
@@ -255,6 +258,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -277,6 +281,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: null, // No callback provided
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -299,6 +304,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -343,6 +349,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -365,6 +372,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: false, // Explicitly disable swipe
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -387,6 +395,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -409,6 +418,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
