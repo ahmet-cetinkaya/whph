@@ -117,6 +117,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.1"
+  boardview:
+    dependency: "direct main"
+    description:
+      name: boardview
+      sha256: f2be317ed1562209b86ebcee441b36abde50bbba2e33dda10fbd83a2a4fa3304
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -1589,6 +1597,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "15.0.0"
+  vs_scrollbar:
+    dependency: transitive
+    description:
+      name: vs_scrollbar
+      sha256: "6a2df5e2597064e8dbb8fc3679065d8e748d711fa979f045328c98b7100b1665"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   wakelock_plus:
     dependency: "direct main"
     description:

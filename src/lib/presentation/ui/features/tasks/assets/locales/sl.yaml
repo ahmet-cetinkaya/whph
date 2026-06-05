@@ -499,3 +499,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Rok mora biti po načrtovanem datumu
     deadline_time_invalid: Čas roka je neveljaven
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

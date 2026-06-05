@@ -41,6 +41,7 @@ class TaskCard extends StatelessWidget {
   final bool isDense;
   final bool isCustomOrder;
   final bool enableSwipeToComplete;
+  final bool testMode; // Test-only: bypass platform check
 
   final VoidCallback onOpenDetails;
   final void Function(String taskId)? onCompleted;
@@ -58,6 +59,7 @@ class TaskCard extends StatelessWidget {
     this.isDense = false,
     this.isCustomOrder = false,
     this.enableSwipeToComplete = true,
+    this.testMode = false, // Default false for production use
   });
 
   Future<void> _handleSchedule(BuildContext context, DateTime date) async {
@@ -189,8 +191,10 @@ class TaskCard extends StatelessWidget {
       ),
     );
 
-    // Only enable swipe to complete if task is not completed and callback is provided
-    if (enableSwipeToComplete && !taskItem.isCompleted && onCompleted != null) {
+    // Only enable swipe to complete on mobile — swipe gestures conflict with
+    // mouse/trackpad scrolling on desktop environments.
+    // In test mode, bypass platform check for testing purposes.
+    if (enableSwipeToComplete && (testMode || PlatformUtils.isMobile) && !taskItem.isCompleted && onCompleted != null) {
       return Dismissible(
         key: Key('task_${taskItem.id}'),
         direction: DismissDirection.startToEnd,

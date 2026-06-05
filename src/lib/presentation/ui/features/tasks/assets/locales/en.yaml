@@ -513,3 +513,8 @@ tasks:
       Deadline must be scheduled after the planned
       date
     deadline_time_invalid: Please enter a valid deadline time
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

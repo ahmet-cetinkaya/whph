@@ -503,3 +503,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Fristen må være etter den planlagte datoen
     deadline_time_invalid: Frist tidspunkt er ugyldig
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

@@ -1,0 +1,1 @@
+enum TaskViewMode { list, board }

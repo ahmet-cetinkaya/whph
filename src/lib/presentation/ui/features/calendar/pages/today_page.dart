@@ -23,6 +23,7 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
+import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
@@ -84,8 +85,11 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   bool _showCompletedTasks = false;
   bool _showSubTasks = false;
   String? _taskSearchQuery;
-  SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting.copyWith(enableGrouping: false);
+  SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting.copyWith(
+    enableGrouping: false,
+  );
   bool _taskForceOriginalLayout = false;
+  TaskViewMode _viewMode = TaskViewMode.list;
 
   // Habit list options state
   static const String _habitFilterOptionsSettingKeySuffix = 'TODAY_PAGE';
@@ -168,7 +172,11 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
         }
       }
     } catch (e, stackTrace) {
-      Logger.error("Failed to load habit settings in TodayPage", error: e, stackTrace: stackTrace);
+      Logger.error(
+        "Failed to load habit settings in TodayPage",
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -243,6 +251,14 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     }
   }
 
+  void _onViewModeChange(TaskViewMode mode) {
+    if (mounted) {
+      setState(() {
+        _viewMode = mode;
+      });
+    }
+  }
+
   void _onHabitSortConfigChange(SortConfig<HabitSortFields> newConfig) {
     if (mounted) {
       setState(() {
@@ -277,10 +293,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   Future<void> _openTaskDetails(BuildContext context, String taskId) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      child: TaskDetailsPage(
-        taskId: taskId,
-        hideSidebar: true,
-      ),
+      child: TaskDetailsPage(taskId: taskId, hideSidebar: true),
       size: DialogSize.max,
     );
   }
@@ -288,9 +301,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   Future<void> _openHabitDetails(BuildContext context, String id) async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      child: HabitDetailsPage(
-        habitId: id,
-      ),
+      child: HabitDetailsPage(habitId: id),
       size: DialogSize.max,
     );
   }
@@ -408,26 +419,27 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       ),
       builder: (context) => LoadingOverlay(
         isLoading: !_isPageFullyLoaded,
-        child: CustomScrollView(
+        child: SingleChildScrollView(
           key: _mainContentKey,
-          slivers: [
-            SliverToBoxAdapter(
-              child: TodayPageListOptions(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TodayPageListOptions(
                 key: _mainListOptionsKey,
                 onSettingsLoaded: _onMainListOptionSettingsLoaded,
                 selectedTagIds: _selectedTagFilter,
                 showNoTagsFilter: _showNoTagsFilter,
                 onFilterChange: _onMainListOptionChange,
               ),
-            ),
-            if (_mainListOptionSettingsLoaded) ...[
-              SliverToBoxAdapter(
-                child: Column(
+              if (_mainListOptionSettingsLoaded) ...[
+                Column(
                   key: _habitsSectionKey,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SectionHeader(
-                      title: _translationService.translate(CalendarTranslationKeys.habitsTitle),
+                      title: _translationService.translate(
+                        CalendarTranslationKeys.habitsTitle,
+                      ),
                       trailing: Expanded(
                         child: HabitListOptions(
                           settingKeyVariantSuffix: _habitFilterOptionsSettingKeySuffix,
@@ -436,7 +448,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           showNoTagsFilter: _showNoTagsFilter,
                           sortConfig: _habitSortConfig,
                           forceOriginalLayout: _habitForceOriginalLayout,
-                          onTagFilterChange: (List<DropdownOption<String>> tags, bool isNoneSelected) {
+                          onTagFilterChange: (
+                            List<DropdownOption<String>> tags,
+                            bool isNoneSelected,
+                          ) {
                             setState(() {
                               _selectedTagFilter = tags.isEmpty ? null : tags.map((t) => t.value).toList();
                               _showNoTagsFilter = isNoneSelected;
@@ -457,45 +472,50 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     const SizedBox(height: AppTheme.sizeSmall),
                   ],
                 ),
-              ),
-              if (_habitListOptionSettingsLoaded)
-                HabitsList(
-                  key: ValueKey(
-                      'habits_list_${_habitListStyle}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}_$_isThreeStateEnabled'),
-                  isThreeStateEnabled: _isThreeStateEnabled,
-                  pageSize: 5,
-                  style: _habitListStyle,
-                  filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                  filterNoTags: _showNoTagsFilter,
-                  excludeCompletedForDate: _todayStart,
-                  sortConfig: _habitSortConfig,
-                  enableReordering: _habitSortConfig.useCustomOrder,
-                  forceOriginalLayout: _habitForceOriginalLayout,
-                  onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-                  onHabitCompleted: _onHabitCompleted,
-                  onListing: _onHabitsListed,
-                  onReorderComplete: () {
-                    // Refresh the habits list to ensure correct order
-                    setState(() {});
-                  },
-                  showDoneOverlayWhenEmpty: true,
-                  useSliver: true,
-                ),
-              SliverToBoxAdapter(child: const SizedBox(height: AppTheme.sizeMedium)),
-              SliverToBoxAdapter(
-                child: Column(
+                if (_habitListOptionSettingsLoaded)
+                  SizedBox(
+                    height: 300,
+                    child: HabitsList(
+                      key: ValueKey(
+                        'habits_list_${_habitListStyle}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}_$_isThreeStateEnabled',
+                      ),
+                      isThreeStateEnabled: _isThreeStateEnabled,
+                      pageSize: 5,
+                      style: _habitListStyle,
+                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                      filterNoTags: _showNoTagsFilter,
+                      excludeCompletedForDate: _todayStart,
+                      sortConfig: _habitSortConfig,
+                      enableReordering: _habitSortConfig.useCustomOrder,
+                      forceOriginalLayout: _habitForceOriginalLayout,
+                      onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                      onHabitCompleted: _onHabitCompleted,
+                      onListing: _onHabitsListed,
+                      onReorderComplete: () {
+                        // Refresh the habits list to ensure correct order
+                        setState(() {});
+                      },
+                      showDoneOverlayWhenEmpty: true,
+                    ),
+                  ),
+                const SizedBox(height: AppTheme.sizeMedium),
+                Column(
                   key: _tasksSectionKey,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SectionHeader(
-                      title: _translationService.translate(CalendarTranslationKeys.tasksTitle),
+                      title: _translationService.translate(
+                        CalendarTranslationKeys.tasksTitle,
+                      ),
                       trailing: Expanded(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
+                                padding: const EdgeInsets.only(
+                                  left: AppTheme.sizeSmall,
+                                ),
                                 child: TaskListOptions(
                                   settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
                                   onSettingsLoaded: _onTaskListOptionSettingsLoaded,
@@ -520,6 +540,8 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                   forceOriginalLayout: _taskForceOriginalLayout,
                                   onSortChange: _onSortConfigChange,
                                   onLayoutToggleChange: _onTaskLayoutToggleChange,
+                                  viewMode: _viewMode,
+                                  onViewModeChange: _onViewModeChange,
                                   hasItems: true,
                                   showDateFilter: false,
                                   showTagFilter: false,
@@ -540,69 +562,101 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     ),
                   ],
                 ),
-              ),
-              if (_taskListOptionSettingsLoaded)
-                TaskList(
-                  key: ValueKey(
-                      'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}'),
-                  filterByCompleted: _showCompletedTasks,
-                  filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                  filterNoTags: _showNoTagsFilter,
-                  filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
-                  filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
-                  filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
-                  filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
-                  filterDateOr: true,
-                  filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
-                  filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
-                  search: _taskSearchQuery,
-                  includeSubTasks: _showSubTasks,
-                  pageSize: 5,
-                  onClickTask: (task) => _openTaskDetails(context, task.id),
-                  onTaskCompleted: _onTaskCompleted,
-                  onList: _onTasksListed,
-                  enableReordering: _taskSortConfig.useCustomOrder,
-                  forceOriginalLayout: _taskForceOriginalLayout,
-                  showDoneOverlayWhenEmpty: true,
-                  sortConfig: _taskSortConfig,
-                  useSliver: true,
-                ),
-              SliverToBoxAdapter(child: const SizedBox(height: AppTheme.size2Small)),
-              SliverToBoxAdapter(
-                child: Column(
-                  key: _timeChartSectionKey,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SectionHeader(
-                      title: _translationService.translate(TagTranslationKeys.timeDistribution),
-                      trailing: Expanded(
-                        child: TagTimeChartOptions(
-                          settingKeyVariantSuffix: _timeChartOptionsSettingKeySuffix,
-                          onSettingsLoaded: _onTimeChartOptionsLoaded,
-                          selectedCategories: _selectedCategories,
-                          onCategoriesChanged: (categories) {
-                            setState(() {
-                              _selectedCategories = categories;
-                            });
-                          },
-                          showDateFilter: false,
+                if (_taskListOptionSettingsLoaded) ...[
+                  _viewMode == TaskViewMode.board
+                      ? SizedBox(
+                          height: 400,
+                          child: TaskList(
+                            key: ValueKey(
+                              'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
+                            ),
+                            filterByCompleted: _showCompletedTasks,
+                            filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                            filterNoTags: _showNoTagsFilter,
+                            filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                            filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
+                            filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                            filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
+                            filterDateOr: true,
+                            filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
+                            filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
+                            search: _taskSearchQuery,
+                            includeSubTasks: _showSubTasks,
+                            pageSize: 5,
+                            onClickTask: (task) => _openTaskDetails(context, task.id),
+                            onTaskCompleted: _onTaskCompleted,
+                            onList: _onTasksListed,
+                            enableReordering: _taskSortConfig.useCustomOrder,
+                            forceOriginalLayout: _taskForceOriginalLayout,
+                            showDoneOverlayWhenEmpty: true,
+                            sortConfig: _taskSortConfig,
+                            viewMode: _viewMode,
+                          ),
+                        )
+                      : TaskList(
+                          key: ValueKey(
+                            'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
+                          ),
+                          filterByCompleted: _showCompletedTasks,
+                          filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                          filterNoTags: _showNoTagsFilter,
+                          filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                          filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
+                          filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                          filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
+                          filterDateOr: true,
+                          filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
+                          filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
+                          search: _taskSearchQuery,
+                          includeSubTasks: _showSubTasks,
+                          pageSize: 5,
+                          onClickTask: (task) => _openTaskDetails(context, task.id),
+                          onTaskCompleted: _onTaskCompleted,
+                          onList: _onTasksListed,
+                          enableReordering: _taskSortConfig.useCustomOrder,
+                          forceOriginalLayout: _taskForceOriginalLayout,
+                          showDoneOverlayWhenEmpty: true,
+                          sortConfig: _taskSortConfig,
+                          viewMode: _viewMode,
+                        ),
+                  const SizedBox(height: AppTheme.size2Small),
+                  Column(
+                    key: _timeChartSectionKey,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SectionHeader(
+                        title: _translationService.translate(
+                          TagTranslationKeys.timeDistribution,
+                        ),
+                        trailing: Expanded(
+                          child: TagTimeChartOptions(
+                            settingKeyVariantSuffix: _timeChartOptionsSettingKeySuffix,
+                            onSettingsLoaded: _onTimeChartOptionsLoaded,
+                            selectedCategories: _selectedCategories,
+                            onCategoriesChanged: (categories) {
+                              setState(() {
+                                _selectedCategories = categories;
+                              });
+                            },
+                            showDateFilter: false,
+                          ),
                         ),
                       ),
-                    ),
-                    if (_timeChartOptionsLoaded)
-                      Center(
-                        child: TagTimeChart(
-                          filterByTags: _selectedTagFilter,
-                          startDate: _todayStart,
-                          endDate: _tomorrowStart,
-                          selectedCategories: _selectedCategories,
+                      if (_timeChartOptionsLoaded)
+                        Center(
+                          child: TagTimeChart(
+                            filterByTags: _selectedTagFilter,
+                            startDate: _todayStart,
+                            endDate: _tomorrowStart,
+                            selectedCategories: _selectedCategories,
+                          ),
                         ),
-                      ),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                ],
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -611,39 +665,63 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   void _startTour({bool isMultiPageTour = false}) {
     final tourSteps = [
       TourStep(
-        title: _translationService.translate(CalendarTranslationKeys.tourWelcomeTitle),
-        description: _translationService.translate(CalendarTranslationKeys.tourWelcomeDescription),
+        title: _translationService.translate(
+          CalendarTranslationKeys.tourWelcomeTitle,
+        ),
+        description: _translationService.translate(
+          CalendarTranslationKeys.tourWelcomeDescription,
+        ),
         icon: Icons.today,
         targetKey: _mainContentKey,
         position: TourPosition.bottom,
       ),
       TourStep(
-        title: _translationService.translate(CalendarTranslationKeys.tourTagFilterTitle),
-        description: _translationService.translate(CalendarTranslationKeys.tourTagFilterDescription),
+        title: _translationService.translate(
+          CalendarTranslationKeys.tourTagFilterTitle,
+        ),
+        description: _translationService.translate(
+          CalendarTranslationKeys.tourTagFilterDescription,
+        ),
         targetKey: _mainListOptionsKey,
         position: TourPosition.bottom,
       ),
       TourStep(
-        title: _translationService.translate(CalendarTranslationKeys.tourHabitsTitle),
-        description: _translationService.translate(CalendarTranslationKeys.tourHabitsDescription),
+        title: _translationService.translate(
+          CalendarTranslationKeys.tourHabitsTitle,
+        ),
+        description: _translationService.translate(
+          CalendarTranslationKeys.tourHabitsDescription,
+        ),
         targetKey: _habitsSectionKey,
         position: TourPosition.bottom,
       ),
       TourStep(
-        title: _translationService.translate(CalendarTranslationKeys.tourTasksTitle),
-        description: _translationService.translate(CalendarTranslationKeys.tourTasksDescription),
+        title: _translationService.translate(
+          CalendarTranslationKeys.tourTasksTitle,
+        ),
+        description: _translationService.translate(
+          CalendarTranslationKeys.tourTasksDescription,
+        ),
         targetKey: _tasksSectionKey,
         position: TourPosition.bottom,
       ),
       TourStep(
-        title: _translationService.translate(CalendarTranslationKeys.tourTimeDistributionTitle),
-        description: _translationService.translate(CalendarTranslationKeys.tourTimeDistributionDescription),
+        title: _translationService.translate(
+          CalendarTranslationKeys.tourTimeDistributionTitle,
+        ),
+        description: _translationService.translate(
+          CalendarTranslationKeys.tourTimeDistributionDescription,
+        ),
         targetKey: _timeChartSectionKey,
         position: TourPosition.top,
       ),
       TourStep(
-        title: _translationService.translate(CalendarTranslationKeys.tourMarathonModeTitle),
-        description: _translationService.translate(CalendarTranslationKeys.tourMarathonModeDescription),
+        title: _translationService.translate(
+          CalendarTranslationKeys.tourMarathonModeTitle,
+        ),
+        description: _translationService.translate(
+          CalendarTranslationKeys.tourMarathonModeDescription,
+        ),
         targetKey: _marathonButtonKey,
         position: TourPosition.bottom,
       ),

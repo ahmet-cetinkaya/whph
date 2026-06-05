@@ -451,7 +451,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
             ),
             if (_currentConfig.orderOptions.length > 1)
               IconButton(
-                icon: Icon(Icons.close, size: 20, color: AppTheme.textColor.withValues(alpha: 0.5)),
+                icon: Icon(Icons.close, size: 20, color: AppTheme.secondaryTextColor.withValues(alpha: 0.5)),
                 onPressed: () => _removeCriteria(index),
                 tooltip: widget.translationService.translate(SharedTranslationKeys.sortRemoveCriteria),
               ),
@@ -465,7 +465,7 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
                   child: Icon(
                     Icons.drag_handle,
                     size: 20,
-                    color: AppTheme.textColor.withValues(alpha: 0.5),
+                    color: AppTheme.secondaryTextColor.withValues(alpha: 0.5),
                   ),
                 ),
               ),

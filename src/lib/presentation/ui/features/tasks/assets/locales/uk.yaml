@@ -586,3 +586,8 @@ tasks:
       Крайній термін має бути після запланованої
       дати
     deadline_time_invalid: Неправильний час крайнього терміну
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

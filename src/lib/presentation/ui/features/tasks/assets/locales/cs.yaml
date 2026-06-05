@@ -583,3 +583,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Datum splatnosti musí být po plánovaném datu
     deadline_time_invalid: Prosím zadejte platný čas splatnosti
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

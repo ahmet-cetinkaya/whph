@@ -498,3 +498,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Määräpäivän on oltava suunnitellun päivän jälkeen
     deadline_time_invalid: Määräajan aika on virheellinen
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

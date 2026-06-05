@@ -542,3 +542,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: Son tarih planlanan tarihten sonra olmalıdır
     deadline_time_invalid: Son tarih zamanı geçersiz
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

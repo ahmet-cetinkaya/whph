@@ -588,3 +588,8 @@ tasks:
       La fecha límite debe ser posterior a la fecha
       planificada
     deadline_time_invalid: La hora límite no es válida
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

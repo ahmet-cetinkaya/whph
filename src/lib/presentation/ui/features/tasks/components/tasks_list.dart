@@ -1,8 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
+import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
+import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
+import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
+import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
@@ -10,6 +18,7 @@ import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart'
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 
@@ -27,6 +36,9 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
 import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_board_view.dart';
+import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
+import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as core_shared;
 
 class TaskList extends StatefulWidget implements IPaginatedWidget {
   final int pageSize;
@@ -57,6 +69,10 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final bool useParentScroll;
   final bool useSliver;
 
+  /// Current view mode; when [TaskViewMode.board] the widget renders a
+  /// horizontal Kanban board instead of a vertical list.
+  final TaskViewMode viewMode;
+
   final void Function(TaskListItem task) onClickTask;
   final void Function(int count)? onList;
   final void Function(String taskId)? onTaskCompleted;
@@ -69,6 +85,11 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final void Function()? onReorderComplete;
   @override
   final PaginationMode paginationMode;
+  final void Function(TaskListItem task, String fromGroupKey, String toGroupKey)? onCardMovedAcrossColumns;
+
+  /// Callback when add button in a group/column header is clicked
+  final void Function(String groupKey)? onAddToGroup;
+
   const TaskList({
     super.key,
     this.pageSize = 10,
@@ -95,6 +116,7 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
     this.useSliver = false,
     this.showDoneOverlayWhenEmpty = false,
     this.ignoreArchivedTagVisibility = false,
+    this.viewMode = TaskViewMode.list,
     required this.onClickTask,
     this.onList,
     this.onTaskCompleted,
@@ -106,6 +128,8 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
     this.sortConfig,
     this.onReorderComplete,
     this.paginationMode = PaginationMode.loadMore,
+    this.onCardMovedAcrossColumns,
+    this.onAddToGroup,
   });
 
   @override
@@ -116,6 +140,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _tasksService = container.resolve<TasksService>();
+  final _recurrenceService = container.resolve<ITaskRecurrenceService>();
   GetListTasksQueryResponse? _tasks;
   final ScrollController _scrollController = ScrollController();
   double? _savedScrollPosition;
@@ -258,6 +283,14 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
     final isLayoutChanged = oldWidget.forceOriginalLayout != widget.forceOriginalLayout;
     final isFilterChanged = _isFilterChanged(oldWidget);
+    final isViewModeChanged = oldWidget.viewMode != widget.viewMode;
+
+    if (isViewModeChanged && mounted) {
+      setState(() {
+        _cachedGroupedTasks = null;
+        _cachedVisualItems = null;
+      });
+    }
 
     if ((isLayoutChanged || isFilterChanged) && mounted) {
       _refreshDebounce?.cancel();
@@ -561,6 +594,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     );
   }
 
+  /// The field tasks are currently grouped by (drives board columns).
+  TaskSortFields? get _primaryGroupField =>
+      widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field;
+
   Map<String, List<TaskListItem>> _groupTasks() {
     if (_tasks == null) return {};
 
@@ -734,6 +771,206 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     );
   }
 
+  /// Persists a card moved to a different board column by mutating the
+  /// group-defining field (priority or planned/deadline date).
+  Future<void> _onCardMovedAcrossColumns(TaskListItem task, String fromGroupKey, String toGroupKey) async {
+    if (!mounted || fromGroupKey == toGroupKey) return;
+
+    final groupField = _primaryGroupField;
+    if (!TaskGroupingHelper.isCrossColumnMovePersistable(groupField)) return;
+
+    if (groupField == TaskSortFields.tag) {
+      await _moveCardToTagColumn(task, fromGroupKey, toGroupKey);
+      return;
+    }
+
+    _dragStateNotifier.startDragging();
+
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+      operation: () async {
+        final fullTask = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: task.id));
+
+        EisenhowerPriority? priority = fullTask.priority;
+        DateTime? plannedDate = fullTask.plannedDate;
+        DateTime? deadlineDate = fullTask.deadlineDate;
+        DateTime? completedAt = fullTask.completedAt;
+        int? estimatedTime = fullTask.estimatedTime;
+
+        switch (groupField) {
+          case TaskSortFields.priority:
+            priority = TaskGroupingHelper.priorityFromGroupKey(toGroupKey);
+            break;
+          case TaskSortFields.plannedDate:
+            final (recognized, date) = TaskGroupingHelper.dateFromGroupKey(toGroupKey);
+            if (!recognized) return;
+            plannedDate = date;
+            break;
+          case TaskSortFields.deadlineDate:
+            final (recognized, date) = TaskGroupingHelper.dateFromGroupKey(toGroupKey);
+            if (!recognized) return;
+            deadlineDate = date;
+            break;
+          case TaskSortFields.completedDate:
+            final (recognized, date) = TaskGroupingHelper.dateFromGroupKey(toGroupKey);
+            if (!recognized) return;
+            // The "no date" column means "not completed"; any date bucket marks
+            // the task completed at that representative date.
+            completedAt = date == null ? null : DateTimeHelper.toUtcDateTime(date);
+            break;
+          case TaskSortFields.estimatedTime:
+            final (recognized, minutes) = TaskGroupingHelper.durationFromGroupKey(toGroupKey);
+            if (!recognized) return;
+            estimatedTime = minutes;
+            break;
+          default:
+            return;
+        }
+
+        await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+          SaveTaskCommand(
+            id: fullTask.id,
+            title: fullTask.title,
+            description: fullTask.description,
+            priority: priority,
+            plannedDate: plannedDate,
+            deadlineDate: deadlineDate,
+            estimatedTime: estimatedTime,
+            completedAt: completedAt,
+            parentTaskId: fullTask.parentTaskId,
+            order: fullTask.order,
+            plannedDateReminderTime: fullTask.plannedDateReminderTime,
+            plannedDateReminderCustomOffset: fullTask.plannedDateReminderCustomOffset,
+            deadlineDateReminderTime: fullTask.deadlineDateReminderTime,
+            deadlineDateReminderCustomOffset: fullTask.deadlineDateReminderCustomOffset,
+            recurrenceType: fullTask.recurrenceType,
+            recurrenceInterval: fullTask.recurrenceInterval,
+            recurrenceDays: _recurrenceService.getRecurrenceDays(fullTask),
+            recurrenceStartDate: fullTask.recurrenceStartDate,
+            recurrenceEndDate: fullTask.recurrenceEndDate,
+            recurrenceCount: fullTask.recurrenceCount,
+            recurrenceParentId: fullTask.recurrenceParentId,
+            recurrenceConfiguration: fullTask.recurrenceConfiguration,
+          ),
+        );
+
+        _tasksService.notifyTaskUpdated(task.id);
+      },
+      onSuccess: () {
+        _dragStateNotifier.stopDragging();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            refresh().catchError((e, stackTrace) {
+              Logger.error('Failed to refresh task list after cross-column move', error: e, stackTrace: stackTrace);
+            });
+          }
+        });
+      },
+      onError: (_) {
+        _dragStateNotifier.stopDragging();
+        if (mounted) {
+          refresh().catchError((e, stackTrace) {
+            Logger.error('Failed to refresh task list after cross-column move error', error: e, stackTrace: stackTrace);
+          });
+        }
+      },
+    );
+  }
+
+  /// Persists a cross-column move when grouping by tag.
+  ///
+  /// Dropping into the "no tag" column ([SharedTranslationKeys.none]) detaches
+  /// every tag, making the task untagged. Dropping into a tag column attaches
+  /// that column's tag and detaches the source column's tag.
+  Future<void> _moveCardToTagColumn(TaskListItem task, String fromGroupKey, String toGroupKey) async {
+    final isTargetUntagged = toGroupKey == _translationService.translate(core_shared.SharedTranslationKeys.none) ||
+        toGroupKey == core_shared.SharedTranslationKeys.none;
+
+    _dragStateNotifier.startDragging();
+
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+      operation: () async {
+        final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+          GetListTaskTagsQuery(taskId: task.id, pageIndex: 0, pageSize: 100),
+        );
+
+        if (isTargetUntagged) {
+          for (final taskTag in taskTags.items) {
+            await _mediator.send<RemoveTaskTagCommand, RemoveTaskTagCommandResponse>(
+              RemoveTaskTagCommand(id: taskTag.id),
+            );
+          }
+          _tasksService.notifyTaskUpdated(task.id);
+          return;
+        }
+
+        final targetTagId = await _resolveTagIdByName(toGroupKey);
+        if (targetTagId == null) {
+          Logger.warning('Cross-column tag move skipped: no tag matches column "$toGroupKey"');
+          return;
+        }
+
+        final alreadyHasTarget = taskTags.items.any((tt) => tt.tagId == targetTagId);
+        if (!alreadyHasTarget) {
+          await _mediator.send<AddTaskTagCommand, AddTaskTagCommandResponse>(
+            AddTaskTagCommand(taskId: task.id, tagId: targetTagId),
+          );
+        }
+
+        final sourceAssociation = taskTags.items.where((tt) => tt.tagName == fromGroupKey).firstOrNull;
+        if (sourceAssociation != null && sourceAssociation.tagId != targetTagId) {
+          await _mediator.send<RemoveTaskTagCommand, RemoveTaskTagCommandResponse>(
+            RemoveTaskTagCommand(id: sourceAssociation.id),
+          );
+        }
+
+        _tasksService.notifyTaskUpdated(task.id);
+      },
+      onSuccess: () {
+        _dragStateNotifier.stopDragging();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            refresh().catchError((e, stackTrace) {
+              Logger.error('Failed to refresh task list after tag move', error: e, stackTrace: stackTrace);
+            });
+          }
+        });
+      },
+      onError: (_) {
+        _dragStateNotifier.stopDragging();
+        if (mounted) {
+          refresh().catchError((e, stackTrace) {
+            Logger.error('Failed to refresh task list after tag move error', error: e, stackTrace: stackTrace);
+          });
+        }
+      },
+    );
+  }
+
+  /// Resolves a tag id from its display name. Returns null when no exact
+  /// (case-insensitive) match exists.
+  ///
+  /// The tags query's archive filter is exclusive (`is_archived = ?`), so a
+  /// single call only sees active *or* archived tags. Active tags are checked
+  /// first (the common case); archived tags are a fallback so a board column
+  /// backed by an archived tag still resolves.
+  Future<String?> _resolveTagIdByName(String tagName) async {
+    final lower = tagName.toLowerCase();
+
+    for (final showArchived in [false, true]) {
+      final tags = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
+        GetListTagsQuery(pageIndex: 0, pageSize: 100, search: tagName, showArchived: showArchived),
+      );
+      final match = tags.items.where((t) => t.name.toLowerCase() == lower).firstOrNull;
+      if (match != null) return match.id;
+    }
+
+    return null;
+  }
+
   @override
   void onGroupCollapseChanged() {
     // Invalidate visual items cache as visibility changes affects the flattened list
@@ -756,6 +993,44 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                 icon: Icons.check_circle_outline,
                 message: _translationService.translate(TaskTranslationKeys.noTasks),
               ),
+      );
+    }
+
+    // Board view: render a Kanban board instead of a vertical list
+    if (widget.viewMode == TaskViewMode.board) {
+      final groupTranslatable = Map<String, bool>.from(_getGroupTranslatableMap());
+
+      // Fixed-cardinality groupings (priority, date/duration buckets) show every
+      // possible column in a stable order, even when empty. Data-driven
+      // groupings (tag) keep their discovered columns but always expose the
+      // empty column so a card can be dropped there to clear the property.
+      final fixedKeys = TaskGroupingHelper.fixedColumnKeysFor(_primaryGroupField);
+      final Map<String, List<TaskListItem>> boardGroups;
+      if (fixedKeys != null) {
+        boardGroups = {for (final key in fixedKeys) key: groupedTasks[key] ?? []};
+        for (final key in fixedKeys) {
+          groupTranslatable[key] = true;
+        }
+      } else {
+        boardGroups = Map<String, List<TaskListItem>>.from(groupedTasks);
+        final emptyGroupKey = TaskGroupingHelper.emptyGroupKeyFor(_primaryGroupField);
+        if (emptyGroupKey != null && !boardGroups.containsKey(emptyGroupKey)) {
+          boardGroups[emptyGroupKey] = [];
+          groupTranslatable[emptyGroupKey] = true;
+        }
+      }
+
+      return TaskBoardView(
+        groupedTasks: boardGroups,
+        groupTranslatable: groupTranslatable,
+        canMoveAcrossColumns: TaskGroupingHelper.isCrossColumnMovePersistable(_primaryGroupField),
+        onClickTask: widget.onClickTask,
+        onTaskCompleted: widget.onTaskCompleted,
+        onScheduleTask: widget.onScheduleTask,
+        onCardMovedAcrossColumns: _onCardMovedAcrossColumns,
+        trailingButtons: widget.trailingButtons,
+        transparentCards: widget.transparentCards,
+        onAddToGroup: widget.onAddToGroup,
       );
     }
 
@@ -788,6 +1063,17 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                         : groupName,
                     isExpanded: !collapsedGroups.contains(groupName),
                     onTap: () => toggleGroupCollapse(groupName),
+                    actions: widget.onAddToGroup != null
+                        ? IconButton(
+                            icon: const Icon(Icons.add, size: 18),
+                            iconSize: 18,
+                            onPressed: () => widget.onAddToGroup!(groupName),
+                            tooltip: _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
+                            visualDensity: VisualDensity.compact,
+                            padding: const EdgeInsets.all(4),
+                            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                          )
+                        : null,
                   ),
 
                 // Nested Independent List

@@ -13,6 +13,7 @@ import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdow
 import 'package:whph/presentation/ui/features/tags/constants/tag_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_list_option_settings.dart';
+import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_date_range_filter.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
 import 'package:whph/presentation/ui/shared/components/filter_icon_button.dart';
@@ -114,6 +115,12 @@ class TaskListOptions extends PersistentListOptionsBase {
   /// Whether to show the grouping option
   final bool showGroupingOption;
 
+  /// Current view mode (list or board)
+  final TaskViewMode viewMode;
+
+  /// Callback when view mode changes
+  final Function(TaskViewMode)? onViewModeChange;
+
   const TaskListOptions({
     super.key,
     this.selectedTagIds,
@@ -148,6 +155,8 @@ class TaskListOptions extends PersistentListOptionsBase {
     super.hasUnsavedChanges = false,
     super.settingKeyVariantSuffix,
     super.onSettingsLoaded,
+    this.viewMode = TaskViewMode.list,
+    this.onViewModeChange,
   });
 
   @override
@@ -269,6 +278,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
       if (widget.onLayoutToggleChange != null) {
         widget.onLayoutToggleChange!(filterSettings.forceOriginalLayout);
       }
+
+      if (widget.onViewModeChange != null) {
+        widget.onViewModeChange!(filterSettings.viewMode);
+      }
     }
 
     if (mounted) {
@@ -314,6 +327,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
           showSubTasks: widget.showSubTasks,
           sortConfig: widget.sortConfig,
           forceOriginalLayout: widget.forceOriginalLayout,
+          viewMode: widget.viewMode,
         );
 
         await filterSettingsManager.saveFilterSettings(
@@ -353,6 +367,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
       showSubTasks: widget.showSubTasks,
       sortConfig: widget.sortConfig,
       forceOriginalLayout: widget.forceOriginalLayout,
+      viewMode: widget.viewMode,
     ).toJson();
 
     final hasChanges = await filterSettingsManager.hasUnsavedChanges(
@@ -377,6 +392,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     final subTasksChanges = widget.showSubTasks != oldWidget.showSubTasks;
     final sortChanges = widget.sortConfig != oldWidget.sortConfig;
     final layoutChanges = widget.forceOriginalLayout != oldWidget.forceOriginalLayout;
+    final viewModeChanges = widget.viewMode != oldWidget.viewMode;
 
     final hasNonSearchChanges = tagChanges ||
         noTagsChanges ||
@@ -386,7 +402,8 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         completedChanges ||
         subTasksChanges ||
         sortChanges ||
-        layoutChanges;
+        layoutChanges ||
+        viewModeChanges;
 
     if (hasNonSearchChanges) {
       // Don't trigger save button if this is just auto-refresh date recalculation
@@ -672,6 +689,22 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         ? _translationService.translate(SharedTranslationKeys.enableReorderingTooltip)
                         : _translationService.translate(SharedTranslationKeys.disableReorderingTooltip),
                     onPressed: () => widget.onLayoutToggleChange!(!widget.forceOriginalLayout),
+                  ),
+
+                // View mode toggle (list / board)
+                if (widget.onViewModeChange != null)
+                  FilterIconButton(
+                    icon: widget.viewMode == TaskViewMode.board ? Icons.view_list_outlined : Icons.view_kanban_outlined,
+                    iconSize: AppTheme.iconSizeMedium,
+                    color: widget.viewMode == TaskViewMode.board
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    tooltip: widget.viewMode == TaskViewMode.board
+                        ? _translationService.translate(TaskTranslationKeys.viewModeListTooltip)
+                        : _translationService.translate(TaskTranslationKeys.viewModeBoardTooltip),
+                    onPressed: () => widget.onViewModeChange!(
+                      widget.viewMode == TaskViewMode.board ? TaskViewMode.list : TaskViewMode.board,
+                    ),
                   ),
 
                 // Group button

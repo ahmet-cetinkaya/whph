@@ -589,3 +589,8 @@ tasks:
       La data di scadenza deve essere successiva
       alla data pianificata
     deadline_time_invalid: L'orario della scadenza non è valido
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

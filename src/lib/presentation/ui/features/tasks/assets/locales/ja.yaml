@@ -540,3 +540,8 @@ tasks:
   validation:
     deadline_cannot_be_before_planned: 期限は予定日より後でなければなりません
     deadline_time_invalid: 期限時間が無効です
+  view_mode:
+    list_tooltip: List view
+    board_tooltip: Board view
+  board:
+    cross_column_move_not_supported: Moving tasks between columns is not supported

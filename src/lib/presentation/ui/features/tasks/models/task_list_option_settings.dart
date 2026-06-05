@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/tasks/models/task_sort_fields.dar
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/presentation/ui/shared/models/date_filter_setting.dart';
+import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 
 /// Model for storing task filter and sort settings
 class TaskListOptionSettings {
@@ -36,6 +37,9 @@ class TaskListOptionSettings {
   /// Show subtasks toggle
   final bool showSubTasks;
 
+  /// Current view mode (list or board)
+  final TaskViewMode viewMode;
+
   TaskListOptionSettings({
     this.selectedTagIds,
     this.showNoTagsFilter = false,
@@ -47,6 +51,7 @@ class TaskListOptionSettings {
     this.sortConfig,
     this.forceOriginalLayout = false,
     this.showSubTasks = false,
+    this.viewMode = TaskViewMode.list,
   });
 
   /// Create settings from a JSON map
@@ -126,6 +131,10 @@ class TaskListOptionSettings {
       sortConfig: sortConfig,
       forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
       showSubTasks: json['showSubTasks'] as bool? ?? false,
+      viewMode: TaskViewMode.values.firstWhere(
+        (e) => e.name == (json['viewMode'] as String?),
+        orElse: () => TaskViewMode.list,
+      ),
     );
   }
 
@@ -137,6 +146,7 @@ class TaskListOptionSettings {
       'search': search, // Always include search, even if null
       'forceOriginalLayout': forceOriginalLayout,
       'showSubTasks': showSubTasks,
+      'viewMode': viewMode.name,
     };
 
     if (selectedTagIds != null) {
