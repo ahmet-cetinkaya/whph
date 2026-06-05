@@ -588,7 +588,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             duration: const Duration(milliseconds: 500),
                             child: _viewMode == TaskViewMode.board
                                 ? SizedBox(
-                                    height: 600,
+                                    height: MediaQuery.of(context).size.height * 0.6,
                                     child: TaskList(
                                       key: _taskListKey,
                                       filterByCompleted: _showCompletedTasks,

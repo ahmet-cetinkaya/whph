@@ -419,20 +419,21 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
       ),
       builder: (context) => LoadingOverlay(
         isLoading: !_isPageFullyLoaded,
-        child: SingleChildScrollView(
+        child: CustomScrollView(
           key: _mainContentKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TodayPageListOptions(
+          slivers: [
+            SliverToBoxAdapter(
+              child: TodayPageListOptions(
                 key: _mainListOptionsKey,
                 onSettingsLoaded: _onMainListOptionSettingsLoaded,
                 selectedTagIds: _selectedTagFilter,
                 showNoTagsFilter: _showNoTagsFilter,
                 onFilterChange: _onMainListOptionChange,
               ),
-              if (_mainListOptionSettingsLoaded) ...[
-                Column(
+            ),
+            if (_mainListOptionSettingsLoaded) ...[
+              SliverToBoxAdapter(
+                child: Column(
                   key: _habitsSectionKey,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -472,34 +473,34 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     const SizedBox(height: AppTheme.sizeSmall),
                   ],
                 ),
-                if (_habitListOptionSettingsLoaded)
-                  SizedBox(
-                    height: 300,
-                    child: HabitsList(
-                      key: ValueKey(
-                        'habits_list_${_habitListStyle}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}_$_isThreeStateEnabled',
-                      ),
-                      isThreeStateEnabled: _isThreeStateEnabled,
-                      pageSize: 5,
-                      style: _habitListStyle,
-                      filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                      filterNoTags: _showNoTagsFilter,
-                      excludeCompletedForDate: _todayStart,
-                      sortConfig: _habitSortConfig,
-                      enableReordering: _habitSortConfig.useCustomOrder,
-                      forceOriginalLayout: _habitForceOriginalLayout,
-                      onClickHabit: (habit) => _openHabitDetails(context, habit.id),
-                      onHabitCompleted: _onHabitCompleted,
-                      onListing: _onHabitsListed,
-                      onReorderComplete: () {
-                        // Refresh the habits list to ensure correct order
-                        setState(() {});
-                      },
-                      showDoneOverlayWhenEmpty: true,
-                    ),
+              ),
+              if (_habitListOptionSettingsLoaded)
+                HabitsList(
+                  key: ValueKey(
+                    'habits_list_${_habitListStyle}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}_$_isThreeStateEnabled',
                   ),
-                const SizedBox(height: AppTheme.sizeMedium),
-                Column(
+                  isThreeStateEnabled: _isThreeStateEnabled,
+                  pageSize: 5,
+                  style: _habitListStyle,
+                  filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                  filterNoTags: _showNoTagsFilter,
+                  excludeCompletedForDate: _todayStart,
+                  sortConfig: _habitSortConfig,
+                  enableReordering: _habitSortConfig.useCustomOrder,
+                  forceOriginalLayout: _habitForceOriginalLayout,
+                  onClickHabit: (habit) => _openHabitDetails(context, habit.id),
+                  onHabitCompleted: _onHabitCompleted,
+                  onListing: _onHabitsListed,
+                  onReorderComplete: () {
+                    // Refresh the habits list to ensure correct order
+                    setState(() {});
+                  },
+                  showDoneOverlayWhenEmpty: true,
+                  useSliver: true,
+                ),
+              SliverToBoxAdapter(child: const SizedBox(height: AppTheme.sizeMedium)),
+              SliverToBoxAdapter(
+                child: Column(
                   key: _tasksSectionKey,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -562,65 +563,71 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     ),
                   ],
                 ),
-                if (_taskListOptionSettingsLoaded) ...[
-                  _viewMode == TaskViewMode.board
-                      ? SizedBox(
-                          height: 400,
-                          child: TaskList(
-                            key: ValueKey(
-                              'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
-                            ),
-                            filterByCompleted: _showCompletedTasks,
-                            filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                            filterNoTags: _showNoTagsFilter,
-                            filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
-                            filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
-                            filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
-                            filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
-                            filterDateOr: true,
-                            filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
-                            filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
-                            search: _taskSearchQuery,
-                            includeSubTasks: _showSubTasks,
-                            pageSize: 5,
-                            onClickTask: (task) => _openTaskDetails(context, task.id),
-                            onTaskCompleted: _onTaskCompleted,
-                            onList: _onTasksListed,
-                            enableReordering: _taskSortConfig.useCustomOrder,
-                            forceOriginalLayout: _taskForceOriginalLayout,
-                            showDoneOverlayWhenEmpty: true,
-                            sortConfig: _taskSortConfig,
-                            viewMode: _viewMode,
-                          ),
-                        )
-                      : TaskList(
-                          key: ValueKey(
-                            'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
-                          ),
-                          filterByCompleted: _showCompletedTasks,
-                          filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
-                          filterNoTags: _showNoTagsFilter,
-                          filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
-                          filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
-                          filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
-                          filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
-                          filterDateOr: true,
-                          filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
-                          filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
-                          search: _taskSearchQuery,
-                          includeSubTasks: _showSubTasks,
-                          pageSize: 5,
-                          onClickTask: (task) => _openTaskDetails(context, task.id),
-                          onTaskCompleted: _onTaskCompleted,
-                          onList: _onTasksListed,
-                          enableReordering: _taskSortConfig.useCustomOrder,
-                          forceOriginalLayout: _taskForceOriginalLayout,
-                          showDoneOverlayWhenEmpty: true,
-                          sortConfig: _taskSortConfig,
-                          viewMode: _viewMode,
+              ),
+              if (_taskListOptionSettingsLoaded) ...[
+                if (_viewMode == TaskViewMode.board)
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: TaskList(
+                        key: ValueKey(
+                          'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
                         ),
-                  const SizedBox(height: AppTheme.size2Small),
-                  Column(
+                        filterByCompleted: _showCompletedTasks,
+                        filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                        filterNoTags: _showNoTagsFilter,
+                        filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                        filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
+                        filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                        filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
+                        filterDateOr: true,
+                        filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
+                        filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
+                        search: _taskSearchQuery,
+                        includeSubTasks: _showSubTasks,
+                        pageSize: 5,
+                        onClickTask: (task) => _openTaskDetails(context, task.id),
+                        onTaskCompleted: _onTaskCompleted,
+                        onList: _onTasksListed,
+                        enableReordering: _taskSortConfig.useCustomOrder,
+                        forceOriginalLayout: _taskForceOriginalLayout,
+                        showDoneOverlayWhenEmpty: true,
+                        sortConfig: _taskSortConfig,
+                        viewMode: _viewMode,
+                      ),
+                    ),
+                  )
+                else
+                  TaskList(
+                    key: ValueKey(
+                      'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
+                    ),
+                    filterByCompleted: _showCompletedTasks,
+                    filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
+                    filterNoTags: _showNoTagsFilter,
+                    filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                    filterByPlannedEndDate: _showCompletedTasks ? null : _todayEnd,
+                    filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                    filterByDeadlineEndDate: _showCompletedTasks ? null : _todayEnd,
+                    filterDateOr: true,
+                    filterByCompletedStartDate: _showCompletedTasks ? _todayStart : null,
+                    filterByCompletedEndDate: _showCompletedTasks ? _todayEnd : null,
+                    search: _taskSearchQuery,
+                    includeSubTasks: _showSubTasks,
+                    pageSize: 5,
+                    onClickTask: (task) => _openTaskDetails(context, task.id),
+                    onTaskCompleted: _onTaskCompleted,
+                    onList: _onTasksListed,
+                    enableReordering: _taskSortConfig.useCustomOrder,
+                    forceOriginalLayout: _taskForceOriginalLayout,
+                    showDoneOverlayWhenEmpty: true,
+                    sortConfig: _taskSortConfig,
+                    viewMode: _viewMode,
+                    useSliver: true,
+                  ),
+                SliverToBoxAdapter(child: const SizedBox(height: AppTheme.size2Small)),
+                SliverToBoxAdapter(
+                  child: Column(
                     key: _timeChartSectionKey,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -653,10 +660,10 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                         ),
                     ],
                   ),
-                ],
+                ),
               ],
             ],
-          ),
+          ],
         ),
       ),
     );

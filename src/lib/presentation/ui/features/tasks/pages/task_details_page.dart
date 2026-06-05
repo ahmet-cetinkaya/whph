@@ -390,7 +390,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
               // Sub Tasks List Section
               _viewMode == TaskViewMode.board
                   ? SizedBox(
-                      height: 400,
+                      height: MediaQuery.of(context).size.height * 0.6,
                       child: TaskList(
                         onClickTask: _onClickSubTask,
                         parentTaskId: widget.taskId,
