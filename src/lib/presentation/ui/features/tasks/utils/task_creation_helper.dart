@@ -13,6 +13,7 @@ import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/abstraction/i_default_task_settings_service.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_draft.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -22,14 +23,7 @@ import 'package:acore/acore.dart';
 class TaskCreationHelper {
   static Future<void> createTask({
     required BuildContext context,
-    List<String>? initialTagIds,
-    DateTime? initialPlannedDate,
-    DateTime? initialDeadlineDate,
-    EisenhowerPriority? initialPriority,
-    int? initialEstimatedTime,
-    String? initialTitle,
-    bool? initialCompleted,
-    String? initialParentTaskId,
+    TaskDraft draft = const TaskDraft(),
     Function(String taskId, TaskData taskData)? onTaskCreated,
   }) async {
     final mediator = container.resolve<Mediator>();
@@ -64,28 +58,21 @@ class TaskCreationHelper {
         translationService: translationService,
         tasksService: tasksService,
         defaultSettingsService: defaultSettingsService,
-        initialTagIds: initialTagIds,
-        initialPlannedDate: initialPlannedDate,
-        initialDeadlineDate: initialDeadlineDate,
-        initialPriority: initialPriority,
-        initialEstimatedTime: initialEstimatedTime,
-        initialTitle: initialTitle,
-        initialCompleted: initialCompleted,
-        initialParentTaskId: initialParentTaskId,
+        draft: draft,
         onTaskCreated: onTaskCreated,
       );
     } else {
       // Show dialog
       await QuickAddTaskDialog.show(
         context: context,
-        initialTagIds: initialTagIds,
-        initialPlannedDate: initialPlannedDate,
-        initialDeadlineDate: initialDeadlineDate,
-        initialPriority: initialPriority,
-        initialEstimatedTime: initialEstimatedTime,
-        initialTitle: initialTitle,
-        initialCompleted: initialCompleted,
-        initialParentTaskId: initialParentTaskId,
+        initialTagIds: draft.tagIds,
+        initialPlannedDate: draft.plannedDate,
+        initialDeadlineDate: draft.deadlineDate,
+        initialPriority: draft.priority,
+        initialEstimatedTime: draft.estimatedTime,
+        initialTitle: draft.title,
+        initialCompleted: draft.completed,
+        initialParentTaskId: draft.parentTaskId,
         onTaskCreated: onTaskCreated,
       );
     }
@@ -97,26 +84,19 @@ class TaskCreationHelper {
     required ITranslationService translationService,
     required TasksService tasksService,
     required IDefaultTaskSettingsService defaultSettingsService,
-    List<String>? initialTagIds,
-    DateTime? initialPlannedDate,
-    DateTime? initialDeadlineDate,
-    EisenhowerPriority? initialPriority,
-    int? initialEstimatedTime,
-    String? initialTitle,
-    bool? initialCompleted,
-    String? initialParentTaskId,
+    required TaskDraft draft,
     Function(String taskId, TaskData taskData)? onTaskCreated,
   }) async {
     // Load defaults if not provided
-    final estimatedTime = initialEstimatedTime ?? await defaultSettingsService.getDefaultEstimatedTime();
+    final estimatedTime = draft.estimatedTime ?? await defaultSettingsService.getDefaultEstimatedTime();
 
     final (reminderTime, customOffset) = await defaultSettingsService.getDefaultPlannedDateReminder();
     ReminderTime plannedDateReminderTime = reminderTime;
     int? plannedDateReminderCustomOffset = customOffset;
 
     // Only apply default reminder if scheduled date is set (manually or initially)
-    // If no initialPlannedDate is provided, the reminder setting is irrelevant for creation
-    if (initialPlannedDate == null) {
+    // If no draft.plannedDate is provided, the reminder setting is irrelevant for creation
+    if (draft.plannedDate == null) {
       plannedDateReminderTime = ReminderTime.none;
       plannedDateReminderCustomOffset = null;
     }
@@ -127,34 +107,28 @@ class TaskCreationHelper {
       context: context,
       errorMessage: translationService.translate(TaskTranslationKeys.saveTaskError),
       operation: () async {
-        final finalTitle = initialTitle ?? translationService.translate(TaskTranslationKeys.newTaskDefaultTitle);
+        final finalTitle = draft.title ?? translationService.translate(TaskTranslationKeys.newTaskDefaultTitle);
 
         final command = SaveTaskCommand(
           title: finalTitle,
           description: '',
-          tagIdsToAdd: initialTagIds,
-          priority: initialPriority,
+          tagIdsToAdd: draft.tagIds,
+          priority: draft.priority,
           estimatedTime: estimatedTime,
-          plannedDate: initialPlannedDate,
-          deadlineDate: initialDeadlineDate,
+          plannedDate: draft.plannedDate,
+          deadlineDate: draft.deadlineDate,
           plannedDateReminderTime: plannedDateReminderTime,
           plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
-          completedAt: (initialCompleted ?? false) ? DateTime.now().toUtc() : null,
-          parentTaskId: initialParentTaskId,
+          completedAt: (draft.completed ?? false) ? DateTime.now().toUtc() : null,
+          parentTaskId: draft.parentTaskId,
         );
         return await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
       },
       onSuccess: (response) => _handleTaskCreationSuccess(
         context: context,
         response: response,
-        initialTitle: initialTitle,
-        initialPriority: initialPriority,
+        draft: draft,
         estimatedTime: estimatedTime,
-        initialPlannedDate: initialPlannedDate,
-        initialDeadlineDate: initialDeadlineDate,
-        initialCompleted: initialCompleted,
-        initialParentTaskId: initialParentTaskId,
-        initialTagIds: initialTagIds,
         translationService: translationService,
         tasksService: tasksService,
         onTaskCreated: onTaskCreated,
@@ -165,32 +139,20 @@ class TaskCreationHelper {
   static void _handleTaskCreationSuccess({
     required BuildContext context,
     required SaveTaskCommandResponse response,
-    required String? initialTitle,
-    required EisenhowerPriority? initialPriority,
+    required TaskDraft draft,
     required int? estimatedTime,
-    required DateTime? initialPlannedDate,
-    required DateTime? initialDeadlineDate,
-    required bool? initialCompleted,
-    required String? initialParentTaskId,
-    required List<String>? initialTagIds,
     required ITranslationService translationService,
     required TasksService tasksService,
     required Function(String taskId, TaskData taskData)? onTaskCreated,
   }) {
     try {
       _notifyTaskCreated(tasksService, response.id);
-      _showSuccessMessage(context, translationService, initialTitle);
+      _showSuccessMessage(context, translationService, draft.title);
       _invokeOnTaskCreatedCallback(
         onTaskCreated,
         response.id,
-        initialTitle,
-        initialPriority,
-        estimatedTime,
-        initialPlannedDate,
-        initialDeadlineDate,
-        initialCompleted,
-        initialParentTaskId,
-        initialTagIds,
+        draft: draft,
+        estimatedTime: estimatedTime,
       );
       _navigateToTaskDetails(context, response.id);
     } catch (e, stackTrace) {
@@ -242,29 +204,23 @@ class TaskCreationHelper {
 
   static void _invokeOnTaskCreatedCallback(
     Function(String taskId, TaskData taskData)? onTaskCreated,
-    String taskId,
-    String? initialTitle,
-    EisenhowerPriority? initialPriority,
-    int? estimatedTime,
-    DateTime? initialPlannedDate,
-    DateTime? initialDeadlineDate,
-    bool? initialCompleted,
-    String? initialParentTaskId,
-    List<String>? initialTagIds,
-  ) {
+    String taskId, {
+    required TaskDraft draft,
+    required int? estimatedTime,
+  }) {
     if (onTaskCreated == null) return;
 
     try {
       final taskData = TaskData(
-        title: initialTitle ?? '',
-        priority: initialPriority,
+        title: draft.title ?? '',
+        priority: draft.priority,
         estimatedTime: estimatedTime,
-        plannedDate: initialPlannedDate?.toUtc(),
-        deadlineDate: initialDeadlineDate?.toUtc(),
+        plannedDate: draft.plannedDate?.toUtc(),
+        deadlineDate: draft.deadlineDate?.toUtc(),
         tags: [],
-        tagIds: initialTagIds ?? [],
-        isCompleted: initialCompleted ?? false,
-        parentTaskId: initialParentTaskId,
+        tagIds: draft.tagIds ?? [],
+        isCompleted: draft.completed ?? false,
+        parentTaskId: draft.parentTaskId,
         createdDate: DateTime.now().toUtc(),
       );
       onTaskCreated(taskId, taskData);

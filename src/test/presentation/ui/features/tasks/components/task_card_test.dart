@@ -153,7 +153,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) => completedCalled = true,
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -187,7 +187,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) => completedCalled = true,
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -218,7 +218,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -258,7 +258,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -281,7 +281,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: null, // No callback provided
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -304,7 +304,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -349,7 +349,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -372,7 +372,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: false, // Explicitly disable swipe
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -395,7 +395,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),
@@ -418,7 +418,7 @@ void main() {
               onOpenDetails: () {},
               onCompleted: (id) {},
               enableSwipeToComplete: true,
-              testMode: true, // Bypass platform check
+              canSwipeToComplete: true, // Force-enable swipes in widget tests
             ),
           ),
         ),

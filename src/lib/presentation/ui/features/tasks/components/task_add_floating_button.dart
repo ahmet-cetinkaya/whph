@@ -4,6 +4,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_data.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_draft.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:acore/acore.dart';
@@ -88,14 +89,16 @@ class TaskAddFloatingButton extends StatelessWidget {
   Future<void> _showTaskCreationDialog(BuildContext context) async {
     await TaskCreationHelper.createTask(
       context: context,
-      initialTagIds: initialTagIds,
-      initialPlannedDate: initialPlannedDate,
-      initialDeadlineDate: initialDeadlineDate,
-      initialPriority: initialPriority,
-      initialEstimatedTime: initialEstimatedTime,
-      initialTitle: initialTitle,
-      initialCompleted: initialCompleted,
-      initialParentTaskId: initialParentTaskId,
+      draft: TaskDraft(
+        tagIds: initialTagIds,
+        plannedDate: initialPlannedDate,
+        deadlineDate: initialDeadlineDate,
+        priority: initialPriority,
+        estimatedTime: initialEstimatedTime,
+        title: initialTitle,
+        completed: initialCompleted,
+        parentTaskId: initialParentTaskId,
+      ),
       onTaskCreated: onTaskCreated,
     );
   }

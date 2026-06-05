@@ -4,6 +4,7 @@ import 'package:whph/core/application/shared/constants/shared_translation_keys.d
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/application/shared/utils/grouping_utils.dart';
+import 'package:whph/core/application/shared/utils/group_key_result.dart';
 
 class TaskGroupingHelper {
   static String? getGroupName(TaskListItem task, TaskSortFields? sortField, {DateTime? now}) {
@@ -69,7 +70,7 @@ class TaskGroupingHelper {
   }
 
   /// Reverse-maps a priority group key back to [EisenhowerPriority].
-  /// Returns null for the "none" group.
+  /// Returns null for the "none" group and for unrecognized keys.
   static EisenhowerPriority? priorityFromGroupKey(String groupKey) {
     switch (groupKey) {
       case TaskTranslationKeys.priorityUrgentImportant:
@@ -86,13 +87,14 @@ class TaskGroupingHelper {
   }
 
   /// Reverse-maps a completed-date group key to completion state.
-  /// Returns true for any date group (task is completed), false for "noDate" (not completed).
+  ///
+  /// The "no date" group means the task is not completed; any date group means
+  /// it is. An unrecognized key yields null.
   static bool? isCompletedFromGroupKey(String groupKey) {
     switch (groupKey) {
       case SharedTranslationKeys.noDate:
-        return false; // No completion date means not completed
+        return false;
       default:
-        // Any date group (today, past, future, etc.) means the task is completed
         return true;
     }
   }
@@ -103,7 +105,6 @@ class TaskGroupingHelper {
     if (groupKey == SharedTranslationKeys.none) {
       return null;
     }
-    // For tag grouping, the group key is the tag name itself
     return groupKey;
   }
 
@@ -195,54 +196,50 @@ class TaskGroupingHelper {
 
   /// Reverse-maps a forward date group key to a representative target date.
   ///
-  /// The first tuple element reports whether [groupKey] was recognized as a
-  /// date group; the second is the resolved date (null for the "no date"
-  /// group). An unrecognized key yields `(false, null)`.
-  static (bool, DateTime?) dateFromGroupKey(String groupKey, {DateTime? now}) {
+  /// Returns [GroupKeyResult.recognized] for known date groups (with the
+  /// resolved date, possibly null for the "no date" group) and
+  /// [GroupKeyResult.unrecognized] for unknown keys.
+  static GroupKeyResult<DateTime?> dateFromGroupKey(String groupKey, {DateTime? now}) {
     final nowValue = now ?? DateTime.now();
     final today = DateTime(nowValue.year, nowValue.month, nowValue.day);
 
     switch (groupKey) {
       case SharedTranslationKeys.noDate:
-        return (true, null);
+        return const GroupKeyResult.recognized(null);
       case SharedTranslationKeys.past:
-        return (true, today.subtract(const Duration(days: 1)));
+        return GroupKeyResult.recognized(today.subtract(const Duration(days: 1)));
       case SharedTranslationKeys.today:
-        return (true, today);
+        return GroupKeyResult.recognized(today);
       case SharedTranslationKeys.tomorrow:
-        return (true, today.add(const Duration(days: 1)));
+        return GroupKeyResult.recognized(today.add(const Duration(days: 1)));
       case SharedTranslationKeys.next7Days:
-        return (true, today.add(const Duration(days: 3)));
+        return GroupKeyResult.recognized(today.add(const Duration(days: 3)));
       case SharedTranslationKeys.future:
-        return (true, today.add(const Duration(days: 8)));
+        return GroupKeyResult.recognized(today.add(const Duration(days: 8)));
       default:
-        return (false, null);
+        return const GroupKeyResult.unrecognized();
     }
   }
 
   /// Reverse-maps a duration group key to a representative estimated time in
   /// minutes. Each bucket resolves to its lower bound so the moved task lands
   /// back in the same column. The "none" group maps to null (no estimate).
-  ///
-  /// The first tuple element reports whether [groupKey] was recognized; the
-  /// second is the resolved minute value. An unrecognized key yields
-  /// `(false, null)`.
-  static (bool, int?) durationFromGroupKey(String groupKey) {
+  static GroupKeyResult<int?> durationFromGroupKey(String groupKey) {
     switch (groupKey) {
       case SharedTranslationKeys.none:
-        return (true, null);
+        return const GroupKeyResult.recognized(null);
       case SharedTranslationKeys.durationLessThan15Min:
-        return (true, 1);
+        return const GroupKeyResult.recognized(1);
       case SharedTranslationKeys.duration15To30Min:
-        return (true, 15);
+        return const GroupKeyResult.recognized(15);
       case SharedTranslationKeys.duration30To60Min:
-        return (true, 30);
+        return const GroupKeyResult.recognized(30);
       case SharedTranslationKeys.duration1To2Hours:
-        return (true, 60);
+        return const GroupKeyResult.recognized(60);
       case SharedTranslationKeys.durationMoreThan2Hours:
-        return (true, 120);
+        return const GroupKeyResult.recognized(120);
       default:
-        return (false, null);
+        return const GroupKeyResult.unrecognized();
     }
   }
 }

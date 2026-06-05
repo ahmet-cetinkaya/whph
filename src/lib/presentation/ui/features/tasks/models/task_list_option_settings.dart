@@ -131,10 +131,7 @@ class TaskListOptionSettings {
       sortConfig: sortConfig,
       forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
       showSubTasks: json['showSubTasks'] as bool? ?? false,
-      viewMode: TaskViewMode.values.firstWhere(
-        (e) => e.name == (json['viewMode'] as String?),
-        orElse: () => TaskViewMode.list,
-      ),
+      viewMode: TaskViewModeParse.fromName(json['viewMode'] as String?),
     );
   }
 

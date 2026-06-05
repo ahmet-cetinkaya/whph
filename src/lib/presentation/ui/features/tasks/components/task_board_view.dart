@@ -64,10 +64,26 @@ class _TaskBoardViewState extends State<TaskBoardView> {
   final _translationService = container.resolve<ITranslationService>();
 
   /// Ordered list of group keys, derived from [widget.groupedTasks].
-  /// No local shadow state — the widget rebuilds on every drag and reads the
-  /// current data straight from the host. This avoids stale-index bugs from
-  /// out-of-sync local copies.
   List<String> get _groupKeys => widget.groupedTasks.keys.toList();
+
+  /// Cached board lists handed to [BoardView].
+  ///
+  /// The `boardview` package mutates the [BoardList]/[BoardItem] instances in
+  /// place during a drag to render the live reorder preview. It must therefore
+  /// receive the *same* instances across rebuilds — regenerating them mid-drag
+  /// (e.g. from an incoming task-update event or a timer tick) would discard the
+  /// in-progress preview and snap the dragged card back to its origin (flicker).
+  /// While [_isDragging] is true we reuse the cache instead of rebuilding.
+  List<BoardList>? _cachedLists;
+  bool _isDragging = false;
+
+  @override
+  void didUpdateWidget(TaskBoardView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Fresh data invalidates the cache, but never while a drag is in flight —
+    // the package owns the list instances until the drop completes.
+    if (!_isDragging) _cachedLists = null;
+  }
 
   bool _isColumnInBounds(int listIndex) => listIndex >= 0 && listIndex < _groupKeys.length;
 
@@ -79,6 +95,10 @@ class _TaskBoardViewState extends State<TaskBoardView> {
   }
 
   void _onDropItem(int? listIndex, int? itemIndex, int? oldListIndex, int? oldItemIndex, BoardItemState state) {
+    // The drag is over: drop the cache so the next rebuild reflects fresh data.
+    _isDragging = false;
+    _cachedLists = null;
+
     if (listIndex == null || itemIndex == null || oldListIndex == null || oldItemIndex == null) return;
     // The source must point at a real card; the destination only needs a valid
     // column — dropping into an empty or shorter column yields a drop index at
@@ -123,6 +143,17 @@ class _TaskBoardViewState extends State<TaskBoardView> {
   Widget build(BuildContext context) {
     if (_groupKeys.isEmpty) return const SizedBox.shrink();
 
+    // Reuse the package-owned list instances while a drag is active so its live
+    // reorder preview is never thrown away by a rebuild.
+    final cached = _cachedLists;
+    if (_isDragging && cached != null) {
+      return BoardView(
+        width: AppTheme.boardColumnWidth,
+        dragDelay: PlatformUtils.isMobile ? 50 : 0,
+        lists: cached,
+      );
+    }
+
     final lists = List.generate(_groupKeys.length, (li) {
       final groupKey = _groupKeys[li];
       final tasks = widget.groupedTasks[groupKey] ?? const <TaskListItem>[];
@@ -133,7 +164,7 @@ class _TaskBoardViewState extends State<TaskBoardView> {
         final buttons = widget.trailingButtons?.call(task) ?? [];
 
         return BoardItem(
-          onStartDragItem: (_, __, ___) {},
+          onStartDragItem: (_, __, ___) => _isDragging = true,
           onDropItem: _onDropItem,
           onTapItem: (_, __, ___) => widget.onClickTask(task),
           draggable: true,
@@ -206,6 +237,8 @@ class _TaskBoardViewState extends State<TaskBoardView> {
         headerBackgroundColor: Colors.transparent,
       );
     });
+
+    _cachedLists = lists;
 
     return BoardView(
       width: AppTheme.boardColumnWidth,

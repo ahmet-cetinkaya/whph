@@ -10,6 +10,7 @@ import 'package:whph/core/application/features/tags/queries/get_list_tags_query.
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
+import 'package:whph/core/application/shared/utils/group_key_result.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/core/domain/shared/utils/logger.dart';
@@ -803,28 +804,50 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             priority = TaskGroupingHelper.priorityFromGroupKey(toGroupKey);
             break;
           case TaskSortFields.plannedDate:
-            final (recognized, date) = TaskGroupingHelper.dateFromGroupKey(toGroupKey);
-            if (!recognized) return;
-            plannedDate = date;
+            switch (TaskGroupingHelper.dateFromGroupKey(toGroupKey)) {
+              case Recognized(:final value):
+                plannedDate = value;
+              case Unrecognized():
+                return;
+            }
             break;
           case TaskSortFields.deadlineDate:
-            final (recognized, date) = TaskGroupingHelper.dateFromGroupKey(toGroupKey);
-            if (!recognized) return;
-            deadlineDate = date;
+            switch (TaskGroupingHelper.dateFromGroupKey(toGroupKey)) {
+              case Recognized(:final value):
+                deadlineDate = value;
+              case Unrecognized():
+                return;
+            }
             break;
           case TaskSortFields.completedDate:
-            final (recognized, date) = TaskGroupingHelper.dateFromGroupKey(toGroupKey);
-            if (!recognized) return;
-            // The "no date" column means "not completed"; any date bucket marks
-            // the task completed at that representative date.
-            completedAt = date == null ? null : DateTimeHelper.toUtcDateTime(date);
+            switch (TaskGroupingHelper.dateFromGroupKey(toGroupKey)) {
+              case Recognized(:final value):
+                // The "no date" column means "not completed"; any date bucket
+                // marks the task completed at that representative date.
+                completedAt = value == null ? null : DateTimeHelper.toUtcDateTime(value);
+              case Unrecognized():
+                return;
+            }
             break;
           case TaskSortFields.estimatedTime:
-            final (recognized, minutes) = TaskGroupingHelper.durationFromGroupKey(toGroupKey);
-            if (!recognized) return;
-            estimatedTime = minutes;
+            switch (TaskGroupingHelper.durationFromGroupKey(toGroupKey)) {
+              case Recognized(:final value):
+                estimatedTime = value;
+              case Unrecognized():
+                return;
+            }
             break;
-          default:
+          // The remaining TaskSortFields values are not persistable cross-
+          // column moves (the early-return at the top of this method already
+          // filtered them out, but listing them explicitly keeps the switch
+          // exhaustive so a new enum value forces a compile error here).
+          // tag is handled by an early-return above.
+          case TaskSortFields.title:
+          case TaskSortFields.tag:
+          case TaskSortFields.createdDate:
+          case TaskSortFields.modifiedDate:
+          case TaskSortFields.totalDuration:
+          case null:
             return;
         }
 

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
-import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_list_options.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
@@ -29,9 +28,7 @@ import 'package:whph/presentation/ui/shared/services/tour_navigation_service.dar
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
-import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
-import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
-import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_group_creation_handler.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -279,101 +276,18 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     }
   }
 
-  Future<String?> _resolveTagIdByName(String tagName) async {
-    try {
-      final response = await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(
-        GetListTagsQuery(pageIndex: 0, pageSize: 100, search: tagName, showArchived: false),
-      );
-      final match = response.items.where((t) => t.name.toLowerCase() == tagName.toLowerCase()).firstOrNull;
-      return match?.id;
-    } catch (e, stackTrace) {
-      Logger.error('Failed to resolve tag ID for name: $tagName', error: e, stackTrace: stackTrace);
-      return null;
-    }
-  }
-
   void _onAddToGroup(String groupKey) {
-    final groupField = _sortConfig.groupOption?.field ?? _sortConfig.orderOptions.firstOrNull?.field;
-    if (groupField == null) return;
-
-    // Compute initial values from the group key using TaskGroupingHelper reverse mappers
-    EisenhowerPriority? initialPriority;
-    DateTime? initialPlannedDate;
-    DateTime? initialDeadlineDate;
-    int? initialEstimatedTime;
-    bool? initialCompleted;
-    List<String>? initialTagIds;
-
-    switch (groupField) {
-      case TaskSortFields.priority:
-        initialPriority = TaskGroupingHelper.priorityFromGroupKey(groupKey);
-        break;
-      case TaskSortFields.plannedDate:
-        final (recognized, date) = TaskGroupingHelper.dateFromGroupKey(groupKey);
-        if (recognized) initialPlannedDate = date;
-        break;
-      case TaskSortFields.deadlineDate:
-        final (recognized, date) = TaskGroupingHelper.dateFromGroupKey(groupKey);
-        if (recognized) initialDeadlineDate = date;
-        break;
-      case TaskSortFields.completedDate:
-        initialCompleted = TaskGroupingHelper.isCompletedFromGroupKey(groupKey);
-        break;
-      case TaskSortFields.estimatedTime:
-        final (recognized, minutes) = TaskGroupingHelper.durationFromGroupKey(groupKey);
-        if (recognized) initialEstimatedTime = minutes;
-        break;
-      case TaskSortFields.tag:
-        final tagName = TaskGroupingHelper.tagNameFromGroupKey(groupKey);
-        if (tagName != null) {
-          // For tag grouping, the groupKey IS the tag name - we need to look up its ID
-          // Do this asynchronously and show the dialog
-          _resolveTagIdByName(tagName).then((tagId) {
-            if (tagId != null && mounted) {
-              TaskCreationHelper.createTask(
-                context: context,
-                initialTitle: _searchQuery,
-                initialTagIds: [tagId],
-                initialPlannedDate: _filterStartDate,
-                initialDeadlineDate: _filterEndDate,
-              );
-            } else {
-              // If tag not found, fall back to no tags
-              if (mounted) {
-                TaskCreationHelper.createTask(
-                  context: context,
-                  initialTitle: _searchQuery,
-                  initialTagIds: [],
-                  initialPlannedDate: _filterStartDate,
-                  initialDeadlineDate: _filterEndDate,
-                );
-              }
-            }
-          });
-          return; // Early return since we're handling it async
-        }
-        // "None" tag group means no tags
-        initialTagIds = [];
-        break;
-      case TaskSortFields.totalDuration:
-        // Not supported for add-to-group via initial values
-        break;
-      case TaskSortFields.title:
-      case TaskSortFields.createdDate:
-      case TaskSortFields.modifiedDate:
-        // These don't support direct add-to-group via initial values
-        break;
-    }
-
-    TaskCreationHelper.createTask(
+    TaskGroupCreationHandler.handle(
       context: context,
-      initialTitle: _searchQuery,
-      initialTagIds: initialTagIds ?? (_showNoTagsFilter ? [] : _selectedTagIds),
-      initialPlannedDate: initialPlannedDate ?? _filterStartDate,
-      initialDeadlineDate: initialDeadlineDate ?? _filterEndDate,
-      initialPriority: initialPriority,
-      initialEstimatedTime: initialEstimatedTime,
-      initialCompleted: initialCompleted,
+      input: TaskGroupCreationInput(
+        groupKey: groupKey,
+        groupField: _sortConfig.groupOption?.field ?? _sortConfig.orderOptions.firstOrNull?.field,
+        searchQuery: _searchQuery,
+        defaultTagIds: _selectedTagIds,
+        showNoTagsFilter: _showNoTagsFilter,
+        defaultPlannedDate: _filterStartDate,
+        defaultDeadlineDate: _filterEndDate,
+      ),
     );
   }
 

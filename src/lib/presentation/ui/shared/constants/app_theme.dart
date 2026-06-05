@@ -197,6 +197,10 @@ class AppTheme {
 
   static const double dialogMaxWidthMedium = 720.0;
 
+  // Kanban Board
+  static const double boardColumnWidth = 280.0;
+  static const double boardHeaderIconSize = 18.0;
+
   // Button Sizes
   static const double buttonSize2XSmall = 20.0;
   static const double buttonSizeXSmall = 24.0;
