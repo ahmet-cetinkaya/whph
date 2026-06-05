@@ -590,4 +590,4 @@ tasks:
     list_tooltip: List view
     board_tooltip: Board view
   board:
-    cross_column_move_not_supported: Moving tasks between columns is not supported
+    cross_column_move_not_supported: Переміщення завдань між стовпцями не підтримується
