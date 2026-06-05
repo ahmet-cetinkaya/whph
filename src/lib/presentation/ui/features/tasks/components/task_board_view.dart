@@ -63,59 +63,54 @@ class TaskBoardView extends StatefulWidget {
 class _TaskBoardViewState extends State<TaskBoardView> {
   final _translationService = container.resolve<ITranslationService>();
 
-  /// Mutable shadow of the grouped task data driven by [BoardView] callbacks.
-  /// Kept in sync so drag indices always map to the right items.
-  late List<List<TaskListItem>> _columnData;
+  /// Ordered list of group keys, derived from [widget.groupedTasks].
+  /// No local shadow state — the widget rebuilds on every drag and reads the
+  /// current data straight from the host. This avoids stale-index bugs from
+  /// out-of-sync local copies.
+  List<String> get _groupKeys => widget.groupedTasks.keys.toList();
 
-  /// Ordered list of group keys, mirroring [_columnData] by index.
-  late List<String> _groupKeys;
+  bool _isColumnInBounds(int listIndex) => listIndex >= 0 && listIndex < _groupKeys.length;
 
-  @override
-  void initState() {
-    super.initState();
-    _syncFromWidget();
-  }
-
-  @override
-  void didUpdateWidget(TaskBoardView old) {
-    super.didUpdateWidget(old);
-    _syncFromWidget();
-  }
-
-  void _syncFromWidget() {
-    _groupKeys = widget.groupedTasks.keys.toList();
-    _columnData = _groupKeys.map((k) => List<TaskListItem>.from(widget.groupedTasks[k]!)).toList();
+  /// The source must reference an existing card.
+  bool _isSourceInBounds(int listIndex, int itemIndex) {
+    if (!_isColumnInBounds(listIndex)) return false;
+    final column = widget.groupedTasks[_groupKeys[listIndex]];
+    return column != null && itemIndex >= 0 && itemIndex < column.length;
   }
 
   void _onDropItem(int? listIndex, int? itemIndex, int? oldListIndex, int? oldItemIndex, BoardItemState state) {
-    final fromList = oldListIndex!;
-    final fromItem = oldItemIndex!;
-    final toList = listIndex!;
-    final toItem = itemIndex!;
+    if (listIndex == null || itemIndex == null || oldListIndex == null || oldItemIndex == null) return;
+    // The source must point at a real card; the destination only needs a valid
+    // column — dropping into an empty or shorter column yields a drop index at
+    // or beyond that column's length, which is a legal insertion point.
+    if (!_isSourceInBounds(oldListIndex, oldItemIndex) || !_isColumnInBounds(listIndex)) return;
 
-    final task = _columnData[fromList][fromItem];
+    final groupKeys = _groupKeys;
+    final fromList = oldListIndex;
+    final fromItem = oldItemIndex;
+    final toList = listIndex;
+    final task = widget.groupedTasks[groupKeys[fromList]]![fromItem];
 
     if (fromList == toList) {
       // Within-column reorder
-      final tasks = _columnData[fromList];
+      final tasks = List<TaskListItem>.from(widget.groupedTasks[groupKeys[fromList]]!);
       tasks.removeAt(fromItem);
+      final toItem = itemIndex.clamp(0, tasks.length);
       tasks.insert(toItem, task);
       widget.onReorderWithinColumn?.call(fromItem, toItem, tasks);
-    } else {
-      // Cross-column move
-      if (!widget.canMoveAcrossColumns) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(_translationService.translate(TaskTranslationKeys.boardCrossColumnMoveNotSupported)),
-          duration: const Duration(seconds: 2),
-        ));
-        return;
-      }
-
-      _columnData[fromList].removeAt(fromItem);
-      _columnData[toList].insert(toItem, task);
-
-      widget.onCardMovedAcrossColumns?.call(task, _groupKeys[fromList], _groupKeys[toList]);
+      return;
     }
+
+    // Cross-column move
+    if (!widget.canMoveAcrossColumns) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(_translationService.translate(TaskTranslationKeys.boardCrossColumnMoveNotSupported)),
+        duration: const Duration(seconds: 2),
+      ));
+      return;
+    }
+    widget.onCardMovedAcrossColumns?.call(task, groupKeys[fromList], groupKeys[toList]);
   }
 
   String _columnTitle(String groupKey) {
@@ -126,11 +121,11 @@ class _TaskBoardViewState extends State<TaskBoardView> {
 
   @override
   Widget build(BuildContext context) {
-    if (_columnData.isEmpty) return const SizedBox.shrink();
+    if (_groupKeys.isEmpty) return const SizedBox.shrink();
 
-    final lists = List.generate(_columnData.length, (li) {
+    final lists = List.generate(_groupKeys.length, (li) {
       final groupKey = _groupKeys[li];
-      final tasks = _columnData[li];
+      final tasks = widget.groupedTasks[groupKey] ?? const <TaskListItem>[];
       final title = _columnTitle(groupKey);
 
       final items = List.generate(tasks.length, (ii) {
@@ -193,13 +188,16 @@ class _TaskBoardViewState extends State<TaskBoardView> {
                   Padding(
                     padding: const EdgeInsets.only(right: AppTheme.sizeXSmall),
                     child: IconButton(
-                      icon: const Icon(Icons.add, size: 18),
-                      iconSize: 18,
+                      icon: const Icon(Icons.add, size: AppTheme.boardHeaderIconSize),
+                      iconSize: AppTheme.boardHeaderIconSize,
                       onPressed: () => widget.onAddToGroup!(groupKey),
                       tooltip: _translationService.translate(TaskTranslationKeys.addTaskButtonTooltip),
                       visualDensity: VisualDensity.compact,
                       padding: const EdgeInsets.all(4),
-                      constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                      constraints: const BoxConstraints(
+                        minWidth: AppTheme.buttonSizeSmall,
+                        minHeight: AppTheme.buttonSizeSmall,
+                      ),
                     ),
                   ),
               ],
@@ -210,7 +208,7 @@ class _TaskBoardViewState extends State<TaskBoardView> {
     });
 
     return BoardView(
-      width: 280,
+      width: AppTheme.boardColumnWidth,
       dragDelay: PlatformUtils.isMobile ? 50 : 0,
       lists: lists,
     );
