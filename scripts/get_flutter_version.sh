@@ -9,4 +9,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SRC_DIR="$PROJECT_ROOT/src"
 cd "$SRC_DIR" || exit
 
-awk -F: '/^[[:space:]]*flutter:/ {gsub(/'\''|"/,"",$2); gsub(/^[[:space:]]+/,"",$2); print $2; exit}' pubspec.yaml
+# Read the pinned Flutter version from the exact SDK constraint in pubspec.yaml.
+# Must resolve to a single checkout-able git ref (e.g. "3.32.0") so consumers
+# like the F-Droid build can run `git reset --hard "$(get_flutter_version.sh)"`.
+awk -F': ' '/^[[:space:]]*flutter:/ && !/sdk:/ {gsub(/"/,"",$2); print $2; exit}' pubspec.yaml
