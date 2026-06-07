@@ -32,7 +32,7 @@ Install WHPH on Android through these stores or download the APK directly:
 
 <!-- prettier-ignore -->
 > [!TIP]
-> Please check the [Linux Dependencies Guide](docs/LINUX-DEPENDENCIES.md)
+> Please check the [Linux Dependencies Guide](docs/build/LINUX-DEPENDENCIES.md)
 > to ensure you have all required system libraries installed before
 > running the application.
 

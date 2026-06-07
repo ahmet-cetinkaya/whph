@@ -1,6 +1,7 @@
 # Google Play Store Deployment Guide
 
-This guide explains how to deploy the WHPH app to the Google Play Store using the automated Fastlane and GitHub Actions workflow.
+This guide explains how to deploy the WHPH app to the Google Play Store using
+the automated Fastlane and GitHub Actions workflow.
 
 ## Prerequisites
 
@@ -27,13 +28,13 @@ This guide explains how to deploy the WHPH app to the Google Play Store using th
 
 Add the following secrets to your GitHub repository:
 
-| Secret Name | Description | How to Get |
-| :---------- | :---------- | :--------- |
-| `GOOGLE_PLAY_SERVICE_ACCOUNT_KEY` | Base64-encoded service account JSON key | `base64 your-service-account-key.json` |
-| `KEYSTORE_BASE64` | Base64-encoded Android keystore file | `base64 src/android/app/whph-release.keystore` |
-| `KEYSTORE_PASSWORD` | Keystore password | From your existing keystore |
-| `KEY_ALIAS` | Key alias | From your existing keystore |
-| `KEY_PASSWORD` | Key password | From your existing keystore |
+| Secret Name                       | Description                             | How to Get                                     |
+| :-------------------------------- | :-------------------------------------- | :--------------------------------------------- |
+| `GOOGLE_PLAY_SERVICE_ACCOUNT_KEY` | Base64-encoded service account JSON key | `base64 your-service-account-key.json`         |
+| `KEYSTORE_BASE64`                 | Base64-encoded Android keystore file    | `base64 src/android/app/whph-release.keystore` |
+| `KEYSTORE_PASSWORD`               | Keystore password                       | From your existing keystore                    |
+| `KEY_ALIAS`                       | Key alias                               | From your existing keystore                    |
+| `KEY_PASSWORD`                    | Key password                            | From your existing keystore                    |
 
 ### 3. Fastlane Setup
 
@@ -110,7 +111,8 @@ Use the **Google Play Store Deployment** workflow in GitHub Actions for:
 
 ### 3. Production Rollout Management
 
-Use the **Google Play Store Rollout Management** workflow to manage production rollouts:
+Use the **Google Play Store Rollout Management** workflow to manage production
+rollouts:
 
 1. Go to **Actions** → **Google Play Store Rollout Management**
 2. Click **Run workflow**
@@ -166,7 +168,8 @@ Use the **Google Play Store Rollout Management** workflow to manage production r
    - Use deployment workflow for production track
    - Start with 10% rollout
    - Monitor for issues
-   - Use "Google Play Store Rollout Management" to gradually increase: 20% → 50% → 100%
+   - Use "Google Play Store Rollout Management" to gradually increase: 20% → 50%
+     → 100%
 
 ### Emergency Rollback
 
@@ -191,7 +194,7 @@ If issues are discovered in production:
 
 Store metadata is managed in the `fastlane/metadata/android/` directory:
 
-```text
+````text
 fastlane/metadata/android/
 ├── en-US/
 │   ├── title.txt              # App title
@@ -240,7 +243,7 @@ echo "- Fixed crash on app startup
    ```bash
    cd fastlane
    bundle install
-   ```
+````
 
 1. **Setup Environment**
 
@@ -256,13 +259,13 @@ echo "- Fixed crash on app startup
 
    ```bash
    cd fastlane
-   
+
    # Deploy to internal testing
    bundle exec fastlane deploy_internal
-   
+
    # Promote to alpha
    bundle exec fastlane promote_to_alpha
-   
+
    # Update metadata
    bundle exec fastlane update_metadata
    ```
@@ -311,7 +314,7 @@ Before deploying to production:
 
 ### Debug Commands
 
-```bash
+````bash
 # Check Fastlane configuration
 cd fastlane && bundle exec fastlane lanes
 
@@ -359,3 +362,4 @@ For issues with the deployment process:
 4. Check Google Play Developer API documentation
 
 For app-specific issues or questions about the deployment configuration, create an issue in the repository.
+````

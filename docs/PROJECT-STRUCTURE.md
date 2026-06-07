@@ -1,12 +1,16 @@
 # WHPH Project Structure
 
-This document provides a comprehensive overview of the WHPH (Work Hard Play Hard) project structure and organization. WHPH is a comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
+This document provides a comprehensive overview of the WHPH (Work Hard Play
+Hard) project structure and organization. WHPH is a comprehensive productivity
+app designed to help you manage tasks, develop new habits, and optimize your
+time.
 
 ## Root Directory Overview
 
-The project follows a standard Flutter application structure with additional platform-specific directories and custom organization:
+The project follows a standard Flutter application structure with additional
+platform-specific directories and custom organization:
 
-```text
+````text
 whph-2/
 ├── android/                    # Android platform-specific code and configuration
 ├── build/                      # Build artifacts and generated files
@@ -43,7 +47,7 @@ src/lib/
 ├── presentation/              # UI and API layers
 ├── main.dart                  # Application entry point
 └── main.mapper.g.dart         # Generated mapper code
-```
+````
 
 ### Core Layer (`src/lib/core/`)
 
@@ -189,19 +193,26 @@ components/task_recurrence_selector/
 The project follows Clean Architecture principles:
 
 1. **Domain Layer** (`src/lib/core/domain/`) - Business entities and rules
-2. **Application Layer** (`src/lib/core/application/`) - Use cases and application services
-3. **Infrastructure Layer** (`src/lib/infrastructure/`) - External concerns (database, file system, platform APIs)
-4. **Presentation Layer** (`src/lib/presentation/`) - UI components and API controllers
+2. **Application Layer** (`src/lib/core/application/`) - Use cases and
+   application services
+3. **Infrastructure Layer** (`src/lib/infrastructure/`) - External concerns
+   (database, file system, platform APIs)
+4. **Presentation Layer** (`src/lib/presentation/`) - UI components and API
+   controllers
 
-This structure ensures separation of concerns, testability, and maintainability while supporting multiple platforms (Android, Windows, Linux) with platform-specific optimizations.
+This structure ensures separation of concerns, testability, and maintainability
+while supporting multiple platforms (Android, Windows, Linux) with
+platform-specific optimizations.
 
 ## Getting Started
 
 For new contributors:
 
 1. Read `docs/CONTRIBUTING.md` for development setup
-2. Check `docs/LINUX-DEPENDENCIES.md` if developing on Linux
+2. Check `docs/build/LINUX-DEPENDENCIES.md` if developing on Linux
 3. Review the `pubspec.yaml` scripts section for available commands
-4. Explore the `src/lib/` directory structure to understand the codebase organization
+4. Explore the `src/lib/` directory structure to understand the codebase
+   organization
 
-The project uses modern Flutter development practices with comprehensive tooling for building, testing, and deploying across multiple platforms.
+The project uses modern Flutter development practices with comprehensive tooling
+for building, testing, and deploying across multiple platforms.

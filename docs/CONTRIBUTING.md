@@ -1,14 +1,16 @@
 # Contributing to WHPH
 
-Thank you for your interest in contributing to WHPH! This guide will help you get started and ensure your contributions are consistent and high-quality.
+Thank you for your interest in contributing to WHPH! This guide will help you
+get started and ensure your contributions are consistent and high-quality.
 
 ## 1. Setting Up the Development Environment
 
 - **Prerequisites:**
   - [FVM (Flutter Version Management)](https://fvm.app/docs/getting_started/installation)
   - Compatible device or emulator for Windows, Linux, or Android
-- **Install FVM:**
-  Follow the installation instructions on the [official FVM website](https://fvm.app/docs/getting_started/installation) for your operating system.
+- **Install FVM:** Follow the installation instructions on the
+  [official FVM website](https://fvm.app/docs/getting_started/installation) for
+  your operating system.
 - **Clone the repository (with submodules):**
 
   ```bash
@@ -34,7 +36,9 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
   fvm use
   ```
 
-  This will automatically install and use the Flutter version specified in the `.fvmrc` file.
+  This will automatically install and use the Flutter version specified in the
+  `.fvmrc` file.
+
 - **Install dependencies:**
 
   ```bash
@@ -53,21 +57,27 @@ Thank you for your interest in contributing to WHPH! This guide will help you ge
   fvm flutter run
   ```
 
-> **Note:** This project uses FVM to ensure all contributors use the same Flutter version. Always use `fvm flutter` instead of `flutter` when running commands.
+> **Note:** This project uses FVM to ensure all contributors use the same
+> Flutter version. Always use `fvm flutter` instead of `flutter` when running
+> commands.
 
 ### Alternative Setup: Nix Development Environment
 
-For Nix or NixOS users, you can use the provided Nix flake for a reproducible development environment:
+For Nix or NixOS users, you can use the provided Nix flake for a reproducible
+development environment:
 
-- **Install Nix with Flakes enabled:**
-  Follow the [Nix install guide](https://nixos.org/download.html) and enable flakes in your configuration.
+- **Install Nix with Flakes enabled:** Follow the
+  [Nix install guide](https://nixos.org/download.html) and enable flakes in your
+  configuration.
 
 - **Enter the development environment:**
+
   ```bash
   nix develop
   ```
 
   Or with direnv for automatic loading:
+
   ```bash
   # Install direnv if needed
   nix-env -iA nixpkgs.direnv
@@ -82,6 +92,7 @@ For Nix or NixOS users, you can use the provided Nix flake for a reproducible de
   ```
 
 The Nix environment includes:
+
 - Flutter SDK via FVM
 - All native dependencies for Linux development (GTK, GLib, GStreamer, etc.)
 - Development tools (prettier, shfmt, clang-format, ktfmt, etc.)
@@ -93,26 +104,33 @@ The Nix environment includes:
 
 - Write idiomatic Flutter and Dart code.
 - Use null safety and modern Flutter syntax.
-- Keep UI code declarative and component-based using `Widget` classes or functions.
+- Keep UI code declarative and component-based using `Widget` classes or
+  functions.
 - Prefer `const` constructors where possible.
 - Use `StatelessWidget` unless state is explicitly needed.
 - Use `SizedBox` for spacing when no decoration is needed.
-- Use `Padding`, `Margin`, `Align`, and `Expanded` appropriately in layout trees.
+- Use `Padding`, `Margin`, `Align`, and `Expanded` appropriately in layout
+  trees.
 - Group widget trees with descriptive comments for better organization.
-- Avoid suggesting `setState` for complex applications; use appropriate state management.
-- Use `Theme.of(context)` for theme values and avoid hardcoding styles or colors.
+- Avoid suggesting `setState` for complex applications; use appropriate state
+  management.
+- Use `Theme.of(context)` for theme values and avoid hardcoding styles or
+  colors.
 - Use `.withValues()` for colors to maintain consistency with the theme.
-- Use camelCase for variables and methods, PascalCase for class names and widgets.
+- Use camelCase for variables and methods, PascalCase for class names and
+  widgets.
 - Prefer async/await over `then()` for readability.
 - Use `FutureBuilder` and `StreamBuilder` for async data in the UI.
 - Use `ListView.builder` for large lists.
-- Use `final` for variables that are not reassigned, `const` for compile-time constants.
+- Use `final` for variables that are not reassigned, `const` for compile-time
+  constants.
 - Follow SOLID principles and DRY (Don't Repeat Yourself).
 - Add explanatory comments only for non-obvious logic.
 - Implement robust error handling and input validation.
 - Avoid magic strings/numbers; use constants or enums.
 - Follow security best practices and defensive programming techniques.
-- Avoid `MediaQuery.of(context)`; use specific methods like `MediaQuery.sizeOf(context)`.
+- Avoid `MediaQuery.of(context)`; use specific methods like
+  `MediaQuery.sizeOf(context)`.
 
 ## 3. How to Submit Pull Requests
 
@@ -137,7 +155,8 @@ The Nix environment includes:
    ```
 
 6. **Open a Pull Request**
-   - Provide a clear description of your changes and reference any related issues.
+   - Provide a clear description of your changes and reference any related
+     issues.
    - Ensure your branch is up to date with `main` before submitting.
    - Follow the pull request template if available.
 
@@ -168,7 +187,8 @@ The Nix environment includes:
 - Use conventional commit messages (e.g., `feat:`, `fix:`, `docs:`).
 - Update documentation as needed for new features or changes.
 - Run `fvm flutter analyze` and address any warnings or errors.
-- Always use `fvm flutter` instead of `flutter` for consistency with the project's Flutter version management.
+- Always use `fvm flutter` instead of `flutter` for consistency with the
+  project's Flutter version management.
 - You can also use the RPS commands defined in `pubspec.yaml` for common tasks:
 
   ```bash
@@ -184,10 +204,12 @@ The Nix environment includes:
   rps run:demo      # Run in demo mode
   ```
 
-- If your change affects the build or deployment, update relevant scripts or documentation.
+- If your change affects the build or deployment, update relevant scripts or
+  documentation.
 - For native code integration, use platform channels and defined constants.
 - Respect licensing and third-party dependencies.
 
 ---
 
-For any questions, please open an issue or contact the maintainers. Happy contributing!
+For any questions, please open an issue or contact the maintainers. Happy
+contributing!

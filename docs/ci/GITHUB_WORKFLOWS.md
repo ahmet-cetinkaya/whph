@@ -1,6 +1,7 @@
 # GitHub Workflows Documentation
 
-This document provides essential documentation for the GitHub Actions workflows used in the WHPH project for automated builds, releases, and deployment.
+This document provides essential documentation for the GitHub Actions workflows
+used in the WHPH project for automated builds, releases, and deployment.
 
 ## Overview
 
@@ -76,7 +77,8 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 
 **File:** `.github/workflows/release.yml`
 
-**Purpose:** Orchestrates multi-platform releases after all CI workflows complete.
+**Purpose:** Orchestrates multi-platform releases after all CI workflows
+complete.
 
 **Triggers:**
 
@@ -117,7 +119,8 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 
 **File:** `.github/workflows/play-store-post-release.yml`
 
-**Purpose:** Automatic deployment to Google Play Internal Testing after GitHub release.
+**Purpose:** Automatic deployment to Google Play Internal Testing after GitHub
+release.
 
 **Features:**
 
@@ -238,9 +241,9 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 
 ### Manual Triggers
 
-**CI Builds:** All platform workflows support manual dispatch
-**Deployments:** Play Store deployment with track selection
-**Rollout Management:** Production rollout percentage control
+**CI Builds:** All platform workflows support manual dispatch **Deployments:**
+Play Store deployment with track selection **Rollout Management:** Production
+rollout percentage control
 
 ## Common Issues & Solutions
 
@@ -285,4 +288,5 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 
 ---
 
-For detailed troubleshooting or questions, review the workflow run logs or create an issue in the repository.
+For detailed troubleshooting or questions, review the workflow run logs or
+create an issue in the repository.
