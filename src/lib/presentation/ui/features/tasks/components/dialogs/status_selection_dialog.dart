@@ -127,16 +127,7 @@ class _StatusSelectionDialogState extends State<StatusSelectionDialog> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final status = _statuses!.where((s) => !s.isBuiltIn).toList()[index];
-                        Color? parsedColor;
-                        if (status.color != null) {
-                          try {
-                            String cleanHex = status.color!.replaceAll('#', '').replaceFirst('0x', '');
-                            if (cleanHex.length == 6) {
-                              cleanHex = 'FF$cleanHex';
-                            }
-                            parsedColor = Color(int.parse(cleanHex, radix: 16));
-                          } catch (_) {}
-                        }
+                        final parsedColor = TaskStatusDisplay.parseColor(status.color);
                         return _buildStatusTile(
                           context: context,
                           statusId: status.id,

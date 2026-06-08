@@ -1,14 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:acore/utils/dialog_size.dart';
-import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/dialogs/status_selection_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/status_loader_mixin.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -50,25 +47,7 @@ class StatusChip extends StatefulWidget {
   State<StatusChip> createState() => _StatusChipState();
 }
 
-class _StatusChipState extends State<StatusChip> {
-  List<TaskStatusListItem>? _statuses;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadStatuses();
-  }
-
-  Future<void> _loadStatuses() async {
-    final mediator = container.resolve<Mediator>();
-    final response = await mediator.send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
-      const GetListTaskStatusesQuery(),
-    );
-    if (mounted) {
-      setState(() => _statuses = response.items);
-    }
-  }
-
+class _StatusChipState extends State<StatusChip> with StatusLoaderMixin<StatusChip> {
   Future<void> _showStatusSelection(BuildContext context) async {
     final translationService = container.resolve<ITranslationService>();
 
@@ -113,7 +92,7 @@ class _StatusChipState extends State<StatusChip> {
       color = Color(int.parse('FF${TaskStatusConstants.doneColor}', radix: 16));
     } else {
       // Custom status — resolve from the async-loaded list
-      final match = _statuses?.where((s) => s.id == statusId).toList();
+      final match = statuses?.where((s) => s.id == statusId).toList();
       if (match != null && match.isNotEmpty) {
         final resolved = match.first;
         label = TaskStatusDisplay.resolveName(
@@ -122,17 +101,7 @@ class _StatusChipState extends State<StatusChip> {
           name: resolved.name,
           isDoneStatus: resolved.isDoneStatus,
         );
-        Color? parsedColor;
-        if (resolved.color != null) {
-          try {
-            String cleanHex = resolved.color!.replaceAll('#', '').replaceFirst('0x', '');
-            if (cleanHex.length == 6) {
-              cleanHex = 'FF$cleanHex';
-            }
-            parsedColor = Color(int.parse(cleanHex, radix: 16));
-          } catch (_) {}
-        }
-        color = parsedColor ?? Colors.grey;
+        color = TaskStatusDisplay.parseColor(resolved.color) ?? Colors.grey;
       } else {
         // Still loading or status deleted — show a placeholder
         label = '…';

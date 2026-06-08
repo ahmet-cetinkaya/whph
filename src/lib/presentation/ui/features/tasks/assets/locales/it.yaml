@@ -62,6 +62,7 @@ tasks:
     add_tag: Errore imprevisto durante l'aggiunta del tag
     adding_tag: Impossibile aggiungere il tag
     get_tags: Errore durante il recupero dei tag
+    get_tasks: Si è verificato un errore durante il recupero delle attività
     get_task: Errore imprevisto durante il caricamento dell'attività
     loading_tags: Impossibile caricare i tag dell'attività
     loading_task: Impossibile caricare l'attività

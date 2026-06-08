@@ -61,6 +61,7 @@ tasks:
     add_tag: Oväntat fel uppstod vid tillägg av tagg
     adding_tag: Misslyckades att lägga till tagg
     get_tags: Fel uppstod vid hämtning av taggar
+    get_tasks: Ett fel inträffade vid hämtning av uppgifter
     get_task: Oväntat fel uppstod vid laddning av uppgift
     loading_tags: Misslyckades att ladda uppgiftstaggar
     loading_task: Misslyckades att ladda uppgift

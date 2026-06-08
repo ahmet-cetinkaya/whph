@@ -113,18 +113,7 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
     }
   }
 
-  Color? _colorFromHex(String? hex) {
-    if (hex == null || hex.isEmpty) return null;
-    try {
-      String cleanHex = hex.replaceAll('#', '').replaceFirst('0x', '');
-      if (cleanHex.length == 6) {
-        cleanHex = 'FF$cleanHex';
-      }
-      return Color(int.parse(cleanHex, radix: 16));
-    } catch (_) {
-      return null;
-    }
-  }
+  Color? _colorFromHex(String? hex) => TaskStatusDisplay.parseColor(hex);
 
   /// Saves a status change with optimistic UI update.
   Future<void> _save(TaskStatusListItem status, {String? name, String? color}) async {

@@ -61,6 +61,7 @@ tasks:
     add_tag: Erro inesperado ocorreu ao adicionar tag
     adding_tag: Falha ao adicionar tag
     get_tags: Erro ocorreu ao buscar tags
+    get_tasks: Ocorreu um erro ao buscar as tarefas
     get_task: Erro inesperado ocorreu ao carregar tarefa
     loading_tags: Falha ao carregar tags da tarefa
     loading_task: Falha ao carregar tarefa

@@ -60,6 +60,7 @@ tasks:
     task_status_builtin: Built-in statuses cannot be deleted
     add_tag: Unexpected error occurred while adding tag
     adding_tag: Failed to add tag
+    get_tasks: Error occurred while fetching tasks
     get_tags: Error occurred while fetching tags
     get_task: Unexpected error occurred while loading task
     loading_tags: Failed to load task tags

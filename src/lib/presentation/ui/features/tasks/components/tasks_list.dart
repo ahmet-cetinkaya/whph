@@ -40,7 +40,6 @@ import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
 import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_board_view.dart';
-import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as core_shared;
 
@@ -383,7 +382,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   Future<void> _getTasksList({int pageIndex = 0, bool isRefresh = false}) async {
     await AsyncErrorHandler.execute<GetListTasksQueryResponse>(
       context: context,
-      errorMessage: _translationService.translate(TaskTranslationKeys.getTagsError),
+      errorMessage: _translationService.translate(TaskTranslationKeys.getTasksError),
       operation: () async {
         final query = GetListTasksQuery(
           pageIndex: pageIndex,
@@ -1042,14 +1041,12 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     _dragStateNotifier.startDragging();
 
     String targetStatusId = TaskStatusConstants.todoId;
-    bool isDoneStatus = false;
     for (final status in _statuses) {
       final key = status.name.isEmpty
           ? (status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo)
           : status.name;
       if (key == toGroupKey) {
         targetStatusId = status.id;
-        isDoneStatus = status.isDoneStatus;
         break;
       }
     }
@@ -1069,7 +1066,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             plannedDate: fullTask.plannedDate,
             deadlineDate: fullTask.deadlineDate,
             estimatedTime: fullTask.estimatedTime,
-            completedAt: isDoneStatus ? (fullTask.completedAt ?? DateTime.now().toUtc()) : null,
+            completedAt: fullTask.completedAt,
             statusId: targetStatusId,
             parentTaskId: fullTask.parentTaskId,
             order: fullTask.order,

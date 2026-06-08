@@ -35,13 +35,7 @@ class DeleteTaskStatusCommandHandler
       throw BusinessException('Cannot delete built-in status', TaskTranslationKeys.taskStatusBuiltInError);
     }
 
-    final affectedTasks = await _taskRepository.getAll(
-      customWhereFilter: CustomWhereFilter('status_id = ? AND deleted_date IS NULL', [request.id]),
-    );
-    for (final task in affectedTasks) {
-      task.statusId = TaskStatusConstants.todoId;
-      await _taskRepository.update(task);
-    }
+    await _taskRepository.updateStatusIdForTasks(request.id, TaskStatusConstants.todoId);
 
     await _taskStatusRepository.delete(status);
 

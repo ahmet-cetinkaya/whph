@@ -62,6 +62,7 @@ tasks:
     add_tag: Error inesperado al añadir la etiqueta
     adding_tag: No se pudo añadir la etiqueta
     get_tags: Error al obtener las etiquetas
+    get_tasks: Se produjo un error al obtener las tareas
     get_task: Error inesperado al cargar la tarea
     loading_tags: No se pudieron cargar las etiquetas de la tarea
     loading_task: No se pudo cargar la tarea

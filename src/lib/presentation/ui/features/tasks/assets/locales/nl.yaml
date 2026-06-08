@@ -61,6 +61,7 @@ tasks:
     add_tag: Onverwachte fout opgetreden bij het toevoegen van tag
     adding_tag: Mislukt om tag toe te voegen
     get_tags: Fout opgetreden bij het ophalen van tags
+    get_tasks: Er is een fout opgetreden bij het ophalen van taken
     get_task: Onverwachte fout opgetreden bij het laden van taak
     loading_tags: Mislukt om taak tags te laden
     loading_task: Mislukt om taak te laden

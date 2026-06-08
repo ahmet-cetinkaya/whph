@@ -32,6 +32,9 @@ class SaveTaskStatusCommandResponse {
 }
 
 class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusCommand, SaveTaskStatusCommandResponse> {
+  static const int _maxNameLength = 50;
+  static final RegExp _hexColorRegex = RegExp(r'^[0-9A-Fa-f]{6}$');
+
   final ITaskStatusRepository _taskStatusRepository;
 
   SaveTaskStatusCommandHandler({required ITaskStatusRepository taskStatusRepository})
@@ -39,6 +42,7 @@ class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusComm
 
   @override
   Future<SaveTaskStatusCommandResponse> call(SaveTaskStatusCommand request) async {
+    _validate(request);
     TaskStatus status;
 
     if (request.id != null) {
@@ -71,5 +75,23 @@ class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusComm
       createdDate: status.createdDate,
       modifiedDate: status.modifiedDate,
     );
+  }
+
+  void _validate(SaveTaskStatusCommand request) {
+    if (request.name.trim().isEmpty) {
+      throw BusinessException('Status name cannot be empty', TaskTranslationKeys.taskStatusNotFoundError);
+    }
+    if (request.name.length > _maxNameLength) {
+      throw BusinessException(
+        'Status name cannot exceed $_maxNameLength characters',
+        TaskTranslationKeys.taskStatusNotFoundError,
+      );
+    }
+    if (request.color != null && request.color!.isNotEmpty && !_hexColorRegex.hasMatch(request.color!)) {
+      throw BusinessException(
+        'Invalid color format. Expected 6-digit hex (e.g. FF5722)',
+        TaskTranslationKeys.taskStatusNotFoundError,
+      );
+    }
   }
 }

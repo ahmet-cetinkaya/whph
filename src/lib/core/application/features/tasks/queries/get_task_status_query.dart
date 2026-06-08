@@ -2,7 +2,6 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/domain/features/tasks/task_status.dart';
 
 class GetTaskStatusQuery implements IRequest<GetTaskStatusQueryResponse> {
   final String id;
@@ -10,17 +9,27 @@ class GetTaskStatusQuery implements IRequest<GetTaskStatusQueryResponse> {
   GetTaskStatusQuery({required this.id});
 }
 
-class GetTaskStatusQueryResponse extends TaskStatus {
-  GetTaskStatusQueryResponse({
-    required super.id,
-    required super.createdDate,
-    super.modifiedDate,
-    super.deletedDate,
-    required super.name,
-    super.color,
-    super.order = 0.0,
-    super.isBuiltIn = false,
-    super.isDoneStatus = false,
+class GetTaskStatusQueryResponse {
+  final String id;
+  final DateTime createdDate;
+  final DateTime? modifiedDate;
+  final DateTime? deletedDate;
+  final String name;
+  final String? color;
+  final double order;
+  final bool isBuiltIn;
+  final bool isDoneStatus;
+
+  const GetTaskStatusQueryResponse({
+    required this.id,
+    required this.createdDate,
+    this.modifiedDate,
+    this.deletedDate,
+    required this.name,
+    this.color,
+    this.order = 0.0,
+    this.isBuiltIn = false,
+    this.isDoneStatus = false,
   });
 }
 

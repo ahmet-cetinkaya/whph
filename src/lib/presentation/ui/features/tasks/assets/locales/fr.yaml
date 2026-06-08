@@ -62,6 +62,7 @@ tasks:
     add_tag: Erreur inattendue lors de l'ajout du tag
     adding_tag: Impossible d'ajouter le tag
     get_tags: Erreur lors de la récupération des tags
+    get_tasks: Une erreur s'est produite lors de la récupération des tâches
     get_task: Erreur inattendue lors du chargement de la tâche
     loading_tags: Impossible de charger les tags de la tâche
     loading_task: Impossible de charger la tâche

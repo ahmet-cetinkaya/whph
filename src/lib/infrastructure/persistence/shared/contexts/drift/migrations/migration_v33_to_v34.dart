@@ -46,6 +46,10 @@ Future<void> migrateV33ToV34(AppDatabase db, Migrator m, Schema34 schema) async 
     );
 
     await db.customStatement(
+      'CREATE INDEX IF NOT EXISTS idx_task_status_id ON task_table (status_id) WHERE deleted_date IS NULL',
+    );
+
+    await db.customStatement(
       'UPDATE task_table SET status_id = ? WHERE status_id IS NULL AND completed_at IS NOT NULL',
       [TaskStatusConstants.doneId],
     );

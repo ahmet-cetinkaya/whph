@@ -60,6 +60,7 @@ tasks:
     add_tag: 태그 추가 중 예상치 못한 오류가 발생했습니다
     adding_tag: 태그 추가에 실패했습니다
     get_tags: 태그 가져오기 중 오류가 발생했습니다
+    get_tasks: 작업을 가져오는 중 오류가 발생했습니다
     get_task: 작업 로드 중 예상치 못한 오류가 발생했습니다
     loading_tags: 작업 태그 로드에 실패했습니다
     loading_task: 작업 로드에 실패했습니다

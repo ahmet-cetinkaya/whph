@@ -62,6 +62,7 @@ tasks:
     add_tag: Etiket eklenirken beklenmedik bir hata oluştu
     adding_tag: Etiket eklenemedi
     get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
+    get_tasks: Görevler alınırken bir hata oluştu
     get_task: Görev yüklenirken beklenmedik bir hata oluştu
     loading_tags: Görev etiketleri yüklenemedi
     loading_task: Görev yüklenemedi

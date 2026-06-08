@@ -62,6 +62,7 @@ tasks:
     add_tag: Wystąpił nieoczekiwany błąd podczas dodawania tagu
     adding_tag: Nie udało się dodać tagu
     get_tags: Wystąpił błąd podczas pobierania tagów
+    get_tasks: Wystąpił błąd podczas pobierania zadań
     get_task: Wystąpił nieoczekiwany błąd podczas ładowania zadania
     loading_tags: Nie udało się załadować tagów zadania
     loading_task: Nie udało się załadować zadania

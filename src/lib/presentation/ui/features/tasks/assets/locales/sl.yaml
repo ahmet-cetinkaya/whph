@@ -62,6 +62,7 @@ tasks:
     add_tag: Nepričakovana napaka pri dodajanju oznake
     adding_tag: Napaka pri dodajanju oznake
     get_tags: Napaka pri pridobivanju oznak
+    get_tasks: Pri nalaganju opravil je prišlo do napake
     get_task: Nepričakovana napaka pri nalaganju naloge
     loading_tags: Napaka pri nalaganju oznak naloge
     loading_task: Napaka pri nalaganju naloge

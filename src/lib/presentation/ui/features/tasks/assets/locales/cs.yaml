@@ -62,6 +62,7 @@ tasks:
     add_tag: Neočekávaná chyba při přidávání štítku
     adding_tag: Selhání přidání štítku
     get_tags: Chyba při získávání štítků
+    get_tasks: Nastala chyba při načítání úkolů
     get_task: Neočekávaná chyba při načítání úkolu
     loading_tags: Selhání načtení štítků úkolu
     loading_task: Selhání načtení úkolu

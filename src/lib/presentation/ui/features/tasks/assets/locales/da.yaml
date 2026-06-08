@@ -62,6 +62,7 @@ tasks:
     add_tag: Uventet fejl opstod under tilføjelse af tag
     adding_tag: Kunne ikke tilføje tag
     get_tags: Fejl opstod under hentning af tags
+    get_tasks: Der opstod en fejl under hentning af opgaver
     get_task: Uventet fejl opstod under indlæsning af opgave
     loading_tags: Kunne ikke indlæse opgavemærker
     loading_task: Kunne ikke indlæse opgave

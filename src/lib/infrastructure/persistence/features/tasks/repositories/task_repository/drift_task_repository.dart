@@ -716,4 +716,23 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         pageIndex: pageIndex,
         pageSize: pageSize);
   }
+
+  @override
+  Future<void> updateStatusIdForTasks(String oldStatusId, String newStatusId) async {
+    try {
+      final now = DateTime.now().toUtc().toIso8601String();
+      await database.customStatement(
+        'UPDATE ${table.actualTableName} SET status_id = ?, modified_date = ? WHERE status_id = ? AND deleted_date IS NULL',
+        [newStatusId, now, oldStatusId],
+      );
+    } catch (e, stackTrace) {
+      Logger.error(
+        'Database error bulk-updating status_id from $oldStatusId to $newStatusId [$TaskErrorIds.updateFailed]',
+        error: e,
+        stackTrace: stackTrace,
+        component: DomainLogComponents.task,
+      );
+      rethrow;
+    }
+  }
 }

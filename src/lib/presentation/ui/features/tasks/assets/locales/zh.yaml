@@ -60,6 +60,7 @@ tasks:
     add_tag: 添加标签时发生意外错误
     adding_tag: 添加标签失败
     get_tags: 获取标签时发生错误
+    get_tasks: 获取任务时发生错误
     get_task: 加载任务时发生意外错误
     loading_tags: 加载任务标签失败
     loading_task: 加载任务失败

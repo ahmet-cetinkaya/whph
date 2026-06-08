@@ -62,6 +62,7 @@ tasks:
     add_tag: Odottamaton virhe lisättäessä tunnistetta
     adding_tag: Tunnisteen lisäys epäonnistui
     get_tags: Virhe haettaessa tunnisteita
+    get_tasks: Tehtävien noudossa tapahtui virhe
     get_task: Odottamaton virhe ladattaessa tehtävää
     loading_tags: Tehtävän tunnisteiden lataus epäonnistui
     loading_task: Tehtävän lataus epäonnistui

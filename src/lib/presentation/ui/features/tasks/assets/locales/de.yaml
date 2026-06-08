@@ -61,6 +61,7 @@ tasks:
     add_tag: Unerwarteter Fehler beim Hinzufügen des Tags
     adding_tag: Tag konnte nicht hinzugefügt werden
     get_tags: Fehler beim Abrufen der Tags
+    get_tasks: Fehler beim Abrufen der Aufgaben aufgetreten
     get_task: Unerwarteter Fehler beim Laden der Aufgabe
     loading_tags: Aufgaben-Tags konnten nicht geladen werden
     loading_task: Aufgabe konnte nicht geladen werden

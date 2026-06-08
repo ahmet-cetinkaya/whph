@@ -2,6 +2,8 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart' as application;
 
 class TaskTranslationKeys extends application.TaskTranslationKeys {
+  // Task list
+  static const String getTasksError = 'tasks.errors.get_tasks';
   // Pomodoro
   static const String pomodoroNotificationTitle = 'tasks.pomodoro.notifications.title';
   static const String pomodoroWorkSessionCompleted = 'tasks.pomodoro.notifications.work_completed';

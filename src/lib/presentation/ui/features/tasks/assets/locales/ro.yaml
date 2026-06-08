@@ -62,6 +62,7 @@ tasks:
     add_tag: Eroare neașteptată la adăugarea etichetei
     adding_tag: Eșec la adăugarea etichetei
     get_tags: Eroare la obținerea etichetelor
+    get_tasks: A apărut o eroare la preluarea sarcinilor
     get_task: Eroare neașteptată la încărcarea sarcinii
     loading_tags: Eșec la încărcarea etichetelor sarcinii
     loading_task: Eșec la încărcarea sarcinii
