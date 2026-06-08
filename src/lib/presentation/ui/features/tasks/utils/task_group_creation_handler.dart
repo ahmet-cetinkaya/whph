@@ -11,6 +11,7 @@ import 'package:whph/presentation/ui/features/tasks/utils/task_draft.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
 
 /// Inputs for opening a task creation dialog pre-filled from a board column
 /// tap ("add to group" affordance on the empty-column placeholder).
@@ -92,9 +93,7 @@ class TaskGroupCreationHandler {
                 const GetListTaskStatusesQuery(),
               );
       for (final status in response.items) {
-        final key = status.name.isEmpty
-            ? (status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo)
-            : status.name;
+        final key = TaskStatusDisplay.resolveKey(name: status.name, isDoneStatus: status.isDoneStatus);
         if (key == groupKey) {
           return status.id;
         }

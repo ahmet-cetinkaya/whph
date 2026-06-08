@@ -7,6 +7,16 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 /// name and are localized at display time; once renamed they carry a literal
 /// name that is shown verbatim.
 class TaskStatusDisplay {
+  /// Returns the translation key for built-in statuses, or the custom name.
+  /// This provides a single source of truth for the empty-name convention.
+  static String resolveKey({
+    required String name,
+    required bool isDoneStatus,
+  }) {
+    if (name.isNotEmpty) return name;
+    return isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo;
+  }
+
   static String resolveName(
     ITranslationService translationService, {
     required String id,

@@ -10,6 +10,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;
@@ -198,20 +199,14 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
 
       if (groupName != null) {
         if (isGroupingByStatus && statusMap != null) {
-          // Resolve status ID to name
+          // Resolve status ID to display key
           final statusData = statusMap[task.statusId ?? TaskStatusConstants.todoId];
           if (statusData != null) {
-            // For built-in statuses with empty names, use translation keys
-            if (statusData.name.isEmpty) {
-              groupName = statusData.isDoneStatus
-                  ? TaskTranslationKeys.statusBuiltInDone
-                  : TaskTranslationKeys.statusBuiltInTodo;
-              isGroupNameTranslatable = true;
-            } else {
-              // For custom statuses, use the stored name
-              groupName = statusData.name;
-              isGroupNameTranslatable = false;
-            }
+            groupName = TaskStatusDisplay.resolveKey(
+              name: statusData.name,
+              isDoneStatus: statusData.isDoneStatus,
+            );
+            isGroupNameTranslatable = statusData.name.isEmpty;
           } else {
             // Fallback for deleted/invalid status IDs
             groupName = TaskTranslationKeys.statusBuiltInTodo;

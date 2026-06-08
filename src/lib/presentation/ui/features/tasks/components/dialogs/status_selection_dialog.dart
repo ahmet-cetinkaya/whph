@@ -1,15 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
-import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/status_loader_mixin.dart';
 
 /// Dialog component for selecting a task status.
 class StatusSelectionDialog extends StatefulWidget {
@@ -28,32 +24,25 @@ class StatusSelectionDialog extends StatefulWidget {
   State<StatusSelectionDialog> createState() => _StatusSelectionDialogState();
 }
 
-class _StatusSelectionDialogState extends State<StatusSelectionDialog> {
-  final _mediator = container.resolve<Mediator>();
-  List<TaskStatusListItem>? _statuses;
+class _StatusSelectionDialogState extends State<StatusSelectionDialog> with StatusLoaderMixin {
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadStatuses();
+    // StatusLoaderMixin.initState() calls _loadStatuses()
+    // Update loading state once statuses are loaded
+    if (statuses != null) {
+      _isLoading = false;
+    }
   }
 
-  Future<void> _loadStatuses() async {
-    try {
-      final response = await _mediator.send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
-        const GetListTaskStatusesQuery(),
-      );
-      if (mounted) {
-        setState(() {
-          _statuses = response.items;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Ensure loading state is updated after mixin initialization
+    if (statuses != null && _isLoading) {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -109,7 +98,7 @@ class _StatusSelectionDialogState extends State<StatusSelectionDialog> {
                   ),
                 ),
                 // Custom statuses
-                if (_statuses != null && _statuses!.any((s) => !s.isBuiltIn))
+                if (statuses != null && statuses!.any((s) => !s.isBuiltIn))
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -126,7 +115,7 @@ class _StatusSelectionDialogState extends State<StatusSelectionDialog> {
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        final status = _statuses!.where((s) => !s.isBuiltIn).toList()[index];
+                        final status = statuses!.where((s) => !s.isBuiltIn).toList()[index];
                         final parsedColor = TaskStatusDisplay.parseColor(status.color);
                         return _buildStatusTile(
                           context: context,
@@ -141,7 +130,7 @@ class _StatusSelectionDialogState extends State<StatusSelectionDialog> {
                           isSelected: widget.selectedStatusId == status.id,
                         );
                       },
-                      childCount: _statuses?.where((s) => !s.isBuiltIn).length ?? 0,
+                      childCount: statuses?.where((s) => !s.isBuiltIn).length ?? 0,
                     ),
                   ),
                 ),
