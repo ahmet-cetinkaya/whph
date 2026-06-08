@@ -236,6 +236,10 @@ class TaskGroupCreationHandler {
     // through the same code path with the resolved id.
     if (groupField == TaskSortFields.status) {
       final statusId = await resolveStatusIdByKey(input.groupKey);
+      if (statusId == null) {
+        Logger.warning(
+            'Could not resolve status for group key "${input.groupKey}". Task will be created with default status.');
+      }
       if (!context.mounted) return false;
       await TaskCreationHelper.createTask(
         context: context,

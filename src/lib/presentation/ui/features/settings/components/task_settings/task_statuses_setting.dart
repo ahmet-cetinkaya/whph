@@ -13,8 +13,10 @@ import 'package:whph/presentation/ui/shared/components/color_picker/color_field.
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 /// Settings card for managing task statuses: rename, recolor, reorder, add and
 /// delete. Built-in statuses (todo/done) cannot be deleted and display a
@@ -151,9 +153,13 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
         ),
       );
     } catch (e) {
-      // On error, reload to restore server state
+      Logger.error('Failed to save task status: $e');
       if (mounted) {
         _load();
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: _translationService.translate(SharedTranslationKeys.unexpectedError),
+        );
       }
     }
   }
@@ -224,16 +230,29 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
 
     setState(() => _statuses = reordered);
 
-    for (var i = 0; i < reordered.length; i++) {
-      final status = reordered[i];
-      final newOrder = (i + 1) * _orderStep;
-      if (status.order != newOrder) {
-        await _mediator.send<SaveTaskStatusCommand, SaveTaskStatusCommandResponse>(
-          SaveTaskStatusCommand(id: status.id, name: status.name, color: status.color, order: newOrder),
+    try {
+      for (var i = 0; i < reordered.length; i++) {
+        final status = reordered[i];
+        final newOrder = (i + 1) * _orderStep;
+        if (status.order != newOrder) {
+          await _mediator.send<SaveTaskStatusCommand, SaveTaskStatusCommandResponse>(
+            SaveTaskStatusCommand(id: status.id, name: status.name, color: status.color, order: newOrder),
+          );
+        }
+      }
+    } catch (e) {
+      Logger.error('Failed to reorder task statuses: $e');
+      if (mounted) {
+        OverlayNotificationHelper.showError(
+          context: context,
+          message: _translationService.translate(SharedTranslationKeys.unexpectedError),
         );
       }
     }
-    await _load();
+
+    if (mounted) {
+      await _load();
+    }
   }
 
   @override

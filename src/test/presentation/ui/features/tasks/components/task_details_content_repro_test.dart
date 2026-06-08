@@ -7,7 +7,6 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';

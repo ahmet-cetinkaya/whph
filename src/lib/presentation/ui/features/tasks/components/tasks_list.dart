@@ -424,42 +424,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         );
 
         if (_primaryGroupField == TaskSortFields.status) {
-          final statuses = await _mediator.send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
-            const GetListTaskStatusesQuery(pageIndex: 0, pageSize: 100),
-          );
-
-          // Ensure built-in statuses are always present in the board
-          final builtInStatuses = [
-            TaskStatusListItem(
-              id: TaskStatusConstants.todoId,
-              name: '',
-              color: TaskStatusConstants.todoColor,
-              order: TaskStatusConstants.todoOrder,
-              isBuiltIn: true,
-              isDoneStatus: false,
-            ),
-            TaskStatusListItem(
-              id: TaskStatusConstants.doneId,
-              name: '',
-              color: TaskStatusConstants.doneColor,
-              order: TaskStatusConstants.doneOrder,
-              isBuiltIn: true,
-              isDoneStatus: true,
-            ),
-          ];
-
-          // Merge: built-ins first (in order), then custom statuses not already present
-          final mergedStatuses = <TaskStatusListItem>[];
-          final existingIds = <String>{};
-
-          for (final status in [...builtInStatuses, ...statuses.items]) {
-            if (!existingIds.contains(status.id)) {
-              mergedStatuses.add(status);
-              existingIds.add(status.id);
-            }
-          }
-
-          _statuses = mergedStatuses;
+          await _loadStatusesForBoard();
         }
 
         return await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
@@ -532,6 +497,47 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         }
       },
     );
+  }
+
+  /// Fetches statuses from the API and merges built-in statuses so the board
+  /// always has Todo and Done columns even when no tasks reference them yet.
+  Future<void> _loadStatusesForBoard() async {
+    final statuses = await _mediator.send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
+      const GetListTaskStatusesQuery(pageIndex: 0, pageSize: 100),
+    );
+
+    // Ensure built-in statuses are always present in the board
+    final builtInStatuses = [
+      TaskStatusListItem(
+        id: TaskStatusConstants.todoId,
+        name: '',
+        color: TaskStatusConstants.todoColor,
+        order: TaskStatusConstants.todoOrder,
+        isBuiltIn: true,
+        isDoneStatus: false,
+      ),
+      TaskStatusListItem(
+        id: TaskStatusConstants.doneId,
+        name: '',
+        color: TaskStatusConstants.doneColor,
+        order: TaskStatusConstants.doneOrder,
+        isBuiltIn: true,
+        isDoneStatus: true,
+      ),
+    ];
+
+    // Merge: built-ins first (in order), then custom statuses not already present
+    final mergedStatuses = <TaskStatusListItem>[];
+    final existingIds = <String>{};
+
+    for (final status in [...builtInStatuses, ...statuses.items]) {
+      if (!existingIds.contains(status.id)) {
+        mergedStatuses.add(status);
+        existingIds.add(status.id);
+      }
+    }
+
+    _statuses = mergedStatuses;
   }
 
   @override

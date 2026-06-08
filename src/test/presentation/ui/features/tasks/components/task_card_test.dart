@@ -14,7 +14,6 @@ import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart'
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 
 class MockMediator extends Mock implements Mediator {
   @override

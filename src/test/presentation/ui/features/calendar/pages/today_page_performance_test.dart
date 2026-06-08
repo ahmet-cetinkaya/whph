@@ -8,7 +8,6 @@ import 'package:whph/core/application/features/habits/queries/get_list_habits_qu
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
-import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/main.dart' as app_main;
 import 'package:acore/acore.dart' hide Container;
