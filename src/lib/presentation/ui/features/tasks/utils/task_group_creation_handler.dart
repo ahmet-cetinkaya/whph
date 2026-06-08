@@ -8,6 +8,9 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_draft.dart';
+import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
+import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 
 /// Inputs for opening a task creation dialog pre-filled from a board column
 /// tap ("add to group" affordance on the empty-column placeholder).
@@ -69,6 +72,36 @@ class TaskGroupCreationHandler {
       return match?.id;
     } catch (e, stackTrace) {
       Logger.error('Failed to resolve tag ID for name: $tagName', error: e, stackTrace: stackTrace);
+      return null;
+    }
+  }
+
+  /// Resolves a status group key (display name or translation key) to its ID.
+  static Future<String?> resolveStatusIdByKey(String groupKey) async {
+    // Check built-in statuses first
+    if (groupKey == TaskTranslationKeys.statusBuiltInTodo) {
+      return TaskStatusConstants.todoId;
+    }
+    if (groupKey == TaskTranslationKeys.statusBuiltInDone) {
+      return TaskStatusConstants.doneId;
+    }
+
+    try {
+      final response =
+          await container.resolve<Mediator>().send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
+                const GetListTaskStatusesQuery(),
+              );
+      for (final status in response.items) {
+        final key = status.name.isEmpty
+            ? (status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo)
+            : status.name;
+        if (key == groupKey) {
+          return status.id;
+        }
+      }
+      return null;
+    } catch (e, stackTrace) {
+      Logger.error('Failed to resolve status ID for key: $groupKey', error: e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -155,6 +188,8 @@ class TaskGroupCreationHandler {
           );
         }
         return null; // Signal: caller must use the async path.
+      case TaskSortFields.status:
+        return null; // Signal: caller must use the async path.
       case TaskSortFields.totalDuration:
       case TaskSortFields.title:
       case TaskSortFields.createdDate:
@@ -195,6 +230,26 @@ class TaskGroupCreationHandler {
         return true;
       }
       // tagName == null is the "None" group — fall through to the sync path.
+    }
+
+    // Status grouping needs an async status-id lookup; resolve then re-enter
+    // through the same code path with the resolved id.
+    if (groupField == TaskSortFields.status) {
+      final statusId = await resolveStatusIdByKey(input.groupKey);
+      if (!context.mounted) return false;
+      await TaskCreationHelper.createTask(
+        context: context,
+        draft: TaskDraft(
+          title: input.searchQuery,
+          tagIds: input.showNoTagsFilter ? [] : input.defaultTagIds,
+          plannedDate: input.defaultPlannedDate,
+          deadlineDate: input.defaultDeadlineDate,
+          statusId: statusId,
+          parentTaskId: input.parentTaskId,
+        ),
+        onTaskCreated: input.onTaskCreated,
+      );
+      return true;
     }
 
     final draft = draftForGroup(

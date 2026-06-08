@@ -253,6 +253,7 @@ class SyncDtoBuilder {
       habitTagsSyncData: entityType == 'HabitTag' ? syncDataDynamic : null,
       tagsSyncData: entityType == 'Tag' ? syncDataDynamic : null,
       tagTagsSyncData: entityType == 'TagTag' ? syncDataDynamic : null,
+      taskStatusesSyncData: entityType == 'TaskStatus' ? syncDataDynamic : null,
       tasksSyncData: entityType == 'Task' ? syncDataDynamic : null,
       taskTagsSyncData: entityType == 'TaskTag' ? syncDataDynamic : null,
       taskTimeRecordsSyncData: entityType == 'TaskTimeRecord' ? syncDataDynamic : null,

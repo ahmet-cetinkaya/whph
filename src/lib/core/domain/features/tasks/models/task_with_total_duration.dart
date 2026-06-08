@@ -13,6 +13,7 @@ class TaskWithTotalDuration extends Task {
     super.plannedDate,
     super.deadlineDate,
     super.completedAt,
+    super.statusId,
     super.estimatedTime,
     super.parentTaskId,
     super.order = 0,

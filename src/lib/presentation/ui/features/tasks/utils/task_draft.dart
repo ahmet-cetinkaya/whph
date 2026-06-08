@@ -14,6 +14,7 @@ class TaskDraft {
   final int? estimatedTime;
   final bool? completed;
   final String? parentTaskId;
+  final String? statusId;
 
   const TaskDraft({
     this.title,
@@ -24,6 +25,7 @@ class TaskDraft {
     this.estimatedTime,
     this.completed,
     this.parentTaskId,
+    this.statusId,
   });
 
   bool get isEmpty =>
@@ -34,5 +36,6 @@ class TaskDraft {
       priority == null &&
       estimatedTime == null &&
       completed == null &&
-      parentTaskId == null;
+      parentTaskId == null &&
+      statusId == null;
 }

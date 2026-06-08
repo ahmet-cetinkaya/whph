@@ -39,6 +39,8 @@ class TaskFieldHelpers {
         return translationService.translate(TaskTranslationKeys.recurrenceLabel);
       case TaskDetailsController.keyParentTask:
         return translationService.translate(TaskTranslationKeys.parentTaskLabel);
+      case TaskDetailsController.keyStatus:
+        return translationService.translate(TaskTranslationKeys.statusLabel);
       default:
         return '';
     }
@@ -71,6 +73,8 @@ class TaskFieldHelpers {
         return Icons.repeat;
       case TaskDetailsController.keyParentTask:
         return TaskUiConstants.parentTaskIcon;
+      case TaskDetailsController.keyStatus:
+        return Icons.check_circle_outline;
       default:
         return Icons.add;
     }

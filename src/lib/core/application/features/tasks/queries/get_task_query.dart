@@ -45,7 +45,8 @@ class GetTaskQueryResponse extends Task {
       super.recurrenceEndDate,
       super.recurrenceCount,
       super.recurrenceParentId,
-      super.recurrenceConfiguration});
+      super.recurrenceConfiguration,
+      super.statusId});
 }
 
 class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryResponse> {
@@ -102,6 +103,7 @@ class GetTaskQueryHandler implements IRequestHandler<GetTaskQuery, GetTaskQueryR
       plannedDateReminderCustomOffset: task.plannedDateReminderCustomOffset,
       deadlineDateReminderTime: task.deadlineDateReminderTime,
       deadlineDateReminderCustomOffset: task.deadlineDateReminderCustomOffset,
+      statusId: task.statusId,
       recurrenceType: task.recurrenceType,
       recurrenceInterval: task.recurrenceInterval,
       recurrenceDaysString: task.recurrenceDaysString,

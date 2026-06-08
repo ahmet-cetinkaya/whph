@@ -45,6 +45,8 @@ tasks:
       label: Načrtovan Datum
     priority:
       label: Prioriteta
+    status:
+      label: Status
     sub_tasks:
       label: Podnaloge
     tags:
@@ -55,6 +57,8 @@ tasks:
       label: Naslov
     total_elapsed_time: Skupni Minuli Čas
   errors:
+    task_status_not_found: Stanje opravila ni najdeno
+    task_status_builtin: Vgrajenih stanj ni mogoče izbrisati
     add_tag: Nepričakovana napaka pri dodajanju oznake
     adding_tag: Napaka pri dodajanju oznake
     get_tags: Napaka pri pridobivanju oznak
@@ -504,3 +508,21 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: Premikanje nalog med stolpci ni podprto
+  statuses:
+    builtin:
+      todo: Za opravit
+      done: Končano
+      section: Vgrajen
+    custom:
+      section: Statusi po meri
+    settings:
+      title: Stanja opravil
+      description: Upravljajte stolpce stanj za organizacijo vaših opravil.
+    add_button: Dodaj stanje
+    name_label: Ime
+    name_hint: Ime stanja
+    color_label: Barva
+    delete_confirm:
+      title: Izbriši stanje
+      message: "Opravila s tem stanjem bodo premaknjena v Za opravit. Nadaljujem?"
+    new_default_name: Novo stanje

@@ -45,6 +45,8 @@ tasks:
       label: Data Planificată
     priority:
       label: Prioritate
+    status:
+      label: Status
     sub_tasks:
       label: Sub-sarcini
     tags:
@@ -55,6 +57,8 @@ tasks:
       label: Titlu
     total_elapsed_time: Timp Total Scurs
   errors:
+    task_status_not_found: Starea sarcinii nu a fost găsită
+    task_status_builtin: Stările predefinite nu pot fi șterse
     add_tag: Eroare neașteptată la adăugarea etichetei
     adding_tag: Eșec la adăugarea etichetei
     get_tags: Eroare la obținerea etichetelor
@@ -512,3 +516,21 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: Mutarea sarcinilor între coloane nu este acceptată
+  statuses:
+    builtin:
+      todo: De făcut
+      done: Finalizat
+      section: Încorporat
+    custom:
+      section: Stări personalizate
+    settings:
+      title: Stări sarcini
+      description: Gestionează coloanele de stare folosite pentru organizarea sarcinilor.
+    add_button: Adaugă stare
+    name_label: Nume
+    name_hint: Numele stării
+    color_label: Culoare
+    delete_confirm:
+      title: Șterge starea
+      message: "Sarcinile cu această stare vor fi mutate în De făcut. Continuați?"
+    new_default_name: Stare nouă

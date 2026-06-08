@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
+import 'package:whph/presentation/ui/features/tasks/components/status_aware_complete_button.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_dates_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_description_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_field_helpers.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_parent_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_priority_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_recurrence_section.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_status_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_tags_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_time_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_timer_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/controllers/task_details_controller.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_date_display_helper.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
@@ -201,6 +201,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   void _onTitleChanged(String value) => _controller.updateTitle(value);
   void _onPriorityChanged(EisenhowerPriority? value) => _controller.updatePriority(value);
+  void _onStatusChanged(String? value) => _controller.updateStatus(value);
   void _onEstimatedTimeChanged(int value) => _controller.updateEstimatedTime(value);
 
   void _onPlannedDateChanged(DateTime? date) {
@@ -330,6 +331,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
     final visibleFields = _controller.visibleOptionalFields;
     final availableChipFields = [
+      TaskDetailsController.keyStatus,
       TaskDetailsController.keyTags,
       TaskDetailsController.keyPriority,
       TaskDetailsController.keyTimer,
@@ -353,6 +355,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       translationService: _controller.translationService,
       priority: task.priority,
       onPriorityChanged: _onPriorityChanged,
+    );
+    final statusSection = TaskStatusSection(
+      translationService: _controller.translationService,
+      statusId: task.statusId,
+      onStatusChanged: _onStatusChanged,
     );
     final timeSection = TaskTimeSection(translationService: _controller.translationService);
     final datesSection = TaskDatesSection(translationService: _controller.translationService);
@@ -387,11 +394,11 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           // Title row with complete button
           Row(
             children: [
-              TaskCompleteButton(
+              StatusAwareCompleteButton(
                 taskId: widget.taskId,
                 isCompleted: task.isCompleted,
+                statusId: task.statusId,
                 onToggleCompleted: _controller.toggleTaskCompletion,
-                color: task.priority != null ? TaskUiConstants.getPriorityColor(task.priority) : null,
                 subTasksCompletionPercentage: task.subTasksCompletionPercentage,
               ),
               const SizedBox(width: AppTheme.sizeSmall),
@@ -418,6 +425,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             DetailTable(
               rowData: [
                 if (task.parentTask != null) parentSection.build(),
+                if (visibleFields.contains(TaskDetailsController.keyStatus)) statusSection.build(),
                 if (visibleFields.contains(TaskDetailsController.keyTags)) tagsSection.build(),
                 if (visibleFields.contains(TaskDetailsController.keyPriority)) prioritySection.build(),
                 if (visibleFields.contains(TaskDetailsController.keyTimer)) timerSection.build(),

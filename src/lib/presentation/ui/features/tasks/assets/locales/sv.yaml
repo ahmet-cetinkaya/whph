@@ -44,6 +44,8 @@ tasks:
       label: Planerat Datum
     priority:
       label: Prioritet
+    status:
+      label: Status
     sub_tasks:
       label: Underuppgifter
     tags:
@@ -54,6 +56,8 @@ tasks:
       label: Titel
     total_elapsed_time: Total Förfluten Tid
   errors:
+    task_status_not_found: Uppgiftsstatus hittades inte
+    task_status_builtin: Inbyggda statusar kan inte tas bort
     add_tag: Oväntat fel uppstod vid tillägg av tagg
     adding_tag: Misslyckades att lägga till tagg
     get_tags: Fel uppstod vid hämtning av taggar
@@ -504,3 +508,21 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: Att flytta uppgifter mellan kolumner stöds inte
+  statuses:
+    builtin:
+      todo: Att göra
+      done: Klar
+      section: Inbyggd
+    custom:
+      section: Anpassade statusar
+    settings:
+      title: Uppgiftsstatusar
+      description: Hantera statuskolumnerna som används för att organisera dina uppgifter.
+    add_button: Lägg till status
+    name_label: Namn
+    name_hint: Statusnamn
+    color_label: Färg
+    delete_confirm:
+      title: Ta bort status
+      message: "Uppgifter med denna status flyttas till Att göra. Fortsätta?"
+    new_default_name: Ny status

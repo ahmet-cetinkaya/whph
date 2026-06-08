@@ -42,6 +42,7 @@ import 'package:whph/core/application/features/settings/services/abstraction/i_s
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 
@@ -61,6 +62,7 @@ void registerSyncFeature(
   ITagRepository tagRepository,
   ITagTagRepository tagTagRepository,
   ITaskRepository taskRepository,
+  ITaskStatusRepository taskStatusRepository,
   ITaskTagRepository taskTagRepository,
   ITaskTimeRecordRepository taskTimeRecordRepository,
   INoteRepository noteRepository,
@@ -93,6 +95,7 @@ void registerSyncFeature(
         tagRepository: tagRepository,
         tagTagRepository: tagTagRepository,
         taskRepository: taskRepository,
+        taskStatusRepository: taskStatusRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
         settingRepository: settingRepository,

@@ -99,6 +99,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String tagsLabel = 'tasks.details.tags.label';
   static const String tagsHint = 'tasks.details.tags.hint';
   static const String priorityLabel = 'tasks.details.priority.label';
+  static const String statusLabel = 'tasks.details.status.label';
   static const String plannedDateLabel = 'tasks.details.planned_date.label';
   static const String deadlineDateLabel = 'tasks.details.deadline_date.label';
   static const String completedDateLabel = 'tasks.details.completed_date.label';
@@ -312,4 +313,19 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String viewModeListTooltip = 'tasks.view_mode.list_tooltip';
   static const String viewModeBoardTooltip = 'tasks.view_mode.board_tooltip';
   static const String boardCrossColumnMoveNotSupported = 'tasks.board.cross_column_move_not_supported';
+
+  // Status management
+  static const String statusBuiltInTodo = 'tasks.statuses.builtin.todo';
+  static const String statusBuiltInDone = 'tasks.statuses.builtin.done';
+  static const String statusBuiltInSection = 'tasks.statuses.builtin.section';
+  static const String statusCustomSection = 'tasks.statuses.custom.section';
+  static const String statusSettingsTitle = 'tasks.statuses.settings.title';
+  static const String statusSettingsDescription = 'tasks.statuses.settings.description';
+  static const String statusAddButton = 'tasks.statuses.add_button';
+  static const String statusNameLabel = 'tasks.statuses.name_label';
+  static const String statusNameHint = 'tasks.statuses.name_hint';
+  static const String statusColorLabel = 'tasks.statuses.color_label';
+  static const String statusDeleteConfirmTitle = 'tasks.statuses.delete_confirm.title';
+  static const String statusDeleteConfirmMessage = 'tasks.statuses.delete_confirm.message';
+  static const String statusNewDefaultName = 'tasks.statuses.new_default_name';
 }

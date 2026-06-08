@@ -20,6 +20,7 @@ class TaskQueryBuilder {
       task_table.deadline_date,
       task_table.estimated_time,
       task_table.completed_at,
+      task_table.status_id,
       task_table.created_date,
       task_table.modified_date,
       task_table.deleted_date,
@@ -52,6 +53,22 @@ class TaskQueryBuilder {
       }
       if (order.field == 'title') {
         return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
+      }
+      if (order.field == 'status') {
+        // Sort by status order: todo first, custom statuses by sort_order, done last
+        // For null status_id (legacy tasks), treat them as todo
+        return '''CASE
+          WHEN task_table.status_id IS NULL THEN 0
+          WHEN task_table.status_id = 'task-status-builtin-todo' THEN 0
+          WHEN task_table.status_id = 'task-status-builtin-done' THEN 9999
+          ELSE (
+            SELECT COALESCE(ss.sort_order, 1000)
+            FROM task_status_table ss
+            WHERE ss.id = task_table.status_id
+            AND ss.deleted_date IS NULL
+            LIMIT 1
+          )
+        END ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}, task_table.id ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}''';
       }
       if (order.field == 'tag') {
         if (customTagSortOrder == null || customTagSortOrder.isEmpty) {

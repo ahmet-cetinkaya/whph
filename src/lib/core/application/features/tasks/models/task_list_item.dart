@@ -11,6 +11,7 @@ class TaskListItem {
   final DateTime? createdDate;
   final DateTime? completedAt;
   final bool isCompleted;
+  final String? statusId;
   final List<TagListItem> tags;
   final int? estimatedTime;
   final int totalElapsedTime;
@@ -33,6 +34,7 @@ class TaskListItem {
     this.modifiedDate,
     this.createdDate,
     this.completedAt,
+    this.statusId,
     this.tags = const [],
     this.estimatedTime,
     this.parentTaskId,
@@ -56,6 +58,7 @@ class TaskListItem {
     DateTime? createdDate,
     DateTime? completedAt,
     bool? isCompleted,
+    String? statusId,
     List<TagListItem>? tags,
     int? estimatedTime,
     int? totalElapsedTime,
@@ -78,6 +81,7 @@ class TaskListItem {
       createdDate: createdDate ?? this.createdDate,
       completedAt: completedAt ?? this.completedAt,
       isCompleted: isCompleted ?? this.isCompleted,
+      statusId: statusId ?? this.statusId,
       tags: tags ?? this.tags,
       estimatedTime: estimatedTime ?? this.estimatedTime,
       totalElapsedTime: totalElapsedTime ?? this.totalElapsedTime,

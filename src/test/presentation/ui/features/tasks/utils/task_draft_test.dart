@@ -43,7 +43,22 @@ void main() {
     test('completed=false still counts as a value (avoids overriding default)', () {
       const draft = TaskDraft(completed: false);
       expect(draft.isEmpty, isFalse);
-      expect(draft.completed, isFalse);
+      expect(draft.completed, false);
+    });
+
+    test('statusId is nullable and does not affect isEmpty when null', () {
+      const draft = TaskDraft(title: 'Test task');
+      expect(draft.statusId, isNull);
+      expect(draft.isEmpty, isFalse);
+    });
+
+    test('statusId with value counts as populated draft', () {
+      const draft = TaskDraft(
+        title: 'Test task',
+        statusId: 'task-status-custom-inprogress',
+      );
+      expect(draft.statusId, 'task-status-custom-inprogress');
+      expect(draft.isEmpty, isFalse);
     });
   });
 }

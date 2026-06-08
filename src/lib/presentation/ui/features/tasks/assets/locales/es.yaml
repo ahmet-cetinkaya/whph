@@ -45,6 +45,8 @@ tasks:
       label: Fecha planificada
     priority:
       label: Prioridad
+    status:
+      label: Status
     sub_tasks:
       label: Subtareas
     tags:
@@ -55,6 +57,8 @@ tasks:
       label: Título
     total_elapsed_time: Tiempo total transcurrido
   errors:
+    task_status_not_found: Estado de tarea no encontrado
+    task_status_builtin: Los estados integrados no se pueden eliminar
     add_tag: Error inesperado al añadir la etiqueta
     adding_tag: No se pudo añadir la etiqueta
     get_tags: Error al obtener las etiquetas
@@ -593,3 +597,21 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: Mover tareas entre columnas no está soportado
+  statuses:
+    builtin:
+      todo: Por hacer
+      done: Hecho
+      section: Integrado
+    custom:
+      section: Estados personalizados
+    settings:
+      title: Estados de tareas
+      description: Gestiona las columnas de estado utilizadas para organizar tus tareas.
+    add_button: Añadir estado
+    name_label: Nombre
+    name_hint: Nombre del estado
+    color_label: Color
+    delete_confirm:
+      title: Eliminar estado
+      message: "Las tareas con este estado se moverán a Por hacer. ¿Continuar?"
+    new_default_name: Nuevo estado

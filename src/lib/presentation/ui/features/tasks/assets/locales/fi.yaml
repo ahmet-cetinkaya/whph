@@ -45,6 +45,8 @@ tasks:
       label: Suunniteltu Päivä
     priority:
       label: Prioriteetti
+    status:
+      label: Status
     sub_tasks:
       label: Alitehtävät
     tags:
@@ -55,6 +57,8 @@ tasks:
       label: Otsikko
     total_elapsed_time: Kokonaiskulunut Aika
   errors:
+    task_status_not_found: Tehtävän tilaa ei löytynyt
+    task_status_builtin: Sisäänrakennettuja tiloja ei voi poistaa
     add_tag: Odottamaton virhe lisättäessä tunnistetta
     adding_tag: Tunnisteen lisäys epäonnistui
     get_tags: Virhe haettaessa tunnisteita
@@ -503,3 +507,21 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: Tehtävien siirtäminen sarakkeiden välillä ei ole tuettu
+  statuses:
+    builtin:
+      todo: Tehtävä
+      done: Valmis
+      section: Sisäänrakennettu
+    custom:
+      section: Mukautetut tilat
+    settings:
+      title: Tehtävien tilat
+      description: Hallitse tehtäviesi järjestämiseen käytettäviä tilasarakkeita.
+    add_button: Lisää tila
+    name_label: Nimi
+    name_hint: Tilan nimi
+    color_label: Väri
+    delete_confirm:
+      title: Poista tila
+      message: "Tämän tilan tehtävät siirretään Tehtävä-tilaan. Jatketaanko?"
+    new_default_name: Uusi tila

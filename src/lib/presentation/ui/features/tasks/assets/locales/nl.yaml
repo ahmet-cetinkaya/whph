@@ -44,6 +44,8 @@ tasks:
       label: Geplande Datum
     priority:
       label: Prioriteit
+    status:
+      label: Status
     sub_tasks:
       label: Subtaken
     tags:
@@ -54,6 +56,8 @@ tasks:
       label: Titel
     total_elapsed_time: Totale Verstreken Tijd
   errors:
+    task_status_not_found: Taakstatus niet gevonden
+    task_status_builtin: Ingebouwde statussen kunnen niet worden verwijderd
     add_tag: Onverwachte fout opgetreden bij het toevoegen van tag
     adding_tag: Mislukt om tag toe te voegen
     get_tags: Fout opgetreden bij het ophalen van tags
@@ -510,3 +514,21 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: Het verplaatsen van taken tussen kolommen wordt niet ondersteund
+  statuses:
+    builtin:
+      todo: Te doen
+      done: Voltooid
+      section: Ingebouwd
+    custom:
+      section: Aangepaste statussen
+    settings:
+      title: Taakstatussen
+      description: Beheer de statuskolommen waarmee je je taken ordent.
+    add_button: Status toevoegen
+    name_label: Naam
+    name_hint: Statusnaam
+    color_label: Kleur
+    delete_confirm:
+      title: Status verwijderen
+      message: "Taken met deze status worden verplaatst naar Te doen. Doorgaan?"
+    new_default_name: Nieuwe status

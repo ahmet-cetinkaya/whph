@@ -43,6 +43,8 @@ tasks:
       label: 计划日期
     priority:
       label: 优先级
+    status:
+      label: Status
     sub_tasks:
       label: 子任务
     tags:
@@ -53,6 +55,8 @@ tasks:
       label: 标题
     total_elapsed_time: 总用时
   errors:
+    task_status_not_found: 未找到任务状态
+    task_status_builtin: 无法删除内置状态
     add_tag: 添加标签时发生意外错误
     adding_tag: 添加标签失败
     get_tags: 获取标签时发生错误
@@ -542,3 +546,21 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: 不支持在列之间移动任务
+  statuses:
+    builtin:
+      todo: 待办
+      done: 已完成
+      section: 内置
+    custom:
+      section: 自定义状态
+    settings:
+      title: 任务状态
+      description: 管理用于整理任务的状态列。
+    add_button: 添加状态
+    name_label: 名称
+    name_hint: 状态名称
+    color_label: 颜色
+    delete_confirm:
+      title: 删除状态
+      message: 此状态的任务将移至待办。是否继续？
+    new_default_name: 新状态

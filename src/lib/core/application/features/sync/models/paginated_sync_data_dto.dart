@@ -13,6 +13,7 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/domain/features/tags/tag_tag.dart';
+import 'package:whph/core/domain/features/tasks/task_status.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
@@ -57,6 +58,7 @@ class PaginatedSyncDataDto {
   final PaginatedSyncData<HabitTag>? habitTagsSyncData;
   final PaginatedSyncData<Tag>? tagsSyncData;
   final PaginatedSyncData<TagTag>? tagTagsSyncData;
+  final PaginatedSyncData<TaskStatus>? taskStatusesSyncData;
   final PaginatedSyncData<Task>? tasksSyncData;
   final PaginatedSyncData<TaskTag>? taskTagsSyncData;
   final PaginatedSyncData<TaskTimeRecord>? taskTimeRecordsSyncData;
@@ -90,6 +92,7 @@ class PaginatedSyncDataDto {
     this.habitTagsSyncData,
     this.tagsSyncData,
     this.tagTagsSyncData,
+    this.taskStatusesSyncData,
     this.tasksSyncData,
     this.taskTagsSyncData,
     this.taskTimeRecordsSyncData,
@@ -125,6 +128,7 @@ class PaginatedSyncDataDto {
       'habitTagsSyncData': habitTagsSyncData?.toJson(),
       'tagsSyncData': tagsSyncData?.toJson(),
       'tagTagsSyncData': tagTagsSyncData?.toJson(),
+      'taskStatusesSyncData': taskStatusesSyncData?.toJson(),
       'tasksSyncData': tasksSyncData?.toJson(),
       'taskTagsSyncData': taskTagsSyncData?.toJson(),
       'taskTimeRecordsSyncData': taskTimeRecordsSyncData?.toJson(),
@@ -210,6 +214,9 @@ class PaginatedSyncDataDto {
       noteTagsSyncData: json['noteTagsSyncData'] != null
           ? PaginatedSyncData<NoteTag>.fromJson(json['noteTagsSyncData'] as Map<String, dynamic>, NoteTag)
           : null,
+      taskStatusesSyncData: json['taskStatusesSyncData'] != null
+          ? PaginatedSyncData<TaskStatus>.fromJson(json['taskStatusesSyncData'] as Map<String, dynamic>, TaskStatus)
+          : null,
     );
   }
 
@@ -233,6 +240,7 @@ class PaginatedSyncDataDto {
       syncDevicesSyncData,
       notesSyncData,
       noteTagsSyncData,
+      taskStatusesSyncData,
     ];
     return dataFields.firstWhere((data) => data != null, orElse: () => null);
   }

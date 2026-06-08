@@ -16,6 +16,7 @@ import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/domain/features/tags/tag_tag.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
@@ -79,6 +80,8 @@ class SyncResponseBuilder {
         return _createDto(params, tagsSyncData: localData as PaginatedSyncData<Tag>?);
       case 'TagTag':
         return _createDto(params, tagTagsSyncData: localData as PaginatedSyncData<TagTag>?);
+      case 'TaskStatus':
+        return _createDto(params, taskStatusesSyncData: localData as PaginatedSyncData<TaskStatus>?);
       case 'Task':
         return _createDto(params, tasksSyncData: localData as PaginatedSyncData<Task>?);
       case 'TaskTag':
@@ -111,6 +114,7 @@ class SyncResponseBuilder {
     PaginatedSyncData<HabitTag>? habitTagsSyncData,
     PaginatedSyncData<Tag>? tagsSyncData,
     PaginatedSyncData<TagTag>? tagTagsSyncData,
+    PaginatedSyncData<TaskStatus>? taskStatusesSyncData,
     PaginatedSyncData<Task>? tasksSyncData,
     PaginatedSyncData<TaskTag>? taskTagsSyncData,
     PaginatedSyncData<TaskTimeRecord>? taskTimeRecordsSyncData,
@@ -142,6 +146,7 @@ class SyncResponseBuilder {
       habitTagsSyncData: habitTagsSyncData,
       tagsSyncData: tagsSyncData,
       tagTagsSyncData: tagTagsSyncData,
+      taskStatusesSyncData: taskStatusesSyncData,
       tasksSyncData: tasksSyncData,
       taskTagsSyncData: taskTagsSyncData,
       taskTimeRecordsSyncData: taskTimeRecordsSyncData,

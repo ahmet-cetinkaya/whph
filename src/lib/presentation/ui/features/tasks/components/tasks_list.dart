@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tasks/commands/update_task_order_
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
+import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
@@ -14,6 +15,7 @@ import 'package:whph/core/application/shared/utils/group_key_result.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
@@ -38,6 +40,7 @@ import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/ui/shared/providers/drag_state_provider.dart';
 import 'package:whph/presentation/ui/shared/mixins/list_group_collapse_mixin.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_board_view.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart' as core_shared;
 
@@ -151,6 +154,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   // Cache for performance optimization
   Map<String, List<TaskListItem>>? _cachedGroupedTasks;
   List<VisualItem>? _cachedVisualItems;
+
+  // Ordered task statuses, loaded when grouping the board by status so empty
+  // status columns still render.
+  List<TaskStatusListItem> _statuses = const [];
 
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
@@ -287,10 +294,21 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     final isViewModeChanged = oldWidget.viewMode != widget.viewMode;
 
     if (isViewModeChanged && mounted) {
+      // Clear all caches unconditionally when view mode changes
+      // The BoardView builds entirely differently from the List view
+      // and needs empty state to be correctly reinitialized.
       setState(() {
+        _tasks = null;
         _cachedGroupedTasks = null;
         _cachedVisualItems = null;
       });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          refresh();
+        }
+      });
+      return;
     }
 
     if ((isLayoutChanged || isFilterChanged) && mounted) {
@@ -403,6 +421,45 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           customTagSortOrder: widget.sortConfig?.customTagSortOrder,
           ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         );
+
+        if (_primaryGroupField == TaskSortFields.status) {
+          final statuses = await _mediator.send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
+            const GetListTaskStatusesQuery(pageIndex: 0, pageSize: 100),
+          );
+
+          // Ensure built-in statuses are always present in the board
+          final builtInStatuses = [
+            TaskStatusListItem(
+              id: TaskStatusConstants.todoId,
+              name: '',
+              color: TaskStatusConstants.todoColor,
+              order: TaskStatusConstants.todoOrder,
+              isBuiltIn: true,
+              isDoneStatus: false,
+            ),
+            TaskStatusListItem(
+              id: TaskStatusConstants.doneId,
+              name: '',
+              color: TaskStatusConstants.doneColor,
+              order: TaskStatusConstants.doneOrder,
+              isBuiltIn: true,
+              isDoneStatus: true,
+            ),
+          ];
+
+          // Merge: built-ins first (in order), then custom statuses not already present
+          final mergedStatuses = <TaskStatusListItem>[];
+          final existingIds = <String>{};
+
+          for (final status in [...builtInStatuses, ...statuses.items]) {
+            if (!existingIds.contains(status.id)) {
+              mergedStatuses.add(status);
+              existingIds.add(status.id);
+            }
+          }
+
+          _statuses = mergedStatuses;
+        }
 
         return await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
       },
@@ -785,6 +842,11 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       return;
     }
 
+    if (groupField == TaskSortFields.status) {
+      await _moveCardToStatusColumn(task, toGroupKey);
+      return;
+    }
+
     _dragStateNotifier.startDragging();
 
     await AsyncErrorHandler.executeVoid(
@@ -844,6 +906,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           // tag is handled by an early-return above.
           case TaskSortFields.title:
           case TaskSortFields.tag:
+          case TaskSortFields.status:
           case TaskSortFields.createdDate:
           case TaskSortFields.modifiedDate:
           case TaskSortFields.totalDuration:
@@ -973,6 +1036,78 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     );
   }
 
+  Future<void> _moveCardToStatusColumn(TaskListItem task, String toGroupKey) async {
+    _dragStateNotifier.startDragging();
+
+    String targetStatusId = TaskStatusConstants.todoId;
+    bool isDoneStatus = false;
+    for (final status in _statuses) {
+      final key = status.name.isEmpty
+          ? (status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo)
+          : status.name;
+      if (key == toGroupKey) {
+        targetStatusId = status.id;
+        isDoneStatus = status.isDoneStatus;
+        break;
+      }
+    }
+
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+      operation: () async {
+        final fullTask = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: task.id));
+
+        await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+          SaveTaskCommand(
+            id: fullTask.id,
+            title: fullTask.title,
+            description: fullTask.description,
+            priority: fullTask.priority,
+            plannedDate: fullTask.plannedDate,
+            deadlineDate: fullTask.deadlineDate,
+            estimatedTime: fullTask.estimatedTime,
+            completedAt: isDoneStatus ? (fullTask.completedAt ?? DateTime.now().toUtc()) : null,
+            statusId: targetStatusId,
+            parentTaskId: fullTask.parentTaskId,
+            order: fullTask.order,
+            plannedDateReminderTime: fullTask.plannedDateReminderTime,
+            plannedDateReminderCustomOffset: fullTask.plannedDateReminderCustomOffset,
+            deadlineDateReminderTime: fullTask.deadlineDateReminderTime,
+            deadlineDateReminderCustomOffset: fullTask.deadlineDateReminderCustomOffset,
+            recurrenceType: fullTask.recurrenceType,
+            recurrenceInterval: fullTask.recurrenceInterval,
+            recurrenceDays: _recurrenceService.getRecurrenceDays(fullTask),
+            recurrenceStartDate: fullTask.recurrenceStartDate,
+            recurrenceEndDate: fullTask.recurrenceEndDate,
+            recurrenceCount: fullTask.recurrenceCount,
+            recurrenceParentId: fullTask.recurrenceParentId,
+            recurrenceConfiguration: fullTask.recurrenceConfiguration,
+          ),
+        );
+        _tasksService.notifyTaskUpdated(task.id);
+      },
+      onSuccess: () {
+        _dragStateNotifier.stopDragging();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            refresh().catchError((e, stackTrace) {
+              Logger.error('Failed to refresh task list after status move', error: e, stackTrace: stackTrace);
+            });
+          }
+        });
+      },
+      onError: (_) {
+        _dragStateNotifier.stopDragging();
+        if (mounted) {
+          refresh().catchError((e, stackTrace) {
+            Logger.error('Failed to refresh task list after status move error', error: e, stackTrace: stackTrace);
+          });
+        }
+      },
+    );
+  }
+
   /// Resolves a tag id from its display name. Returns null when no exact
   /// (case-insensitive) match exists.
   ///
@@ -1025,15 +1160,52 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
       // Fixed-cardinality groupings (priority, date/duration buckets) show every
       // possible column in a stable order, even when empty. Data-driven
-      // groupings (tag) keep their discovered columns but always expose the
+      // groupings (tag, status) keep their discovered columns but always expose the
       // empty column so a card can be dropped there to clear the property.
       final fixedKeys = TaskGroupingHelper.fixedColumnKeysFor(_primaryGroupField);
-      final Map<String, List<TaskListItem>> boardGroups;
+      Map<String, String>? groupLabels;
+      late Map<String, List<TaskListItem>> boardGroups;
       if (fixedKeys != null) {
         boardGroups = {for (final key in fixedKeys) key: groupedTasks[key] ?? []};
         for (final key in fixedKeys) {
           groupTranslatable[key] = true;
         }
+      } else if (_primaryGroupField == TaskSortFields.status) {
+        // Sort statuses: todo first, then by order, then done last
+        final sortedStatuses = List<TaskStatusListItem>.from(_statuses);
+        sortedStatuses.sort((a, b) {
+          // Built-in todo first
+          if (a.id == TaskStatusConstants.todoId) return -1;
+          if (b.id == TaskStatusConstants.todoId) return 1;
+          // Built-in done last
+          if (a.id == TaskStatusConstants.doneId) return 1;
+          if (b.id == TaskStatusConstants.doneId) return -1;
+          // Custom statuses by order
+          return a.order.compareTo(b.order);
+        });
+
+        final statusBoardGroups = <String, List<TaskListItem>>{};
+        final statusGroupLabels = <String, String>{};
+        for (final status in sortedStatuses) {
+          // The query handler uses translation keys for built-in statuses and
+          // stored names for custom statuses as the groupName
+          final groupKey = status.name.isEmpty
+              ? (status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo)
+              : status.name;
+
+          statusBoardGroups[groupKey] = groupedTasks[groupKey] ?? [];
+
+          // For built-in statuses, the groupKey is a translation key (translatable)
+          // For custom statuses, it's the actual name (not translatable)
+          if (status.name.isEmpty) {
+            groupTranslatable[groupKey] = true;
+          } else {
+            groupTranslatable[groupKey] = false;
+            statusGroupLabels[groupKey] = status.name;
+          }
+        }
+        boardGroups = statusBoardGroups;
+        groupLabels = statusGroupLabels;
       } else {
         boardGroups = Map<String, List<TaskListItem>>.from(groupedTasks);
         final emptyGroupKey = TaskGroupingHelper.emptyGroupKeyFor(_primaryGroupField);
@@ -1046,6 +1218,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       return TaskBoardView(
         groupedTasks: boardGroups,
         groupTranslatable: groupTranslatable,
+        groupLabels: groupLabels,
         canMoveAcrossColumns: TaskGroupingHelper.isCrossColumnMovePersistable(_primaryGroupField),
         onClickTask: widget.onClickTask,
         onTaskCompleted: widget.onTaskCompleted,

@@ -136,5 +136,22 @@ void main() {
         );
       });
     });
+
+    group('Status Grouping', () {
+      test('returns the task statusId as the (non-translatable) group key', () {
+        final task = baseTask.copyWith(statusId: 'status-abc');
+        expect(TaskGroupingHelper.getGroupName(task, TaskSortFields.status), equals('status-abc'));
+        expect(TaskGroupingHelper.isGroupTranslatable(TaskSortFields.status), isFalse);
+      });
+
+      test('status grouping is data-driven (no fixed columns)', () {
+        expect(TaskGroupingHelper.fixedColumnKeysFor(TaskSortFields.status), isNull);
+        expect(TaskGroupingHelper.emptyGroupKeyFor(TaskSortFields.status), isNull);
+      });
+
+      test('status cross-column moves are persistable', () {
+        expect(TaskGroupingHelper.isCrossColumnMovePersistable(TaskSortFields.status), isTrue);
+      });
+    });
   });
 }

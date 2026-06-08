@@ -45,6 +45,8 @@ tasks:
       label: Planlagt dato
     priority:
       label: Prioritet
+    status:
+      label: Status
     sub_tasks:
       label: Underopgaver
     tags:
@@ -55,6 +57,8 @@ tasks:
       label: Titel
     total_elapsed_time: Total forløbet tid
   errors:
+    task_status_not_found: Opgavestatus ikke fundet
+    task_status_builtin: Indbyggede statusser kan ikke slettes
     add_tag: Uventet fejl opstod under tilføjelse af tag
     adding_tag: Kunne ikke tilføje tag
     get_tags: Fejl opstod under hentning af tags
@@ -590,3 +594,21 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: Flytning af opgaver mellem kolonner understøttes ikke
+  statuses:
+    builtin:
+      todo: At gøre
+      done: Færdig
+      section: Indbygget
+    custom:
+      section: Brugerdefinerede statusser
+    settings:
+      title: Opgavestatusser
+      description: "Administrer de statuskolonner, der bruges til at organisere dine opgaver."
+    add_button: Tilføj status
+    name_label: Navn
+    name_hint: Statusnavn
+    color_label: Farve
+    delete_confirm:
+      title: Slet status
+      message: "Opgaver med denne status flyttes til At gøre. Fortsæt?"
+    new_default_name: Ny status

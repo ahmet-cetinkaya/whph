@@ -47,6 +47,7 @@ class SyncDtoSerializer {
     total += dto.habitTagsSyncData?.data.getTotalItemCount() ?? 0;
     total += dto.tagsSyncData?.data.getTotalItemCount() ?? 0;
     total += dto.tagTagsSyncData?.data.getTotalItemCount() ?? 0;
+    total += dto.taskStatusesSyncData?.data.getTotalItemCount() ?? 0;
     total += dto.taskTagsSyncData?.data.getTotalItemCount() ?? 0;
     total += dto.taskTimeRecordsSyncData?.data.getTotalItemCount() ?? 0;
     total += dto.settingsSyncData?.data.getTotalItemCount() ?? 0;
@@ -112,6 +113,9 @@ class SyncDtoSerializer {
     }
     if (dto.tagTagsSyncData != null) {
       isolateData['tagTagsSyncData'] = dto.tagTagsSyncData!.toJson();
+    }
+    if (dto.taskStatusesSyncData != null) {
+      isolateData['taskStatusesSyncData'] = dto.taskStatusesSyncData!.toJson();
     }
     if (dto.taskTagsSyncData != null) {
       isolateData['taskTagsSyncData'] = dto.taskTagsSyncData!.toJson();
@@ -191,6 +195,7 @@ class SyncDtoSerializer {
     await _serializeIfNotNull(result, 'habitTagsSyncData', dto.habitTagsSyncData);
     await _serializeIfNotNull(result, 'tagsSyncData', dto.tagsSyncData);
     await _serializeIfNotNull(result, 'tagTagsSyncData', dto.tagTagsSyncData);
+    await _serializeIfNotNull(result, 'taskStatusesSyncData', dto.taskStatusesSyncData);
     await _serializeIfNotNull(result, 'taskTagsSyncData', dto.taskTagsSyncData);
     await _serializeIfNotNull(result, 'taskTimeRecordsSyncData', dto.taskTimeRecordsSyncData);
     await _serializeIfNotNull(result, 'settingsSyncData', dto.settingsSyncData);
@@ -316,6 +321,7 @@ class SyncDtoSerializer {
       'habitTagsSyncData',
       'tagsSyncData',
       'tagTagsSyncData',
+      'taskStatusesSyncData',
       'taskTagsSyncData',
       'taskTimeRecordsSyncData',
       'settingsSyncData',

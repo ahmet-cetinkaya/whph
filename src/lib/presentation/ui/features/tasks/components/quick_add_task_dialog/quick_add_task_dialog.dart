@@ -41,6 +41,7 @@ class QuickAddTaskDialog extends StatefulWidget {
   final bool? initialCompleted;
   final Function(String taskId, TaskData taskData)? onTaskCreated;
   final String? initialParentTaskId;
+  final String? initialStatusId;
 
   const QuickAddTaskDialog({
     super.key,
@@ -54,6 +55,7 @@ class QuickAddTaskDialog extends StatefulWidget {
     this.initialCompleted,
     this.onTaskCreated,
     this.initialParentTaskId,
+    this.initialStatusId,
   });
 
   /// Shows the task dialog as bottom sheet on mobile platforms, dialog on desktop
@@ -69,6 +71,7 @@ class QuickAddTaskDialog extends StatefulWidget {
     bool? initialCompleted,
     Function(String taskId, TaskData taskData)? onTaskCreated,
     String? initialParentTaskId,
+    String? initialStatusId,
   }) {
     final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
 
@@ -83,6 +86,7 @@ class QuickAddTaskDialog extends StatefulWidget {
       initialCompleted: initialCompleted,
       onTaskCreated: onTaskCreated,
       initialParentTaskId: initialParentTaskId,
+      initialStatusId: initialStatusId,
     );
 
     Future<T?> showDialogFuture;
@@ -178,6 +182,7 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
       initialDescription: widget.initialDescription,
       initialCompleted: widget.initialCompleted,
       initialParentTaskId: widget.initialParentTaskId,
+      initialStatusId: widget.initialStatusId,
       onTaskCreated: widget.onTaskCreated,
     );
 

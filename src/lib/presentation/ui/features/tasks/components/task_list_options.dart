@@ -618,8 +618,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                   SortDialogButton<TaskSortFields>(
                     iconColor: Theme.of(context).primaryColor,
                     tooltip: _translationService.translate(SharedTranslationKeys.sort),
-                    config: widget.sortConfig ?? TaskDefaults.sorting,
-                    defaultConfig: TaskDefaults.sorting,
+                    config: widget.sortConfig ??
+                        (widget.viewMode == TaskViewMode.board ? TaskDefaults.boardSorting : TaskDefaults.sorting),
+                    defaultConfig:
+                        widget.viewMode == TaskViewMode.board ? TaskDefaults.boardSorting : TaskDefaults.sorting,
                     onConfigChanged: widget.onSortChange!,
                     availableOptions: [
                       SortOptionWithTranslationKey(
@@ -671,6 +673,11 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         field: TaskSortFields.tag,
                         direction: SortDirection.asc,
                         translationKey: SharedTranslationKeys.tagsLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.status,
+                        direction: SortDirection.asc,
+                        translationKey: TaskTranslationKeys.statusLabel,
                       ),
                     ],
                     showCustomOrderOption: true,
@@ -712,7 +719,8 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                   GroupDialogButton<TaskSortFields>(
                     iconColor: Theme.of(context).primaryColor,
                     tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
-                    config: widget.sortConfig ?? TaskDefaults.sorting,
+                    config: widget.sortConfig ??
+                        (widget.viewMode == TaskViewMode.board ? TaskDefaults.boardSorting : TaskDefaults.sorting),
                     onConfigChanged: widget.onSortChange!,
                     availableOptions: [
                       SortOptionWithTranslationKey(
@@ -754,6 +762,10 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.tag,
                         translationKey: SharedTranslationKeys.tagsLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.status,
+                        translationKey: TaskTranslationKeys.statusLabel,
                       ),
                     ],
                   ),

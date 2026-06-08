@@ -13,6 +13,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:acore/acore.dart';
@@ -33,6 +34,7 @@ import 'package:whph/infrastructure/persistence/features/sync/repositories/drift
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
+import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_status_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
@@ -57,6 +59,7 @@ void registerPersistence(IContainer container) {
   container.registerSingleton<ITagRepository>((_) => DriftTagRepository());
   container.registerSingleton<ITagTagRepository>((_) => DriftTagTagRepository());
   container.registerSingleton<ITaskRepository>((_) => DriftTaskRepository());
+  container.registerSingleton<ITaskStatusRepository>((_) => DriftTaskStatusRepository());
   container.registerSingleton<ITaskTagRepository>((_) => DriftTaskTagRepository());
   container.registerSingleton<ITaskTimeRecordRepository>((_) => DriftTaskTimeRecordRepository());
 }

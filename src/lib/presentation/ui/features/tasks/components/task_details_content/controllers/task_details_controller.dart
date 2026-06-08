@@ -6,6 +6,7 @@ import 'package:acore/acore.dart' show DateTimeHelper, WeekDays;
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
@@ -15,6 +16,7 @@ import 'package:whph/core/application/features/tasks/queries/get_task_query.dart
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
@@ -58,6 +60,7 @@ class TaskDetailsController extends ChangeNotifier {
   static const String keyDeadlineDateReminder = 'deadlineDateReminder';
   static const String keyRecurrence = 'recurrence';
   static const String keyParentTask = 'parentTask';
+  static const String keyStatus = 'status';
   static const String keyTimer = 'timer';
 
   VoidCallback? onTaskUpdated;
@@ -180,6 +183,7 @@ class TaskDetailsController extends ChangeNotifier {
     if (_hasFieldContent(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDate);
     if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
     if (_hasFieldContent(keyRecurrence)) _visibleOptionalFields.add(keyRecurrence);
+    if (_hasFieldContent(keyStatus)) _visibleOptionalFields.add(keyStatus);
 
     if (_visibleOptionalFields.contains(keyPlannedDate)) _visibleOptionalFields.add(keyPlannedDateReminder);
     if (_visibleOptionalFields.contains(keyDeadlineDate)) _visibleOptionalFields.add(keyDeadlineDateReminder);
@@ -216,6 +220,10 @@ class TaskDetailsController extends ChangeNotifier {
         return _task!.recurrenceType != RecurrenceType.none;
       case keyParentTask:
         return _task!.parentTask != null;
+      case keyStatus:
+        final statusId = _task!.statusId;
+        if (statusId == null || statusId.isEmpty) return false;
+        return !TaskStatusConstants.isDoneStatusId(statusId) && statusId != TaskStatusConstants.todoId;
       default:
         return false;
     }
@@ -292,6 +300,7 @@ class TaskDetailsController extends ChangeNotifier {
       deadlineDate: deadlineDate ?? _task!.deadlineDate,
       priority: _task!.priority,
       estimatedTime: _task!.estimatedTime,
+      statusId: _task!.statusId,
       completedAt: _task!.completedAt,
       plannedDateReminderTime: _task!.plannedDateReminderTime,
       plannedDateReminderCustomOffset: _task!.plannedDateReminderCustomOffset,
@@ -696,10 +705,46 @@ class TaskDetailsController extends ChangeNotifier {
   void toggleTaskCompletion() {
     if (_task!.isCompleted) {
       _task!.markNotCompleted();
+      _task!.statusId = TaskStatusConstants.todoId;
     } else {
       _task!.markCompleted();
+      _task!.statusId = TaskStatusConstants.doneId;
     }
     onCompletedChanged?.call(_task!.isCompleted);
+    saveTaskImmediately();
+    notifyListeners();
+  }
+
+  /// Updates the task status. Routing the done status through [CompleteTaskCommand]
+  /// keeps every completion code path (auto time-record, recurrence, UI notification)
+  /// identical to the complete button.
+  Future<void> updateStatus(String? statusId) async {
+    if (_task == null || _isDeleted) return;
+    _task!.statusId = statusId;
+
+    if (statusId != null && TaskStatusConstants.isDoneStatusId(statusId) && _task!.completedAt == null) {
+      _task!.markCompleted();
+      onCompletedChanged?.call(_task!.isCompleted);
+      notifyListeners();
+
+      try {
+        await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+          CompleteTaskCommand(id: _task!.id),
+        );
+        onTaskUpdated?.call();
+      } catch (e, stackTrace) {
+        Logger.error('Error completing task via status change', error: e, stackTrace: stackTrace);
+        onError?.call(_translationService.translate(TaskTranslationKeys.taskCompleteError));
+      }
+      return;
+    }
+
+    if (statusId != null && !TaskStatusConstants.isDoneStatusId(statusId) && _task!.completedAt != null) {
+      _task!.markNotCompleted();
+      onCompletedChanged?.call(_task!.isCompleted);
+    }
+
+    saveTaskImmediately();
     notifyListeners();
   }
 }

@@ -2,11 +2,14 @@ import 'package:whph/core/application/features/tasks/models/task_list_item.dart'
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/models/task_query_filter.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/utils/task_grouping_helper.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:acore/acore.dart';
 
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
+import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;
@@ -132,8 +135,13 @@ class GetListTasksQueryResponse extends PaginatedList<TaskListItem> {
 
 class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, GetListTasksQueryResponse> {
   late final ITaskRepository _taskRepository;
+  late final ITaskStatusRepository _taskStatusRepository;
 
-  GetListTasksQueryHandler({required ITaskRepository taskRepository}) : _taskRepository = taskRepository;
+  GetListTasksQueryHandler({
+    required ITaskRepository taskRepository,
+    required ITaskStatusRepository taskStatusRepository,
+  })  : _taskRepository = taskRepository,
+        _taskStatusRepository = taskStatusRepository;
 
   @override
   Future<GetListTasksQueryResponse> call(GetListTasksQuery request) async {
@@ -169,12 +177,51 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
         : null;
     final isGroupTranslatable = TaskGroupingHelper.isGroupTranslatable(groupField?.field);
 
-    // Set isGroupNameTranslatable on each task
+    // Load statuses if grouping by status to resolve names
+    Map<String, ({String name, bool isBuiltIn, bool isDoneStatus})>? statusMap;
+    final isGroupingByStatus = groupField?.field == TaskSortFields.status;
+    if (isGroupingByStatus) {
+      final statusesResponse = await _taskStatusRepository.getList(0, 100);
+      statusMap = {
+        for (var status in statusesResponse.items)
+          status.id: (name: status.name, isBuiltIn: status.isBuiltIn, isDoneStatus: status.isDoneStatus),
+      };
+      // Add built-in statuses
+      statusMap[TaskStatusConstants.todoId] = (name: '', isBuiltIn: true, isDoneStatus: false);
+      statusMap[TaskStatusConstants.doneId] = (name: '', isBuiltIn: true, isDoneStatus: true);
+    }
+
+    // Set isGroupNameTranslatable on each task and resolve status group names
     final itemsWithTranslatableFlag = tasks.items.map((task) {
-      if (task.groupName != null && (isGroupTranslatable || task.groupName == SharedTranslationKeys.none)) {
-        return task.copyWith(isGroupNameTranslatable: true);
+      String? groupName = task.groupName;
+      bool? isGroupNameTranslatable;
+
+      if (groupName != null) {
+        if (isGroupingByStatus && statusMap != null) {
+          // Resolve status ID to name
+          final statusData = statusMap[task.statusId ?? TaskStatusConstants.todoId];
+          if (statusData != null) {
+            // For built-in statuses with empty names, use translation keys
+            if (statusData.name.isEmpty) {
+              groupName = statusData.isDoneStatus
+                  ? TaskTranslationKeys.statusBuiltInDone
+                  : TaskTranslationKeys.statusBuiltInTodo;
+              isGroupNameTranslatable = true;
+            } else {
+              // For custom statuses, use the stored name
+              groupName = statusData.name;
+              isGroupNameTranslatable = false;
+            }
+          }
+        } else if (isGroupTranslatable || groupName == SharedTranslationKeys.none) {
+          isGroupNameTranslatable = true;
+        }
       }
-      return task;
+
+      return task.copyWith(
+        groupName: groupName,
+        isGroupNameTranslatable: isGroupNameTranslatable,
+      );
     }).toList();
 
     return GetListTasksQueryResponse(
@@ -234,6 +281,8 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       orders.add(CustomOrder(field: "priority", direction: option.direction));
     } else if (option.field == TaskSortFields.title) {
       orders.add(CustomOrder(field: "title", direction: option.direction));
+    } else if (option.field == TaskSortFields.status) {
+      orders.add(CustomOrder(field: "status", direction: option.direction));
     } else if (option.field == TaskSortFields.tag) {
       orders.add(CustomOrder(field: "tag", direction: option.direction));
     }

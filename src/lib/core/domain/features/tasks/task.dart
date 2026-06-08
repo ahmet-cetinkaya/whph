@@ -55,6 +55,7 @@ class Task extends BaseEntity<String> {
   DateTime? deadlineDate;
   int? estimatedTime;
   DateTime? completedAt;
+  String? statusId;
   String? parentTaskId;
   double order = 0;
 
@@ -115,6 +116,7 @@ class Task extends BaseEntity<String> {
     this.priority,
     this.estimatedTime,
     this.completedAt,
+    this.statusId,
     this.parentTaskId,
     this.order = 0.0,
     this.plannedDateReminderTime = ReminderTime.none,
@@ -151,6 +153,7 @@ class Task extends BaseEntity<String> {
         'estimatedTime': estimatedTime,
         'completedAt': completedAt?.toIso8601String(),
         'isCompleted': isCompleted, // Backward compatibility
+        'statusId': statusId,
         'parentTaskId': parentTaskId,
         'order': order,
         'plannedDateReminderTime': plannedDateReminderTime.name,
@@ -188,6 +191,7 @@ class Task extends BaseEntity<String> {
     Object? deadlineDate = _copyWithSentinel,
     Object? estimatedTime = _copyWithSentinel,
     Object? completedAt = _copyWithSentinel,
+    Object? statusId = _copyWithSentinel,
     Object? parentTaskId = _copyWithSentinel,
     double? order,
     ReminderTime? plannedDateReminderTime,
@@ -215,6 +219,7 @@ class Task extends BaseEntity<String> {
       deadlineDate: deadlineDate == _copyWithSentinel ? this.deadlineDate : deadlineDate as DateTime?,
       estimatedTime: estimatedTime == _copyWithSentinel ? this.estimatedTime : estimatedTime as int?,
       completedAt: completedAt == _copyWithSentinel ? this.completedAt : completedAt as DateTime?,
+      statusId: statusId == _copyWithSentinel ? this.statusId : statusId as String?,
       parentTaskId: parentTaskId == _copyWithSentinel ? this.parentTaskId : parentTaskId as String?,
       order: order ?? this.order,
       plannedDateReminderTime: plannedDateReminderTime ?? this.plannedDateReminderTime,
@@ -399,6 +404,7 @@ class Task extends BaseEntity<String> {
         deadlineDate: json['deadlineDate'] != null ? DateTime.parse(json['deadlineDate'] as String) : null,
         estimatedTime: estimatedTime,
         completedAt: completedAt,
+        statusId: json['statusId'] as String?,
         parentTaskId: json['parentTaskId'] as String?,
         order: order,
         plannedDateReminderTime: plannedDateReminderTime,

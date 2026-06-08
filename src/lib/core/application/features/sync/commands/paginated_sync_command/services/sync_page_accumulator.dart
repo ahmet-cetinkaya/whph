@@ -13,6 +13,7 @@ import 'package:whph/core/domain/features/notes/note_tag.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
@@ -107,6 +108,13 @@ class SyncPageAccumulator {
           (dto) => dto.tagsSyncData,
           (baseDto, data, totalItems) => baseDto.copyWith(tagsSyncData: data, totalItems: totalItems),
         );
+      case 'TaskStatus':
+        return _accumulateTyped<TaskStatus>(
+          responseDtos,
+          entityType,
+          (dto) => dto.taskStatusesSyncData,
+          (baseDto, data, totalItems) => baseDto.copyWith(taskStatusesSyncData: data, totalItems: totalItems),
+        );
       case 'Setting':
         return _accumulateTyped<Setting>(
           responseDtos,
@@ -194,6 +202,7 @@ extension PaginatedSyncDataDtoCopyWith on PaginatedSyncDataDto {
     PaginatedSyncData<Habit>? habitsSyncData,
     PaginatedSyncData<HabitTag>? habitTagsSyncData,
     PaginatedSyncData<Tag>? tagsSyncData,
+    PaginatedSyncData<TaskStatus>? taskStatusesSyncData,
     PaginatedSyncData<Setting>? settingsSyncData,
     PaginatedSyncData<Note>? notesSyncData,
     PaginatedSyncData<NoteTag>? noteTagsSyncData,
@@ -220,6 +229,7 @@ extension PaginatedSyncDataDtoCopyWith on PaginatedSyncDataDto {
       habitsSyncData: habitsSyncData ?? this.habitsSyncData,
       habitTagsSyncData: habitTagsSyncData ?? this.habitTagsSyncData,
       tagsSyncData: tagsSyncData ?? this.tagsSyncData,
+      taskStatusesSyncData: taskStatusesSyncData ?? this.taskStatusesSyncData,
       settingsSyncData: settingsSyncData ?? this.settingsSyncData,
       notesSyncData: notesSyncData ?? this.notesSyncData,
       noteTagsSyncData: noteTagsSyncData ?? this.noteTagsSyncData,

@@ -22,6 +22,7 @@ import 'package:whph/core/application/features/tags/services/abstraction/i_tag_r
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tags/tags_registration.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/tasks/tasks_registration.dart';
@@ -68,6 +69,7 @@ void registerApplication(IContainer container) {
   final appUsageTagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
   final tagTagRepository = container.resolve<ITagTagRepository>();
   final taskRepository = container.resolve<ITaskRepository>();
+  final taskStatusRepository = container.resolve<ITaskStatusRepository>();
   final taskTagRepository = container.resolve<ITaskTagRepository>();
   final taskTimeRecordRepository = container.resolve<ITaskTimeRecordRepository>();
   final appUsageTimeRecordRepository = container
@@ -104,6 +106,7 @@ void registerApplication(IContainer container) {
     container,
     mediator,
     taskRepository,
+    taskStatusRepository,
     taskTagRepository,
     taskTimeRecordRepository,
     tagRepository,
@@ -162,6 +165,7 @@ void registerApplication(IContainer container) {
     tagRepository,
     tagTagRepository,
     taskRepository,
+    taskStatusRepository,
     taskTagRepository,
     taskTimeRecordRepository,
     noteRepository,

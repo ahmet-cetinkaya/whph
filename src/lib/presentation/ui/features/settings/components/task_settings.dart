@@ -12,6 +12,7 @@ import 'package:whph/presentation/ui/features/settings/constants/settings_transl
 import 'package:whph/presentation/ui/features/settings/components/task_settings/default_estimated_time_setting.dart';
 import 'package:whph/presentation/ui/features/settings/components/task_settings/default_reminder_setting.dart';
 import 'package:whph/presentation/ui/features/settings/components/task_settings/skip_quick_add_setting.dart';
+import 'package:whph/presentation/ui/features/settings/components/task_settings/task_statuses_setting.dart';
 import 'package:whph/presentation/ui/shared/components/loading_overlay.dart';
 import 'package:whph/presentation/ui/shared/components/responsive_scaffold_layout.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -128,6 +129,8 @@ class _TaskSettingsState extends State<TaskSettings> {
               ),
               const SizedBox(height: AppTheme.sizeMedium),
               const SkipQuickAddSetting(),
+              const SizedBox(height: AppTheme.sizeMedium),
+              const TaskStatusesSetting(),
             ],
           ),
         ),

@@ -34,6 +34,7 @@ class TaskTable extends Table {
   DateTimeColumn get deadlineDate => dateTime().nullable()();
   IntColumn get estimatedTime => integer().nullable()();
   DateTimeColumn get completedAt => dateTime().nullable()();
+  TextColumn get statusId => text().nullable()();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
@@ -111,6 +112,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     'priority': TaskSortFields.priority,
     'title': TaskSortFields.title,
     'tag': TaskSortFields.tag,
+    'status': TaskSortFields.status,
   };
 
   final TaskDataMapper _mapper = TaskDataMapper();
@@ -513,6 +515,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
       plannedDate: task.plannedDate,
       deadlineDate: task.deadlineDate,
       completedAt: task.completedAt,
+      statusId: task.statusId,
       estimatedTime: task.estimatedTime,
       parentTaskId: task.parentTaskId,
       order: task.order,
@@ -651,6 +654,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
           title: subtask.title,
           priority: subtask.priority,
           isCompleted: subtask.isCompleted,
+          statusId: subtask.statusId,
           plannedDate: subtask.plannedDate,
           deadlineDate: subtask.deadlineDate,
           estimatedTime: subtask.estimatedTime,
@@ -684,6 +688,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
         // Assuming TaskWithTotalDuration has completedAt and logic for isCompleted
         isCompleted: task.completedAt != null,
         completedAt: task.completedAt,
+        statusId: task.statusId,
         plannedDate: task.plannedDate,
         deadlineDate: task.deadlineDate,
         modifiedDate: task.modifiedDate,
