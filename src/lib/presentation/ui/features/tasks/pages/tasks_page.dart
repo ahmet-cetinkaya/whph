@@ -240,6 +240,14 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     if (!mounted) return;
     setState(() {
       _viewMode = mode;
+
+      // When switching to board mode, ensure grouping is enabled with status
+      if (mode == TaskViewMode.board) {
+        // Only apply board defaults if grouping is not already enabled
+        if (!_sortConfig.enableGrouping || _sortConfig.groupOption == null) {
+          _sortConfig = TaskDefaults.boardSorting;
+        }
+      }
     });
   }
 
