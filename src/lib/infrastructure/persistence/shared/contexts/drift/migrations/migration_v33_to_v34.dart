@@ -89,7 +89,7 @@ Future<void> _seedBuiltInStatus(
   await db.customStatement(
     '''
     INSERT INTO task_status_table
-      (id, created_date, name, color, sort_order, is_built_in, is_done_status)
+      (id, created_date, name, color, "order", is_built_in, is_done_status)
     VALUES (?, CAST(strftime('%s','now') AS INTEGER), '', ?, ?, 1, ?)
     ''',
     [id, color, sortOrder, isDoneStatus],
