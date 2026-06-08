@@ -122,7 +122,17 @@ class _StatusChipState extends State<StatusChip> {
           name: resolved.name,
           isDoneStatus: resolved.isDoneStatus,
         );
-        color = resolved.color != null ? Color(int.parse('FF${resolved.color!}', radix: 16)) : Colors.grey;
+        Color? parsedColor;
+        if (resolved.color != null) {
+          try {
+            String cleanHex = resolved.color!.replaceAll('#', '').replaceFirst('0x', '');
+            if (cleanHex.length == 6) {
+              cleanHex = 'FF$cleanHex';
+            }
+            parsedColor = Color(int.parse(cleanHex, radix: 16));
+          } catch (_) {}
+        }
+        color = parsedColor ?? Colors.grey;
       } else {
         // Still loading or status deleted — show a placeholder
         label = '…';

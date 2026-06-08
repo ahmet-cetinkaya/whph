@@ -212,6 +212,10 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
               groupName = statusData.name;
               isGroupNameTranslatable = false;
             }
+          } else {
+            // Fallback for deleted/invalid status IDs
+            groupName = TaskTranslationKeys.statusBuiltInTodo;
+            isGroupNameTranslatable = true;
           }
         } else if (isGroupTranslatable || groupName == SharedTranslationKeys.none) {
           isGroupNameTranslatable = true;

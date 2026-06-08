@@ -33,7 +33,7 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
   List<TaskStatusListItem> _statuses = const [];
   final Map<String, TextEditingController> _nameControllers = {};
   final Map<String, String?> _lastSyncedNames = {};
-  Timer? _debounce;
+  final Map<String, Timer> _debounces = {};
 
   static const double _orderStep = 1000.0;
   static const Duration _debounceDelay = Duration(milliseconds: 500);
@@ -46,7 +46,9 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
 
   @override
   void dispose() {
-    _debounce?.cancel();
+    for (final debounce in _debounces.values) {
+      debounce.cancel();
+    }
     for (final controller in _nameControllers.values) {
       controller.dispose();
     }
@@ -114,7 +116,11 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
   Color? _colorFromHex(String? hex) {
     if (hex == null || hex.isEmpty) return null;
     try {
-      return Color(int.parse('FF$hex', radix: 16));
+      String cleanHex = hex.replaceAll('#', '').replaceFirst('0x', '');
+      if (cleanHex.length == 6) {
+        cleanHex = 'FF$cleanHex';
+      }
+      return Color(int.parse(cleanHex, radix: 16));
     } catch (_) {
       return null;
     }
@@ -186,12 +192,13 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
     // Update last synced to prevent _syncControllers from overwriting during typing
     _lastSyncedNames[status.id] = nameToSave;
 
-    // Cancel existing debounce
-    _debounce?.cancel();
+    // Cancel existing debounce for this status
+    _debounces[status.id]?.cancel();
 
     // Schedule debounced save
-    _debounce = Timer(_debounceDelay, () {
+    _debounces[status.id] = Timer(_debounceDelay, () {
       _save(status, name: nameToSave);
+      _debounces.remove(status.id);
     });
   }
 
@@ -334,7 +341,8 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
               onChanged: (value) => _onNameChanged(status, value),
               onSubmitted: (value) {
                 // Cancel any pending debounce and save immediately
-                _debounce?.cancel();
+                _debounces[status.id]?.cancel();
+                _debounces.remove(status.id);
                 final trimmed = value.trim();
                 if (trimmed.isEmpty) {
                   // Empty names are reserved for un-renamed built-ins; restore display.

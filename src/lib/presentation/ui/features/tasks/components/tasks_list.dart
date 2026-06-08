@@ -305,7 +305,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          refresh();
+          refresh().catchError((e, stackTrace) {
+            Logger.error('Failed to refresh task list after view mode change', error: e, stackTrace: stackTrace);
+          });
         }
       });
       return;

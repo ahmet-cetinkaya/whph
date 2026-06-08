@@ -52,6 +52,7 @@ class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusComm
       if (request.order != null) {
         existing.order = request.order!;
       }
+      existing.modifiedDate = DateTime.now().toUtc();
       await _taskStatusRepository.update(existing);
       status = existing;
     } else {

@@ -127,6 +127,16 @@ class _StatusSelectionDialogState extends State<StatusSelectionDialog> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final status = _statuses!.where((s) => !s.isBuiltIn).toList()[index];
+                        Color? parsedColor;
+                        if (status.color != null) {
+                          try {
+                            String cleanHex = status.color!.replaceAll('#', '').replaceFirst('0x', '');
+                            if (cleanHex.length == 6) {
+                              cleanHex = 'FF$cleanHex';
+                            }
+                            parsedColor = Color(int.parse(cleanHex, radix: 16));
+                          } catch (_) {}
+                        }
                         return _buildStatusTile(
                           context: context,
                           statusId: status.id,
@@ -136,7 +146,7 @@ class _StatusSelectionDialogState extends State<StatusSelectionDialog> {
                             name: status.name,
                             isDoneStatus: status.isDoneStatus,
                           ),
-                          color: status.color != null ? Color(int.parse('FF${status.color!}', radix: 16)) : null,
+                          color: parsedColor,
                           isSelected: widget.selectedStatusId == status.id,
                         );
                       },

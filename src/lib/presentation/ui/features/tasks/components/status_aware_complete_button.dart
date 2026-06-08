@@ -57,19 +57,28 @@ class _StatusAwareCompleteButtonState extends State<StatusAwareCompleteButton> {
       return null;
     }
 
-    if (statusId == TaskStatusConstants.todoId) {
-      return Color(int.parse('FF${TaskStatusConstants.todoColor}', radix: 16));
-    }
+    try {
+      if (statusId == TaskStatusConstants.todoId) {
+        return Color(int.parse('FF${TaskStatusConstants.todoColor}', radix: 16));
+      }
 
-    if (statusId == TaskStatusConstants.doneId) {
-      return Color(int.parse('FF${TaskStatusConstants.doneColor}', radix: 16));
-    }
+      if (statusId == TaskStatusConstants.doneId) {
+        return Color(int.parse('FF${TaskStatusConstants.doneColor}', radix: 16));
+      }
 
-    final match = _statuses?.where((s) => s.id == statusId).toList();
-    if (match != null && match.isNotEmpty) {
-      final resolved = match.first;
-      return resolved.color != null ? Color(int.parse('FF${resolved.color!}', radix: 16)) : null;
-    }
+      final match = _statuses?.where((s) => s.id == statusId).toList();
+      if (match != null && match.isNotEmpty) {
+        final resolved = match.first;
+        final colorHex = resolved.color;
+        if (colorHex != null && colorHex.isNotEmpty) {
+          String cleanHex = colorHex.replaceAll('#', '').replaceFirst('0x', '');
+          if (cleanHex.length == 6) {
+            cleanHex = 'FF$cleanHex';
+          }
+          return Color(int.parse(cleanHex, radix: 16));
+        }
+      }
+    } catch (_) {}
 
     return null;
   }
