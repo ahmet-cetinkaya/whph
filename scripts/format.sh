@@ -69,7 +69,7 @@ fi
 acore_log_section "🎨 Formatting files with Prettier"
 if command -v prettier &>/dev/null; then
 	cd "$PROJECT_ROOT"
-	prettier --write 'src/**/*.{json,yaml,yml,md,xml}' --log-level error || true
+	prettier --write 'src/**/*.{json,yaml,yml,md,xml}' 'docs/**/*.{json,yaml,yml,md,xml}' --log-level error || true
 	cd "$SRC_DIR"
 else
 	acore_log_warning "⚠️ Prettier not found, skipping JSON, YAML, Markdown, XML formatting"

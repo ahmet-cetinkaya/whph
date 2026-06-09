@@ -45,6 +45,8 @@ tasks:
       label: Planlanan Tarih
     priority:
       label: Öncelik
+    status:
+      label: Durum
     sub_tasks:
       label: Alt görevler
     tags:
@@ -55,9 +57,15 @@ tasks:
       label: Başlık
     total_elapsed_time: Toplam Geçen Süre
   errors:
+    task_status_invalid_color: Geçersiz renk formatı. 6 haneli onaltılık beklenir (örn. FF5722)
+    task_status_name_empty: Durum adı boş olamaz
+    task_status_name_too_long: Durum adı 50 karakteri geçemez
+    task_status_not_found: Görev durumu bulunamadı
+    task_status_builtin: Yerleşik durumlar silinemez
     add_tag: Etiket eklenirken beklenmedik bir hata oluştu
     adding_tag: Etiket eklenemedi
     get_tags: Etiketler yüklenirken beklenmedik bir hata oluştu
+    get_tasks: Görevler alınırken bir hata oluştu
     get_task: Görev yüklenirken beklenmedik bir hata oluştu
     loading_tags: Görev etiketleri yüklenemedi
     loading_task: Görev yüklenemedi
@@ -544,6 +552,25 @@ tasks:
     deadline_time_invalid: Son tarih zamanı geçersiz
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Pan görünümü
   board:
     cross_column_move_not_supported: Görevleri sütunlar arasında taşımak desteklenmiyor
+  statuses:
+    builtin:
+      todo: Yapılacak
+      done: Tamamlandı
+      section: Yerleşik
+      tooltip: Düzenlenebilir ancak silinemez
+    custom:
+      section: Özel Durumlar
+    settings:
+      title: Görev Durumları
+      description: Görevlerinizi düzenlemek için kullanılan durum sütunlarını yönetin.
+    add_button: Durum ekle
+    name_label: Ad
+    name_hint: Durum adı
+    color_label: Renk
+    delete_confirm:
+      title: Durumu sil
+      message: "Bu duruma sahip görevler Yapılacak durumuna taşınacak. Devam edilsin mi?"
+    new_default_name: Yeni durum

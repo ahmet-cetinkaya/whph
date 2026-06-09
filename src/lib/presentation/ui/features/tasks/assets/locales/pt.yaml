@@ -44,6 +44,8 @@ tasks:
       label: Data Planejada
     priority:
       label: Prioridade
+    status:
+      label: Status
     sub_tasks:
       label: Sub-tarefas
     tags:
@@ -54,9 +56,15 @@ tasks:
       label: Título
     total_elapsed_time: Tempo Total Decorrido
   errors:
+    task_status_invalid_color: Formato de cor inválido. Esperado hex de 6 dígitos (por exemplo, FF5722)
+    task_status_name_empty: O nome do status não pode estar vazio
+    task_status_name_too_long: O nome do status não pode exceder 50 caracteres
+    task_status_not_found: Estado da tarefa não encontrado
+    task_status_builtin: Os estados integrados não podem ser excluídos
     add_tag: Erro inesperado ocorreu ao adicionar tag
     adding_tag: Falha ao adicionar tag
     get_tags: Erro ocorreu ao buscar tags
+    get_tasks: Ocorreu um erro ao buscar as tarefas
     get_task: Erro inesperado ocorreu ao carregar tarefa
     loading_tags: Falha ao carregar tags da tarefa
     loading_task: Falha ao carregar tarefa
@@ -506,6 +514,25 @@ tasks:
     deadline_time_invalid: Hora limite inválida
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Visualização em quadro
   board:
     cross_column_move_not_supported: Mover tarefas entre colunas não é suportado
+  statuses:
+    builtin:
+      todo: A fazer
+      done: Concluído
+      section: Integrado
+      tooltip: Editável mas não excluído
+    custom:
+      section: Status personalizados
+    settings:
+      title: Estados das tarefas
+      description: Gerencie as colunas de estado usadas para organizar suas tarefas.
+    add_button: Adicionar estado
+    name_label: Nome
+    name_hint: Nome do estado
+    color_label: Cor
+    delete_confirm:
+      title: Excluir estado
+      message: "As tarefas com este estado serão movidas para A fazer. Continuar?"
+    new_default_name: Novo estado

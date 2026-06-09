@@ -1,12 +1,15 @@
 # Project Modules Documentation
 
-This document provides an overview of the modules in the WHPH project, a cross-platform application built with Flutter/Dart. Modules are organized in feature folders to promote modularity.
+This document provides an overview of the modules in the WHPH project, a
+cross-platform application built with Flutter/Dart. Modules are organized in
+feature folders to promote modularity.
 
 ## Core Modules
 
 ### About Module
 
-**Overview**: Displays app information, version, licenses, and credits with localization support.
+**Overview**: Displays app information, version, licenses, and credits with
+localization support.
 
 **Folder Structure**:
 
@@ -28,7 +31,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 **Usage Instructions**:
 
 - Query: `aboutQueries.getAppInfo()`.
-- Reference: [`about_service.dart`](core/application/features/about/services/about_service.dart).
+- Reference:
+  [`about_service.dart`](core/application/features/about/services/about_service.dart).
 
 **Best Practices**:
 
@@ -37,11 +41,13 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 ### App Usages Module
 
-**Overview**: Tracks app usage statistics like time spent and sessions across platforms.
+**Overview**: Tracks app usage statistics like time spent and sessions across
+platforms.
 
 **Folder Structure**:
 
-- `core/application/features/app_usages/`: Commands, constants, queries, services.
+- `core/application/features/app_usages/`: Commands, constants, queries,
+  services.
 - `core/domain/features/app_usages/`: Domain models.
 - `infrastructure/persistence/features/app_usages/`: Database schemas.
 - `presentation/ui/features/app_usages/`: UI (inferred).
@@ -61,7 +67,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 - Service: `appUsagesService.logSessionStart()`.
 - Query: `appUsagesQueries.getWeeklyStats()`.
-- Reference: [`app_usages_service.dart`](core/application/features/app_usages/services/app_usages_service.dart).
+- Reference:
+  [`app_usages_service.dart`](core/application/features/app_usages/services/app_usages_service.dart).
 
 **Best Practices**:
 
@@ -93,7 +100,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 **Usage Instructions**:
 
 - Command: `calendarCommands.createEvent(EventModel(title: 'Meeting'))`.
-- Reference: [`calendar_service.dart`](core/application/features/calendar/services/calendar_service.dart).
+- Reference:
+  [`calendar_service.dart`](core/application/features/calendar/services/calendar_service.dart).
 
 **Best Practices**:
 
@@ -121,7 +129,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 **Usage Instructions**:
 
 - Enable in settings: `DemoService.enableDemos(true);`.
-- Reference: [`demo_service.dart`](core/application/features/demo/services/demo_service.dart).
+- Reference:
+  [`demo_service.dart`](core/application/features/demo/services/demo_service.dart).
 
 **Best Practices**:
 
@@ -130,7 +139,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 ### Habits Module
 
-**Overview**: Tracks user habits with streaks, reminders, and progress analytics.
+**Overview**: Tracks user habits with streaks, reminders, and progress
+analytics.
 
 **Folder Structure**:
 
@@ -154,7 +164,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 - Command: `habitsCommands.createHabit(HabitModel(name: 'Exercise'));`.
 - Query: `habitsQueries.getActiveHabits()`.
-- Reference: [`habits_service.dart`](core/application/features/habits/services/habits_service.dart).
+- Reference:
+  [`habits_service.dart`](core/application/features/habits/services/habits_service.dart).
 
 **Best Practices**:
 
@@ -187,7 +198,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 - Service: `notesService.saveNote(NoteModel(content: 'Hello'));`.
 - Cross-ref: Integrate with tags via `tagsService.assignTag(noteId, tagId)`.
-- Reference: [`notes_queries.dart`](core/application/features/notes/queries/notes_queries.dart).
+- Reference:
+  [`notes_queries.dart`](core/application/features/notes/queries/notes_queries.dart).
 
 **Best Practices**:
 
@@ -220,7 +232,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 - Query: `settingsQueries.getTheme()`.
 - Update: `settingsCommands.updateTheme(ThemeMode.dark);`.
-- Reference: [`settings_service.dart`](core/application/features/settings/services/settings_service.dart).
+- Reference:
+  [`settings_service.dart`](core/application/features/settings/services/settings_service.dart).
 
 **Best Practices**:
 
@@ -233,9 +246,11 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 **Folder Structure**:
 
-- `core/application/features/sync/`: Commands, constants, models, queries, services.
+- `core/application/features/sync/`: Commands, constants, models, queries,
+  services.
 - `core/domain/features/sync/`: Domain.
-- `infrastructure/android/features/sync/`, `infrastructure/desktop/features/sync/`, etc.: Platform sync.
+- `infrastructure/android/features/sync/`,
+  `infrastructure/desktop/features/sync/`, etc.: Platform sync.
 - `infrastructure/persistence/features/sync/`: Sync state.
 
 **Key Functionalities**:
@@ -253,7 +268,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 - Trigger: `syncService.startSync();`.
 - Handle conflicts: Implement `SyncModel` resolvers.
-- Reference: [`sync_service.dart`](core/application/features/sync/services/sync_service.dart).
+- Reference:
+  [`sync_service.dart`](core/application/features/sync/services/sync_service.dart).
 
 **Best Practices**:
 
@@ -266,7 +282,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 **Folder Structure**:
 
-- `core/application/features/tags/`: Commands, constants, models, queries, services.
+- `core/application/features/tags/`: Commands, constants, models, queries,
+  services.
 - `core/domain/features/tags/`: Domain.
 - `infrastructure/persistence/features/tags/`: Storage.
 
@@ -283,7 +300,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 **Usage Instructions**:
 
 - `tagsService.createTag(TagModel(name: 'Work'));`.
-- Reference: [`tags_models.dart`](core/application/features/tags/models/tags_models.dart).
+- Reference:
+  [`tags_models.dart`](core/application/features/tags/models/tags_models.dart).
 
 **Best Practices**:
 
@@ -315,7 +333,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 **Usage Instructions**:
 
 - `tasksCommands.addTask(TaskModel(title: 'Buy groceries', due: DateTime.now().add(Duration(days:1))));`.
-- Reference: [`tasks_service.dart`](core/application/features/tasks/services/tasks_service.dart).
+- Reference:
+  [`tasks_service.dart`](core/application/features/tasks/services/tasks_service.dart).
 
 **Best Practices**:
 
@@ -343,7 +362,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 **Usage Instructions**:
 
 - `widgetService.updateData();`.
-- Reference: [`widget_models.dart`](core/application/features/widget/models/widget_models.dart).
+- Reference:
+  [`widget_models.dart`](core/application/features/widget/models/widget_models.dart).
 
 **Best Practices**:
 
@@ -384,7 +404,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 **Folder Structure**:
 
 - `infrastructure/persistence/features/*/`: Per-feature tables.
-- `infrastructure/persistence/shared/contexts/drift/schemas/app_database/`: Schema.
+- `infrastructure/persistence/shared/contexts/drift/schemas/app_database/`:
+  Schema.
 
 **Key Functionalities**:
 
@@ -398,7 +419,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 **Usage Instructions**:
 
 - Use DriftDatabase: `AppDatabase.instance`.
-- Reference: [`app_database.dart`](infrastructure/persistence/shared/contexts/drift/schemas/app_database/app_database.dart).
+- Reference:
+  [`app_database.dart`](infrastructure/persistence/shared/contexts/drift/schemas/app_database/app_database.dart).
 
 **Best Practices**:
 
@@ -407,7 +429,8 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 ### Platform-Specific Infrastructure
 
-**Overview**: Platform-specific implementations for notifications, file systems, and more.
+**Overview**: Platform-specific implementations for notifications, file systems,
+and more.
 
 **Folder Structure**:
 
@@ -436,10 +459,13 @@ This document provides an overview of the modules in the WHPH project, a cross-p
 
 ## Contribution Guidelines
 
-- Follow folder structure for new features: Add to all layers (domain, application, infrastructure, presentation).
+- Follow folder structure for new features: Add to all layers (domain,
+  application, infrastructure, presentation).
 - Run `flutter analyze` before commits.
 - Use semantic commits strictly.
-- For cross-references, update this doc: `docs(modules): add new feature section`.
+- For cross-references, update this doc:
+  `docs(modules): add new feature section`.
 - Test thoroughly: Unit (services), Integration (sync), UI (widgets).
 
-This documentation is auto-generated based on project structure as of 2025-09-06. Update via PRs.
+This documentation is auto-generated based on project structure as of
+2025-09-06. Update via PRs.

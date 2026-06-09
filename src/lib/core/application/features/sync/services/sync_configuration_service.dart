@@ -12,6 +12,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
@@ -28,6 +29,7 @@ import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/domain/features/tags/tag_tag.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/domain/features/notes/note.dart';
@@ -49,6 +51,7 @@ class SyncConfigurationService implements ISyncConfigurationService {
   final ITagRepository _tagRepository;
   final ITagTagRepository _tagTagRepository;
   final ITaskRepository _taskRepository;
+  final ITaskStatusRepository _taskStatusRepository;
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ISettingRepository _settingRepository;
@@ -68,6 +71,7 @@ class SyncConfigurationService implements ISyncConfigurationService {
     required ITagRepository tagRepository,
     required ITagTagRepository tagTagRepository,
     required ITaskRepository taskRepository,
+    required ITaskStatusRepository taskStatusRepository,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
     required ISettingRepository settingRepository,
@@ -85,6 +89,7 @@ class SyncConfigurationService implements ISyncConfigurationService {
         _tagRepository = tagRepository,
         _tagTagRepository = tagTagRepository,
         _taskRepository = taskRepository,
+        _taskStatusRepository = taskStatusRepository,
         _taskTagRepository = taskTagRepository,
         _taskTimeRecordRepository = taskTimeRecordRepository,
         _settingRepository = settingRepository,
@@ -165,6 +170,14 @@ class SyncConfigurationService implements ISyncConfigurationService {
       getPaginatedSyncData: (lastSyncDate, pageIndex, pageSize, entityType) => _tagRepository
           .getPaginatedSyncData(lastSyncDate, pageIndex: pageIndex, pageSize: pageSize, entityType: entityType),
       getPaginatedSyncDataFromDto: (dto) => dto.tagsSyncData,
+    ));
+
+    _registerConfiguration(PaginatedSyncConfig<TaskStatus>(
+      name: 'TaskStatus',
+      repository: _taskStatusRepository,
+      getPaginatedSyncData: (lastSyncDate, pageIndex, pageSize, entityType) => _taskStatusRepository
+          .getPaginatedSyncData(lastSyncDate, pageIndex: pageIndex, pageSize: pageSize, entityType: entityType),
+      getPaginatedSyncDataFromDto: (dto) => dto.taskStatusesSyncData,
     ));
 
     _registerConfiguration(PaginatedSyncConfig<TagTag>(

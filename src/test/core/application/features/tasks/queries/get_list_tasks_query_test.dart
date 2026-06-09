@@ -3,6 +3,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:acore/acore.dart';
@@ -13,16 +14,20 @@ import 'get_list_tasks_query_test.mocks.dart';
 
 @GenerateMocks([
   ITaskRepository,
+  ITaskStatusRepository,
 ])
 void main() {
   group('GetListTasksQuery Tests', () {
     late MockITaskRepository taskRepository;
+    late MockITaskStatusRepository taskStatusRepository;
     late GetListTasksQueryHandler handler;
 
     setUp(() {
       taskRepository = MockITaskRepository();
+      taskStatusRepository = MockITaskStatusRepository();
       handler = GetListTasksQueryHandler(
         taskRepository: taskRepository,
+        taskStatusRepository: taskStatusRepository,
       );
     });
 

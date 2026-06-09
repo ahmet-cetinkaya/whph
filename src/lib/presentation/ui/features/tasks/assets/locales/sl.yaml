@@ -45,6 +45,8 @@ tasks:
       label: Načrtovan Datum
     priority:
       label: Prioriteta
+    status:
+      label: Status
     sub_tasks:
       label: Podnaloge
     tags:
@@ -55,9 +57,15 @@ tasks:
       label: Naslov
     total_elapsed_time: Skupni Minuli Čas
   errors:
+    task_status_invalid_color: Neveljaven format barve. Pričakovan 6-mestni hex (npr. FF5722)
+    task_status_name_empty: Ime stanja ne sme biti prazno
+    task_status_name_too_long: Ime stanja ne sme presegati 50 znakov
+    task_status_not_found: Stanje opravila ni najdeno
+    task_status_builtin: Vgrajenih stanj ni mogoče izbrisati
     add_tag: Nepričakovana napaka pri dodajanju oznake
     adding_tag: Napaka pri dodajanju oznake
     get_tags: Napaka pri pridobivanju oznak
+    get_tasks: Pri nalaganju opravil je prišlo do napake
     get_task: Nepričakovana napaka pri nalaganju naloge
     loading_tags: Napaka pri nalaganju oznak naloge
     loading_task: Napaka pri nalaganju naloge
@@ -501,6 +509,25 @@ tasks:
     deadline_time_invalid: Čas roka je neveljaven
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Pogled table
   board:
     cross_column_move_not_supported: Premikanje nalog med stolpci ni podprto
+  statuses:
+    builtin:
+      todo: Za opravit
+      done: Končano
+      section: Vgrajen
+      tooltip: Urejljiv, a se ne izbriše
+    custom:
+      section: Statusi po meri
+    settings:
+      title: Stanja opravil
+      description: Upravljajte stolpce stanj za organizacijo vaših opravil.
+    add_button: Dodaj stanje
+    name_label: Ime
+    name_hint: Ime stanja
+    color_label: Barva
+    delete_confirm:
+      title: Izbriši stanje
+      message: "Opravila s tem stanjem bodo premaknjena v Za opravit. Nadaljujem?"
+    new_default_name: Novo stanje

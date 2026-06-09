@@ -73,6 +73,7 @@ class TaskCreationHelper {
         initialTitle: draft.title,
         initialCompleted: draft.completed,
         initialParentTaskId: draft.parentTaskId,
+        initialStatusId: draft.statusId,
         onTaskCreated: onTaskCreated,
       );
     }
@@ -121,6 +122,7 @@ class TaskCreationHelper {
           plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
           completedAt: (draft.completed ?? false) ? DateTime.now().toUtc() : null,
           parentTaskId: draft.parentTaskId,
+          statusId: draft.statusId,
         );
         return await mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
       },

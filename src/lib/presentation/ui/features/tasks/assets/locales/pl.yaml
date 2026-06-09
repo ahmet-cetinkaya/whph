@@ -45,6 +45,8 @@ tasks:
       label: Planowana data
     priority:
       label: Priorytet
+    status:
+      label: Status
     sub_tasks:
       label: Podzadania
     tags:
@@ -55,9 +57,15 @@ tasks:
       label: Tytuł
     total_elapsed_time: Całkowity czas wykonania
   errors:
+    task_status_invalid_color: Nieprawidłowy format koloru. Oczekiwano 6-znakowego kodu szesnastkowego (np. FF5722)
+    task_status_name_empty: Nazwa statusu nie może być pusta
+    task_status_name_too_long: Nazwa statusu nie może przekroczyć 50 znaków
+    task_status_not_found: Nie znaleziono statusu zadania
+    task_status_builtin: Nie można usunąć wbudowanych statusów
     add_tag: Wystąpił nieoczekiwany błąd podczas dodawania tagu
     adding_tag: Nie udało się dodać tagu
     get_tags: Wystąpił błąd podczas pobierania tagów
+    get_tasks: Wystąpił błąd podczas pobierania zadań
     get_task: Wystąpił nieoczekiwany błąd podczas ładowania zadania
     loading_tags: Nie udało się załadować tagów zadania
     loading_task: Nie udało się załadować zadania
@@ -585,6 +593,25 @@ tasks:
     deadline_time_invalid: Nieprawidłowy czas terminu
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Widok tablicy
   board:
     cross_column_move_not_supported: Przenoszenie zadań między kolumnami nie jest obsługiwane
+  statuses:
+    builtin:
+      todo: Do zrobienia
+      done: Ukończone
+      section: Wbudowany
+      tooltip: Edytowalny, ale nie do usunięcia
+    custom:
+      section: Niestandardowe statusy
+    settings:
+      title: Statusy zadań
+      description: Zarządzaj kolumnami statusów używanymi do organizowania zadań.
+    add_button: Dodaj status
+    name_label: Nazwa
+    name_hint: Nazwa statusu
+    color_label: Kolor
+    delete_confirm:
+      title: Usuń status
+      message: "Zadania z tym statusem zostaną przeniesione do Do zrobienia. Kontynuować?"
+    new_default_name: Nowy status

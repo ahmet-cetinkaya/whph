@@ -44,6 +44,8 @@ tasks:
       label: Geplande Datum
     priority:
       label: Prioriteit
+    status:
+      label: Status
     sub_tasks:
       label: Subtaken
     tags:
@@ -54,9 +56,15 @@ tasks:
       label: Titel
     total_elapsed_time: Totale Verstreken Tijd
   errors:
+    task_status_invalid_color: "Ongeldig kleurformaat. Verwacht: 6-cijferige hex-waarde (bijv. FF5722)"
+    task_status_name_empty: Statusnaam mag niet leeg zijn
+    task_status_name_too_long: Statusnaam mag niet meer dan 50 tekens zijn
+    task_status_not_found: Taakstatus niet gevonden
+    task_status_builtin: Ingebouwde statussen kunnen niet worden verwijderd
     add_tag: Onverwachte fout opgetreden bij het toevoegen van tag
     adding_tag: Mislukt om tag toe te voegen
     get_tags: Fout opgetreden bij het ophalen van tags
+    get_tasks: Er is een fout opgetreden bij het ophalen van taken
     get_task: Onverwachte fout opgetreden bij het laden van taak
     loading_tags: Mislukt om taak tags te laden
     loading_task: Mislukt om taak te laden
@@ -507,6 +515,25 @@ tasks:
     deadline_time_invalid: Deadline tijd is ongeldig
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Bordweergave
   board:
     cross_column_move_not_supported: Het verplaatsen van taken tussen kolommen wordt niet ondersteund
+  statuses:
+    builtin:
+      todo: Te doen
+      done: Voltooid
+      section: Ingebouwd
+      tooltip: Bewerkbaar maar niet verwijderbaar
+    custom:
+      section: Aangepaste statussen
+    settings:
+      title: Taakstatussen
+      description: Beheer de statuskolommen waarmee je je taken ordent.
+    add_button: Status toevoegen
+    name_label: Naam
+    name_hint: Statusnaam
+    color_label: Kleur
+    delete_confirm:
+      title: Status verwijderen
+      message: "Taken met deze status worden verplaatst naar Te doen. Doorgaan?"
+    new_default_name: Nieuwe status

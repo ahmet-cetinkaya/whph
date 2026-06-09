@@ -6,15 +6,21 @@ import 'package:whph/core/application/features/tasks/commands/delete_task_comman
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
+import 'package:whph/core/application/features/tasks/commands/save_task_status_command.dart';
+import 'package:whph/core/application/features/tasks/commands/delete_task_status_command.dart';
+import 'package:whph/core/application/features/tasks/commands/reorder_task_statuses_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_tags_order_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
+import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
+import 'package:whph/core/application/features/tasks/queries/get_task_status_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_total_duration_by_task_id_query.dart';
 import 'package:whph/core/application/features/tasks/commands/import_tasks_command.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -31,6 +37,7 @@ void registerTasksFeature(
   IContainer container,
   Mediator mediator,
   ITaskRepository taskRepository,
+  ITaskStatusRepository taskStatusRepository,
   ITaskTagRepository taskTagRepository,
   ITaskTimeRecordRepository taskTimeRecordRepository,
   ITagRepository tagRepository,
@@ -89,6 +96,7 @@ void registerTasksFeature(
     ..registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(
       () => GetListTasksQueryHandler(
         taskRepository: taskRepository,
+        taskStatusRepository: taskStatusRepository,
       ),
     )
     ..registerHandler<GetTaskQuery, GetTaskQueryResponse, GetTaskQueryHandler>(
@@ -127,5 +135,24 @@ void registerTasksFeature(
     )
     ..registerHandler<ImportTasksCommand, ImportTasksCommandResponse, ImportTasksCommandHandler>(
       () => ImportTasksCommandHandler(mediator),
+    )
+    ..registerHandler<SaveTaskStatusCommand, SaveTaskStatusCommandResponse, SaveTaskStatusCommandHandler>(
+      () => SaveTaskStatusCommandHandler(taskStatusRepository: taskStatusRepository),
+    )
+    ..registerHandler<DeleteTaskStatusCommand, DeleteTaskStatusCommandResponse, DeleteTaskStatusCommandHandler>(
+      () => DeleteTaskStatusCommandHandler(
+        taskStatusRepository: taskStatusRepository,
+        taskRepository: taskRepository,
+      ),
+    )
+    ..registerHandler<ReorderTaskStatusesCommand, ReorderTaskStatusesCommandResponse,
+        ReorderTaskStatusesCommandHandler>(
+      () => ReorderTaskStatusesCommandHandler(taskStatusRepository: taskStatusRepository),
+    )
+    ..registerHandler<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse, GetListTaskStatusesQueryHandler>(
+      () => GetListTaskStatusesQueryHandler(taskStatusRepository: taskStatusRepository),
+    )
+    ..registerHandler<GetTaskStatusQuery, GetTaskStatusQueryResponse, GetTaskStatusQueryHandler>(
+      () => GetTaskStatusQueryHandler(taskStatusRepository: taskStatusRepository),
     );
 }

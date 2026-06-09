@@ -44,6 +44,8 @@ tasks:
       label: Запланированная дата
     priority:
       label: Приоритет
+    status:
+      label: Статус
     sub_tasks:
       label: Подзадачи
     tags:
@@ -54,9 +56,15 @@ tasks:
       label: Заголовок
     total_elapsed_time: Общее затраченное время
   errors:
+    task_status_invalid_color: Неверный формат цвета. Ожидается 6-значный hex (например, FF5722)
+    task_status_name_empty: Имя статуса не может быть пустым
+    task_status_name_too_long: Имя статуса не может превышать 50 символов
+    task_status_not_found: Статус задачи не найден
+    task_status_builtin: Встроенные статусы нельзя удалить
     add_tag: Неожиданная ошибка при добавлении тега
     adding_tag: Не удалось добавить тег
     get_tags: Ошибка при получении тегов
+    get_tasks: Произошла ошибка при загрузке задач
     get_task: Неожиданная ошибка при загрузке задачи
     loading_tags: Не удалось загрузить теги задачи
     loading_task: Не удалось загрузить задачу
@@ -589,6 +597,25 @@ tasks:
     deadline_time_invalid: Неверное время крайнего срока
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Вид доски
   board:
     cross_column_move_not_supported: Перемещение задач между столбцами не поддерживается
+  statuses:
+    builtin:
+      todo: К выполнению
+      done: Готово
+      section: Встроенный
+      tooltip: Редактируемый, но не удаляемый
+    custom:
+      section: Пользовательские статусы
+    settings:
+      title: Статусы задач
+      description: Управляйте столбцами статусов для организации ваших задач.
+    add_button: Добавить статус
+    name_label: Название
+    name_hint: Название статуса
+    color_label: Цвет
+    delete_confirm:
+      title: Удалить статус
+      message: "Задачи с этим статусом будут перемещены в «К выполнению». Продолжить?"
+    new_default_name: Новый статус

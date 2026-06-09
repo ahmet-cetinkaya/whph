@@ -45,19 +45,27 @@ tasks:
       label: Data pianificata
     priority:
       label: Priorità
+    status:
+      label: Stato
     sub_tasks:
       label: Sotto-attività
     tags:
       hint: Seleziona tag da associare
-      label: Tag
+      label: Etichetta
     tags_hint: Seleziona tag per l'attività
     title:
       label: Titolo
     total_elapsed_time: Tempo totale trascorso
   errors:
+    task_status_invalid_color: Formato colore non valido. Previsto hex a 6 cifre (es. FF5722)
+    task_status_name_empty: Il nome dello stato non può essere vuoto
+    task_status_name_too_long: Il nome dello stato non può superare i 50 caratteri
+    task_status_not_found: Stato attività non trovato
+    task_status_builtin: Gli stati predefiniti non possono essere eliminati
     add_tag: Errore imprevisto durante l'aggiunta del tag
     adding_tag: Impossibile aggiungere il tag
     get_tags: Errore durante il recupero dei tag
+    get_tasks: Si è verificato un errore durante il recupero delle attività
     get_task: Errore imprevisto durante il caricamento dell'attività
     loading_tags: Impossibile caricare i tag dell'attività
     loading_task: Impossibile caricare l'attività
@@ -591,6 +599,25 @@ tasks:
     deadline_time_invalid: L'orario della scadenza non è valido
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Vista bacheca
   board:
     cross_column_move_not_supported: Lo spostamento di attività tra colonne non è supportato
+  statuses:
+    builtin:
+      todo: Da fare
+      done: Completato
+      section: Integrato
+      tooltip: Modificabile ma non eliminabile
+    custom:
+      section: Stati personalizzati
+    settings:
+      title: Stati delle attività
+      description: Gestisci le colonne di stato usate per organizzare le tue attività.
+    add_button: Aggiungi stato
+    name_label: Nome
+    name_hint: Nome dello stato
+    color_label: Colore
+    delete_confirm:
+      title: Elimina stato
+      message: "Le attività con questo stato verranno spostate in Da fare. Continuare?"
+    new_default_name: Nuovo stato

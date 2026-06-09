@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/tasks/models/task_list_item.dart'
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/core/application/shared/utils/grouping_utils.dart';
 import 'package:whph/core/application/shared/utils/group_key_result.dart';
 
@@ -31,6 +32,10 @@ class TaskGroupingHelper {
         return GroupingUtils.getDurationGroup(task.totalElapsedTime);
       case TaskSortFields.tag:
         return task.tags.isNotEmpty ? task.tags.first.name : SharedTranslationKeys.none;
+      case TaskSortFields.status:
+        // Use statusId directly as group key (consistent with board column building)
+        // Treat null status as todo (legacy/unmigrated tasks)
+        return task.statusId ?? TaskStatusConstants.todoId;
     }
   }
 
@@ -50,6 +55,7 @@ class TaskGroupingHelper {
         return true;
       case TaskSortFields.title:
       case TaskSortFields.tag:
+      case TaskSortFields.status:
         return false;
     }
   }
@@ -119,6 +125,7 @@ class TaskGroupingHelper {
       case TaskSortFields.completedDate:
       case TaskSortFields.estimatedTime:
       case TaskSortFields.tag:
+      case TaskSortFields.status:
         return true;
       default:
         return false;
@@ -143,6 +150,7 @@ class TaskGroupingHelper {
       case TaskSortFields.modifiedDate:
         return SharedTranslationKeys.noDate;
       case TaskSortFields.title:
+      case TaskSortFields.status:
       case null:
         return null;
     }
@@ -187,6 +195,7 @@ class TaskGroupingHelper {
         ];
       case TaskSortFields.tag:
       case TaskSortFields.title:
+      case TaskSortFields.status:
       case TaskSortFields.createdDate:
       case TaskSortFields.modifiedDate:
       case null:

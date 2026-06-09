@@ -23,6 +23,11 @@ class TaskBoardView extends StatefulWidget {
   /// Map of group key → whether the group name is a translation key.
   final Map<String, bool> groupTranslatable;
 
+  /// Optional map of group key → display label. When a key is present here, the
+  /// label is shown verbatim (used for data-driven columns like task statuses
+  /// whose keys are opaque ids rather than display names).
+  final Map<String, String>? groupLabels;
+
   /// Whether cross-column drops should be persisted.
   final bool canMoveAcrossColumns;
 
@@ -45,6 +50,7 @@ class TaskBoardView extends StatefulWidget {
     super.key,
     required this.groupedTasks,
     required this.groupTranslatable,
+    this.groupLabels,
     required this.onClickTask,
     this.canMoveAcrossColumns = false,
     this.onTaskCompleted,
@@ -135,7 +141,15 @@ class _TaskBoardViewState extends State<TaskBoardView> {
 
   String _columnTitle(String groupKey) {
     if (groupKey.isEmpty) return '';
+    final label = widget.groupLabels?[groupKey];
     final isTranslatable = widget.groupTranslatable[groupKey] ?? false;
+    if (label != null) {
+      // If we have a label, use it:
+      // - If translatable, the label is a translation key (built-in status)
+      // - If not translatable, the label is the actual name (custom status)
+      return isTranslatable ? _translationService.translate(label) : label;
+    }
+    // Fallback: no label provided, translate groupKey if translatable
     return isTranslatable ? _translationService.translate(groupKey) : groupKey;
   }
 

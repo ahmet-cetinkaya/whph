@@ -45,6 +45,8 @@ tasks:
       label: Заплановані дата
     priority:
       label: Пріоритет
+    status:
+      label: Статус
     sub_tasks:
       label: Підзавдання
     tags:
@@ -55,9 +57,15 @@ tasks:
       label: Назва
     total_elapsed_time: Загальний витрачений час
   errors:
+    task_status_invalid_color: Некоректний формат кольору. Очікується 6-значний hex (наприклад, FF5722)
+    task_status_name_empty: Назва статусу не може бути порожньою
+    task_status_name_too_long: Назва статусу не може перевищувати 50 символів
+    task_status_not_found: Статус завдання не знайдено
+    task_status_builtin: Вбудовані статуси не можна видалити
     add_tag: Сталася неочікувана помилка під час додавання тегу
     adding_tag: Не вдалося додати тег
     get_tags: Сталася помилка під час отримання тегів
+    get_tasks: Сталася помилка під час отримання завдань
     get_task: Сталася неочікувана помилка під час завантаження завдання
     loading_tags: Не вдалося завантажити теги завдання
     loading_task: Не вдалося завантажити завдання
@@ -588,6 +596,25 @@ tasks:
     deadline_time_invalid: Неправильний час крайнього терміну
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Вигляд дошки
   board:
     cross_column_move_not_supported: Переміщення завдань між стовпцями не підтримується
+  statuses:
+    builtin:
+      todo: До виконання
+      done: Виконано
+      section: Вбудований
+      tooltip: Редагований, але не видаляється
+    custom:
+      section: Користувацькі статуси
+    settings:
+      title: Статуси завдань
+      description: Керуйте стовпцями статусів для впорядкування ваших завдань.
+    add_button: Додати статус
+    name_label: Назва
+    name_hint: Назва статусу
+    color_label: Колір
+    delete_confirm:
+      title: Видалити статус
+      message: "Завдання з цим статусом буде переміщено до «До виконання». Продовжити?"
+    new_default_name: Новий статус

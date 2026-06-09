@@ -45,6 +45,8 @@ tasks:
       label: Προγραμματισμένη Ημερομηνία
     priority:
       label: Προτεραιότητα
+    status:
+      label: Κατάσταση
     sub_tasks:
       label: Υπο-εργασίες
     tags:
@@ -55,9 +57,15 @@ tasks:
       label: Τίτλος
     total_elapsed_time: Συνολικός Χρόνος που Πέρασε
   errors:
+    task_status_invalid_color: Μη έγκυρη μορφή χρώματος. Αναμένεται δεκαεξαδικό 6 ψηφίων (π.χ. FF5722)
+    task_status_name_empty: Το όνομα της κατάστασης δεν μπορεί να είναι κενό
+    task_status_name_too_long: Το όνομα της κατάστασης δεν μπορεί να υπερβαίνει τους 50 χαρακτήρες
+    task_status_not_found: Η κατάσταση εργασίας δεν βρέθηκε
+    task_status_builtin: Οι ενσωματωμένες καταστάσεις δεν μπορούν να διαγραφούν
     add_tag: Ανέλπιστο σφάλμα κατά την προσθήκη ετικέτας
     adding_tag: Αποτυχία προσθήκης ετικέτας
     get_tags: Σφάλμα κατά την ανάκτηση ετικετών
+    get_tasks: Παρουσιάστηκε σφάλμα κατά την ανάκτηση εργασιών
     get_task: Ανέλπιστο σφάλμα κατά το φόρτωμα εργασίας
     loading_tags: Αποτυχία φόρτωσης ετικετών εργασίας
     loading_task: Αποτυχία φόρτωσης εργασίας
@@ -517,6 +525,25 @@ tasks:
     deadline_time_invalid: Παρακαλώ εισαγάγετε έγκυρη ώρα προθεσμίας
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Προβολή πίνακα
   board:
     cross_column_move_not_supported: Η μετακίνηση εργασιών μεταξύ στηλών δεν υποστηρίζεται
+  statuses:
+    builtin:
+      todo: Προς εκτέλεση
+      done: Ολοκληρώθηκε
+      section: Ενσωματωμένο
+      tooltip: Επεξεργάσιμο αλλά όχι διαγράψιμο
+    custom:
+      section: Προσαρμοσμένες καταστάσεις
+    settings:
+      title: Καταστάσεις εργασιών
+      description: Διαχειριστείτε τις στήλες κατάστασης για την οργάνωση των εργασιών σας.
+    add_button: Προσθήκη κατάστασης
+    name_label: Όνομα
+    name_hint: Όνομα κατάστασης
+    color_label: Χρώμα
+    delete_confirm:
+      title: Διαγραφή κατάστασης
+      message: Οι εργασίες με αυτήν την κατάσταση θα μετακινηθούν στο Προς εκτέλεση. Συνέχεια;
+    new_default_name: Νέα κατάσταση

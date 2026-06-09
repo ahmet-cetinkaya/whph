@@ -9,4 +9,5 @@ enum TaskSortFields {
   priority,
   title,
   tag,
+  status,
 }

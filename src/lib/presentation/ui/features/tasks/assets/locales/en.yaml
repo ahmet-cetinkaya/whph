@@ -44,6 +44,8 @@ tasks:
       label: Planned Date
     priority:
       label: Priority
+    status:
+      label: Status
     sub_tasks:
       label: Sub-tasks
     tags:
@@ -54,8 +56,14 @@ tasks:
       label: Title
     total_elapsed_time: Total Elapsed Time
   errors:
+    task_status_not_found: Task status not found
+    task_status_builtin: Built-in statuses cannot be deleted
+    task_status_name_empty: Status name cannot be empty
+    task_status_name_too_long: Status name cannot exceed 50 characters
+    task_status_invalid_color: Invalid color format. Expected 6-digit hex (e.g. FF5722)
     add_tag: Unexpected error occurred while adding tag
     adding_tag: Failed to add tag
+    get_tasks: Error occurred while fetching tasks
     get_tags: Error occurred while fetching tags
     get_task: Unexpected error occurred while loading task
     loading_tags: Failed to load task tags
@@ -518,3 +526,22 @@ tasks:
     board_tooltip: Board view
   board:
     cross_column_move_not_supported: Moving tasks between columns is not supported
+  statuses:
+    builtin:
+      todo: To Do
+      done: Done
+      section: Built-in
+      tooltip: Editable but not deletable
+    custom:
+      section: Custom Statuses
+    settings:
+      title: Task Statuses
+      description: Manage the status columns used to organize your tasks.
+    add_button: Add status
+    name_label: Name
+    name_hint: Status name
+    color_label: Color
+    delete_confirm:
+      title: Delete status
+      message: "Tasks with this status will be moved to To Do. Continue?"
+    new_default_name: New status

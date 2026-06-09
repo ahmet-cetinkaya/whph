@@ -45,6 +45,8 @@ tasks:
       label: Planlagt dato
     priority:
       label: Prioritet
+    status:
+      label: Status
     sub_tasks:
       label: Underopgaver
     tags:
@@ -55,9 +57,15 @@ tasks:
       label: Titel
     total_elapsed_time: Total forløbet tid
   errors:
+    task_status_invalid_color: Ugyldigt farveformat. Forventet 6-cifret hex (f.eks. FF5722)
+    task_status_name_empty: Statusnavn kan ikke være tomt
+    task_status_name_too_long: Statusnavn må ikke overstige 50 tegn
+    task_status_not_found: Opgavestatus ikke fundet
+    task_status_builtin: Indbyggede statusser kan ikke slettes
     add_tag: Uventet fejl opstod under tilføjelse af tag
     adding_tag: Kunne ikke tilføje tag
     get_tags: Fejl opstod under hentning af tags
+    get_tasks: Der opstod en fejl under hentning af opgaver
     get_task: Uventet fejl opstod under indlæsning af opgave
     loading_tags: Kunne ikke indlæse opgavemærker
     loading_task: Kunne ikke indlæse opgave
@@ -587,6 +595,25 @@ tasks:
     deadline_time_invalid: Indtast gyldig fristtid
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Tavlevisning
   board:
     cross_column_move_not_supported: Flytning af opgaver mellem kolonner understøttes ikke
+  statuses:
+    builtin:
+      todo: At gøre
+      done: Færdig
+      section: Indbygget
+      tooltip: Kan redigeres men ikke slettes
+    custom:
+      section: Brugerdefinerede statusser
+    settings:
+      title: Opgavestatusser
+      description: "Administrer de statuskolonner, der bruges til at organisere dine opgaver."
+    add_button: Tilføj status
+    name_label: Navn
+    name_hint: Statusnavn
+    color_label: Farve
+    delete_confirm:
+      title: Slet status
+      message: "Opgaver med denne status flyttes til At gøre. Fortsæt?"
+    new_default_name: Ny status

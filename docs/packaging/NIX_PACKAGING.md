@@ -1,8 +1,10 @@
 # NixOS Packaging
 
-A comprehensive productivity app designed to help you manage tasks, develop new habits, and optimize your time.
+A comprehensive productivity app designed to help you manage tasks, develop new
+habits, and optimize your time.
 
-WHPH is available on NixOS via a Nix Flake. This document provides instructions for using, developing, and building the WHPH flake locally.
+WHPH is available on NixOS via a Nix Flake. This document provides instructions
+for using, developing, and building the WHPH flake locally.
 
 ## Prerequisites
 
@@ -64,4 +66,5 @@ outputs = { self, nixpkgs, whph, ... }: {
 
 ## Maintenance
 
-The `flake.nix` uses `autoPubspecLock` to manage Dart dependencies. Ensure `src/pubspec.lock` is up-to-date.
+The `flake.nix` uses `autoPubspecLock` to manage Dart dependencies. Ensure
+`src/pubspec.lock` is up-to-date.

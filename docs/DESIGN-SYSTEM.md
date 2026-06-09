@@ -2,11 +2,15 @@
 
 ## Overview
 
-WHPH (Work Hard Play Hard) is a comprehensive productivity application with a modern, adaptive design system built on Flutter's Material Design 3 principles. The design emphasizes clarity, accessibility, and user focus while maintaining visual consistency across all platforms (Android, Windows, and Linux).
+WHPH (Work Hard Play Hard) is a comprehensive productivity application with a
+modern, adaptive design system built on Flutter's Material Design 3 principles.
+The design emphasizes clarity, accessibility, and user focus while maintaining
+visual consistency across all platforms (Android, Windows, and Linux).
 
 ### Design Philosophy
 
-- **Adaptive Theming**: Supports light/dark modes with automatic system detection
+- **Adaptive Theming**: Supports light/dark modes with automatic system
+  detection
 - **Dynamic Colors**: Material You integration with custom accent color support
 - **Accessibility First**: High contrast ratios and clear visual hierarchy
 - **Minimalist Approach**: Clean interfaces that reduce cognitive load
@@ -16,7 +20,8 @@ WHPH (Work Hard Play Hard) is a comprehensive productivity application with a mo
 
 ### Primary Colors
 
-The application uses a golden yellow as its primary brand color, with support for dynamic theming:
+The application uses a golden yellow as its primary brand color, with support
+for dynamic theming:
 
 - **Default Primary**: `#F4D03E` (Golden Yellow)
 - **Dynamic Colors**: Material You integration when enabled
@@ -27,16 +32,19 @@ The application uses a golden yellow as its primary brand color, with support fo
 #### Light Theme
 
 - **Surface 0** (Background): `#FFFBFF` - Pure white with slight warm tint
-- **Surface 1** (Primary Surface): `#F8F9FA` - Very light gray with subtle blue tint
+- **Surface 1** (Primary Surface): `#F8F9FA` - Very light gray with subtle blue
+  tint
 - **Surface 2** (Cards/Containers): `#F1F3F4` - Light gray for elevated content
-- **Surface 3** (Elevated Surfaces): `#E8EAED` - Medium light gray for highest elevation
+- **Surface 3** (Elevated Surfaces): `#E8EAED` - Medium light gray for highest
+  elevation
 
 #### Dark Theme
 
 - **Surface 0** (Background): `#000000` - Pure black background
 - **Surface 1** (Primary Surface): `#121212` - Dark surface
 - **Surface 2** (Cards/Containers): `#181818` - Dark surface variant for cards
-- **Surface 3** (Elevated Surfaces): `#202020` - Dark surface for elevated content
+- **Surface 3** (Elevated Surfaces): `#202020` - Dark surface for elevated
+  content
 
 ### Text Colors
 
@@ -208,10 +216,12 @@ The typography system uses a consistent scale with optimal line heights:
 
 #### Input Sections
 
-- **Container**: Surface 1 with rounded corners (`AppTheme.containerBorderRadius`)
+- **Container**: Surface 1 with rounded corners
+  (`AppTheme.containerBorderRadius`)
 - **Layout**:
   - **Icon**: `StyledIcon` (Icon within a colored circle container)
-  - **Content**: Vertically centered row with text on the left and controls on the right
+  - **Content**: Vertically centered row with text on the left and controls on
+    the right
   - **Alignment**: Start-aligned for text content
 - **StyledIcon**:
   - **Container**: Circle shape
@@ -317,4 +327,6 @@ The application uses a sophisticated theme service that:
 - **Component Theming**: Comprehensive theming for all Material components
 - **Dynamic Color Support**: Optional Material You integration
 
-This design system ensures visual consistency, accessibility, and a premium user experience across all supported platforms while maintaining the flexibility for user customization and system integration.
+This design system ensures visual consistency, accessibility, and a premium user
+experience across all supported platforms while maintaining the flexibility for
+user customization and system integration.

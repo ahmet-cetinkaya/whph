@@ -1,6 +1,7 @@
 # Fastlane Configuration for WHPH
 
-This directory contains Fastlane configuration for automated app store deployments and screenshot capture.
+This directory contains Fastlane configuration for automated app store
+deployments and screenshot capture.
 
 ## Structure
 

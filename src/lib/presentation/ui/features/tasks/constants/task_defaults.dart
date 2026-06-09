@@ -26,4 +26,21 @@ class TaskDefaults {
     useCustomOrder: false,
     enableGrouping: false,
   );
+
+  static const SortConfig<TaskSortFields> boardSorting = SortConfig<TaskSortFields>(
+    orderOptions: [
+      SortOptionWithTranslationKey(
+        field: TaskSortFields.status,
+        direction: SortDirection.asc,
+        translationKey: TaskTranslationKeys.statusLabel,
+      ),
+    ],
+    useCustomOrder: false,
+    enableGrouping: true,
+    groupOption: SortOptionWithTranslationKey(
+      field: TaskSortFields.status,
+      direction: SortDirection.asc,
+      translationKey: TaskTranslationKeys.statusLabel,
+    ),
+  );
 }

@@ -45,6 +45,8 @@ tasks:
       label: Date prévue
     priority:
       label: Priorité
+    status:
+      label: Statut
     sub_tasks:
       label: Sous-tâches
     tags:
@@ -55,9 +57,15 @@ tasks:
       label: Titre
     total_elapsed_time: Temps total écoulé
   errors:
+    task_status_invalid_color: Format de couleur non valide. Format hexadécimal à 6 chiffres attendu (par exemple, FF5722)
+    task_status_name_empty: Le nom du statut ne peut pas être vide
+    task_status_name_too_long: Le nom du statut ne peut pas dépasser 50 caractères
+    task_status_not_found: Statut de tâche introuvable
+    task_status_builtin: Les statuts intégrés ne peuvent pas être supprimés
     add_tag: Erreur inattendue lors de l'ajout du tag
     adding_tag: Impossible d'ajouter le tag
     get_tags: Erreur lors de la récupération des tags
+    get_tasks: Une erreur s'est produite lors de la récupération des tâches
     get_task: Erreur inattendue lors du chargement de la tâche
     loading_tags: Impossible de charger les tags de la tâche
     loading_task: Impossible de charger la tâche
@@ -595,6 +603,25 @@ tasks:
     deadline_time_invalid: L'heure d'échéance n'est pas valide
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Vue tableau
   board:
     cross_column_move_not_supported: Le déplacement de tâches entre colonnes n'est pas pris en charge
+  statuses:
+    builtin:
+      todo: À faire
+      done: Terminé
+      section: Intégré
+      tooltip: Modifiable mais non supprimable
+    custom:
+      section: Statuts personnalisés
+    settings:
+      title: Statuts des tâches
+      description: Gérez les colonnes de statut utilisées pour organiser vos tâches.
+    add_button: Ajouter un statut
+    name_label: Nom
+    name_hint: Nom du statut
+    color_label: Couleur
+    delete_confirm:
+      title: Supprimer le statut
+      message: "Les tâches avec ce statut seront déplacées vers À faire. Continuer ?"
+    new_default_name: Nouveau statut

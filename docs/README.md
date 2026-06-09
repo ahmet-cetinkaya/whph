@@ -12,45 +12,36 @@ Index of all documentation for the WHPH (Work Hard Play Hard) project.
 | [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)         | UI design tokens, components, and style guidelines            |
 | [CONTRIBUTING.md](CONTRIBUTING.md)           | Development workflow, conventions, and contribution guide     |
 
-## CI / Build
+## CI
 
-| Document                                             | Description                                           |
-| ---------------------------------------------------- | ----------------------------------------------------- |
-| [GITHUB_WORKFLOWS.md](GITHUB_WORKFLOWS.md)           | GitHub Actions pipeline overview and job descriptions |
-| [SCREENSHOT-AUTOMATION.md](SCREENSHOT-AUTOMATION.md) | Fastlane screenshot automation for store listings     |
-| [LINUX-DEPENDENCIES.md](LINUX-DEPENDENCIES.md)       | Runtime native dependencies required on Linux         |
-| [windows-ci-disabled.md](windows-ci-disabled.md)     | Context for disabled Windows CI (VS 2026 issue)       |
+| Document                                            | Description                                           |
+| --------------------------------------------------- | ----------------------------------------------------- |
+| [GITHUB_WORKFLOWS.md](ci/GITHUB_WORKFLOWS.md)       | GitHub Actions pipeline overview and job descriptions |
+| [WINDOWS_CI_DISABLED.md](ci/WINDOWS_CI_DISABLED.md) | Context for disabled Windows CI (VS 2026 issue)       |
 
-## Deployment
+## Build
 
-| Document                                               | Description                                   |
-| ------------------------------------------------------ | --------------------------------------------- |
-| [GOOGLE_PLAY_DEPLOYMENT.md](GOOGLE_PLAY_DEPLOYMENT.md) | Google Play Store release and signing process |
+| Document                                             | Description                                   |
+| ---------------------------------------------------- | --------------------------------------------- |
+| [LINUX-DEPENDENCIES.md](build/LINUX-DEPENDENCIES.md) | Runtime native dependencies required on Linux |
+| [FLUTTER_VERSION.md](build/FLUTTER_VERSION.md)       | Pinned Flutter SDK version and management     |
 
 ## Packaging
 
-| Document                                                               | Description                              |
-| ---------------------------------------------------------------------- | ---------------------------------------- |
-| [packaging/FLATPAK_PACKAGING.md](packaging/FLATPAK_PACKAGING.md)       | Flatpak bundle build and publish process |
-| [packaging/INNO_SETUP_PACKAGING.md](packaging/INNO_SETUP_PACKAGING.md) | Windows installer via Inno Setup         |
-| [packaging/NIX_PACKAGING.md](packaging/NIX_PACKAGING.md)               | NixOS derivation and flake packaging     |
+| Document                                                     | Description                              |
+| ------------------------------------------------------------ | ---------------------------------------- |
+| [FLATPAK_PACKAGING.md](packaging/FLATPAK_PACKAGING.md)       | Flatpak bundle build and publish process |
+| [INNO_SETUP_PACKAGING.md](packaging/INNO_SETUP_PACKAGING.md) | Windows installer via Inno Setup         |
+| [NIX_PACKAGING.md](packaging/NIX_PACKAGING.md)               | NixOS derivation and flake packaging     |
 
-## RFCs
+## Deployment
 
-Architecture decision records and feature design proposals.
+| Document                                                          | Description                                       |
+| ----------------------------------------------------------------- | ------------------------------------------------- |
+| [GOOGLE_PLAY_DEPLOYMENT.md](deployment/GOOGLE_PLAY_DEPLOYMENT.md) | Google Play Store release and signing process     |
+| [SCREENSHOT-AUTOMATION.md](deployment/SCREENSHOT-AUTOMATION.md)   | Fastlane screenshot automation for store listings |
 
-| RFC                                                           | Title                                                             |
-| ------------------------------------------------------------- | ----------------------------------------------------------------- |
-| [001](RFCs/001_implement-task-management.md)                  | Implement Task Management Module                                  |
-| [002](RFCs/002_implement-habit-tracking.md)                   | Implement Habit Tracking Module                                   |
-| [003](RFCs/003_implement-application-usage-monitoring.md)     | Implement Application Usage Monitoring                            |
-| [004](RFCs/004_implement-note-taking.md)                      | Implement Note-Taking Module                                      |
-| [005](RFCs/005_implement-cross-platform-ui-design.md)         | Implement Cross-Platform UI Design                                |
-| [006](RFCs/006_implement-peer-to-peer-synchronization.md)     | Implement Peer-to-Peer Synchronization                            |
-| [007](RFCs/007_implement-notification-system.md)              | Implement Notification System                                     |
-| [008](RFCs/008_implement-platform-specific-features.md)       | Implement Platform-Specific Features                              |
-| [009](RFCs/009_support-multiple-habit-occurrences-per-day.md) | Support Multiple Habit Occurrences per Day                        |
-| [010](RFCs/010_implement-firewall-rules-for-sync-feature.md)  | Implement Firewall Rules for Sync Feature                         |
-| [011](RFCs/011_enhance-network-discovery-multi-interface.md)  | Enhance Network Discovery with Multi-Interface Support            |
-| [012](RFCs/012_implement-pc-client-sync-capability.md)        | Implement PC Client Sync Capability                               |
-| [013](RFCs/013_time-tracking-enhancements.md)                 | Time Tracking Enhancements — Architecture and Implementation Plan |
+## Entity Development
+
+| [README](entity-development/README.md) | How-to guide for developing new
+entities end-to-end |

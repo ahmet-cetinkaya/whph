@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 
@@ -48,6 +49,7 @@ class CompleteTaskCommandHandler implements IRequestHandler<CompleteTaskCommand,
     }
 
     task.completedAt = DateTime.now().toUtc();
+    task.statusId = TaskStatusConstants.doneId;
 
     if (task.recurrenceType != RecurrenceType.none) {
       task.setRecurrenceDays(_recurrenceService.getRecurrenceDays(task));

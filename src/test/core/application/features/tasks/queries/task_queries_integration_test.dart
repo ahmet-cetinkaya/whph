@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/tasks/queries/get_task_query.dart
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
+import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
@@ -15,6 +16,7 @@ void main() {
     late AppDatabase database;
     late DriftTaskRepository taskRepository;
     late DriftTaskTimeRecordRepository taskTimeRecordRepository;
+    late DriftTaskStatusRepository taskStatusRepository;
     late GetTaskQueryHandler getTaskHandler;
     late GetListTasksQueryHandler getListTasksHandler;
 
@@ -27,6 +29,7 @@ void main() {
       database = AppDatabase.forTesting();
       taskRepository = DriftTaskRepository.withDatabase(database);
       taskTimeRecordRepository = DriftTaskTimeRecordRepository.withDatabase(database);
+      taskStatusRepository = DriftTaskStatusRepository.withDatabase(database);
 
       // Initialize the query handlers with the repositories
       getTaskHandler = GetTaskQueryHandler(
@@ -36,6 +39,7 @@ void main() {
 
       getListTasksHandler = GetListTasksQueryHandler(
         taskRepository: taskRepository,
+        taskStatusRepository: taskStatusRepository,
       );
     });
 

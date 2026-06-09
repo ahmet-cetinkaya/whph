@@ -44,6 +44,8 @@ tasks:
       label: Planerat Datum
     priority:
       label: Prioritet
+    status:
+      label: Status
     sub_tasks:
       label: Underuppgifter
     tags:
@@ -54,9 +56,15 @@ tasks:
       label: Titel
     total_elapsed_time: Total Förfluten Tid
   errors:
+    task_status_invalid_color: Ogiltigt färgformat. Förväntat 6-siffrigt hex (t.ex. FF5722)
+    task_status_name_empty: Statusnamnet kan inte vara tomt
+    task_status_name_too_long: Statusnamnet får inte överstiga 50 tecken
+    task_status_not_found: Uppgiftsstatus hittades inte
+    task_status_builtin: Inbyggda statusar kan inte tas bort
     add_tag: Oväntat fel uppstod vid tillägg av tagg
     adding_tag: Misslyckades att lägga till tagg
     get_tags: Fel uppstod vid hämtning av taggar
+    get_tasks: Ett fel inträffade vid hämtning av uppgifter
     get_task: Oväntat fel uppstod vid laddning av uppgift
     loading_tags: Misslyckades att ladda uppgiftstaggar
     loading_task: Misslyckades att ladda uppgift
@@ -501,6 +509,25 @@ tasks:
     deadline_time_invalid: Deadline tid är ogiltig
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Tavelläge
   board:
     cross_column_move_not_supported: Att flytta uppgifter mellan kolumner stöds inte
+  statuses:
+    builtin:
+      todo: Att göra
+      done: Klar
+      section: Inbyggd
+      tooltip: Redigerbar men inte raderbar
+    custom:
+      section: Anpassade statusar
+    settings:
+      title: Uppgiftsstatusar
+      description: Hantera statuskolumnerna som används för att organisera dina uppgifter.
+    add_button: Lägg till status
+    name_label: Namn
+    name_hint: Statusnamn
+    color_label: Färg
+    delete_confirm:
+      title: Ta bort status
+      message: "Uppgifter med denna status flyttas till Att göra. Fortsätta?"
+    new_default_name: Ny status

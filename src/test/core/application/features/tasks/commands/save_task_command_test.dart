@@ -10,6 +10,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
@@ -986,6 +987,126 @@ void main() {
       verify(mockTaskRepository.add(argThat(
         predicate<Task>((task) =>
             task.plannedDateReminderTime == ReminderTime.custom && task.plannedDateReminderCustomOffset == 45),
+      ))).called(1);
+    });
+  });
+
+  group('SaveTaskCommand status <-> completedAt sync', () {
+    test('assigning the done status sets completedAt', () async {
+      const taskId = 'task-status-1';
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Task',
+        statusId: TaskStatusConstants.todoId,
+        completedAt: null,
+      );
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      await handler(SaveTaskCommand(id: taskId, title: 'Task', statusId: TaskStatusConstants.doneId));
+
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) => task.statusId == TaskStatusConstants.doneId && task.completedAt != null),
+      ))).called(1);
+    });
+
+    test('assigning a non-done status clears completedAt', () async {
+      const taskId = 'task-status-2';
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Task',
+        statusId: TaskStatusConstants.doneId,
+        completedAt: DateTime.now().toUtc(),
+      );
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      await handler(SaveTaskCommand(id: taskId, title: 'Task', statusId: TaskStatusConstants.todoId));
+
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) => task.statusId == TaskStatusConstants.todoId && task.completedAt == null),
+      ))).called(1);
+    });
+
+    test('completing via completedAt assigns the done status', () async {
+      const taskId = 'task-status-3';
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Task',
+        statusId: null,
+        completedAt: null,
+      );
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      await handler(SaveTaskCommand(id: taskId, title: 'Task', completedAt: DateTime.now().toUtc()));
+
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) => task.statusId == TaskStatusConstants.doneId && task.completedAt != null),
+      ))).called(1);
+    });
+
+    test('completing via completedAt assigns the done status even when task has an existing todo status', () async {
+      const taskId = 'task-status-4';
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Task',
+        statusId: TaskStatusConstants.todoId,
+        completedAt: null,
+      );
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      await handler(SaveTaskCommand(id: taskId, title: 'Task', completedAt: DateTime.now().toUtc()));
+
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) => task.statusId == TaskStatusConstants.doneId && task.completedAt != null),
+      ))).called(1);
+    });
+
+    test('uncompleting via null completedAt resets status to todo status when currently done', () async {
+      const taskId = 'task-status-5';
+      final existingTask = Task(
+        id: taskId,
+        createdDate: DateTime.now().toUtc(),
+        title: 'Task',
+        statusId: TaskStatusConstants.doneId,
+        completedAt: DateTime.now().toUtc(),
+      );
+      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+
+      await handler(SaveTaskCommand(id: taskId, title: 'Task', completedAt: null));
+
+      verify(mockTaskRepository.update(argThat(
+        predicate<Task>((task) => task.statusId == TaskStatusConstants.todoId && task.completedAt == null),
+      ))).called(1);
+    });
+
+    test('new task defaults to todo status when not completed', () async {
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
+
+      await handler(SaveTaskCommand(title: 'Fresh Task'));
+
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.statusId == TaskStatusConstants.todoId && task.completedAt == null),
+      ))).called(1);
+    });
+
+    test('new task with custom statusId persists that statusId', () async {
+      when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
+
+      await handler(SaveTaskCommand(
+        title: 'In Progress Task',
+        statusId: 'task-status-custom-inprogress',
+      ));
+
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.statusId == 'task-status-custom-inprogress' && task.completedAt == null),
       ))).called(1);
     });
   });

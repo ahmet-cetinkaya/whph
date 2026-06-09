@@ -5,6 +5,11 @@ class TaskTranslationKeys {
   static const String taskTagAlreadyExistsError = 'tasks.errors.task_tag_already_exists';
   static const String sameTagError = 'tasks.errors.same_tag';
   static const String invalidDateRangeError = 'tasks.errors.invalid_date_range';
+  static const String taskStatusNotFoundError = 'tasks.errors.task_status_not_found';
+  static const String taskStatusBuiltInError = 'tasks.errors.task_status_builtin';
+  static const String taskStatusNameEmptyError = 'tasks.errors.task_status_name_empty';
+  static const String taskStatusNameTooLongError = 'tasks.errors.task_status_name_too_long';
+  static const String taskStatusInvalidColorError = 'tasks.errors.task_status_invalid_color';
 
   // Priority Selection
   static const String prioritySelectionTitle = 'tasks.priority.selection.title';
@@ -20,4 +25,8 @@ class TaskTranslationKeys {
   static const String priorityUrgentNotImportantTooltip = 'tasks.priority.tooltips.urgent_not_important';
   static const String priorityNotUrgentNotImportantTooltip = 'tasks.priority.tooltips.not_urgent_not_important';
   static const String priorityNoneTooltip = 'tasks.priority.tooltips.none';
+
+  // Status
+  static const String statusBuiltInTodo = 'tasks.statuses.builtin.todo';
+  static const String statusBuiltInDone = 'tasks.statuses.builtin.done';
 }

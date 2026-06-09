@@ -95,11 +95,11 @@ packaging/flatpak/
 
 ### Window Management
 
-| Permission                            | Description & Justification                                                                                                                                                                                                                                                                                                                                                                |
-| :------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--talk-name=org.gnome.Shell`         | **Active Window / Tray (GNOME)**. Used to query window information on GNOME Shell via DBus for the "Active Window Detection" feature.                                                                                                                                                                                                                                                      |
-| `--talk-name=org.kde.KWin`            | **Active Window (KDE)**. Required to run KWin scripts via DBus to detect the active window title and class on KDE Plasma.                                                                                                                                                                                                                                                                  |
-| `--talk-name=org.kde.kwin.Scripting`  | **KWin Scripting Interface**. Additional interface for KWin scripting functionality used in active window detection on KDE.                                                                                                                                                                                                                                                                |
+| Permission                            | Description & Justification                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| :------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--talk-name=org.gnome.Shell`         | **Active Window / Tray (GNOME)**. Used to query window information on GNOME Shell via DBus for the "Active Window Detection" feature.                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `--talk-name=org.kde.KWin`            | **Active Window (KDE)**. Required to run KWin scripts via DBus to detect the active window title and class on KDE Plasma.                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `--talk-name=org.kde.kwin.Scripting`  | **KWin Scripting Interface**. Additional interface for KWin scripting functionality used in active window detection on KDE.                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `--talk-name=org.freedesktop.Flatpak` | **Sandbox Escape (Host Access)**. **CRITICAL**: Allows the app to run commands on the host system via `flatpak-spawn --host`. <br> **Usage**: This is strictly used by the "Active Window Detection" feature to run tools like `ps`, `journalctl`, and `qdbus` to determine the currently focused window title and application name. <br> **Flathub Note**: This permission is removed in the Flathub build (`--flathub` flag) to comply with strict sandboxing rules, which limits active window tracking on some Wayland compositors. |
 
 ## External Libraries and Build Dependencies (`modules`)
@@ -110,7 +110,7 @@ are built in order. Some modules are prerequisite build tools for others.
 | Module / Dependency       | Category             | Purpose & Justification                                                                                                                                                                    |
 | :------------------------ | :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `perl-xml-parser`         | **Build Dependency** | A Perl module required to build `intltool`. It is used only during the build process and is cleaned up (`cleanup: ["*"]`) afterwards.                                                      |
-| `intltool`                | **Build Tool**       | A set of tools to centralize translation. It is required to build `libayatana-appindicator` and is built as an internal module within it.                                              |
+| `intltool`                | **Build Tool**       | A set of tools to centralize translation. It is required to build `libayatana-appindicator` and is built as an internal module within it.                                                  |
 | `libayatana-appindicator` | **Runtime Library**  | Provides support for **System Tray Icons** (AppIndicators) on Linux. This is required by the Flutter `tray_manager` plugin to show the app icon in the system tray.                        |
 | `flutter`                 | **Runtime SDK**      | Included as a source within the `whph` module. The Flutter SDK is downloaded and built during the process to ensure a consistent, reproducible environment independent of the host system. |
 | `whph`                    | **Application**      | The main application module. It uses the `flutter` SDK to compile the source code and bundles the resulting binary with its assets, desktop entries, and metadata.                         |
@@ -143,7 +143,8 @@ CMake/pkg-config resolution failures during:
 - Normalized install libdir (`-DCMAKE_INSTALL_LIBDIR=lib`) for Ayatana modules
 - Preservation of required pkg-config metadata between module boundaries
 - Patch path stability when building from generated manifests
-- Stable `PKG_CONFIG_PATH` in `whph` build options (declared directly in source manifests)
+- Stable `PKG_CONFIG_PATH` in `whph` build options (declared directly in source
+  manifests)
 
 #### Maintenance note
 
@@ -159,8 +160,10 @@ stable for all of these checks in CI:
 To support system tray icons in the Flutter application, the following
 dependency chain is established in the manifest:
 
-1.  **`perl-xml-parser`** (Needed by `intltool`, which is built internally by `libayatana-appindicator`)
-2.  **`libayatana-appindicator`** (Needed by Flutter's tray plugin; builds its own `intltool`)
+1.  **`perl-xml-parser`** (Needed by `intltool`, which is built internally by
+    `libayatana-appindicator`)
+2.  **`libayatana-appindicator`** (Needed by Flutter's tray plugin; builds its
+    own `intltool`)
 3.  **`whph`** (The final application, built using the `flutter` SDK source)
 
 ## Flathub Submission & Differences
@@ -174,19 +177,29 @@ directly (not patched dynamically by the script):
 - `--talk-name=org.kde.KWin` is omitted.
 - `--talk-name=org.kde.kwin.Scripting` is omitted.
 - `flutter build linux` includes `--dart-define=FLATHUB=true`.
-- Ayatana module is referenced via `shared-modules/...` instead of local override.
+- Ayatana module is referenced via `shared-modules/...` instead of local
+  override.
 
-Because of this, the Flathub version of WHPH cannot use `flatpak-spawn --host` fallback heuristics and does not request direct GNOME/KWin session-bus access. Active window tracking is therefore more limited on Flathub, and users will see an in-app notice when tracking is unavailable.
+Because of this, the Flathub version of WHPH cannot use `flatpak-spawn --host`
+fallback heuristics and does not request direct GNOME/KWin session-bus access.
+Active window tracking is therefore more limited on Flathub, and users will see
+an in-app notice when tracking is unavailable.
 
 ### Installing Flatpak from Release
-If you require full active window tracking on these unsupported Wayland compositors, you can install the fully-featured Flatpak directly from the GitHub releases:
 
-1. Download the `whph-v<VERSION>-linux.flatpak` bundle from the latest [GitHub Release](https://github.com/ahmet-cetinkaya/whph/releases).
-   You can also use `curl` to download it (replace `<VERSION>` with the desired version, e.g., `v0.22.1`):
+If you require full active window tracking on these unsupported Wayland
+compositors, you can install the fully-featured Flatpak directly from the GitHub
+releases:
+
+1. Download the `whph-v<VERSION>-linux.flatpak` bundle from the latest
+   [GitHub Release](https://github.com/ahmet-cetinkaya/whph/releases). You can
+   also use `curl` to download it (replace `<VERSION>` with the desired version,
+   e.g., `v0.22.1`):
    ```bash
    curl -L -O https://github.com/ahmet-cetinkaya/whph/releases/download/<VERSION>/whph-v<VERSION>-linux.flatpak
    ```
-2. Install it using the Flatpak CLI (replace `<VERSION>` with the version you downloaded):
+2. Install it using the Flatpak CLI (replace `<VERSION>` with the version you
+   downloaded):
 
 ```bash
 flatpak install --user whph-v<VERSION>-linux.flatpak

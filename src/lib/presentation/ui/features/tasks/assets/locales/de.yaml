@@ -44,6 +44,8 @@ tasks:
       label: Geplantes Datum
     priority:
       label: Priorität
+    status:
+      label: Status
     sub_tasks:
       label: Unteraufgaben
     tags:
@@ -54,9 +56,15 @@ tasks:
       label: Titel
     total_elapsed_time: Gesamt verstrichene Zeit
   errors:
+    task_status_invalid_color: Ungültiges Farbschema. Erwartet wird 6-stelliger Hex-Wert (z. B. FF5722)
+    task_status_name_empty: Statusname darf nicht leer sein
+    task_status_name_too_long: Statusname darf 50 Zeichen nicht überschreiten
+    task_status_not_found: Aufgabenstatus nicht gefunden
+    task_status_builtin: Integrierte Status können nicht gelöscht werden
     add_tag: Unerwarteter Fehler beim Hinzufügen des Tags
     adding_tag: Tag konnte nicht hinzugefügt werden
     get_tags: Fehler beim Abrufen der Tags
+    get_tasks: Fehler beim Abrufen der Aufgaben aufgetreten
     get_task: Unerwarteter Fehler beim Laden der Aufgabe
     loading_tags: Aufgaben-Tags konnten nicht geladen werden
     loading_task: Aufgabe konnte nicht geladen werden
@@ -591,6 +599,25 @@ tasks:
     deadline_time_invalid: Termin-Uhrzeit ist ungültig
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Board-Ansicht
   board:
     cross_column_move_not_supported: Das Verschieben von Aufgaben zwischen Spalten wird nicht unterstützt
+  statuses:
+    builtin:
+      todo: Zu erledigen
+      done: Erledigt
+      section: Integriert
+      tooltip: Bearbeitbar, aber nicht löschbar
+    custom:
+      section: Benutzerdefinierte Status
+    settings:
+      title: Aufgabenstatus
+      description: Verwalten Sie die Statusspalten zur Organisation Ihrer Aufgaben.
+    add_button: Status hinzufügen
+    name_label: Name
+    name_hint: Statusname
+    color_label: Farbe
+    delete_confirm:
+      title: Status löschen
+      message: "Aufgaben mit diesem Status werden zu „Zu erledigen“ verschoben. Fortfahren?"
+    new_default_name: Neuer Status

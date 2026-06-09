@@ -8,6 +8,11 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_draft.dart';
+import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 
 /// Inputs for opening a task creation dialog pre-filled from a board column
 /// tap ("add to group" affordance on the empty-column placeholder).
@@ -69,6 +74,53 @@ class TaskGroupCreationHandler {
       return match?.id;
     } catch (e, stackTrace) {
       Logger.error('Failed to resolve tag ID for name: $tagName', error: e, stackTrace: stackTrace);
+      return null;
+    }
+  }
+
+  /// Resolves a status group key (translation key or name) to a status ID.
+  /// Supports built-in status translation keys (e.g., TaskTranslationKeys.statusBuiltInDone)
+  /// and custom status names (e.g., 'In Progress').
+  static Future<String?> resolveStatusIdByKey(String groupKey) async {
+    try {
+      final response =
+          await container.resolve<Mediator>().send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
+                const GetListTaskStatusesQuery(),
+              );
+
+      // First, check if groupKey is already a valid status ID
+      final existing = response.items.any((s) => s.id == groupKey);
+      if (existing) {
+        return groupKey;
+      }
+
+      // Check for built-in status translation keys
+      final translationService = container.resolve<ITranslationService>();
+      if (groupKey == TaskTranslationKeys.statusBuiltInTodo) {
+        final todoStatus = response.items.firstWhere(
+          (s) => s.id == TaskStatusConstants.todoId,
+          orElse: () => throw Exception('Todo status not found'),
+        );
+        return todoStatus.id;
+      }
+      if (groupKey == TaskTranslationKeys.statusBuiltInDone) {
+        final doneStatus = response.items.firstWhere(
+          (s) => s.id == TaskStatusConstants.doneId,
+          orElse: () => throw Exception('Done status not found'),
+        );
+        return doneStatus.id;
+      }
+
+      // Otherwise, treat groupKey as a status name and look it up
+      final status = response.items.firstWhere(
+        (s) =>
+            TaskStatusDisplay.resolveName(translationService, id: s.id, name: s.name, isDoneStatus: s.isDoneStatus) ==
+            groupKey,
+        orElse: () => throw Exception('Status not found: $groupKey'),
+      );
+      return status.id;
+    } catch (e, stackTrace) {
+      Logger.error('Failed to resolve status ID for key: $groupKey', error: e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -155,6 +207,8 @@ class TaskGroupCreationHandler {
           );
         }
         return null; // Signal: caller must use the async path.
+      case TaskSortFields.status:
+        return null; // Signal: caller must use the async path.
       case TaskSortFields.totalDuration:
       case TaskSortFields.title:
       case TaskSortFields.createdDate:
@@ -195,6 +249,30 @@ class TaskGroupCreationHandler {
         return true;
       }
       // tagName == null is the "None" group — fall through to the sync path.
+    }
+
+    // Status grouping needs an async status-id lookup; resolve then re-enter
+    // through the same code path with the resolved id.
+    if (groupField == TaskSortFields.status) {
+      final statusId = await resolveStatusIdByKey(input.groupKey);
+      if (statusId == null) {
+        Logger.warning(
+            'Could not resolve status for group key "${input.groupKey}". Task will be created with default status.');
+      }
+      if (!context.mounted) return false;
+      await TaskCreationHelper.createTask(
+        context: context,
+        draft: TaskDraft(
+          title: input.searchQuery,
+          tagIds: input.showNoTagsFilter ? [] : input.defaultTagIds,
+          plannedDate: input.defaultPlannedDate,
+          deadlineDate: input.defaultDeadlineDate,
+          statusId: statusId,
+          parentTaskId: input.parentTaskId,
+        ),
+        onTaskCreated: input.onTaskCreated,
+      );
+      return true;
     }
 
     final draft = draftForGroup(

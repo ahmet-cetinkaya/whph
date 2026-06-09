@@ -25,6 +25,7 @@ import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/domain/features/tags/tag_tag.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
+import 'package:whph/core/domain/features/tasks/task_status.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
@@ -44,6 +45,7 @@ import 'package:whph/infrastructure/persistence/features/sync/repositories/drift
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
+import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_status_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/database_backup_service.dart';
@@ -72,6 +74,7 @@ String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
     TagTable,
     TagTagTable,
     TaskTable,
+    TaskStatusTable,
     TaskTagTable,
     TaskTimeRecordTable,
   ],
@@ -127,7 +130,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 33;
+  int get schemaVersion => 34;
 
   /// Validates migration version numbers
   void _validateMigrationVersions(int from, int to) {

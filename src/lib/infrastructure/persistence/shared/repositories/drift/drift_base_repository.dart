@@ -167,9 +167,36 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     try {
       item.modifiedDate = DateTime.now().toUtc();
       final companion = toCompanion(item);
-      await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+      final stmt = (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id)));
+      final result = await stmt.write(companion);
+      Logger.debug('Updated ${table.actualTableName} id=${item.id}, rows affected: $result');
     } catch (e, stackTrace) {
       Logger.error('Database error updating ${table.actualTableName}: $e\n$stackTrace');
+      rethrow;
+    }
+  }
+
+  /// Updates multiple entities in a single transaction.
+  /// This is more efficient than calling update() multiple times.
+  @override
+  Future<void> updateMultiple(List<TEntity> items) async {
+    if (items.isEmpty) return;
+
+    final now = DateTime.now().toUtc();
+    for (final item in items) {
+      item.modifiedDate = now;
+    }
+
+    try {
+      await database.transaction(() async {
+        for (final item in items) {
+          final companion = toCompanion(item);
+          await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+        }
+      });
+      Logger.debug('Batch updated ${table.actualTableName}, count: ${items.length}');
+    } catch (e, stackTrace) {
+      Logger.error('Database error batch updating ${table.actualTableName}: $e\n$stackTrace');
       rethrow;
     }
   }

@@ -12,6 +12,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_constants.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
@@ -26,6 +27,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final DateTime? deadlineDate;
   final int? estimatedTime;
   final DateTime? completedAt;
+  final String? statusId;
   final List<String>? tagIdsToAdd;
   final String? parentTaskId;
   final double? order;
@@ -57,6 +59,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     DateTime? deadlineDate,
     this.estimatedTime,
     DateTime? completedAt,
+    this.statusId,
     this.tagIdsToAdd,
     this.parentTaskId,
     this.order,
@@ -253,6 +256,22 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       task.completedAt = request.completedAt;
 
+      // Status⇔completion sync
+      if (request.statusId != null) {
+        task.statusId = request.statusId;
+        if (TaskStatusConstants.isDoneStatusId(request.statusId) && task.completedAt == null) {
+          task.completedAt = DateTime.now().toUtc();
+        } else if (!TaskStatusConstants.isDoneStatusId(request.statusId)) {
+          task.completedAt = null;
+        }
+      } else if (request.completedAt != null && !TaskStatusConstants.isDoneStatusId(task.statusId)) {
+        task.statusId = TaskStatusConstants.doneId;
+      } else if (request.completedAt == null &&
+          task.statusId != null &&
+          TaskStatusConstants.isDoneStatusId(task.statusId)) {
+        task.statusId = TaskStatusConstants.todoId;
+      }
+
       task.order = request.order ?? task.order;
 
       if (request.plannedDateReminderTime != null) {
@@ -345,6 +364,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
               ? await _getDefaultEstimatedTime()
               : (request.estimatedTime! > 0 ? request.estimatedTime : null),
           completedAt: request.completedAt,
+          statusId: request.statusId ??
+              (request.completedAt != null ? TaskStatusConstants.doneId : TaskStatusConstants.todoId),
           parentTaskId: request.parentTaskId,
           order: newOrder,
           plannedDateReminderTime: plannedDateReminderTime,
@@ -367,7 +388,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     }
 
     // Auto-add time record when completing a task with estimated time but no existing time records
-    final bool isTaskCompleted = request.completedAt != null;
+    final bool isTaskCompleted = task.completedAt != null;
     if (isTaskCompleted && task.estimatedTime != null && task.estimatedTime! > 0) {
       final existingTimeRecords = await _taskTimeRecordRepository.getList(
         0,

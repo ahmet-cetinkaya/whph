@@ -43,6 +43,8 @@ tasks:
       label: 계획일
     priority:
       label: 우선순위
+    status:
+      label: 상태
     sub_tasks:
       label: 하위 작업
     tags:
@@ -53,9 +55,15 @@ tasks:
       label: 제목
     total_elapsed_time: 총 경과 시간
   errors:
+    task_status_invalid_color: "잘못된 색상 형식입니다. 6자리 16진수(예: FF5722)가 필요합니다"
+    task_status_name_empty: 상태 이름은 비어 있을 수 없습니다
+    task_status_name_too_long: 상태 이름은 50자를 초과할 수 없습니다
+    task_status_not_found: 작업 상태를 찾을 수 없습니다
+    task_status_builtin: 기본 제공 상태는 삭제할 수 없습니다
     add_tag: 태그 추가 중 예상치 못한 오류가 발생했습니다
     adding_tag: 태그 추가에 실패했습니다
     get_tags: 태그 가져오기 중 오류가 발생했습니다
+    get_tasks: 작업을 가져오는 중 오류가 발생했습니다
     get_task: 작업 로드 중 예상치 못한 오류가 발생했습니다
     loading_tags: 작업 태그 로드에 실패했습니다
     loading_task: 작업 로드에 실패했습니다
@@ -548,6 +556,25 @@ tasks:
     deadline_time_invalid: 마감 시간이 잘못되었습니다
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: 보드 보기
   board:
     cross_column_move_not_supported: 열 간에 작업을 이동하는 것은 지원되지 않습니다
+  statuses:
+    builtin:
+      todo: 할 일
+      done: 완료
+      section: 내장
+      tooltip: 편집 가능하지만 삭제 불가
+    custom:
+      section: 사용자 정의 상태
+    settings:
+      title: 작업 상태
+      description: 작업을 정리하는 데 사용되는 상태 열을 관리합니다.
+    add_button: 상태 추가
+    name_label: 이름
+    name_hint: 상태 이름
+    color_label: 색상
+    delete_confirm:
+      title: 상태 삭제
+      message: "이 상태의 작업은 할 일로 이동됩니다. 계속하시겠습니까?"
+    new_default_name: 새 상태

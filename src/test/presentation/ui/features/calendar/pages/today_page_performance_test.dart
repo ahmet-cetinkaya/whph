@@ -7,6 +7,7 @@ import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/main.dart' as app_main;
 import 'package:acore/acore.dart' hide Container;
@@ -131,6 +132,13 @@ class FakeMediator extends Fake implements Mediator {
       return GetListTasksQueryResponse(
         items: tasks,
         totalItemCount: tasks.length,
+        pageIndex: 0,
+        pageSize: 100,
+      ) as TResponse;
+    } else if (request is GetListTaskStatusesQuery) {
+      return GetListTaskStatusesQueryResponse(
+        items: [],
+        totalItemCount: 0,
         pageIndex: 0,
         pageSize: 100,
       ) as TResponse;

@@ -43,6 +43,8 @@ tasks:
       label: 予定日
     priority:
       label: 優先度
+    status:
+      label: ステータス
     sub_tasks:
       label: サブタスク
     tags:
@@ -53,9 +55,15 @@ tasks:
       label: タイトル
     total_elapsed_time: 総経過時間
   errors:
+    task_status_invalid_color: 無効な色の形式です。6桁の16進数（FF5722など）が予想されます
+    task_status_name_empty: ステータス名は空にできません
+    task_status_name_too_long: ステータス名は50文字を超えることはできません
+    task_status_not_found: タスクステータスが見つかりません
+    task_status_builtin: 組み込みステータスは削除できません
     add_tag: タグの追加中に予期しないエラーが発生しました
     adding_tag: タグの追加に失敗しました
     get_tags: タグの取得中にエラーが発生しました
+    get_tasks: タスクの取得中にエラーが発生しました
     get_task: タスクの読み込み中に予期しないエラーが発生しました
     loading_tags: タスクタグの読み込みに失敗しました
     loading_task: タスクの読み込みに失敗しました
@@ -542,6 +550,25 @@ tasks:
     deadline_time_invalid: 期限時間が無効です
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: ボードビュー
   board:
     cross_column_move_not_supported: 列間のタスク移動はサポートされていません
+  statuses:
+    builtin:
+      todo: 未着手
+      done: 完了
+      section: 組み込み
+      tooltip: 編集可能ですが削除できません
+    custom:
+      section: カスタムステータス
+    settings:
+      title: タスクステータス
+      description: タスクを整理するためのステータス列を管理します。
+    add_button: ステータスを追加
+    name_label: 名前
+    name_hint: ステータス名
+    color_label: 色
+    delete_confirm:
+      title: ステータスを削除
+      message: このステータスのタスクは未着手に移動されます。続行しますか？
+    new_default_name: 新しいステータス

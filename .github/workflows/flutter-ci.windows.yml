@@ -1,5 +1,5 @@
 # DISABLED: Flutter 3.38.0 cannot detect Visual Studio 2026 on windows-latest
-# See docs/windows-ci-disabled.md for details
+# See docs/ci/WINDOWS_CI_DISABLED.md for details
 # To re-enable: Update to Flutter version with VS 2026 support and remove this comment
 # TODO: Monitor flutter/flutter#176399 for resolution
 #

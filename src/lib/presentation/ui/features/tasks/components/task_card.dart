@@ -4,7 +4,7 @@ import 'package:whph/core/application/features/tasks/models/task_list_item.dart'
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
+import 'package:whph/presentation/ui/features/tasks/components/status_aware_complete_button.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -139,11 +139,11 @@ class TaskCard extends StatelessWidget {
           visualDensity: isDense ? VisualDensity.compact : VisualDensity.standard,
           dense: isDense,
           onTap: onOpenDetails,
-          leading: TaskCompleteButton(
+          leading: StatusAwareCompleteButton(
             taskId: taskItem.id,
             isCompleted: taskItem.isCompleted,
+            statusId: taskItem.statusId,
             onToggleCompleted: null,
-            color: taskItem.priority != null ? _getPriorityColor(taskItem.priority!) : null,
             subTasksCompletionPercentage: taskItem.subTasksCompletionPercentage,
             size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
           ),
@@ -395,9 +395,5 @@ class TaskCard extends StatelessWidget {
   Widget _buildTaskTagsWidget() {
     final items = TagDisplayUtils.objectsToDisplayItems(taskItem.tags, _translationService);
     return TagListWidget(items: items, mini: isDense);
-  }
-
-  Color _getPriorityColor(EisenhowerPriority? priority) {
-    return TaskUiConstants.getPriorityColor(priority);
   }
 }

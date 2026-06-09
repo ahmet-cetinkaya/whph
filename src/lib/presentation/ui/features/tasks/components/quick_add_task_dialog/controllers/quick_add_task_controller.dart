@@ -37,6 +37,7 @@ class QuickAddTaskController extends ChangeNotifier {
   final String? _initialDescription;
   final bool? _initialCompleted;
   final String? _initialParentTaskId;
+  final String? _initialStatusId;
 
   EisenhowerPriority? _selectedPriority;
   int? _estimatedTime;
@@ -103,6 +104,7 @@ class QuickAddTaskController extends ChangeNotifier {
     String? initialDescription,
     bool? initialCompleted,
     String? initialParentTaskId,
+    String? initialStatusId,
     this.onTaskCreated,
   })  : _mediator = mediator ?? container.resolve<Mediator>(),
         _tagRepository = tagRepository ?? container.resolve<ITagRepository>(),
@@ -118,7 +120,8 @@ class QuickAddTaskController extends ChangeNotifier {
         _initialTitle = initialTitle,
         _initialDescription = initialDescription,
         _initialCompleted = initialCompleted,
-        _initialParentTaskId = initialParentTaskId {
+        _initialParentTaskId = initialParentTaskId,
+        _initialStatusId = initialStatusId {
     _plannedDate = initialPlannedDate;
     _deadlineDate = initialDeadlineDate;
     _selectedPriority = initialPriority;
@@ -353,6 +356,7 @@ class QuickAddTaskController extends ChangeNotifier {
           deadlineDateReminderCustomOffset: _deadlineDateReminderCustomOffset,
           completedAt: (_initialCompleted ?? false) ? DateTime.now().toUtc() : null,
           parentTaskId: _initialParentTaskId,
+          statusId: _initialStatusId,
         );
         return await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
       },

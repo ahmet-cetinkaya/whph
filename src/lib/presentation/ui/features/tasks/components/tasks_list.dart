@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/tasks/commands/update_task_order_
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
+import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
@@ -14,6 +15,7 @@ import 'package:whph/core/application/shared/utils/group_key_result.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
@@ -152,6 +154,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   Map<String, List<TaskListItem>>? _cachedGroupedTasks;
   List<VisualItem>? _cachedVisualItems;
 
+  // Ordered task statuses, loaded when grouping the board by status so empty
+  // status columns still render.
+  List<TaskStatusListItem> _statuses = const [];
+
   // Drag state notifier for reorderable list
   late final DragStateNotifier _dragStateNotifier;
 
@@ -287,10 +293,23 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     final isViewModeChanged = oldWidget.viewMode != widget.viewMode;
 
     if (isViewModeChanged && mounted) {
+      // Clear all caches unconditionally when view mode changes
+      // The BoardView builds entirely differently from the List view
+      // and needs empty state to be correctly reinitialized.
       setState(() {
+        _tasks = null;
         _cachedGroupedTasks = null;
         _cachedVisualItems = null;
       });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          refresh().catchError((e, stackTrace) {
+            Logger.error('Failed to refresh task list after view mode change', error: e, stackTrace: stackTrace);
+          });
+        }
+      });
+      return;
     }
 
     if ((isLayoutChanged || isFilterChanged) && mounted) {
@@ -363,7 +382,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   Future<void> _getTasksList({int pageIndex = 0, bool isRefresh = false}) async {
     await AsyncErrorHandler.execute<GetListTasksQueryResponse>(
       context: context,
-      errorMessage: _translationService.translate(TaskTranslationKeys.getTagsError),
+      errorMessage: _translationService.translate(TaskTranslationKeys.getTasksError),
       operation: () async {
         final query = GetListTasksQuery(
           pageIndex: pageIndex,
@@ -403,6 +422,10 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           customTagSortOrder: widget.sortConfig?.customTagSortOrder,
           ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         );
+
+        if (_primaryGroupField == TaskSortFields.status) {
+          await _loadStatusesForBoard();
+        }
 
         return await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
       },
@@ -476,6 +499,15 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     );
   }
 
+  /// Fetches statuses from the API. Built-in statuses are always included
+  /// by the query handler, so the board always has Todo and Done columns.
+  Future<void> _loadStatusesForBoard() async {
+    final response = await _mediator.send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
+      const GetListTaskStatusesQuery(pageIndex: 0, pageSize: 100),
+    );
+    _statuses = response.items;
+  }
+
   @override
   Future<void> onLoadMore() async {
     // Prevent concurrent loads if triggered directly (e.g. via Load More button)
@@ -542,6 +574,35 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     } catch (e, stackTrace) {
       Logger.error('Critical error during task order normalization', error: e, stackTrace: stackTrace);
     }
+  }
+
+  String _getGroupDisplayLabel(String groupName, List<TaskListItem> tasks) {
+    // Check if this is a status ID (for status grouping)
+    final firstTask = tasks.firstOrNull;
+    final isTranslatable = firstTask?.isGroupNameTranslatable ?? false;
+
+    // For status grouping, groupName is the statusId
+    // Look up the status to get the display label
+    final status = _statuses.cast<TaskStatusListItem?>().firstWhere(
+          (s) => s?.id == groupName,
+          orElse: () => null,
+        );
+
+    if (status != null) {
+      // Status found - use its name or translate
+      if (status.name.isEmpty) {
+        // Empty name = built-in status, use translation
+        final translationKey =
+            status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo;
+        return _translationService.translate(translationKey);
+      } else {
+        // Custom status with user-defined name
+        return status.name;
+      }
+    }
+
+    // Not a status or status not found, use default logic
+    return isTranslatable ? _translationService.translate(groupName) : groupName;
   }
 
   void _updateCacheIfNeeded() {
@@ -785,6 +846,11 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       return;
     }
 
+    if (groupField == TaskSortFields.status) {
+      await _moveCardToStatusColumn(task, toGroupKey);
+      return;
+    }
+
     _dragStateNotifier.startDragging();
 
     await AsyncErrorHandler.executeVoid(
@@ -844,6 +910,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           // tag is handled by an early-return above.
           case TaskSortFields.title:
           case TaskSortFields.tag:
+          case TaskSortFields.status:
           case TaskSortFields.createdDate:
           case TaskSortFields.modifiedDate:
           case TaskSortFields.totalDuration:
@@ -973,6 +1040,78 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     );
   }
 
+  Future<void> _moveCardToStatusColumn(TaskListItem task, String toGroupKey) async {
+    _dragStateNotifier.startDragging();
+
+    // toGroupKey is now the statusId (matching TaskGroupingHelper)
+    // Validate it exists in our status list
+    final targetStatus = _statuses.cast<TaskStatusListItem?>().firstWhere(
+          (s) => s?.id == toGroupKey,
+          orElse: () => null,
+        );
+
+    if (targetStatus == null) {
+      Logger.error('Status not found for group key: $toGroupKey');
+      _dragStateNotifier.stopDragging();
+      return;
+    }
+
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+      operation: () async {
+        final fullTask = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: task.id));
+
+        await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+          SaveTaskCommand(
+            id: fullTask.id,
+            title: fullTask.title,
+            description: fullTask.description,
+            priority: fullTask.priority,
+            plannedDate: fullTask.plannedDate,
+            deadlineDate: fullTask.deadlineDate,
+            estimatedTime: fullTask.estimatedTime,
+            completedAt: fullTask.completedAt,
+            statusId: targetStatus.id,
+            parentTaskId: fullTask.parentTaskId,
+            order: fullTask.order,
+            plannedDateReminderTime: fullTask.plannedDateReminderTime,
+            plannedDateReminderCustomOffset: fullTask.plannedDateReminderCustomOffset,
+            deadlineDateReminderTime: fullTask.deadlineDateReminderTime,
+            deadlineDateReminderCustomOffset: fullTask.deadlineDateReminderCustomOffset,
+            recurrenceType: fullTask.recurrenceType,
+            recurrenceInterval: fullTask.recurrenceInterval,
+            recurrenceDays: _recurrenceService.getRecurrenceDays(fullTask),
+            recurrenceStartDate: fullTask.recurrenceStartDate,
+            recurrenceEndDate: fullTask.recurrenceEndDate,
+            recurrenceCount: fullTask.recurrenceCount,
+            recurrenceParentId: fullTask.recurrenceParentId,
+            recurrenceConfiguration: fullTask.recurrenceConfiguration,
+          ),
+        );
+        _tasksService.notifyTaskUpdated(task.id);
+      },
+      onSuccess: () {
+        _dragStateNotifier.stopDragging();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            refresh().catchError((e, stackTrace) {
+              Logger.error('Failed to refresh task list after status move', error: e, stackTrace: stackTrace);
+            });
+          }
+        });
+      },
+      onError: (_) {
+        _dragStateNotifier.stopDragging();
+        if (mounted) {
+          refresh().catchError((e, stackTrace) {
+            Logger.error('Failed to refresh task list after status move error', error: e, stackTrace: stackTrace);
+          });
+        }
+      },
+    );
+  }
+
   /// Resolves a tag id from its display name. Returns null when no exact
   /// (case-insensitive) match exists.
   ///
@@ -1025,15 +1164,57 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
       // Fixed-cardinality groupings (priority, date/duration buckets) show every
       // possible column in a stable order, even when empty. Data-driven
-      // groupings (tag) keep their discovered columns but always expose the
+      // groupings (tag, status) keep their discovered columns but always expose the
       // empty column so a card can be dropped there to clear the property.
       final fixedKeys = TaskGroupingHelper.fixedColumnKeysFor(_primaryGroupField);
-      final Map<String, List<TaskListItem>> boardGroups;
+      Map<String, String>? groupLabels;
+      late Map<String, List<TaskListItem>> boardGroups;
       if (fixedKeys != null) {
         boardGroups = {for (final key in fixedKeys) key: groupedTasks[key] ?? []};
         for (final key in fixedKeys) {
           groupTranslatable[key] = true;
         }
+      } else if (_primaryGroupField == TaskSortFields.status) {
+        // Sort statuses: todo first, then by order, then done last
+        final sortedStatuses = List<TaskStatusListItem>.from(_statuses);
+        sortedStatuses.sort((a, b) {
+          // Built-in todo first
+          if (a.id == TaskStatusConstants.todoId) return -1;
+          if (b.id == TaskStatusConstants.todoId) return 1;
+          // Built-in done last
+          if (a.id == TaskStatusConstants.doneId) return 1;
+          if (b.id == TaskStatusConstants.doneId) return -1;
+          // Custom statuses by order
+          return a.order.compareTo(b.order);
+        });
+
+        final statusBoardGroups = <String, List<TaskListItem>>{};
+        final statusGroupLabels = <String, String>{};
+        Logger.debug('Building board: groupedTasks keys = ${groupedTasks.keys.toList()}');
+        for (final status in sortedStatuses) {
+          // Use status.id as group key to match TaskGroupingHelper.getGroupName()
+          // which returns statusId for status grouping
+          final groupKey = status.id;
+          final tasksInGroup = groupedTasks[groupKey] ?? [];
+          Logger.debug('Status ${status.id} (${status.name}): ${tasksInGroup.length} tasks');
+
+          statusBoardGroups[groupKey] = tasksInGroup;
+
+          // For display labels:
+          if (status.name.isEmpty) {
+            // Empty name = use translation (built-in statuses)
+            // Store the translation key in groupLabels so the view can translate
+            groupTranslatable[groupKey] = true;
+            statusGroupLabels[groupKey] =
+                status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo;
+          } else {
+            // Custom status with user-defined name
+            groupTranslatable[groupKey] = false;
+            statusGroupLabels[groupKey] = status.name;
+          }
+        }
+        boardGroups = statusBoardGroups;
+        groupLabels = statusGroupLabels;
       } else {
         boardGroups = Map<String, List<TaskListItem>>.from(groupedTasks);
         final emptyGroupKey = TaskGroupingHelper.emptyGroupKeyFor(_primaryGroupField);
@@ -1046,6 +1227,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       return TaskBoardView(
         groupedTasks: boardGroups,
         groupTranslatable: groupTranslatable,
+        groupLabels: groupLabels,
         canMoveAcrossColumns: TaskGroupingHelper.isCrossColumnMovePersistable(_primaryGroupField),
         onClickTask: widget.onClickTask,
         onTaskCompleted: widget.onTaskCompleted,
@@ -1081,9 +1263,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                 if (groupName.isNotEmpty)
                   ListGroupHeader(
                     key: ValueKey('group_header_$groupName'),
-                    title: tasks.isNotEmpty && tasks.first.isGroupNameTranslatable
-                        ? _translationService.translate(groupName)
-                        : groupName,
+                    title: _getGroupDisplayLabel(groupName, tasks),
                     isExpanded: !collapsedGroups.contains(groupName),
                     onTap: () => toggleGroupCollapse(groupName),
                     actions: widget.onAddToGroup != null
@@ -1245,9 +1425,30 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     final item = visualItems[index];
 
     if (item is VisualItemHeader<TaskListItem>) {
+      // For status grouping, item.title is the statusId
+      // Look up the status to get the display label
+      final status = _statuses.cast<TaskStatusListItem?>().firstWhere(
+            (s) => s?.id == item.title,
+            orElse: () => null,
+          );
+
+      String displayTitle;
+      if (status != null && status.name.isEmpty) {
+        // Built-in status with empty name - use translation
+        final translationKey =
+            status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo;
+        displayTitle = _translationService.translate(translationKey);
+      } else if (status != null) {
+        // Custom status with user-defined name
+        displayTitle = status.name;
+      } else {
+        // Not a status or status not found - use default logic
+        displayTitle = item.isTranslatable ? _translationService.translate(item.title) : item.title;
+      }
+
       return ListGroupHeader(
         key: ValueKey('group_header_${item.title}_${!collapsedGroups.contains(item.title)}'),
-        title: item.isTranslatable ? _translationService.translate(item.title) : item.title,
+        title: displayTitle,
         isExpanded: !collapsedGroups.contains(item.title),
         onTap: () => toggleGroupCollapse(item.title),
       );

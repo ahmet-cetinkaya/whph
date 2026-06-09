@@ -48,4 +48,7 @@ abstract class ITaskRepository extends app.IRepository<Task, String> {
   Future<List<Task>> getByParentTaskId(String parentTaskId);
 
   Future<List<Task>> getByRecurrenceParentId(String recurrenceParentId);
+
+  /// Bulk-updates the status_id for all non-deleted tasks matching [oldStatusId].
+  Future<void> updateStatusIdForTasks(String oldStatusId, String newStatusId);
 }

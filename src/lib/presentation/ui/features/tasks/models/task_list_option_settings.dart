@@ -210,6 +210,8 @@ class TaskListOptionSettings {
         return TaskSortFields.modifiedDate;
       case 'tag':
         return TaskSortFields.tag;
+      case 'status':
+        return TaskSortFields.status;
       default:
         return TaskSortFields.createdDate;
     }

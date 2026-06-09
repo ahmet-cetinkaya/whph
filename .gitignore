@@ -20,6 +20,7 @@
 docs/.tasks/
 PROJECT_INDEX.json
 PROJECT_INDEX.md
+graphify-out/
 
 # FVM Version Cache
 .fvm/

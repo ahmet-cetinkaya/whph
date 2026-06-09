@@ -55,6 +55,11 @@ class MockRepository implements IHabitTimeRecordRepository {
     return [];
   }
 
+  @override
+  Future<void> updateMultiple(List<HabitTimeRecord> items) async {
+    // Mock implementation - does nothing
+  }
+
   // Base repository methods would be inherited in real implementation
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
