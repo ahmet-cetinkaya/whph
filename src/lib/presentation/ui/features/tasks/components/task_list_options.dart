@@ -625,9 +625,9 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     onConfigChanged: widget.onSortChange!,
                     availableOptions: [
                       SortOptionWithTranslationKey(
-                        field: TaskSortFields.title,
+                        field: TaskSortFields.status,
                         direction: SortDirection.asc,
-                        translationKey: TaskTranslationKeys.titleLabel,
+                        translationKey: TaskTranslationKeys.statusLabel,
                       ),
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.priority,
@@ -635,14 +635,14 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         translationKey: TaskTranslationKeys.priorityLabel,
                       ),
                       SortOptionWithTranslationKey(
-                        field: TaskSortFields.plannedDate,
+                        field: TaskSortFields.title,
                         direction: SortDirection.asc,
-                        translationKey: TaskTranslationKeys.plannedDateLabel,
+                        translationKey: TaskTranslationKeys.titleLabel,
                       ),
                       SortOptionWithTranslationKey(
-                        field: TaskSortFields.deadlineDate,
+                        field: TaskSortFields.tag,
                         direction: SortDirection.asc,
-                        translationKey: TaskTranslationKeys.deadlineDateLabel,
+                        translationKey: SharedTranslationKeys.tagsLabel,
                       ),
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.estimatedTime,
@@ -653,6 +653,16 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         field: TaskSortFields.totalDuration,
                         direction: SortDirection.desc,
                         translationKey: SharedTranslationKeys.timeDisplayElapsed,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.plannedDate,
+                        direction: SortDirection.asc,
+                        translationKey: TaskTranslationKeys.plannedDateLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.deadlineDate,
+                        direction: SortDirection.asc,
+                        translationKey: TaskTranslationKeys.deadlineDateLabel,
                       ),
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.createdDate,
@@ -668,16 +678,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         field: TaskSortFields.modifiedDate,
                         direction: SortDirection.desc,
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
-                      ),
-                      SortOptionWithTranslationKey(
-                        field: TaskSortFields.tag,
-                        direction: SortDirection.asc,
-                        translationKey: SharedTranslationKeys.tagsLabel,
-                      ),
-                      SortOptionWithTranslationKey(
-                        field: TaskSortFields.status,
-                        direction: SortDirection.asc,
-                        translationKey: TaskTranslationKeys.statusLabel,
                       ),
                     ],
                     showCustomOrderOption: true,
@@ -724,8 +724,28 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     onConfigChanged: widget.onSortChange!,
                     availableOptions: [
                       SortOptionWithTranslationKey(
+                        field: TaskSortFields.status,
+                        translationKey: TaskTranslationKeys.statusLabel,
+                      ),
+                      SortOptionWithTranslationKey(
                         field: TaskSortFields.priority,
                         translationKey: TaskTranslationKeys.priorityLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.title,
+                        translationKey: TaskTranslationKeys.titleLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.tag,
+                        translationKey: SharedTranslationKeys.tagsLabel,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.estimatedTime,
+                        translationKey: SharedTranslationKeys.timeDisplayEstimated,
+                      ),
+                      SortOptionWithTranslationKey(
+                        field: TaskSortFields.totalDuration,
+                        translationKey: SharedTranslationKeys.timeDisplayElapsed,
                       ),
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.plannedDate,
@@ -746,26 +766,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                       SortOptionWithTranslationKey(
                         field: TaskSortFields.modifiedDate,
                         translationKey: SharedTranslationKeys.modifiedDateLabel,
-                      ),
-                      SortOptionWithTranslationKey(
-                        field: TaskSortFields.title,
-                        translationKey: TaskTranslationKeys.titleLabel,
-                      ),
-                      SortOptionWithTranslationKey(
-                        field: TaskSortFields.estimatedTime,
-                        translationKey: SharedTranslationKeys.timeDisplayEstimated,
-                      ),
-                      SortOptionWithTranslationKey(
-                        field: TaskSortFields.totalDuration,
-                        translationKey: SharedTranslationKeys.timeDisplayElapsed,
-                      ),
-                      SortOptionWithTranslationKey(
-                        field: TaskSortFields.tag,
-                        translationKey: SharedTranslationKeys.tagsLabel,
-                      ),
-                      SortOptionWithTranslationKey(
-                        field: TaskSortFields.status,
-                        translationKey: TaskTranslationKeys.statusLabel,
                       ),
                     ],
                   ),
