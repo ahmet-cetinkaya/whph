@@ -46,7 +46,7 @@ tasks:
     priority:
       label: Προτεραιότητα
     status:
-      label: Status
+      label: Κατάσταση
     sub_tasks:
       label: Υπο-εργασίες
     tags:
@@ -522,7 +522,7 @@ tasks:
     deadline_time_invalid: Παρακαλώ εισαγάγετε έγκυρη ώρα προθεσμίας
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Προβολή πίνακα
   board:
     cross_column_move_not_supported: Η μετακίνηση εργασιών μεταξύ στηλών δεν υποστηρίζεται
   statuses:
@@ -530,6 +530,7 @@ tasks:
       todo: Προς εκτέλεση
       done: Ολοκληρώθηκε
       section: Ενσωματωμένο
+      tooltip: Επεξεργάσιμο αλλά όχι διαγράψιμο
     custom:
       section: Προσαρμοσμένες καταστάσεις
     settings:

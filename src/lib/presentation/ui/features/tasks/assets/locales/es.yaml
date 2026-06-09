@@ -46,7 +46,7 @@ tasks:
     priority:
       label: Prioridad
     status:
-      label: Status
+      label: Estado
     sub_tasks:
       label: Subtareas
     tags:
@@ -595,7 +595,7 @@ tasks:
     deadline_time_invalid: La hora límite no es válida
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Vista de tablero
   board:
     cross_column_move_not_supported: Mover tareas entre columnas no está soportado
   statuses:
@@ -603,6 +603,7 @@ tasks:
       todo: Por hacer
       done: Hecho
       section: Integrado
+      tooltip: Editable pero no eliminable
     custom:
       section: Estados personalizados
     settings:

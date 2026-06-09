@@ -142,8 +142,14 @@ class _TaskBoardViewState extends State<TaskBoardView> {
   String _columnTitle(String groupKey) {
     if (groupKey.isEmpty) return '';
     final label = widget.groupLabels?[groupKey];
-    if (label != null) return label;
     final isTranslatable = widget.groupTranslatable[groupKey] ?? false;
+    if (label != null) {
+      // If we have a label, use it:
+      // - If translatable, the label is a translation key (built-in status)
+      // - If not translatable, the label is the actual name (custom status)
+      return isTranslatable ? _translationService.translate(label) : label;
+    }
+    // Fallback: no label provided, translate groupKey if translatable
     return isTranslatable ? _translationService.translate(groupKey) : groupKey;
   }
 

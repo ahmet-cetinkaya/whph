@@ -528,6 +528,7 @@ tasks:
       todo: To Do
       done: Done
       section: Built-in
+      tooltip: Editable but not deletable
     custom:
       section: Custom Statuses
     settings:

@@ -46,7 +46,7 @@ tasks:
     priority:
       label: Öncelik
     status:
-      label: Status
+      label: Durum
     sub_tasks:
       label: Alt görevler
     tags:
@@ -549,7 +549,7 @@ tasks:
     deadline_time_invalid: Son tarih zamanı geçersiz
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Pan görünümü
   board:
     cross_column_move_not_supported: Görevleri sütunlar arasında taşımak desteklenmiyor
   statuses:
@@ -557,6 +557,7 @@ tasks:
       todo: Yapılacak
       done: Tamamlandı
       section: Yerleşik
+      tooltip: Düzenlenebilir ancak silinemez
     custom:
       section: Özel Durumlar
     settings:

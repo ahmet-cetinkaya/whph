@@ -512,7 +512,7 @@ tasks:
     deadline_time_invalid: Deadline tijd is ongeldig
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Bordweergave
   board:
     cross_column_move_not_supported: Het verplaatsen van taken tussen kolommen wordt niet ondersteund
   statuses:
@@ -520,6 +520,7 @@ tasks:
       todo: Te doen
       done: Voltooid
       section: Ingebouwd
+      tooltip: Bewerkbaar maar niet verwijderbaar
     custom:
       section: Aangepaste statussen
     settings:

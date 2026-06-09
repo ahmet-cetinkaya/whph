@@ -392,9 +392,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
           onPressed: () => _showTagSelectionModal(context),
           tooltip: displayTooltip,
-          style: widget.buttonStyle?.copyWith(
-            minimumSize: WidgetStateProperty.all(const Size(48, 48)),
-          ),
+          style: widget.buttonStyle,
         );
         if (selectedTagNames.isNotEmpty) {
           displayTooltip = selectedTagNames.join(', ');
@@ -416,9 +414,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
         iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
         onPressed: () => _showTagSelectionModal(context),
         tooltip: displayTooltip,
-        style: widget.buttonStyle?.copyWith(
-          minimumSize: WidgetStateProperty.all(const Size(48, 48)),
-        ),
+        style: widget.buttonStyle,
       );
     }
 
@@ -431,9 +427,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             child: displayWidget,
           )
         else
-          Flexible(
-            child: widget.buttonLabel != null
-                ? InkWell(
+          widget.buttonLabel != null
+              ? Flexible(
+                  child: InkWell(
                     onTap: () => _showTagSelectionModal(context),
                     child: Tooltip(
                       message: displayTooltip ?? '',
@@ -442,26 +438,24 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                         child: displayWidget,
                       ),
                     ),
-                  )
-                : IconButton(
-                    icon: Icon(
-                      widget.icon,
-                      color: widget.color ?? Theme.of(context).iconTheme.color,
-                    ),
-                    iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
-                    onPressed: () => _showTagSelectionModal(context),
-                    tooltip: displayTooltip ?? '',
-                    style: widget.buttonStyle?.copyWith(
-                      minimumSize: WidgetStateProperty.all(const Size(48, 48)),
-                    ),
                   ),
-          ),
+                )
+              : IconButton(
+                  icon: Icon(
+                    widget.icon,
+                    color: widget.color ?? Theme.of(context).iconTheme.color,
+                  ),
+                  iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
+                  onPressed: () => _showTagSelectionModal(context),
+                  tooltip: displayTooltip ?? '',
+                  style: widget.buttonStyle,
+                ),
         if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: IconButton(
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
               icon: Icon(
                 widget.icon,
                 color: widget.color ?? Theme.of(context).iconTheme.color,

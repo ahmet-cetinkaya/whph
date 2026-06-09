@@ -506,7 +506,7 @@ tasks:
     deadline_time_invalid: Čas roka je neveljaven
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Pogled table
   board:
     cross_column_move_not_supported: Premikanje nalog med stolpci ni podprto
   statuses:
@@ -514,6 +514,7 @@ tasks:
       todo: Za opravit
       done: Končano
       section: Vgrajen
+      tooltip: Urejljiv, a se ne izbriše
     custom:
       section: Statusi po meri
     settings:

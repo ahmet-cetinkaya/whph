@@ -46,7 +46,7 @@ tasks:
     priority:
       label: Priorité
     status:
-      label: Status
+      label: Statut
     sub_tasks:
       label: Sous-tâches
     tags:
@@ -600,7 +600,7 @@ tasks:
     deadline_time_invalid: L'heure d'échéance n'est pas valide
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Vue tableau
   board:
     cross_column_move_not_supported: Le déplacement de tâches entre colonnes n'est pas pris en charge
   statuses:
@@ -608,6 +608,7 @@ tasks:
       todo: À faire
       done: Terminé
       section: Intégré
+      tooltip: Modifiable mais non supprimable
     custom:
       section: Statuts personnalisés
     settings:

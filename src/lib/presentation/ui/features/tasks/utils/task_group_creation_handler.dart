@@ -9,9 +9,6 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_draft.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
-import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
-import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
 
 /// Inputs for opening a task creation dialog pre-filled from a board column
 /// tap ("add to group" affordance on the empty-column placeholder).
@@ -77,27 +74,19 @@ class TaskGroupCreationHandler {
     }
   }
 
-  /// Resolves a status group key (display name or translation key) to its ID.
+  /// Resolves a status group key (status id) to itself.
+  /// Now that grouping uses status.id directly, the group key IS the status id.
   static Future<String?> resolveStatusIdByKey(String groupKey) async {
-    // Check built-in statuses first
-    if (groupKey == TaskTranslationKeys.statusBuiltInTodo) {
-      return TaskStatusConstants.todoId;
-    }
-    if (groupKey == TaskTranslationKeys.statusBuiltInDone) {
-      return TaskStatusConstants.doneId;
-    }
-
+    // Validate that the status id exists
     try {
       final response =
           await container.resolve<Mediator>().send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
                 const GetListTaskStatusesQuery(),
               );
-      for (final status in response.items) {
-        final key = TaskStatusDisplay.resolveKey(name: status.name, isDoneStatus: status.isDoneStatus);
-        if (key == groupKey) {
-          return status.id;
-        }
+      if (response.items.any((s) => s.id == groupKey)) {
+        return groupKey;
       }
+      Logger.warning('Status ID not found: $groupKey');
       return null;
     } catch (e, stackTrace) {
       Logger.error('Failed to resolve status ID for key: $groupKey', error: e, stackTrace: stackTrace);

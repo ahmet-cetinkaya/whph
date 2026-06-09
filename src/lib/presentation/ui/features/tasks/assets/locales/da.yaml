@@ -592,7 +592,7 @@ tasks:
     deadline_time_invalid: Indtast gyldig fristtid
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Tavlevisning
   board:
     cross_column_move_not_supported: Flytning af opgaver mellem kolonner understøttes ikke
   statuses:
@@ -600,6 +600,7 @@ tasks:
       todo: At gøre
       done: Færdig
       section: Indbygget
+      tooltip: Kan redigeres men ikke slettes
     custom:
       section: Brugerdefinerede statusser
     settings:

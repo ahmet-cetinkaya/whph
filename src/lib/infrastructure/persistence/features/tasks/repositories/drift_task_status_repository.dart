@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/domain/features/tasks/task_status.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 
@@ -44,5 +45,55 @@ class DriftTaskStatusRepository extends DriftBaseRepository<TaskStatus, String, 
       isBuiltIn: Value(entity.isBuiltIn),
       isDoneStatus: Value(entity.isDoneStatus),
     );
+  }
+
+  /// Handles builtin status IDs specially: returns a virtual TaskStatus for todo/done
+  /// even if they don't exist in the database (migration may have been skipped or failed).
+  @override
+  Future<TaskStatus?> getById(String id, {bool includeDeleted = false}) async {
+    final existing = await super.getById(id, includeDeleted: includeDeleted);
+    if (existing != null) return existing;
+
+    // Return virtual builtin status if table doesn't have it
+    if (TaskStatusConstants.isTodoStatusId(id)) {
+      return TaskStatus(
+        id: TaskStatusConstants.todoId,
+        createdDate: DateTime.now().toUtc(),
+        name: '',
+        color: TaskStatusConstants.todoColor,
+        order: TaskStatusConstants.todoOrder,
+        isBuiltIn: true,
+        isDoneStatus: false,
+      );
+    }
+    if (TaskStatusConstants.isDoneStatusId(id)) {
+      return TaskStatus(
+        id: TaskStatusConstants.doneId,
+        createdDate: DateTime.now().toUtc(),
+        name: '',
+        color: TaskStatusConstants.doneColor,
+        order: TaskStatusConstants.doneOrder,
+        isBuiltIn: true,
+        isDoneStatus: true,
+      );
+    }
+
+    return null;
+  }
+
+  @override
+  Future<bool> existsInDb(String id) async {
+    final result = await database.customSelect(
+      'SELECT 1 FROM ${table.actualTableName} WHERE id = ? AND deleted_date IS NULL LIMIT 1',
+      variables: [Variable.withString(id)],
+    ).getSingleOrNull();
+    return result != null;
+  }
+
+  /// Checks if a status truly exists in the database (not just virtual from getById override).
+  bool rowExistsInDb(String id) {
+    // This is overridden in the command handler to check DB directly
+    // By default, if we got here via getById, it exists
+    throw UnsupportedError('Use DriftTaskStatusRepository with database access');
   }
 }

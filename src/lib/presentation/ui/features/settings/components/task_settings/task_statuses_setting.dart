@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:acore/acore.dart';
+import 'package:acore/acore.dart' hide Container;
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/delete_task_status_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_status_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
@@ -17,6 +18,7 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
+import 'package:flutter/widgets.dart' as widgets;
 
 /// Settings card for managing task statuses: rename, recolor, reorder, add and
 /// delete. Built-in statuses (todo/done) cannot be deleted and display a
@@ -223,6 +225,16 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
   }
 
   Future<void> _reorder(int oldIndex, int newIndex) async {
+    // newIndex can equal _statuses.length (drop at end), clamp it
+    if (newIndex >= _statuses.length) newIndex = _statuses.length - 1;
+    if (newIndex < 0) newIndex = 0;
+
+    // Prevent dragging builtin statuses or over them
+    if (_statuses[oldIndex].isBuiltIn || _statuses[newIndex].isBuiltIn) {
+      await _load(); // Revert UI
+      return;
+    }
+
     if (newIndex > oldIndex) newIndex -= 1;
     final reordered = List<TaskStatusListItem>.from(_statuses);
     final moved = reordered.removeAt(oldIndex);
@@ -233,6 +245,8 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
     try {
       for (var i = 0; i < reordered.length; i++) {
         final status = reordered[i];
+        // Skip built-in statuses - they cannot be reordered
+        if (status.isBuiltIn) continue;
         final newOrder = (i + 1) * _orderStep;
         if (status.order != newOrder) {
           await _mediator.send<SaveTaskStatusCommand, SaveTaskStatusCommandResponse>(
@@ -329,10 +343,13 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.size2XSmall),
       child: Row(
         children: [
-          ReorderableDragStartListener(
-            index: index,
-            child: Icon(Icons.drag_handle, color: Theme.of(context).colorScheme.onSurfaceVariant),
-          ),
+          if (!status.isBuiltIn)
+            ReorderableDragStartListener(
+              index: index,
+              child: const Icon(Icons.drag_handle),
+            )
+          else
+            const SizedBox(width: 24), // Match dragger width for alignment
           const SizedBox(width: AppTheme.sizeSmall),
           ColorField(
             initialColor: _colorFromHex(status.color),
@@ -345,6 +362,37 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
               decoration: InputDecoration(
                 isDense: true,
                 hintText: _translationService.translate(TaskTranslationKeys.statusNameHint),
+                suffixIcon: status.isBuiltIn
+                    ? Tooltip(
+                        message: _translationService.translate(TaskTranslationKeys.statusBuiltInTooltip),
+                        child: widgets.Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                _translationService.translate(TaskTranslationKeys.statusBuiltInSection),
+                                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 10,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : null,
               ),
               onChanged: (value) => _onNameChanged(status, value),
               onSubmitted: (value) {
@@ -362,11 +410,13 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
               },
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            tooltip: _translationService.translate(SharedTranslationKeys.deleteButton),
-            onPressed: status.isBuiltIn ? null : () => _confirmDelete(status),
-          ),
+          if (!TaskStatusConstants.isBuiltinStatusId(status.id))
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              tooltip: _translationService.translate(SharedTranslationKeys.deleteButton),
+              onPressed: status.isBuiltIn ? null : () => _confirmDelete(status),
+              color: status.isBuiltIn ? Colors.transparent : null,
+            ),
         ],
       ),
     );

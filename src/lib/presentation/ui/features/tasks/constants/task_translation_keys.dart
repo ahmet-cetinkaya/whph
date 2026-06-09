@@ -330,4 +330,5 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String statusDeleteConfirmTitle = 'tasks.statuses.delete_confirm.title';
   static const String statusDeleteConfirmMessage = 'tasks.statuses.delete_confirm.message';
   static const String statusNewDefaultName = 'tasks.statuses.new_default_name';
+  static const String statusBuiltInTooltip = 'tasks.statuses.builtin.tooltip';
 }

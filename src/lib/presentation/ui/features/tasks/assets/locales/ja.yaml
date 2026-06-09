@@ -44,7 +44,7 @@ tasks:
     priority:
       label: 優先度
     status:
-      label: Status
+      label: ステータス
     sub_tasks:
       label: サブタスク
     tags:
@@ -547,7 +547,7 @@ tasks:
     deadline_time_invalid: 期限時間が無効です
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: ボードビュー
   board:
     cross_column_move_not_supported: 列間のタスク移動はサポートされていません
   statuses:
@@ -555,6 +555,7 @@ tasks:
       todo: 未着手
       done: 完了
       section: 組み込み
+      tooltip: 編集可能ですが削除できません
     custom:
       section: カスタムステータス
     settings:

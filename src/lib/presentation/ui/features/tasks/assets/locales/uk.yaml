@@ -46,7 +46,7 @@ tasks:
     priority:
       label: Пріоритет
     status:
-      label: Status
+      label: Статус
     sub_tasks:
       label: Підзавдання
     tags:
@@ -593,7 +593,7 @@ tasks:
     deadline_time_invalid: Неправильний час крайнього терміну
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Вигляд дошки
   board:
     cross_column_move_not_supported: Переміщення завдань між стовпцями не підтримується
   statuses:
@@ -601,6 +601,7 @@ tasks:
       todo: До виконання
       done: Виконано
       section: Вбудований
+      tooltip: Редагований, але не видаляється
     custom:
       section: Користувацькі статуси
     settings:

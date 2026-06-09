@@ -46,12 +46,12 @@ tasks:
     priority:
       label: Priorità
     status:
-      label: Status
+      label: Stato
     sub_tasks:
       label: Sotto-attività
     tags:
       hint: Seleziona tag da associare
-      label: Tag
+      label: Etichetta
     tags_hint: Seleziona tag per l'attività
     title:
       label: Titolo
@@ -596,7 +596,7 @@ tasks:
     deadline_time_invalid: L'orario della scadenza non è valido
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Vista bacheca
   board:
     cross_column_move_not_supported: Lo spostamento di attività tra colonne non è supportato
   statuses:
@@ -604,6 +604,7 @@ tasks:
       todo: Da fare
       done: Completato
       section: Integrato
+      tooltip: Modificabile ma non eliminabile
     custom:
       section: Stati personalizzati
     settings:

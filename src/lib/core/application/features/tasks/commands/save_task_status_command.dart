@@ -4,6 +4,8 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task_status.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class SaveTaskStatusCommand implements IRequest<SaveTaskStatusCommandResponse> {
   final String? id;
@@ -57,7 +59,19 @@ class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusComm
         existing.order = request.order!;
       }
       existing.modifiedDate = DateTime.now().toUtc();
-      await _taskStatusRepository.update(existing);
+
+      // For builtin statuses that were merged in (not in DB), insert them first
+      // then update. This ensures they persist and future getById returns real rows.
+      if (existing.isBuiltIn && !(await _taskStatusRepository.existsInDb(existing.id))) {
+        existing.createdDate = DateTime.now().toUtc();
+        Logger.debug('Inserting builtin status ${existing.id} with name "${existing.name}"');
+        await _taskStatusRepository.add(existing);
+        Logger.debug('Added builtin status, now updating');
+        await _taskStatusRepository.update(existing);
+      } else {
+        Logger.debug('Updating status ${existing.id} with name "${existing.name}" (isBuiltIn: ${existing.isBuiltIn})');
+        await _taskStatusRepository.update(existing);
+      }
       status = existing;
     } else {
       status = TaskStatus(
@@ -78,7 +92,9 @@ class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusComm
   }
 
   void _validate(SaveTaskStatusCommand request) {
-    if (request.name.trim().isEmpty) {
+    // Allow empty names for builtin statuses (todo/done) - they use localized labels
+    final isBuiltin = request.id != null && TaskStatusConstants.isBuiltinStatusId(request.id!);
+    if (!isBuiltin && request.name.trim().isEmpty) {
       throw BusinessException('Status name cannot be empty', TaskTranslationKeys.taskStatusNotFoundError);
     }
     if (request.name.length > _maxNameLength) {

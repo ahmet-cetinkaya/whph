@@ -511,7 +511,7 @@ tasks:
     deadline_time_invalid: Hora limite inválida
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Visualização em quadro
   board:
     cross_column_move_not_supported: Mover tarefas entre colunas não é suportado
   statuses:
@@ -519,6 +519,7 @@ tasks:
       todo: A fazer
       done: Concluído
       section: Integrado
+      tooltip: Editável mas não excluído
     custom:
       section: Status personalizados
     settings:

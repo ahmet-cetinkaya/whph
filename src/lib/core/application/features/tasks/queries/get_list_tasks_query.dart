@@ -10,7 +10,6 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;
@@ -192,26 +191,19 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       statusMap[TaskStatusConstants.doneId] = (name: '', isBuiltIn: true, isDoneStatus: true);
     }
 
-    // Set isGroupNameTranslatable on each task and resolve status group names
+    // Set isGroupNameTranslatable on each task
+    // For status grouping, groupName remains the statusId (matching TaskGroupingHelper)
+    // The display label will be resolved by the UI components using statusMap data
     final itemsWithTranslatableFlag = tasks.items.map((task) {
       String? groupName = task.groupName;
       bool? isGroupNameTranslatable;
 
       if (groupName != null) {
         if (isGroupingByStatus && statusMap != null) {
-          // Resolve status ID to display key
-          final statusData = statusMap[task.statusId ?? TaskStatusConstants.todoId];
-          if (statusData != null) {
-            groupName = TaskStatusDisplay.resolveKey(
-              name: statusData.name,
-              isDoneStatus: statusData.isDoneStatus,
-            );
-            isGroupNameTranslatable = statusData.name.isEmpty;
-          } else {
-            // Fallback for deleted/invalid status IDs
-            groupName = TaskTranslationKeys.statusBuiltInTodo;
-            isGroupNameTranslatable = true;
-          }
+          // For status grouping, groupName is the statusId
+          // Mark as translatable if the status has no custom name
+          final statusData = statusMap[groupName];
+          isGroupNameTranslatable = statusData?.name.isEmpty ?? true;
         } else if (isGroupTranslatable || groupName == SharedTranslationKeys.none) {
           isGroupNameTranslatable = true;
         }

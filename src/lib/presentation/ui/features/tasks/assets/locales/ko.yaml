@@ -44,7 +44,7 @@ tasks:
     priority:
       label: 우선순위
     status:
-      label: Status
+      label: 상태
     sub_tasks:
       label: 하위 작업
     tags:
@@ -553,7 +553,7 @@ tasks:
     deadline_time_invalid: 마감 시간이 잘못되었습니다
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: 보드 보기
   board:
     cross_column_move_not_supported: 열 간에 작업을 이동하는 것은 지원되지 않습니다
   statuses:
@@ -561,6 +561,7 @@ tasks:
       todo: 할 일
       done: 완료
       section: 내장
+      tooltip: 편집 가능하지만 삭제 불가
     custom:
       section: 사용자 정의 상태
     settings:

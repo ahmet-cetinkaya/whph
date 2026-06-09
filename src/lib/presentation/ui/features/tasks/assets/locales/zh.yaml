@@ -44,7 +44,7 @@ tasks:
     priority:
       label: 优先级
     status:
-      label: Status
+      label: 状态
     sub_tasks:
       label: 子任务
     tags:
@@ -544,7 +544,7 @@ tasks:
     deadline_time_invalid: 截止时间无效
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: 看板视图
   board:
     cross_column_move_not_supported: 不支持在列之间移动任务
   statuses:
@@ -552,6 +552,7 @@ tasks:
       todo: 待办
       done: 已完成
       section: 内置
+      tooltip: 可编辑但不可删除
     custom:
       section: 自定义状态
     settings:

@@ -510,7 +510,7 @@ tasks:
     deadline_time_invalid: Frist tidspunkt er ugyldig
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Tavlevisning
   board:
     cross_column_move_not_supported: Å flytte oppgaver mellom kolonner støttes ikke
   statuses:
@@ -518,6 +518,7 @@ tasks:
       todo: Å gjøre
       done: Ferdig
       section: Innebygd
+      tooltip: Kan redigeres men ikke slettes
     custom:
       section: Egendefinerte statuser
     settings:

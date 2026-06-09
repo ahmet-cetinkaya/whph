@@ -46,7 +46,7 @@ tasks:
     priority:
       label: Prioritate
     status:
-      label: Status
+      label: Stare
     sub_tasks:
       label: Sub-sarcini
     tags:
@@ -514,7 +514,7 @@ tasks:
     deadline_time_invalid: Ora termenului limită este invalidă
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Vizualizare tablă
   board:
     cross_column_move_not_supported: Mutarea sarcinilor între coloane nu este acceptată
   statuses:
@@ -522,6 +522,7 @@ tasks:
       todo: De făcut
       done: Finalizat
       section: Încorporat
+      tooltip: Editabil dar nu ștergeabil
     custom:
       section: Stări personalizate
     settings:

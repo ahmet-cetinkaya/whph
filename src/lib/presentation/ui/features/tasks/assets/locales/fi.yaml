@@ -46,7 +46,7 @@ tasks:
     priority:
       label: Prioriteetti
     status:
-      label: Status
+      label: Tila
     sub_tasks:
       label: Alitehtävät
     tags:
@@ -505,7 +505,7 @@ tasks:
     deadline_time_invalid: Määräajan aika on virheellinen
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Taulukkonäkymä
   board:
     cross_column_move_not_supported: Tehtävien siirtäminen sarakkeiden välillä ei ole tuettu
   statuses:
@@ -513,6 +513,7 @@ tasks:
       todo: Tehtävä
       done: Valmis
       section: Sisäänrakennettu
+      tooltip: Muokattavissa, mutta ei poistettavissa
     custom:
       section: Mukautetut tilat
     settings:

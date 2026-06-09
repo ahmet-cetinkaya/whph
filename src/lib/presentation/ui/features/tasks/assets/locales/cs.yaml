@@ -46,7 +46,7 @@ tasks:
     priority:
       label: Priorita
     status:
-      label: Status
+      label: Stav
     sub_tasks:
       label: Podúkoly
     tags:
@@ -590,7 +590,7 @@ tasks:
     deadline_time_invalid: Prosím zadejte platný čas splatnosti
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Pohled tabule
   board:
     cross_column_move_not_supported: Přesun úkolů mezi sloupci není podporován
   statuses:
@@ -598,6 +598,7 @@ tasks:
       todo: K provedení
       done: Hotovo
       section: Vestavěný
+      tooltip: Upravitelný, ale nelze smazat
     custom:
       section: Vlastní stavy
     settings:

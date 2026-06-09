@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_status_command.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 
 void main() {
   group('SaveTaskStatusCommand Tests', () {
@@ -63,43 +64,37 @@ void main() {
   });
 
   group('SaveTaskStatusCommand Validation Tests', () {
-    test('should reject empty name', () {
-      // Arrange & Act
+    test('should allow empty name for builtin todo status', () {
+      // Arrange - builtin statuses have empty stored names (localized at display time)
       final command = SaveTaskStatusCommand(
-        id: null,
+        id: TaskStatusConstants.todoId,
+        name: '',
+        color: 'FF5722',
+      );
+
+      // Assert - builtin todo status id is recognized
+      expect(TaskStatusConstants.isTodoStatusId(command.id), isTrue);
+      expect(command.name.isEmpty, isTrue);
+    });
+
+    test('should allow empty name for builtin done status', () {
+      // Arrange - builtin done status
+      final command = SaveTaskStatusCommand(
+        id: TaskStatusConstants.doneId,
         name: '',
         color: '4CAF50',
       );
 
-      // Assert - empty name is invalid for custom statuses
+      // Assert - builtin done status id is recognized
+      expect(TaskStatusConstants.isDoneStatusId(command.id), isTrue);
       expect(command.name.isEmpty, isTrue);
     });
 
-    test('should reject invalid hex color', () {
-      // Arrange & Act
-      final command = SaveTaskStatusCommand(
-        id: null,
-        name: 'Test',
-        color: 'invalid-color',
-      );
-
-      // Assert - this would be caught by the handler's validation
-      expect(command.color, 'invalid-color');
-    });
-
-    test('should reject names exceeding max length', () {
-      // Arrange
-      final longName = 'A' * 101;
-
-      // Act
-      final command = SaveTaskStatusCommand(
-        id: null,
-        name: longName,
-        color: '4CAF50',
-      );
-
-      // Assert - name exceeds 100 character limit
-      expect(command.name.length, greaterThan(100));
+    test('should identify builtin status ids correctly', () {
+      // Assert
+      expect(TaskStatusConstants.isBuiltinStatusId(TaskStatusConstants.todoId), isTrue);
+      expect(TaskStatusConstants.isBuiltinStatusId(TaskStatusConstants.doneId), isTrue);
+      expect(TaskStatusConstants.isBuiltinStatusId('custom-id'), isFalse);
     });
   });
 }

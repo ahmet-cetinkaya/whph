@@ -33,6 +33,7 @@ class TaskGroupingHelper {
       case TaskSortFields.tag:
         return task.tags.isNotEmpty ? task.tags.first.name : SharedTranslationKeys.none;
       case TaskSortFields.status:
+        // Use statusId directly as group key (consistent with board column building)
         // Treat null status as todo (legacy/unmigrated tasks)
         return task.statusId ?? TaskStatusConstants.todoId;
     }

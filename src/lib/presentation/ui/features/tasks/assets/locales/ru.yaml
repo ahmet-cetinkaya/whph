@@ -45,7 +45,7 @@ tasks:
     priority:
       label: Приоритет
     status:
-      label: Status
+      label: Статус
     sub_tasks:
       label: Подзадачи
     tags:
@@ -594,7 +594,7 @@ tasks:
     deadline_time_invalid: Неверное время крайнего срока
   view_mode:
     list_tooltip: List view
-    board_tooltip: Board view
+    board_tooltip: Вид доски
   board:
     cross_column_move_not_supported: Перемещение задач между столбцами не поддерживается
   statuses:
@@ -602,6 +602,7 @@ tasks:
       todo: К выполнению
       done: Готово
       section: Встроенный
+      tooltip: Редактируемый, но не удаляемый
     custom:
       section: Пользовательские статусы
     settings:

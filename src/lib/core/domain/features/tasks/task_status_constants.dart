@@ -12,9 +12,9 @@ class TaskStatusConstants {
   static const double todoOrder = 0.0;
   static const double doneOrder = 1.0;
 
-  /// The done role is fixed to the single built-in done status, so completion
-  /// can be derived from a status id without a repository lookup.
+  static bool isTodoStatusId(String? statusId) => statusId == todoId;
   static bool isDoneStatusId(String? statusId) => statusId == doneId;
+  static bool isBuiltinStatusId(String? statusId) => isTodoStatusId(statusId) || isDoneStatusId(statusId);
 
   TaskStatusConstants._();
 }

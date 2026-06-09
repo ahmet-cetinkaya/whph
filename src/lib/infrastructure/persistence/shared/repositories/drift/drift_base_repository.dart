@@ -167,7 +167,9 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
     try {
       item.modifiedDate = DateTime.now().toUtc();
       final companion = toCompanion(item);
-      await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
+      final stmt = (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id)));
+      final result = await stmt.write(companion);
+      Logger.debug('Updated ${table.actualTableName} id=${item.id}, rows affected: $result');
     } catch (e, stackTrace) {
       Logger.error('Database error updating ${table.actualTableName}: $e\n$stackTrace');
       rethrow;

@@ -576,6 +576,35 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     }
   }
 
+  String _getGroupDisplayLabel(String groupName, List<TaskListItem> tasks) {
+    // Check if this is a status ID (for status grouping)
+    final firstTask = tasks.firstOrNull;
+    final isTranslatable = firstTask?.isGroupNameTranslatable ?? false;
+
+    // For status grouping, groupName is the statusId
+    // Look up the status to get the display label
+    final status = _statuses.cast<TaskStatusListItem?>().firstWhere(
+          (s) => s?.id == groupName,
+          orElse: () => null,
+        );
+
+    if (status != null) {
+      // Status found - use its name or translate
+      if (status.name.isEmpty) {
+        // Empty name = built-in status, use translation
+        final translationKey =
+            status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo;
+        return _translationService.translate(translationKey);
+      } else {
+        // Custom status with user-defined name
+        return status.name;
+      }
+    }
+
+    // Not a status or status not found, use default logic
+    return isTranslatable ? _translationService.translate(groupName) : groupName;
+  }
+
   void _updateCacheIfNeeded() {
     if (_tasks == null) {
       _cachedGroupedTasks = null;
@@ -1014,15 +1043,17 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   Future<void> _moveCardToStatusColumn(TaskListItem task, String toGroupKey) async {
     _dragStateNotifier.startDragging();
 
-    String targetStatusId = TaskStatusConstants.todoId;
-    for (final status in _statuses) {
-      final key = status.name.isEmpty
-          ? (status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo)
-          : status.name;
-      if (key == toGroupKey) {
-        targetStatusId = status.id;
-        break;
-      }
+    // toGroupKey is now the statusId (matching TaskGroupingHelper)
+    // Validate it exists in our status list
+    final targetStatus = _statuses.cast<TaskStatusListItem?>().firstWhere(
+      (s) => s?.id == toGroupKey,
+      orElse: () => null,
+    );
+
+    if (targetStatus == null) {
+      Logger.error('Status not found for group key: $toGroupKey');
+      _dragStateNotifier.stopDragging();
+      return;
     }
 
     await AsyncErrorHandler.executeVoid(
@@ -1041,7 +1072,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             deadlineDate: fullTask.deadlineDate,
             estimatedTime: fullTask.estimatedTime,
             completedAt: fullTask.completedAt,
-            statusId: targetStatusId,
+            statusId: targetStatus.id,
             parentTaskId: fullTask.parentTaskId,
             order: fullTask.order,
             plannedDateReminderTime: fullTask.plannedDateReminderTime,
@@ -1159,20 +1190,25 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
         final statusBoardGroups = <String, List<TaskListItem>>{};
         final statusGroupLabels = <String, String>{};
+        Logger.debug('Building board: groupedTasks keys = ${groupedTasks.keys.toList()}');
         for (final status in sortedStatuses) {
-          // The query handler uses translation keys for built-in statuses and
-          // stored names for custom statuses as the groupName
-          final groupKey = status.name.isEmpty
-              ? (status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo)
-              : status.name;
+          // Use status.id as group key to match TaskGroupingHelper.getGroupName()
+          // which returns statusId for status grouping
+          final groupKey = status.id;
+          final tasksInGroup = groupedTasks[groupKey] ?? [];
+          Logger.debug('Status ${status.id} (${status.name}): ${tasksInGroup.length} tasks');
 
-          statusBoardGroups[groupKey] = groupedTasks[groupKey] ?? [];
+          statusBoardGroups[groupKey] = tasksInGroup;
 
-          // For built-in statuses, the groupKey is a translation key (translatable)
-          // For custom statuses, it's the actual name (not translatable)
+          // For display labels:
           if (status.name.isEmpty) {
+            // Empty name = use translation (built-in statuses)
+            // Store the translation key in groupLabels so the view can translate
             groupTranslatable[groupKey] = true;
+            statusGroupLabels[groupKey] =
+                status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo;
           } else {
+            // Custom status with user-defined name
             groupTranslatable[groupKey] = false;
             statusGroupLabels[groupKey] = status.name;
           }
@@ -1227,9 +1263,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                 if (groupName.isNotEmpty)
                   ListGroupHeader(
                     key: ValueKey('group_header_$groupName'),
-                    title: tasks.isNotEmpty && tasks.first.isGroupNameTranslatable
-                        ? _translationService.translate(groupName)
-                        : groupName,
+                    title: _getGroupDisplayLabel(groupName, tasks),
                     isExpanded: !collapsedGroups.contains(groupName),
                     onTap: () => toggleGroupCollapse(groupName),
                     actions: widget.onAddToGroup != null
@@ -1391,9 +1425,30 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     final item = visualItems[index];
 
     if (item is VisualItemHeader<TaskListItem>) {
+      // For status grouping, item.title is the statusId
+      // Look up the status to get the display label
+      final status = _statuses.cast<TaskStatusListItem?>().firstWhere(
+            (s) => s?.id == item.title,
+            orElse: () => null,
+          );
+
+      String displayTitle;
+      if (status != null && status.name.isEmpty) {
+        // Built-in status with empty name - use translation
+        final translationKey =
+            status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo;
+        displayTitle = _translationService.translate(translationKey);
+      } else if (status != null) {
+        // Custom status with user-defined name
+        displayTitle = status.name;
+      } else {
+        // Not a status or status not found - use default logic
+        displayTitle = item.isTranslatable ? _translationService.translate(item.title) : item.title;
+      }
+
       return ListGroupHeader(
         key: ValueKey('group_header_${item.title}_${!collapsedGroups.contains(item.title)}'),
-        title: item.isTranslatable ? _translationService.translate(item.title) : item.title,
+        title: displayTitle,
         isExpanded: !collapsedGroups.contains(item.title),
         onTap: () => toggleGroupCollapse(item.title),
       );
