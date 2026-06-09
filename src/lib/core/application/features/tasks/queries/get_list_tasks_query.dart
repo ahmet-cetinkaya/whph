@@ -9,7 +9,6 @@ import 'package:acore/acore.dart';
 
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/shared/constants/shared_translation_keys.dart';
-import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 
 class GetListTasksQuery implements IRequest<GetListTasksQueryResponse> {
   final int pageIndex;

@@ -57,6 +57,9 @@ tasks:
       label: Titre
     total_elapsed_time: Temps total écoulé
   errors:
+    task_status_invalid_color: Format de couleur non valide. Format hexadécimal à 6 chiffres attendu (par exemple, FF5722)
+    task_status_name_empty: Le nom du statut ne peut pas être vide
+    task_status_name_too_long: Le nom du statut ne peut pas dépasser 50 caractères
     task_status_not_found: Statut de tâche introuvable
     task_status_builtin: Les statuts intégrés ne peuvent pas être supprimés
     add_tag: Erreur inattendue lors de l'ajout du tag

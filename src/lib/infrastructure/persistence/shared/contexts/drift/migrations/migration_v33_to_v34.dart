@@ -61,15 +61,16 @@ Future<void> migrateV33ToV34(AppDatabase db, Migrator m, Schema34 schema) async 
     Logger.info('Migration from v33 to v34 completed');
   } catch (e, stackTrace) {
     Logger.error(
-      'Failed to migrate db from v33 to v34. Rolling back changes.',
+      'Failed to migrate db from v33 to v34.',
       error: e,
       stackTrace: stackTrace,
       component: 'migration_v33_to_v34',
     );
 
     throw MigrationException(
-      'Migration v33 to v34 failed. Database may be in inconsistent state. '
-      'Please review logs and manually verify state.',
+      'Migration v33 to v34 failed: ${e.toString()}. '
+      'The transaction was rolled back automatically. '
+      'If the issue persists, check logs for details and ensure you have sufficient storage space.',
       e,
     );
   }

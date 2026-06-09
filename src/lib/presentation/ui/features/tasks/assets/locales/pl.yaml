@@ -57,6 +57,9 @@ tasks:
       label: Tytuł
     total_elapsed_time: Całkowity czas wykonania
   errors:
+    task_status_invalid_color: Nieprawidłowy format koloru. Oczekiwano 6-znakowego kodu szesnastkowego (np. FF5722)
+    task_status_name_empty: Nazwa statusu nie może być pusta
+    task_status_name_too_long: Nazwa statusu nie może przekroczyć 50 znaków
     task_status_not_found: Nie znaleziono statusu zadania
     task_status_builtin: Nie można usunąć wbudowanych statusów
     add_tag: Wystąpił nieoczekiwany błąd podczas dodawania tagu

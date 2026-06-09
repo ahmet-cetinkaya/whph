@@ -56,6 +56,9 @@ tasks:
       label: Titel
     total_elapsed_time: Totale Verstreken Tijd
   errors:
+    task_status_invalid_color: "Ongeldig kleurformaat. Verwacht: 6-cijferige hex-waarde (bijv. FF5722)"
+    task_status_name_empty: Statusnaam mag niet leeg zijn
+    task_status_name_too_long: Statusnaam mag niet meer dan 50 tekens zijn
     task_status_not_found: Taakstatus niet gevonden
     task_status_builtin: Ingebouwde statussen kunnen niet worden verwijderd
     add_tag: Onverwachte fout opgetreden bij het toevoegen van tag

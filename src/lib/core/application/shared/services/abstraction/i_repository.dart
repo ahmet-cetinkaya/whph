@@ -10,4 +10,8 @@ abstract class IRepository<T extends acore.BaseEntity<TId>, TId> extends acore.I
   });
   Future<void> hardDeleteSoftDeleted(DateTime beforeDate);
   Future<void> truncate();
+
+  /// Updates multiple entities in a single batch operation.
+  /// This is more efficient than calling update() multiple times.
+  Future<void> updateMultiple(List<T> items);
 }

@@ -56,6 +56,9 @@ tasks:
       label: Заголовок
     total_elapsed_time: Общее затраченное время
   errors:
+    task_status_invalid_color: Неверный формат цвета. Ожидается 6-значный hex (например, FF5722)
+    task_status_name_empty: Имя статуса не может быть пустым
+    task_status_name_too_long: Имя статуса не может превышать 50 символов
     task_status_not_found: Статус задачи не найден
     task_status_builtin: Встроенные статусы нельзя удалить
     add_tag: Неожиданная ошибка при добавлении тега

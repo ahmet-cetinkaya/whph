@@ -57,6 +57,9 @@ tasks:
       label: Titlu
     total_elapsed_time: Timp Total Scurs
   errors:
+    task_status_invalid_color: Format de culoare nevalid. Se așteaptă hexadecimal de 6 cifre (de exemplu, FF5722)
+    task_status_name_empty: Numele stării nu poate fi gol
+    task_status_name_too_long: Numele stării nu poate depăși 50 de caractere
     task_status_not_found: Starea sarcinii nu a fost găsită
     task_status_builtin: Stările predefinite nu pot fi șterse
     add_tag: Eroare neașteptată la adăugarea etichetei

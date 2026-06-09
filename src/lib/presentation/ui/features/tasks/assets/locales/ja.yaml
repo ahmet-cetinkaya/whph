@@ -55,6 +55,9 @@ tasks:
       label: タイトル
     total_elapsed_time: 総経過時間
   errors:
+    task_status_invalid_color: 無効な色の形式です。6桁の16進数（FF5722など）が予想されます
+    task_status_name_empty: ステータス名は空にできません
+    task_status_name_too_long: ステータス名は50文字を超えることはできません
     task_status_not_found: タスクステータスが見つかりません
     task_status_builtin: 組み込みステータスは削除できません
     add_tag: タグの追加中に予期しないエラーが発生しました

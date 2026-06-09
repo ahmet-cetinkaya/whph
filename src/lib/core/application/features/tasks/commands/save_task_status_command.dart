@@ -60,13 +60,13 @@ class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusComm
       }
       existing.modifiedDate = DateTime.now().toUtc();
 
-      // For builtin statuses that were merged in (not in DB), insert them first
-      // then update. This ensures they persist and future getById returns real rows.
+      // Builtin statuses (todo/done) may exist only virtually if migration was skipped.
+      // When user first modifies a builtin, we must persist it to the database.
+      // We use add() to insert the row, then update() to apply the user's changes.
       if (existing.isBuiltIn && !(await _taskStatusRepository.existsInDb(existing.id))) {
         existing.createdDate = DateTime.now().toUtc();
-        Logger.debug('Inserting builtin status ${existing.id} with name "${existing.name}"');
+        Logger.debug('Persisting builtin status ${existing.id} with name "${existing.name}"');
         await _taskStatusRepository.add(existing);
-        Logger.debug('Added builtin status, now updating');
         await _taskStatusRepository.update(existing);
       } else {
         Logger.debug('Updating status ${existing.id} with name "${existing.name}" (isBuiltIn: ${existing.isBuiltIn})');
@@ -95,18 +95,18 @@ class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusComm
     // Allow empty names for builtin statuses (todo/done) - they use localized labels
     final isBuiltin = request.id != null && TaskStatusConstants.isBuiltinStatusId(request.id!);
     if (!isBuiltin && request.name.trim().isEmpty) {
-      throw BusinessException('Status name cannot be empty', TaskTranslationKeys.taskStatusNotFoundError);
+      throw BusinessException('Status name cannot be empty', TaskTranslationKeys.taskStatusNameEmptyError);
     }
     if (request.name.length > _maxNameLength) {
       throw BusinessException(
         'Status name cannot exceed $_maxNameLength characters',
-        TaskTranslationKeys.taskStatusNotFoundError,
+        TaskTranslationKeys.taskStatusNameTooLongError,
       );
     }
     if (request.color != null && request.color!.isNotEmpty && !_hexColorRegex.hasMatch(request.color!)) {
       throw BusinessException(
         'Invalid color format. Expected 6-digit hex (e.g. FF5722)',
-        TaskTranslationKeys.taskStatusNotFoundError,
+        TaskTranslationKeys.taskStatusInvalidColorError,
       );
     }
   }

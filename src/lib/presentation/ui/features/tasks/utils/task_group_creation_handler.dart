@@ -9,6 +9,10 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_creation_helper.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_draft.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 
 /// Inputs for opening a task creation dialog pre-filled from a board column
 /// tap ("add to group" affordance on the empty-column placeholder).
@@ -74,20 +78,47 @@ class TaskGroupCreationHandler {
     }
   }
 
-  /// Resolves a status group key (status id) to itself.
-  /// Now that grouping uses status.id directly, the group key IS the status id.
+  /// Resolves a status group key (translation key or name) to a status ID.
+  /// Supports built-in status translation keys (e.g., TaskTranslationKeys.statusBuiltInDone)
+  /// and custom status names (e.g., 'In Progress').
   static Future<String?> resolveStatusIdByKey(String groupKey) async {
-    // Validate that the status id exists
     try {
       final response =
           await container.resolve<Mediator>().send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
                 const GetListTaskStatusesQuery(),
               );
-      if (response.items.any((s) => s.id == groupKey)) {
+
+      // First, check if groupKey is already a valid status ID
+      final existing = response.items.any((s) => s.id == groupKey);
+      if (existing) {
         return groupKey;
       }
-      Logger.warning('Status ID not found: $groupKey');
-      return null;
+
+      // Check for built-in status translation keys
+      final translationService = container.resolve<ITranslationService>();
+      if (groupKey == TaskTranslationKeys.statusBuiltInTodo) {
+        final todoStatus = response.items.firstWhere(
+          (s) => s.id == TaskStatusConstants.todoId,
+          orElse: () => throw Exception('Todo status not found'),
+        );
+        return todoStatus.id;
+      }
+      if (groupKey == TaskTranslationKeys.statusBuiltInDone) {
+        final doneStatus = response.items.firstWhere(
+          (s) => s.id == TaskStatusConstants.doneId,
+          orElse: () => throw Exception('Done status not found'),
+        );
+        return doneStatus.id;
+      }
+
+      // Otherwise, treat groupKey as a status name and look it up
+      final status = response.items.firstWhere(
+        (s) =>
+            TaskStatusDisplay.resolveName(translationService, id: s.id, name: s.name, isDoneStatus: s.isDoneStatus) ==
+            groupKey,
+        orElse: () => throw Exception('Status not found: $groupKey'),
+      );
+      return status.id;
     } catch (e, stackTrace) {
       Logger.error('Failed to resolve status ID for key: $groupKey', error: e, stackTrace: stackTrace);
       return null;

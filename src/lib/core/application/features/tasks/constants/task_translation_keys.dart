@@ -7,6 +7,9 @@ class TaskTranslationKeys {
   static const String invalidDateRangeError = 'tasks.errors.invalid_date_range';
   static const String taskStatusNotFoundError = 'tasks.errors.task_status_not_found';
   static const String taskStatusBuiltInError = 'tasks.errors.task_status_builtin';
+  static const String taskStatusNameEmptyError = 'tasks.errors.task_status_name_empty';
+  static const String taskStatusNameTooLongError = 'tasks.errors.task_status_name_too_long';
+  static const String taskStatusInvalidColorError = 'tasks.errors.task_status_invalid_color';
 
   // Priority Selection
   static const String prioritySelectionTitle = 'tasks.priority.selection.title';

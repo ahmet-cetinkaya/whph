@@ -9,6 +9,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 void main() {
   group('TaskGroupCreationHandler.draftForGroup', () {
@@ -186,11 +187,14 @@ void main() {
   group('TaskGroupCreationHandler.resolveStatusIdByKey', () {
     late FakeContainer fakeContainer;
     late FakeMediator fakeMediator;
+    late FakeTranslationService fakeTranslationService;
 
     setUp(() {
       fakeContainer = FakeContainer();
       fakeMediator = FakeMediator();
+      fakeTranslationService = FakeTranslationService();
       fakeContainer.register<Mediator>(fakeMediator);
+      fakeContainer.register<ITranslationService>(fakeTranslationService);
       app_main.container = fakeContainer;
     });
 
@@ -280,5 +284,13 @@ class FakeContainer extends Fake implements IContainer {
       return _registrations[T] as T;
     }
     throw Exception('Service setup missing for type $T');
+  }
+}
+
+class FakeTranslationService extends Fake implements ITranslationService {
+  @override
+  String translate(String key, {Map<String, String>? namedArgs}) {
+    // Return the key as-is for testing purposes
+    return key;
   }
 }

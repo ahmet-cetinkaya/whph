@@ -57,6 +57,9 @@ tasks:
       label: Título
     total_elapsed_time: Tiempo total transcurrido
   errors:
+    task_status_invalid_color: Formato de color no válido. Se espera hex de 6 dígitos (por ejemplo, FF5722)
+    task_status_name_empty: El nombre del estado no puede estar vacío
+    task_status_name_too_long: El nombre del estado no puede exceder los 50 caracteres
     task_status_not_found: Estado de tarea no encontrado
     task_status_builtin: Los estados integrados no se pueden eliminar
     add_tag: Error inesperado al añadir la etiqueta

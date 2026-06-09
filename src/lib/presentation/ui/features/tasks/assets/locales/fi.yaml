@@ -57,6 +57,9 @@ tasks:
       label: Otsikko
     total_elapsed_time: Kokonaiskulunut Aika
   errors:
+    task_status_invalid_color: Virheellinen väriformaatti. Odotettu 6-merkkinen hex (esim. FF5722)
+    task_status_name_empty: Tilan nimi ei voi olla tyhjä
+    task_status_name_too_long: Tilan nimi ei voi olla yli 50 merkkiä
     task_status_not_found: Tehtävän tilaa ei löytynyt
     task_status_builtin: Sisäänrakennettuja tiloja ei voi poistaa
     add_tag: Odottamaton virhe lisättäessä tunnistetta

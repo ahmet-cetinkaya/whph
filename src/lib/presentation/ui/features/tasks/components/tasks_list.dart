@@ -1046,9 +1046,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     // toGroupKey is now the statusId (matching TaskGroupingHelper)
     // Validate it exists in our status list
     final targetStatus = _statuses.cast<TaskStatusListItem?>().firstWhere(
-      (s) => s?.id == toGroupKey,
-      orElse: () => null,
-    );
+          (s) => s?.id == toGroupKey,
+          orElse: () => null,
+        );
 
     if (targetStatus == null) {
       Logger.error('Status not found for group key: $toGroupKey');

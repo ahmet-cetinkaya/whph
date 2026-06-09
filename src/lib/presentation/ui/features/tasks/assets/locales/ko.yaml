@@ -55,6 +55,9 @@ tasks:
       label: 제목
     total_elapsed_time: 총 경과 시간
   errors:
+    task_status_invalid_color: "잘못된 색상 형식입니다. 6자리 16진수(예: FF5722)가 필요합니다"
+    task_status_name_empty: 상태 이름은 비어 있을 수 없습니다
+    task_status_name_too_long: 상태 이름은 50자를 초과할 수 없습니다
     task_status_not_found: 작업 상태를 찾을 수 없습니다
     task_status_builtin: 기본 제공 상태는 삭제할 수 없습니다
     add_tag: 태그 추가 중 예상치 못한 오류가 발생했습니다

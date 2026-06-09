@@ -8,6 +8,7 @@ import 'package:whph/core/application/features/tasks/commands/save_task_command.
 import 'package:whph/core/application/features/tasks/commands/save_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_status_command.dart';
 import 'package:whph/core/application/features/tasks/commands/delete_task_status_command.dart';
+import 'package:whph/core/application/features/tasks/commands/reorder_task_statuses_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_tags_order_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
@@ -143,6 +144,10 @@ void registerTasksFeature(
         taskStatusRepository: taskStatusRepository,
         taskRepository: taskRepository,
       ),
+    )
+    ..registerHandler<ReorderTaskStatusesCommand, ReorderTaskStatusesCommandResponse,
+        ReorderTaskStatusesCommandHandler>(
+      () => ReorderTaskStatusesCommandHandler(taskStatusRepository: taskStatusRepository),
     )
     ..registerHandler<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse, GetListTaskStatusesQueryHandler>(
       () => GetListTaskStatusesQueryHandler(taskStatusRepository: taskStatusRepository),

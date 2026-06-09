@@ -57,6 +57,9 @@ tasks:
       label: Başlık
     total_elapsed_time: Toplam Geçen Süre
   errors:
+    task_status_invalid_color: Geçersiz renk formatı. 6 haneli onaltılık beklenir (örn. FF5722)
+    task_status_name_empty: Durum adı boş olamaz
+    task_status_name_too_long: Durum adı 50 karakteri geçemez
     task_status_not_found: Görev durumu bulunamadı
     task_status_builtin: Yerleşik durumlar silinemez
     add_tag: Etiket eklenirken beklenmedik bir hata oluştu

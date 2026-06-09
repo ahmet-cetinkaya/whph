@@ -57,6 +57,9 @@ tasks:
       label: Titulek
     total_elapsed_time: Celkový uplynulý čas
   errors:
+    task_status_invalid_color: Neplatný formát barvy. Očekává se 6místný hex (např. FF5722)
+    task_status_name_empty: Název stavu nemůže být prázdný
+    task_status_name_too_long: Název stavu nesmí překročit 50 znaků
     task_status_not_found: Stav úkolu nenalezen
     task_status_builtin: Vestavěné stavy nelze odstranit
     add_tag: Neočekávaná chyba při přidávání štítku

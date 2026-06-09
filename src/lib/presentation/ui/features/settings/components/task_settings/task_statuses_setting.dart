@@ -4,9 +4,9 @@ import 'package:acore/acore.dart' hide Container;
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/delete_task_status_command.dart';
+import 'package:whph/core/application/features/tasks/commands/reorder_task_statuses_command.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_status_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
-import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
@@ -39,6 +39,10 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
   final Map<String, String?> _lastSyncedNames = {};
   final Map<String, Timer> _debounces = {};
 
+  /// Order step for reordering statuses. Using 1000.0 allows for up to 999
+  /// insertions between any two statuses before collisions occur. This provides
+  /// sufficient space for drag-and-drop reordering without requiring a full
+  /// reindex on every move.
   static const double _orderStep = 1000.0;
   static const Duration _debounceDelay = Duration(milliseconds: 500);
 
@@ -76,8 +80,14 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
   }
 
   /// Keeps the per-status name controllers in sync with the loaded statuses.
+  ///
+  /// Dirty state tracking:
+  /// - `_lastSyncedNames[id]` stores the last status.name value that was synced to the controller
+  /// - A controller is "dirty" when its text differs from the last synced name
+  /// - Dirty controllers are never overwritten to avoid losing user input during typing
+  /// - When user saves (onSubmitted), we update `_lastSyncedNames` to match the new value
+  ///
   /// Built-in statuses display their localized default when unnamed.
-  /// Uses smart dirty checking to avoid overwriting user input.
   void _syncControllers() {
     final activeIds = _statuses.map((s) => s.id).toSet();
     _nameControllers.removeWhere((id, controller) {
@@ -243,16 +253,23 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
     setState(() => _statuses = reordered);
 
     try {
+      // Collect all statuses to update in a single batch operation
+      final orderedStatuses = <OrderedStatus>[];
       for (var i = 0; i < reordered.length; i++) {
         final status = reordered[i];
         // Skip built-in statuses - they cannot be reordered
         if (status.isBuiltIn) continue;
         final newOrder = (i + 1) * _orderStep;
         if (status.order != newOrder) {
-          await _mediator.send<SaveTaskStatusCommand, SaveTaskStatusCommandResponse>(
-            SaveTaskStatusCommand(id: status.id, name: status.name, color: status.color, order: newOrder),
-          );
+          orderedStatuses.add(OrderedStatus(id: status.id, order: newOrder));
         }
+      }
+
+      // Batch update all at once
+      if (orderedStatuses.isNotEmpty) {
+        await _mediator.send<ReorderTaskStatusesCommand, ReorderTaskStatusesCommandResponse>(
+          ReorderTaskStatusesCommand(statuses: orderedStatuses),
+        );
       }
     } catch (e) {
       Logger.error('Failed to reorder task statuses: $e');
@@ -410,12 +427,11 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
               },
             ),
           ),
-          if (!TaskStatusConstants.isBuiltinStatusId(status.id))
+          if (!status.isBuiltIn)
             IconButton(
               icon: const Icon(Icons.delete_outline),
               tooltip: _translationService.translate(SharedTranslationKeys.deleteButton),
-              onPressed: status.isBuiltIn ? null : () => _confirmDelete(status),
-              color: status.isBuiltIn ? Colors.transparent : null,
+              onPressed: () => _confirmDelete(status),
             ),
         ],
       ),

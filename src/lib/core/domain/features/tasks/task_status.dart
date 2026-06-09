@@ -43,22 +43,41 @@ class TaskStatus extends BaseEntity<String> {
       };
 
   factory TaskStatus.fromJson(Map<String, dynamic> json) {
-    double order = 0.0;
-    final orderValue = json['order'];
-    if (orderValue is num) {
-      order = orderValue.toDouble();
-    }
+    try {
+      final idValue = json['id'];
+      if (idValue == null || idValue is! String) {
+        throw FormatException('Missing or invalid id field');
+      }
 
-    return TaskStatus(
-      id: json['id'] as String,
-      createdDate: DateTime.parse(json['createdDate'] as String),
-      modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
-      deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
-      name: json['name'] as String? ?? '',
-      color: json['color'] as String?,
-      order: order,
-      isBuiltIn: json['isBuiltIn'] as bool? ?? false,
-      isDoneStatus: json['isDoneStatus'] as bool? ?? false,
-    );
+      final createdDateValue = json['createdDate'];
+      if (createdDateValue == null || createdDateValue is! String) {
+        throw FormatException('Missing or invalid createdDate field');
+      }
+
+      double order = 0.0;
+      final orderValue = json['order'];
+      if (orderValue is num) {
+        order = orderValue.toDouble();
+      }
+
+      final modifiedDate = json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null;
+      final deletedDate = json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null;
+
+      return TaskStatus(
+        id: idValue,
+        createdDate: DateTime.parse(createdDateValue),
+        modifiedDate: modifiedDate,
+        deletedDate: deletedDate,
+        name: json['name'] as String? ?? '',
+        color: json['color'] as String?,
+        order: order,
+        isBuiltIn: json['isBuiltIn'] as bool? ?? false,
+        isDoneStatus: json['isDoneStatus'] as bool? ?? false,
+      );
+    } on FormatException {
+      rethrow;
+    } catch (e) {
+      throw FormatException('Failed to parse TaskStatus: ${e.toString()}');
+    }
   }
 }

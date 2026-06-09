@@ -55,6 +55,9 @@ tasks:
       label: 标题
     total_elapsed_time: 总用时
   errors:
+    task_status_invalid_color: 无效的颜色格式。应为6位十六进制（例如FF5722）
+    task_status_name_empty: 状态名称不能为空
+    task_status_name_too_long: 状态名称不能超过50个字符
     task_status_not_found: 未找到任务状态
     task_status_builtin: 无法删除内置状态
     add_tag: 添加标签时发生意外错误

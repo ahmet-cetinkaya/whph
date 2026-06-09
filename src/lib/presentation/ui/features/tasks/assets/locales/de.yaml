@@ -56,6 +56,9 @@ tasks:
       label: Titel
     total_elapsed_time: Gesamt verstrichene Zeit
   errors:
+    task_status_invalid_color: Ungültiges Farbschema. Erwartet wird 6-stelliger Hex-Wert (z. B. FF5722)
+    task_status_name_empty: Statusname darf nicht leer sein
+    task_status_name_too_long: Statusname darf 50 Zeichen nicht überschreiten
     task_status_not_found: Aufgabenstatus nicht gefunden
     task_status_builtin: Integrierte Status können nicht gelöscht werden
     add_tag: Unerwarteter Fehler beim Hinzufügen des Tags

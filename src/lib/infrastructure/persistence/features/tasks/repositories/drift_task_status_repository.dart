@@ -89,11 +89,4 @@ class DriftTaskStatusRepository extends DriftBaseRepository<TaskStatus, String, 
     ).getSingleOrNull();
     return result != null;
   }
-
-  /// Checks if a status truly exists in the database (not just virtual from getById override).
-  bool rowExistsInDb(String id) {
-    // This is overridden in the command handler to check DB directly
-    // By default, if we got here via getById, it exists
-    throw UnsupportedError('Use DriftTaskStatusRepository with database access');
-  }
 }

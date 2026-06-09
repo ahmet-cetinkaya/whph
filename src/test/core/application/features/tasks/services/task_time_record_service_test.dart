@@ -131,6 +131,13 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   }
 
   List<TaskTimeRecord> getAllRecords() => _records.toList();
+
+  @override
+  Future<void> updateMultiple(List<TaskTimeRecord> items) async {
+    for (final item in items) {
+      await update(item);
+    }
+  }
 }
 
 // Error throwing repository for testing specific error scenarios
@@ -264,6 +271,13 @@ class _ErrorThrowingTaskTimeRecordRepository implements ITaskTimeRecordRepositor
       throw Exception(errorMessage);
     }
     return {};
+  }
+
+  @override
+  Future<void> updateMultiple(List<TaskTimeRecord> items) async {
+    if (methodToThrow == 'updateMultiple') {
+      throw Exception(errorMessage);
+    }
   }
 }
 

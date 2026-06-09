@@ -56,6 +56,9 @@ tasks:
       label: Titel
     total_elapsed_time: Total Förfluten Tid
   errors:
+    task_status_invalid_color: Ogiltigt färgformat. Förväntat 6-siffrigt hex (t.ex. FF5722)
+    task_status_name_empty: Statusnamnet kan inte vara tomt
+    task_status_name_too_long: Statusnamnet får inte överstiga 50 tecken
     task_status_not_found: Uppgiftsstatus hittades inte
     task_status_builtin: Inbyggda statusar kan inte tas bort
     add_tag: Oväntat fel uppstod vid tillägg av tagg

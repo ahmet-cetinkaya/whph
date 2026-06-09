@@ -57,6 +57,9 @@ tasks:
       label: Tittel
     total_elapsed_time: Total Forløpt Tid
   errors:
+    task_status_invalid_color: Ugyldig fargeformat. Forventet 6-sifret heks (f.eks. FF5722)
+    task_status_name_empty: Statusnavnet kan ikke være tomt
+    task_status_name_too_long: Statusnavnet kan ikke overstige 50 tegn
     task_status_not_found: Oppgavestatus ikke funnet
     task_status_builtin: Innebygde statuser kan ikke slettes
     add_tag: Uventet feil oppstod under tilføyelse av tag
