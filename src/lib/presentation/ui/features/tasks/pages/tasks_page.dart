@@ -29,6 +29,8 @@ import 'package:whph/core/application/features/tasks/commands/complete_task_comm
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_group_creation_handler.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_calendar_view.dart';
+import 'package:whph/presentation/ui/features/tasks/services/task_calendar_service.dart';
 
 class TasksPage extends StatefulWidget {
   static const String route = '/tasks';
@@ -70,6 +72,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
   bool _forceOriginalLayout = false;
   TaskViewMode _viewMode = TaskViewMode.list;
+  TaskCalendarService? _calendarService;
 
   String? _handledTaskId;
   Timer? _autoRefreshUITimer;
@@ -247,6 +250,16 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         if (!_sortConfig.enableGrouping || _sortConfig.groupOption == null) {
           _sortConfig = TaskDefaults.boardSorting;
         }
+      }
+
+      if (mode == TaskViewMode.calendar) {
+        _calendarService ??= TaskCalendarService(container.resolve<Mediator>());
+        _calendarService!.setFilters(
+          tags: _showNoTagsFilter ? [] : _selectedTagIds,
+          noTags: _showNoTagsFilter,
+          showCompleted: _showCompletedTasks,
+          search: _searchQuery,
+        );
       }
     });
   }
@@ -448,33 +461,42 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
               onViewModeChange: _onViewModeChange,
             ),
 
-            // Task List
+            // Task List / Calendar View
             if (_isTaskListVisible)
               Expanded(
-                child: TaskList(
-                  key: _taskListKey,
-                  filterByCompleted: _showCompletedTasks,
-                  filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
-                  filterNoTags: _showNoTagsFilter,
-                  filterByPlannedStartDate: _effectiveFilterStartDate,
-                  filterByPlannedEndDate: _effectiveFilterEndDate,
-                  filterByDeadlineStartDate: _effectiveFilterStartDate,
-                  filterByDeadlineEndDate: _effectiveFilterEndDate,
-                  filterDateOr: true,
-                  includeNullDates: _dateFilterSetting?.includeNullDates ?? false,
-                  search: _searchQuery,
-                  includeSubTasks: _showSubTasks,
-                  onClickTask: (task) => _openDetails(task.id),
-                  onList: _onDataListed,
-                  onTaskCompleted: _onTaskCompleted,
-                  enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
-                  forceOriginalLayout: _forceOriginalLayout,
-                  sortConfig: _sortConfig,
-                  useParentScroll: false,
-                  paginationMode: PaginationMode.infinityScroll,
-                  viewMode: _viewMode,
-                  onAddToGroup: _onAddToGroup,
-                ),
+                child: _viewMode == TaskViewMode.calendar && _calendarService != null
+                    ? TaskCalendarView(
+                        calendarService: _calendarService!,
+                        onOpenDetails: _openDetails,
+                        onCreateTask: (date) {
+                          // Open add dialog with the selected date
+                        },
+                        onInitialLoadComplete: () => _onDataListed(0),
+                      )
+                    : TaskList(
+                        key: _taskListKey,
+                        filterByCompleted: _showCompletedTasks,
+                        filterByTags: _showNoTagsFilter ? [] : _selectedTagIds,
+                        filterNoTags: _showNoTagsFilter,
+                        filterByPlannedStartDate: _effectiveFilterStartDate,
+                        filterByPlannedEndDate: _effectiveFilterEndDate,
+                        filterByDeadlineStartDate: _effectiveFilterStartDate,
+                        filterByDeadlineEndDate: _effectiveFilterEndDate,
+                        filterDateOr: true,
+                        includeNullDates: _dateFilterSetting?.includeNullDates ?? false,
+                        search: _searchQuery,
+                        includeSubTasks: _showSubTasks,
+                        onClickTask: (task) => _openDetails(task.id),
+                        onList: _onDataListed,
+                        onTaskCompleted: _onTaskCompleted,
+                        enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
+                        forceOriginalLayout: _forceOriginalLayout,
+                        sortConfig: _sortConfig,
+                        useParentScroll: false,
+                        paginationMode: PaginationMode.infinityScroll,
+                        viewMode: _viewMode,
+                        onAddToGroup: _onAddToGroup,
+                      ),
               ),
           ],
         ),

@@ -314,6 +314,7 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   // View Mode
   static const String viewModeListTooltip = 'tasks.view_mode.list_tooltip';
   static const String viewModeBoardTooltip = 'tasks.view_mode.board_tooltip';
+  static const String viewModeCalendarTooltip = 'tasks.view_mode.calendar_tooltip';
   static const String boardCrossColumnMoveNotSupported = 'tasks.board.cross_column_move_not_supported';
 
   // Status management

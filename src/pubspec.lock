@@ -704,6 +704,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
+  kalender:
+    dependency: "direct main"
+    description:
+      name: kalender
+      sha256: "00a4305c614ef71279c6512a406aeab9f9f99707b7ca0eb3443896847164b587"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.0"
   kiwi:
     dependency: "direct main"
     description:
@@ -744,6 +752,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  linked_pageview:
+    dependency: transitive
+    description:
+      name: linked_pageview
+      sha256: "795972b7d7c9b8cdf133c0328956ce32f068ebfdff7bb2012068df8fcd8a1664"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.5"
   lints:
     dependency: transitive
     description:
@@ -1168,6 +1184,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  scrollable_positioned_list:
+    dependency: transitive
+    description:
+      name: scrollable_positioned_list
+      sha256: "1b54d5f1329a1e263269abc9e2543d90806131aa14fe7c6062a8054d57249287"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.8"
   share_plus:
     dependency: "direct main"
     description:
@@ -1509,6 +1533,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      sha256: "64e16458a0ea9b99260ceb5467a214c1f298d647c659af1bff6d3bf82536b1ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   url_launcher:
     dependency: "direct main"
     description:
