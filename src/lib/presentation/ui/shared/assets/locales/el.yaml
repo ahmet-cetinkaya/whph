@@ -349,6 +349,7 @@ shared:
     report_error: Αναφορά
   units:
     days: ημέρες
+    days_short: η
     hours: ώρες
     hours_short: h
     minutes: λεπτά

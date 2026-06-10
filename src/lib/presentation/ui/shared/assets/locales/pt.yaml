@@ -340,6 +340,7 @@ shared:
     report_error: Relatar
   units:
     days: dias
+    days_short: d
     hours: h
     hours_short: h
     minutes: min

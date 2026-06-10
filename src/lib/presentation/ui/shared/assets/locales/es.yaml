@@ -345,6 +345,7 @@ shared:
     report_error: Reportar
   units:
     days: días
+    days_short: d
     hours: h
     hours_short: h
     minutes: min

@@ -327,6 +327,7 @@ shared:
     report_error: Rapporter
   units:
     days: dage
+    days_short: d
     hours: timer
     hours_short: h
     minutes: min

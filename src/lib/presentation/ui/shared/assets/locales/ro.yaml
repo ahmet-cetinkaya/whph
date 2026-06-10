@@ -333,6 +333,7 @@ shared:
     report_error: Raportează
   units:
     days: zile
+    days_short: z
     hours: ore
     hours_short: h
     minutes: min

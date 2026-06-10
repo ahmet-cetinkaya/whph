@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' show NumericInput;
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/ui/shared/components/estimated_time_input.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
@@ -52,15 +52,9 @@ class EstimatedTimeBuilder {
         ),
         SizedBox(height: 16),
         // Estimated Time Input
-        NumericInput(
-          initialValue: estimatedTime ?? 0,
-          minValue: 0,
-          maxValue: 480, // 8 hours maximum
-          incrementValue: 10,
-          decrementValue: 10,
+        EstimatedTimeInput(
+          totalMinutes: estimatedTime ?? 0,
           onValueChanged: onValueChanged,
-          valueSuffix: translationService.translate(SharedTranslationKeys.minutesShort),
-          iconSize: 20,
         ),
         SizedBox(height: 16),
         // Action Buttons
@@ -124,17 +118,9 @@ class EstimatedTimeBuilder {
     VoidCallback? onClear,
     bool showClearButton = true,
   }) {
-    final translationService = container.resolve<ITranslationService>();
-
-    return NumericInput(
-      initialValue: estimatedTime ?? 0,
-      minValue: 0,
-      maxValue: 480, // 8 hours maximum
-      incrementValue: 5,
-      decrementValue: 5,
+    return EstimatedTimeInput(
+      totalMinutes: estimatedTime ?? 0,
       onValueChanged: onValueChanged,
-      valueSuffix: translationService.translate(SharedTranslationKeys.minutesShort),
-      iconSize: 20,
     );
   }
 }

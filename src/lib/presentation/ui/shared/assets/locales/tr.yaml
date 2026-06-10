@@ -323,6 +323,7 @@ shared:
     report_error: Bildir
   units:
     days: gün
+    days_short: g
     hours: sa
     hours_short: h
     minutes: dk

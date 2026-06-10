@@ -327,6 +327,7 @@ shared:
     report_error: Сообщить
   units:
     days: дни
+    days_short: д
     hours: ч
     hours_short: h
     minutes: мин
