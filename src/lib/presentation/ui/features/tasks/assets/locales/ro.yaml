@@ -518,8 +518,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Vizualizare tablă
+    calendar_tooltip: Vizualizare calendar
   board:
     cross_column_move_not_supported: Mutarea sarcinilor între coloane nu este acceptată
+  calendar:
+    unplanned_panel:
+      title: Sarcini neplanificate
+      close: Închide
+      empty: Toate sarcinile sunt planificate
+      open: Afișează sarcinile neplanificate
+      arm_hint: 'Atinge o zi pentru a planifica „{title}”'
+      arm_cancel: Anulează
+      arm_button: Programează în calendar
   statuses:
     builtin:
       todo: De făcut

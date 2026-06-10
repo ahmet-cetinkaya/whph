@@ -167,6 +167,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
         _selectedTagIds = tagOptions.isEmpty ? null : tagOptions.map((option) => option.value).toList();
         _showNoTagsFilter = isNoneSelected;
       });
+      _updateCalendarFilters();
     }
   }
 
@@ -206,6 +207,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
       setState(() {
         _searchQuery = query;
       });
+      _updateCalendarFilters();
     }
   }
 
@@ -214,6 +216,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
       setState(() {
         _showCompletedTasks = showCompleted;
       });
+      _updateCalendarFilters();
     }
   }
 
@@ -230,6 +233,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     setState(() {
       _sortConfig = newConfig;
     });
+    _updateCalendarFilters();
   }
 
   void _onLayoutToggleChange(bool forceOriginalLayout) {
@@ -237,6 +241,20 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     setState(() {
       _forceOriginalLayout = forceOriginalLayout;
     });
+  }
+
+  void _updateCalendarFilters() {
+    if (_calendarService == null || _viewMode != TaskViewMode.calendar) return;
+    _calendarService!.setFilters(
+      tags: _showNoTagsFilter ? [] : _selectedTagIds,
+      noTags: _showNoTagsFilter,
+      showCompleted: _showCompletedTasks,
+      search: _searchQuery,
+      sortBy: _sortConfig.orderOptions,
+      groupBy: _sortConfig.groupOption,
+      enableGrouping: _sortConfig.enableGrouping,
+    );
+    _calendarService!.reloadWithFilters();
   }
 
   void _onViewModeChange(TaskViewMode mode) {
@@ -259,6 +277,9 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
           noTags: _showNoTagsFilter,
           showCompleted: _showCompletedTasks,
           search: _searchQuery,
+          sortBy: _sortConfig.orderOptions,
+          groupBy: _sortConfig.groupOption,
+          enableGrouping: _sortConfig.enableGrouping,
         );
       }
     });

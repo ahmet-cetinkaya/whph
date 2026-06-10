@@ -557,8 +557,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: 보드 보기
+    calendar_tooltip: 캘린더 보기
   board:
     cross_column_move_not_supported: 열 간에 작업을 이동하는 것은 지원되지 않습니다
+  calendar:
+    unplanned_panel:
+      title: 예정되지 않은 작업
+      close: 닫기
+      empty: 모든 작업이 예정되었습니다
+      open: 예정되지 않은 작업 표시
+      arm_hint: '“{title}” 일정을 잡으려면 날짜를 탭하세요'
+      arm_cancel: 취소
+      arm_button: 캘린더에 예약
   statuses:
     builtin:
       todo: 할 일

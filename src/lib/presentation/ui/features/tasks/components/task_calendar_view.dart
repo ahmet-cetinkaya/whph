@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/features/tasks/components/unplanned_tasks_panel.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_calendar_event.dart';
 import 'package:whph/presentation/ui/features/tasks/services/task_calendar_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
 enum CalendarSubView { month, week, day, schedule }
 
@@ -27,6 +31,7 @@ class TaskCalendarView extends StatefulWidget {
 
 class _TaskCalendarViewState extends State<TaskCalendarView> {
   final _tasksService = container.resolve<TasksService>();
+  final _translationService = container.resolve<ITranslationService>();
 
   CalendarSubView _currentSubView = CalendarSubView.week;
   ViewConfiguration _viewConfiguration = MultiDayViewConfiguration.week();
@@ -36,6 +41,10 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   bool _listenerAdded = false;
   bool _isTransitioning = false;
   bool _tasksListenersAdded = false;
+  bool _isPanelOpen = false;
+
+  static const double _panelWidth = 240.0;
+  static const double _toggleWidth = 32.0;
 
   @override
   void initState() {
@@ -111,7 +120,6 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
 
     widget.calendarService.resetEventsController();
 
-    // Frame 1: Remove CalendarView from tree so old widget fully disposes
     setState(() {
       _calendarKey = UniqueKey();
       _currentSubView = subView;
@@ -128,14 +136,12 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
       }
     });
 
-    // Frame 2: Old widget fully disposed. Now create new CalendarView
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       setState(() {
         _isTransitioning = false;
       });
 
-      // Frame 3: New widget mounted, safe to load events and add listener
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
 
@@ -153,22 +159,26 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   void _onTaskCreatedListener() {
     if (!mounted) return;
     widget.calendarService.onTaskCreated(_tasksService.onTaskCreated.value ?? '');
+    if (_isPanelOpen) widget.calendarService.loadUnplannedTasks();
   }
 
   void _onTaskUpdatedListener() {
     if (!mounted) return;
     widget.calendarService.onTaskUpdated(_tasksService.onTaskUpdated.value ?? '');
+    if (_isPanelOpen) widget.calendarService.loadUnplannedTasks();
   }
 
   void _onTaskDeletedListener() {
     if (!mounted) return;
     final taskId = _tasksService.onTaskDeleted.value;
     if (taskId != null) widget.calendarService.onTaskDeleted(taskId);
+    if (_isPanelOpen) widget.calendarService.loadUnplannedTasks();
   }
 
   void _onTaskCompletedListener() {
     if (!mounted) return;
     widget.calendarService.onTaskUpdated(_tasksService.onTaskCompleted.value ?? '');
+    if (_isPanelOpen) widget.calendarService.loadUnplannedTasks();
   }
 
   void _addTasksServiceListeners() {
@@ -189,6 +199,14 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
     _tasksListenersAdded = false;
   }
 
+  Future<void> _togglePanel() async {
+    setState(() => _isPanelOpen = !_isPanelOpen);
+    widget.calendarService.isPanelOpen = _isPanelOpen;
+    if (_isPanelOpen) {
+      await widget.calendarService.loadUnplannedTasks();
+    }
+  }
+
   @override
   void dispose() {
     _removeTasksServiceListeners();
@@ -205,36 +223,157 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
     return Column(
       children: [
         _buildSubViewToolbar(),
+        ListenableBuilder(
+          listenable: widget.calendarService,
+          builder: (context, _) => _buildArmedHint(),
+        ),
         Expanded(
-          child: _isTransitioning
-              ? const SizedBox.shrink()
-              : CalendarView<TaskCalendarEventData>(
-                  key: _calendarKey,
-                  eventsController: widget.calendarService.eventsController,
-                  calendarController: widget.calendarService.calendarController,
-                  viewConfiguration: _viewConfiguration,
-                  callbacks: CalendarCallbacks<TaskCalendarEventData>(
-                    onEventTapped: _onEventTapped,
-                    onEventChanged: _onEventChanged,
-                    onTapped: _onEmptySlotTapped,
-                  ),
-                  header: CalendarHeader<TaskCalendarEventData>(
-                    multiDayTileComponents: _buildTileComponents(),
-                  ),
-                  body: CalendarBody<TaskCalendarEventData>(
-                    multiDayTileComponents: _buildTileComponents(),
-                    monthTileComponents: _buildTileComponents(),
-                    scheduleTileComponents: _buildScheduleTileComponents(),
-                    interaction: CalendarInteraction(
-                      allowResizing: true,
-                      allowRescheduling: true,
-                      allowEventCreation: false,
+          child: Row(
+            children: [
+              Expanded(
+                child: _isTransitioning
+                    ? const SizedBox.shrink()
+                    : ListenableBuilder(
+                        listenable: widget.calendarService,
+                        builder: (context, _) => _buildCalendarView(),
+                      ),
+              ),
+              _buildPanelToggleButton(),
+              if (_isPanelOpen) ...[
+                const VerticalDivider(width: 1),
+                SizedBox(
+                  width: _panelWidth,
+                  child: ListenableBuilder(
+                    listenable: widget.calendarService,
+                    builder: (context, _) => UnplannedTasksPanel(
+                      tasks: widget.calendarService.unplannedTasks,
+                      onArm: widget.calendarService.armTask,
+                      onOpenDetails: (task) => widget.onOpenDetails(task.id),
+                      armedTaskId: widget.calendarService.armedTask?.id,
+                      groupLabelResolver: (task) =>
+                          widget.calendarService.resolveGroupLabel(task, _translationService.translate),
+                      onClose: () {
+                        setState(() => _isPanelOpen = false);
+                        widget.calendarService.isPanelOpen = false;
+                      },
                     ),
-                    snapping: const CalendarSnapping(snapIntervalMinutes: 15),
                   ),
                 ),
+              ],
+            ],
+          ),
         ),
       ],
+    );
+  }
+
+  Widget _buildPanelToggleButton() {
+    final unplannedCount = widget.calendarService.unplannedTasks.length;
+
+    return SizedBox(
+      width: _toggleWidth,
+      child: Material(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        child: InkWell(
+          onTap: _togglePanel,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                _isPanelOpen ? Icons.chevron_right : Icons.chevron_left,
+                size: AppTheme.iconSizeSmall,
+              ),
+              if (!_isPanelOpen && unplannedCount > 0)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
+                    ),
+                    child: Text(
+                      '$unplannedCount',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCalendarView() {
+    final isArmed = widget.calendarService.armedTask != null;
+
+    return CalendarView<TaskCalendarEventData>(
+      key: _calendarKey,
+      eventsController: widget.calendarService.eventsController,
+      calendarController: widget.calendarService.calendarController,
+      viewConfiguration: _viewConfiguration,
+      components: CalendarComponents<TaskCalendarEventData>(
+        scheduleComponents: ScheduleComponents<TaskCalendarEventData>(
+          leadingDateBuilder: _buildScheduleLeadingDate,
+        ),
+      ),
+      callbacks: CalendarCallbacks<TaskCalendarEventData>(
+        onEventTapped: _onEventTapped,
+        onEventChanged: _onEventChanged,
+        onTapped: _onEmptySlotTapped,
+      ),
+      header: CalendarHeader<TaskCalendarEventData>(
+        multiDayTileComponents: _buildTileComponents(),
+      ),
+      body: CalendarBody<TaskCalendarEventData>(
+        multiDayTileComponents: _buildTileComponents(),
+        monthTileComponents: _buildTileComponents(),
+        scheduleTileComponents: _buildScheduleTileComponents(),
+        scheduleBodyConfiguration: ScheduleBodyConfiguration(
+          emptyDay: isArmed ? EmptyDayBehavior.show : EmptyDayBehavior.hide,
+        ),
+        interaction: CalendarInteraction(
+          allowResizing: true,
+          allowRescheduling: true,
+          allowEventCreation: false,
+        ),
+        snapping: const CalendarSnapping(snapIntervalMinutes: 15),
+      ),
+    );
+  }
+
+  Widget _buildArmedHint() {
+    final armed = widget.calendarService.armedTask;
+    if (armed == null) return const SizedBox.shrink();
+
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      color: colorScheme.primaryContainer,
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall, vertical: AppTheme.sizeXSmall),
+      child: Row(
+        children: [
+          Icon(Icons.touch_app, size: AppTheme.iconSizeSmall, color: colorScheme.onPrimaryContainer),
+          const SizedBox(width: AppTheme.sizeXSmall),
+          Expanded(
+            child: Text(
+              _translationService.translate(
+                TaskTranslationKeys.unplannedTasksPanelArmHint,
+                namedArgs: {'title': armed.title},
+              ),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.onPrimaryContainer),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          TextButton(
+            onPressed: widget.calendarService.disarmTask,
+            child: Text(_translationService.translate(TaskTranslationKeys.unplannedTasksPanelArmCancel)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -281,6 +420,12 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   }
 
   void _onEmptySlotTapped(DateTime date) {
+    final armed = widget.calendarService.armedTask;
+    if (armed != null) {
+      final normalizedDate = DateTime(date.year, date.month, date.day);
+      widget.calendarService.assignTaskToDate(armed.id, normalizedDate);
+      return;
+    }
     if (widget.onCreateTask != null) {
       widget.onCreateTask!(date);
     }
@@ -324,6 +469,51 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   ScheduleTileComponents<TaskCalendarEventData> _buildScheduleTileComponents() {
     return ScheduleTileComponents<TaskCalendarEventData>(
       tileBuilder: _buildEventTile,
+      emptyItemBuilder: (tileRange) => _buildScheduleEmptyDay(tileRange.start),
+    );
+  }
+
+  /// Assigns the armed task to [date] when scheduling via the schedule view.
+  /// Returns true if a task was armed and assigned.
+  bool _assignArmedToDate(DateTime date) {
+    final armed = widget.calendarService.armedTask;
+    if (armed == null) return false;
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    widget.calendarService.assignTaskToDate(armed.id, normalizedDate);
+    return true;
+  }
+
+  Widget _buildScheduleEmptyDay(DateTime date) {
+    final isArmed = widget.calendarService.armedTask != null;
+    final label = Text(
+      _translationService.translate(TaskTranslationKeys.unplannedTasksPanelEmpty),
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppTheme.secondaryTextColor),
+    );
+
+    if (!isArmed) return label;
+
+    return InkWell(
+      onTap: () => _assignArmedToDate(date),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
+        child: Row(
+          children: [
+            Icon(Icons.add, size: AppTheme.iconSizeSmall, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: AppTheme.sizeXSmall),
+            Expanded(child: label),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScheduleLeadingDate(InternalDateTime date, ScheduleDateStyle? style) {
+    final defaultWidget = ScheduleDate.builder(date, style);
+    if (widget.calendarService.armedTask == null) return defaultWidget;
+
+    return InkWell(
+      onTap: () => _assignArmedToDate(date),
+      child: defaultWidget,
     );
   }
 

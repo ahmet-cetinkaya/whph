@@ -548,8 +548,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: 看板视图
+    calendar_tooltip: 日历视图
   board:
     cross_column_move_not_supported: 不支持在列之间移动任务
+  calendar:
+    unplanned_panel:
+      title: 未计划的任务
+      close: 关闭
+      empty: 所有任务均已计划
+      open: 显示未计划的任务
+      arm_hint: '点按某一天以安排“{title}”'
+      arm_cancel: 取消
+      arm_button: 在日历中安排
   statuses:
     builtin:
       todo: 待办

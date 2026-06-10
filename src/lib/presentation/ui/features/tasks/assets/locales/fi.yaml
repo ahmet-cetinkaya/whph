@@ -509,8 +509,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Taulukkonäkymä
+    calendar_tooltip: Kalenterinäkymä
   board:
     cross_column_move_not_supported: Tehtävien siirtäminen sarakkeiden välillä ei ole tuettu
+  calendar:
+    unplanned_panel:
+      title: Suunnittelemattomat tehtävät
+      close: Sulje
+      empty: Kaikki tehtävät on aikataulutettu
+      open: Näytä suunnittelemattomat tehtävät
+      arm_hint: 'Napauta päivää ajoittaaksesi ”{title}”'
+      arm_cancel: Peruuta
+      arm_button: Ajoita kalenteriin
   statuses:
     builtin:
       todo: Tehtävä

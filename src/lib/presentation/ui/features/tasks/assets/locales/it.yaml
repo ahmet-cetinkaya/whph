@@ -600,8 +600,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Vista bacheca
+    calendar_tooltip: Vista calendario
   board:
     cross_column_move_not_supported: Lo spostamento di attività tra colonne non è supportato
+  calendar:
+    unplanned_panel:
+      title: Attività non pianificate
+      close: Chiudi
+      empty: Tutte le attività sono pianificate
+      open: Mostra attività non pianificate
+      arm_hint: 'Tocca un giorno per pianificare «{title}»'
+      arm_cancel: Annulla
+      arm_button: Pianifica nel calendario
   statuses:
     builtin:
       todo: Da fare

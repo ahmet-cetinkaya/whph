@@ -594,8 +594,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Pohled tabule
+    calendar_tooltip: Zobrazení kalendáře
   board:
     cross_column_move_not_supported: Přesun úkolů mezi sloupci není podporován
+  calendar:
+    unplanned_panel:
+      title: Nenaplánované úkoly
+      close: Zavřít
+      empty: Všechny úkoly jsou naplánované
+      open: Zobrazit nenaplánované úkoly
+      arm_hint: 'Klepnutím na den naplánujte „{title}“'
+      arm_cancel: Zrušit
+      arm_button: Naplánovat do kalendáře
   statuses:
     builtin:
       todo: K provedení

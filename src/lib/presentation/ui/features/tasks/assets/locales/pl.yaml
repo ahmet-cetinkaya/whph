@@ -594,8 +594,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Widok tablicy
+    calendar_tooltip: Widok kalendarza
   board:
     cross_column_move_not_supported: Przenoszenie zadań między kolumnami nie jest obsługiwane
+  calendar:
+    unplanned_panel:
+      title: Niezaplanowane zadania
+      close: Zamknij
+      empty: Wszystkie zadania są zaplanowane
+      open: Pokaż niezaplanowane zadania
+      arm_hint: 'Dotknij dnia, aby zaplanować „{title}”'
+      arm_cancel: Anuluj
+      arm_button: Zaplanuj w kalendarzu
   statuses:
     builtin:
       todo: Do zrobienia

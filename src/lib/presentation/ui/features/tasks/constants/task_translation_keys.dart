@@ -317,6 +317,15 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String viewModeCalendarTooltip = 'tasks.view_mode.calendar_tooltip';
   static const String boardCrossColumnMoveNotSupported = 'tasks.board.cross_column_move_not_supported';
 
+  // Calendar - Unplanned Tasks Panel
+  static const String unplannedTasksPanelTitle = 'tasks.calendar.unplanned_panel.title';
+  static const String unplannedTasksPanelClose = 'tasks.calendar.unplanned_panel.close';
+  static const String unplannedTasksPanelEmpty = 'tasks.calendar.unplanned_panel.empty';
+  static const String unplannedTasksPanelOpen = 'tasks.calendar.unplanned_panel.open';
+  static const String unplannedTasksPanelArmHint = 'tasks.calendar.unplanned_panel.arm_hint';
+  static const String unplannedTasksPanelArmCancel = 'tasks.calendar.unplanned_panel.arm_cancel';
+  static const String unplannedTasksPanelArmButton = 'tasks.calendar.unplanned_panel.arm_button';
+
   // Status management
   static const String statusBuiltInTodo = 'tasks.statuses.builtin.todo';
   static const String statusBuiltInDone = 'tasks.statuses.builtin.done';

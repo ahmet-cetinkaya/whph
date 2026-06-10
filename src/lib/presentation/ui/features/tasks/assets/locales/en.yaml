@@ -524,8 +524,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Board view
+    calendar_tooltip: Calendar view
   board:
     cross_column_move_not_supported: Moving tasks between columns is not supported
+  calendar:
+    unplanned_panel:
+      title: Unplanned Tasks
+      close: Close
+      empty: All tasks are scheduled
+      open: Show unplanned tasks
+      arm_hint: 'Tap a day to schedule “{title}”'
+      arm_cancel: Cancel
+      arm_button: Schedule on calendar
   statuses:
     builtin:
       todo: To Do

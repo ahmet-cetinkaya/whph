@@ -1,8 +1,14 @@
+import 'package:acore/queries/models/sort_option.dart';
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
+import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_calendar_event.dart';
 
 class TaskCalendarService extends ChangeNotifier {
@@ -18,6 +24,32 @@ class TaskCalendarService extends ChangeNotifier {
   bool _filterNoTags = false;
   bool _showCompleted = false;
   String? _searchQuery;
+  List<SortOption<TaskSortFields>>? _sortBy;
+  SortOption<TaskSortFields>? _groupBy;
+  bool _enableGrouping = false;
+
+  List<TaskListItem> _unplannedTasks = [];
+  List<TaskListItem> get unplannedTasks => _unplannedTasks;
+
+  Map<String, TaskStatusListItem> _statusById = {};
+  Map<String, TaskStatusListItem> get statusById => _statusById;
+
+  bool _isPanelOpen = false;
+  set isPanelOpen(bool value) => _isPanelOpen = value;
+
+  TaskListItem? _armedTask;
+  TaskListItem? get armedTask => _armedTask;
+
+  void armTask(TaskListItem task) {
+    _armedTask = (_armedTask?.id == task.id) ? null : task;
+    notifyListeners();
+  }
+
+  void disarmTask() {
+    if (_armedTask == null) return;
+    _armedTask = null;
+    notifyListeners();
+  }
 
   TaskCalendarService(this._mediator);
 
@@ -26,11 +58,22 @@ class TaskCalendarService extends ChangeNotifier {
     bool noTags = false,
     bool showCompleted = false,
     String? search,
+    List<SortOption<TaskSortFields>>? sortBy,
+    SortOption<TaskSortFields>? groupBy,
+    bool enableGrouping = false,
   }) {
     _filterTags = tags;
     _filterNoTags = noTags;
     _showCompleted = showCompleted;
     _searchQuery = search;
+    _sortBy = sortBy;
+    _groupBy = groupBy;
+    _enableGrouping = enableGrouping;
+  }
+
+  Future<void> reloadWithFilters() async {
+    await _reloadCurrentRange();
+    if (_isPanelOpen) await loadUnplannedTasks();
   }
 
   Future<void> loadEventsForRange(DateTimeRange range) async {
@@ -85,9 +128,7 @@ class TaskCalendarService extends ChangeNotifier {
       );
     } catch (e) {
       debugPrint('TaskCalendarService: Failed to save event change: $e');
-      eventsController.removeEvent(updated);
-      eventsController.addEvent(original);
-      notifyListeners();
+      _reloadCurrentRange();
     }
   }
 
@@ -100,8 +141,93 @@ class TaskCalendarService extends ChangeNotifier {
   }
 
   void onTaskDeleted(String taskId) {
-    eventsController.removeWhere((key, event) => event.data?.taskId == taskId);
-    notifyListeners();
+    _reloadCurrentRange();
+  }
+
+  Future<void> loadUnplannedTasks() async {
+    try {
+      if (_enableGrouping && _statusById.isEmpty) {
+        await _loadStatuses();
+      }
+
+      final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+        GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 500,
+          includeNullDates: true,
+          filterByCompleted: false,
+          filterByTags: _filterNoTags ? [] : _filterTags,
+          filterNoTags: _filterNoTags,
+          filterBySearch: _searchQuery,
+          sortBy: _sortBy,
+          groupBy: _enableGrouping ? _groupBy : null,
+          enableGrouping: _enableGrouping,
+        ),
+      );
+      _unplannedTasks = response.items
+          .where((task) => task.plannedDate == null && !task.isCompleted)
+          .toList();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('TaskCalendarService: Failed to load unplanned tasks: $e');
+    }
+  }
+
+  /// Resolves the display label for a task's group, handling status grouping
+  /// (where [TaskListItem.groupName] is a statusId) and translatable keys.
+  String resolveGroupLabel(TaskListItem task, String Function(String key) translate) {
+    final groupName = task.groupName ?? '';
+
+    final status = _statusById[groupName];
+    if (status != null) {
+      if (status.name.isEmpty) {
+        return translate(status.isDoneStatus
+            ? TaskTranslationKeys.statusBuiltInDone
+            : TaskTranslationKeys.statusBuiltInTodo);
+      }
+      return status.name;
+    }
+
+    return task.isGroupNameTranslatable ? translate(groupName) : groupName;
+  }
+
+  Future<void> _loadStatuses() async {
+    try {
+      final response = await _mediator.send<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse>(
+        const GetListTaskStatusesQuery(pageSize: 100),
+      );
+      _statusById = {for (final status in response.items) status.id: status};
+    } catch (e) {
+      debugPrint('TaskCalendarService: Failed to load statuses: $e');
+    }
+  }
+
+  Future<void> assignTaskToDate(String taskId, DateTime date) async {
+    try {
+      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+        GetTaskQuery(id: taskId),
+      );
+
+      await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
+        SaveTaskCommand(
+          id: task.id,
+          title: task.title,
+          plannedDate: date,
+          priority: task.priority,
+          description: task.description,
+          deadlineDate: task.deadlineDate,
+          estimatedTime: task.estimatedTime,
+          order: task.order,
+          statusId: task.statusId,
+        ),
+      );
+      _unplannedTasks.removeWhere((t) => t.id == taskId);
+      if (_armedTask?.id == taskId) _armedTask = null;
+      notifyListeners();
+      await _reloadCurrentRange();
+    } catch (e) {
+      debugPrint('TaskCalendarService: Failed to assign task to date: $e');
+    }
   }
 
   Future<void> _reloadCurrentRange() async {

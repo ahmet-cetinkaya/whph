@@ -596,8 +596,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Tavlevisning
+    calendar_tooltip: Kalendervisning
   board:
     cross_column_move_not_supported: Flytning af opgaver mellem kolonner understøttes ikke
+  calendar:
+    unplanned_panel:
+      title: Uplanlagte opgaver
+      close: Luk
+      empty: Alle opgaver er planlagt
+      open: Vis uplanlagte opgaver
+      arm_hint: 'Tryk på en dag for at planlægge “{title}”'
+      arm_cancel: Annuller
+      arm_button: Planlæg i kalender
   statuses:
     builtin:
       todo: At gøre

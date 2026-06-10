@@ -597,8 +597,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Вигляд дошки
+    calendar_tooltip: Вигляд календаря
   board:
     cross_column_move_not_supported: Переміщення завдань між стовпцями не підтримується
+  calendar:
+    unplanned_panel:
+      title: Незаплановані завдання
+      close: Закрити
+      empty: Усі завдання заплановані
+      open: Показати незаплановані завдання
+      arm_hint: 'Торкніться дня, щоб запланувати «{title}»'
+      arm_cancel: Скасувати
+      arm_button: Запланувати в календарі
   statuses:
     builtin:
       todo: До виконання

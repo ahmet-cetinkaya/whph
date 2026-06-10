@@ -604,8 +604,18 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Vue tableau
+    calendar_tooltip: Vue calendrier
   board:
     cross_column_move_not_supported: Le déplacement de tâches entre colonnes n'est pas pris en charge
+  calendar:
+    unplanned_panel:
+      title: Tâches non planifiées
+      close: Fermer
+      empty: Toutes les tâches sont planifiées
+      open: Afficher les tâches non planifiées
+      arm_hint: 'Touchez un jour pour planifier « {title} »'
+      arm_cancel: Annuler
+      arm_button: Planifier dans le calendrier
   statuses:
     builtin:
       todo: À faire
