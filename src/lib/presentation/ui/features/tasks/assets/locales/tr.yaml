@@ -565,6 +565,11 @@ tasks:
       arm_hint: 'Planlamak için bir gün seçin: “{title}”'
       arm_cancel: İptal
       arm_button: Takvime planla
+    sub_view:
+      month: 'Ay'
+      week: 'Hafta'
+      day: 'Gün'
+      schedule: 'Program'
   statuses:
     builtin:
       todo: Yapılacak

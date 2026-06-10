@@ -606,6 +606,11 @@ tasks:
       arm_hint: 'Klepnutím na den naplánujte „{title}“'
       arm_cancel: Zrušit
       arm_button: Naplánovat do kalendáře
+    sub_view:
+      month: 'Měsíc'
+      week: 'Týden'
+      day: 'Den'
+      schedule: 'Rozvrh'
   statuses:
     builtin:
       todo: K provedení

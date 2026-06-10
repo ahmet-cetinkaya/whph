@@ -528,6 +528,11 @@ tasks:
       arm_hint: 'Tik op een dag om “{title}” in te plannen'
       arm_cancel: Annuleren
       arm_button: Plannen in agenda
+    sub_view:
+      month: 'Maand'
+      week: 'Week'
+      day: 'Dag'
+      schedule: 'Schema'
   statuses:
     builtin:
       todo: Te doen

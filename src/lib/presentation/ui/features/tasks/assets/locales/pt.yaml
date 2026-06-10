@@ -527,6 +527,11 @@ tasks:
       arm_hint: 'Toque num dia para planear “{title}”'
       arm_cancel: Cancelar
       arm_button: Agendar no calendário
+    sub_view:
+      month: 'Mês'
+      week: 'Semana'
+      day: 'Dia'
+      schedule: 'Agenda'
   statuses:
     builtin:
       todo: A fazer

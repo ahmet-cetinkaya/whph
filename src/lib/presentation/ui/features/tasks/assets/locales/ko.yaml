@@ -569,6 +569,11 @@ tasks:
       arm_hint: '“{title}” 일정을 잡으려면 날짜를 탭하세요'
       arm_cancel: 취소
       arm_button: 캘린더에 예약
+    sub_view:
+      month: '월'
+      week: '주'
+      day: '일'
+      schedule: '일정'
   statuses:
     builtin:
       todo: 할 일

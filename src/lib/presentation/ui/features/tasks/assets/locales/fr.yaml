@@ -616,6 +616,11 @@ tasks:
       arm_hint: 'Touchez un jour pour planifier « {title} »'
       arm_cancel: Annuler
       arm_button: Planifier dans le calendrier
+    sub_view:
+      month: 'Mois'
+      week: 'Semaine'
+      day: 'Jour'
+      schedule: 'Emploi du temps'
   statuses:
     builtin:
       todo: À faire

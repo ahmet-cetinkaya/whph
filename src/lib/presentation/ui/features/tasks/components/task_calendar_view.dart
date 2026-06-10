@@ -312,6 +312,7 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
 
     return CalendarView<TaskCalendarEventData>(
       key: _calendarKey,
+      locale: Localizations.localeOf(context).toString(),
       eventsController: widget.calendarService.eventsController,
       calendarController: widget.calendarService.calendarController,
       viewConfiguration: _viewConfiguration,
@@ -397,12 +398,13 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   }
 
   String _subViewLabel(CalendarSubView subView) {
-    return switch (subView) {
-      CalendarSubView.month => 'Month',
-      CalendarSubView.week => 'Week',
-      CalendarSubView.day => 'Day',
-      CalendarSubView.schedule => 'Schedule',
+    final key = switch (subView) {
+      CalendarSubView.month => TaskTranslationKeys.calendarSubViewMonth,
+      CalendarSubView.week => TaskTranslationKeys.calendarSubViewWeek,
+      CalendarSubView.day => TaskTranslationKeys.calendarSubViewDay,
+      CalendarSubView.schedule => TaskTranslationKeys.calendarSubViewSchedule,
     };
+    return _translationService.translate(key);
   }
 
   void _onEventTapped(CalendarEvent<TaskCalendarEventData> event, RenderBox renderBox) {

@@ -536,6 +536,11 @@ tasks:
       arm_hint: 'Tap a day to schedule “{title}”'
       arm_cancel: Cancel
       arm_button: Schedule on calendar
+    sub_view:
+      month: 'Month'
+      week: 'Week'
+      day: 'Day'
+      schedule: 'Schedule'
   statuses:
     builtin:
       todo: To Do

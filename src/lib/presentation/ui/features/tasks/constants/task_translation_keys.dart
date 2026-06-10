@@ -325,6 +325,10 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String unplannedTasksPanelArmHint = 'tasks.calendar.unplanned_panel.arm_hint';
   static const String unplannedTasksPanelArmCancel = 'tasks.calendar.unplanned_panel.arm_cancel';
   static const String unplannedTasksPanelArmButton = 'tasks.calendar.unplanned_panel.arm_button';
+  static const String calendarSubViewMonth = 'tasks.calendar.sub_view.month';
+  static const String calendarSubViewWeek = 'tasks.calendar.sub_view.week';
+  static const String calendarSubViewDay = 'tasks.calendar.sub_view.day';
+  static const String calendarSubViewSchedule = 'tasks.calendar.sub_view.schedule';
 
   // Status management
   static const String statusBuiltInTodo = 'tasks.statuses.builtin.todo';

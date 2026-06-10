@@ -521,6 +521,11 @@ tasks:
       arm_hint: 'Napauta päivää ajoittaaksesi ”{title}”'
       arm_cancel: Peruuta
       arm_button: Ajoita kalenteriin
+    sub_view:
+      month: 'Kuukausi'
+      week: 'Viikko'
+      day: 'Päivä'
+      schedule: 'Aikataulu'
   statuses:
     builtin:
       todo: Tehtävä

@@ -610,6 +610,11 @@ tasks:
       arm_hint: 'Нажмите на день, чтобы запланировать «{title}»'
       arm_cancel: Отмена
       arm_button: Запланировать в календаре
+    sub_view:
+      month: 'Месяц'
+      week: 'Неделя'
+      day: 'День'
+      schedule: 'Расписание'
   statuses:
     builtin:
       todo: К выполнению

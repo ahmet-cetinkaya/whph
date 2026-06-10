@@ -611,6 +611,11 @@ tasks:
       arm_hint: 'Toca un día para planificar «{title}»'
       arm_cancel: Cancelar
       arm_button: Programar en el calendario
+    sub_view:
+      month: 'Mes'
+      week: 'Semana'
+      day: 'Día'
+      schedule: 'Horario'
   statuses:
     builtin:
       todo: Por hacer

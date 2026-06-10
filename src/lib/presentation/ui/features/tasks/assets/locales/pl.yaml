@@ -606,6 +606,11 @@ tasks:
       arm_hint: 'Dotknij dnia, aby zaplanować „{title}”'
       arm_cancel: Anuluj
       arm_button: Zaplanuj w kalendarzu
+    sub_view:
+      month: 'Miesiąc'
+      week: 'Tydzień'
+      day: 'Dzień'
+      schedule: 'Harmonogram'
   statuses:
     builtin:
       todo: Do zrobienia

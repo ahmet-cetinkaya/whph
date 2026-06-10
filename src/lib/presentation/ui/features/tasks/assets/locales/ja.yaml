@@ -563,6 +563,11 @@ tasks:
       arm_hint: '「{title}」を予定する日をタップ'
       arm_cancel: キャンセル
       arm_button: カレンダーに予定する
+    sub_view:
+      month: '月'
+      week: '週'
+      day: '日'
+      schedule: '予定'
   statuses:
     builtin:
       todo: 未着手

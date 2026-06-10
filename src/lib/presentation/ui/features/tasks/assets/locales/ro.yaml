@@ -530,6 +530,11 @@ tasks:
       arm_hint: 'Atinge o zi pentru a planifica „{title}”'
       arm_cancel: Anulează
       arm_button: Programează în calendar
+    sub_view:
+      month: 'Lună'
+      week: 'Săptămână'
+      day: 'Zi'
+      schedule: 'Program'
   statuses:
     builtin:
       todo: De făcut

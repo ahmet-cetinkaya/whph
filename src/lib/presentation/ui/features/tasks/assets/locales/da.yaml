@@ -608,6 +608,11 @@ tasks:
       arm_hint: 'Tryk på en dag for at planlægge “{title}”'
       arm_cancel: Annuller
       arm_button: Planlæg i kalender
+    sub_view:
+      month: 'Måned'
+      week: 'Uge'
+      day: 'Dag'
+      schedule: 'Tidsplan'
   statuses:
     builtin:
       todo: At gøre

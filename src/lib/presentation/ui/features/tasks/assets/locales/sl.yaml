@@ -522,6 +522,11 @@ tasks:
       arm_hint: 'Tapnite dan za načrtovanje »{title}«'
       arm_cancel: Prekliči
       arm_button: Načrtuj v koledarju
+    sub_view:
+      month: 'Mesec'
+      week: 'Teden'
+      day: 'Dan'
+      schedule: 'Urnik'
   statuses:
     builtin:
       todo: Za opravit
