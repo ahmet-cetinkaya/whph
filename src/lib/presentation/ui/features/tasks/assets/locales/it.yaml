@@ -609,14 +609,14 @@ tasks:
       close: Chiudi
       empty: Tutte le attività sono pianificate
       open: Mostra attività non pianificate
-      arm_hint: 'Tocca un giorno per pianificare «{title}»'
+      arm_hint: "Tocca un giorno per pianificare «{title}»"
       arm_cancel: Annulla
       arm_button: Pianifica nel calendario
     sub_view:
-      month: 'Mese'
-      week: 'Settimana'
-      day: 'Giorno'
-      schedule: 'Programma'
+      month: "Mese"
+      week: "Settimana"
+      day: "Giorno"
+      schedule: "Programma"
   statuses:
     builtin:
       todo: Da fare

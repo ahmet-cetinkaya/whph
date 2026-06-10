@@ -164,9 +164,7 @@ class TaskCalendarService extends ChangeNotifier {
           enableGrouping: _enableGrouping,
         ),
       );
-      _unplannedTasks = response.items
-          .where((task) => task.plannedDate == null && !task.isCompleted)
-          .toList();
+      _unplannedTasks = response.items.where((task) => task.plannedDate == null && !task.isCompleted).toList();
       notifyListeners();
     } catch (e) {
       debugPrint('TaskCalendarService: Failed to load unplanned tasks: $e');
@@ -181,9 +179,8 @@ class TaskCalendarService extends ChangeNotifier {
     final status = _statusById[groupName];
     if (status != null) {
       if (status.name.isEmpty) {
-        return translate(status.isDoneStatus
-            ? TaskTranslationKeys.statusBuiltInDone
-            : TaskTranslationKeys.statusBuiltInTodo);
+        return translate(
+            status.isDoneStatus ? TaskTranslationKeys.statusBuiltInDone : TaskTranslationKeys.statusBuiltInTodo);
       }
       return status.name;
     }

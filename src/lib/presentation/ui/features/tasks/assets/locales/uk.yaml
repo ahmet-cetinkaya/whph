@@ -606,14 +606,14 @@ tasks:
       close: Закрити
       empty: Усі завдання заплановані
       open: Показати незаплановані завдання
-      arm_hint: 'Торкніться дня, щоб запланувати «{title}»'
+      arm_hint: "Торкніться дня, щоб запланувати «{title}»"
       arm_cancel: Скасувати
       arm_button: Запланувати в календарі
     sub_view:
-      month: 'Місяць'
-      week: 'Тиждень'
-      day: 'День'
-      schedule: 'Розклад'
+      month: "Місяць"
+      week: "Тиждень"
+      day: "День"
+      schedule: "Розклад"
   statuses:
     builtin:
       todo: До виконання

@@ -613,14 +613,14 @@ tasks:
       close: Fermer
       empty: Toutes les tâches sont planifiées
       open: Afficher les tâches non planifiées
-      arm_hint: 'Touchez un jour pour planifier « {title} »'
+      arm_hint: "Touchez un jour pour planifier « {title} »"
       arm_cancel: Annuler
       arm_button: Planifier dans le calendrier
     sub_view:
-      month: 'Mois'
-      week: 'Semaine'
-      day: 'Jour'
-      schedule: 'Emploi du temps'
+      month: "Mois"
+      week: "Semaine"
+      day: "Jour"
+      schedule: "Emploi du temps"
   statuses:
     builtin:
       todo: À faire

@@ -32,7 +32,8 @@ class UnplannedTasksPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(AppTheme.sizeSmall, AppTheme.sizeSmall, AppTheme.sizeXSmall, AppTheme.sizeSmall),
+          padding: const EdgeInsets.fromLTRB(
+              AppTheme.sizeSmall, AppTheme.sizeSmall, AppTheme.sizeXSmall, AppTheme.sizeSmall),
           child: Row(
             children: [
               Expanded(
@@ -146,9 +147,7 @@ class _UnplannedTaskCard extends StatelessWidget {
           color: isArmed ? Theme.of(context).colorScheme.primary : Colors.transparent,
           width: 2,
         ),
-        color: isArmed
-            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.08)
-            : Colors.transparent,
+        color: isArmed ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.08) : Colors.transparent,
       ),
       child: TaskCard(
         taskItem: task,

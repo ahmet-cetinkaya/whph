@@ -523,14 +523,14 @@ tasks:
       close: Lukk
       empty: Alle oppgaver er planlagt
       open: Vis uplanlagte oppgaver
-      arm_hint: 'Trykk på en dag for å planlegge «{title}»'
+      arm_hint: "Trykk på en dag for å planlegge «{title}»"
       arm_cancel: Avbryt
       arm_button: Planlegg i kalender
     sub_view:
-      month: 'Måned'
-      week: 'Uke'
-      day: 'Dag'
-      schedule: 'Tidsplan'
+      month: "Måned"
+      week: "Uke"
+      day: "Dag"
+      schedule: "Tidsplan"
   statuses:
     builtin:
       todo: Å gjøre

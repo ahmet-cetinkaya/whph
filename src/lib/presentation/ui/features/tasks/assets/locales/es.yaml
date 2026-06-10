@@ -608,14 +608,14 @@ tasks:
       close: Cerrar
       empty: Todas las tareas están planificadas
       open: Mostrar tareas sin planificar
-      arm_hint: 'Toca un día para planificar «{title}»'
+      arm_hint: "Toca un día para planificar «{title}»"
       arm_cancel: Cancelar
       arm_button: Programar en el calendario
     sub_view:
-      month: 'Mes'
-      week: 'Semana'
-      day: 'Día'
-      schedule: 'Horario'
+      month: "Mes"
+      week: "Semana"
+      day: "Día"
+      schedule: "Horario"
   statuses:
     builtin:
       todo: Por hacer

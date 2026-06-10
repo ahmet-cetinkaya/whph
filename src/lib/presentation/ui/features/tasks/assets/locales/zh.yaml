@@ -557,14 +557,14 @@ tasks:
       close: 关闭
       empty: 所有任务均已计划
       open: 显示未计划的任务
-      arm_hint: '点按某一天以安排“{title}”'
+      arm_hint: "点按某一天以安排“{title}”"
       arm_cancel: 取消
       arm_button: 在日历中安排
     sub_view:
-      month: '月'
-      week: '周'
-      day: '日'
-      schedule: '日程'
+      month: "月"
+      week: "周"
+      day: "日"
+      schedule: "日程"
   statuses:
     builtin:
       todo: 待办

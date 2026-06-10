@@ -518,14 +518,14 @@ tasks:
       close: Sulje
       empty: Kaikki tehtävät on aikataulutettu
       open: Näytä suunnittelemattomat tehtävät
-      arm_hint: 'Napauta päivää ajoittaaksesi ”{title}”'
+      arm_hint: "Napauta päivää ajoittaaksesi ”{title}”"
       arm_cancel: Peruuta
       arm_button: Ajoita kalenteriin
     sub_view:
-      month: 'Kuukausi'
-      week: 'Viikko'
-      day: 'Päivä'
-      schedule: 'Aikataulu'
+      month: "Kuukausi"
+      week: "Viikko"
+      day: "Päivä"
+      schedule: "Aikataulu"
   statuses:
     builtin:
       todo: Tehtävä

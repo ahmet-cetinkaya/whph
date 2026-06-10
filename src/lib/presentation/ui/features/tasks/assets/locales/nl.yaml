@@ -525,14 +525,14 @@ tasks:
       close: Sluiten
       empty: Alle taken zijn ingepland
       open: Ongeplande taken tonen
-      arm_hint: 'Tik op een dag om “{title}” in te plannen'
+      arm_hint: "Tik op een dag om “{title}” in te plannen"
       arm_cancel: Annuleren
       arm_button: Plannen in agenda
     sub_view:
-      month: 'Maand'
-      week: 'Week'
-      day: 'Dag'
-      schedule: 'Schema'
+      month: "Maand"
+      week: "Week"
+      day: "Dag"
+      schedule: "Schema"
   statuses:
     builtin:
       todo: Te doen

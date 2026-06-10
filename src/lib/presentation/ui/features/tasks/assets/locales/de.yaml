@@ -609,14 +609,14 @@ tasks:
       close: Schließen
       empty: Alle Aufgaben sind geplant
       open: Ungeplante Aufgaben anzeigen
-      arm_hint: 'Tippe auf einen Tag, um „{title}“ zu planen'
+      arm_hint: "Tippe auf einen Tag, um „{title}“ zu planen"
       arm_cancel: Abbrechen
       arm_button: Im Kalender planen
     sub_view:
-      month: 'Monat'
-      week: 'Woche'
-      day: 'Tag'
-      schedule: 'Zeitplan'
+      month: "Monat"
+      week: "Woche"
+      day: "Tag"
+      schedule: "Zeitplan"
   statuses:
     builtin:
       todo: Zu erledigen

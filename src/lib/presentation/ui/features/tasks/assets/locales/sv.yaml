@@ -519,14 +519,14 @@ tasks:
       close: Stäng
       empty: Alla uppgifter är schemalagda
       open: Visa oplanerade uppgifter
-      arm_hint: 'Tryck på en dag för att schemalägga ”{title}”'
+      arm_hint: "Tryck på en dag för att schemalägga ”{title}”"
       arm_cancel: Avbryt
       arm_button: Schemalägg i kalender
     sub_view:
-      month: 'Månad'
-      week: 'Vecka'
-      day: 'Dag'
-      schedule: 'Schema'
+      month: "Månad"
+      week: "Vecka"
+      day: "Dag"
+      schedule: "Schema"
   statuses:
     builtin:
       todo: Att göra

@@ -527,14 +527,14 @@ tasks:
       close: Închide
       empty: Toate sarcinile sunt planificate
       open: Afișează sarcinile neplanificate
-      arm_hint: 'Atinge o zi pentru a planifica „{title}”'
+      arm_hint: "Atinge o zi pentru a planifica „{title}”"
       arm_cancel: Anulează
       arm_button: Programează în calendar
     sub_view:
-      month: 'Lună'
-      week: 'Săptămână'
-      day: 'Zi'
-      schedule: 'Program'
+      month: "Lună"
+      week: "Săptămână"
+      day: "Zi"
+      schedule: "Program"
   statuses:
     builtin:
       todo: De făcut
