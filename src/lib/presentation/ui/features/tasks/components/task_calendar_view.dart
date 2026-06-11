@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/unplanned_tasks_panel.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_calendar_event.dart';
+import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 import 'package:whph/presentation/ui/features/tasks/services/task_calendar_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-
-enum CalendarSubView { month, week, day, schedule }
 
 class TaskCalendarView extends StatefulWidget {
   final TaskCalendarService calendarService;
@@ -82,17 +82,38 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
         widget.onInitialLoadComplete?.call();
       }
     } catch (e) {
-      debugPrint('TaskCalendarView: Error in _loadInitialEvents: $e');
+      Logger.error('Error in _loadInitialEvents', error: e);
     } finally {
       if (mounted) _isLoading = false;
     }
   }
 
+  DateTimeRange? _lastLoadedRange;
+
   void _onVisibleRangeChanged() {
-    if (!mounted || _isLoading) return;
+    if (!mounted) return;
 
     final range = widget.calendarService.calendarController.visibleDateTimeRange.value;
-    if (range != null) _loadEventsForRange(range);
+    if (range == null) return;
+
+    if (_isLoading) {
+      _lastLoadedRange = range;
+      return;
+    }
+    _loadEventsForRange(range);
+  }
+
+  @override
+  void didUpdateWidget(TaskCalendarView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.calendarService != widget.calendarService) {
+      _removeTasksServiceListeners();
+      _lastLoadedRange = null;
+      _addTasksServiceListeners();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _loadInitialEvents();
+      });
+    }
   }
 
   Future<void> _loadEventsForRange(DateTimeRange range) async {
@@ -103,9 +124,16 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
     try {
       await widget.calendarService.loadEventsForRange(range);
     } catch (e) {
-      debugPrint('TaskCalendarView: Error loading events: $e');
+      Logger.error('Error loading events', error: e);
     } finally {
-      if (mounted) _isLoading = false;
+      if (mounted) {
+        _isLoading = false;
+        final pendingRange = _lastLoadedRange;
+        _lastLoadedRange = null;
+        if (pendingRange != null && pendingRange != range) {
+          _loadEventsForRange(pendingRange);
+        }
+      }
     }
   }
 
@@ -214,7 +242,9 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
       if (_listenerAdded) {
         widget.calendarService.calendarController.visibleDateTimeRange.removeListener(_onVisibleRangeChanged);
       }
-    } catch (_) {}
+    } catch (e) {
+      Logger.error('Error removing calendar listener', error: e);
+    }
     super.dispose();
   }
 
@@ -422,15 +452,8 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   }
 
   void _onEmptySlotTapped(DateTime date) {
-    final armed = widget.calendarService.armedTask;
-    if (armed != null) {
-      final normalizedDate = DateTime(date.year, date.month, date.day);
-      widget.calendarService.assignTaskToDate(armed.id, normalizedDate);
-      return;
-    }
-    if (widget.onCreateTask != null) {
-      widget.onCreateTask!(date);
-    }
+    if (_assignArmedToDate(date)) return;
+    widget.onCreateTask?.call(date);
   }
 
   TileComponents<TaskCalendarEventData> _buildTileComponents() {

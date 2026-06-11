@@ -361,6 +361,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   @override
   void dispose() {
     _autoRefreshUITimer?.cancel();
+    _calendarService?.dispose();
     super.dispose();
   }
 

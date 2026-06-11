@@ -62,43 +62,33 @@ class UnplannedTasksPanel extends StatelessWidget {
         Expanded(
           child: tasks.isEmpty
               ? _EmptyState(message: translationService.translate(TaskTranslationKeys.unplannedTasksPanelEmpty))
-              : Builder(
-                  builder: (context) {
-                    final items = _buildItems();
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                      itemCount: items.length,
-                      itemBuilder: (context, index) => items[index],
+              : ListView.builder(
+                  padding: const EdgeInsets.all(AppTheme.sizeSmall),
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) {
+                    final task = tasks[index];
+                    final isFirstInGroup =
+                        index == 0 || groupLabelResolver(tasks[index - 1]) != groupLabelResolver(task);
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (isFirstInGroup) _GroupHeader(label: groupLabelResolver(task)),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: AppTheme.sizeXSmall),
+                          child: _UnplannedTaskCard(
+                            task: task,
+                            isArmed: task.id == armedTaskId,
+                            onArm: () => onArm(task),
+                            onOpenDetails: () => onOpenDetails(task),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 ),
         ),
       ],
     );
-  }
-
-  List<Widget> _buildItems() {
-    final items = <Widget>[];
-    String? currentGroup;
-
-    for (final task in tasks) {
-      final groupName = task.groupName;
-      if (groupName != null && groupName != currentGroup) {
-        currentGroup = groupName;
-        items.add(_GroupHeader(label: groupLabelResolver(task)));
-      }
-      items.add(Padding(
-        padding: const EdgeInsets.only(bottom: AppTheme.sizeXSmall),
-        child: _UnplannedTaskCard(
-          task: task,
-          isArmed: task.id == armedTaskId,
-          onArm: () => onArm(task),
-          onOpenDetails: () => onOpenDetails(task),
-        ),
-      ));
-    }
-
-    return items;
   }
 }
 

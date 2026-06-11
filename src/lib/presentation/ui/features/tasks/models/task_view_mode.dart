@@ -1,3 +1,5 @@
+enum CalendarSubView { month, week, day, schedule }
+
 enum TaskViewMode { list, board, calendar }
 
 extension TaskViewModeParse on TaskViewMode {

@@ -75,7 +75,7 @@ class _EstimatedTimePickerSheet extends StatefulWidget {
 }
 
 class _EstimatedTimePickerSheetState extends State<_EstimatedTimePickerSheet> {
-  static const int _maxDays = 365;
+  static const int _maxDays = 7;
 
   late int _days;
   late int _hours;
@@ -84,67 +84,73 @@ class _EstimatedTimePickerSheetState extends State<_EstimatedTimePickerSheet> {
   @override
   void initState() {
     super.initState();
-    _days = widget.initialMinutes ~/ 1440;
-    final remaining = widget.initialMinutes % 1440;
+    final clamped = widget.initialMinutes.clamp(0, _maxDays * 1440 - 1);
+    _days = clamped ~/ 1440;
+    final remaining = clamped % 1440;
     _hours = remaining ~/ 60;
     _minutes = remaining % 60;
   }
 
-  int get _total => _days * 1440 + _hours * 60 + _minutes;
+  int get _total => (_days * 1440 + _hours * 60 + _minutes).clamp(0, _maxDays * 1440 - 1);
 
   @override
   Widget build(BuildContext context) {
     final translationService = container.resolve<ITranslationService>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(translationService.translate(SharedTranslationKeys.timeDisplayEstimated)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(_total),
-            child: Text(
-              translationService.translate(SharedTranslationKeys.doneButton),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _WheelColumn(
-                      label: translationService.translate(SharedTranslationKeys.days),
-                      itemCount: _maxDays + 1,
-                      selectedValue: _days,
-                      onChanged: (value) => setState(() => _days = value),
-                    ),
-                  ),
-                  Expanded(
-                    child: _WheelColumn(
-                      label: translationService.translate(SharedTranslationKeys.hours),
-                      itemCount: 24,
-                      selectedValue: _hours,
-                      onChanged: (value) => setState(() => _hours = value),
-                    ),
-                  ),
-                  Expanded(
-                    child: _WheelColumn(
-                      label: translationService.translate(SharedTranslationKeys.minutes),
-                      itemCount: 60,
-                      selectedValue: _minutes,
-                      onChanged: (value) => setState(() => _minutes = value),
-                    ),
-                  ),
-                ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppTheme.sizeMedium, AppTheme.sizeMedium, AppTheme.sizeMedium, 0),
+          child: Row(
+            children: [
+              Text(
+                translationService.translate(SharedTranslationKeys.timeDisplayEstimated),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-            ),
-          ],
+              const Spacer(),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(_total),
+                child: Text(
+                  translationService.translate(SharedTranslationKeys.doneButton),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+        SizedBox(
+          height: 200,
+          child: Row(
+            children: [
+              Expanded(
+                child: _WheelColumn(
+                  label: translationService.translate(SharedTranslationKeys.days),
+                  itemCount: _maxDays + 1,
+                  selectedValue: _days,
+                  onChanged: (value) => setState(() => _days = value),
+                ),
+              ),
+              Expanded(
+                child: _WheelColumn(
+                  label: translationService.translate(SharedTranslationKeys.hours),
+                  itemCount: 24,
+                  selectedValue: _hours,
+                  onChanged: (value) => setState(() => _hours = value),
+                ),
+              ),
+              Expanded(
+                child: _WheelColumn(
+                  label: translationService.translate(SharedTranslationKeys.minutes),
+                  itemCount: 60,
+                  selectedValue: _minutes,
+                  onChanged: (value) => setState(() => _minutes = value),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -175,6 +181,18 @@ class _WheelColumnState extends State<_WheelColumn> {
   void initState() {
     super.initState();
     _controller = FixedExtentScrollController(initialItem: widget.selectedValue);
+  }
+
+  @override
+  void didUpdateWidget(_WheelColumn oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedValue != widget.selectedValue) {
+      _controller.animateToItem(
+        widget.selectedValue,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override

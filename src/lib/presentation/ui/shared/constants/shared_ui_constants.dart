@@ -36,9 +36,7 @@ class SharedUiConstants {
   /// Uses the translation service to get localized strings.
   static String formatDurationHuman(int? minutes, ITranslationService translationService) {
     if (minutes == null || minutes <= 0) return translationService.translate(SharedTranslationKeys.notSetTime);
-    if (minutes < 60) {
-      return '$minutes${translationService.translate(SharedTranslationKeys.minutesShort)}';
-    }
+    if (minutes < 60) return '$minutes${translationService.translate(SharedTranslationKeys.minutesShort)}';
     final daysCount = minutes ~/ 1440;
     final remainingAfterDays = minutes % 1440;
     final hoursCount = remainingAfterDays ~/ 60;

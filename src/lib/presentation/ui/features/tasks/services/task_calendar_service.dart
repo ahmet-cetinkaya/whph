@@ -4,6 +4,7 @@ import 'package:kalender/kalender.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
@@ -81,6 +82,7 @@ class TaskCalendarService extends ChangeNotifier {
       final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
         GetListTasksQuery(
           pageIndex: 0,
+          // TODO(#286): page through results instead of capping at 500
           pageSize: 500,
           filterByPlannedStartDate: range.start,
           filterByPlannedEndDate: range.end,
@@ -103,7 +105,7 @@ class TaskCalendarService extends ChangeNotifier {
       eventsController.addEvents(events);
       notifyListeners();
     } catch (e) {
-      debugPrint('TaskCalendarService: Failed to load events: $e');
+      Logger.error('Failed to load events', error: e);
     }
   }
 
@@ -118,16 +120,25 @@ class TaskCalendarService extends ChangeNotifier {
     final hasTimeChange = durationDiff != 0;
 
     try {
+      final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
+        GetTaskQuery(id: data.taskId),
+      );
+
       await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
         SaveTaskCommand(
-          id: data.taskId,
-          title: data.title,
+          id: task.id,
+          title: task.title,
           plannedDate: updated.dateTimeRange.start,
-          estimatedTime: hasTimeChange ? updated.duration.inMinutes : null,
+          priority: task.priority,
+          description: task.description,
+          deadlineDate: task.deadlineDate,
+          estimatedTime: hasTimeChange ? updated.duration.inMinutes : task.estimatedTime,
+          order: task.order,
+          statusId: task.statusId,
         ),
       );
     } catch (e) {
-      debugPrint('TaskCalendarService: Failed to save event change: $e');
+      Logger.error('Failed to save event change', error: e);
       _reloadCurrentRange();
     }
   }
@@ -153,6 +164,7 @@ class TaskCalendarService extends ChangeNotifier {
       final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
         GetListTasksQuery(
           pageIndex: 0,
+          // TODO(#286): page through results instead of capping at 500
           pageSize: 500,
           includeNullDates: true,
           filterByCompleted: false,
@@ -167,7 +179,7 @@ class TaskCalendarService extends ChangeNotifier {
       _unplannedTasks = response.items.where((task) => task.plannedDate == null && !task.isCompleted).toList();
       notifyListeners();
     } catch (e) {
-      debugPrint('TaskCalendarService: Failed to load unplanned tasks: $e');
+      Logger.error('Failed to load unplanned tasks', error: e);
     }
   }
 
@@ -195,7 +207,7 @@ class TaskCalendarService extends ChangeNotifier {
       );
       _statusById = {for (final status in response.items) status.id: status};
     } catch (e) {
-      debugPrint('TaskCalendarService: Failed to load statuses: $e');
+      Logger.error('Failed to load statuses', error: e);
     }
   }
 
@@ -223,7 +235,7 @@ class TaskCalendarService extends ChangeNotifier {
       notifyListeners();
       await _reloadCurrentRange();
     } catch (e) {
-      debugPrint('TaskCalendarService: Failed to assign task to date: $e');
+      Logger.error('Failed to assign task to date', error: e);
     }
   }
 

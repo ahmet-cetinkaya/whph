@@ -7,14 +7,12 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.
 class TaskCalendarEventData {
   final String taskId;
   final String title;
-  final String? description;
   final bool isCompleted;
   final EisenhowerPriority? priority;
 
   TaskCalendarEventData({
     required this.taskId,
     required this.title,
-    this.description,
     required this.isCompleted,
     this.priority,
   });
@@ -36,7 +34,6 @@ class TaskCalendarEvent {
       data: TaskCalendarEventData(
         taskId: task.id,
         title: task.title,
-        description: null,
         isCompleted: task.isCompleted,
         priority: task.priority,
       ),
