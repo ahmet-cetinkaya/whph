@@ -10,12 +10,25 @@ class TaskCalendarEventData {
   final bool isCompleted;
   final EisenhowerPriority? priority;
 
-  TaskCalendarEventData({
+  const TaskCalendarEventData({
     required this.taskId,
     required this.title,
     required this.isCompleted,
     this.priority,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TaskCalendarEventData &&
+          runtimeType == other.runtimeType &&
+          taskId == other.taskId &&
+          title == other.title &&
+          isCompleted == other.isCompleted &&
+          priority == other.priority;
+
+  @override
+  int get hashCode => Object.hash(taskId, title, isCompleted, priority);
 }
 
 class TaskCalendarEvent {
@@ -45,9 +58,5 @@ class TaskCalendarEvent {
 
   static Color getEventColor(TaskCalendarEventData data) {
     return TaskUiConstants.getPriorityColor(data.priority);
-  }
-
-  static bool isAllDay(CalendarEvent<TaskCalendarEventData> event) {
-    return event.duration.inDays >= 1;
   }
 }

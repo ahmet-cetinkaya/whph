@@ -76,6 +76,7 @@ class _EstimatedTimePickerSheet extends StatefulWidget {
 
 class _EstimatedTimePickerSheetState extends State<_EstimatedTimePickerSheet> {
   static const int _maxDays = 7;
+  static const int _minutesPerDay = 1440;
 
   late int _days;
   late int _hours;
@@ -84,14 +85,14 @@ class _EstimatedTimePickerSheetState extends State<_EstimatedTimePickerSheet> {
   @override
   void initState() {
     super.initState();
-    final clamped = widget.initialMinutes.clamp(0, _maxDays * 1440 - 1);
-    _days = clamped ~/ 1440;
-    final remaining = clamped % 1440;
+    final clamped = widget.initialMinutes.clamp(0, _maxDays * _minutesPerDay - 1);
+    _days = clamped ~/ _minutesPerDay;
+    final remaining = clamped % _minutesPerDay;
     _hours = remaining ~/ 60;
     _minutes = remaining % 60;
   }
 
-  int get _total => (_days * 1440 + _hours * 60 + _minutes).clamp(0, _maxDays * 1440 - 1);
+  int get _total => (_days * _minutesPerDay + _hours * 60 + _minutes).clamp(0, _maxDays * _minutesPerDay - 1);
 
   @override
   Widget build(BuildContext context) {

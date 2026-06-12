@@ -41,7 +41,6 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   bool _listenerAdded = false;
   bool _isTransitioning = false;
   bool _tasksListenersAdded = false;
-  bool _isPanelOpen = false;
 
   static const double _panelWidth = 240.0;
   static const double _toggleWidth = 32.0;
@@ -146,7 +145,7 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
       _listenerAdded = false;
     }
 
-    widget.calendarService.resetEventsController();
+    widget.calendarService.clearEvents();
 
     setState(() {
       _calendarKey = UniqueKey();
@@ -186,27 +185,26 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
 
   void _onTaskCreatedListener() {
     if (!mounted) return;
-    widget.calendarService.onTaskCreated(_tasksService.onTaskCreated.value ?? '');
-    if (_isPanelOpen) widget.calendarService.loadUnplannedTasks();
+    widget.calendarService.onTaskCreated();
+    if (widget.calendarService.isPanelOpen) widget.calendarService.loadUnplannedTasks();
   }
 
   void _onTaskUpdatedListener() {
     if (!mounted) return;
-    widget.calendarService.onTaskUpdated(_tasksService.onTaskUpdated.value ?? '');
-    if (_isPanelOpen) widget.calendarService.loadUnplannedTasks();
+    widget.calendarService.onTaskUpdated();
+    if (widget.calendarService.isPanelOpen) widget.calendarService.loadUnplannedTasks();
   }
 
   void _onTaskDeletedListener() {
     if (!mounted) return;
-    final taskId = _tasksService.onTaskDeleted.value;
-    if (taskId != null) widget.calendarService.onTaskDeleted(taskId);
-    if (_isPanelOpen) widget.calendarService.loadUnplannedTasks();
+    widget.calendarService.onTaskDeleted();
+    if (widget.calendarService.isPanelOpen) widget.calendarService.loadUnplannedTasks();
   }
 
   void _onTaskCompletedListener() {
     if (!mounted) return;
-    widget.calendarService.onTaskUpdated(_tasksService.onTaskCompleted.value ?? '');
-    if (_isPanelOpen) widget.calendarService.loadUnplannedTasks();
+    widget.calendarService.onTaskUpdated();
+    if (widget.calendarService.isPanelOpen) widget.calendarService.loadUnplannedTasks();
   }
 
   void _addTasksServiceListeners() {
@@ -228,9 +226,8 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   }
 
   Future<void> _togglePanel() async {
-    setState(() => _isPanelOpen = !_isPanelOpen);
-    widget.calendarService.isPanelOpen = _isPanelOpen;
-    if (_isPanelOpen) {
+    widget.calendarService.isPanelOpen = !widget.calendarService.isPanelOpen;
+    if (widget.calendarService.isPanelOpen) {
       await widget.calendarService.loadUnplannedTasks();
     }
   }
@@ -269,7 +266,7 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
                       ),
               ),
               _buildPanelToggleButton(),
-              if (_isPanelOpen) ...[
+              if (widget.calendarService.isPanelOpen) ...[
                 const VerticalDivider(width: 1),
                 SizedBox(
                   width: _panelWidth,
@@ -283,7 +280,7 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
                       groupLabelResolver: (task) =>
                           widget.calendarService.resolveGroupLabel(task, _translationService.translate),
                       onClose: () {
-                        setState(() => _isPanelOpen = false);
+                        widget.calendarService.isPanelOpen = false;
                         widget.calendarService.isPanelOpen = false;
                       },
                     ),
@@ -310,10 +307,10 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                _isPanelOpen ? Icons.chevron_right : Icons.chevron_left,
+                widget.calendarService.isPanelOpen ? Icons.chevron_right : Icons.chevron_left,
                 size: AppTheme.iconSizeSmall,
               ),
-              if (!_isPanelOpen && unplannedCount > 0)
+              if (!widget.calendarService.isPanelOpen && unplannedCount > 0)
                 Padding(
                   padding: const EdgeInsets.only(top: 2),
                   child: Container(

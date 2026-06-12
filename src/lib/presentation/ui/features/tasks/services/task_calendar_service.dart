@@ -13,13 +13,17 @@ import 'package:whph/core/application/features/tasks/queries/get_task_query.dart
 import 'package:whph/presentation/ui/features/tasks/models/task_calendar_event.dart';
 
 class TaskCalendarService extends ChangeNotifier {
+  static const int _minutesPerDay = 1440;
   final Mediator _mediator;
-  DefaultEventsController<TaskCalendarEventData> eventsController = DefaultEventsController<TaskCalendarEventData>();
+  final DefaultEventsController<TaskCalendarEventData> _eventsController = DefaultEventsController<TaskCalendarEventData>();
   final calendarController = CalendarController<TaskCalendarEventData>();
 
-  void resetEventsController() {
-    eventsController = DefaultEventsController<TaskCalendarEventData>();
+  void clearEvents() {
+    _eventsController.clearEvents();
+    notifyListeners();
   }
+
+  DefaultEventsController<TaskCalendarEventData> get eventsController => _eventsController;
 
   List<String>? _filterTags;
   bool _filterNoTags = false;
@@ -33,10 +37,15 @@ class TaskCalendarService extends ChangeNotifier {
   List<TaskListItem> get unplannedTasks => _unplannedTasks;
 
   Map<String, TaskStatusListItem> _statusById = {};
-  Map<String, TaskStatusListItem> get statusById => _statusById;
+  Map<String, TaskStatusListItem> get statusById => Map.unmodifiable(_statusById);
 
   bool _isPanelOpen = false;
-  set isPanelOpen(bool value) => _isPanelOpen = value;
+  bool get isPanelOpen => _isPanelOpen;
+  set isPanelOpen(bool value) {
+    if (_isPanelOpen == value) return;
+    _isPanelOpen = value;
+    notifyListeners();
+  }
 
   TaskListItem? _armedTask;
   TaskListItem? get armedTask => _armedTask;
@@ -101,11 +110,11 @@ class TaskCalendarService extends ChangeNotifier {
           .map((task) => TaskCalendarEvent.fromTaskListItem(task))
           .toList();
 
-      eventsController.clearEvents();
-      eventsController.addEvents(events);
+      _eventsController.clearEvents();
+      _eventsController.addEvents(events);
       notifyListeners();
-    } catch (e) {
-      Logger.error('Failed to load events', error: e);
+    } catch (e, stackTrace) {
+      Logger.error('Failed to load events', error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
     }
   }
 
@@ -132,26 +141,26 @@ class TaskCalendarService extends ChangeNotifier {
           priority: task.priority,
           description: task.description,
           deadlineDate: task.deadlineDate,
-          estimatedTime: hasTimeChange ? updated.duration.inMinutes : task.estimatedTime,
+          estimatedTime: hasTimeChange ? updated.duration.inMinutes.clamp(1, _minutesPerDay) : task.estimatedTime,
           order: task.order,
           statusId: task.statusId,
         ),
       );
-    } catch (e) {
-      Logger.error('Failed to save event change', error: e);
+    } catch (e, stackTrace) {
+      Logger.error('Failed to save event change', error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
       _reloadCurrentRange();
     }
   }
 
-  void onTaskCreated(String taskId) {
+  void onTaskCreated() {
     _reloadCurrentRange();
   }
 
-  void onTaskUpdated(String taskId) {
+  void onTaskUpdated() {
     _reloadCurrentRange();
   }
 
-  void onTaskDeleted(String taskId) {
+  void onTaskDeleted() {
     _reloadCurrentRange();
   }
 
@@ -178,8 +187,8 @@ class TaskCalendarService extends ChangeNotifier {
       );
       _unplannedTasks = response.items.where((task) => task.plannedDate == null && !task.isCompleted).toList();
       notifyListeners();
-    } catch (e) {
-      Logger.error('Failed to load unplanned tasks', error: e);
+    } catch (e, stackTrace) {
+      Logger.error('Failed to load unplanned tasks', error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
     }
   }
 
@@ -206,8 +215,8 @@ class TaskCalendarService extends ChangeNotifier {
         const GetListTaskStatusesQuery(pageSize: 100),
       );
       _statusById = {for (final status in response.items) status.id: status};
-    } catch (e) {
-      Logger.error('Failed to load statuses', error: e);
+    } catch (e, stackTrace) {
+      Logger.error('Failed to load statuses', error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
     }
   }
 
@@ -234,8 +243,8 @@ class TaskCalendarService extends ChangeNotifier {
       if (_armedTask?.id == taskId) _armedTask = null;
       notifyListeners();
       await _reloadCurrentRange();
-    } catch (e) {
-      Logger.error('Failed to assign task to date', error: e);
+    } catch (e, stackTrace) {
+      Logger.error('Failed to assign task to date', error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
     }
   }
 
@@ -248,7 +257,7 @@ class TaskCalendarService extends ChangeNotifier {
 
   @override
   void dispose() {
-    eventsController.dispose();
+    _eventsController.dispose();
     calendarController.dispose();
     super.dispose();
   }

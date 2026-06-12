@@ -702,23 +702,24 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                 if (widget.onViewModeChange != null)
                   Builder(
                     builder: (context) {
-                      final nextMode = widget.viewMode == TaskViewMode.list
-                          ? TaskViewMode.board
-                          : widget.viewMode == TaskViewMode.board
-                              ? TaskViewMode.calendar
-                              : TaskViewMode.list;
-
-                      final icon = widget.viewMode == TaskViewMode.list
-                          ? Icons.view_kanban_outlined
-                          : widget.viewMode == TaskViewMode.board
-                              ? Icons.calendar_month_outlined
-                              : Icons.view_list_outlined;
-
-                      final tooltip = widget.viewMode == TaskViewMode.list
-                          ? _translationService.translate(TaskTranslationKeys.viewModeBoardTooltip)
-                          : widget.viewMode == TaskViewMode.board
-                              ? _translationService.translate(TaskTranslationKeys.viewModeCalendarTooltip)
-                              : _translationService.translate(TaskTranslationKeys.viewModeListTooltip);
+                      final (nextMode, icon, tooltipKey) = switch (widget.viewMode) {
+                        TaskViewMode.list => (
+                            TaskViewMode.board,
+                            Icons.view_kanban_outlined,
+                            TaskTranslationKeys.viewModeBoardTooltip,
+                          ),
+                        TaskViewMode.board => (
+                            TaskViewMode.calendar,
+                            Icons.calendar_month_outlined,
+                            TaskTranslationKeys.viewModeCalendarTooltip,
+                          ),
+                        TaskViewMode.calendar => (
+                            TaskViewMode.list,
+                            Icons.view_list_outlined,
+                            TaskTranslationKeys.viewModeListTooltip,
+                          ),
+                      };
+                      final tooltip = _translationService.translate(tooltipKey);
 
                       return FilterIconButton(
                         icon: icon,

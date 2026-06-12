@@ -1,4 +1,4 @@
-enum CalendarSubView { month, week, day, schedule }
+export 'calendar_sub_view.dart' show CalendarSubView;
 
 enum TaskViewMode { list, board, calendar }
 

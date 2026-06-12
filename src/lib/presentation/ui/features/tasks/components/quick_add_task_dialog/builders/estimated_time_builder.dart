@@ -10,7 +10,6 @@ class EstimatedTimeBuilder {
   static Widget buildContent({
     required BuildContext context,
     required int? estimatedTime,
-    required bool isEstimatedTimeExplicitlySet,
     required ValueChanged<int> onValueChanged,
     required VoidCallback onClear,
     required VoidCallback onDone,

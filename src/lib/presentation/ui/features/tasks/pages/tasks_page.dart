@@ -271,16 +271,8 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
       }
 
       if (mode == TaskViewMode.calendar) {
-        _calendarService ??= TaskCalendarService(container.resolve<Mediator>());
-        _calendarService!.setFilters(
-          tags: _showNoTagsFilter ? [] : _selectedTagIds,
-          noTags: _showNoTagsFilter,
-          showCompleted: _showCompletedTasks,
-          search: _searchQuery,
-          sortBy: _sortConfig.orderOptions,
-          groupBy: _sortConfig.groupOption,
-          enableGrouping: _sortConfig.enableGrouping,
-        );
+        _calendarService ??= container.resolve<TaskCalendarService>();
+        _updateCalendarFilters();
       }
     });
   }

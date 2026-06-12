@@ -26,6 +26,7 @@ import 'dart:io';
 import 'package:whph/presentation/ui/shared/utils/audio_player_sound_player.dart';
 import 'package:whph/infrastructure/windows/features/audio/windows_audio_player.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
+import 'package:whph/presentation/ui/features/tasks/services/task_calendar_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_support_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/support_dialog_service.dart';
 import 'package:whph/presentation/ui/features/about/services/abstraction/i_changelog_service.dart';
@@ -94,4 +95,5 @@ void registerUIPresentation(IContainer container) {
   container.registerSingleton<ITourNavigationService>(
     (c) => TourNavigationServiceImpl(c.resolve<Mediator>()),
   );
+  container.registerSingleton<TaskCalendarService>((c) => TaskCalendarService(c.resolve<Mediator>()));
 }
