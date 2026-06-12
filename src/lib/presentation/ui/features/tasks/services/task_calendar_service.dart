@@ -15,7 +15,8 @@ import 'package:whph/presentation/ui/features/tasks/models/task_calendar_event.d
 class TaskCalendarService extends ChangeNotifier {
   static const int _minutesPerDay = 1440;
   final Mediator _mediator;
-  final DefaultEventsController<TaskCalendarEventData> _eventsController = DefaultEventsController<TaskCalendarEventData>();
+  final DefaultEventsController<TaskCalendarEventData> _eventsController =
+      DefaultEventsController<TaskCalendarEventData>();
   final calendarController = CalendarController<TaskCalendarEventData>();
 
   void clearEvents() {
@@ -188,7 +189,8 @@ class TaskCalendarService extends ChangeNotifier {
       _unplannedTasks = response.items.where((task) => task.plannedDate == null && !task.isCompleted).toList();
       notifyListeners();
     } catch (e, stackTrace) {
-      Logger.error('Failed to load unplanned tasks', error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
+      Logger.error('Failed to load unplanned tasks',
+          error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
     }
   }
 
