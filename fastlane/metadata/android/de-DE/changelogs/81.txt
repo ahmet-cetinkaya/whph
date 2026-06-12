@@ -1,0 +1,6 @@
+• Neue Kanban-Board-Ansicht für visuelle Aufgabenverwaltung
+• Erstellen Sie personalisierte Aufgabenstatus-Labels
+• Kalenderansicht mit Unterstützung für externe Kalender
+• Natürliche Zeiteingabe (z. B. "1h 30m")
+• Verbesserte Kalenderstabilität und Lokalisierung
+• Bessere Synchronisation und Widget-Zuverlässigkeit

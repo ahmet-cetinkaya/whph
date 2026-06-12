@@ -8,6 +8,31 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-06-12
+
+### Added
+- **Kanban Board View**: Manage your tasks with a new visual Kanban board mode
+- **Custom Task Statuses**: Create personalized status labels to match your workflow
+- **Calendar View**: View your tasks in a calendar format with support for external calendar integration
+- **Unplanned Tasks Panel**: See unscheduled tasks directly in the calendar view
+- **Time Estimation Input**: Enter task times using natural formats like "1h 30m" instead of minutes
+- **Completion Date Sorting**: Organize your tasks by when you completed them
+- **Infinite Scrolling**: Navigate through large task lists more smoothly without manual pagination
+
+### Changed
+- **Calendar Localization**: Calendar views now display fully in your preferred language
+- **Task List Sorting**: More options to organize your tasks the way you want
+
+### Fixed
+- **Calendar View Stability**: Improved reliability when toggling panels and switching views
+- **Kanban Organization**: Status grouping now activates automatically when switching to Kanban mode
+- **Custom Status Reliability**: Enhanced stability for personalized task status labels
+- **Loading Indicators**: Better visual feedback when loading more tasks
+- **Sync Accuracy**: Completed tasks now synchronize correctly across all your devices
+- **Widget Display**: Android widgets now show text properly in all supported languages
+- **Linux Updates**: Smoother experience when using package managers like Flatpak
+- **Category Translation**: Fixed category display in certain languages
+
 ## [0.22.3] - 2026-05-22
 
 ### Added
@@ -1681,7 +1706,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.22.3...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.23.0...HEAD
+[0.23.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.0
 [0.22.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.3
 [0.22.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.2
 [0.22.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.1

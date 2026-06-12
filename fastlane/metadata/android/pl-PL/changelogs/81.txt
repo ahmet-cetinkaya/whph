@@ -1,0 +1,6 @@
+• Nowy widok tablicy Kanban do wizualnego zarządzania zadaniami
+• Twórz spersonalizowane etykiety statusów zadań
+• Widok kalendarza z obsługą zewnętrznych kalendarzy
+• Naturalne wprowadzanie czasu (np. "1h 30m")
+• Ulepszona stabilność i lokalizacja kalendarza
+• Lepsza synchronizacja i niezawodność widżetów

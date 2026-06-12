@@ -1,0 +1,6 @@
+• Nieuwe Kanban-bordweergave voor visueel taakbeheer
+• Maak gepersonaliseerde taakstatuslabels
+• Kalenderweergave met ondersteuning voor externe agenda's
+• Natuurlijke tijdinvoer (bijv. "1u 30m")
+• Verbeterde kalenderstabiliteit en lokalisatie
+• Betere synchronisatie en widgetbetrouwbaarheid

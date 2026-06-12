@@ -1,0 +1,6 @@
+• Nouvelle vue de tableau Kanban pour la gestion visuelle des tâches
+• Créez des étiquettes d'état de tâches personnalisées
+• Vue calendrier avec prise en charge des calendriers externes
+• Saisie de temps naturelle (ex: "1h 30m")
+• Stabilité et localisation du calendrier améliorées
+• Meilleure synchronisation et fiabilité des widgets

@@ -1,0 +1,6 @@
+• New Kanban board view for visual task management
+• Create personalized task status labels
+• Calendar view with external calendar support
+• Natural time input (e.g., "1h 30m")
+• Improved calendar stability and localization
+• Better sync and widget reliability

@@ -1,0 +1,6 @@
+• Uusi Kanban-taulukkonäkymä visuaaliseen tehtävien hallintaan
+• Luo personoituja tehtävän tila-tarrroja
+• Kalenterinäkymä ulkoisten kalentereiden tuella
+• Luonnollinen aika-syöte (esim. "1h 30m")
+• Parannettu kalenterin vakaus ja lokalisointi
+• Parempi synkronointi ja widget-luotettavuus

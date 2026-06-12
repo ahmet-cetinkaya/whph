@@ -234,7 +234,9 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
     if (widget.calendarService.isPanelOpen) {
       Logger.info('_togglePanel: calling loadUnplannedTasks', component: 'TaskCalendarView');
       await widget.calendarService.loadUnplannedTasks();
-      Logger.info('_togglePanel: loadUnplannedTasks completed, taskCount=${widget.calendarService.unplannedTasks.length}', component: 'TaskCalendarView');
+      Logger.info(
+          '_togglePanel: loadUnplannedTasks completed, taskCount=${widget.calendarService.unplannedTasks.length}',
+          component: 'TaskCalendarView');
     }
   }
 

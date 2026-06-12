@@ -1,0 +1,6 @@
+• Ny Kanban-tavlevy för visuell uppgiftshantering
+• Skapa anpassade uppgiftsstatusetiketter
+• Kalendervy med stöd för externa kalendrar
+• Naturlig tidsinmatning (t.ex. "1t 30m")
+• Förbättrad kalenderstabilitet och lokalisering
+• Bättre synkronisering och widget-pålitlighet

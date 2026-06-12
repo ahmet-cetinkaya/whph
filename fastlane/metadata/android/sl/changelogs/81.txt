@@ -1,0 +1,6 @@
+• Novi pogled Kanban table za vizualno upravljanje nalog
+• Ustvarite prilagojene oznake stanja nalog
+• Pogled koledarja s podporo zunanji koledarje
+• Naraven vnos časa (npr. "1h 30m")
+• Izboljšana stabilnost in lokalizacija koledarja
+• Boljša sinhronizacija in zanesljivost gradnikov

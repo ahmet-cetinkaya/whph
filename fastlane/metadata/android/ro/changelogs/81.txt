@@ -1,0 +1,6 @@
+• Vizualizare nouă de tabel Kanban pentru gestionarea vizuală a sarcinilor
+• Creați etichete de stare a sarcinilor personalizate
+• Vizualizare calendar cu suport pentru calendare externe
+• Introducere naturală a timpului (ex. "1h 30m")
+• Stabilitate și localizare îmbunătățite ale calendarului
+• Sincronizare mai bună și fiabilitate a widget-urilor

@@ -79,7 +79,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/ahmet-cetinkaya/whph.git
-        tag: v0.22.3
+        tag: v0.23.0
         disable-submodules: true
         x-checker-data:
           type: git

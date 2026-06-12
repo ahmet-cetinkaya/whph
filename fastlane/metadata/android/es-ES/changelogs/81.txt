@@ -1,0 +1,6 @@
+• Nueva vista de tablero Kanban para gestión visual de tareas
+• Cree etiquetas de estado de tareas personalizadas
+• Vista de calendario con soporte para calendarios externos
+• Entrada de tiempo natural (ej. "1h 30m")
+• Mejor estabilidad y localización del calendario
+• Mejor sincronización y fiabilidad de widgets

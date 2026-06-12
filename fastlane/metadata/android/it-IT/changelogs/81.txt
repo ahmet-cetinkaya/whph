@@ -1,0 +1,6 @@
+• Nuova vista bacheca Kanban per la gestione visiva delle attività
+• Crea etichette di stato attività personalizzate
+• Vista calendario con supporto per calendari esterni
+• Inserimento tempo naturale (es. "1h 30m")
+• Migliorata stabilità e localizzazione del calendario
+• Migliore sincronizzazione e affidabilità dei widget

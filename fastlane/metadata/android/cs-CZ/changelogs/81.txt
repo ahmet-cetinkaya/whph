@@ -1,0 +1,6 @@
+• Nové zobrazení Kanban pro vizuální správu úkolů
+• Vytvářejte personalizované štítky stavů úkolů
+• Zobrazení kalendáře s podporou externích kalendářů
+• Přirozený zadávání času (např. "1h 30m")
+• Vylepšená stabilita a lokalizace kalendáře
+• Lepší synchronizace a spolehlivost widgetů

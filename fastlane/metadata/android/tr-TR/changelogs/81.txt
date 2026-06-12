@@ -1,0 +1,6 @@
+• Görsel görev yönetimi için yeni Kanban panosu görünümü
+• Kişiselleştirilmiş görev durumu etiketleri oluşturun
+• Dış takvim desteği ile takvim görünümü
+• Doğal zaman girişi (örn. "1s 30dk")
+• İyileştirilmiş takvim kararlılığı ve yerelleştirme
+• Daha iyi senkronizasyon ve widget güvenilirliği

@@ -204,7 +204,8 @@ class TaskCalendarService extends ChangeNotifier {
       );
       _unplannedTasks = response.items.where((task) => task.plannedDate == null && !task.isCompleted).toList();
       _hasMoreUnplanned = response.hasNext;
-      Logger.info('loadUnplannedTasks: loaded ${_unplannedTasks.length} tasks, hasMore=$_hasMoreUnplanned', component: 'TaskCalendarService');
+      Logger.info('loadUnplannedTasks: loaded ${_unplannedTasks.length} tasks, hasMore=$_hasMoreUnplanned',
+          component: 'TaskCalendarService');
       notifyListeners();
     } catch (e, stackTrace) {
       Logger.error('Failed to load unplanned tasks',

@@ -1,0 +1,6 @@
+• Ny Kanban-tavle til visuel opgavehåndtering
+• Opret tilpassede statuslabels til opgaver
+• Kalendervisning med understøttelse af eksterne kalendere
+• Naturtidinput (f.eks. "1t 30m")
+• Forbedret kalenderstabilitet og lokalisering
+• Bedre synkronisering og widgetpålidelighed
