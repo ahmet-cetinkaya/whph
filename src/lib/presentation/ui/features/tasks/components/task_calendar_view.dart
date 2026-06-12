@@ -5,6 +5,7 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/unplanned_tasks_panel.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_calendar_event.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
 import 'package:whph/presentation/ui/features/tasks/services/task_calendar_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
@@ -304,8 +305,6 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   }
 
   Widget _buildPanelToggleButton() {
-    final unplannedCount = widget.calendarService.unplannedTasks.length;
-
     return SizedBox(
       width: _toggleWidth,
       child: Material(
@@ -319,23 +318,6 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
                 widget.calendarService.isPanelOpen ? Icons.chevron_right : Icons.chevron_left,
                 size: AppTheme.iconSizeSmall,
               ),
-              if (!widget.calendarService.isPanelOpen && unplannedCount > 0)
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(AppTheme.sizeMedium),
-                    ),
-                    child: Text(
-                      '$unplannedCount',
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                    ),
-                  ),
-                ),
             ],
           ),
         ),
@@ -344,8 +326,6 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   }
 
   Widget _buildCalendarView() {
-    final isArmed = widget.calendarService.armedTask != null;
-
     return CalendarView<TaskCalendarEventData>(
       key: _calendarKey,
       locale: Localizations.localeOf(context).toString(),
@@ -372,7 +352,7 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
         multiDayBodyConfiguration: const MultiDayBodyConfiguration(),
         scheduleTileComponents: _buildScheduleTileComponents(),
         scheduleBodyConfiguration: ScheduleBodyConfiguration(
-          emptyDay: isArmed ? EmptyDayBehavior.show : EmptyDayBehavior.hide,
+          emptyDay: EmptyDayBehavior.show,
         ),
         interaction: CalendarInteraction(
           allowResizing: true,
@@ -541,7 +521,26 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   }
 
   Widget _buildScheduleLeadingDate(InternalDateTime date, ScheduleDateStyle? style) {
-    final defaultWidget = ScheduleDate.builder(date, style);
+    final customStyle = ScheduleDateStyle(
+      textStyle: style?.textStyle,
+      numberTextStyle: style?.numberTextStyle,
+      stringBuilder: (dateTime) {
+        final weekday = dateTime.weekday;
+        final translationKey = switch (weekday) {
+          DateTime.monday => SharedTranslationKeys.weekDayMonShort,
+          DateTime.tuesday => SharedTranslationKeys.weekDayTueShort,
+          DateTime.wednesday => SharedTranslationKeys.weekDayWedShort,
+          DateTime.thursday => SharedTranslationKeys.weekDayThuShort,
+          DateTime.friday => SharedTranslationKeys.weekDayFriShort,
+          DateTime.saturday => SharedTranslationKeys.weekDaySatShort,
+          DateTime.sunday => SharedTranslationKeys.weekDaySunShort,
+          _ => SharedTranslationKeys.weekDayMonShort,
+        };
+        return _translationService.translate(translationKey);
+      },
+    );
+
+    final defaultWidget = ScheduleDate.builder(date, customStyle);
     if (widget.calendarService.armedTask == null) return defaultWidget;
 
     return InkWell(
