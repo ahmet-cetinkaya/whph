@@ -515,8 +515,23 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Visualização em quadro
+    calendar_tooltip: Vista de calendário
   board:
     cross_column_move_not_supported: Mover tarefas entre colunas não é suportado
+  calendar:
+    unplanned_panel:
+      title: Tarefas não planeadas
+      close: Fechar
+      empty: Todas as tarefas estão planeadas
+      open: Mostrar tarefas não planeadas
+      arm_hint: "Toque num dia para planear “{title}”"
+      arm_cancel: Cancelar
+      arm_button: Agendar no calendário
+    sub_view:
+      month: "Mês"
+      week: "Semana"
+      day: "Dia"
+      schedule: "Agenda"
   statuses:
     builtin:
       todo: A fazer

@@ -1,0 +1,1 @@
+enum CalendarSubView { month, week, day, schedule }

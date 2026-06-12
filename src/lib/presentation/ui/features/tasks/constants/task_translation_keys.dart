@@ -314,7 +314,21 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   // View Mode
   static const String viewModeListTooltip = 'tasks.view_mode.list_tooltip';
   static const String viewModeBoardTooltip = 'tasks.view_mode.board_tooltip';
+  static const String viewModeCalendarTooltip = 'tasks.view_mode.calendar_tooltip';
   static const String boardCrossColumnMoveNotSupported = 'tasks.board.cross_column_move_not_supported';
+
+  // Calendar - Unplanned Tasks Panel
+  static const String unplannedTasksPanelTitle = 'tasks.calendar.unplanned_panel.title';
+  static const String unplannedTasksPanelClose = 'tasks.calendar.unplanned_panel.close';
+  static const String unplannedTasksPanelEmpty = 'tasks.calendar.unplanned_panel.empty';
+  static const String unplannedTasksPanelOpen = 'tasks.calendar.unplanned_panel.open';
+  static const String unplannedTasksPanelArmHint = 'tasks.calendar.unplanned_panel.arm_hint';
+  static const String unplannedTasksPanelArmCancel = 'tasks.calendar.unplanned_panel.arm_cancel';
+  static const String unplannedTasksPanelArmButton = 'tasks.calendar.unplanned_panel.arm_button';
+  static const String calendarSubViewMonth = 'tasks.calendar.sub_view.month';
+  static const String calendarSubViewWeek = 'tasks.calendar.sub_view.week';
+  static const String calendarSubViewDay = 'tasks.calendar.sub_view.day';
+  static const String calendarSubViewSchedule = 'tasks.calendar.sub_view.schedule';
 
   // Status management
   static const String statusBuiltInTodo = 'tasks.statuses.builtin.todo';

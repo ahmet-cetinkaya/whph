@@ -329,6 +329,7 @@ shared:
     report_error: Zgłoś
   units:
     days: dni
+    days_short: d
     hours: godz
     hours_short: h
     minutes: min

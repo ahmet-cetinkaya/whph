@@ -325,6 +325,7 @@ shared:
     report_error: Rapportera
   units:
     days: dagar
+    days_short: d
     hours: tim
     hours_short: h
     minutes: min

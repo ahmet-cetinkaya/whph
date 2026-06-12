@@ -332,6 +332,7 @@ shared:
     report_error: Повідомити
   units:
     days: днів
+    days_short: д
     hours: год
     hours_short: h
     minutes: хв

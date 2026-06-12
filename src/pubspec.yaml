@@ -81,6 +81,7 @@ dependencies:
   # UI
   boardview: ^1.0.0
   calendar_date_picker2: ^2.0.0
+  kalender: ^0.15.0
   cupertino_icons: ^1.0.8
   dynamic_color: ^1.8.1
   easy_localization: ^3.0.8

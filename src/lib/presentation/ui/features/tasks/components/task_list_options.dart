@@ -698,20 +698,39 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     onPressed: () => widget.onLayoutToggleChange!(!widget.forceOriginalLayout),
                   ),
 
-                // View mode toggle (list / board)
+                // View mode toggle (list / board / calendar)
                 if (widget.onViewModeChange != null)
-                  FilterIconButton(
-                    icon: widget.viewMode == TaskViewMode.board ? Icons.view_list_outlined : Icons.view_kanban_outlined,
-                    iconSize: AppTheme.iconSizeMedium,
-                    color: widget.viewMode == TaskViewMode.board
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                    tooltip: widget.viewMode == TaskViewMode.board
-                        ? _translationService.translate(TaskTranslationKeys.viewModeListTooltip)
-                        : _translationService.translate(TaskTranslationKeys.viewModeBoardTooltip),
-                    onPressed: () => widget.onViewModeChange!(
-                      widget.viewMode == TaskViewMode.board ? TaskViewMode.list : TaskViewMode.board,
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final (nextMode, icon, tooltipKey) = switch (widget.viewMode) {
+                        TaskViewMode.list => (
+                            TaskViewMode.board,
+                            Icons.view_kanban_outlined,
+                            TaskTranslationKeys.viewModeBoardTooltip,
+                          ),
+                        TaskViewMode.board => (
+                            TaskViewMode.calendar,
+                            Icons.calendar_month_outlined,
+                            TaskTranslationKeys.viewModeCalendarTooltip,
+                          ),
+                        TaskViewMode.calendar => (
+                            TaskViewMode.list,
+                            Icons.view_list_outlined,
+                            TaskTranslationKeys.viewModeListTooltip,
+                          ),
+                      };
+                      final tooltip = _translationService.translate(tooltipKey);
+
+                      return FilterIconButton(
+                        icon: icon,
+                        iconSize: AppTheme.iconSizeMedium,
+                        color: widget.viewMode != TaskViewMode.list
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        tooltip: tooltip,
+                        onPressed: () => widget.onViewModeChange!(nextMode),
+                      );
+                    },
                   ),
 
                 // Group button

@@ -333,6 +333,7 @@ shared:
     report_error: Melden
   units:
     days: Tage
+    days_short: T
     hours: Std
     hours_short: h
     minutes: Min

@@ -16,6 +16,7 @@ import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/tag_list_widget.dart';
 import 'package:whph/presentation/ui/shared/utils/tag_display_utils.dart';
 import 'package:acore/acore.dart';
@@ -291,7 +292,7 @@ class TaskCard extends StatelessWidget {
         if (taskItem.estimatedTime != null && taskItem.estimatedTime! > 0)
           _buildInfoRow(
             Icons.timer_outlined,
-            '${taskItem.estimatedTime}m',
+            SharedUiConstants.formatDurationHuman(taskItem.estimatedTime, _translationService),
             TaskUiConstants.estimatedTimeColor,
           ),
       ],

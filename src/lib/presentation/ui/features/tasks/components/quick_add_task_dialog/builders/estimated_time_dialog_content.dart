@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart' as acore;
 import 'package:whph/presentation/ui/shared/components/information_card.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
+import 'package:whph/presentation/ui/shared/components/estimated_time_input.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -109,36 +108,11 @@ class EstimatedTimeDialogContent extends StatelessWidget {
           ),
           child: Row(
             children: [
-              StyledIcon(
-                TaskUiConstants.estimatedTimeIcon,
-                isActive: true,
-              ),
-              const SizedBox(width: AppTheme.sizeLarge),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      translationService.translate(SharedTranslationKeys.timeLoggingDuration),
-                      style: AppTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      translationService.translate(SharedTranslationKeys.minutes),
-                      style: AppTheme.bodySmall,
-                    ),
-                  ],
+                child: EstimatedTimeInput(
+                  totalMinutes: selectedTime,
+                  onValueChanged: onTimeSelected,
                 ),
-              ),
-              acore.NumericInput(
-                value: selectedTime,
-                minValue: 0,
-                maxValue: 480,
-                incrementValue: 10,
-                decrementValue: 10,
-                onValueChanged: onTimeSelected,
-                iconSize: AppTheme.iconSizeMedium,
-                iconColor: theme.colorScheme.primary,
               ),
             ],
           ),

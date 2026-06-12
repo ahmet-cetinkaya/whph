@@ -1,4 +1,6 @@
-enum TaskViewMode { list, board }
+export 'calendar_sub_view.dart' show CalendarSubView;
+
+enum TaskViewMode { list, board, calendar }
 
 extension TaskViewModeParse on TaskViewMode {
   /// Parse a [TaskViewMode] from its [name] (e.g. persisted JSON value).

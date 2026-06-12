@@ -416,10 +416,10 @@ class QuickAddTaskController extends ChangeNotifier {
     if (_isEstimatedTimeExplicitlySet) {
       return _translationService.translate(
         TaskTranslationKeys.quickTaskEstimatedTime,
-        namedArgs: {'time': SharedUiConstants.formatMinutes(_estimatedTime)},
+        namedArgs: {'time': SharedUiConstants.formatDurationHuman(_estimatedTime, _translationService)},
       );
     } else {
-      final formattedTime = SharedUiConstants.formatMinutes(_estimatedTime);
+      final formattedTime = SharedUiConstants.formatDurationHuman(_estimatedTime, _translationService);
       final defaultText = _translationService.translate(TaskTranslationKeys.quickTaskEstimatedTimeDefault);
       return _translationService.translate(
         TaskTranslationKeys.quickTaskEstimatedTime,

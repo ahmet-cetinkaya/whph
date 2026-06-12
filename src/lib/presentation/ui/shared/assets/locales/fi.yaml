@@ -333,6 +333,7 @@ shared:
     report_error: Ilmoita
   units:
     days: päivää
+    days_short: pv
     hours: t
     hours_short: h
     minutes: min

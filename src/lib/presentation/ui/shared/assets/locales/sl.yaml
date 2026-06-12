@@ -327,6 +327,7 @@ shared:
     report_error: Prijavi
   units:
     days: dni
+    days_short: d
     hours: ur
     hours_short: h
     minutes: min

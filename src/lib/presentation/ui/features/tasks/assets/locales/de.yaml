@@ -600,8 +600,23 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Board-Ansicht
+    calendar_tooltip: Kalenderansicht
   board:
     cross_column_move_not_supported: Das Verschieben von Aufgaben zwischen Spalten wird nicht unterstützt
+  calendar:
+    unplanned_panel:
+      title: Ungeplante Aufgaben
+      close: Schließen
+      empty: Alle Aufgaben sind geplant
+      open: Ungeplante Aufgaben anzeigen
+      arm_hint: "Tippe auf einen Tag, um „{title}“ zu planen"
+      arm_cancel: Abbrechen
+      arm_button: Im Kalender planen
+    sub_view:
+      month: "Monat"
+      week: "Woche"
+      day: "Tag"
+      schedule: "Zeitplan"
   statuses:
     builtin:
       todo: Zu erledigen

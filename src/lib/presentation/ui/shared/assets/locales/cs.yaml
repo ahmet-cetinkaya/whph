@@ -327,6 +327,7 @@ shared:
     report_error: Nahlásit
   units:
     days: dny
+    days_short: d
     hours: hod
     hours_short: h
     minutes: min

@@ -347,6 +347,7 @@ shared:
     report_error: Signaler
   units:
     days: jours
+    days_short: j
     hours: h
     hours_short: h
     minutes: min

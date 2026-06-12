@@ -338,6 +338,7 @@ shared:
     report_error: Report
   units:
     days: days
+    days_short: d
     hours: hr
     hours_short: h
     minutes: min

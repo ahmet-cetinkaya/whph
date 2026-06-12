@@ -598,8 +598,23 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Вид доски
+    calendar_tooltip: Вид календаря
   board:
     cross_column_move_not_supported: Перемещение задач между столбцами не поддерживается
+  calendar:
+    unplanned_panel:
+      title: Незапланированные задачи
+      close: Закрыть
+      empty: Все задачи запланированы
+      open: Показать незапланированные задачи
+      arm_hint: "Нажмите на день, чтобы запланировать «{title}»"
+      arm_cancel: Отмена
+      arm_button: Запланировать в календаре
+    sub_view:
+      month: "Месяц"
+      week: "Неделя"
+      day: "День"
+      schedule: "Расписание"
   statuses:
     builtin:
       todo: К выполнению

@@ -510,8 +510,23 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Pogled table
+    calendar_tooltip: Pogled koledarja
   board:
     cross_column_move_not_supported: Premikanje nalog med stolpci ni podprto
+  calendar:
+    unplanned_panel:
+      title: Nenačrtovane naloge
+      close: Zapri
+      empty: Vse naloge so načrtovane
+      open: Pokaži nenačrtovane naloge
+      arm_hint: "Tapnite dan za načrtovanje »{title}«"
+      arm_cancel: Prekliči
+      arm_button: Načrtuj v koledarju
+    sub_view:
+      month: "Mesec"
+      week: "Teden"
+      day: "Dan"
+      schedule: "Urnik"
   statuses:
     builtin:
       todo: Za opravit

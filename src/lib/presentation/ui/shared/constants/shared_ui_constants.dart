@@ -32,19 +32,22 @@ class SharedUiConstants {
     return '${minutes}m';
   }
 
-  /// Converts [minutes] to a human-readable format.
+  /// Converts [minutes] to a human-readable format with days, hours, minutes.
   /// Uses the translation service to get localized strings.
   static String formatDurationHuman(int? minutes, ITranslationService translationService) {
-    if (minutes == null) return translationService.translate(SharedTranslationKeys.notSetTime);
-    if (minutes < 60) {
-      return '$minutes${translationService.translate(SharedTranslationKeys.minutes)}';
-    }
-    final hoursCount = minutes ~/ 60;
-    final remainingMinutes = minutes % 60;
-    if (remainingMinutes == 0) {
-      return '$hoursCount${translationService.translate(SharedTranslationKeys.hours)}';
-    }
-    return '$hoursCount${translationService.translate(SharedTranslationKeys.hours)} $remainingMinutes${translationService.translate(SharedTranslationKeys.minutes)}';
+    if (minutes == null || minutes <= 0) return translationService.translate(SharedTranslationKeys.notSetTime);
+    if (minutes < 60) return '$minutes${translationService.translate(SharedTranslationKeys.minutesShort)}';
+    final daysCount = minutes ~/ 1440;
+    final remainingAfterDays = minutes % 1440;
+    final hoursCount = remainingAfterDays ~/ 60;
+    final remainingMinutes = remainingAfterDays % 60;
+
+    final parts = <String>[];
+    if (daysCount > 0) parts.add('$daysCount${translationService.translate(SharedTranslationKeys.daysShort)}');
+    if (hoursCount > 0) parts.add('$hoursCount${translationService.translate(SharedTranslationKeys.hoursShort)}');
+    if (remainingMinutes > 0)
+      parts.add('$remainingMinutes${translationService.translate(SharedTranslationKeys.minutesShort)}');
+    return parts.join(' ');
   }
 
   // Debounce durations

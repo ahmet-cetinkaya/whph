@@ -526,8 +526,23 @@ tasks:
   view_mode:
     list_tooltip: List view
     board_tooltip: Προβολή πίνακα
+    calendar_tooltip: Προβολή ημερολογίου
   board:
     cross_column_move_not_supported: Η μετακίνηση εργασιών μεταξύ στηλών δεν υποστηρίζεται
+  calendar:
+    unplanned_panel:
+      title: Μη προγραμματισμένες εργασίες
+      close: Κλείσιμο
+      empty: Όλες οι εργασίες έχουν προγραμματιστεί
+      open: Εμφάνιση μη προγραμματισμένων εργασιών
+      arm_hint: "Πατήστε μια ημέρα για προγραμματισμό «{title}»"
+      arm_cancel: Άκυρο
+      arm_button: Προγραμματισμός στο ημερολόγιο
+    sub_view:
+      month: "Μήνας"
+      week: "Εβδομάδα"
+      day: "Ημέρα"
+      schedule: "Πρόγραμμα"
   statuses:
     builtin:
       todo: Προς εκτέλεση
