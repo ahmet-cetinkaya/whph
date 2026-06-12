@@ -37,6 +37,11 @@ class TaskCalendarService extends ChangeNotifier {
   List<TaskListItem> _unplannedTasks = [];
   List<TaskListItem> get unplannedTasks => _unplannedTasks;
 
+  int _unplannedPageIndex = 0;
+  static const int _unplannedPageSize = 50;
+  bool _hasMoreUnplanned = false;
+  bool get hasMoreUnplanned => _hasMoreUnplanned;
+
   Map<String, TaskStatusListItem> _statusById = {};
   Map<String, TaskStatusListItem> get statusById => Map.unmodifiable(_statusById);
 
@@ -87,32 +92,42 @@ class TaskCalendarService extends ChangeNotifier {
     if (_isPanelOpen) await loadUnplannedTasks();
   }
 
+  static const int _eventsPageSize = 100;
+
   Future<void> loadEventsForRange(DateTimeRange range) async {
     try {
-      final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
-        GetListTasksQuery(
-          pageIndex: 0,
-          // TODO(#286): page through results instead of capping at 500
-          pageSize: 500,
-          filterByPlannedStartDate: range.start,
-          filterByPlannedEndDate: range.end,
-          filterDateOr: true,
-          includeNullDates: false,
-          filterByCompleted: _showCompleted ? null : false,
-          filterByTags: _filterNoTags ? [] : _filterTags,
-          filterNoTags: _filterNoTags,
-          filterBySearch: _searchQuery,
-          enableGrouping: false,
-        ),
-      );
+      final allEvents = <CalendarEvent<TaskCalendarEventData>>[];
+      var pageIndex = 0;
 
-      final events = response.items
-          .where((task) => task.plannedDate != null)
-          .map((task) => TaskCalendarEvent.fromTaskListItem(task))
-          .toList();
+      while (true) {
+        final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+          GetListTasksQuery(
+            pageIndex: pageIndex,
+            pageSize: _eventsPageSize,
+            filterByPlannedStartDate: range.start,
+            filterByPlannedEndDate: range.end,
+            filterDateOr: true,
+            includeNullDates: false,
+            filterByCompleted: _showCompleted ? null : false,
+            filterByTags: _filterNoTags ? [] : _filterTags,
+            filterNoTags: _filterNoTags,
+            filterBySearch: _searchQuery,
+            enableGrouping: false,
+          ),
+        );
+
+        allEvents.addAll(
+          response.items
+              .where((task) => task.plannedDate != null)
+              .map((task) => TaskCalendarEvent.fromTaskListItem(task)),
+        );
+
+        if (!response.hasNext) break;
+        pageIndex++;
+      }
 
       _eventsController.clearEvents();
-      _eventsController.addEvents(events);
+      _eventsController.addEvents(allEvents);
       notifyListeners();
     } catch (e, stackTrace) {
       Logger.error('Failed to load events', error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
@@ -167,15 +182,16 @@ class TaskCalendarService extends ChangeNotifier {
 
   Future<void> loadUnplannedTasks() async {
     try {
+      Logger.info('loadUnplannedTasks: starting', component: 'TaskCalendarService');
       if (_enableGrouping && _statusById.isEmpty) {
         await _loadStatuses();
       }
 
+      _unplannedPageIndex = 0;
       final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
         GetListTasksQuery(
-          pageIndex: 0,
-          // TODO(#286): page through results instead of capping at 500
-          pageSize: 500,
+          pageIndex: _unplannedPageIndex,
+          pageSize: _unplannedPageSize,
           includeNullDates: true,
           filterByCompleted: false,
           filterByTags: _filterNoTags ? [] : _filterTags,
@@ -187,9 +203,41 @@ class TaskCalendarService extends ChangeNotifier {
         ),
       );
       _unplannedTasks = response.items.where((task) => task.plannedDate == null && !task.isCompleted).toList();
+      _hasMoreUnplanned = response.hasNext;
+      Logger.info('loadUnplannedTasks: loaded ${_unplannedTasks.length} tasks, hasMore=$_hasMoreUnplanned', component: 'TaskCalendarService');
       notifyListeners();
     } catch (e, stackTrace) {
       Logger.error('Failed to load unplanned tasks',
+          error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
+    }
+  }
+
+  Future<void> loadMoreUnplannedTasks() async {
+    if (!_hasMoreUnplanned) return;
+
+    try {
+      _unplannedPageIndex++;
+      final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+        GetListTasksQuery(
+          pageIndex: _unplannedPageIndex,
+          pageSize: _unplannedPageSize,
+          includeNullDates: true,
+          filterByCompleted: false,
+          filterByTags: _filterNoTags ? [] : _filterTags,
+          filterNoTags: _filterNoTags,
+          filterBySearch: _searchQuery,
+          sortBy: _sortBy,
+          groupBy: _enableGrouping ? _groupBy : null,
+          enableGrouping: _enableGrouping,
+        ),
+      );
+      _unplannedTasks.addAll(
+        response.items.where((task) => task.plannedDate == null && !task.isCompleted),
+      );
+      _hasMoreUnplanned = response.hasNext;
+      notifyListeners();
+    } catch (e, stackTrace) {
+      Logger.error('Failed to load more unplanned tasks',
           error: e, stackTrace: stackTrace, component: 'TaskCalendarService');
     }
   }

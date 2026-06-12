@@ -226,9 +226,14 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   }
 
   Future<void> _togglePanel() async {
+    final wasOpen = widget.calendarService.isPanelOpen;
+    Logger.info('_togglePanel: wasOpen=$wasOpen', component: 'TaskCalendarView');
     widget.calendarService.isPanelOpen = !widget.calendarService.isPanelOpen;
+    Logger.info('_togglePanel: isPanelOpen=${widget.calendarService.isPanelOpen}', component: 'TaskCalendarView');
     if (widget.calendarService.isPanelOpen) {
+      Logger.info('_togglePanel: calling loadUnplannedTasks', component: 'TaskCalendarView');
       await widget.calendarService.loadUnplannedTasks();
+      Logger.info('_togglePanel: loadUnplannedTasks completed, taskCount=${widget.calendarService.unplannedTasks.length}', component: 'TaskCalendarView');
     }
   }
 
@@ -255,39 +260,43 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
           builder: (context, _) => _buildArmedHint(),
         ),
         Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: _isTransitioning
-                    ? const SizedBox.shrink()
-                    : ListenableBuilder(
-                        listenable: widget.calendarService,
-                        builder: (context, _) => _buildCalendarView(),
+          child: ListenableBuilder(
+            listenable: widget.calendarService,
+            builder: (context, _) => Row(
+              children: [
+                Expanded(
+                  child: _isTransitioning
+                      ? const SizedBox.shrink()
+                      : ListenableBuilder(
+                          listenable: widget.calendarService,
+                          builder: (context, _) => _buildCalendarView(),
+                        ),
+                ),
+                _buildPanelToggleButton(),
+                if (widget.calendarService.isPanelOpen) ...[
+                  const VerticalDivider(width: 1),
+                  SizedBox(
+                    width: _panelWidth,
+                    child: ListenableBuilder(
+                      listenable: widget.calendarService,
+                      builder: (context, _) => UnplannedTasksPanel(
+                        tasks: widget.calendarService.unplannedTasks,
+                        onArm: widget.calendarService.armTask,
+                        onOpenDetails: (task) => widget.onOpenDetails(task.id),
+                        armedTaskId: widget.calendarService.armedTask?.id,
+                        groupLabelResolver: (task) =>
+                            widget.calendarService.resolveGroupLabel(task, _translationService.translate),
+                        onClose: () {
+                          widget.calendarService.isPanelOpen = false;
+                        },
+                        onLoadMore: widget.calendarService.loadMoreUnplannedTasks,
+                        hasMore: widget.calendarService.hasMoreUnplanned,
                       ),
-              ),
-              _buildPanelToggleButton(),
-              if (widget.calendarService.isPanelOpen) ...[
-                const VerticalDivider(width: 1),
-                SizedBox(
-                  width: _panelWidth,
-                  child: ListenableBuilder(
-                    listenable: widget.calendarService,
-                    builder: (context, _) => UnplannedTasksPanel(
-                      tasks: widget.calendarService.unplannedTasks,
-                      onArm: widget.calendarService.armTask,
-                      onOpenDetails: (task) => widget.onOpenDetails(task.id),
-                      armedTaskId: widget.calendarService.armedTask?.id,
-                      groupLabelResolver: (task) =>
-                          widget.calendarService.resolveGroupLabel(task, _translationService.translate),
-                      onClose: () {
-                        widget.calendarService.isPanelOpen = false;
-                        widget.calendarService.isPanelOpen = false;
-                      },
                     ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ],
@@ -359,6 +368,8 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
       body: CalendarBody<TaskCalendarEventData>(
         multiDayTileComponents: _buildTileComponents(),
         monthTileComponents: _buildTileComponents(),
+        monthBodyConfiguration: MonthBodyConfiguration<TaskCalendarEventData>(),
+        multiDayBodyConfiguration: const MultiDayBodyConfiguration(),
         scheduleTileComponents: _buildScheduleTileComponents(),
         scheduleBodyConfiguration: ScheduleBodyConfiguration(
           emptyDay: isArmed ? EmptyDayBehavior.show : EmptyDayBehavior.hide,
