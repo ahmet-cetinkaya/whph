@@ -79,7 +79,9 @@ jobs:
               echo "App version: $APP_VERSION"
 
               # Wait for all CI workflows to complete with retry mechanism
-              WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
+              # Note: Flutter CI - Windows is disabled (see flutter-ci.windows.yml)
+              # until Visual Studio 2026 support is available in Flutter
+              WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux")
               MAX_RETRIES=40  # 40 retries * 30 seconds = 20 minutes max wait
               RETRY_COUNT=0
               ALL_SUCCESS=false
