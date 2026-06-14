@@ -184,6 +184,13 @@ class _ColorPickerState extends State<ColorPicker> with SingleTickerProviderStat
                                 width: 1,
                               ),
                       ),
+                      child: isCurrentColor
+                          ? Icon(
+                              Icons.check,
+                              size: _ColorPickerConstants.blockPickerItemSize * 0.5,
+                              color: flutter_colorpicker.useWhiteForeground(color) ? Colors.white : Colors.black,
+                            )
+                          : null,
                     ),
                   );
                 },
