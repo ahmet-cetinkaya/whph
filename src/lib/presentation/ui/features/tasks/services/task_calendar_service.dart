@@ -18,8 +18,10 @@ class TaskCalendarService extends ChangeNotifier {
   final DefaultEventsController<TaskCalendarEventData> _eventsController =
       DefaultEventsController<TaskCalendarEventData>();
   final calendarController = CalendarController<TaskCalendarEventData>();
+  bool _isDisposed = false;
 
   void clearEvents() {
+    if (_isDisposed) return;
     _eventsController.clearEvents();
     notifyListeners();
   }
@@ -50,6 +52,7 @@ class TaskCalendarService extends ChangeNotifier {
   set isPanelOpen(bool value) {
     if (_isPanelOpen == value) return;
     _isPanelOpen = value;
+    if (_isDisposed) return;
     notifyListeners();
   }
 
@@ -58,12 +61,14 @@ class TaskCalendarService extends ChangeNotifier {
 
   void armTask(TaskListItem task) {
     _armedTask = (_armedTask?.id == task.id) ? null : task;
+    if (_isDisposed) return;
     notifyListeners();
   }
 
   void disarmTask() {
     if (_armedTask == null) return;
     _armedTask = null;
+    if (_isDisposed) return;
     notifyListeners();
   }
 
@@ -88,7 +93,9 @@ class TaskCalendarService extends ChangeNotifier {
   }
 
   Future<void> reloadWithFilters() async {
+    if (_isDisposed) return;
     await _reloadCurrentRange();
+    if (_isDisposed) return;
     if (_isPanelOpen) await loadUnplannedTasks();
   }
 
@@ -100,6 +107,8 @@ class TaskCalendarService extends ChangeNotifier {
       var pageIndex = 0;
 
       while (true) {
+        if (_isDisposed) return;
+
         final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
           GetListTasksQuery(
             pageIndex: pageIndex,
@@ -116,6 +125,8 @@ class TaskCalendarService extends ChangeNotifier {
           ),
         );
 
+        if (_isDisposed) return;
+
         allEvents.addAll(
           response.items
               .where((task) => task.plannedDate != null)
@@ -126,6 +137,7 @@ class TaskCalendarService extends ChangeNotifier {
         pageIndex++;
       }
 
+      if (_isDisposed) return;
       _eventsController.clearEvents();
       _eventsController.addEvents(allEvents);
       notifyListeners();
@@ -187,6 +199,8 @@ class TaskCalendarService extends ChangeNotifier {
         await _loadStatuses();
       }
 
+      if (_isDisposed) return;
+
       _unplannedPageIndex = 0;
       final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
         GetListTasksQuery(
@@ -202,6 +216,9 @@ class TaskCalendarService extends ChangeNotifier {
           enableGrouping: _enableGrouping,
         ),
       );
+
+      if (_isDisposed) return;
+
       _unplannedTasks = response.items.where((task) => task.plannedDate == null && !task.isCompleted).toList();
       _hasMoreUnplanned = response.hasNext;
       Logger.info('loadUnplannedTasks: loaded ${_unplannedTasks.length} tasks, hasMore=$_hasMoreUnplanned',
@@ -217,6 +234,8 @@ class TaskCalendarService extends ChangeNotifier {
     if (!_hasMoreUnplanned) return;
 
     try {
+      if (_isDisposed) return;
+
       _unplannedPageIndex++;
       final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
         GetListTasksQuery(
@@ -232,6 +251,9 @@ class TaskCalendarService extends ChangeNotifier {
           enableGrouping: _enableGrouping,
         ),
       );
+
+      if (_isDisposed) return;
+
       _unplannedTasks.addAll(
         response.items.where((task) => task.plannedDate == null && !task.isCompleted),
       );
@@ -277,6 +299,8 @@ class TaskCalendarService extends ChangeNotifier {
         GetTaskQuery(id: taskId),
       );
 
+      if (_isDisposed) return;
+
       await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(
         SaveTaskCommand(
           id: task.id,
@@ -290,6 +314,9 @@ class TaskCalendarService extends ChangeNotifier {
           statusId: task.statusId,
         ),
       );
+
+      if (_isDisposed) return;
+
       _unplannedTasks.removeWhere((t) => t.id == taskId);
       if (_armedTask?.id == taskId) _armedTask = null;
       notifyListeners();
@@ -300,14 +327,26 @@ class TaskCalendarService extends ChangeNotifier {
   }
 
   Future<void> _reloadCurrentRange() async {
+    if (_isDisposed) return;
     final range = calendarController.visibleDateTimeRange.value;
     if (range != null) {
       await loadEventsForRange(range);
     }
   }
 
+  void reset() {
+    _eventsController.clearEvents();
+    _unplannedTasks = [];
+    _unplannedPageIndex = 0;
+    _hasMoreUnplanned = false;
+    _armedTask = null;
+    _isPanelOpen = false;
+    _statusById = {};
+  }
+
   @override
   void dispose() {
+    _isDisposed = true;
     _eventsController.dispose();
     calendarController.dispose();
     super.dispose();
