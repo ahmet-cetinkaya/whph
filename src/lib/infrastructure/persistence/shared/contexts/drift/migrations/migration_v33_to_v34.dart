@@ -21,6 +21,14 @@ Future<void> migrateV33ToV34(AppDatabase db, Migrator m, Schema34 schema) async 
     ''').getSingleOrNull();
     if (taskStatusTableExists == null) {
       await m.createTable(schema.taskStatusTable);
+    } else {
+      // Table exists but may be missing columns from partial migration
+      final statusColumns = await db.customSelect('PRAGMA table_info(task_status_table)').get();
+      final columnNames = statusColumns.map((row) => row.data['name'] as String).toList();
+
+      if (!columnNames.contains('order')) {
+        await db.customStatement('ALTER TABLE task_status_table ADD COLUMN "order" REAL NOT NULL DEFAULT 0.0');
+      }
     }
 
     final taskColumns = await db.customSelect('PRAGMA table_info(task_table)').get();

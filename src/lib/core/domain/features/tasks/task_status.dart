@@ -10,8 +10,7 @@ class TaskStatus extends BaseEntity<String> {
   /// Optional hex color for the status column.
   String? color;
 
-  /// Column/group order. Mapped from sort_order column in database.
-  @JsonProperty(name: 'sort_order')
+  /// Column/group order.
   double order;
 
   /// Built-in statuses (todo & done) cannot be deleted.

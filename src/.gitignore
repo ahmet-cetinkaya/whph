@@ -55,6 +55,7 @@ adi-registration.properties
 
 # Drift ORM generated files
 test/drift/app_database/generated/
+lib/infrastructure/persistence/shared/contexts/drift/schemas/app_database/schema*.dart
 
 # Linux Native Tests
 test/infrastructure/linux/features/tracking/*_test

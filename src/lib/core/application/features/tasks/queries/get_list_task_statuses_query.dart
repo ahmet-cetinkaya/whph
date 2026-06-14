@@ -55,7 +55,7 @@ class GetListTaskStatusesQueryHandler
     final result = await _taskStatusRepository.getList(
       request.pageIndex,
       request.pageSize,
-      customOrder: [CustomOrder(field: 'sort_order', direction: SortDirection.asc)],
+      customOrder: [CustomOrder(field: 'order', direction: SortDirection.asc)],
     );
 
     // Merge: use DB values for builtin statuses if they exist, otherwise use defaults

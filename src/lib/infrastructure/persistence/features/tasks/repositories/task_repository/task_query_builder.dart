@@ -55,14 +55,14 @@ class TaskQueryBuilder {
         return 'task_table.`${order.field}` IS NULL, task_table.`${order.field}` COLLATE NOCASE ${order.direction == SortDirection.asc ? 'ASC' : 'DESC'}';
       }
       if (order.field == 'status') {
-        // Sort by status order: todo first, custom statuses by sort_order, done last
+        // Sort by status order: todo first, custom statuses by order, done last
         // For null status_id (legacy tasks), treat them as todo
         return '''CASE
           WHEN task_table.status_id IS NULL THEN 0
           WHEN task_table.status_id = 'task-status-builtin-todo' THEN 0
           WHEN task_table.status_id = 'task-status-builtin-done' THEN 9999
           ELSE (
-            SELECT COALESCE(ss.sort_order, 1000)
+            SELECT COALESCE(ss."order", 1000)
             FROM task_status_table ss
             WHERE ss.id = task_table.status_id
             AND ss.deleted_date IS NULL
