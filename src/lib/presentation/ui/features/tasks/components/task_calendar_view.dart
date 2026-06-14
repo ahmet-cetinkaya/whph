@@ -18,12 +18,16 @@ class TaskCalendarView extends StatefulWidget {
   final void Function(DateTime plannedDate)? onCreateTask;
   final VoidCallback? onInitialLoadComplete;
 
+  /// Restricts which sub-views appear in the toolbar. Defaults to all views.
+  final List<CalendarSubView>? allowedSubViews;
+
   const TaskCalendarView({
     super.key,
     required this.calendarService,
     required this.onOpenDetails,
     this.onCreateTask,
     this.onInitialLoadComplete,
+    this.allowedSubViews,
   });
 
   @override
@@ -33,6 +37,12 @@ class TaskCalendarView extends StatefulWidget {
 class _TaskCalendarViewState extends State<TaskCalendarView> {
   final _tasksService = container.resolve<TasksService>();
   final _translationService = container.resolve<ITranslationService>();
+
+  CalendarSubView get _defaultSubView {
+    final allowed = widget.allowedSubViews;
+    if (allowed != null && allowed.isNotEmpty) return allowed.first;
+    return CalendarSubView.week;
+  }
 
   CalendarSubView _currentSubView = CalendarSubView.week;
   ViewConfiguration _viewConfiguration = MultiDayViewConfiguration.week();
@@ -49,6 +59,8 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
   @override
   void initState() {
     super.initState();
+    _currentSubView = _defaultSubView;
+    _viewConfiguration = _buildViewConfiguration(_defaultSubView);
     _addTasksServiceListeners();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _loadInitialEvents();
@@ -152,16 +164,7 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
       _calendarKey = UniqueKey();
       _currentSubView = subView;
       _isTransitioning = true;
-      switch (subView) {
-        case CalendarSubView.month:
-          _viewConfiguration = MonthViewConfiguration.singleMonth();
-        case CalendarSubView.week:
-          _viewConfiguration = MultiDayViewConfiguration.week();
-        case CalendarSubView.day:
-          _viewConfiguration = MultiDayViewConfiguration.singleDay();
-        case CalendarSubView.schedule:
-          _viewConfiguration = ScheduleViewConfiguration.paginated();
-      }
+      _viewConfiguration = _buildViewConfiguration(subView);
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -398,11 +401,24 @@ class _TaskCalendarViewState extends State<TaskCalendarView> {
     );
   }
 
+  List<CalendarSubView> get _visibleSubViews => widget.allowedSubViews ?? CalendarSubView.values;
+
+  ViewConfiguration _buildViewConfiguration(CalendarSubView subView) {
+    return switch (subView) {
+      CalendarSubView.month => MonthViewConfiguration.singleMonth(),
+      CalendarSubView.week => MultiDayViewConfiguration.week(),
+      CalendarSubView.day => MultiDayViewConfiguration.singleDay(),
+      CalendarSubView.schedule => ScheduleViewConfiguration.paginated(),
+    };
+  }
+
   Widget _buildSubViewToolbar() {
+    if (_visibleSubViews.length <= 1) return const SizedBox.shrink();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Row(
-        children: CalendarSubView.values.map((subView) {
+        children: _visibleSubViews.map((subView) {
           final isSelected = _currentSubView == subView;
           return Padding(
             padding: const EdgeInsets.only(right: 4),

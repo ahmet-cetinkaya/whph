@@ -24,6 +24,8 @@ import 'package:whph/presentation/ui/features/tasks/constants/task_translation_k
 import 'package:whph/presentation/ui/features/tasks/pages/marathon_page.dart';
 import 'package:whph/presentation/ui/features/tasks/pages/task_details_page.dart';
 import 'package:whph/presentation/ui/features/tasks/models/task_view_mode.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_calendar_view.dart';
+import 'package:whph/presentation/ui/features/tasks/services/task_calendar_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
@@ -90,6 +92,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   );
   bool _taskForceOriginalLayout = false;
   TaskViewMode _viewMode = TaskViewMode.list;
+  TaskCalendarService? _calendarService;
 
   // Habit list options state
   static const String _habitFilterOptionsSettingKeySuffix = 'TODAY_PAGE';
@@ -255,6 +258,9 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     if (mounted) {
       setState(() {
         _viewMode = mode;
+        if (mode == TaskViewMode.calendar) {
+          _calendarService ??= container.resolve<TaskCalendarService>();
+        }
       });
     }
   }
@@ -380,6 +386,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   @override
   void dispose() {
     _habitsService.onSettingsChanged.removeListener(_loadHabitSettings);
+    _calendarService?.reset();
     super.dispose();
   }
 
@@ -565,7 +572,19 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 ),
               ),
               if (_taskListOptionSettingsLoaded) ...[
-                if (_viewMode == TaskViewMode.board)
+                if (_viewMode == TaskViewMode.calendar && _calendarService != null)
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: TaskCalendarView(
+                        calendarService: _calendarService!,
+                        onOpenDetails: (taskId) => _openTaskDetails(context, taskId),
+                        onCreateTask: (date) {},
+                        allowedSubViews: [CalendarSubView.day],
+                      ),
+                    ),
+                  )
+                else if (_viewMode == TaskViewMode.board)
                   SliverToBoxAdapter(
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.6,
