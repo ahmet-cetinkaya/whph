@@ -1250,7 +1250,7 @@ void main() {
             reason: 'Completed subtask A should not appear in incomplete filter');
       });
 
-      test('should hide parent when ALL subtasks are completed', () async {
+      test('should show parent when it is incomplete regardless of subtask completion', () async {
         // Arrange - Create a parent with 2 subtasks, complete both
         final parentTask = Task(
           id: 'all-complete-parent',
@@ -1287,10 +1287,10 @@ void main() {
           ),
         );
 
-        // Assert - Parent should be hidden (all subtasks completed)
+        // Assert - Parent should still appear (it is incomplete, completion depends on parent's own state)
         final resultIds = incompleteResult.items.map((t) => t.id).toList();
-        expect(resultIds, isNot(contains('all-complete-parent')),
-            reason: 'Parent should be hidden when ALL subtasks are completed');
+        expect(resultIds, contains('all-complete-parent'),
+            reason: 'Incomplete parent should appear regardless of subtask completion');
         expect(resultIds, isNot(contains('all-complete-sub-1')));
         expect(resultIds, isNot(contains('all-complete-sub-2')));
       });

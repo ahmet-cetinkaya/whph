@@ -37,56 +37,46 @@ void main() {
         expect(result.variables, isEmpty);
       });
 
-      test('includes parent if any subtask is completed when filterByCompleted is true', () {
+      test('includes task if it or its parent is completed when filterByCompleted is true', () {
         final result = builder.buildCompletionCondition(
           filterByCompleted: true,
           areParentAndSubTasksIncluded: true,
         );
 
         expect(result.condition, contains('task_table.completed_at IS NOT NULL'));
-        expect(result.condition, contains('EXISTS(SELECT 1 FROM task_table subtask'));
-        expect(result.condition, contains('subtask.completed_at IS NOT NULL'));
         expect(result.condition, contains('EXISTS(SELECT 1 FROM task_table parent'));
+        expect(result.condition, contains('parent.id = task_table.parent_task_id'));
+        expect(result.condition, contains('parent.completed_at IS NOT NULL'));
       });
 
-      test('excludes parent only when ALL subtasks are completed when filterByCompleted is false', () {
+      test('excludes task when its parent is completed when filterByCompleted is false', () {
         final result = builder.buildCompletionCondition(
           filterByCompleted: false,
           areParentAndSubTasksIncluded: true,
         );
 
-        // Parent must be incomplete
+        // Task itself must be incomplete
         expect(result.condition, contains('task_table.completed_at IS NULL'));
-        // Parent should remain if it has NO subtasks
-        expect(result.condition,
-            contains('NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id)'));
-        // Parent should remain if it has at least one incomplete subtask
-        expect(
-            result.condition,
-            contains(
-                'EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NULL)'));
-        // Parent should be excluded if its parent is completed
+        // Task should be excluded if its parent is completed
         expect(
             result.condition,
             contains(
                 'NOT EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)'));
       });
 
-      test('uses OR logic between no-subtasks and has-incomplete-subtask conditions', () {
+      test('uses AND logic to exclude children of completed parents when filterByCompleted is false', () {
         final result = builder.buildCompletionCondition(
           filterByCompleted: false,
           areParentAndSubTasksIncluded: true,
         );
 
-        // The two conditions must be OR'd: a parent with no subtasks OR a parent with at least one incomplete subtask
-        expect(result.condition, contains('OR'));
-        // Both conditions are grouped together in parentheses
-        expect(result.condition,
-            contains('NOT EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id)'));
+        // Task must be incomplete AND parent must not be completed
+        expect(result.condition, contains('task_table.completed_at IS NULL'));
+        expect(result.condition, contains('AND'));
         expect(
             result.condition,
             contains(
-                'EXISTS(SELECT 1 FROM task_table subtask WHERE subtask.parent_task_id = task_table.id AND subtask.completed_at IS NULL)'));
+                'NOT EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.completed_at IS NOT NULL)'));
       });
     });
 
