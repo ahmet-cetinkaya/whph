@@ -275,6 +275,8 @@ settings:
     description:
       Adjust the size of text and UI elements to improve readability on
       high DPI displays
+    system: System
+    system_description: Automatically adjusts based on your system's display settings
     compact: Compact
     normal: Normal
     large: Large

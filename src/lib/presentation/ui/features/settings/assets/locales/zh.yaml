@@ -227,6 +227,8 @@ settings:
   ui_density:
     title: 密度
     description: 调整文本和UI元素的大小以改善高分辨率显示器上的可读性
+    system: 系统
+    system_description: 根据系统显示设置自动调整
     compact: 紧凑
     normal: 正常
     large: 大

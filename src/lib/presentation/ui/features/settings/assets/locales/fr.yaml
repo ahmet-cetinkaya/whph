@@ -308,6 +308,8 @@ settings:
     description:
       Ajustez la taille du texte et des éléments UI pour améliorer la lisibilité
       sur les écrans haute résolution
+    system: Système
+    system_description: S'ajuste automatiquement en fonction des paramètres d'affichage de votre système
     compact: Compact
     normal: Normal
     large: Large

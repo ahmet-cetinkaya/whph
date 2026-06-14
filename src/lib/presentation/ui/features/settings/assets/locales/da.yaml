@@ -277,6 +277,8 @@ settings:
     description:
       Juster størrelsen på tekst og UI-elementer for at forbedre læsbarheden
       på skærme med høj DPI
+    system: System
+    system_description: Justeres automatisk baseret på dit systems skærmindstillinger
     compact: Kompakt
     normal: Normal
     large: Stor

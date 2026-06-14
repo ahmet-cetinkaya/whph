@@ -139,10 +139,10 @@ class _ThemeSettingsState extends State<ThemeSettings> {
       features.add(_translationService.translate(SettingsTranslationKeys.customAccentColorFeature));
     }
 
-    // Add UI density if not normal
-    if (_uiDensity != domain.UiDensity.normal) {
+    if (_uiDensity != domain.UiDensity.system) {
       const densityKeys = {
         domain.UiDensity.compact: SettingsTranslationKeys.uiDensityCompact,
+        domain.UiDensity.normal: SettingsTranslationKeys.uiDensityNormal,
         domain.UiDensity.large: SettingsTranslationKeys.uiDensityLarge,
         domain.UiDensity.larger: SettingsTranslationKeys.uiDensityLarger,
       };
@@ -602,10 +602,11 @@ class _ThemeDialogState extends State<_ThemeDialog> {
                 ),
                 child: Column(
                   children: [
+                    _buildDensityOption(domain.UiDensity.system, SettingsTranslationKeys.uiDensitySystem, 'Auto'),
+                    Divider(height: 1, color: theme.dividerColor, indent: 50),
                     _buildDensityOption(domain.UiDensity.compact, SettingsTranslationKeys.uiDensityCompact, '0.8x'),
                     Divider(height: 1, color: theme.dividerColor, indent: 50),
-                    _buildDensityOption(
-                        domain.UiDensity.normal, SettingsTranslationKeys.uiDensityNormal, '1.0x (Default)'),
+                    _buildDensityOption(domain.UiDensity.normal, SettingsTranslationKeys.uiDensityNormal, '1.0x'),
                     Divider(height: 1, color: theme.dividerColor, indent: 50),
                     _buildDensityOption(domain.UiDensity.large, SettingsTranslationKeys.uiDensityLarge, '1.2x'),
                     Divider(height: 1, color: theme.dividerColor, indent: 50),

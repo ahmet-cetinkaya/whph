@@ -305,6 +305,8 @@ settings:
     description:
       Anpassung der Größe von Text und UI-Elementen zur Verbesserung der
       Lesbarkeit auf hochauflösenden Displays
+    system: System
+    system_description: Passt sich automatisch an die Anzeigeeinstellungen Ihres Systems an
     compact: Kompakt
     normal: Normal
     large: Groß

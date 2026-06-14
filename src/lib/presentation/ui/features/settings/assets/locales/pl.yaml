@@ -300,6 +300,8 @@ settings:
     description:
       Dostosuj rozmiar tekstu i elementów interfejsu, aby poprawić czytelność
       na wyświetlaczach o wysokim DPI
+    system: Systemowa
+    system_description: Automatycznie dostosowuje się do ustawień wyświetlania systemu
     compact: Zwarta
     normal: Normalna
     large: Duża

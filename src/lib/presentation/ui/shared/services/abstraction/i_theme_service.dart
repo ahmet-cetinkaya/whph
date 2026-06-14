@@ -19,6 +19,9 @@ abstract class IThemeService {
   /// Gets the current UI density
   UiDensity get currentUiDensity;
 
+  /// Gets the effective density multiplier resolved from the current UI density
+  double get densityMultiplier;
+
   /// Gets the current primary color
   Color get primaryColor;
 

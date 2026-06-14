@@ -36,9 +36,17 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   set isPollingLinuxTheme(bool value) => _isPollingLinuxTheme = value;
 
   bool _isPollingLinuxTheme = false;
+
+  @protected
+  domain.UiDensity get storedUiDensity => _storedUiDensity;
+
+  @protected
+  double get effectiveDensityMultiplier => _effectiveDensityMultiplier;
+
   bool _isCustomAccentColorEnabled = false;
   Color? _customAccentColor;
-  domain.UiDensity _currentUiDensity = domain.AppTheme.defaultUiDensity;
+  domain.UiDensity _storedUiDensity = domain.AppTheme.defaultUiDensity;
+  double _effectiveDensityMultiplier = 1.0;
   Color _primaryColor = domain.AppTheme.primaryColor;
   ColorScheme? _dynamicLightColorScheme;
   ColorScheme? _dynamicDarkColorScheme;
@@ -58,7 +66,10 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
   Color? get customAccentColor => _customAccentColor;
 
   @override
-  domain.UiDensity get currentUiDensity => _currentUiDensity;
+  domain.UiDensity get currentUiDensity => _storedUiDensity;
+
+  @override
+  double get densityMultiplier => _effectiveDensityMultiplier;
 
   @override
   Color get primaryColor => _primaryColor;
@@ -151,7 +162,7 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     final builder = ThemeDataBuilder(
       isDark: isDark,
       primaryColor: _primaryColor,
-      densityMultiplier: _currentUiDensity.multiplier,
+      densityMultiplier: _effectiveDensityMultiplier,
       surface0: surface0,
       surface1: surface1,
       surface2: surface2,
@@ -172,6 +183,14 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
     await _loadThemeSettings();
     if (_isDynamicAccentColorEnabled) {
       await _loadDynamicAccentColor();
+    }
+  }
+
+  @override
+  void didChangeMetrics() {
+    if (_storedUiDensity == domain.UiDensity.system) {
+      resolveEffectiveDensityMultiplier();
+      if (!_isDisposed) notifyThemeChanged();
     }
   }
 
@@ -263,13 +282,12 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
 
   @override
   Future<void> setUiDensity(domain.UiDensity density) async {
-    _currentUiDensity = density;
-
-    String valueToSave = density.name;
+    _storedUiDensity = density;
+    resolveEffectiveDensityMultiplier();
 
     await _mediator.send(SaveSettingCommand(
       key: SettingKeys.uiDensity,
-      value: valueToSave,
+      value: density.name,
       valueType: SettingValueType.string,
     ));
 
@@ -353,16 +371,18 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
       );
 
       if (densityResponse != null) {
-        _currentUiDensity = domain.UiDensity.values.firstWhere(
+        _storedUiDensity = domain.UiDensity.values.firstWhere(
           (density) => density.name == densityResponse.value,
           orElse: () => domain.AppTheme.defaultUiDensity,
         );
       } else {
-        _currentUiDensity = domain.AppTheme.defaultUiDensity;
+        _storedUiDensity = domain.AppTheme.defaultUiDensity;
       }
     } catch (e) {
-      _currentUiDensity = domain.AppTheme.defaultUiDensity;
+      _storedUiDensity = domain.AppTheme.defaultUiDensity;
     }
+
+    resolveEffectiveDensityMultiplier();
 
     await _updatePrimaryColor();
   }
@@ -437,6 +457,17 @@ class ThemeService with WidgetsBindingObserver implements IThemeService {
         final systemBrightness = await getSystemBrightness();
         _currentThemeMode = systemBrightness == Brightness.dark ? AppThemeMode.dark : AppThemeMode.light;
         break;
+    }
+  }
+
+  @visibleForTesting
+  @protected
+  void resolveEffectiveDensityMultiplier() {
+    if (_storedUiDensity == domain.UiDensity.system) {
+      final textScale = WidgetsBinding.instance.platformDispatcher.textScaleFactor;
+      _effectiveDensityMultiplier = textScale.clamp(0.8, 1.4);
+    } else {
+      _effectiveDensityMultiplier = _storedUiDensity.multiplier;
     }
   }
 

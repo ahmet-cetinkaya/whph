@@ -293,6 +293,8 @@ settings:
     description:
       Ajuste o tamanho do texto e dos elementos da interface para melhorar
       a legibilidade em telas com DPI alto
+    system: Sistema
+    system_description: Ajusta-se automaticamente com base nas configurações de exibição do sistema
     compact: Compacta
     normal: Normal
     large: Grande

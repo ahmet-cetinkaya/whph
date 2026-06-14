@@ -290,6 +290,8 @@ settings:
     description:
       Yüksek DPI ekranlarda okunabilirliği artırmak için metin ve UI elemanlarının
       boyutunu ayarlayın
+    system: Sistem
+    system_description: Sisteminizin ekran ayarlarına göre otomatik olarak ayarlanır
     compact: Kompakt
     normal: Normal
     large: Büyük

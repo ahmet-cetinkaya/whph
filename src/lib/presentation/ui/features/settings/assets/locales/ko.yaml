@@ -239,6 +239,8 @@ settings:
   ui_density:
     title: 밀도
     description: 고해상도 DPI 디스플레이에서 가독성을 높이기 위해 텍스트와 UI 요소의 크기를 조정합니다
+    system: 시스템
+    system_description: 시스템의 디스플레이 설정에 따라 자동으로 조정됩니다
     compact: 조밀함
     normal: 보통
     large: 큼

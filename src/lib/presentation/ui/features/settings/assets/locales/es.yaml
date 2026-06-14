@@ -304,6 +304,8 @@ settings:
     description:
       Ajusta el tamaño del texto y elementos de la interfaz para mejorar
       la legibilidad en pantallas de alta resolución
+    system: Sistema
+    system_description: Se ajusta automáticamente según la configuración de pantalla de su sistema
     compact: Compacto
     normal: Normal
     large: Grande

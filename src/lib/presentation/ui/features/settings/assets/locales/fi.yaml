@@ -282,6 +282,8 @@ settings:
     description:
       Säädä tekstin ja käyttöliittymäelementtien kokoa parantaaksesi luettavuutta
       korkean DPI:n näytöillä
+    system: Järjestelmä
+    system_description: Säätää automaattisesti järjestelmän näyttöasetusten mukaan
     compact: Kompakti
     normal: Normaali
     large: Suuri

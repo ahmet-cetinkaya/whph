@@ -285,6 +285,8 @@ settings:
     description:
       Upravte velikost textu a prvků rozhraní pro lepší čitelnost na displejích
       s vysokým DPI
+    system: Systémová
+    system_description: Automaticky se přizpůsobí nastavení zobrazení vašeho systému
     compact: Kompaktní
     normal: Normální
     large: Velká

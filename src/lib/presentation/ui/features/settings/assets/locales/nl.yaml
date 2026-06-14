@@ -294,6 +294,8 @@ settings:
     description:
       Pas de grootte van tekst en UI-elementen aan om de leesbaarheid op
       schermen met hoge DPI te verbeteren
+    system: Systeem
+    system_description: Past zich automatisch aan op basis van de weergave-instellingen van uw systeem
     compact: Compact
     normal: Normaal
     large: Groot

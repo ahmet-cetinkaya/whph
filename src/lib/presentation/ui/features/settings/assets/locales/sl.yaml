@@ -292,6 +292,8 @@ settings:
     description:
       Prilagodite velikost besedila in elementov vmesnika za boljšo čitljivost
       na zaslonih z visoko gostoto
+    system: Sistemska
+    system_description: Samodejno se prilagodi glede na nastavitve zaslona vašega sistema
     compact: Kompaktno
     normal: Normalno
     large: Veliko

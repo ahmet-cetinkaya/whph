@@ -244,6 +244,8 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   // UI Density Settings
   static const String uiDensityTitle = 'settings.ui_density.title';
   static const String uiDensityDescription = 'settings.ui_density.description';
+  static const String uiDensitySystem = 'settings.ui_density.system';
+  static const String uiDensitySystemDescription = 'settings.ui_density.system_description';
   static const String uiDensityCompact = 'settings.ui_density.compact';
   static const String uiDensityNormal = 'settings.ui_density.normal';
   static const String uiDensityLarge = 'settings.ui_density.large';

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 
+import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 
 import 'package:whph/infrastructure/linux/constants/linux_app_constants.dart';
@@ -22,19 +23,29 @@ class LinuxThemeService extends ThemeService {
 
     // Poll for theme changes on Linux since WidgetsBindingObserver might not fire
     _linuxThemePollingTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
-      if (currentThemeMode == AppThemeMode.auto && !isPollingLinuxTheme) {
-        isPollingLinuxTheme = true;
-        try {
+      if (isPollingLinuxTheme) return;
+      isPollingLinuxTheme = true;
+      try {
+        bool changed = false;
+
+        if (currentThemeMode == AppThemeMode.auto) {
           final newBrightness = await getSystemBrightness();
           final currentBrightness = currentThemeMode == AppThemeMode.light ? Brightness.light : Brightness.dark;
-
           if (currentBrightness != newBrightness) {
             await updateActualThemeMode();
-            notifyThemeChanged();
+            changed = true;
           }
-        } finally {
-          isPollingLinuxTheme = false;
         }
+
+        if (storedUiDensity == domain.UiDensity.system) {
+          final oldMultiplier = effectiveDensityMultiplier;
+          resolveEffectiveDensityMultiplier();
+          if (oldMultiplier != effectiveDensityMultiplier) changed = true;
+        }
+
+        if (changed) notifyThemeChanged();
+      } finally {
+        isPollingLinuxTheme = false;
       }
     });
   }

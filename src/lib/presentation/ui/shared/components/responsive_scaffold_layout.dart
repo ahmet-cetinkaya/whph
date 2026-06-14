@@ -285,21 +285,23 @@ class _ResponsiveScaffoldLayoutState extends State<ResponsiveScaffoldLayout> {
     }
     final bool isActive = navItem.route == currentRoute;
 
+    final dm = _themeService.densityMultiplier;
+
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.sizeLarge)),
       selected: isActive,
       selectedTileColor: _themeService.primaryColor.withValues(alpha: 0.1),
       dense: true,
       visualDensity: const VisualDensity(horizontal: 0, vertical: -1),
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge),
+      contentPadding: EdgeInsets.symmetric(horizontal: AppTheme.sizeLarge * dm),
       leading: navItem.icon != null
-          ? Icon(navItem.icon, size: AppTheme.fontSizeXLarge, color: isActive ? _themeService.primaryColor : null)
+          ? Icon(navItem.icon, size: AppTheme.fontSizeXLarge * dm, color: isActive ? _themeService.primaryColor : null)
           : null,
       title: navItem.widget ??
           Text(
             translationService.translate(navItem.titleKey),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontSize: AppTheme.fontSizeMedium,
+                  fontSize: AppTheme.fontSizeMedium * dm,
                   color: isActive ? _themeService.primaryColor : null,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
                 ),

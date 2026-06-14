@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum UiDensity { compact, normal, large, larger }
+enum UiDensity { system, compact, normal, large, larger }
 
 extension UiDensityExtension on UiDensity {
   double get multiplier {
@@ -24,7 +24,7 @@ class AppTheme {
   static const Color chartColor10 = Color(0xFF9E9D24);
 
   // UI Density Settings
-  static const UiDensity defaultUiDensity = UiDensity.normal;
+  static const UiDensity defaultUiDensity = UiDensity.system;
 
   static const Map<UiDensity, double> uiDensityMultipliers = {
     UiDensity.compact: 0.8,

@@ -296,6 +296,8 @@ settings:
     description:
       Ajustați dimensiunea textului și a elementelor de interfață pentru
       a îmbunătăți lizibilitatea pe ecrane cu DPI ridicat
+    system: Sistem
+    system_description: Se ajustează automat în funcție de setările de afișare ale sistemului
     compact: Compactă
     normal: Normală
     large: Mare

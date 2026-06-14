@@ -323,6 +323,9 @@ class _DefaultThemeService implements IThemeService {
   domain.UiDensity get currentUiDensity => domain.UiDensity.normal;
 
   @override
+  double get densityMultiplier => 1.0;
+
+  @override
   Stream<void> get themeChanges => _themeChangesController.stream;
 
   @override
