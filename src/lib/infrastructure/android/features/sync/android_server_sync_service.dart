@@ -37,16 +37,28 @@ class AndroidServerSyncService extends AndroidSyncService {
     super.updateSyncStatus(status);
 
     // Also update the main ISyncService instance if it's different
+    // Note: In test environments, container may not be initialized - silently skip
+    bool containerInitialized = false;
     try {
-      final mainSyncService = container.resolve<ISyncService>();
-      if (mainSyncService != this) {
-        Logger.info('AndroidServerSyncService: Also updating main ISyncService instance');
-        mainSyncService.updateSyncStatus(status);
-      } else {
-        Logger.info('AndroidServerSyncService: Same instance as ISyncService');
+      // Check if container is initialized by accessing a property
+      container.hashCode;
+      containerInitialized = true;
+    } on Error {
+      // Container not initialized - expected in test environments
+    }
+
+    if (containerInitialized) {
+      try {
+        final mainSyncService = container.resolve<ISyncService>();
+        if (mainSyncService != this) {
+          Logger.info('AndroidServerSyncService: Also updating main ISyncService instance');
+          mainSyncService.updateSyncStatus(status);
+        } else {
+          Logger.info('AndroidServerSyncService: Same instance as ISyncService');
+        }
+      } catch (e) {
+        Logger.error('AndroidServerSyncService: Failed to resolve main ISyncService: $e');
       }
-    } catch (e) {
-      Logger.error('AndroidServerSyncService: Failed to resolve main ISyncService: $e');
     }
 
     Logger.info('AndroidServerSyncService: updateSyncStatus completed');
