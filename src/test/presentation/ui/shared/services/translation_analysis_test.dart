@@ -140,8 +140,7 @@ class TranslationKeysAnalyzer {
   ];
 
   // Resolved absolute paths
-  List<String> get translationKeyPaths =>
-      _relativeTranslationKeyPaths.map((path) => p.join(baseDir, path)).toList();
+  List<String> get translationKeyPaths => _relativeTranslationKeyPaths.map((path) => p.join(baseDir, path)).toList();
 
   Future<AnalysisResult> analyze() async {
     final missingTranslations = <String, List<MissingTranslation>>{};

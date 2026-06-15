@@ -1024,7 +1024,7 @@ void main() {
           ],
         );
 
-        final copied = original.copyWith(weeklySchedule: []);
+        final copied = original.copyWith(weeklySchedule: <WeeklySchedule>[]);
 
         expect(copied.weeklySchedule, isEmpty);
       });
