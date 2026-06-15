@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
+import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
@@ -54,6 +56,8 @@ class ReminderService {
     _habitsService.onHabitCreated.addListener(_handleHabitCreated);
     _habitsService.onHabitUpdated.addListener(_handleHabitUpdated);
     _habitsService.onHabitDeleted.addListener(_handleHabitDeleted);
+    _habitsService.onHabitRecordAdded.addListener(_handleHabitRecordAdded);
+    _habitsService.onHabitRecordRemoved.addListener(_handleHabitRecordRemoved);
 
     await _scheduleExistingHabitReminders();
     await _scheduleExistingTaskReminders();
@@ -68,6 +72,8 @@ class ReminderService {
     _habitsService.onHabitCreated.removeListener(_handleHabitCreated);
     _habitsService.onHabitUpdated.removeListener(_handleHabitUpdated);
     _habitsService.onHabitDeleted.removeListener(_handleHabitDeleted);
+    _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordAdded);
+    _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordRemoved);
   }
 
   Future<void> _scheduleExistingHabitReminders() async {
@@ -83,6 +89,8 @@ class ReminderService {
           final habitResponse = await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(
             GetHabitQuery(id: habitItem.id),
           );
+
+          if (await _isHabitDailyTargetMet(habitResponse)) continue;
 
           await scheduleHabitReminder(habitResponse, cancelExisting: false);
         }
@@ -181,6 +189,46 @@ class ReminderService {
     if (habitId == null) return;
 
     await cancelHabitReminders(habitId);
+  }
+
+  void _handleHabitRecordAdded() async {
+    final habitId = _habitsService.onHabitRecordAdded.value;
+    if (habitId == null) return;
+
+    try {
+      final habit = await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(
+        GetHabitQuery(id: habitId),
+      );
+
+      if (!habit.hasReminder || habit.reminderTime == null) return;
+
+      if (await _isHabitDailyTargetMet(habit)) {
+        await cancelHabitReminders(habitId);
+        Logger.debug('ReminderService: Cancelled habit reminder for $habitId — daily target met');
+      }
+    } catch (e) {
+      Logger.error('ReminderService: Error handling habit record added: $e');
+    }
+  }
+
+  void _handleHabitRecordRemoved() async {
+    final habitId = _habitsService.onHabitRecordRemoved.value;
+    if (habitId == null) return;
+
+    try {
+      final habit = await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(
+        GetHabitQuery(id: habitId),
+      );
+
+      if (!habit.hasReminder || habit.reminderTime == null) return;
+
+      if (!(await _isHabitDailyTargetMet(habit))) {
+        await scheduleHabitReminder(habit);
+        Logger.debug('ReminderService: Re-scheduled habit reminder for $habitId — daily target no longer met');
+      }
+    } catch (e) {
+      Logger.error('ReminderService: Error handling habit record removed: $e');
+    }
   }
 
   void _handleTaskCompleted() async {
@@ -294,6 +342,8 @@ class ReminderService {
 
     if (habit.isArchived || habit.isDeleted) return;
 
+    if (await _isHabitDailyTargetMet(habit)) return;
+
     if (habit.hasReminder && habit.reminderTime != null) {
       final reminderDaysList = habit.getReminderDaysAsList();
       if (reminderDaysList.isEmpty) return;
@@ -388,6 +438,25 @@ class ReminderService {
 
   Future<void> cancelHabitReminders(String habitId) async {
     await cancelEntityReminders(startsWith: 'habit_$habitId');
+  }
+
+  Future<bool> _isHabitDailyTargetMet(Habit habit) async {
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1)).subtract(const Duration(microseconds: 1));
+
+    final recordsResponse = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
+      GetListHabitRecordsQuery(
+        habitId: habit.id,
+        startDate: startOfDay,
+        endDate: endOfDay,
+        pageIndex: 0,
+        pageSize: 1000,
+      ),
+    );
+
+    final completedCount = recordsResponse.items.where((r) => r.status == HabitRecordStatus.complete).length;
+    return habit.isDailyTargetMet(completedCount);
   }
 
   Future<void> cancelRemindersForCompletedTask(String taskId) async {
