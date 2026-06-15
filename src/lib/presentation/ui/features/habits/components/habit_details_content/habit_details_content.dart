@@ -45,7 +45,6 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
 
-  bool _isDescriptionFieldActive = false;
   String? _autoOpenField; // Track which field should auto-open its dialog
 
   @override
