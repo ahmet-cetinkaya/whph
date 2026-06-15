@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 
@@ -72,6 +73,22 @@ void main() {
 }
 
 class TranslationKeysAnalyzer {
+  // Base directory - use current directory from test runner
+  String get baseDir {
+    final currentDir = Directory.current.path;
+    // If we're in src/ directory, use it directly
+    if (currentDir.endsWith('/src') || currentDir.endsWith('\\src')) {
+      return currentDir;
+    }
+    // Otherwise, assume we're in project root and src is a subdirectory
+    final srcDir = p.join(currentDir, 'src');
+    if (Directory(srcDir).existsSync()) {
+      return srcDir;
+    }
+    // Fallback to current directory
+    return currentDir;
+  }
+
   // Supported languages
   static const supportedLanguages = [
     'cs', // Czech
@@ -98,8 +115,8 @@ class TranslationKeysAnalyzer {
     'zh', // Chinese
   ];
 
-  // TranslationKey file paths
-  static const translationKeyPaths = [
+  // TranslationKey file paths (relative paths that will be resolved against baseDir)
+  static const _relativeTranslationKeyPaths = [
     'lib/presentation/ui/features/about/constants/about_translation_keys.dart',
     'lib/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart',
     'lib/presentation/ui/features/calendar/constants/calendar_translation_keys.dart',
@@ -121,6 +138,10 @@ class TranslationKeysAnalyzer {
     'lib/core/application/features/tasks/constants/task_translation_keys.dart',
     'lib/core/application/shared/constants/shared_translation_keys.dart',
   ];
+
+  // Resolved absolute paths
+  List<String> get translationKeyPaths =>
+      _relativeTranslationKeyPaths.map((path) => p.join(baseDir, path)).toList();
 
   Future<AnalysisResult> analyze() async {
     final missingTranslations = <String, List<MissingTranslation>>{};
@@ -300,9 +321,9 @@ class TranslationKeysAnalyzer {
   /// Creates YAML file path for feature and language
   String _getYamlPathForFeature(String featureName, String language) {
     if (featureName == 'shared') {
-      return 'lib/presentation/ui/shared/assets/locales/$language.yaml';
+      return p.join(baseDir, 'lib/presentation/ui/shared/assets/locales/$language.yaml');
     }
-    return 'lib/presentation/ui/features/$featureName/assets/locales/$language.yaml';
+    return p.join(baseDir, 'lib/presentation/ui/features/$featureName/assets/locales/$language.yaml');
   }
 
   /// Checks if a specific translation key exists in YAML data
