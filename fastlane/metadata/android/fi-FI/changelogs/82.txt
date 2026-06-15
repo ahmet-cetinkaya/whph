@@ -1,0 +1,9 @@
+• Koko päivän toistuvat tehtävät
+• Valinnaiset kentät nopeasti auki
+• Värinvalinta vahvistuksella
+• Järjestelmän mukautuva
+• Päiväkalenteri Tänään-sivu
+• Parannettu toisto mobiilissa
+• Tehtävät oletuksena koko päivä
+• Parempi vakaus näkymän vaihdossa
+• Luotettava tietojen synkronointi

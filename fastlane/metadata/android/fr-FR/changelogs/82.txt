@@ -1,0 +1,9 @@
+• Tâches récurrentes toute la journée
+• Ouvrir champs optionnels via puces
+• Sélection de couleur visualisée
+• Adaptation affichage système
+• Calendrier journalier page Aujourd'hui
+• Amélioration récitation mobile
+• Tâches par défaut toute la journée
+• Meilleure stabilité changement vues
+• Synchronisation données fiable

@@ -1,0 +1,9 @@
+• Cykliczne zadania całodniowe
+• Otwieranie pól opcjonalnych
+• Wybór koloru z podglądem
+• Dostosowanie do ustawień systemu
+• Kalendarz dzienny na Dzisiaj
+• Ulepszona rekurencja mobilna
+• Zadania domyślnie całodniowe
+• Lepsza stabilność przełączania widoków
+• Wiarygodna synchronizacja danych

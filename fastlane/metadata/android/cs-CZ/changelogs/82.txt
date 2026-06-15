@@ -1,0 +1,9 @@
+• Opakující se úkoly na celý den
+• Rychlé otevření volitelných polí
+• Výběr barvy s potvrzením
+• Přizpůsobení systému
+• Denní kalendář na Dnes
+• Vylepšeno opakování na mobilu
+• Úkoly defaultně celý den
+• Lepší stabilita při změně pohledů
+• Spolehlivá synchronizace dat

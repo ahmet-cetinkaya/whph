@@ -1,0 +1,9 @@
+• Upprepande uppgifter hela dagen
+• Snabb öppning av valfria fält
+• Färgval med bekräftelse
+• Anpassning till system
+• Dagens kalender på Idag
+• Förbättrad upprepning mobil
+• Uppgifter standard hela dagen
+• Bättre stabilitet vid byte av vy
+• Tillförlitlig datasynkronisering

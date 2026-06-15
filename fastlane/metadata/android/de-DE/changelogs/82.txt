@@ -1,0 +1,9 @@
+• Ganztagsaufgaben mit Wiederholung
+• Chips öffnen optionale Felder
+• Farbauswahl mit visueller Bestätigung
+• Interface passt Systemeinstellungen an
+• Tageskalender auf Heute-Seite
+• Bessere Wiederholungseinstellungen mobil
+• Aufgaben standardmäßig Ganztags
+• Stabilitätsverbesserungen beim Sichtwechsel
+• Zuverlässigere Datensynchronisation

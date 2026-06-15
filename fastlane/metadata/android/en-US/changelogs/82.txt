@@ -1,0 +1,9 @@
+• All-day recurring task scheduling
+• Quick opening of optional fields
+• Color selection with confirmation
+• Adapts to system display settings
+• Daily calendar on Today page
+• Improved recurrence on mobile
+• Tasks default to all-day timing
+• Enhanced stability switching views
+• Reliable data synchronization

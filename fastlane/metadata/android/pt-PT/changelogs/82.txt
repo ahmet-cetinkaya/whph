@@ -1,0 +1,9 @@
+• Tarefas recorrentes dia inteiro
+• Abrir campos opcionais via etiquetas
+• Seleção de cor visualizada
+• Adaptação a ecrã sistema
+• Calendário diário página Hoje
+• Melhoria recuperação em móveis
+• Tarefas pré-definidas dia inteiro
+• Maior estabilidade mudar vistas
+• Sincronização de dados fiável

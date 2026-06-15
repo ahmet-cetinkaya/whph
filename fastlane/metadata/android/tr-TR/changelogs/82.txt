@@ -1,0 +1,9 @@
+• Tüm gün yinelenen görevler
+• İsteğe bağlı alanları açma
+• Renk seçimi görsel onay
+• Sistem ekranına uyum
+• Bugün sayfasında takvim
+• Mobilde yinelenme iyileştirmesi
+• Görevler varsayılan tüm gün
+• Görünt değişiminde stabilite
+• Güvenilir veri eşzamanlama

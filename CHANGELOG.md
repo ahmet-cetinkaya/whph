@@ -8,6 +8,22 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.23.1] - 2026-06-16
+
+### Added
+- All-day task scheduling now supports recurring tasks
+- Tap chips to quickly open optional field dialogs
+- Visual indicator shows your selected color in the picker
+- Interface now adapts to your system's display density settings
+- Daily calendar view available on the Today page
+
+### Fixed
+- Improved reliability of recurrence end date settings on mobile devices
+- New tasks now default to all-day (00:00) instead of current time
+- Parent tasks remain active when subtasks are completed
+- Enhanced stability when switching between views
+- Improved app behavior during data synchronization
+
 ## [0.23.0] - 2026-06-12
 
 ### Added
@@ -1706,7 +1722,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.23.0...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.23.1...HEAD
+[0.23.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.1
 [0.23.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.0
 [0.22.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.3
 [0.22.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.2

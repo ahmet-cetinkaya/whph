@@ -1,0 +1,9 @@
+• Tareas recurrentes de todo el día
+• Abrir campos opcionales vía etiquetas
+• Selección de color visualizada
+• Adaptación a pantalla sistema
+• Calendario diario en página Hoy
+• Mejora recurrencia en móviles
+• Tareas predeterminadas todo el día
+• Mejor estabilidad al cambiar vistas
+• Sincronización de datos fiable
