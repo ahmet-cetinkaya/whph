@@ -38,7 +38,20 @@ class ScheduleButton extends StatelessWidget {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
-    // Determine the time to use - convert to local if needed
+    // Check if current planned date is "All Day" (00:00)
+    final isAllDay = currentPlannedDate != null && currentPlannedDate!.hour == 0 && currentPlannedDate!.minute == 0;
+
+    // If All Day, return just the date without time component
+    if (isAllDay) {
+      switch (option) {
+        case ScheduleOption.today:
+          return today;
+        case ScheduleOption.tomorrow:
+          return today.add(const Duration(days: 1));
+      }
+    }
+
+    // Otherwise, use the time component
     final timeToUse = _getTimeToUse();
 
     switch (option) {

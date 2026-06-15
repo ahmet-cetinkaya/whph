@@ -1625,5 +1625,319 @@ void main() {
         );
       });
     });
+
+    group('All Day Recurrence', () {
+      group('Daily All Day Recurrence', () {
+        test('should preserve All Day status for daily recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Daily All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day (00:00)
+            recurrenceType: RecurrenceType.daily,
+            recurrenceInterval: 1,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 16);
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved (hour should be 0)');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved (minute should be 0)');
+        });
+
+        test('should preserve All Day status for daily recurrence with interval', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Every 3 Days All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day
+            recurrenceType: RecurrenceType.daily,
+            recurrenceInterval: 3,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 18);
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+
+        test('should preserve time component for non-All Day daily recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Daily 9AM Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 9, 0), // 9:00 AM
+            recurrenceType: RecurrenceType.daily,
+            recurrenceInterval: 1,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 9, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 16);
+          expect(nextDate.hour, 9, reason: 'Time component should be preserved for non-All Day tasks');
+          expect(nextDate.minute, 0, reason: 'Time component should be preserved for non-All Day tasks');
+        });
+      });
+
+      group('Weekly All Day Recurrence', () {
+        test('should preserve All Day status for weekly recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Weekly All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day
+            recurrenceType: RecurrenceType.weekly,
+            recurrenceInterval: 1,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 22);
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+
+        test('should preserve All Day status for biweekly recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Biweekly All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day
+            recurrenceType: RecurrenceType.weekly,
+            recurrenceInterval: 2,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 29);
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+      });
+
+      group('Monthly All Day Recurrence', () {
+        test('should preserve All Day status for monthly recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Monthly All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day
+            recurrenceType: RecurrenceType.monthly,
+            recurrenceInterval: 1,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 2);
+          expect(nextDate.day, 15);
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+
+        test('should preserve All Day status for quarterly recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Quarterly All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day
+            recurrenceType: RecurrenceType.monthly,
+            recurrenceInterval: 3,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 4);
+          expect(nextDate.day, 15);
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+      });
+
+      group('Yearly All Day Recurrence', () {
+        test('should preserve All Day status for yearly recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Yearly All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day
+            recurrenceType: RecurrenceType.yearly,
+            recurrenceInterval: 1,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2025);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 15);
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+
+        test('should preserve All Day status for biyearly recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Biyearly All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day
+            recurrenceType: RecurrenceType.yearly,
+            recurrenceInterval: 2,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2026);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 15);
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+
+        test('should preserve time component for non-All Day yearly recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Yearly 2PM Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 14, 30), // 2:30 PM
+            recurrenceType: RecurrenceType.yearly,
+            recurrenceInterval: 1,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 14, 30);
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2025);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 15);
+          expect(nextDate.hour, 14, reason: 'Time component should be preserved for non-All Day tasks');
+          expect(nextDate.minute, 30, reason: 'Time component should be preserved for non-All Day tasks');
+        });
+      });
+
+      group('Days of Week All Day Recurrence', () {
+        test('should preserve All Day status for days of week recurrence', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Mon/Wed/Fri All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day, Monday
+            recurrenceType: RecurrenceType.daysOfWeek,
+            recurrenceDaysString: 'monday,wednesday,friday',
+            recurrenceInterval: 1,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0); // Monday
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 17); // Wednesday
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+
+        test('should preserve All Day status for days of week with interval', () {
+          // Arrange
+          final task = Task(
+            id: 'task-1',
+            createdDate: DateTime.now().toUtc(),
+            title: 'Every 2 Weeks Mon All Day Task',
+            completedAt: null,
+            plannedDate: DateTime(2024, 1, 15, 0, 0), // All Day, Monday
+            recurrenceType: RecurrenceType.daysOfWeek,
+            recurrenceDaysString: 'monday',
+            recurrenceInterval: 2,
+          );
+
+          final currentDate = DateTime(2024, 1, 15, 0, 0); // Monday
+
+          // Act
+          final nextDate = service.calculateNextRecurrenceDate(task, currentDate);
+
+          // Assert
+          expect(nextDate.year, 2024);
+          expect(nextDate.month, 1);
+          expect(nextDate.day, 29); // Monday in 2 weeks
+          expect(nextDate.hour, 0, reason: 'All Day status should be preserved');
+          expect(nextDate.minute, 0, reason: 'All Day status should be preserved');
+        });
+      });
+    });
   });
 }

@@ -110,11 +110,16 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     // Legacy logic
     TaskRecurrenceValidator.validateRecurrenceParameters(task);
 
+    // Check if the original task was "All Day" (00:00 time)
+    final wasAllDay = task.plannedDate?.hour == 0 && task.plannedDate?.minute == 0;
+
     final List<WeekDays>? recurrenceDays = getRecurrenceDays(task);
 
     switch (task.recurrenceType) {
       case RecurrenceType.daily:
-        return currentDate.add(Duration(days: task.recurrenceInterval ?? 1));
+        final nextDate = currentDate.add(Duration(days: task.recurrenceInterval ?? 1));
+        // Preserve All Day status
+        return wasAllDay ? DateTime(nextDate.year, nextDate.month, nextDate.day) : nextDate;
 
       case RecurrenceType.daysOfWeek:
         if (recurrenceDays != null && recurrenceDays.isNotEmpty) {
@@ -122,29 +127,44 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
 
           final referenceDate = task.recurrenceStartDate ?? task.plannedDate ?? task.createdDate;
 
-          return DateHelper.findNextWeekdayOccurrence(
+          final nextDate = DateHelper.findNextWeekdayOccurrence(
             currentDate,
             selectedWeekdays,
             task.recurrenceInterval,
             referenceDate,
           );
+
+          // Preserve All Day status for days of week recurrence
+          return wasAllDay ? DateTime(nextDate.year, nextDate.month, nextDate.day) : nextDate;
         }
-        return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
+        final fallbackDate = currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
+        return wasAllDay ? DateTime(fallbackDate.year, fallbackDate.month, fallbackDate.day) : fallbackDate;
 
       case RecurrenceType.weekly:
-        return currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
+        final nextDate = currentDate.add(Duration(days: 7 * (task.recurrenceInterval ?? 1)));
+        // Preserve All Day status
+        return wasAllDay ? DateTime(nextDate.year, nextDate.month, nextDate.day) : nextDate;
 
       case RecurrenceType.monthly:
-        return DateHelper.calculateNextMonthDate(currentDate, task.recurrenceInterval ?? 1);
+        final nextDate = DateHelper.calculateNextMonthDate(currentDate, task.recurrenceInterval ?? 1);
+        // Preserve All Day status
+        return wasAllDay ? DateTime(nextDate.year, nextDate.month, nextDate.day) : nextDate;
 
       case RecurrenceType.yearly:
-        return DateTime(
-          currentDate.year + (task.recurrenceInterval ?? 1),
-          currentDate.month,
-          currentDate.day,
-          currentDate.hour,
-          currentDate.minute,
-        );
+        // Preserve All Day status for yearly recurrence
+        return wasAllDay
+            ? DateTime(
+                currentDate.year + (task.recurrenceInterval ?? 1),
+                currentDate.month,
+                currentDate.day,
+              )
+            : DateTime(
+                currentDate.year + (task.recurrenceInterval ?? 1),
+                currentDate.month,
+                currentDate.day,
+                currentDate.hour,
+                currentDate.minute,
+              );
 
       case RecurrenceType.hourly:
         return currentDate.add(Duration(hours: task.recurrenceInterval ?? 1));

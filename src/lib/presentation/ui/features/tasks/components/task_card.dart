@@ -13,6 +13,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
+import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
@@ -108,12 +109,24 @@ class TaskCard extends StatelessWidget {
         stackTrace: stackTrace,
       );
       if (context.mounted) {
-        ErrorHelper.showUnexpectedError(
-          context,
-          e,
-          stackTrace,
-          message: _translationService.translate(SharedTranslationKeys.unexpectedError),
-        );
+        // Handle business errors (validation errors) differently from unexpected errors
+        if (e is BusinessException) {
+          // Show business error with UI translation key
+          final errorMessage = _translationService.translate(
+            TaskTranslationKeys.deadlineCannotBeBeforePlanned,
+          );
+          OverlayNotificationHelper.showError(
+            context: context,
+            message: errorMessage,
+          );
+        } else {
+          ErrorHelper.showUnexpectedError(
+            context,
+            e,
+            stackTrace,
+            message: _translationService.translate(SharedTranslationKeys.unexpectedError),
+          );
+        }
       }
     }
   }
