@@ -131,6 +131,8 @@ class RecurrenceConfigurationValidation {
   static const int maxMinute = 59;
 }
 
+const _sentinel = Object();
+
 @jm.jsonSerializable
 class RecurrenceConfiguration {
   final RecurrenceFrequency frequency;
@@ -238,34 +240,37 @@ class RecurrenceConfiguration {
   });
 
   RecurrenceConfiguration copyWith({
-    RecurrenceFrequency? frequency,
-    int? interval,
-    List<int>? daysOfWeek,
-    List<WeeklySchedule>? weeklySchedule,
-    MonthlyPatternType? monthlyPatternType,
-    int? dayOfMonth,
-    int? weekOfMonth,
-    int? dayOfWeek,
-    int? monthOfYear,
-    RecurrenceEndCondition? endCondition,
-    DateTime? endDate,
-    int? occurrenceCount,
-    RecurrenceFromPolicy? fromPolicy,
+    Object? frequency = _sentinel,
+    Object? interval = _sentinel,
+    Object? daysOfWeek = _sentinel,
+    Object? weeklySchedule = _sentinel,
+    Object? monthlyPatternType = _sentinel,
+    Object? dayOfMonth = _sentinel,
+    Object? weekOfMonth = _sentinel,
+    Object? dayOfWeek = _sentinel,
+    Object? monthOfYear = _sentinel,
+    Object? endCondition = _sentinel,
+    Object? endDate = _sentinel,
+    Object? occurrenceCount = _sentinel,
+    Object? fromPolicy = _sentinel,
   }) {
     return RecurrenceConfiguration(
-      frequency: frequency ?? this.frequency,
-      interval: interval ?? this.interval,
-      daysOfWeek: daysOfWeek ?? this.daysOfWeek,
-      weeklySchedule: weeklySchedule ?? this.weeklySchedule,
-      monthlyPatternType: monthlyPatternType ?? this.monthlyPatternType,
-      dayOfMonth: dayOfMonth ?? this.dayOfMonth,
-      weekOfMonth: weekOfMonth ?? this.weekOfMonth,
-      dayOfWeek: dayOfWeek ?? this.dayOfWeek,
-      monthOfYear: monthOfYear ?? this.monthOfYear,
-      endCondition: endCondition ?? this.endCondition,
-      endDate: endDate ?? this.endDate,
-      occurrenceCount: occurrenceCount ?? this.occurrenceCount,
-      fromPolicy: fromPolicy ?? this.fromPolicy,
+      frequency: identical(frequency, _sentinel) ? this.frequency : frequency as RecurrenceFrequency,
+      interval: identical(interval, _sentinel) ? this.interval : interval as int,
+      daysOfWeek: identical(daysOfWeek, _sentinel) ? this.daysOfWeek : daysOfWeek as List<int>?,
+      weeklySchedule:
+          identical(weeklySchedule, _sentinel) ? this.weeklySchedule : weeklySchedule as List<WeeklySchedule>?,
+      monthlyPatternType: identical(monthlyPatternType, _sentinel)
+          ? this.monthlyPatternType
+          : monthlyPatternType as MonthlyPatternType?,
+      dayOfMonth: identical(dayOfMonth, _sentinel) ? this.dayOfMonth : dayOfMonth as int?,
+      weekOfMonth: identical(weekOfMonth, _sentinel) ? this.weekOfMonth : weekOfMonth as int?,
+      dayOfWeek: identical(dayOfWeek, _sentinel) ? this.dayOfWeek : dayOfWeek as int?,
+      monthOfYear: identical(monthOfYear, _sentinel) ? this.monthOfYear : monthOfYear as int?,
+      endCondition: identical(endCondition, _sentinel) ? this.endCondition : endCondition as RecurrenceEndCondition,
+      endDate: identical(endDate, _sentinel) ? this.endDate : endDate as DateTime?,
+      occurrenceCount: identical(occurrenceCount, _sentinel) ? this.occurrenceCount : occurrenceCount as int?,
+      fromPolicy: identical(fromPolicy, _sentinel) ? this.fromPolicy : fromPolicy as RecurrenceFromPolicy,
     );
   }
 

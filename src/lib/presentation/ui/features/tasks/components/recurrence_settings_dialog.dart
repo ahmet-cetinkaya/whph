@@ -249,11 +249,13 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
                 label: _translationService.translate(TaskTranslationKeys.recurrenceLabel),
                 icon: Icons.repeat,
                 content: _buildFrequencyDropdown(),
+                compact: true,
               ),
               if (_configuration != null) ...[
                 _buildSection(
                   label: _translationService.translate(TaskTranslationKeys.recurrenceIntervalLabel),
                   icon: Icons.timer,
+                  compact: true,
                   content: NumericInput(
                     value: _configuration!.interval,
                     minValue: RecurrenceConfigurationValidation.minInterval,
@@ -354,6 +356,7 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
                   label: _translationService.translate(TaskTranslationKeys.starts),
                   icon: Icons.calendar_today,
                   content: _buildStartDatePicker(),
+                  compact: true,
                 ),
                 _buildSection(
                   label: _translationService.translate(TaskTranslationKeys.recurrenceEndsLabel),
@@ -446,6 +449,7 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
     required Widget content,
     String? description,
     bool isActive = true,
+    bool compact = false,
   }) {
     return Column(
       children: [
@@ -458,21 +462,21 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final bool isWide = constraints.maxWidth > 500;
+              final bool useRow = compact || constraints.maxWidth > 500;
 
-              if (isWide) {
+              if (useRow) {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: compact ? 1 : 3,
                       child: _buildLabelArea(icon, label, description, isActive),
                     ),
                     const SizedBox(width: AppTheme.sizeLarge),
-                    Expanded(
-                      flex: 7,
+                    Flexible(
+                      flex: compact ? 0 : 7,
                       child: Align(
-                        alignment: Alignment.centerLeft,
+                        alignment: Alignment.centerRight,
                         child: content,
                       ),
                     ),
@@ -534,6 +538,7 @@ class _RecurrenceSettingsDialogState extends State<RecurrenceSettingsDialog> {
       label: _translationService.translate(TaskTranslationKeys.recurrenceRegenerateLabel),
       description: _translationService.translate(TaskTranslationKeys.recurrenceRegenerateDescription),
       icon: Icons.autorenew,
+      compact: true,
       content: Switch(
         value: _configuration!.fromPolicy == RecurrenceFromPolicy.completionDate,
         onChanged: (value) {
