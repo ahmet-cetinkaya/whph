@@ -57,6 +57,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   // Set to track which optional fields are visible
   final Set<String> _visibleOptionalFields = {};
+  String? _autoOpenField; // Track which field should auto-open its dialog
 
   static const String keyTags = 'tags';
   static const String keyColor = 'color';
@@ -293,6 +294,11 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
   // Toggles visibility of an optional field
   void _toggleOptionalField(String fieldKey) {
+    if (!_visibleOptionalFields.contains(fieldKey)) {
+      setState(() {
+        _autoOpenField = fieldKey;
+      });
+    }
     setState(() {
       if (_visibleOptionalFields.contains(fieldKey)) {
         _visibleOptionalFields.remove(fieldKey);
@@ -459,6 +465,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                     key: ValueKey(_appUsageTags!.items.map((t) => '${t.tagId}_${t.tagOrder}').join(',')),
                     isMultiSelect: true,
                     onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
+                    autoOpen: _autoOpenField == keyTags,
                     showSelectedInDropdown: true,
                     initialSelectedTags: _appUsageTags!.items
                         .map((appUsage) => DropdownOption<String>(
@@ -480,6 +487,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                   widget: ColorField(
                     initialColor: AppUsageUiConstants.getTagColor(_appUsage!.color),
                     onColorChanged: _onChangeColor,
+                    autoOpen: _autoOpenField == keyColor,
                   ),
                 ),
             ],

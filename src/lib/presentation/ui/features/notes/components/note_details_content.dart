@@ -57,6 +57,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   final _translationService = container.resolve<ITranslationService>();
 
   final Set<String> _visibleOptionalFields = {};
+  String? _autoOpenField; // Track which field should auto-open its dialog
 
   static const String keyTags = 'tags';
 
@@ -303,13 +304,20 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
       label: _getFieldLabel(fieldKey),
       icon: _getFieldIcon(fieldKey),
       selected: _isFieldVisible(fieldKey),
-      onSelected: (_) => setState(() {
-        if (_visibleOptionalFields.contains(fieldKey)) {
-          _visibleOptionalFields.remove(fieldKey);
-        } else {
-          _visibleOptionalFields.add(fieldKey);
+      onSelected: (_) {
+        if (!_visibleOptionalFields.contains(fieldKey)) {
+          setState(() {
+            _autoOpenField = fieldKey;
+          });
         }
-      }),
+        setState(() {
+          if (_visibleOptionalFields.contains(fieldKey)) {
+            _visibleOptionalFields.remove(fieldKey);
+          } else {
+            _visibleOptionalFields.add(fieldKey);
+          }
+        });
+      },
       backgroundColor: selected ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
     );
   }
@@ -397,6 +405,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
                 key: ValueKey(_note!.tags.map((t) => '${t.tagId}_${t.tagOrder}').join(',')),
                 isMultiSelect: true,
                 onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
+                autoOpen: _autoOpenField == keyTags,
                 showSelectedInDropdown: true,
                 initialSelectedTags: _note!.tags
                     .map((tag) => DropdownOption<String>(

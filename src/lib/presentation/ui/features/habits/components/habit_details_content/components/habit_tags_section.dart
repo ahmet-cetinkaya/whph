@@ -12,31 +12,37 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 
 /// Builds the tags section for habit details.
 class HabitTagsSection {
-  static DetailTableRowData build({
-    required String habitId,
-    required GetListHabitTagsQueryResponse? habitTags,
-    required ITranslationService translationService,
-    required Function(List<DropdownOption<String>>) onTagsSelected,
-  }) {
-    return DetailTableRowData(
-      label: translationService.translate(HabitTranslationKeys.tagsLabel),
-      icon: TagUiConstants.tagIcon,
-      widget: TagSelectDropdown(
-        key: ValueKey('habit_${habitId}_tags'),
-        isMultiSelect: true,
-        onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => onTagsSelected(tagOptions),
-        showSelectedInDropdown: true,
-        initialSelectedTags: habitTags?.items
-                .map((tag) => DropdownOption<String>(
-                    value: tag.tagId,
-                    label: tag.tagName.isNotEmpty
-                        ? tag.tagName
-                        : translationService.translate(SharedTranslationKeys.untitled)))
-                .toList() ??
-            [],
-        icon: SharedUiConstants.addIcon,
-        iconSize: AppTheme.iconSizeMedium,
-      ),
-    );
-  }
+  final ITranslationService translationService;
+  final GetListHabitTagsQueryResponse? habitTags;
+  final Function(List<DropdownOption<String>> options) onTagsSelected;
+  final bool autoOpenDropdown;
+
+  const HabitTagsSection({
+    required this.translationService,
+    required this.habitTags,
+    required this.onTagsSelected,
+    this.autoOpenDropdown = false,
+  });
+
+  DetailTableRowData build() => DetailTableRowData(
+        label: translationService.translate(HabitTranslationKeys.tagsLabel),
+        icon: TagUiConstants.tagIcon,
+        widget: TagSelectDropdown(
+          key: ValueKey('habit_tags'),
+          isMultiSelect: true,
+          onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => onTagsSelected(tagOptions),
+          autoOpen: autoOpenDropdown,
+          showSelectedInDropdown: true,
+          initialSelectedTags: habitTags?.items
+                  .map((tag) => DropdownOption<String>(
+                      value: tag.tagId,
+                      label: tag.tagName.isNotEmpty
+                          ? tag.tagName
+                          : translationService.translate(SharedTranslationKeys.untitled)))
+                  .toList() ??
+              [],
+          icon: SharedUiConstants.addIcon,
+          iconSize: AppTheme.iconSizeMedium,
+        ),
+      );
 }

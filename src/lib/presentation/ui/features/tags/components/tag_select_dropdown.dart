@@ -35,28 +35,31 @@ class TagSelectDropdown extends StatefulWidget {
   final bool showNoneOption;
   final bool initialNoneSelected;
   final bool initialShowNoTagsFilter;
+  final bool autoOpen; // NEW: Auto-open overlay on first build
+
   final Function(List<DropdownOption<String>>, bool isNoneSelected) onTagsSelected;
   final Widget? headerAction;
   final ButtonStyle? buttonStyle;
 
   const TagSelectDropdown({
     super.key,
-    this.initialSelectedTags = const [],
+    required this.initialSelectedTags,
+    required this.onTagsSelected,
     this.excludeTagIds = const [],
-    required this.isMultiSelect,
+    this.isMultiSelect = false,
     this.icon = TagUiConstants.tagIcon,
     this.buttonLabel,
-    this.iconSize = AppTheme.iconSizeMedium, // Default to Medium for better mobile touch target
+    this.iconSize,
     this.color,
     this.tooltip,
-    required this.onTagsSelected,
-    this.showLength = false,
+    this.showLength = true,
     this.limit,
-    this.showSelectedInDropdown = false,
+    this.showSelectedInDropdown = true,
     this.showArchived = false,
     this.showNoneOption = false,
     this.initialNoneSelected = false,
     this.initialShowNoTagsFilter = false,
+    this.autoOpen = false, // NEW: Default to false
     this.headerAction,
     this.buttonStyle,
   });
@@ -73,6 +76,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   List<String> _selectedTags = [];
   bool _hasExplicitlySelectedNone = false;
   bool _needsStateUpdate = false;
+  bool _hasAutoOpened = false; // NEW: Track if we've already auto-opened
 
   @override
   void initState() {
@@ -87,6 +91,15 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     // We still need to fetch tags to display selected tags in the button/list
     _getTags(pageIndex: 0);
     super.initState();
+    // NEW: Auto-open overlay if requested
+    if (widget.autoOpen && !_hasAutoOpened) {
+      _hasAutoOpened = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _showTagSelectionModal(context);
+        }
+      });
+    }
   }
 
   @override
@@ -126,6 +139,16 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           setState(() {
             _needsStateUpdate = false;
           });
+        }
+      });
+    }
+
+    // NEW: Auto-open if autoOpen changes to true
+    if (widget.autoOpen != oldWidget.autoOpen && widget.autoOpen && !_hasAutoOpened) {
+      _hasAutoOpened = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _showTagSelectionModal(context);
         }
       });
     }

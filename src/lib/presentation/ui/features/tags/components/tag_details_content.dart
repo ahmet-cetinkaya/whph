@@ -51,6 +51,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   // State for showing/hiding optional properties
   final Set<String> _visibleOptionalFields = {};
+  String? _autoOpenField; // Track which field should auto-open its dialog
 
   // Define optional field keys
   static const String keyColor = 'color';
@@ -116,6 +117,11 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
 
   // Toggles visibility of an optional field
   void _toggleOptionalField(String fieldKey) {
+    if (!_visibleOptionalFields.contains(fieldKey)) {
+      setState(() {
+        _autoOpenField = fieldKey;
+      });
+    }
     setState(() {
       if (_visibleOptionalFields.contains(fieldKey)) {
         _visibleOptionalFields.remove(fieldKey);
@@ -366,6 +372,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                           ? Color(int.parse("FF${_tag!.color}", radix: 16))
                           : Colors.blue,
                       onColorChanged: _onChangeColor,
+                      autoOpen: _autoOpenField == keyColor,
                     ),
                   ),
                 if (_visibleOptionalFields.contains(keyType))
@@ -421,6 +428,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                       key: ValueKey('${_tagTags!.items.length}_${_visibleOptionalFields.contains(keyRelatedTags)}'),
                       isMultiSelect: true,
                       onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
+                      autoOpen: _autoOpenField == keyRelatedTags,
                       showSelectedInDropdown: true,
                       initialSelectedTags: _tagTags!.items
                           .map((tag) => DropdownOption<String>(

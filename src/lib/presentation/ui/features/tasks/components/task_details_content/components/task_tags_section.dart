@@ -15,11 +15,13 @@ class TaskTagsSection {
   final ITranslationService translationService;
   final GetListTaskTagsQueryResponse taskTags;
   final void Function(List<DropdownOption<String>> options) onTagsSelected;
+  final bool autoOpenDropdown; // NEW: Auto-open dropdown on first display
 
   const TaskTagsSection({
     required this.translationService,
     required this.taskTags,
     required this.onTagsSelected,
+    this.autoOpenDropdown = false, // NEW: Default to false
   });
 
   DetailTableRowData build() => DetailTableRowData(
@@ -35,6 +37,7 @@ class TaskTagsSection {
             key: ValueKey(taskTags.items.map((t) => t.tagId).join(',')),
             isMultiSelect: true,
             onTagsSelected: (options, _) => onTagsSelected(options),
+            autoOpen: autoOpenDropdown, // NEW: Pass through auto-open flag
             showSelectedInDropdown: true,
             initialSelectedTags: taskTags.items
                 .map((tag) => DropdownOption<String>(

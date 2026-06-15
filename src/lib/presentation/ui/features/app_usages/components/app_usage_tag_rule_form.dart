@@ -4,6 +4,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dropdown.dart';
+import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
 import 'package:whph/main.dart';
@@ -219,6 +220,9 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                   ),
                   TagSelectDropdown(
                     key: UniqueKey(),
+                    initialSelectedTags: _selectedTagId != null
+                        ? [DropdownOption(label: _selectedTagLabel ?? '', value: _selectedTagId!)]
+                        : const [],
                     onTagsSelected: (options, _) => setState(() {
                       if (options.isNotEmpty) {
                         _selectedTagId = options.first.value;

@@ -5,6 +5,9 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/presentation/ui/features/tasks/components/recurrence_settings_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/status_aware_complete_button.dart';
+import 'package:whph/presentation/ui/features/tasks/components/dialogs/priority_selection_dialog.dart';
+import 'package:whph/presentation/ui/features/tasks/components/quick_add_task_dialog/builders/estimated_time_dialog_content.dart';
+import 'package:whph/presentation/ui/features/tasks/components/task_date_picker_dialog.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_dates_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_description_section.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_details_content/components/task_field_helpers.dart';
@@ -65,6 +68,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   bool _isPlannedDatePickerActive = false;
   bool _isDeadlineDatePickerActive = false;
+  String? _autoOpenField; // Track which field should auto-open its dialog
 
   @override
   void initState() {
@@ -245,6 +249,132 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
 
   void _onTagsSelected(List<DropdownOption<String>> tagOptions) => _controller.processTagChanges(tagOptions, context);
 
+  void _handleAutoOpen(String? fieldKey) {
+    if (fieldKey == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      switch (fieldKey) {
+        case TaskDetailsController.keyTags:
+          // Tags auto-open is handled by TagSelectDropdown.autoOpen parameter
+          break;
+        case TaskDetailsController.keyPriority:
+          _showPrioritySelectionDialog();
+          break;
+        case TaskDetailsController.keyEstimatedTime:
+          _showEstimatedTimeDialog();
+          break;
+        case TaskDetailsController.keyPlannedDate:
+          _selectPlannedDate();
+          break;
+        case TaskDetailsController.keyDeadlineDate:
+          _selectDeadlineDate();
+          break;
+        case TaskDetailsController.keyRecurrence:
+          _openRecurrenceDialog();
+          break;
+        case TaskDetailsController.keyElapsedTime:
+          _showTimeLoggingDialog();
+          break;
+        // Fields that just toggle visibility (no dialog to open):
+        // keyTimer, keyStatus, keyPlannedDateReminder, keyDeadlineDateReminder
+        default:
+          break;
+      }
+    });
+  }
+
+  void _showPrioritySelectionDialog() {
+    EisenhowerPriority? tempPriority = _controller.task?.priority;
+
+    ResponsiveDialogHelper.showResponsiveDialog<void>(
+      context: context,
+      size: DialogSize.xLarge,
+      child: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setDialogState) {
+          return PrioritySelectionDialog(
+            selectedPriority: tempPriority,
+            onPrioritySelected: (EisenhowerPriority? priority) {
+              setDialogState(() => tempPriority = priority);
+            },
+            translationService: _controller.translationService,
+            theme: Theme.of(context),
+          );
+        },
+      ),
+    ).then((_) {
+      if (mounted) _onPriorityChanged(tempPriority);
+    });
+  }
+
+  Future<void> _showEstimatedTimeDialog() async {
+    int tempEstimatedTime = _controller.task?.estimatedTime ?? 0;
+
+    await ResponsiveDialogHelper.showResponsiveDialog<void>(
+      context: context,
+      size: DialogSize.xLarge,
+      child: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setDialogState) {
+          return EstimatedTimeDialogContent(
+            selectedTime: tempEstimatedTime,
+            onTimeSelected: (value) {
+              setDialogState(() {
+                tempEstimatedTime = value;
+              });
+            },
+            onConfirm: () => _onEstimatedTimeChanged(tempEstimatedTime),
+            translationService: _controller.translationService,
+            theme: Theme.of(context),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _selectPlannedDate() async {
+    final result = await TaskDatePickerDialog.showWithReminder(
+      context: context,
+      config: TaskDatePickerConfig(
+        initialDate: _controller.task?.plannedDate,
+        initialReminderTime: _controller.task?.plannedDateReminderTime,
+        titleText: _controller.translationService.translate(TaskTranslationKeys.plannedDateLabel),
+        showTime: true,
+        showQuickRanges: true,
+        useResponsiveDesign: true,
+        enableFooterActions: true,
+        translationService: _controller.translationService,
+        minDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+      ),
+    );
+
+    if (result != null && !result.wasCancelled && mounted) {
+      _onPlannedDateChanged(result.selectedDate);
+    }
+  }
+
+  Future<void> _selectDeadlineDate() async {
+    final result = await TaskDatePickerDialog.showWithReminder(
+      context: context,
+      config: TaskDatePickerConfig(
+        initialDate: _controller.task?.deadlineDate,
+        initialReminderTime: _controller.task?.deadlineDateReminderTime,
+        titleText: _controller.translationService.translate(TaskTranslationKeys.deadlineDateLabel),
+        showTime: true,
+        showQuickRanges: true,
+        useResponsiveDesign: true,
+        enableFooterActions: true,
+        translationService: _controller.translationService,
+        minDate:
+            _controller.task?.plannedDate ?? DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+      ),
+    );
+
+    if (result != null && !result.wasCancelled && mounted) {
+      _onDeadlineDateChanged(result.selectedDate);
+    }
+  }
+
   Future<void> _showTimeLoggingDialog() async {
     final task = _controller.task;
     if (task == null) return;
@@ -345,11 +475,19 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       TaskDetailsController.keyDeadlineDateReminder,
     ].where((field) => _controller.shouldShowAsChip(field)).toList();
 
+    // NEW: Handle auto-open for any field after build cycle
+    final currentAutoOpenField = _autoOpenField;
+    if (currentAutoOpenField != null) {
+      _autoOpenField = null;
+      _handleAutoOpen(currentAutoOpenField);
+    }
+
     // Create section builders
     final tagsSection = TaskTagsSection(
       translationService: _controller.translationService,
       taskTags: taskTags,
       onTagsSelected: _onTagsSelected,
+      autoOpenDropdown: currentAutoOpenField == TaskDetailsController.keyTags,
     );
     final prioritySection = TaskPrioritySection(
       translationService: _controller.translationService,
@@ -507,7 +645,15 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       label: _fieldHelpers.getFieldLabel(fieldKey),
       icon: _fieldHelpers.getFieldIcon(fieldKey),
       selected: _controller.isFieldVisible(fieldKey),
-      onSelected: (_) => _controller.toggleOptionalField(fieldKey),
+      onSelected: (_) {
+        // Set auto-open field when making a field visible (not hiding it)
+        if (!_controller.isFieldVisible(fieldKey)) {
+          setState(() {
+            _autoOpenField = fieldKey;
+          });
+        }
+        _controller.toggleOptionalField(fieldKey);
+      },
       backgroundColor: null,
       tooltip: tooltip,
     );

@@ -45,6 +45,9 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
 
+  bool _isDescriptionFieldActive = false;
+  String? _autoOpenField; // Track which field should auto-open its dialog
+
   @override
   void initState() {
     super.initState();
@@ -180,6 +183,33 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     }
   }
 
+  void _handleAutoOpen(String? fieldKey) {
+    if (fieldKey == null) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      switch (fieldKey) {
+        case HabitDetailsController.keyTags:
+          // Tags auto-open is handled by TagSelectDropdown.autoOpen parameter
+          break;
+        case HabitDetailsController.keyReminder:
+          _controller.openReminderDialog(context, widget.habitId);
+          break;
+        case HabitDetailsController.keyGoal:
+          _controller.openGoalDialog(context, widget.habitId);
+          break;
+        case HabitDetailsController.keyElapsedTime:
+          _showHabitTimeLoggingDialog();
+          break;
+        // Fields that just toggle visibility (no dialog to open):
+        // keyTimer, keyEstimatedTime, keyDescription
+        default:
+          break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_controller.habit == null) {
@@ -255,12 +285,12 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             DetailTable(
               rowData: [
                 if (_controller.isFieldVisible(HabitDetailsController.keyTags))
-                  HabitTagsSection.build(
-                    habitId: widget.habitId,
+                  HabitTagsSection(
                     habitTags: _controller.habitTags,
                     translationService: translationService,
                     onTagsSelected: (tags) => _controller.processTagChanges(tags, widget.habitId, context),
-                  ),
+                    autoOpenDropdown: _autoOpenField == HabitDetailsController.keyTags,
+                  ).build(),
                 if (_controller.isFieldVisible(HabitDetailsController.keyTimer))
                   HabitTimerSection.build(
                     context: context,
@@ -350,7 +380,15 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                         isSelected: _controller.isFieldVisible(fieldKey),
                         hasContent: false,
                         translationService: translationService,
-                        onSelected: () => _controller.toggleOptionalField(fieldKey),
+                        onSelected: () {
+                          if (!_controller.isFieldVisible(fieldKey)) {
+                            setState(() {
+                              _autoOpenField = fieldKey;
+                            });
+                            _handleAutoOpen(fieldKey);
+                          }
+                          _controller.toggleOptionalField(fieldKey);
+                        },
                       ))
                   .toList(),
             ),

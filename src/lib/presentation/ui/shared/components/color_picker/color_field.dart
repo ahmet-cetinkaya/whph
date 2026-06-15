@@ -12,6 +12,7 @@ class ColorField extends StatefulWidget {
   final IconData? icon;
   final String? hintText;
   final EdgeInsetsGeometry? padding;
+  final bool autoOpen;
 
   const ColorField({
     super.key,
@@ -21,6 +22,7 @@ class ColorField extends StatefulWidget {
     this.icon,
     this.hintText,
     this.padding,
+    this.autoOpen = false,
   });
 
   @override
@@ -29,11 +31,18 @@ class ColorField extends StatefulWidget {
 
 class _ColorFieldState extends State<ColorField> {
   late Color _selectedColor;
+  bool _hasAutoOpened = false;
 
   @override
   void initState() {
     super.initState();
     _selectedColor = widget.initialColor ?? Colors.blue;
+    if (widget.autoOpen && !_hasAutoOpened) {
+      _hasAutoOpened = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _onColorSelectionOpen();
+      });
+    }
   }
 
   @override
@@ -41,6 +50,12 @@ class _ColorFieldState extends State<ColorField> {
     super.didUpdateWidget(oldWidget);
     if (widget.initialColor != oldWidget.initialColor && widget.initialColor != null) {
       _selectedColor = widget.initialColor!;
+    }
+    if (widget.autoOpen != oldWidget.autoOpen && widget.autoOpen && !_hasAutoOpened) {
+      _hasAutoOpened = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _onColorSelectionOpen();
+      });
     }
   }
 
