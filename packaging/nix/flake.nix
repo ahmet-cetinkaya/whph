@@ -12,7 +12,7 @@
         pkgs = import nixpkgs { inherit system; };
         
         pname = "whph";
-        version = "0.23.1";
+        version = "0.23.2";
 
         # Source assets from the project
         desktopTemplate = ../../src/linux/whph.desktop.in;
@@ -20,7 +20,7 @@
         
         src = pkgs.fetchurl {
           url = "https://github.com/ahmet-cetinkaya/whph/releases/download/v${version}/whph-v${version}-linux.tar.gz";
-          hash = "sha256-GO7QL6C6cWHQLuZFBe+pNhvo7aD/eTQYwOV2n4LHrqQ=";
+          hash = "sha256-xRCxTvqpN06W5eYWi348Hw5a97WO+qEM1En2CRNYClg=";
         };
       in {
         packages.default = pkgs.stdenv.mkDerivation {
