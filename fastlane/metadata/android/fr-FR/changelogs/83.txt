@@ -1,0 +1,1 @@
+- Correction d'un problème d'affichage pouvant entraîner un affichage incorrect de la zone de sélection des étiquettes lors de l'ajout rapide de tâches

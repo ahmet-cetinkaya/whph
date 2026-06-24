@@ -1,0 +1,1 @@
+- Corregido un problema de visualización que podía causar que el área de selección de etiquetas se mostrara incorrectamente al añadir tareas rápidamente

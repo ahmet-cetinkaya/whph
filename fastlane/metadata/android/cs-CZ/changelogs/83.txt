@@ -1,0 +1,1 @@
+- Opravena chyba zobrazení, která mohla způsobit nesprávné zobrazení oblasti výběru štítků při rychlém přidávání úkolů

@@ -1,0 +1,1 @@
+- Åtgärdat ett visningsproblem som kunde göra att taggvalsområdet visades felaktigt vid snabb tillägg av uppgifter

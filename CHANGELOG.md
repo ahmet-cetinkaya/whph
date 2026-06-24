@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.23.2] - 2026-06-24
+
+### Fixed
+- Resolved a display issue that could cause the tag selection area to appear incorrectly when quickly adding tasks
+
 ## [0.23.1] - 2026-06-16
 
 ### Added
@@ -1722,7 +1727,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.23.1...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.23.2...HEAD
+[0.23.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.2
 [0.23.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.1
 [0.23.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.0
 [0.22.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.22.3

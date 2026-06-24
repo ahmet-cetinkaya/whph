@@ -1,0 +1,1 @@
+- Rezolvată o problemă de afișare care putea cauza afișarea incorectă a zonei de selecție a etichetelor la adăugarea rapidă a sarcinilor

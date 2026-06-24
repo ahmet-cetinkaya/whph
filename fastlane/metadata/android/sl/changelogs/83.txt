@@ -1,0 +1,1 @@
+- Odpravljena napaka prikaza, ki je lahko povzročila nepravilen prikaz območja za izbiro oznak pri hitrem dodajanju nalog

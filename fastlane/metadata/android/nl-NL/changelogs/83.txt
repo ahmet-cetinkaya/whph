@@ -1,0 +1,1 @@
+- Een weergaveprobleem opgelost waardoor het tagselectiegebied onjuist kon worden weergegeven bij het snel toevoegen van taken

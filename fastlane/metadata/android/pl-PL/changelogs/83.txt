@@ -1,0 +1,1 @@
+- Naprawiono problem z wyświetlaniem, który mógł powodować nieprawidłowe wyświetlanie obszaru wyboru tagów podczas szybkiego dodawania zadań

@@ -1,0 +1,1 @@
+- Görevleri hızlıca eklerken etiket seçim alanının yanlış görüntülenmesine neden olabilecek bir görüntüleme sorunu giderildi

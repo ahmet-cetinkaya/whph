@@ -1,0 +1,1 @@
+- Rettet et visningsproblem, der kunne forårsage, at tagvælgeren blev vist forkert ved hurtig tilføjelse af opgaver

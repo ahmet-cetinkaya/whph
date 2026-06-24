@@ -1,0 +1,1 @@
+- Fixed a display issue that could cause the tag selection area to appear incorrectly when quickly adding tasks

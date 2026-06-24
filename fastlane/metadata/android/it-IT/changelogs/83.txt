@@ -1,0 +1,1 @@
+- Risolto un problema di visualizzazione che poteva causare la visualizzazione errata dell'area di selezione dei tag durante l'aggiunta rapida di attività

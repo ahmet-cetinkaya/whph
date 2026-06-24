@@ -1,0 +1,1 @@
+- Korjattu näyttöongelma, joka saattoi aiheuttaa tunnisteiden valinta-alueen virheellisen näkymisen tehtävien pikalisäyksessä

@@ -1,0 +1,1 @@
+- Ein Anzeigeproblem wurde behoben, das dazu führen konnte, dass der Tag-Auswahlbereich beim schnellen Hinzufügen von Aufgaben fehlerhaft dargestellt wurde

@@ -1,0 +1,1 @@
+- Rettet et visningsproblem som kunne føre til at taggvalgområdet ble vist feil ved hurtig tillegging av oppgaver
