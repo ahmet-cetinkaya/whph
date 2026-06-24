@@ -69,6 +69,7 @@ class QuickActionButtonsBar extends StatelessWidget {
       child: TagSelectDropdown(
         initialSelectedTags: controller.selectedTags,
         isMultiSelect: true,
+        showSelectedInDropdown: false,
         tooltip: controller.getTagsTooltip(),
         onTagsSelected: (tags, _) => controller.setSelectedTags(tags),
         iconSize: iconSize,
