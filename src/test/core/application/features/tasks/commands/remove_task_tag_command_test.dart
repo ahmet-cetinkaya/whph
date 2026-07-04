@@ -4,7 +4,6 @@ import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:acore/acore.dart';
 
 import 'remove_task_tag_command_test.mocks.dart';
 
@@ -46,27 +45,28 @@ void main() {
       verify(mockTaskTagRepository.delete(existingTaskTag)).called(1);
     });
 
-    // Test handling of non-existent task tag
-    test('should throw BusinessException when task tag does not exist', () async {
+    // Test handling of non-existent task tag: removing something that is
+    // already gone achieves the caller's desired end state, so this is a
+    // successful no-op rather than an error (prevents spurious "not found"
+    // notifications when a removal is retried/raced).
+    test('should return successfully as a no-op when task tag does not exist', () async {
       // Arrange
       const taskTagId = 'task-tag-1';
       final command = RemoveTaskTagCommand(id: taskTagId);
 
       when(mockTaskTagRepository.getById(taskTagId, includeDeleted: false)).thenAnswer((_) async => null);
 
-      // Act & Assert
-      expect(
-        () => handler(command),
-        throwsA(
-          predicate((e) => e is BusinessException && e.message == 'Task tag not found'),
-        ),
-      );
+      // Act
+      final result = await handler(command);
+
+      // Assert
+      expect(result.id, taskTagId);
       verify(mockTaskTagRepository.getById(taskTagId, includeDeleted: false)).called(1);
       verifyNever(mockTaskTagRepository.delete(any));
     });
 
-    // Test handling of already deleted task tag
-    test('should throw BusinessException when task tag is already deleted', () async {
+    // Test handling of already deleted task tag: same idempotent no-op behavior.
+    test('should return successfully as a no-op when task tag is already deleted', () async {
       // Arrange
       const taskTagId = 'task-tag-1';
       final existingTaskTag = TaskTag(
@@ -81,13 +81,11 @@ void main() {
 
       when(mockTaskTagRepository.getById(taskTagId, includeDeleted: false)).thenAnswer((_) async => existingTaskTag);
 
-      // Act & Assert
-      expect(
-        () => handler(command),
-        throwsA(
-          predicate((e) => e is BusinessException && e.message == 'Task tag already deleted'),
-        ),
-      );
+      // Act
+      final result = await handler(command);
+
+      // Assert
+      expect(result.id, taskTagId);
       verify(mockTaskTagRepository.getById(taskTagId, includeDeleted: false)).called(1);
       verifyNever(mockTaskTagRepository.delete(any));
     });
@@ -194,20 +192,18 @@ void main() {
     });
 
     // Test with empty string ID (edge case)
-    test('should handle empty string ID correctly', () async {
+    test('should handle empty string ID correctly as a no-op', () async {
       // Arrange
       const taskTagId = '';
       final command = RemoveTaskTagCommand(id: taskTagId);
 
       when(mockTaskTagRepository.getById(taskTagId, includeDeleted: false)).thenAnswer((_) async => null);
 
-      // Act & Assert
-      expect(
-        () => handler(command),
-        throwsA(
-          predicate((e) => e is BusinessException && e.message == 'Task tag not found'),
-        ),
-      );
+      // Act
+      final result = await handler(command);
+
+      // Assert
+      expect(result.id, taskTagId);
       verify(mockTaskTagRepository.getById(taskTagId, includeDeleted: false)).called(1);
       verifyNever(mockTaskTagRepository.delete(any));
     });

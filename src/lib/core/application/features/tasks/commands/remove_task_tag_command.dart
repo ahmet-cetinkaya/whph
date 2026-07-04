@@ -1,8 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
-import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
-import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 
 class RemoveTaskTagCommand implements IRequest<RemoveTaskTagCommandResponse> {
   String id;
@@ -25,15 +23,21 @@ class RemoveTaskTagCommandHandler implements IRequestHandler<RemoveTaskTagComman
 
   RemoveTaskTagCommandHandler({required ITaskTagRepository taskTagRepository}) : _taskTagRepository = taskTagRepository;
 
+  /// Removing a tag that is already gone (not found, or already soft-deleted)
+  /// achieves the caller's desired end state, so it is treated as a
+  /// successful no-op rather than an error. This keeps repeated/concurrent
+  /// removal requests for the same association idempotent instead of
+  /// surfacing a spurious "not found" notification for an operation that
+  /// effectively already succeeded.
   @override
   Future<RemoveTaskTagCommandResponse> call(RemoveTaskTagCommand request) async {
     TaskTag? taskTag = await _taskTagRepository.getById(request.id);
-    if (taskTag == null) {
-      throw BusinessException('Task tag not found', TaskTranslationKeys.taskTagNotFoundError);
+    if (taskTag == null || taskTag.deletedDate != null) {
+      return RemoveTaskTagCommandResponse(
+        id: request.id,
+      );
     }
-    if (taskTag.deletedDate != null) {
-      throw BusinessException('Task tag already deleted', TaskTranslationKeys.taskTagAlreadyDeletedError);
-    }
+
     await _taskTagRepository.delete(taskTag);
 
     return RemoveTaskTagCommandResponse(
