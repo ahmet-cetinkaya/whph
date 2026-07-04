@@ -545,6 +545,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                         : Colors.grey,
                     tooltip: _translationService.translate(TaskTranslationKeys.filterByTagsTooltip),
                     showLength: true,
+                    showSelectedInDropdown: false,
                     showNoneOption: true,
                     initialSelectedTags: widget.selectedTagIds != null
                         ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()

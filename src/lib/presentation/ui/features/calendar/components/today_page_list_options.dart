@@ -174,6 +174,7 @@ class _TodayPageListOptionsState extends PersistentListOptionsBaseState<TodayPag
                       ? Theme.of(context).primaryColor
                       : Colors.grey,
                   tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
+                  showSelectedInDropdown: false,
                   onTagsSelected: (selectedTags, isNoneSelected) {
                     final newTags = selectedTags.map((t) => t.value).toList();
                     widget.onFilterChange?.call(newTags, isNoneSelected);
