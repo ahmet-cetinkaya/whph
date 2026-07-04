@@ -130,11 +130,6 @@ class SyncIncomingHandler {
       createResponseDto: createResponseDto,
     );
 
-    // Reset tracking if sync is complete
-    if (!bidirectionalResult.hasMorePages && processingErrors.isEmpty) {
-      _paginationService.setLastSentServerPage(dto.syncDevice.id, dto.entityType, -1);
-    }
-
     return IncomingSyncResult(
       responseDto: bidirectionalResult.responseDto,
       processedCount: processedCount,
@@ -205,6 +200,14 @@ class SyncIncomingHandler {
       final syncDevice = dto.syncDevice;
       final lastSyncDate = syncDevice.lastSyncDate ?? DateTime(2000);
 
+      // A local-page sweep begins at pageIndex 0 — treat that as a new sync session and
+      // reset the server-side page cursor then. The cursor is intentionally NOT reset on
+      // exhaustion: resetting mid-session restarted pagination from page 0 and, combined
+      // with the client re-requesting pages each iteration, caused an unbounded re-fetch loop.
+      if (dto.pageIndex == 0) {
+        _paginationService.setLastSentServerPage(dto.syncDevice.id, dto.entityType, -1);
+      }
+
       // Determine which server page to send
       final serverPageToSend =
           dto.requestedServerPage ?? (_paginationService.getLastSentServerPage(dto.syncDevice.id, dto.entityType) + 1);
@@ -236,7 +239,6 @@ class SyncIncomingHandler {
         return (responseDto: responseDto, hasMorePages: hasMorePages);
       } else {
         Logger.info('No local ${dto.entityType} data to send back');
-        _paginationService.setLastSentServerPage(dto.syncDevice.id, dto.entityType, -1);
         return (responseDto: null, hasMorePages: false);
       }
     } catch (e) {

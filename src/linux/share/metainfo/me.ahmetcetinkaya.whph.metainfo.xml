@@ -1460,7 +1460,9 @@
   </requires>
   <releases>
     <release version="0.23.2" date="2026-06-24">
-      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.23.2/CHANGELOG.md</url>
+      <url
+        type="details"
+      >https://github.com/ahmet-cetinkaya/whph/blob/v0.23.2/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Prevent unbounded width crash in quick add tag selection</li>

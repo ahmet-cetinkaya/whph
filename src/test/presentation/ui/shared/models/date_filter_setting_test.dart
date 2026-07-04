@@ -98,6 +98,11 @@ void main() {
         final now = DateTime.now();
         final daysToSubtract = now.weekday - 1;
         final daysToAdd = 7 - now.weekday;
+        // Compute expected boundaries the same way the implementation does, since
+        // the week start/end can fall in a different month (or year) than `now`
+        // near month/year boundaries.
+        final expectedWeekStart = DateTime(now.year, now.month, now.day - daysToSubtract);
+        final expectedWeekEnd = DateTime(now.year, now.month, now.day + daysToAdd);
 
         final setting = DateFilterSetting.quickSelection(
           key: 'this_week',
@@ -108,12 +113,12 @@ void main() {
 
         final range = setting.calculateCurrentDateRange();
 
-        expect(range.startDate?.year, now.year);
-        expect(range.startDate?.month, now.month);
-        expect(range.startDate?.day, now.day - daysToSubtract);
-        expect(range.endDate?.year, now.year);
-        expect(range.endDate?.month, now.month);
-        expect(range.endDate?.day, now.day + daysToAdd);
+        expect(range.startDate?.year, expectedWeekStart.year);
+        expect(range.startDate?.month, expectedWeekStart.month);
+        expect(range.startDate?.day, expectedWeekStart.day);
+        expect(range.endDate?.year, expectedWeekEnd.year);
+        expect(range.endDate?.month, expectedWeekEnd.month);
+        expect(range.endDate?.day, expectedWeekEnd.day);
         expect(range.endDate?.hour, 23);
         expect(range.endDate?.minute, 59);
       });
