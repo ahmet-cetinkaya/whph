@@ -307,8 +307,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           .toList();
 
       if (widget.showSelectedInDropdown) {
-        displayWidget = SizedBox(
-            height: 48,
+        displayWidget = ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 200, maxHeight: 48),
             child: ReorderableListView.builder(
               scrollDirection: Axis.horizontal,
               buildDefaultDragHandles: false,
