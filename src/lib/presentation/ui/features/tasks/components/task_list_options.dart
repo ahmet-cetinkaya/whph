@@ -528,10 +528,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                 // Tag filter
                 if (widget.showTagFilter && widget.onTagFilterChange != null)
                   TagSelectDropdown(
-                    key: ValueKey({
-                      'showNoTagsFilter': widget.showNoTagsFilter,
-                      'selectedTags': widget.selectedTagIds?.join(',') ?? '',
-                    }.toString()),
+                    key: const ValueKey('task_list_tags_filter'),
                     isMultiSelect: true,
                     onTagsSelected: (tags, isNoneSelected) {
                       if (mounted) {

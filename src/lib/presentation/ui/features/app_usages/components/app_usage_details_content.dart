@@ -462,7 +462,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                   label: _translationService.translate(AppUsageTranslationKeys.tagsLabel),
                   icon: AppUsageUiConstants.tagsIcon,
                   widget: TagSelectDropdown(
-                    key: ValueKey(_appUsageTags!.items.map((t) => '${t.tagId}_${t.tagOrder}').join(',')),
+                    key: const ValueKey('app_usage_tags'),
                     isMultiSelect: true,
                     onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
                     autoOpen: _autoOpenField == keyTags,

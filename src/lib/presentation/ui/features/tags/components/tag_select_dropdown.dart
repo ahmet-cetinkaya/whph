@@ -307,95 +307,90 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           .toList();
 
       if (widget.showSelectedInDropdown) {
-        displayWidget = ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 200, maxHeight: 48),
-            child: ReorderableListView.builder(
-              scrollDirection: Axis.horizontal,
-              buildDefaultDragHandles: false,
-              onReorder: _onReorder,
-              proxyDecorator: (child, index, animation) {
-                return Material(
-                  color: Colors.transparent,
-                  child: child,
-                );
-              },
-              itemCount: uniqueSelectedTagIds.length,
-              itemBuilder: (context, index) {
-                if (index < 0 || index >= uniqueSelectedTagIds.length) {
-                  return SizedBox.shrink(key: ValueKey('empty_index_$index'));
-                }
+        displayWidget = ReorderableListView.builder(
+          scrollDirection: Axis.horizontal,
+          buildDefaultDragHandles: false,
+          onReorder: _onReorder,
+          proxyDecorator: (child, index, animation) {
+            return Material(
+              color: Colors.transparent,
+              child: child,
+            );
+          },
+          itemCount: uniqueSelectedTagIds.length,
+          itemBuilder: (context, index) {
+            if (index < 0 || index >= uniqueSelectedTagIds.length) {
+              return SizedBox.shrink(key: ValueKey('empty_index_$index'));
+            }
 
-                final id = uniqueSelectedTagIds[index];
-                final tagsResponse = _tags;
-                if (tagsResponse == null) {
-                  return SizedBox.shrink(key: ValueKey('empty_no_tags_$id'));
-                }
+            final id = uniqueSelectedTagIds[index];
+            final tagsResponse = _tags;
+            if (tagsResponse == null) {
+              return SizedBox.shrink(key: ValueKey('empty_no_tags_$id'));
+            }
 
-                final tag = tagsResponse.items.firstWhereOrNull((t) => t.id == id);
-                if (tag == null) {
-                  return SizedBox.shrink(key: ValueKey('empty_no_tag_$id'));
-                }
+            final tag = tagsResponse.items.firstWhereOrNull((t) => t.id == id);
+            if (tag == null) {
+              return SizedBox.shrink(key: ValueKey('empty_no_tag_$id'));
+            }
 
-                return ReorderableDelayedDragStartListener(
-                  key: ValueKey('drag_listener_$id'),
-                  index: index,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 4.0),
-                    child: GestureDetector(
-                      onTap: () async {
-                        final result = await TagOptionsDialog.show(
-                          context: context,
-                          tag: tag,
-                        );
+            return ReorderableDelayedDragStartListener(
+              key: ValueKey('drag_listener_$id'),
+              index: index,
+              child: GestureDetector(
+                onTap: () async {
+                  final result = await TagOptionsDialog.show(
+                    context: context,
+                    tag: tag,
+                  );
 
-                        if (result == null || !mounted) return;
+                  if (result == null || !mounted) return;
 
-                        if (result == TagOptionsResult.removeTag) {
-                          final currentTags = _tags;
-                          if (currentTags == null) return;
+                  if (result == TagOptionsResult.removeTag) {
+                    final currentTags = _tags;
+                    if (currentTags == null) return;
 
-                          final List<DropdownOption<String>> updatedTags =
-                              uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
-                            final tagItem = currentTags.items.firstWhereOrNull((t) => t.id == tagId);
-                            return DropdownOption(label: tagItem?.name ?? '', value: tagId);
-                          }).toList();
+                    final List<DropdownOption<String>> updatedTags =
+                        uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
+                      final tagItem = currentTags.items.firstWhereOrNull((t) => t.id == tagId);
+                      return DropdownOption(label: tagItem?.name ?? '', value: tagId);
+                    }).toList();
 
-                          widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
-                          setState(() {
-                            _selectedTags.removeWhere((tagId) => tagId == id);
-                          });
-                        } else if (result == TagOptionsResult.openDetails) {
-                          _navigateToTagDetails(tag.id);
-                        }
-                      },
-                      child: Chip(
-                        visualDensity: VisualDensity.compact,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        backgroundColor: AppTheme.surface3,
-                        side: BorderSide.none,
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              TagUiConstants.getTagTypeIcon(tag.type),
-                              size: AppTheme.iconSizeXSmall,
-                              color: TagUiConstants.getTagColor(tag.color),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                                tag.name.isNotEmpty
-                                    ? tag.name
-                                    : _translationService.translate(SharedTranslationKeys.untitled),
-                                style: AppTheme.labelSmall),
-                          ],
-                        ),
+                    widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
+                    setState(() {
+                      _selectedTags.removeWhere((tagId) => tagId == id);
+                    });
+                  } else if (result == TagOptionsResult.openDetails) {
+                    _navigateToTagDetails(tag.id);
+                  }
+                },
+                child: Chip(
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  backgroundColor: AppTheme.surface3,
+                  side: BorderSide.none,
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        TagUiConstants.getTagTypeIcon(tag.type),
+                        size: AppTheme.iconSizeXSmall,
+                        color: TagUiConstants.getTagColor(tag.color),
                       ),
-                    ),
+                      const SizedBox(width: 4),
+                      Text(
+                          tag.name.isNotEmpty
+                              ? tag.name
+                              : _translationService.translate(SharedTranslationKeys.untitled),
+                          style: AppTheme.labelSmall),
+                    ],
                   ),
-                );
-              },
-            ));
+                ),
+              ),
+            );
+          },
+        );
       } else if (widget.buttonLabel != null) {
         displayWidget = Text(
           widget.buttonLabel!,

@@ -402,7 +402,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         icon: TagUiConstants.tagIcon,
         widget: _note != null
             ? TagSelectDropdown(
-                key: ValueKey(_note!.tags.map((t) => '${t.tagId}_${t.tagOrder}').join(',')),
+                key: const ValueKey('note_tags'),
                 isMultiSelect: true,
                 onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => _onTagsSelected(tagOptions),
                 autoOpen: _autoOpenField == keyTags,

@@ -28,7 +28,7 @@ class HabitTagsSection {
         label: translationService.translate(HabitTranslationKeys.tagsLabel),
         icon: TagUiConstants.tagIcon,
         widget: TagSelectDropdown(
-          key: ValueKey('habit_tags'),
+          key: const ValueKey('habit_tags'),
           isMultiSelect: true,
           onTagsSelected: (List<DropdownOption<String>> tagOptions, bool _) => onTagsSelected(tagOptions),
           autoOpen: autoOpenDropdown,

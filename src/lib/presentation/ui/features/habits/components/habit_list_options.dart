@@ -384,10 +384,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                 // Filter by tags
                 if (widget.showTagFilter && widget.onTagFilterChange != null)
                   TagSelectDropdown(
-                    key: ValueKey({
-                      'showNoTagsFilter': widget.showNoTagsFilter,
-                      'selectedTags': widget.selectedTagIds?.join(',') ?? '',
-                    }.toString()),
+                    key: const ValueKey('habit_list_tags_filter'),
                     isMultiSelect: true,
                     onTagsSelected: widget.onTagFilterChange!,
                     icon: TagUiConstants.tagIcon,

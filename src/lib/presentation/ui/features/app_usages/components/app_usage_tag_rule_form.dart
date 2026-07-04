@@ -219,7 +219,7 @@ class AppUsageTagRuleFormState extends State<AppUsageTagRuleForm> {
                     ),
                   ),
                   TagSelectDropdown(
-                    key: UniqueKey(),
+                    key: const ValueKey('app_usage_tag_rule_tag_selector'),
                     initialSelectedTags: _selectedTagId != null
                         ? [DropdownOption(label: _selectedTagLabel ?? '', value: _selectedTagId!)]
                         : const [],

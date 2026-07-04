@@ -425,7 +425,7 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
                     label: _translationService.translate(TagTranslationKeys.detailsRelatedTags),
                     icon: TagUiConstants.tagIcon,
                     widget: TagSelectDropdown(
-                      key: ValueKey('${_tagTags!.items.length}_${_visibleOptionalFields.contains(keyRelatedTags)}'),
+                      key: const ValueKey('tag_details_related_tags'),
                       isMultiSelect: true,
                       onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
                       autoOpen: _autoOpenField == keyRelatedTags,
