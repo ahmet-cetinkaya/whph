@@ -401,6 +401,8 @@ class TaskDetailsController extends ChangeNotifier {
   }
 
   // Tag operations
+  bool _isProcessingTagChanges = false;
+
   Future<bool> addTag(String tagId, BuildContext context) async {
     if (!context.mounted) return false;
     final result = await AsyncErrorHandler.execute<AddTaskTagCommandResponse>(
@@ -419,6 +421,11 @@ class TaskDetailsController extends ChangeNotifier {
   }
 
   Future<bool> removeTag(String id, BuildContext context) async {
+    // Removed optimistically so a concurrent diff (e.g. a second tag-change
+    // request arriving before this one's loadTaskTags finishes) can't
+    // re-target the same association and re-send the same removal command.
+    _taskTags?.items.removeWhere((taskTag) => taskTag.id == id);
+
     final result = await AsyncErrorHandler.execute<RemoveTaskTagCommandResponse>(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.removeTagError),
@@ -438,32 +445,38 @@ class TaskDetailsController extends ChangeNotifier {
     List<DropdownOption<String>> tagOptions,
     BuildContext context,
   ) async {
-    if (_taskTags == null) return;
+    if (_taskTags == null || _isProcessingTagChanges) return;
+    _isProcessingTagChanges = true;
 
-    final tagOptionsToAdd =
-        tagOptions.where((tagOption) => !_taskTags!.items.any((taskTag) => taskTag.tagId == tagOption.value)).toList();
-    final tagsToRemove =
-        _taskTags!.items.where((taskTag) => !tagOptions.map((tag) => tag.value).contains(taskTag.tagId)).toList();
+    try {
+      final tagOptionsToAdd = tagOptions
+          .where((tagOption) => !_taskTags!.items.any((taskTag) => taskTag.tagId == tagOption.value))
+          .toList();
+      final tagsToRemove =
+          _taskTags!.items.where((taskTag) => !tagOptions.map((tag) => tag.value).contains(taskTag.tagId)).toList();
 
-    for (final tagOption in tagOptionsToAdd) {
-      if (!context.mounted) return;
-      await addTag(tagOption.value, context);
-    }
+      for (final tagOption in tagOptionsToAdd) {
+        if (!context.mounted) return;
+        await addTag(tagOption.value, context);
+      }
 
-    for (final taskTag in tagsToRemove) {
-      if (!context.mounted) return;
-      await removeTag(taskTag.id, context);
-    }
+      for (final taskTag in tagsToRemove) {
+        if (!context.mounted) return;
+        await removeTag(taskTag.id, context);
+      }
 
-    if (tagOptions.isNotEmpty) {
-      final tagOrders = {for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i};
-      final orderCommand = UpdateTaskTagsOrderCommand(taskId: _task!.id, tagOrders: tagOrders);
-      await _mediator.send(orderCommand);
-    }
+      if (tagOptions.isNotEmpty) {
+        final tagOrders = {for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i};
+        final orderCommand = UpdateTaskTagsOrderCommand(taskId: _task!.id, tagOrders: tagOrders);
+        await _mediator.send(orderCommand);
+      }
 
-    if (tagOptionsToAdd.isNotEmpty || tagsToRemove.isNotEmpty || tagOptions.isNotEmpty) {
-      await loadTaskTags(_task!.id);
-      _tasksService.notifyTaskUpdated(_task!.id);
+      if (tagOptionsToAdd.isNotEmpty || tagsToRemove.isNotEmpty || tagOptions.isNotEmpty) {
+        await loadTaskTags(_task!.id);
+        _tasksService.notifyTaskUpdated(_task!.id);
+      }
+    } finally {
+      _isProcessingTagChanges = false;
     }
   }
 
