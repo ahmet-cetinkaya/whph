@@ -1,0 +1,6 @@
+• Fjernet forkert tomt statusmeddelelse der dukkede op ved fjernelse af tags
+• Forbedret synlighed af knapper i listeindstillinger, handlingsknapper skjules ikke længere bag tags
+• Retted layoutproblemer hvor knapper overløb i visninger for ændring af rækkefølge
+• Forbedret pålidelighed af dataindlæsning ved navigation mellem sider
+• Elimineret overdreven genindlæsning ved rulning gennem lister for bedre ydeevne
+• Forbedret kompatibilitet med nyere Linux-distributioner

@@ -8,6 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.23.3] - 2026-07-05
+
+### Fixed
+- Removed incorrect empty state message that appeared when removing tags
+- Improved button visibility in list options so action buttons no longer hide behind tag displays
+- Fixed layout issues where buttons could overflow in reordering views
+- Enhanced data loading reliability when navigating between pages
+- Eliminated excessive re-fetching while scrolling through lists for better performance
+- Improved compatibility with newer Linux distributions
+
 ## [0.23.2] - 2026-06-24
 
 ### Fixed
@@ -1727,7 +1737,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.23.2...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.23.3...HEAD
+[0.23.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.3
 [0.23.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.2
 [0.23.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.1
 [0.23.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.0

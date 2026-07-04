@@ -1,0 +1,6 @@
+• Removed incorrect empty state message that appeared when removing tags
+• Improved button visibility in list options so action buttons no longer hide behind tag displays
+• Fixed layout issues where buttons could overflow in reordering views
+• Enhanced data loading reliability when navigating between pages
+• Eliminated excessive re-fetching while scrolling through lists for better performance
+• Improved compatibility with newer Linux distributions

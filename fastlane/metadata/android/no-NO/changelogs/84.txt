@@ -1,0 +1,6 @@
+• Fjernet feil tom statusmelding som dukket opp ved fjerning av tagger
+• Forbedret synlighet for knapper i listealternativer, handlingsknapper skjules ikke lenger bakom tagger
+• Korrigert layoutproblemer hvor knapper ble avskåret i visninger for omorganisering
+• Forbedret pålitelighet for datalasting ved navigering mellom sider
+• Eliminert overdreven gjeninnlasting ved rulling gjennom lister for bedre ytelse
+• Forbedret kompatibilitet med nyere Linux-distribusjoner

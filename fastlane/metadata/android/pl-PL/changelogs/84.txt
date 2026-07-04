@@ -1,0 +1,6 @@
+• Usunięto nieprawidłowy komunikat o pustym stanie pojawiający się przy usuwaniu tagów
+• Poprawiona widoczność przycisków w opcjach listy, przyciski akcji nie są już ukrywane za tagami
+• Naprawiono problemy z układem, gdzie przyciski były przycinane w widokach zmiany kolejności
+• Zwiększona niezawodność ładowania danych podczas nawigacji między stronami
+• Wyeliminowane nadmierne ponowne ładowanie podczas przewijania list dla lepszej wydajności
+• Poprawiona kompatybilność z nowszymi dystrybucjami Linuxa

@@ -1,0 +1,6 @@
+• Etiket kaldırılırken yanlış boş durum mesajı kaldırıldı
+• Liste seçeneklerinde buton görünürlüğü iyileştirildi, artık işlem butonları etiketlerin arkasına gizlenmiyor
+• Sıralama görünümlerinde butonların taşması sorunları düzeltildi
+• Sayfalar arasında gezinirken veri yükleme güvenilirliği artırıldı
+• Listelerde kaydırırken daha iyi performans için gereksiz yeniden yüklemeler önlendi
+• Daha yeni Linux dağıtımları ile uyumluluk iyileştirildi
