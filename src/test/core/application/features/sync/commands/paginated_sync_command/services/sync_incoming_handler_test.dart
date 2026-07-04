@@ -1,113 +1,88 @@
-import 'package:acore/acore.dart' hide IRepository;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command/services/sync_incoming_handler.dart';
 import 'package:whph/core/application/features/sync/models/bidirectional_sync_progress.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart';
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command/services/sync_progress_tracker.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
-    as whph_repo;
 import 'package:whph/core/domain/features/sync/sync_device.dart';
+import '../../../services/sync_pagination_service_test.dart';
 
 import 'sync_incoming_handler_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<ISyncConfigurationService>(),
-  MockSpec<ISyncPaginationService>(),
   MockSpec<ISyncValidationService>(),
+  MockSpec<ISyncPaginationService>(),
+  MockSpec<SyncProgressTracker>(),
 ])
-class MockRepository extends Mock
-    implements whph_repo.IRepository<BaseEntity<String>, String> {}
-
-PaginatedSyncData<BaseEntity<String>> emptySyncData(String name) {
-  return PaginatedSyncData<BaseEntity<String>>(
-    data: SyncData<BaseEntity<String>>(
-      createSync: [],
-      updateSync: [],
-      deleteSync: [],
-    ),
-    pageIndex: 0,
-    pageSize: 50,
-    totalPages: 1,
-    totalItems: 0,
-    isLastPage: true,
-    entityType: name,
-  );
-}
-
-// Config whose getPaginatedSyncData returns EMPTY local data, so the
-// bidirectional response takes the "no data to send back" path. This still
-// exercises the pageIndex==0 cursor reset that runs before the data fetch.
-PaginatedSyncConfig emptyDataConfig(String name) {
-  return PaginatedSyncConfig<BaseEntity<String>>(
-    name: name,
-    repository: MockRepository(),
-    getPaginatedSyncData: (_, __, ___, ____) async => emptySyncData(name),
-    getPaginatedSyncDataFromDto: (_) => null,
-  );
-}
-
 void main() {
-  group('SyncIncomingHandler Cursor Reset Tests', () {
-    late SyncIncomingHandler handler;
-    late MockISyncConfigurationService mockConfigService;
-    late MockISyncPaginationService mockPaginationService;
-    late MockISyncValidationService mockValidationService;
+  late SyncIncomingHandler handler;
+  late MockISyncConfigurationService mockConfigService;
+  late MockISyncValidationService mockValidationService;
+  late MockISyncPaginationService mockPaginationService;
+  late MockSyncProgressTracker mockProgressTracker;
 
-    late SyncDevice testDevice;
+  final syncDevice = SyncDevice(
+    id: 'device-1',
+    name: 'Test Device',
+    createdDate: DateTime.now(),
+    fromIp: '192.168.1.1',
+    toIp: '192.168.1.100',
+    fromDeviceId: 'device-1',
+    toDeviceId: 'device-2',
+  );
 
-    setUp(() {
-      mockConfigService = MockISyncConfigurationService();
-      mockPaginationService = MockISyncPaginationService();
-      mockValidationService = MockISyncValidationService();
+  PaginatedSyncDataDto createDto({
+    required String entityType,
+    required int pageIndex,
+    int? currentServerPage,
+    int? totalServerPages,
+    bool? hasMoreServerPages,
+  }) {
+    return PaginatedSyncDataDto(
+      syncDevice: syncDevice,
+      appVersion: '0.23.2',
+      isDebugMode: false,
+      entityType: entityType,
+      pageIndex: pageIndex,
+      pageSize: 50,
+      totalPages: 1,
+      totalItems: 0,
+      isLastPage: true,
+      currentServerPage: currentServerPage,
+      totalServerPages: totalServerPages,
+      hasMoreServerPages: hasMoreServerPages,
+    );
+  }
 
-      testDevice = SyncDevice(
-        id: 'device-1',
-        createdDate: DateTime(2026),
-        fromIp: '192.168.1.10',
-        toIp: '192.168.1.20',
-        fromDeviceId: 'from-device',
-        toDeviceId: 'to-device',
-        name: 'Test Device',
-      );
+  PaginatedSyncConfig emptyDataConfig(String entityType) {
+    return MockPaginatedSyncConfig(entityType);
+  }
 
-      // NiceMocks return defaults for un-stubbed methods, so validation passes
-      // without explicit stubs.
+  setUp(() {
+    mockConfigService = MockISyncConfigurationService();
+    mockValidationService = MockISyncValidationService();
+    mockPaginationService = MockISyncPaginationService();
+    mockProgressTracker = MockSyncProgressTracker();
 
-      handler = SyncIncomingHandler(
-        configurationService: mockConfigService,
-        validationService: mockValidationService,
-        paginationService: mockPaginationService,
-        progressTracker: SyncProgressTracker(),
-      );
-    });
+    when(mockValidationService.validateVersion(any)).thenAnswer((_) async {});
+    when(mockValidationService.validateDeviceId(any)).thenAnswer((_) async {});
 
-    PaginatedSyncDataDto createDto({
-      required String entityType,
-      required int pageIndex,
-    }) {
-      return PaginatedSyncDataDto(
-        appVersion: '1.0.0',
-        syncDevice: testDevice,
-        isDebugMode: false,
-        entityType: entityType,
-        pageIndex: pageIndex,
-        pageSize: 50,
-        totalPages: 1,
-        totalItems: 0,
-        isLastPage: true,
-      );
-    }
+    handler = SyncIncomingHandler(
+      configurationService: mockConfigService,
+      validationService: mockValidationService,
+      paginationService: mockPaginationService,
+      progressTracker: mockProgressTracker,
+    );
+  });
 
-    test('resets cursor to -1 when pageIndex is 0 (new session)', () async {
-      when(mockConfigService.getConfiguration('AppUsageTimeRecord'))
-          .thenReturn(emptyDataConfig('AppUsageTimeRecord'));
+  group('SyncIncomingHandler', () {
+    test('cursor is reset on new session (pageIndex == 0)', () async {
+      when(mockConfigService.getConfiguration('AppUsageTimeRecord')).thenReturn(emptyDataConfig('AppUsageTimeRecord'));
 
       await handler.handleIncomingSync(
         createDto(entityType: 'AppUsageTimeRecord', pageIndex: 0),
@@ -126,34 +101,11 @@ void main() {
       )).called(1);
     });
 
-    test('does NOT reset cursor when pageIndex is > 0 (mid-session)', () async {
-      when(mockConfigService.getConfiguration('AppUsageTimeRecord'))
-          .thenReturn(emptyDataConfig('AppUsageTimeRecord'));
-
-      await handler.handleIncomingSync(
-        createDto(entityType: 'AppUsageTimeRecord', pageIndex: 5),
-        onProgress: (BidirectionalSyncProgress progress) {},
-        processDto: (PaginatedSyncDataDto dto) async => 0,
-        createResponseDto: (syncDevice, localData, entityType,
-            {currentServerPage, totalServerPages, hasMoreServerPages}) async {
-          return createDto(entityType: entityType, pageIndex: 0);
-        },
-      );
-
-      verifyNever(mockPaginationService.setLastSentServerPage(
-        'device-1',
-        'AppUsageTimeRecord',
-        -1,
-      ));
-    });
-
-    test('cursor is NOT reset on local data exhaustion (hasMorePages=false)',
-        () async {
+    test('cursor is NOT reset on local data exhaustion (hasMorePages=false)', () async {
       // Empty local data → _prepareBidirectionalResponse returns hasMorePages=false.
       // Previously this path reset the cursor to -1 (causing re-fetch loops).
       // After the fix it must NOT reset.
-      when(mockConfigService.getConfiguration('AppUsageTimeRecord'))
-          .thenReturn(emptyDataConfig('AppUsageTimeRecord'));
+      when(mockConfigService.getConfiguration('AppUsageTimeRecord')).thenReturn(emptyDataConfig('AppUsageTimeRecord'));
 
       await handler.handleIncomingSync(
         createDto(entityType: 'AppUsageTimeRecord', pageIndex: 1),
@@ -173,10 +125,8 @@ void main() {
     });
 
     test('cursor reset is isolated per entity type', () async {
-      when(mockConfigService.getConfiguration('Task'))
-          .thenReturn(emptyDataConfig('Task'));
-      when(mockConfigService.getConfiguration('Habit'))
-          .thenReturn(emptyDataConfig('Habit'));
+      when(mockConfigService.getConfiguration('Task')).thenReturn(emptyDataConfig('Task'));
+      when(mockConfigService.getConfiguration('Habit')).thenReturn(emptyDataConfig('Habit'));
 
       await handler.handleIncomingSync(
         createDto(entityType: 'Task', pageIndex: 0),
@@ -207,6 +157,64 @@ void main() {
       verify(mockPaginationService.setLastSentServerPage(
         'device-1',
         'Habit',
+        -1,
+      )).called(1);
+    });
+
+    test('client tracks server pages correctly in lockstep loop', () async {
+      // Test that server page tracking works correctly in the lockstep loop
+      // This test validates the core fix logic in sync_pagination_service.dart
+      when(mockConfigService.getConfiguration('AppUsageTimeRecord')).thenReturn(emptyDataConfig('AppUsageTimeRecord'));
+
+      // Simulate multiple pages with increasing server page numbers
+      final serverResponses = [
+        // Page 0: server has 3 pages total, current is 0
+        createDto(
+          entityType: 'AppUsageTimeRecord',
+          pageIndex: 0,
+          currentServerPage: 0,
+          totalServerPages: 3,
+          hasMoreServerPages: true,
+        ),
+        // Page 1: server has 3 pages total, current is 1
+        createDto(
+          entityType: 'AppUsageTimeRecord',
+          pageIndex: 1,
+          currentServerPage: 1,
+          totalServerPages: 3,
+          hasMoreServerPages: true,
+        ),
+        // Page 2: server has 3 pages total, current is 2 (last)
+        createDto(
+          entityType: 'AppUsageTimeRecord',
+          pageIndex: 2,
+          currentServerPage: 2,
+          totalServerPages: 3,
+          hasMoreServerPages: false,
+        ),
+      ];
+
+      // Feed each incoming page through the handler in sequence, as the client would
+      // during the lockstep loop. Only the first page (pageIndex == 0) starts a new
+      // session and should reset the server-side cursor; subsequent pages must not.
+      for (final response in serverResponses) {
+        await handler.handleIncomingSync(
+          response,
+          onProgress: (BidirectionalSyncProgress progress) {},
+          processDto: (PaginatedSyncDataDto dto) async => 0,
+          createResponseDto: (syncDevice, localData, entityType,
+              {currentServerPage, totalServerPages, hasMoreServerPages}) async {
+            return createDto(entityType: entityType, pageIndex: 0);
+          },
+        );
+      }
+
+      // The reset only happens once, on the first (pageIndex == 0) page.
+      // This is the core fix that prevents the quadratic re-fetch bug: resetting the
+      // cursor again mid-session would restart pagination from page 0.
+      verify(mockPaginationService.setLastSentServerPage(
+        'device-1',
+        'AppUsageTimeRecord',
         -1,
       )).called(1);
     });

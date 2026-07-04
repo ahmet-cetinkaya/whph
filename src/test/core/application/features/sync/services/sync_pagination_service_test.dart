@@ -90,7 +90,7 @@ void main() {
         when(mockConfigurationService.getAllConfigurations()).thenReturn([mockSyncConfig]);
       });
 
-      testWidgets('should process single page successfully', (tester) async {
+      test('should process single page successfully', () async {
         // Arrange
         final habitRecords = List.generate(
             25,
@@ -142,7 +142,7 @@ void main() {
         verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(1);
       });
 
-      testWidgets('should handle pagination boundary conditions', (tester) async {
+      test('should handle pagination boundary conditions', () async {
         // Test a simple case where local data indicates isLastPage correctly
         final habitRecords = List.generate(
             25,
@@ -190,7 +190,7 @@ void main() {
         verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(1);
       });
 
-      testWidgets('should stop pagination when server indicates completion (isComplete: true)', (tester) async {
+      test('should stop pagination when server indicates completion (isComplete: true)', () async {
         // Arrange
         final singlePageData = PaginatedSyncData<HabitRecord>(
           data: SyncData<HabitRecord>(
@@ -232,7 +232,7 @@ void main() {
         verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(1);
       });
 
-      testWidgets('should handle communication failure', (tester) async {
+      test('should handle communication failure', () async {
         // Arrange
         final pageData = PaginatedSyncData<HabitRecord>(
           data: SyncData<HabitRecord>(
@@ -272,7 +272,7 @@ void main() {
         verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(1);
       });
 
-      testWidgets('should handle empty target IP', (tester) async {
+      test('should handle empty target IP', () async {
         // Arrange
         final invalidDevice = SyncDevice(
           id: 'test-device',
@@ -295,7 +295,7 @@ void main() {
         verifyNever(mockCommunicationService.sendPaginatedDataToDevice(any, any));
       });
 
-      testWidgets('should store server response data when isComplete is false', (tester) async {
+      test('should store server response data when isComplete is false', () async {
         // Arrange
         final pageData = PaginatedSyncData<HabitRecord>(
           data: SyncData<HabitRecord>(
@@ -351,7 +351,7 @@ void main() {
     });
 
     group('Progress Management', () {
-      testWidgets('should update progress correctly', (tester) async {
+      test('should update progress correctly', () async {
         // Arrange
         bool progressReceived = false;
         SyncProgress? receivedProgress;
@@ -371,8 +371,7 @@ void main() {
           totalEntities: 3,
           operation: 'syncing',
         );
-
-        await tester.pump(); // Allow stream to emit
+        await Future<void>.delayed(Duration.zero); // Allow broadcast stream to emit
 
         // Assert
         expect(progressReceived, isTrue);
@@ -383,7 +382,7 @@ void main() {
         expect(receivedProgress!.operation, equals('syncing'));
       });
 
-      testWidgets('should clamp progress percentage between 0 and 100', (tester) async {
+      test('should clamp progress percentage between 0 and 100', () async {
         // Arrange
         SyncProgress? receivedProgress;
         service.progressStream.listen((progress) {
@@ -400,14 +399,13 @@ void main() {
           totalEntities: 1,
           operation: 'syncing',
         );
-
-        await tester.pump();
+        await Future<void>.delayed(Duration.zero); // Allow broadcast stream to emit
 
         // Assert
         expect(receivedProgress!.progressPercentage, equals(100.0));
       });
 
-      testWidgets('should reset progress correctly', (tester) async {
+      test('should reset progress correctly', () async {
         // Arrange
         service.updateProgress(
           currentEntity: 'TestEntity',
@@ -428,7 +426,7 @@ void main() {
         expect(service.activeEntityTypes, isEmpty);
       });
 
-      testWidgets('should calculate overall progress correctly', (tester) async {
+      test('should calculate overall progress correctly', () async {
         // Arrange
         final mockConfig1 = MockPaginatedSyncConfig('Entity1');
         final mockConfig2 = MockPaginatedSyncConfig('Entity2');
@@ -470,7 +468,7 @@ void main() {
     });
 
     group('Server Pagination Metadata', () {
-      testWidgets('should update and retrieve server pagination metadata', (tester) async {
+      test('should update and retrieve server pagination metadata', () async {
         // Act
         service.updateServerPaginationMetadata('TestEntity', 5, 250);
 
@@ -480,7 +478,7 @@ void main() {
         expect(metadata['totalItems'], equals(250));
       });
 
-      testWidgets('should return empty metadata for unknown entity', (tester) async {
+      test('should return empty metadata for unknown entity', () async {
         // Act
         final metadata = service.getServerPaginationMetadata('UnknownEntity');
 
@@ -491,7 +489,7 @@ void main() {
     });
 
     group('Pending Response Data Management', () {
-      testWidgets('should manage pending response data correctly', (tester) async {
+      test('should manage pending response data correctly', () async {
         // Arrange
         final responseDto = PaginatedSyncDataDto(
           appVersion: '1.0.0',
@@ -569,7 +567,7 @@ void main() {
     });
 
     group('Sync Cancellation', () {
-      testWidgets('should cancel sync operations', (tester) async {
+      test('should cancel sync operations', () async {
         // Arrange
         bool progressReceived = false;
         SyncProgress? receivedProgress;
@@ -581,7 +579,7 @@ void main() {
 
         // Act
         await service.cancelSync();
-        await tester.pump(); // Allow stream to emit
+        await Future<void>.delayed(Duration.zero); // Allow broadcast stream to emit
 
         // Assert
         expect(progressReceived, isTrue);
@@ -589,7 +587,7 @@ void main() {
         expect(service.activeEntityTypes, isEmpty);
       });
 
-      testWidgets('should return false when sync is cancelled', (tester) async {
+      test('should return false when sync is cancelled', () async {
         // Arrange
         final pageData = PaginatedSyncData<HabitRecord>(
           data: SyncData<HabitRecord>(createSync: [], updateSync: [], deleteSync: []),

@@ -17,6 +17,7 @@ class ServerPaginationHandler {
   final Map<String, Map<String, int>> _serverLastSentPage = {};
 
   // Pending response data from bidirectional sync
+  // Using LinkedHashMap to maintain insertion order for FIFO eviction
   final Map<String, PaginatedSyncDataDto> _pendingResponseData = {};
 
   ServerPaginationHandler(this._communicationService);
@@ -94,11 +95,18 @@ class ServerPaginationHandler {
       Logger.info('Cleaned up ${staleKeys.length} stale pending sync data entries');
     }
 
-    // Safety check: if too much pending data, clear all
-    if (_pendingResponseData.length > 50) {
-      Logger.warning(
-          'Excessive pending response data (${_pendingResponseData.length} entries) - clearing all to prevent memory issues');
-      _pendingResponseData.clear();
+    // Safety check: if too much pending data, evict oldest entries
+    const maxPendingEntries = 50;
+    if (_pendingResponseData.length > maxPendingEntries) {
+      final entriesToRemove = _pendingResponseData.length - maxPendingEntries;
+      final keysToRemove = _pendingResponseData.keys.take(entriesToRemove).toList();
+
+      for (final key in keysToRemove) {
+        _pendingResponseData.remove(key);
+      }
+
+      Logger.warning('Evicted $entriesToRemove oldest pending response entries to prevent memory issues '
+          '(${_pendingResponseData.length}/$maxPendingEntries remaining)');
     }
   }
 
