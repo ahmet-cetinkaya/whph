@@ -394,6 +394,7 @@ class _AppUsageFiltersState extends PersistentListOptionsBaseState<AppUsageListO
                 [],
             onTagsSelected: _handleTagSelect,
             showLength: true,
+            showSelectedInDropdown: false,
             showNoneOption: true,
             initialNoneSelected: _currentState.showNoTagsFilter,
             icon: TagUiConstants.tagIcon,

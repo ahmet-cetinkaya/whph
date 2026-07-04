@@ -397,6 +397,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                         : Colors.grey,
                     tooltip: _translationService.translate(HabitTranslationKeys.filterByTagsTooltip),
                     showLength: true,
+                    showSelectedInDropdown: false,
                     showNoneOption: true,
                     initialSelectedTags: widget.selectedTagIds != null
                         ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()

@@ -298,6 +298,7 @@ class _TagListOptionsState extends PersistentListOptionsBaseState<TagListOptions
                     color: widget.selectedTagIds?.isNotEmpty ?? false ? primaryColor : Colors.grey,
                     tooltip: _translationService.translate(TagTranslationKeys.filterTagsTooltip),
                     showLength: true,
+                    showSelectedInDropdown: false,
                   ),
 
                 // Search filter

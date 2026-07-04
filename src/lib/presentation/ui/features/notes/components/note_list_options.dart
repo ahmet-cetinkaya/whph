@@ -283,6 +283,7 @@ class _NoteListOptionsState extends PersistentListOptionsBaseState<NoteListOptio
                         : Colors.grey,
                     tooltip: _translationService.translate(NoteTranslationKeys.filterTagsTooltip),
                     showLength: true,
+                    showSelectedInDropdown: false,
                     showNoneOption: true,
                     initialSelectedTags: widget.selectedTagIds != null
                         ? widget.selectedTagIds!.map((id) => DropdownOption<String>(value: id, label: id)).toList()
