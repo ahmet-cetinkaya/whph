@@ -424,9 +424,14 @@ class SyncPaginationService implements ISyncPaginationService {
     required int totalServerPages,
   }) {
     Logger.info('Server has data to send back for $entityType - storing for later processing');
-    _serverPaginationHandler.storePendingResponse(entityType, responseData);
 
     final currentServerPage = responseData.currentServerPage ?? lastReceivedServerPage;
+
+    if (currentServerPage >= 0) {
+      _serverPaginationHandler.storeAdditionalServerPage(entityType, currentServerPage, responseData);
+    } else {
+      _serverPaginationHandler.storePendingResponse(entityType, responseData);
+    }
     final responseTotalServerPages = responseData.totalServerPages ?? totalServerPages;
 
     final newLastReceived = currentServerPage > lastReceivedServerPage ? currentServerPage : lastReceivedServerPage;
@@ -451,7 +456,7 @@ class SyncPaginationService implements ISyncPaginationService {
     required int lastReceivedServerPage,
     required int totalServerPages,
   }) async {
-    if (totalServerPages <= 0 || lastReceivedServerPage >= totalServerPages - 1) {
+    if (_isSyncCancelled || totalServerPages <= 0 || lastReceivedServerPage >= totalServerPages - 1) {
       return;
     }
 
