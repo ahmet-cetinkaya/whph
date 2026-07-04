@@ -63,6 +63,8 @@ class SyncPaginationService implements ISyncPaginationService {
       final DateTime effectiveLastSyncDate = lastSyncDate;
       int pageIndex = 0;
       bool hasMorePages = true;
+      int lastReceivedServerPage = -1;
+      int totalServerPages = 0;
 
       Logger.info('Starting paginated sync for ${config.name}');
       Logger.info('Using sync date filter: $effectiveLastSyncDate');
@@ -129,43 +131,27 @@ class SyncPaginationService implements ISyncPaginationService {
             return false;
           }
 
-          // Handle bidirectional sync response
+          // Store server data returned in lockstep with each local page and track the
+          // highest server page received. Remaining server pages are fetched once, after
+          // local data is exhausted — re-requesting them on every iteration caused an
+          // unbounded re-fetch loop with large data sets.
           if (!response.isComplete && response.responseData != null) {
             Logger.info('Server has data to send back for ${config.name} - storing for later processing');
             _serverPaginationHandler.storePendingResponse(config.name, response.responseData!);
 
-            // Request additional server pages if available
             final responseData = response.responseData!;
-            if (responseData.hasMoreServerPages == true) {
-              final currentServerPage = responseData.currentServerPage ?? 0;
-              final totalServerPages = responseData.totalServerPages ?? 1;
-
-              Logger.info('Server has more pages for ${config.name} (page ${currentServerPage + 1}/$totalServerPages)');
-
-              await _serverPaginationHandler.requestAdditionalServerPages(
-                syncDevice,
-                targetIp,
-                config.name,
-                currentServerPage + 1,
-                totalServerPages,
-                SyncPaginationConfig.defaultNetworkPageSize,
-                _isSyncCancelled,
-              );
+            final currentServerPage = responseData.currentServerPage ?? lastReceivedServerPage;
+            final responseTotalServerPages = responseData.totalServerPages ?? totalServerPages;
+            if (currentServerPage > lastReceivedServerPage) {
+              lastReceivedServerPage = currentServerPage;
+            }
+            if (responseTotalServerPages > totalServerPages) {
+              totalServerPages = responseTotalServerPages;
             }
           }
 
-          // Determine if we should continue pagination
+          // Continue only while there is local data left to send
           hasMorePages = !paginatedData.isLastPage;
-
-          if (!hasMorePages) {
-            final serverMetadata = _serverPaginationHandler.getServerPaginationMetadata(config.name);
-            final serverTotalPages = serverMetadata['totalPages'] ?? 0;
-            if (serverTotalPages > 0 && pageIndex < serverTotalPages - 1) {
-              hasMorePages = true;
-              Logger.debug(
-                  'Local data complete but server metadata indicates $serverTotalPages pages total. Continuing pagination for ${config.name}');
-            }
-          }
 
           pageIndex++;
 
@@ -189,6 +175,23 @@ class SyncPaginationService implements ISyncPaginationService {
       if (_isSyncCancelled) {
         Logger.warning('Sync for ${config.name} was cancelled');
         return false;
+      }
+
+      // Fetch any server pages not delivered during the lockstep above, in a single
+      // sequential pass. This runs once per entity instead of once per local page.
+      if (totalServerPages > 0 && lastReceivedServerPage < totalServerPages - 1) {
+        final startServerPage = lastReceivedServerPage + 1;
+        Logger.info(
+            'Fetching remaining server pages for ${config.name}: pages $startServerPage-${totalServerPages - 1}');
+        await _serverPaginationHandler.requestAdditionalServerPages(
+          syncDevice,
+          targetIp,
+          config.name,
+          startServerPage,
+          totalServerPages,
+          SyncPaginationConfig.defaultNetworkPageSize,
+          _isSyncCancelled,
+        );
       }
 
       Logger.debug('Completed paginated sync for ${config.name}');
