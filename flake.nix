@@ -41,8 +41,6 @@
           # X11 for window detection (using new non-deprecated paths)
           libx11
           libxtst
-          xprop
-          xwininfo
           libsm
           libice
           libxext
@@ -54,6 +52,8 @@
           libxcursor
           libxinerama
           libxi
+          xprop
+          xwininfo
 
           # OpenGL support
           libglvnd
