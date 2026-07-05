@@ -1,6 +1,6 @@
-• Eliminado el mensaje incorrecto de estado vacío que aparecía al eliminar etiquetas
-• Mejorada la visibilidad de botones en opciones de lista, los botones de acción ya no se ocultan detrás de las etiquetas
-• Corregidos problemas de diseño donde los botones se desbordaban en vistas de reordenamiento
-• Mejorada la fiabilidad de carga de datos al navegar entre páginas
-• Eliminadas las recargas excesivas al desplazarse por listas para mejor rendimiento
-• Mejorada la compatibilidad con distribuciones Linux más recientes
+• Eliminado el mensaje incorrecto de estado vacío al quitar etiquetas
+• Mejorada la visibilidad de botones en opciones de lista
+• Corregidos problemas de diseño con botones desbordados
+• Mejorada la fiabilidad de carga de datos entre páginas
+• Eliminadas recargas excesivas al desplazarse por listas
+• Mejorada la compatibilidad con distribuciones Linux recientes

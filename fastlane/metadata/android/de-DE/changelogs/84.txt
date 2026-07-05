@@ -1,6 +1,6 @@
 • Falsche leere Zustandsnachricht beim Entfernen von Tags entfernt
-• Die Sichtbarkeit von Schaltflächen in Listenoptionen verbessert, Aktionsschaltflächen werden nicht mehr hinter Tags versteckt
-• Layoutprobleme behoben, bei denen Schaltflächen in Sortieransichten überliefen
-• Zuverlässigkeit des Datenladens beim Navigieren zwischen Seiten verbessert
-• Übermäßiges erneutes Laden beim Scrollen durch Listen für bessere Leistung eliminiert
+• Sichtbarkeit von Schaltflächen in Listenoptionen verbessert
+• Layoutprobleme mit überlaufenden Schaltflächen behoben
+• Zuverlässigkeit des Datenladens zwischen Seiten verbessert
+• Übermäßiges Neuladen beim Scrollen eliminiert
 • Kompatibilität mit neueren Linux-Distributionen verbessert

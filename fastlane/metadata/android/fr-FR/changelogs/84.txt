@@ -1,6 +1,6 @@
-• Suppression du message d'état vide incorrect lors de la suppression des étiquettes
-• Amélioration de la visibilité des boutons dans les options de liste, les boutons d'action ne sont plus cachés derrière les étiquettes
-• Correction des problèmes de mise en page où les boutons débordaient dans les vues de réorganisation
-• Amélioration de la fiabilité du chargement des données lors de la navigation entre les pages
-• Élimination des rechargements excessifs lors du défilement dans les listes pour de meilleures performances
-• Amélioration de la compatibilité avec les distributions Linux plus récentes
+• Suppression du message d'état vide incorrect à la suppression des étiquettes
+• Amélioration de la visibilité des boutons dans les options de liste
+• Correction des problèmes de mise en page avec débordement de boutons
+• Amélioration de la fiabilité du chargement des données entre pages
+• Élimination des rechargements excessifs lors du défilement
+• Amélioration de la compatibilité avec les distributions Linux récentes

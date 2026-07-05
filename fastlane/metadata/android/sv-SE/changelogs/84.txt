@@ -1,6 +1,6 @@
-• Tog bort felaktigt tomt statusmeddelande som visades vid borttagning av taggar
-• Förbättrad synlighet för knappar i listalternativ, åtgärdsknappar döljs inte längre bakom taggar
-• Korrigerade layoutproblem där knappar spillde över i vyer för omordning
-• Förbättrad tillförlitlighet för datainläsning vid navigering mellan sidor
-• Eliminerat överdrivet omläsning vid scrollning genom listor för bättre prestanda
+• Tog bort felaktigt tomt statusmeddelande vid borttagning av taggar
+• Förbättrad synlighet för knappar i listalternativ
+• Korrigerade layoutproblem med knappar som spillde över
+• Förbättrad tillförlitlighet för dataladdning mellan sidor
+• Minskat onödig omladdning vid scrollning
 • Förbättrad kompatibilitet med nyare Linux-distributioner

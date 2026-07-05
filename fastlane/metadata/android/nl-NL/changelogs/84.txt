@@ -1,6 +1,6 @@
-• Onjuist lege statusbericht verwijderd dat verscheen bij het verwijderen van tags
-• Zichtbaarheid van knoppen in lijstopties verbeterd, actieknoppen worden niet meer verborgen achter tags
-• Layoutproblemen verholpen waarbij knoppen overliepen in weergaven voor herschikking
-• Betrouwbaarheid van gegevensladen bij navigeren tussen pagina's verbeterd
-• Overmatig herladen tijdens het scrollen door lijsten geëlimineerd voor betere prestaties
+• Onjuist lege statusbericht verwijderd bij het verwijderen van tags
+• Zichtbaarheid van knoppen in lijstopties verbeterd
+• Layoutproblemen met overlopende knoppen verholpen
+• Betrouwbaarheid van gegevensladen tussen pagina's verbeterd
+• Overmatig herladen bij het scrollen verminderd
 • Compatibiliteit met nieuwere Linux-distributies verbeterd

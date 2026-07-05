@@ -1,6 +1,6 @@
 • Odstraněna nesprávná zpráva o prázdném stavu při odstraňování značek
-• Vylepšena viditelnost tlačítek v možnostech seznamu, akční tlačítka se již neskrývají za značkami
-• Opraveny problémy s rozložením, kdy se tlačítka přetékala v zobrazeních pro změnu pořadí
-• Zvýšena spolehlivost načítání dat při navigaci mezi stránkami
-• Odstraněno nadměrné opětovné načítání při posouvání seznamů pro lepší výkon
-• Vylepšena kompatibilita s novějšími linuxovými distribucemi
+• Vylepšena viditelnost tlačítek v možnostech seznamu
+• Opraveny problémy s rozložením při přetékání tlačítek
+• Zvýšena spolehlivost načítání dat mezi stránkami
+• Odstraněno nadměrné načítání při posouvání seznamů
+• Vylepšena kompatibilita s novějšími distribucemi Linuxu

@@ -1,6 +1,6 @@
-• Poistettu virheellinen tyhjän tilan viesti, joka ilmestyi tunnisteita poistettaessa
-• Parannettu näkyvyyttä luettelon asetuksissa, toimintopainikkeet eivät enää piiloudu tunnisteiden taakse
-• Korjattu asetteluongelmat, joissa painikkeet ylivuotivat järjestelynäkymissä
-• Parannettu datan lataamisen luotettavuutta sivujen välillä navigoitaessa
-• Eliminoitu ylimääräinen uudelleenlataus luetteloja vieritettäessä paremman suorituskyvyn vuoksi
-• Parannettu yhteensopivuutta uudempien Linux-julkaisujen kanssa
+• Poistettu virheellinen tyhjän tilan viesti tunnisteita poistettaessa
+• Parannettu painikkeiden näkyvyyttä luettelon asetuksissa
+• Korjattu asetteluongelmat, joissa painikkeet ylivuotivat
+• Parannettu datan latauksen luotettavuutta sivujen välillä
+• Poistettu ylimääräinen uudelleenlataus vieritettäessä
+• Parannettu yhteensopivuutta uudempien Linux-jakelujen kanssa

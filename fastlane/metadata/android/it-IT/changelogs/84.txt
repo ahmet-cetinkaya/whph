@@ -1,6 +1,6 @@
-• Rimozso il messaggio di stato vuoto errato che appariva rimuovendo i tag
-• Migliorata la visibilità dei pulsanti nelle opzioni elenco, i pulsanti di azione non si nascondono più dietro i tag
-• Corretti problemi di layout in cui i pulsanti traboccavano nelle viste di riordino
-• Migliorata l'affidabilità del caricamento dati durante la navigazione tra le pagine
-• Eliminati i ricarichi eccessivi durante lo scorrimento degli elenchi per migliori prestazioni
-• Migliorata la compatibilità con le distribuzioni Linux più recenti
+• Rimosso il messaggio di stato vuoto errato rimuovendo i tag
+• Migliorata la visibilità dei pulsanti nelle opzioni elenco
+• Corretti problemi di layout con pulsanti che traboccavano
+• Migliorata l'affidabilità del caricamento dati tra le pagine
+• Eliminati i ricarichi eccessivi durante lo scorrimento
+• Migliorata la compatibilità con le distribuzioni Linux recenti
