@@ -10,6 +10,7 @@ import 'package:whph/core/application/features/tasks/commands/save_task_status_c
 import 'package:whph/core/application/features/tasks/commands/delete_task_status_command.dart';
 import 'package:whph/core/application/features/tasks/commands/reorder_task_statuses_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
+import 'package:whph/core/application/features/tasks/commands/normalize_task_orders_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_tags_order_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_statuses_query.dart';
@@ -120,8 +121,11 @@ void registerTasksFeature(
     ..registerHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse, SaveTaskTimeRecordCommandHandler>(
       () => SaveTaskTimeRecordCommandHandler(taskTimeRecordRepository: taskTimeRecordRepository),
     )
-    ..registerHandler<UpdateTaskOrderCommand, void, UpdateTaskOrderCommandHandler>(
+    ..registerHandler<UpdateTaskOrderCommand, UpdateTaskOrderResponse, UpdateTaskOrderCommandHandler>(
       () => UpdateTaskOrderCommandHandler(taskRepository),
+    )
+    ..registerHandler<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse, NormalizeTaskOrdersCommandHandler>(
+      () => NormalizeTaskOrdersCommandHandler(taskRepository),
     )
     ..registerHandler<UpdateTaskTagsOrderCommand, void, UpdateTaskTagsOrderCommandHandler>(
       () => UpdateTaskTagsOrderCommandHandler(taskTagRepository: taskTagRepository),

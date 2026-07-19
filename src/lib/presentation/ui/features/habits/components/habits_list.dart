@@ -323,6 +323,16 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           widget.onListing?.call(_habitList?.items.length ?? 0);
         });
 
+        // Repair collapsed/duplicate/near-zero order values so the next drag
+        // lands reliably. Only relevant when custom ordering is active.
+        if (_isCustomOrderActive && _shouldNormalizeOrders(_habitList!.items)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _normalizeHabitOrders();
+            }
+          });
+        }
+
         if (widget.paginationMode == PaginationMode.infinityScroll && _habitList!.hasNext) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             checkAndFillViewport();
@@ -330,6 +340,31 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         }
       },
     );
+  }
+
+  /// Detects order values that can no longer accept reliable midpoint
+  /// insertions: near-zero/non-positive values, duplicates, or adjacent gaps
+  /// smaller than [OrderRank.minimumOrderGap].
+  bool _shouldNormalizeOrders(List<HabitListItem> items) {
+    final orders = items.map((item) => item.order ?? 0.0).toList();
+    if (orders.any((order) => order.abs() < 1e-10 || (order > 0 && order < 1e-6))) {
+      return true;
+    }
+    return OrderRank.needsNormalization(orders);
+  }
+
+  Future<void> _normalizeHabitOrders() async {
+    if (_habitList == null) return;
+    try {
+      if (!_shouldNormalizeOrders(_habitList!.items)) return;
+
+      await _mediator.send<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse>(
+        const NormalizeHabitOrdersCommand(),
+      );
+      await refresh();
+    } catch (_) {
+      // Best-effort repair; a failed normalization simply leaves orders as-is.
+    }
   }
 
   void _updateCacheIfNeeded() {
@@ -531,7 +566,6 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     _dragStateNotifier.startDragging();
 
     final habit = groupHabits[oldIndex];
-    final originalOrder = habit.order ?? 0.0;
 
     setState(() {
       final reorderedAllItems = List<HabitListItem>.from(_habitList!.items);
@@ -570,71 +604,47 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       }
     });
 
-    try {
-      final existingOrders = groupHabits.map((item) => item.order ?? 0.0).toList()..removeAt(oldIndex);
-      double targetOrder;
+    // Resolve the neighbor ids at the drop position within the group (with the
+    // moved item removed). The command handler is the single source of truth
+    // for rank computation; the UI only reports where the item was dropped.
+    final reducedGroup = List<HabitListItem>.from(groupHabits)..removeAt(oldIndex);
+    final clampedTargetIndex = targetIndex.clamp(0, reducedGroup.length);
+    final beforeHabitId = clampedTargetIndex > 0 ? reducedGroup[clampedTargetIndex - 1].id : null;
+    final afterHabitId = clampedTargetIndex < reducedGroup.length ? reducedGroup[clampedTargetIndex].id : null;
 
-      if (targetIndex == 0) {
-        final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
-        targetOrder = firstOrder - OrderRank.initialStep;
-      } else if (targetIndex >= existingOrders.length) {
-        final lastOrder = existingOrders.isNotEmpty ? existingOrders.last : 0.0;
-        targetOrder = lastOrder + OrderRank.initialStep;
-      } else {
-        targetOrder = OrderRank.getTargetOrder(existingOrders, targetIndex);
-      }
-
-      if ((targetOrder - originalOrder).abs() < 1e-10) {
-        _dragStateNotifier.stopDragging();
-        return;
-      }
-
-      await AsyncErrorHandler.execute<UpdateHabitOrderResponse>(
-        context: context,
-        errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
-        operation: () async {
-          return await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
-            UpdateHabitOrderCommand(
-              habitId: habit.id,
-              newOrder: targetOrder,
-            ),
-          );
-        },
-        onSuccess: (result) {
-          _dragStateNotifier.stopDragging();
-          if ((result.order - targetOrder).abs() > 1e-10) {
-            refresh();
-          }
-        },
-        onError: (error) {
-          _dragStateNotifier.stopDragging();
-          refresh();
-        },
-      );
-    } catch (e) {
-      if (e is RankGapTooSmallException && mounted) {
-        await AsyncErrorHandler.executeVoid(
-          context: context,
-          errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
-          operation: () async {
-            await _mediator.send<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse>(
-              const NormalizeHabitOrdersCommand(),
-            );
-          },
-          onSuccess: () {
-            _dragStateNotifier.stopDragging();
-            widget.onReorderComplete?.call();
-          },
-          onError: (_) {
-            _dragStateNotifier.stopDragging();
-            refresh();
-          },
-        );
-      } else {
-        _dragStateNotifier.stopDragging();
-        refresh();
-      }
+    // No-op if the item is already at the target slot within the group.
+    if (oldIndex == clampedTargetIndex) {
+      _dragStateNotifier.stopDragging();
+      return;
     }
+
+    await AsyncErrorHandler.executeVoid(
+      context: context,
+      errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
+      operation: () async {
+        await _mediator.send<UpdateHabitOrderCommand, UpdateHabitOrderResponse>(
+          UpdateHabitOrderCommand(
+            habitId: habit.id,
+            targetIndex: clampedTargetIndex,
+            beforeHabitId: beforeHabitId,
+            afterHabitId: afterHabitId,
+          ),
+        );
+      },
+      onSuccess: () {
+        _dragStateNotifier.stopDragging();
+        try {
+          widget.onReorderComplete?.call();
+        } catch (_) {}
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) refresh();
+        });
+      },
+      onError: (_) {
+        _dragStateNotifier.stopDragging();
+        if (mounted) refresh();
+      },
+    );
   }
 
   @override

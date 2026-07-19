@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
+import 'package:whph/core/application/features/tasks/commands/normalize_task_orders_command.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
@@ -518,56 +519,28 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     _backLastScrollPosition();
   }
 
-  // Helper method to check and normalize very small orders
+  /// Detects order values that can no longer accept reliable midpoint
+  /// insertions: near-zero/non-positive values, duplicates, or adjacent gaps
+  /// smaller than [OrderRank.minimumOrderGap]. Such a set must be renormalized
+  /// before the next reorder to keep drops landing where dropped.
   bool _shouldNormalizeOrders(List<TaskListItem> items) {
-    return items.any((item) => item.order.abs() < 1e-10 || (item.order > 0 && item.order < 1e-6));
+    if (items.any((item) => item.order.abs() < 1e-10 || (item.order > 0 && item.order < 1e-6))) {
+      return true;
+    }
+    return OrderRank.needsNormalization(items.map((item) => item.order).toList());
   }
 
   Future<void> _normalizeTaskOrders() async {
     if (_tasks == null) return;
 
     try {
-      final items = _tasks!.items;
-      final shouldNormalize = _shouldNormalizeOrders(items);
+      if (!_shouldNormalizeOrders(_tasks!.items)) return;
 
-      if (!shouldNormalize) return;
-
-      // Sort items by current order to maintain relative positioning
-      final sortedItems = List<TaskListItem>.from(items)..sort((a, b) => a.order.compareTo(b.order));
-
-      int successCount = 0;
-      int failureCount = 0;
-
-      // Normalize orders with proper spacing
-      for (int i = 0; i < sortedItems.length; i++) {
-        final newOrder = (i + 1) * OrderRank.initialStep;
-        final item = sortedItems[i];
-
-        if ((item.order - newOrder).abs() > 1e-10) {
-          try {
-            await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-              UpdateTaskOrderCommand(
-                taskId: item.id,
-                parentTaskId: widget.parentTaskId,
-                beforeTaskOrder: item.order,
-                afterTaskOrder: newOrder,
-              ),
-            );
-            successCount++;
-          } catch (e, stackTrace) {
-            failureCount++;
-            Logger.error(
-              'Failed to normalize order for task ${item.id}',
-              error: e,
-              stackTrace: stackTrace,
-            );
-          }
-        }
-      }
-
-      if (failureCount > 0) {
-        Logger.warning('Completed normalization with $failureCount failures and $successCount successes.');
-      }
+      // Renumber the whole sibling set in a single batch operation. The handler
+      // preserves relative order while assigning clean, well-spaced values.
+      await _mediator.send<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse>(
+        NormalizeTaskOrdersCommand(parentTaskId: widget.parentTaskId),
+      );
 
       // Refresh to get updated orders
       await refresh();
@@ -716,7 +689,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     _dragStateNotifier.startDragging();
 
     final task = groupTasks[oldIndex];
-    final originalOrder = task.order;
 
     // Apply visual update immediately
     setState(() {
@@ -762,20 +734,16 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       }
     });
 
-    final existingOrders = groupTasks.map((item) => item.order).toList()..removeAt(oldIndex);
-    double targetOrder;
+    // Resolve the neighbor ids at the drop position within the group (with the
+    // moved item removed). The command handler is the single source of truth
+    // for rank computation; the UI only reports where the item was dropped.
+    final reducedGroup = List<TaskListItem>.from(groupTasks)..removeAt(oldIndex);
+    final clampedTargetIndex = targetIndex.clamp(0, reducedGroup.length);
+    final beforeTaskId = clampedTargetIndex > 0 ? reducedGroup[clampedTargetIndex - 1].id : null;
+    final afterTaskId = clampedTargetIndex < reducedGroup.length ? reducedGroup[clampedTargetIndex].id : null;
 
-    if (targetIndex == 0) {
-      final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
-      targetOrder = firstOrder - OrderRank.initialStep;
-    } else if (targetIndex >= existingOrders.length) {
-      final lastOrder = existingOrders.isNotEmpty ? existingOrders.last : 0.0;
-      targetOrder = lastOrder + OrderRank.initialStep;
-    } else {
-      targetOrder = OrderRank.getTargetOrder(existingOrders, targetIndex);
-    }
-
-    if ((targetOrder - originalOrder).abs() < 1e-10) {
+    // No-op if the item is already at the target slot within the group.
+    if (oldIndex == clampedTargetIndex) {
       _dragStateNotifier.stopDragging();
       return;
     }
@@ -784,28 +752,15 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       context: context,
       errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
       operation: () async {
-        try {
-          await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-            UpdateTaskOrderCommand(
-              taskId: task.id,
-              parentTaskId: widget.parentTaskId,
-              beforeTaskOrder: originalOrder,
-              afterTaskOrder: targetOrder,
-            ),
-          );
-        } on RankGapTooSmallException {
-          // Fallback for RankGapTooSmallException: Try to recover by placing the item at the end of the group
-          // with a larger spacing. This helps to resolve the inconsistent order values.
-          final retryTargetOrder = (groupTasks.isNotEmpty ? groupTasks.last.order : 0.0) + OrderRank.initialStep * 2;
-          await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-            UpdateTaskOrderCommand(
-              taskId: task.id,
-              parentTaskId: widget.parentTaskId,
-              beforeTaskOrder: originalOrder,
-              afterTaskOrder: retryTargetOrder,
-            ),
-          );
-        }
+        await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+          UpdateTaskOrderCommand(
+            taskId: task.id,
+            parentTaskId: widget.parentTaskId,
+            targetIndex: clampedTargetIndex,
+            beforeTaskId: beforeTaskId,
+            afterTaskId: afterTaskId,
+          ),
+        );
       },
       onSuccess: () {
         _dragStateNotifier.stopDragging();
