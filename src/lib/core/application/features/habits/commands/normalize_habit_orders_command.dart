@@ -34,23 +34,10 @@ class NormalizeHabitOrdersCommandHandler
     // Sort by current order to maintain relative positions
     allHabits.sort((a, b) => a.order.compareTo(b.order));
 
-    // Use single timestamp for all updates in the batch
-    final now = DateTime.now().toUtc();
+    // Assign clean, evenly spaced orders and batch update in one transaction.
+    OrderRank.assignSequential<Habit>(allHabits, setOrder: (habit, order) => habit.order = order);
+    await _habitRepository.updateMultiple(allHabits);
 
-    // Assign new normalized orders
-    double orderStep = OrderRank.initialStep;
-    final habitsToUpdate = <Habit>[];
-
-    for (var habit in allHabits) {
-      habit.order = orderStep;
-      habit.modifiedDate = now;
-      habitsToUpdate.add(habit);
-      orderStep += OrderRank.initialStep;
-    }
-
-    // Batch update all habits
-    await _habitRepository.updateAll(habitsToUpdate);
-
-    return NormalizeHabitOrdersResponse(habitsToUpdate.length);
+    return NormalizeHabitOrdersResponse(allHabits.length);
   }
 }

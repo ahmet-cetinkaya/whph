@@ -12,7 +12,7 @@ class HabitListItem {
   final DateTime? archivedDate;
   final DateTime? createdDate;
   final DateTime? modifiedDate;
-  final double? order;
+  final double order;
   final bool hasGoal;
   final int? dailyTarget;
   final int targetFrequency;
@@ -32,7 +32,7 @@ class HabitListItem {
     this.archivedDate,
     this.createdDate,
     this.modifiedDate,
-    this.order,
+    this.order = 0.0,
     this.hasGoal = false,
     this.dailyTarget,
     this.targetFrequency = 1,

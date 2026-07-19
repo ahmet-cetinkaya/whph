@@ -6,6 +6,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/commands/update_habit_order_command.dart';
 import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_card.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
@@ -346,11 +347,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   /// insertions: near-zero/non-positive values, duplicates, or adjacent gaps
   /// smaller than [OrderRank.minimumOrderGap].
   bool _shouldNormalizeOrders(List<HabitListItem> items) {
-    final orders = items.map((item) => item.order ?? 0.0).toList();
-    if (orders.any((order) => order.abs() < 1e-10 || (order > 0 && order < 1e-6))) {
-      return true;
-    }
-    return OrderRank.needsNormalization(orders);
+    final orders = items.map((item) => item.order).toList();
+    return OrderRank.hasNearZeroOrder(orders) || OrderRank.needsNormalization(orders);
   }
 
   Future<void> _normalizeHabitOrders() async {
@@ -362,8 +360,9 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         const NormalizeHabitOrdersCommand(),
       );
       await refresh();
-    } catch (_) {
+    } catch (e, stackTrace) {
       // Best-effort repair; a failed normalization simply leaves orders as-is.
+      Logger.error('Failed to normalize habit orders', error: e, stackTrace: stackTrace);
     }
   }
 
@@ -559,6 +558,46 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     };
   }
 
+  /// Optimistically moves [habit] to [clampedTargetIndex] within its group in
+  /// the local list, so the drop looks instant before the command round-trips.
+  /// [reducedGroup] is the group with the moved item already removed.
+  /// Must be called inside `setState`.
+  void _applyOptimisticReorder(HabitListItem habit, List<HabitListItem> reducedGroup, int clampedTargetIndex) {
+    final reorderedAllItems = List<HabitListItem>.from(_habitList!.items);
+    final globalIndex = reorderedAllItems.indexWhere((h) => h.id == habit.id);
+    if (globalIndex == -1) return;
+
+    reorderedAllItems.removeAt(globalIndex);
+
+    int globalNewIndex;
+    if (clampedTargetIndex < reducedGroup.length) {
+      // Insert before the anchor item at the target slot.
+      final anchorItem = reducedGroup[clampedTargetIndex];
+      globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == anchorItem.id);
+    } else if (reducedGroup.isNotEmpty) {
+      // Insert after the last item of the group.
+      final lastItem = reducedGroup.last;
+      globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == lastItem.id) + 1;
+    } else {
+      // Sole member of its group: keep its current global position.
+      globalNewIndex = globalIndex;
+    }
+
+    if (globalNewIndex != -1) {
+      globalNewIndex = globalNewIndex.clamp(0, reorderedAllItems.length);
+      reorderedAllItems.insert(globalNewIndex, habit);
+    } else {
+      reorderedAllItems.insert(globalIndex, habit);
+    }
+
+    _habitList = GetListHabitsQueryResponse(
+      items: reorderedAllItems,
+      totalItemCount: _habitList!.totalItemCount,
+      pageIndex: _habitList!.pageIndex,
+      pageSize: _habitList!.pageSize,
+    );
+  }
+
   Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<HabitListItem> groupHabits) async {
     if (!mounted) return;
     if (oldIndex < 0 || oldIndex >= groupHabits.length) return;
@@ -567,48 +606,18 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
     final habit = groupHabits[oldIndex];
 
-    setState(() {
-      final reorderedAllItems = List<HabitListItem>.from(_habitList!.items);
-      final globalIndex = reorderedAllItems.indexWhere((h) => h.id == habit.id);
-
-      if (globalIndex != -1) {
-        reorderedAllItems.removeAt(globalIndex);
-
-        int globalNewIndex;
-        final reducedGroup = List<HabitListItem>.from(groupHabits)..removeAt(oldIndex);
-
-        if (targetIndex < reducedGroup.length) {
-          final anchorItem = reducedGroup[targetIndex];
-          globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == anchorItem.id);
-        } else if (reducedGroup.isNotEmpty) {
-          final lastItem = reducedGroup.last;
-          globalNewIndex = reorderedAllItems.indexWhere((h) => h.id == lastItem.id) + 1;
-        } else {
-          globalNewIndex = globalIndex;
-        }
-
-        if (globalNewIndex != -1) {
-          if (globalNewIndex < 0) globalNewIndex = 0;
-          if (globalNewIndex > reorderedAllItems.length) globalNewIndex = reorderedAllItems.length;
-          reorderedAllItems.insert(globalNewIndex, habit);
-        } else {
-          reorderedAllItems.insert(globalIndex, habit);
-        }
-
-        _habitList = GetListHabitsQueryResponse(
-          items: reorderedAllItems,
-          totalItemCount: _habitList!.totalItemCount,
-          pageIndex: _habitList!.pageIndex,
-          pageSize: _habitList!.pageSize,
-        );
-      }
-    });
-
-    // Resolve the neighbor ids at the drop position within the group (with the
-    // moved item removed). The command handler is the single source of truth
-    // for rank computation; the UI only reports where the item was dropped.
+    // The group with the moved item removed — computed once and reused for both
+    // the optimistic UI reorder and the neighbor-id resolution, so the two can
+    // never disagree.
     final reducedGroup = List<HabitListItem>.from(groupHabits)..removeAt(oldIndex);
     final clampedTargetIndex = targetIndex.clamp(0, reducedGroup.length);
+
+    // Apply visual update immediately for a flicker-free drop.
+    setState(() => _applyOptimisticReorder(habit, reducedGroup, clampedTargetIndex));
+
+    // Resolve the neighbor ids at the drop position. The command handler is the
+    // single source of truth for rank computation; the UI only reports where
+    // the item was dropped.
     final beforeHabitId = clampedTargetIndex > 0 ? reducedGroup[clampedTargetIndex - 1].id : null;
     final afterHabitId = clampedTargetIndex < reducedGroup.length ? reducedGroup[clampedTargetIndex].id : null;
 
@@ -635,14 +644,24 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         _dragStateNotifier.stopDragging();
         try {
           widget.onReorderComplete?.call();
-        } catch (_) {}
+        } catch (e, stackTrace) {
+          Logger.error('Failed to invoke onReorderComplete callback', error: e, stackTrace: stackTrace);
+        }
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) refresh();
+          if (mounted) {
+            refresh().catchError((e, stackTrace) {
+              Logger.error('Failed to refresh habit list after reorder success', error: e, stackTrace: stackTrace);
+            });
+          }
         });
       },
       onError: (_) {
         _dragStateNotifier.stopDragging();
-        if (mounted) refresh();
+        if (mounted) {
+          refresh().catchError((e, stackTrace) {
+            Logger.error('Failed to refresh habit list after reorder error', error: e, stackTrace: stackTrace);
+          });
+        }
       },
     );
   }

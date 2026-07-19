@@ -82,15 +82,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
   }
 
   @override
-  Future<void> updateAll(List<Habit> habits) async {
-    await database.transaction(() async {
-      for (final habit in habits) {
-        await database.update(table).replace(toCompanion(habit));
-      }
-    });
-  }
-
-  @override
   Future<acore.PaginatedList<Habit>> getList(int pageIndex, int pageSize,
       {bool includeDeleted = false,
       acore.CustomWhereFilter? customWhereFilter,

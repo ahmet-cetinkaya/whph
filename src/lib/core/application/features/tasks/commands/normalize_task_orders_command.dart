@@ -44,19 +44,9 @@ class NormalizeTaskOrdersCommandHandler
 
     tasks.sort((a, b) => a.order.compareTo(b.order));
 
-    final now = DateTime.now().toUtc();
-    double step = OrderRank.initialStep;
-    final tasksToUpdate = <Task>[];
+    OrderRank.assignSequential<Task>(tasks, setOrder: (task, order) => task.order = order);
+    await _taskRepository.updateMultiple(tasks);
 
-    for (final task in tasks) {
-      task.order = step;
-      task.modifiedDate = now;
-      tasksToUpdate.add(task);
-      step += OrderRank.initialStep;
-    }
-
-    await _taskRepository.updateMultiple(tasksToUpdate);
-
-    return NormalizeTaskOrdersResponse(tasksToUpdate.length);
+    return NormalizeTaskOrdersResponse(tasks.length);
   }
 }
