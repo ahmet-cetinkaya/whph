@@ -1,0 +1,26 @@
+// Zed debug configuration for WHPH (Flutter).
+// The Flutter project lives in `src/`, so cwd points there.
+// Flutter is launched inside the Nix dev shell (scripts/zed_nix_flutter.sh) so
+// the session gets the SDK + native runtime deps (ninja, CMake, GTK/X11/Wayland)
+// that `nix develop` provides.
+// `deviceId` pins the target device because multiple devices (Linux desktop +
+// Chrome) are usually connected and Flutter otherwise aborts with "More than
+// one device connected". A `-d` CLI flag on the wrapper does NOT work here:
+// the debug adapter launches the real `flutter run` itself over DAP, not via
+// the argv this script receives, so device selection must go through the
+// launch config's `deviceId` field instead.
+// The Dart extension requires the `type` field ("flutter" here).
+// See: https://zed.dev/docs/debugger
+[
+  {
+    "label": "whph",
+    "adapter": "Dart",
+    "type": "flutter",
+    "request": "launch",
+    "program": "lib/main.dart",
+    "cwd": "$ZED_WORKTREE_ROOT/src",
+    "deviceId": "linux",
+    "customTool": "$ZED_WORKTREE_ROOT/scripts/zed_nix_flutter.sh",
+    "customToolReplacesArgs": 0
+  }
+]
