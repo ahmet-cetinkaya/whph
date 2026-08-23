@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
+import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dialog.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -76,11 +77,15 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   List<String> _selectedTags = [];
   bool _hasExplicitlySelectedNone = false;
   bool _needsStateUpdate = false;
-  bool _hasAutoOpened = false; // NEW: Track if we've already auto-opened
+  bool _hasAutoOpened = false;
+  late Map<String, String> _selectedTagLabels;
 
   @override
   void initState() {
     _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
+    _selectedTagLabels = Map.fromEntries(
+      widget.initialSelectedTags.map((e) => MapEntry(e.value, e.label)),
+    );
     _hasExplicitlySelectedNone = widget.showNoneOption &&
         (_selectedTags.isEmpty && (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
 
@@ -108,6 +113,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
     if (_selectedTagsChanged(oldWidget.initialSelectedTags, widget.initialSelectedTags)) {
       _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
+      _selectedTagLabels = Map.fromEntries(
+        widget.initialSelectedTags.map((e) => MapEntry(e.value, e.label)),
+      );
       _needsStateUpdate = true;
     }
 
@@ -291,20 +299,22 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       displayTooltip = _translationService.translate(SharedTranslationKeys.noneOption);
     } else if (_selectedTags.isNotEmpty && _tags != null) {
       final uniqueSelectedTagIds = _selectedTags.toSet().toList();
-      final selectedTagNames = uniqueSelectedTagIds
-          .map((id) {
-            try {
-              final tag = _tags!.items.firstWhere((t) => t.id == id);
-              return tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled);
-            } catch (e, stackTrace) {
-              const errorCode = 'tag_select_tag_not_found';
-              Logger.warning('$errorCode: Tag not found for id: $id',
-                  component: 'TagSelectDropdown', error: e, stackTrace: stackTrace);
-              return null;
-            }
-          })
-          .whereType<String>()
-          .toList();
+      final selectedTagNames = uniqueSelectedTagIds.map((id) {
+        try {
+          final tag = _tags!.items.firstWhereOrNull((t) => t.id == id);
+          if (tag != null) {
+            return tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled);
+          }
+          // Use fallback label from initialSelectedTags if tag not found
+          final fallbackLabel = _selectedTagLabels[id];
+          return fallbackLabel ?? _translationService.translate(SharedTranslationKeys.untitled);
+        } catch (e, stackTrace) {
+          const errorCode = 'tag_select_tag_not_found';
+          Logger.warning('$errorCode: Tag not found for id: $id',
+              component: 'TagSelectDropdown', error: e, stackTrace: stackTrace);
+          return _selectedTagLabels[id] ?? _translationService.translate(SharedTranslationKeys.untitled);
+        }
+      }).toList();
 
       if (widget.showSelectedInDropdown) {
         displayWidget = ReorderableListView.builder(
@@ -330,15 +340,26 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             }
 
             final tag = tagsResponse.items.firstWhereOrNull((t) => t.id == id);
-            if (tag == null) {
+            // Use fallback label from initialSelectedTags if tag not found in current page
+            final fallbackLabel = _selectedTagLabels[id];
+            if (tag == null && fallbackLabel == null) {
               return SizedBox.shrink(key: ValueKey('empty_no_tag_$id'));
             }
+
+            // Use tag data if available, otherwise use fallback label
+            final displayName =
+                tag?.name ?? fallbackLabel ?? _translationService.translate(SharedTranslationKeys.untitled);
+            final tagType = tag?.type ?? TagType.label;
+            final tagColor = tag?.color;
 
             return ReorderableDelayedDragStartListener(
               key: ValueKey('drag_listener_$id'),
               index: index,
               child: GestureDetector(
                 onTap: () async {
+                  // Only show options dialog if tag data is available
+                  if (tag == null) return;
+
                   final result = await TagOptionsDialog.show(
                     context: context,
                     tag: tag,
@@ -374,14 +395,14 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        TagUiConstants.getTagTypeIcon(tag.type),
+                        TagUiConstants.getTagTypeIcon(tagType),
                         size: AppTheme.iconSizeXSmall,
-                        color: TagUiConstants.getTagColor(tag.color),
+                        color: TagUiConstants.getTagColor(tagColor),
                       ),
                       const SizedBox(width: 4),
                       Text(
-                          tag.name.isNotEmpty
-                              ? tag.name
+                          displayName.isNotEmpty
+                              ? displayName
                               : _translationService.translate(SharedTranslationKeys.untitled),
                           style: AppTheme.labelSmall),
                     ],
