@@ -223,6 +223,19 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   }
 
   List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {
+    if (request.sortByCustomSort) {
+      final customOrders = <CustomOrder>[];
+      if (request.groupBy != null) {
+        _addCustomOrder(customOrders, request.groupBy!);
+      }
+      return [
+        ...customOrders,
+        CustomOrder(field: "order", direction: SortDirection.asc),
+        CustomOrder(field: "created_date", direction: SortDirection.asc),
+        CustomOrder(field: "id", direction: SortDirection.asc),
+      ];
+    }
+
     List<CustomOrder> customOrders = [];
     SortOption<TaskSortFields>? groupField;
 
@@ -232,11 +245,6 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
       if (groupField != null) {
         _addCustomOrder(customOrders, groupField);
       }
-    }
-
-    if (request.sortByCustomSort) {
-      customOrders.add(CustomOrder(field: "order", direction: SortDirection.asc));
-      return customOrders;
     }
 
     // Ensure sortBy is not null before iterating

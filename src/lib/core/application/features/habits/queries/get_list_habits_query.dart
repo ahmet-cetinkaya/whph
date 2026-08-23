@@ -209,15 +209,23 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   }
 
   List<CustomOrder>? _getCustomOrders(GetListHabitsQuery request) {
+    if (request.sortByCustomSort) {
+      final customOrders = <CustomOrder>[];
+      if (request.groupBy != null) {
+        _addCustomOrder(customOrders, request.groupBy!, request);
+      }
+      return [
+        ...customOrders,
+        CustomOrder(field: "order", direction: SortDirection.asc),
+        CustomOrder(field: "created_date", direction: SortDirection.asc),
+        CustomOrder(field: "id", direction: SortDirection.asc),
+      ];
+    }
+
     List<CustomOrder> customOrders = [];
 
     if (request.groupBy != null) {
       _addCustomOrder(customOrders, request.groupBy!, request);
-    }
-
-    if (request.sortByCustomSort) {
-      customOrders.add(CustomOrder(field: "order", direction: SortDirection.asc));
-      return customOrders;
     }
 
     if (request.sortBy == null || request.sortBy!.isEmpty) {
