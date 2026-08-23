@@ -6,7 +6,27 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_
 
 /// Migrates entity order columns from legacy REAL values to sortable text ranks.
 Future<void> migrateV35ToV36(AppDatabase db, Migrator m, Schema36 schema) async {
-  if (await _usesTextRanks(db, 'habit_table')) return;
+  final textRankStatus = <String, bool>{
+    for (final table in _rankedTables) table: await _usesTextRanks(db, table),
+  };
+  final convertedCount = textRankStatus.values.where((converted) => converted).length;
+
+  if (convertedCount == _rankedTables.length) return;
+
+  if (convertedCount != 0) {
+    // The four rank columns are only ever converted together inside one
+    // transaction (see this function below), so a mix of TEXT and REAL
+    // columns means an earlier attempt was interrupted outside that
+    // transaction's protection or the schema was hand-edited. Continuing
+    // would silently skip re-converting the tables that already look
+    // done, potentially leaving mismatched rank formats across entities.
+    final convertedTables = textRankStatus.entries.where((e) => e.value).map((e) => e.key).join(', ');
+    throw StateError(
+      'v35 to v36 order-column migration is in an inconsistent state: '
+      '$convertedTables already use TEXT ranks but not all four ranked tables do. '
+      'Refusing to proceed automatically — restore from a pre-migration backup.',
+    );
+  }
 
   Logger.info('Migrating entity orders from v35 to v36');
   try {
@@ -52,11 +72,15 @@ Future<void> migrateV35ToV36(AppDatabase db, Migrator m, Schema36 schema) async 
   }
 }
 
-const _preservedTables = [
+const _rankedTables = [
   'habit_table',
   'note_table',
   'task_status_table',
   'task_table',
+];
+
+const _preservedTables = [
+  ..._rankedTables,
   'habit_record_table',
   'habit_tag_table',
   'habit_time_record_table',

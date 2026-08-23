@@ -224,6 +224,39 @@ void main() {
       expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
     });
 
+    test('v35 to v36 refuses to proceed when the four ranked tables disagree on column type', () async {
+      // Simulates an interrupted or hand-edited database where habit_table
+      // was converted to TEXT ranks but task_table was not — the idempotence
+      // guard must not treat "habit_table is TEXT" as "everything is done"
+      // and silently skip converting the rest.
+      final schema35 = await verifier.schemaAt(35);
+      final db = TestAppDatabase(schema35.newConnection(), 35);
+      addTearDown(db.close);
+      await _insertHabit(db, 'habit-one', 1000, 1.0);
+      await _insertTask(db, id: 'task-one', createdDate: 1000, order: 1.0);
+
+      await _migrateV35ToV36(db);
+      expect(await _columnType(db, 'habit_table', 'order'), 'TEXT');
+      expect(await _columnType(db, 'task_table', 'order'), 'TEXT');
+
+      // Force task_table's order column back to REAL to simulate the
+      // inconsistent state, bypassing the app's own migration path.
+      await db.customStatement('PRAGMA foreign_keys = OFF');
+      await db.customStatement('ALTER TABLE task_table RENAME COLUMN "order" TO "order_text"');
+      await db.customStatement('ALTER TABLE task_table ADD COLUMN "order" REAL NOT NULL DEFAULT 0');
+      await db.customStatement('ALTER TABLE task_table DROP COLUMN "order_text"');
+      await db.customStatement('PRAGMA foreign_keys = ON');
+      expect(await _columnType(db, 'task_table', 'order'), anyOf('REAL', 'NUM', 'NUMERIC'));
+
+      Object? caught;
+      try {
+        await migrateV35ToV36(db, Migrator(db), Schema36(database: db));
+      } catch (error) {
+        caught = error;
+      }
+      expect(caught, isA<StateError>());
+    });
+
     test('v35 to v36 rolls back entirely when the surrounding transaction fails', () async {
       // Mirrors the production pattern in drift_app_context.dart's onUpgrade:
       // migration steps and post-migration validation run inside one
