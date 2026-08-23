@@ -223,6 +223,59 @@ void main() {
       expect(await _rankMap(db, 'habit_table'), before);
       expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
     });
+
+    test('v35 to v36 survives real-world scale and hostile legacy order values', () async {
+      final schema35 = await verifier.schemaAt(35);
+      final db = TestAppDatabase(schema35.newConnection(), 35);
+      addTearDown(db.close);
+
+      // A heavy user: more habits and tasks than any fixture so far, which
+      // forces multi-digit rank widths rather than the single digit a handful
+      // of rows would need.
+      const habitCount = 500;
+      for (var index = 0; index < habitCount; index++) {
+        await _insertHabit(db, 'habit-${index.toString().padLeft(4, '0')}', 1000 + index, index.toDouble());
+      }
+
+      // Order values that real databases actually accumulate through sync,
+      // legacy migrations and repeated midpoint insertion.
+      const hostileOrders = <String, double>{
+        'task-negative': -5000.0,
+        'task-negative-small': -0.5,
+        'task-zero': 0.0,
+        'task-zero-twin': 0.0,
+        'task-tiny': 0.000000001,
+        'task-huge': 1e12,
+        'task-max': double.maxFinite,
+        'task-collapsed-a': 1.0000001,
+        'task-collapsed-b': 1.0000002,
+      };
+      var createdDate = 5000;
+      for (final entry in hostileOrders.entries) {
+        await _insertTask(db, id: entry.key, createdDate: createdDate++, order: entry.value);
+      }
+
+      final legacyHabits = await _legacyOrderedIds(db, 'habit_table');
+      final legacyRootTasks = await _legacyOrderedTaskIds(db, null);
+      final legacyCounts = await _tableCounts(db);
+
+      await _migrateV35ToV36(db);
+
+      // The user's sequence must survive verbatim, at scale and through
+      // negative, zero, denormal and overflow-prone legacy values.
+      expect(await _orderedIds(db, 'habit_table'), legacyHabits);
+      expect(await _orderedTaskIds(db, null), legacyRootTasks);
+      expect(await _tableCounts(db), legacyCounts);
+      await _expectCanonicalDistinctRanks(db, 'habit_table');
+      await _expectCanonicalDistinctRanks(db, 'task_table');
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+
+      // Ranks must stay short enough that later drag-and-drop can still insert
+      // between any two neighbours instead of hitting the length cap.
+      final habitRanks = (await _rankMap(db, 'habit_table')).values;
+      expect(habitRanks.every((rank) => rank.length <= 4), isTrue,
+          reason: 'sequential ranks should stay compact at 500 rows');
+    });
   });
 }
 
