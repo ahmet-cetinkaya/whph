@@ -34,7 +34,7 @@ class UpdateHabitOrderCommand implements IRequest<UpdateHabitOrderResponse> {
 
 class UpdateHabitOrderResponse {
   final String habitId;
-  final double order;
+  final String order;
 
   UpdateHabitOrderResponse(this.habitId, this.order);
 }
@@ -48,6 +48,7 @@ class UpdateHabitOrderCommandHandler implements IRequestHandler<UpdateHabitOrder
     SiblingReorderService reorderService = const SiblingReorderService(),
   }) : _reorderService = reorderService;
 
+  /// Habits reorder globally; tasks intentionally restrict reordering to a shared parent task.
   @override
   Future<UpdateHabitOrderResponse> call(UpdateHabitOrderCommand request) async {
     final habit = await _habitRepository.getById(request.habitId);

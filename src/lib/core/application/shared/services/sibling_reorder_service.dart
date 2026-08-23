@@ -13,11 +13,11 @@ class ReorderPlacement<T> {
   /// When `true`, the whole sibling set could no longer accept a reliable
   /// midpoint insertion (duplicate/collapsed/overflowing orders); the caller
   /// must renumber every sibling. Use [renumbered] for the fully-ordered list
-  /// with clean [OrderRank.initialStep] multiples already assigned.
+  /// with clean sequential ranks already assigned.
   final bool requiresRenormalization;
 
   /// The order to assign to the moved item (valid in both branches).
-  final double order;
+  final String order;
 
   /// Present only when [requiresRenormalization] is `true`: the full sibling
   /// set (including the moved item) in final order with clean orders already
@@ -60,8 +60,8 @@ class SiblingReorderService {
     String? beforeId,
     String? afterId,
     required String Function(T item) idOf,
-    required double Function(T item) orderOf,
-    required void Function(T item, double order) setOrder,
+    required String Function(T item) orderOf,
+    required void Function(T item, String order) setOrder,
   }) {
     final position = _resolvePosition(
       siblings: siblings,
@@ -76,29 +76,54 @@ class SiblingReorderService {
     final afterOrder = position < siblings.length ? orderOf(siblings[position]) : null;
 
     if (OrderRank.needsNormalization(currentOrders) ||
-        OrderRank.cannotFit(beforeOrder: beforeOrder, afterOrder: afterOrder)) {
-      final ordered = List<T>.from(siblings);
-      final clampedPosition = position.clamp(0, ordered.length);
-      ordered.insert(clampedPosition, moved);
-      final placedOrder = OrderRank.assignSequential<T>(
-        ordered,
+        OrderRank.cannotFit(beforeOrder: beforeOrder, afterOrder: afterOrder))
+      return _renormalizedPlacement(
+        moved: moved,
+        siblings: siblings,
+        position: position,
+        idOf: idOf,
         setOrder: setOrder,
-        isPlaced: (item) => idOf(item) == idOf(moved),
       );
+
+    try {
+      final newOrder = OrderRank.neighborRank(beforeOrder: beforeOrder, afterOrder: afterOrder);
+      setOrder(moved, newOrder);
       return ReorderPlacement<T>(
-        position: clampedPosition,
-        requiresRenormalization: true,
-        order: placedOrder,
-        renumbered: ordered,
+        position: position,
+        requiresRenormalization: false,
+        order: newOrder,
+      );
+    } on RankGapTooSmallException {
+      return _renormalizedPlacement(
+        moved: moved,
+        siblings: siblings,
+        position: position,
+        idOf: idOf,
+        setOrder: setOrder,
       );
     }
+  }
 
-    final newOrder = OrderRank.neighborRank(beforeOrder: beforeOrder, afterOrder: afterOrder);
-    setOrder(moved, newOrder);
+  ReorderPlacement<T> _renormalizedPlacement<T>({
+    required T moved,
+    required List<T> siblings,
+    required int position,
+    required String Function(T item) idOf,
+    required void Function(T item, String order) setOrder,
+  }) {
+    final ordered = List<T>.from(siblings);
+    final clampedPosition = position.clamp(0, ordered.length);
+    ordered.insert(clampedPosition, moved);
+    final placedOrder = OrderRank.assignSequential<T>(
+      ordered,
+      setOrder: setOrder,
+      isPlaced: (item) => idOf(item) == idOf(moved),
+    );
     return ReorderPlacement<T>(
-      position: position,
-      requiresRenormalization: false,
-      order: newOrder,
+      position: clampedPosition,
+      requiresRenormalization: true,
+      order: placedOrder,
+      renumbered: ordered,
     );
   }
 
