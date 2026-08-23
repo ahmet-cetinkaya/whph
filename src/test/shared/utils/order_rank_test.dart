@@ -1,171 +1,215 @@
 import 'package:acore/acore.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+void _expectCanonicalAscending(List<String> ranks) {
+  expect(OrderRank.needsNormalization(ranks), isFalse);
+  for (var index = 1; index < ranks.length; index++) expect(ranks[index - 1].compareTo(ranks[index]), lessThan(0));
+}
+
+void _insertAndRecover(
+  List<String> itemIds,
+  Map<String, String> assignedRanks,
+  String itemId,
+  int insertionIndex,
+) {
+  final beforeOrder = insertionIndex == 0 ? null : assignedRanks[itemIds[insertionIndex - 1]];
+  final afterOrder = insertionIndex == itemIds.length ? null : assignedRanks[itemIds[insertionIndex]];
+
+  try {
+    assignedRanks[itemId] = OrderRank.neighborRank(
+      beforeOrder: beforeOrder,
+      afterOrder: afterOrder,
+    );
+    itemIds.insert(insertionIndex, itemId);
+  } on RankGapTooSmallException {
+    itemIds.insert(insertionIndex, itemId);
+    final placedRank = OrderRank.assignSequential<String>(
+      itemIds,
+      setOrder: (item, rank) => assignedRanks[item] = rank,
+      isPlaced: (item) => item == itemId,
+    );
+    expect(placedRank, assignedRanks[itemId]);
+  }
+
+  _expectCanonicalAscending(itemIds.map((item) => assignedRanks[item]!).toList());
+}
+
 void main() {
-  group('OrderRank.neighborRank', () {
-    test('returns initialStep for an empty list (both bounds null)', () {
-      expect(OrderRank.neighborRank(), OrderRank.initialStep);
+  group('rank grammar', () {
+    test('uses the canonical base-62 fractional ranks', () {
+      expect(OrderRank.initialRank, 'U');
+      expect(OrderRank.neighborRank(), 'U');
+      expect(OrderRank.neighborRank(afterOrder: 'a'), 'I');
+      expect(OrderRank.neighborRank(beforeOrder: 'a'), 'n');
+      expect(OrderRank.neighborRank(beforeOrder: 'a', afterOrder: 'b'), 'aV');
+      expect(OrderRank.neighborRank(beforeOrder: 'az', afterOrder: 'b'), 'azV');
+      expect(OrderRank.neighborRank(beforeOrder: 'a', afterOrder: 'aV'), 'aF');
+      expect(OrderRank.neighborRank(beforeOrder: 'a', afterOrder: 'a0000001'), 'a0000000V');
     });
 
-    test('places strictly between two well-spaced neighbors (midpoint)', () {
-      final rank = OrderRank.neighborRank(beforeOrder: 1000, afterOrder: 2000);
-      expect(rank, greaterThan(1000));
-      expect(rank, lessThan(2000));
-      expect(rank, 1500);
+    test('returns a canonical rank strictly between valid bounds', () {
+      final rank = OrderRank.neighborRank(beforeOrder: 'aF', afterOrder: 'aV');
+
+      expect(rank.compareTo('aF'), greaterThan(0));
+      expect(rank.compareTo('aV'), lessThan(0));
+      expect(rank.endsWith('0'), isFalse);
     });
 
-    test('places before the first item when beforeOrder is null', () {
-      final rank = OrderRank.neighborRank(afterOrder: 1000);
-      expect(rank, lessThan(1000));
+    test('normalizes malformed, oversized, duplicate, and inverted ranks', () {
+      expect(OrderRank.needsNormalization(['a', 'b']), isFalse);
+      expect(OrderRank.needsNormalization(['']), isTrue);
+      expect(OrderRank.needsNormalization(['0']), isTrue);
+      expect(OrderRank.needsNormalization(['000']), isTrue);
+      expect(OrderRank.needsNormalization(['a0']), isTrue);
+      expect(OrderRank.needsNormalization(['a!']), isTrue);
+      expect(OrderRank.needsNormalization(['a', 'a']), isTrue);
+      expect(OrderRank.needsNormalization(['b', 'a']), isTrue);
+      expect(OrderRank.needsNormalization(['${'a' * OrderRank.maxRankLength}1']), isTrue);
+    });
+  });
+
+  group('failure paths', () {
+    test('rejects inverted and malformed neighbor bounds', () {
+      final invalidBounds = [
+        (before: 'a', after: 'a'),
+        (before: 'zz', after: 'aa'),
+        (before: 'a!', after: 'b'),
+        (before: 'a', after: 'b!'),
+        (before: 'a0', after: 'b'),
+        (before: 'a', after: 'b0'),
+        (before: '000', after: 'b'),
+        (before: 'a', after: '000'),
+      ];
+
+      for (final bounds in invalidBounds)
+        expect(
+          () => OrderRank.neighborRank(
+            beforeOrder: bounds.before,
+            afterOrder: bounds.after,
+          ),
+          throwsA(isA<InvalidNeighborOrderException>()),
+        );
     });
 
-    test('places after the last item when afterOrder is null', () {
-      final rank = OrderRank.neighborRank(beforeOrder: 3000);
-      expect(rank, greaterThan(3000));
+    test('cannotFit identifies invalid bounds and an overlength midpoint', () {
+      final before = 'a' * OrderRank.maxRankLength;
+
+      for (final bounds in [
+        (before: 'a!', after: 'b'),
+        (before: '000', after: 'b'),
+        (before: 'a0', after: 'b'),
+        (before: 'a', after: 'a'),
+        (before: 'b', after: 'a'),
+        (before: before, after: '${before}1'),
+      ])
+        expect(
+          OrderRank.cannotFit(
+            beforeOrder: bounds.before,
+            afterOrder: bounds.after,
+          ),
+          isTrue,
+        );
+
+      expect(OrderRank.cannotFit(beforeOrder: 'a', afterOrder: 'b'), isFalse);
     });
 
-    test('throws RankGapTooSmallException when neighbors are too close', () {
+    test('reserves RankGapTooSmallException for an overlength midpoint', () {
+      final before = 'a' * OrderRank.maxRankLength;
+
       expect(
-        () => OrderRank.neighborRank(beforeOrder: 1000, afterOrder: 1000.5),
+        () => OrderRank.neighborRank(beforeOrder: before, afterOrder: '${before}1'),
         throwsA(isA<RankGapTooSmallException>()),
       );
     });
+  });
 
-    test('throws InvalidNeighborOrderException when neighbors are equal', () {
-      expect(
-        () => OrderRank.neighborRank(beforeOrder: 1000, afterOrder: 1000),
-        throwsA(isA<InvalidNeighborOrderException>()),
+  group('legacy conversion', () {
+    test('maps the lowest bucket to a prependable canonical rank', () {
+      final zero = OrderRank.fromLegacyDouble(0);
+
+      expect(zero, '0000001');
+      expect(OrderRank.neighborRank(afterOrder: zero).compareTo(zero), lessThan(0));
+      expect(zero.compareTo(OrderRank.fromLegacyDouble(1)), lessThan(0));
+    });
+
+    test('maps non-finite legacy values to the initial rank', () {
+      expect(OrderRank.fromLegacyDouble(double.nan), OrderRank.initialRank);
+      expect(OrderRank.fromLegacyDouble(double.infinity), OrderRank.initialRank);
+      expect(OrderRank.fromLegacyDouble(double.negativeInfinity), OrderRank.initialRank);
+    });
+
+    test('is non-decreasing across the legacy range', () {
+      final ranks = [0.0, 1.0, 2.0, 1000.0, 1000000.0].map(OrderRank.fromLegacyDouble).toList();
+
+      for (var index = 1; index < ranks.length; index++)
+        expect(ranks[index - 1].compareTo(ranks[index]), lessThanOrEqualTo(0));
+    });
+  });
+
+  group('sequential assignment', () {
+    test('assigns canonical ascending ranks and returns the placed rank', () {
+      final assignedRanks = <String, String>{};
+      final placedRank = OrderRank.assignSequential<String>(
+        ['first', 'placed', 'last'],
+        setOrder: (item, rank) => assignedRanks[item] = rank,
+        isPlaced: (item) => item == 'placed',
       );
+
+      expect(assignedRanks['first']!.compareTo(assignedRanks['placed']!), lessThan(0));
+      expect(assignedRanks['placed']!.compareTo(assignedRanks['last']!), lessThan(0));
+      expect(placedRank, assignedRanks['placed']);
+      expect(OrderRank.needsNormalization(assignedRanks.values.toList()), isFalse);
     });
 
-    test('throws InvalidNeighborOrderException when neighbors are inverted', () {
-      // A caller bug (before > after) must be distinguishable from a genuine
-      // too-small gap so it is not silently masked by renormalization.
-      expect(
-        () => OrderRank.neighborRank(beforeOrder: 5000, afterOrder: 1000),
-        throwsA(isA<InvalidNeighborOrderException>()),
-      );
-    });
+    test('keeps 62 and 63 assignments canonical, unique, and ordered', () {
+      for (final itemCount in [62, 63]) {
+        final itemIds = List.generate(itemCount, (index) => 'item-$index');
+        final assignedRanks = <String, String>{};
+        final placedItem = itemIds.last;
+        final placedRank = OrderRank.assignSequential<String>(
+          itemIds,
+          setOrder: (item, rank) => assignedRanks[item] = rank,
+          isPlaced: (item) => item == placedItem,
+        );
+        final ranks = itemIds.map((item) => assignedRanks[item]!).toList();
 
-    test('throws RankGapTooSmallException when appending would overflow maxOrder', () {
-      expect(
-        () => OrderRank.neighborRank(beforeOrder: OrderRank.maxOrder - 1),
-        throwsA(isA<RankGapTooSmallException>()),
-      );
-    });
-  });
-
-  group('OrderRank.cannotFit', () {
-    test('false for well-spaced neighbors', () {
-      expect(OrderRank.cannotFit(beforeOrder: 1000, afterOrder: 2000), isFalse);
-    });
-
-    test('true when the gap is below minimumOrderGap', () {
-      expect(OrderRank.cannotFit(beforeOrder: 1000, afterOrder: 1000.5), isTrue);
-    });
-
-    test('true when neighbors are inverted or equal', () {
-      expect(OrderRank.cannotFit(beforeOrder: 2000, afterOrder: 1000), isTrue);
-      expect(OrderRank.cannotFit(beforeOrder: 1000, afterOrder: 1000), isTrue);
-    });
-
-    test('false when prepending at the head (beforeOrder null)', () {
-      expect(OrderRank.cannotFit(afterOrder: 1000), isFalse);
-    });
-
-    test('false when appending at the tail with headroom', () {
-      expect(OrderRank.cannotFit(beforeOrder: 3000), isFalse);
-    });
-
-    test('true when appending at the tail would overflow maxOrder', () {
-      expect(OrderRank.cannotFit(beforeOrder: OrderRank.maxOrder - 1), isTrue);
-    });
-
-    test('false for an empty list (both bounds null)', () {
-      expect(OrderRank.cannotFit(), isFalse);
+        expect(ranks.toSet(), hasLength(itemCount));
+        _expectCanonicalAscending(ranks);
+        expect(placedRank, assignedRanks[placedItem]);
+      }
     });
   });
 
-  group('OrderRank.needsNormalization', () {
-    test('false for a cleanly spaced, positive, unique set', () {
-      expect(OrderRank.needsNormalization([1000, 2000, 3000]), isFalse);
+  group('repeated insertion recovery', () {
+    test('preserves every placement through 1000 same-gap insertions', () {
+      final itemIds = ['lower', 'upper'];
+      final assignedRanks = {'lower': 'a', 'upper': 'b'};
+
+      for (var index = 0; index < 1000; index++) _insertAndRecover(itemIds, assignedRanks, 'gap-$index', 1);
+
+      expect(itemIds, hasLength(1002));
+      _expectCanonicalAscending(itemIds.map((item) => assignedRanks[item]!).toList());
     });
 
-    test('true when duplicates are present', () {
-      expect(OrderRank.needsNormalization([1000, 1000, 3000]), isTrue);
+    test('preserves every placement through 1000 prepends', () {
+      final itemIds = ['initial'];
+      final assignedRanks = {'initial': OrderRank.initialRank};
+
+      for (var index = 0; index < 1000; index++) _insertAndRecover(itemIds, assignedRanks, 'prepend-$index', 0);
+
+      expect(itemIds, hasLength(1001));
+      _expectCanonicalAscending(itemIds.map((item) => assignedRanks[item]!).toList());
     });
 
-    test('true when an adjacent gap collapses below minimumOrderGap', () {
-      expect(OrderRank.needsNormalization([1000, 1000.5, 3000]), isTrue);
-    });
+    test('preserves every placement through 1000 appends', () {
+      final itemIds = ['initial'];
+      final assignedRanks = {'initial': OrderRank.initialRank};
 
-    test('true when a non-positive order is present', () {
-      expect(OrderRank.needsNormalization([0, 1000, 2000]), isTrue);
-      expect(OrderRank.needsNormalization([-5, 1000, 2000]), isTrue);
-    });
+      for (var index = 0; index < 1000; index++)
+        _insertAndRecover(itemIds, assignedRanks, 'append-$index', itemIds.length);
 
-    test('true when a positive-but-near-zero order is present', () {
-      expect(OrderRank.needsNormalization([1e-9, 1000, 2000]), isTrue);
-    });
-
-    test('true when a value reaches or exceeds maxOrder', () {
-      expect(OrderRank.needsNormalization([1000, 2000, OrderRank.maxOrder]), isTrue);
-      expect(OrderRank.needsNormalization([1000, 2000, OrderRank.maxOrder + 1]), isTrue);
-    });
-
-    test('false for an empty set', () {
-      expect(OrderRank.needsNormalization([]), isFalse);
-    });
-
-    test('unsorted input is evaluated after sorting', () {
-      expect(OrderRank.needsNormalization([3000, 2000, 2000.4, 1000]), isTrue);
-    });
-  });
-
-  group('OrderRank.hasNearZeroOrder', () {
-    test('false for a normal positive set', () {
-      expect(OrderRank.hasNearZeroOrder([1000, 2000, 3000]), isFalse);
-    });
-
-    test('true for an effectively-zero value', () {
-      expect(OrderRank.hasNearZeroOrder([1e-11, 1000]), isTrue);
-    });
-
-    test('true for a positive-but-below-tolerance value', () {
-      expect(OrderRank.hasNearZeroOrder([1e-7, 1000]), isTrue);
-    });
-  });
-
-  group('OrderRank.assignSequential', () {
-    test('assigns evenly spaced initialStep multiples in order', () {
-      final items = ['a', 'b', 'c'];
-      final orders = <String, double>{};
-      OrderRank.assignSequential<String>(items, setOrder: (item, order) => orders[item] = order);
-      expect(orders['a'], OrderRank.initialStep);
-      expect(orders['b'], OrderRank.initialStep * 2);
-      expect(orders['c'], OrderRank.initialStep * 3);
-    });
-
-    test('returns the order assigned to the placed item', () {
-      final items = ['a', 'b', 'c'];
-      final placed = OrderRank.assignSequential<String>(
-        items,
-        setOrder: (_, __) {},
-        isPlaced: (item) => item == 'b',
-      );
-      expect(placed, OrderRank.initialStep * 2);
-    });
-
-    test('returns initialStep when no item is marked placed', () {
-      final placed = OrderRank.assignSequential<String>(['a'], setOrder: (_, __) {});
-      expect(placed, OrderRank.initialStep);
-    });
-  });
-
-  group('regression: collapsed-gap reorder no longer collides', () {
-    test('needsNormalization catches the accumulated-midpoint scenario', () {
-      final orders = [1000.0, 1000.5, 1001.0, 3000.0];
-      expect(OrderRank.needsNormalization(orders), isTrue);
+      expect(itemIds, hasLength(1001));
+      _expectCanonicalAscending(itemIds.map((item) => assignedRanks[item]!).toList());
     });
   });
 }
