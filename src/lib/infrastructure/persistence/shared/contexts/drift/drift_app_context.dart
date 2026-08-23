@@ -299,7 +299,8 @@ class AppDatabase extends _$AppDatabase {
           }
         } catch (e, stackTrace) {
           Logger.error('CRITICAL: Migration from v$from to v$to failed: $e\n$stackTrace');
-          Logger.info('Transaction will be rolled back automatically');
+          Logger.info('No changes were committed: migration steps run in a transaction that rolls back on failure, '
+              'and this failure may have occurred before that transaction started.');
           rethrow;
         }
       },
