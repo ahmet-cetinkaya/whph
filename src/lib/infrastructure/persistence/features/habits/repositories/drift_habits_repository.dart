@@ -31,7 +31,7 @@ class HabitTable extends Table {
   // Daily target settings for multiple occurrences per day
   IntColumn get dailyTarget => integer().nullable()();
 
-  RealColumn get order => real().withDefault(const Constant(0.0))();
+  TextColumn get order => text().withDefault(const Constant('U'))();
 
   @override
   Set<Column> get primaryKey => {id};

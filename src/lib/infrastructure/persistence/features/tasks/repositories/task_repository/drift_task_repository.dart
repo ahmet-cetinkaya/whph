@@ -38,7 +38,7 @@ class TaskTable extends Table {
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
-  RealColumn get order => real().withDefault(const Constant(0.0))();
+  TextColumn get order => text().withDefault(const Constant('U'))();
 
   // Reminder settings
   IntColumn get plannedDateReminderTime =>

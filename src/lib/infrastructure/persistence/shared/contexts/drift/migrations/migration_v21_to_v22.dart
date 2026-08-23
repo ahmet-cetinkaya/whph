@@ -4,7 +4,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_
 
 /// Migration v21 -> v22: Add order column to habit table
 Future<void> migrateV21ToV22(AppDatabase db, Migrator m, Schema22 schema) async {
-  await m.addColumn(db.habitTable, db.habitTable.order);
+  await m.addColumn(schema.habitTable, schema.habitTable.order);
 
   await db.customStatement('''
     WITH ordered_habits AS (

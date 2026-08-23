@@ -130,7 +130,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 35;
+  int get schemaVersion => 36;
 
   /// Validates migration version numbers
   void _validateMigrationVersions(int from, int to) {
@@ -287,15 +287,16 @@ class AppDatabase extends _$AppDatabase {
           // Validate connection before migration
           await _validateConnectionState();
 
-          // Run migration steps in transaction
-          await transaction(() async {
-            await runMigrationSteps(m, from, to);
-
-            // Validate data integrity after migration steps
-            await _validateDataIntegrity();
-
-            Logger.info('Migration from v$from to v$to completed successfully');
-          });
+          await customStatement('PRAGMA foreign_keys = OFF');
+          try {
+            await transaction(() async {
+              await runMigrationSteps(m, from, to);
+              await _validateDataIntegrity();
+              Logger.info('Migration from v$from to v$to completed successfully');
+            });
+          } finally {
+            await customStatement('PRAGMA foreign_keys = ON');
+          }
         } catch (e, stackTrace) {
           Logger.error('CRITICAL: Migration from v$from to v$to failed: $e\n$stackTrace');
           Logger.info('Transaction will be rolled back automatically');

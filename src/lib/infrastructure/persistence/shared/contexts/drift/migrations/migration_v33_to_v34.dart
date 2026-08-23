@@ -42,14 +42,14 @@ Future<void> migrateV33ToV34(AppDatabase db, Migrator m, Schema34 schema) async 
       db,
       id: TaskStatusConstants.todoId,
       color: TaskStatusConstants.todoColor,
-      sortOrder: TaskStatusConstants.todoOrder,
+      sortOrder: 1.0,
       isDoneStatus: 0,
     );
     await _seedBuiltInStatus(
       db,
       id: TaskStatusConstants.doneId,
       color: TaskStatusConstants.doneColor,
-      sortOrder: TaskStatusConstants.doneOrder,
+      sortOrder: 2.0,
       isDoneStatus: 1,
     );
 
