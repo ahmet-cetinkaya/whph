@@ -8,6 +8,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
+import 'package:whph/core/application/features/notes/commands/normalize_note_orders_command.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
@@ -122,6 +123,9 @@ void main() {
       )
       ..registerHandler<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse, NormalizeTaskOrdersCommandHandler>(
         () => NormalizeTaskOrdersCommandHandler(contextTaskRepository),
+      )
+      ..registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
+        () => NormalizeNoteOrdersCommandHandler(contextNoteRepository),
       );
 
     handler = ImportDataCommandHandler(
@@ -168,9 +172,14 @@ void main() {
       storedTasks.add(invocation.positionalArguments.single as Task);
     });
     when(contextTaskRepository.updateMultiple(any)).thenAnswer((_) async {});
+    when(contextNoteRepository.getAll(
+      customWhereFilter: anyNamed('customWhereFilter'),
+      customOrder: anyNamed('customOrder'),
+    )).thenAnswer((_) async => storedNotes);
     when(contextNoteRepository.add(any)).thenAnswer((invocation) async {
       storedNotes.add(invocation.positionalArguments.single as Note);
     });
+    when(contextNoteRepository.updateMultiple(any)).thenAnswer((_) async {});
   });
 
   tearDown(() async {
@@ -248,6 +257,32 @@ void main() {
       expect(storedHabits, hasLength(3));
       expect(storedHabits.map((habit) => habit.order).toSet(), hasLength(3));
       expect(storedHabits.map((habit) => OrderRank.needsNormalization([habit.order])), everyElement(isFalse));
+    });
+
+    test('normalizes legacy rank collisions in imported notes without dropping any', () async {
+      // Notes were excluded from the post-import normalization pass, so
+      // duplicate ranks from a legacy or malformed backup survived import
+      // and left the notes' relative order undefined.
+      final compressionService = CompressionService();
+      final backupData = await compressionService.createWhphFile(jsonEncode({
+        'appInfo': {'version': AppInfo.version},
+        'notes': [
+          _noteJson('note-a', 0.0),
+          _noteJson('note-b', 0.0),
+          _noteJson('note-c', 0.0),
+        ],
+      }));
+
+      when(mockCompressionService.validateHeader(backupData)).thenReturn(true);
+      when(mockCompressionService.validateChecksum(backupData)).thenAnswer((_) async => true);
+      when(mockCompressionService.extractFromWhphFile(backupData))
+          .thenAnswer((_) => compressionService.extractFromWhphFile(backupData));
+
+      await handler.call(ImportDataCommand(backupData, ImportStrategy.replace));
+
+      expect(storedNotes, hasLength(3));
+      expect(storedNotes.map((note) => note.order).toSet(), hasLength(3));
+      expect(storedNotes.map((note) => OrderRank.needsNormalization([note.order])), everyElement(isFalse));
     });
 
     test('replaces malformed, absent, and wrong-type entity ranks with the initial rank', () async {

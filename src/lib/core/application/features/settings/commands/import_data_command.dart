@@ -8,6 +8,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_record_re
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
+import 'package:whph/core/application/features/notes/commands/normalize_note_orders_command.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -219,6 +220,10 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   Future<void> _normalizeImportedOrders(Map<String, dynamic> data) async {
     await mediator.send<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse>(
       const NormalizeHabitOrdersCommand(),
+    );
+
+    await mediator.send<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse>(
+      const NormalizeNoteOrdersCommand(),
     );
 
     final parentTaskIds = (data['tasks'] as List? ?? const []).whereType<Map<String, dynamic>>().map((task) {
