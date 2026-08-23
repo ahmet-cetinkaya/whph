@@ -224,6 +224,64 @@ void main() {
       expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
     });
 
+    test('v35 to v36 rolls back entirely when the surrounding transaction fails', () async {
+      // Mirrors the production pattern in drift_app_context.dart's onUpgrade:
+      // migration steps and post-migration validation run inside one
+      // db.transaction(). This proves that pattern actually protects the
+      // user — if anything after the migration steps fails within that same
+      // transaction, the schema and data revert to their pre-migration
+      // state rather than being left half-converted.
+      final schema35 = await verifier.schemaAt(35);
+      final db = TestAppDatabase(schema35.newConnection(), 35);
+      addTearDown(db.close);
+
+      await _insertHabit(db, 'habit-three', 3000, 3.0);
+      await _insertHabit(db, 'habit-one', 1000, 1.0);
+      await _insertHabit(db, 'habit-two', 2000, 2.0);
+      await _insertTask(db, id: 'root-a', createdDate: 1000, order: 1.0);
+      await _insertTask(db, id: 'root-b', createdDate: 2000, order: 2.0);
+
+      final ordersBefore = await _rankMap(db, 'habit_table');
+      final taskOrdersBefore = await _rankMap(db, 'task_table');
+
+      await db.customStatement('PRAGMA foreign_keys = OFF');
+      Object? caught;
+      try {
+        await db.transaction(() async {
+          await migrateV35ToV36(db, Migrator(db), Schema36(database: db));
+          // Simulate a failure occurring after the migration's own steps
+          // but still inside the same enclosing transaction, exactly as a
+          // later _validateDataIntegrity() failure would in production.
+          throw StateError('forced failure to prove rollback');
+        });
+      } catch (error) {
+        caught = error;
+      } finally {
+        await db.customStatement('PRAGMA foreign_keys = ON');
+      }
+
+      expect(caught, isA<StateError>(), reason: 'the forced failure must propagate out of the transaction');
+
+      // The schema must have reverted: the order column is REAL again, not
+      // the TEXT type the migration would have left behind.
+      expect(await _columnType(db, 'habit_table', 'order'), anyOf('REAL', 'NUM', 'NUMERIC'));
+      expect(await _columnType(db, 'task_table', 'order'), anyOf('REAL', 'NUM', 'NUMERIC'));
+
+      // The original numeric orders must be intact — not overwritten with
+      // canonical rank strings, and not left as some partially-converted mix.
+      expect(await _rankMap(db, 'habit_table'), ordersBefore);
+      expect(await _rankMap(db, 'task_table'), taskOrdersBefore);
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+
+      // The database must remain usable: a subsequent clean migration must
+      // still succeed after the failed attempt, proving no lingering
+      // half-applied state blocks retry.
+      await _migrateV35ToV36(db);
+      expect(await _columnType(db, 'habit_table', 'order'), 'TEXT');
+      await _expectCanonicalDistinctRanks(db, 'habit_table');
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+    });
+
     test('v35 to v36 survives real-world scale and hostile legacy order values', () async {
       final schema35 = await verifier.schemaAt(35);
       final db = TestAppDatabase(schema35.newConnection(), 35);
