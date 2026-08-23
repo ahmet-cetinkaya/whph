@@ -274,6 +274,57 @@ void main() {
         verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(2);
       });
 
+      test('should recover from transient page-send failure on retry', () async {
+        // Arrange
+        final pageData = PaginatedSyncData<HabitRecord>(
+          data: SyncData<HabitRecord>(
+            createSync: [],
+            updateSync: [],
+            deleteSync: [],
+          ),
+          pageIndex: 0,
+          pageSize: 50,
+          totalPages: 1,
+          totalItems: 0,
+          isLastPage: true,
+          entityType: 'HabitRecord',
+        );
+
+        mockSyncConfig = MockPaginatedSyncConfig('HabitRecord',
+            mockGetPaginatedSyncData: (DateTime lastSync, int pageIndex, int pageSize, String? entityType) async =>
+                pageData);
+        when(mockConfigurationService.getAllConfigurations()).thenReturn([mockSyncConfig]);
+
+        int callCount = 0;
+        when(mockCommunicationService.sendPaginatedDataToDevice(any, any))
+            .thenAnswer((_) async {
+              callCount++;
+              if (callCount == 1) {
+                return SyncCommunicationResponse(
+                  success: false,
+                  isComplete: false,
+                  error: 'Network error',
+                );
+              }
+
+              return SyncCommunicationResponse(
+                success: true,
+                isComplete: true,
+              );
+            });
+
+        // Act
+        final result = await service.syncEntityWithPagination(
+          mockSyncConfig,
+          testDevice,
+          lastSyncDate,
+        );
+
+        // Assert
+        expect(result, isTrue);
+        verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(2);
+      });
+
       test('should handle empty target IP', () async {
         // Arrange
         final invalidDevice = SyncDevice(
