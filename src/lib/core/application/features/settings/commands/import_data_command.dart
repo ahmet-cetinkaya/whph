@@ -16,7 +16,6 @@ import 'package:whph/core/application/features/tags/services/abstraction/i_tag_t
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
-import 'package:whph/core/application/features/tasks/commands/normalize_task_orders_command.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
@@ -226,15 +225,30 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       const NormalizeNoteOrdersCommand(),
     );
 
-    final parentTaskIds = (data['tasks'] as List? ?? const []).whereType<Map<String, dynamic>>().map((task) {
-      final parentTaskId = task['parentTaskId'];
-      return parentTaskId is String ? parentTaskId : null;
-    }).toSet();
-    for (final parentTaskId in parentTaskIds) {
-      await mediator.send<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse>(
-        NormalizeTaskOrdersCommand(parentTaskId: parentTaskId),
-      );
+    await _normalizeImportedTaskOrders();
+  }
+
+  /// Renumbers every imported task's rank, grouped by parent scope, in a
+  /// single fetch + single batch update — rather than one mediator round-trip
+  /// and one repository update per distinct parent scope, which does not
+  /// scale with the number of distinct parents in a large backup.
+  Future<void> _normalizeImportedTaskOrders() async {
+    final allTasks = await taskRepository.getAll(
+      customWhereFilter: CustomWhereFilter('deleted_date IS NULL', []),
+      customOrder: [CustomOrder(field: "order")],
+    );
+    if (allTasks.isEmpty) return;
+
+    final tasksByParent = <String?, List<Task>>{};
+    for (final task in allTasks) {
+      tasksByParent.putIfAbsent(task.parentTaskId, () => []).add(task);
     }
+
+    for (final siblings in tasksByParent.values) {
+      OrderRank.assignSequential<Task>(siblings, setOrder: (task, order) => task.order = order);
+    }
+
+    await taskRepository.updateMultiple(allTasks);
   }
 
   /// Creates a backup of current database before import

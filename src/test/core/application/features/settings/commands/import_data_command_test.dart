@@ -285,6 +285,62 @@ void main() {
       expect(storedNotes.map((note) => OrderRank.needsNormalization([note.order])), everyElement(isFalse));
     });
 
+    test('normalizes imported tasks per parent scope in a single fetch and single batch update', () async {
+      // Task normalization is grouped by parentTaskId and applied as one
+      // fetch + one batch update, rather than one mediator round-trip and one
+      // repository fetch/update pair per distinct parent scope. Each of two
+      // sibling groups under different parents (plus one root group) starts
+      // with a distinct, already-ordered legacy rank, so a correct per-parent
+      // normalization must preserve each group's own relative order —
+      // proving scoping actually happened, not just "some" normalization.
+      final compressionService = CompressionService();
+      final backupData = await compressionService.createWhphFile(jsonEncode({
+        'appInfo': {'version': AppInfo.version},
+        'tasks': [
+          _taskJson('root-a', 1.0),
+          _taskJson('root-b', 2.0),
+          _taskJson('child-x1', 1.0, parentTaskId: 'parent-x'),
+          _taskJson('child-x2', 2.0, parentTaskId: 'parent-x'),
+          _taskJson('child-y1', 1.0, parentTaskId: 'parent-y'),
+          _taskJson('child-y2', 2.0, parentTaskId: 'parent-y'),
+        ],
+      }));
+
+      when(mockCompressionService.validateHeader(backupData)).thenReturn(true);
+      when(mockCompressionService.validateChecksum(backupData)).thenAnswer((_) async => true);
+      when(mockCompressionService.extractFromWhphFile(backupData))
+          .thenAnswer((_) => compressionService.extractFromWhphFile(backupData));
+
+      await handler.call(ImportDataCommand(backupData, ImportStrategy.replace));
+
+      expect(storedTasks, hasLength(6));
+      expect(storedTasks.map((task) => OrderRank.needsNormalization([task.order])), everyElement(isFalse));
+
+      final byId = {for (final task in storedTasks) task.id: task};
+      final rootOrders = storedTasks.where((t) => t.parentTaskId == null).map((t) => t.order).toSet();
+      final parentXOrders = storedTasks.where((t) => t.parentTaskId == 'parent-x').map((t) => t.order).toSet();
+      final parentYOrders = storedTasks.where((t) => t.parentTaskId == 'parent-y').map((t) => t.order).toSet();
+
+      expect(rootOrders, hasLength(2), reason: 'root siblings must get distinct ranks');
+      expect(parentXOrders, hasLength(2), reason: 'parent-x siblings must get distinct ranks');
+      expect(parentYOrders, hasLength(2), reason: 'parent-y siblings must get distinct ranks');
+
+      // Each partition's rank ordering must follow its own pre-import
+      // relative order, proving the grouping is genuinely per-parent rather
+      // than one flattened global sequence that could interleave partitions.
+      expect(byId['child-x1']!.order.compareTo(byId['child-x2']!.order), lessThan(0));
+      expect(byId['child-y1']!.order.compareTo(byId['child-y2']!.order), lessThan(0));
+      expect(byId['root-a']!.order.compareTo(byId['root-b']!.order), lessThan(0));
+
+      // Consolidated into one fetch and one batch update, not N pairs (one
+      // per distinct parent scope).
+      verify(contextTaskRepository.getAll(
+        customWhereFilter: anyNamed('customWhereFilter'),
+        customOrder: anyNamed('customOrder'),
+      )).called(1);
+      verify(contextTaskRepository.updateMultiple(any)).called(1);
+    });
+
     test('replaces malformed, absent, and wrong-type entity ranks with the initial rank', () async {
       final compressionService = CompressionService();
       final missingTaskOrder = _taskJson('task-missing', 'U')..remove('order');
@@ -477,10 +533,10 @@ Map<String, dynamic> _habitJson(String id, Object order) {
   return {...jsonDecode(JsonMapper.serialize(habit)) as Map<String, dynamic>, 'order': order};
 }
 
-Map<String, dynamic> _taskJson(String id, Object order, {String? parentTaskId}) {
+Map<String, dynamic> _taskJson(String id, Object order, {String? parentTaskId, String? createdDate}) {
   final task = Task(
     id: id,
-    createdDate: DateTime.utc(2026),
+    createdDate: createdDate != null ? DateTime.parse(createdDate) : DateTime.utc(2026),
     title: id,
     parentTaskId: parentTaskId,
   );
