@@ -93,12 +93,12 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
     timeoutTimer = Timer(timeout, () {
       if (!completer.isCompleted) {
-        Logger.error('⏰ WebSocket timeout after ${timeout.inSeconds} seconds (attempt ${attempt + 1}/$_maxRetries)');
-        completer.complete(SyncCommunicationResponse(
-          success: false,
-          isComplete: true,
-          error: 'Operation failed',
-        ));
+        final message = 'WebSocket timeout after ${timeout.inSeconds} seconds (attempt ${attempt + 1}/$_maxRetries)';
+        Logger.error('⏰ $message');
+        // Complete with an error (not a value) so the retry loop in
+        // sendPaginatedDataToDevice actually catches this and retries,
+        // instead of treating the timeout as a final non-retryable result.
+        completer.completeError(TimeoutException(message, timeout));
         socket.close();
       }
     });
