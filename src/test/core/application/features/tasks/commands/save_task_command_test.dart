@@ -167,12 +167,12 @@ void main() {
         completedAt: null,
       );
 
-      // Mock an existing task with order 1000
+      // Mock an existing task with a canonical rank.
       final lastTask = Task(
         id: 'existing-task-id',
         createdDate: DateTime.now().toUtc(),
         title: 'Existing Task',
-        order: 1000.0,
+        order: 'U',
       );
 
       when(mockTaskRepository.getList(
@@ -189,8 +189,17 @@ void main() {
 
       // Assert
       verify(mockTaskRepository.add(argThat(
-        predicate<Task>((task) => task.order == 2000.0 // 1000 + 1000 (last order + orderStep)
-            ),
+        predicate<Task>((task) => task.order.compareTo(lastTask.order) > 0),
+      ))).called(1);
+    });
+
+    test('creates an empty custom-ordered task list at the initial rank', () async {
+      when(mockTaskRepository.add(any)).thenAnswer((_) async {});
+
+      await handler(SaveTaskCommand(title: 'First task'));
+
+      verify(mockTaskRepository.add(argThat(
+        predicate<Task>((task) => task.order == OrderRank.initialRank),
       ))).called(1);
     });
 
@@ -202,7 +211,7 @@ void main() {
         priority: EisenhowerPriority.urgentImportant,
         estimatedTime: 30,
         completedAt: null,
-        order: 500.0,
+        order: 'M',
       );
 
       when(mockTaskRepository.getList(
@@ -219,8 +228,7 @@ void main() {
 
       // Assert
       verify(mockTaskRepository.add(argThat(
-        predicate<Task>((task) => task.order == 500.0 // Should use the provided order
-            ),
+        predicate<Task>((task) => task.order == 'M'),
       ))).called(1);
     });
 
