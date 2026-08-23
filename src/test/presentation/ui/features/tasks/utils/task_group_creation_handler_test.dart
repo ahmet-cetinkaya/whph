@@ -201,8 +201,9 @@ void main() {
     test('resolves built-in todo status ID', () async {
       fakeMediator.statusesResponse = GetListTaskStatusesQueryResponse(
         items: [
-          TaskStatusListItem(id: TaskStatusConstants.todoId, name: '', order: 1, isBuiltIn: true, isDoneStatus: false),
-          TaskStatusListItem(id: TaskStatusConstants.doneId, name: '', order: 2, isBuiltIn: true, isDoneStatus: true),
+          TaskStatusListItem(
+              id: TaskStatusConstants.todoId, name: '', order: 'U', isBuiltIn: true, isDoneStatus: false),
+          TaskStatusListItem(id: TaskStatusConstants.doneId, name: '', order: 'V', isBuiltIn: true, isDoneStatus: true),
         ],
         totalItemCount: 2,
         pageIndex: 0,
@@ -216,8 +217,9 @@ void main() {
     test('resolves built-in done status ID', () async {
       fakeMediator.statusesResponse = GetListTaskStatusesQueryResponse(
         items: [
-          TaskStatusListItem(id: TaskStatusConstants.todoId, name: '', order: 1, isBuiltIn: true, isDoneStatus: false),
-          TaskStatusListItem(id: TaskStatusConstants.doneId, name: '', order: 2, isBuiltIn: true, isDoneStatus: true),
+          TaskStatusListItem(
+              id: TaskStatusConstants.todoId, name: '', order: 'U', isBuiltIn: true, isDoneStatus: false),
+          TaskStatusListItem(id: TaskStatusConstants.doneId, name: '', order: 'V', isBuiltIn: true, isDoneStatus: true),
         ],
         totalItemCount: 2,
         pageIndex: 0,
@@ -232,7 +234,7 @@ void main() {
       fakeMediator.statusesResponse = GetListTaskStatusesQueryResponse(
         items: [
           TaskStatusListItem(
-              id: 'in-progress-uuid', name: 'In Progress', order: 1.5, isBuiltIn: false, isDoneStatus: false),
+              id: 'in-progress-uuid', name: 'In Progress', order: 'V', isBuiltIn: false, isDoneStatus: false),
         ],
         totalItemCount: 1,
         pageIndex: 0,
