@@ -157,6 +157,7 @@ class TaskCard extends StatelessWidget {
             taskId: taskItem.id,
             isCompleted: taskItem.isCompleted,
             statusId: taskItem.statusId,
+            priority: taskItem.priority,
             onToggleCompleted: null,
             subTasksCompletionPercentage: taskItem.subTasksCompletionPercentage,
             size: isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium,
