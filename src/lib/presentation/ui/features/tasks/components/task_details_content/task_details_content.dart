@@ -536,6 +536,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                 taskId: widget.taskId,
                 isCompleted: task.isCompleted,
                 statusId: task.statusId,
+                priority: task.priority,
                 onToggleCompleted: _controller.toggleTaskCompletion,
                 subTasksCompletionPercentage: task.subTasksCompletionPercentage,
               ),

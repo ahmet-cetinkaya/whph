@@ -17,6 +17,7 @@ class TaskCompleteButton extends StatefulWidget {
   final bool isCompleted;
   final VoidCallback? onToggleCompleted;
   final Color? color;
+  final Color? borderColor;
   final double subTasksCompletionPercentage;
   final double size;
 
@@ -26,6 +27,7 @@ class TaskCompleteButton extends StatefulWidget {
     required this.isCompleted,
     this.onToggleCompleted,
     this.color,
+    this.borderColor,
     this.subTasksCompletionPercentage = 0.0,
     this.size = AppTheme.buttonSize2XSmall,
   });
@@ -151,7 +153,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = widget.color ?? Theme.of(context).colorScheme.primary;
-    final borderColor = widget.color ?? AppTheme.borderColor;
+    final borderColor = widget.borderColor ?? widget.color ?? AppTheme.borderColor;
     const double hoverSize = AppTheme.buttonSizeMedium;
 
     return SizedBox(
