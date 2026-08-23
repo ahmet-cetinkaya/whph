@@ -1,4 +1,5 @@
 import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 
 @jsonSerializable
@@ -16,7 +17,7 @@ class TaskWithTotalDuration extends Task {
     super.statusId,
     super.estimatedTime,
     super.parentTaskId,
-    super.order = 0,
+    super.order = OrderRank.initialRank,
     super.plannedDateReminderTime = ReminderTime.none,
     super.plannedDateReminderCustomOffset,
     super.deadlineDateReminderTime = ReminderTime.none,

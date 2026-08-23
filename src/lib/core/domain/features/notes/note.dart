@@ -6,7 +6,7 @@ import 'package:whph/core/domain/features/notes/note_tag.dart';
 class Note extends BaseEntity<String> {
   String title;
   String? content;
-  double order = 0;
+  String order = OrderRank.initialRank;
 
   List<NoteTag> tags = [];
 
@@ -17,7 +17,7 @@ class Note extends BaseEntity<String> {
     super.deletedDate,
     required this.title,
     this.content,
-    this.order = 0.0,
+    this.order = OrderRank.initialRank,
     this.tags = const [],
   });
 
@@ -38,8 +38,14 @@ class Note extends BaseEntity<String> {
       deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
       title: json['title'] as String,
       content: json['content'] as String?,
-      order: (json['order'] as num?)?.toDouble() ?? 0.0,
+      order: _parseOrder(json['order']),
       tags: (json['tags'] as List?)?.map((e) => NoteTag.fromJson(e as Map<String, dynamic>)).toList() ?? [],
     );
+  }
+
+  static String _parseOrder(Object? value) {
+    if (value is String && !OrderRank.needsNormalization([value])) return value;
+    if (value is num) return OrderRank.fromLegacyDouble(value.toDouble());
+    return OrderRank.initialRank;
   }
 }
