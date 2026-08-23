@@ -102,7 +102,6 @@ class _HabitsPageState extends State<HabitsPage> {
   bool _filterByArchived = false;
   String? _searchQuery;
   SortConfig<HabitSortFields> _sortConfig = HabitDefaults.sorting;
-  bool _forceOriginalLayout = false;
   String? _handledHabitId;
   bool _isHabitListVisible = false;
   bool _isHabitDataLoaded = false;
@@ -171,14 +170,6 @@ class _HabitsPageState extends State<HabitsPage> {
     if (mounted) {
       setState(() {
         _sortConfig = newConfig;
-      });
-    }
-  }
-
-  void _onLayoutToggleChange(bool forceOriginalLayout) {
-    if (mounted) {
-      setState(() {
-        _forceOriginalLayout = forceOriginalLayout;
       });
     }
   }
@@ -265,7 +256,7 @@ class _HabitsPageState extends State<HabitsPage> {
     final rightPadding =
         isCompactView ? HabitUiConstants.calendarPaddingMobile : HabitUiConstants.calendarPaddingDesktop;
     final baseSpacing = HabitUiConstants.calendarTrailingSpacer + rightPadding + AppTheme.size4XSmall;
-    final dragHandleSpacing = (_sortConfig.useCustomOrder && !_forceOriginalLayout) ? _dragHandleWidth : 0;
+    final dragHandleSpacing = _sortConfig.useCustomOrder ? _dragHandleWidth : 0;
 
     return baseSpacing + dragHandleSpacing;
   }
@@ -329,13 +320,11 @@ class _HabitsPageState extends State<HabitsPage> {
                     showNoTagsFilter: _showNoTagsFilter,
                     filterByArchived: _filterByArchived,
                     sortConfig: _sortConfig,
-                    forceOriginalLayout: _forceOriginalLayout,
                     habitListStyle: _habitListStyle,
                     onTagFilterChange: _onFilterTagsSelect,
                     onArchiveFilterChange: _onToggleArchived,
                     onSearchChange: _onSearchChange,
                     onSortChange: _onSortConfigChange,
-                    onLayoutToggleChange: _onLayoutToggleChange,
                     showSearchFilter: true,
                     showSortButton: true,
                     showSaveButton: true,
@@ -385,7 +374,6 @@ class _HabitsPageState extends State<HabitsPage> {
                   search: _searchQuery,
                   sortConfig: _sortConfig,
                   enableReordering: _sortConfig.useCustomOrder,
-                  forceOriginalLayout: _forceOriginalLayout,
                   useParentScroll: false,
                   isThreeStateEnabled: _isThreeStateEnabled,
                   isReverseDayOrder: _reverseDayOrder,

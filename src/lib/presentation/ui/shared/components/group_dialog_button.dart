@@ -18,6 +18,9 @@ class GroupDialogButton<T> extends StatefulWidget {
   final Function(SortConfig<T>) onConfigChanged;
   final List<SortOptionWithTranslationKey<T>>? availableOptions;
 
+  /// When true the control is inert: it renders greyed out and cannot be opened.
+  final bool isDisabled;
+
   const GroupDialogButton({
     super.key,
     required this.tooltip,
@@ -26,6 +29,7 @@ class GroupDialogButton<T> extends StatefulWidget {
     this.availableOptions,
     this.iconColor,
     this.iconSize = AppTheme.iconSizeMedium,
+    this.isDisabled = false,
   });
 
   @override
@@ -51,14 +55,14 @@ class _GroupDialogButtonState<T> extends State<GroupDialogButton<T>> {
   @override
   Widget build(BuildContext context) {
     final Color effectiveColor = widget.iconColor ?? Theme.of(context).primaryColor;
-    final bool isActive = widget.config.enableGrouping;
+    final bool isActive = widget.config.enableGrouping && !widget.isDisabled;
 
     return Material(
       type: MaterialType.transparency,
       child: Tooltip(
         message: widget.tooltip,
         child: InkWell(
-          onTap: () => _showGroupDialog(context),
+          onTap: widget.isDisabled ? null : () => _showGroupDialog(context),
           customBorder: const CircleBorder(),
           hoverColor: AppTheme.surface1,
           child: Container(
@@ -67,7 +71,7 @@ class _GroupDialogButtonState<T> extends State<GroupDialogButton<T>> {
             alignment: Alignment.center,
             child: Icon(
               isActive ? Icons.view_agenda : Icons.view_agenda_outlined,
-              color: isActive ? effectiveColor : Colors.grey,
+              color: widget.isDisabled ? Theme.of(context).disabledColor : (isActive ? effectiveColor : Colors.grey),
               size: widget.iconSize,
             ),
           ),

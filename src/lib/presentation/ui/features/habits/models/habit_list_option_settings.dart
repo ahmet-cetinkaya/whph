@@ -21,9 +21,6 @@ class HabitListOptionSettings {
   /// Current sort configuration
   final SortConfig<HabitSortFields>? sortConfig;
 
-  /// Whether to force the original layout even with custom sort
-  final bool forceOriginalLayout;
-
   /// Current habit list style
   final HabitListStyle habitListStyle;
 
@@ -34,7 +31,6 @@ class HabitListOptionSettings {
     this.filterByArchived = false,
     this.search,
     this.sortConfig,
-    this.forceOriginalLayout = false,
     this.habitListStyle = HabitListStyle.grid,
   });
 
@@ -96,7 +92,6 @@ class HabitListOptionSettings {
       filterByArchived: json['filterByArchived'] as bool? ?? false,
       search: json['search'] as String?,
       sortConfig: sortConfig,
-      forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
       habitListStyle: habitListStyle,
     );
   }
@@ -107,7 +102,6 @@ class HabitListOptionSettings {
       'showNoTagsFilter': showNoTagsFilter,
       'filterByArchived': filterByArchived,
       'search': search, // Always include search, even if null
-      'forceOriginalLayout': forceOriginalLayout,
       'habitListStyle': habitListStyle.toString().split('.').last,
     };
 

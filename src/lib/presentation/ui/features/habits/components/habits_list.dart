@@ -41,7 +41,6 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
   final SortConfig<HabitSortFields>? sortConfig;
   final DateTime? excludeCompletedForDate;
   final bool enableReordering;
-  final bool forceOriginalLayout;
   final bool useParentScroll;
   final bool useSliver;
   final bool isThreeStateEnabled;
@@ -68,7 +67,6 @@ class HabitsList extends StatefulWidget implements IPaginatedWidget {
     this.sortConfig,
     this.excludeCompletedForDate,
     this.enableReordering = false,
-    this.forceOriginalLayout = false,
     this.useParentScroll = true,
     this.useSliver = false,
     this.isThreeStateEnabled = false,
@@ -107,8 +105,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   @override
   bool get hasNextPage => _habitList?.hasNext ?? false;
 
-  bool get _isCustomOrderActive =>
-      widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout;
+  bool get _isCustomOrderActive => widget.enableReordering && widget.sortConfig?.useCustomOrder == true;
+
+  /// Custom sort outranks grouping: the query must not group so a
+  /// previously-saved grouping cannot leak through.
+  bool get _isGroupingSuppressed => widget.sortConfig?.useCustomOrder ?? false;
 
   HabitListStyle get _effectiveStyle => _isCustomOrderActive ? HabitListStyle.list : widget.style;
 
@@ -296,7 +297,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           filterByArchived: _currentFilters.filterByArchived,
           search: _currentFilters.search,
           sortBy: _currentFilters.sortConfig?.orderOptions,
-          groupBy: _currentFilters.sortConfig?.groupOption,
+          groupBy:
+              (_currentFilters.sortConfig?.useCustomOrder ?? false) ? null : _currentFilters.sortConfig?.groupOption,
           sortByCustomSort: _currentFilters.sortConfig?.useCustomOrder ?? false,
           customTagSortOrder: _currentFilters.sortConfig?.customTagSortOrder,
           excludeCompletedForDate: _currentFilters.excludeCompletedForDate,
@@ -343,12 +345,10 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     );
   }
 
-  /// Detects order values that can no longer accept reliable midpoint
-  /// insertions: near-zero/non-positive values, duplicates, or adjacent gaps
-  /// smaller than [OrderRank.minimumOrderGap].
+  /// Detects duplicate or non-canonical ranks that require normalization.
   bool _shouldNormalizeOrders(List<HabitListItem> items) {
     final orders = items.map((item) => item.order).toList();
-    return OrderRank.hasNearZeroOrder(orders) || OrderRank.needsNormalization(orders);
+    return OrderRank.needsNormalization(orders);
   }
 
   Future<void> _normalizeHabitOrders() async {
@@ -530,9 +530,9 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
     final groupedHabits = <String, List<HabitListItem>>{};
 
-    final bool showHeaders =
+    final bool showHeaders = !_isGroupingSuppressed &&
         ((widget.sortConfig?.orderOptions.isNotEmpty ?? false) || (widget.sortConfig?.groupOption != null)) &&
-            (widget.sortConfig?.enableGrouping ?? false);
+        (widget.sortConfig?.enableGrouping ?? false);
 
     if (!showHeaders) {
       groupedHabits[''] = _habitList!.items;
@@ -706,9 +706,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                     onTap: () => toggleGroupCollapse(groupName),
                   ),
                 if (!collapsedGroups.contains(groupName))
-                  if (widget.enableReordering &&
-                      widget.sortConfig?.useCustomOrder == true &&
-                      !widget.forceOriginalLayout)
+                  if (_isCustomOrderActive)
                     ReorderableListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -959,7 +957,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
 
-    if (widget.enableReordering && widget.sortConfig?.useCustomOrder == true && !widget.forceOriginalLayout) {
+    if (_isCustomOrderActive) {
       return SliverReorderableList(
         itemCount: totalCount,
         onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, filteredVisualItems),

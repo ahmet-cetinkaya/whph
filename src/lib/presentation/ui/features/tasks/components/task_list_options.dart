@@ -82,15 +82,6 @@ class TaskListOptions extends PersistentListOptionsBase {
   /// Whether to show the sort button
   final bool showSortButton;
 
-  /// Whether to show the layout toggle button when custom sort is enabled
-  final bool showLayoutToggle;
-
-  /// Whether to force the original layout even with custom sort
-  final bool forceOriginalLayout;
-
-  /// Callback when layout toggle changes
-  final Function(bool)? onLayoutToggleChange;
-
   /// Whether to show the completed tasks toggle button
   final bool showCompletedTasksToggle;
 
@@ -140,10 +131,7 @@ class TaskListOptions extends PersistentListOptionsBase {
     this.showDateFilter = true,
     this.showSearchFilter = true,
     this.showSortButton = true,
-    this.showLayoutToggle = true,
     this.showGroupingOption = true,
-    this.forceOriginalLayout = false,
-    this.onLayoutToggleChange,
     super.showSaveButton = true,
     this.showCompletedTasksToggle = true,
     this.showCompletedTasks = false,
@@ -204,6 +192,11 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
               return config;
             },
           };
+
+  /// Custom order outranks grouping in list mode, so the grouping control is
+  /// inert there. Board mode is grouped by status by definition and keeps it.
+  bool get _isGroupingSuppressed =>
+      widget.viewMode != TaskViewMode.board && (widget.sortConfig?.useCustomOrder ?? false);
 
   @override
   void initSettingKey() {
@@ -275,10 +268,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         widget.onSortChange!(filterSettings.sortConfig!);
       }
 
-      if (widget.onLayoutToggleChange != null) {
-        widget.onLayoutToggleChange!(filterSettings.forceOriginalLayout);
-      }
-
       if (widget.onViewModeChange != null) {
         widget.onViewModeChange!(filterSettings.viewMode);
       }
@@ -326,7 +315,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
           showCompletedTasks: widget.showCompletedTasks,
           showSubTasks: widget.showSubTasks,
           sortConfig: widget.sortConfig,
-          forceOriginalLayout: widget.forceOriginalLayout,
           viewMode: widget.viewMode,
         );
 
@@ -366,7 +354,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
       showCompletedTasks: widget.showCompletedTasks,
       showSubTasks: widget.showSubTasks,
       sortConfig: widget.sortConfig,
-      forceOriginalLayout: widget.forceOriginalLayout,
       viewMode: widget.viewMode,
     ).toJson();
 
@@ -391,7 +378,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
     final completedChanges = widget.showCompletedTasks != oldWidget.showCompletedTasks;
     final subTasksChanges = widget.showSubTasks != oldWidget.showSubTasks;
     final sortChanges = widget.sortConfig != oldWidget.sortConfig;
-    final layoutChanges = widget.forceOriginalLayout != oldWidget.forceOriginalLayout;
     final viewModeChanges = widget.viewMode != oldWidget.viewMode;
 
     final hasNonSearchChanges = tagChanges ||
@@ -402,7 +388,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
         completedChanges ||
         subTasksChanges ||
         sortChanges ||
-        layoutChanges ||
         viewModeChanges;
 
     if (hasNonSearchChanges) {
@@ -682,20 +667,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                     customOrderConfigurators: _customOrderConfigurators,
                   ),
 
-                // Layout toggle button (only show when custom sort is enabled)
-                if (widget.showLayoutToggle &&
-                    widget.sortConfig?.useCustomOrder == true &&
-                    widget.onLayoutToggleChange != null)
-                  FilterIconButton(
-                    icon: widget.forceOriginalLayout ? Icons.reorder_outlined : Icons.reorder,
-                    iconSize: AppTheme.iconSizeMedium,
-                    color: !widget.forceOriginalLayout ? Theme.of(context).primaryColor : Colors.grey,
-                    tooltip: widget.forceOriginalLayout
-                        ? _translationService.translate(SharedTranslationKeys.enableReorderingTooltip)
-                        : _translationService.translate(SharedTranslationKeys.disableReorderingTooltip),
-                    onPressed: () => widget.onLayoutToggleChange!(!widget.forceOriginalLayout),
-                  ),
-
                 // View mode toggle (list / board / calendar)
                 if (widget.onViewModeChange != null)
                   Builder(
@@ -736,6 +707,7 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                   GroupDialogButton<TaskSortFields>(
                     iconColor: Theme.of(context).primaryColor,
                     tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
+                    isDisabled: _isGroupingSuppressed,
                     config: widget.sortConfig ??
                         (widget.viewMode == TaskViewMode.board ? TaskDefaults.boardSorting : TaskDefaults.sorting),
                     onConfigChanged: widget.onSortChange!,

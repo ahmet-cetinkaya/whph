@@ -69,7 +69,6 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final bool showSelectButton;
   final bool transparentCards;
   final bool enableReordering;
-  final bool forceOriginalLayout;
   final bool useParentScroll;
   final bool useSliver;
 
@@ -115,7 +114,6 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
     this.showSelectButton = false,
     this.transparentCards = false,
     this.enableReordering = false,
-    this.forceOriginalLayout = false,
     this.useParentScroll = true,
     this.useSliver = false,
     this.showDoneOverlayWhenEmpty = false,
@@ -167,6 +165,15 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
   @override
   bool get hasNextPage => _tasks?.hasNext ?? false;
+
+  /// Reordering is available only when custom sort is the active ordering.
+  bool get _isCustomOrderActive =>
+      widget.enableReordering && widget.filterByCompleted != true && (widget.sortConfig?.useCustomOrder ?? false);
+
+  /// Custom sort outranks grouping in list mode: the query must not group, so a
+  /// previously-saved grouping cannot leak through. Board mode stays grouped.
+  bool get _isGroupingSuppressed =>
+      widget.viewMode != TaskViewMode.board && (widget.sortConfig?.useCustomOrder ?? false);
 
   @override
   void initState() {
@@ -289,7 +296,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   void didUpdateWidget(TaskList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final isLayoutChanged = oldWidget.forceOriginalLayout != widget.forceOriginalLayout;
     final isFilterChanged = _isFilterChanged(oldWidget);
     final isViewModeChanged = oldWidget.viewMode != widget.viewMode;
 
@@ -313,7 +319,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       return;
     }
 
-    if ((isLayoutChanged || isFilterChanged) && mounted) {
+    if ((isFilterChanged) && mounted) {
       _refreshDebounce?.cancel();
       _pendingRefresh = false;
 
@@ -417,9 +423,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           filterByParentTaskId: widget.parentTaskId,
           areParentAndSubTasksIncluded: widget.includeSubTasks,
           sortBy: widget.sortConfig?.orderOptions,
-          groupBy: widget.sortConfig?.groupOption,
+          groupBy: _isGroupingSuppressed ? null : widget.sortConfig?.groupOption,
           sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
-          enableGrouping: widget.sortConfig?.enableGrouping ?? true,
+          enableGrouping: _isGroupingSuppressed ? false : (widget.sortConfig?.enableGrouping ?? true),
           customTagSortOrder: widget.sortConfig?.customTagSortOrder,
           ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         );
@@ -519,13 +525,11 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     _backLastScrollPosition();
   }
 
-  /// Detects order values that can no longer accept reliable midpoint
-  /// insertions: near-zero/non-positive values, duplicates, or adjacent gaps
-  /// smaller than [OrderRank.minimumOrderGap]. Such a set must be renormalized
-  /// before the next reorder to keep drops landing where dropped.
+  /// Detects duplicate or non-canonical ranks that require normalization before
+  /// the next reorder to keep drops landing where dropped.
   bool _shouldNormalizeOrders(List<TaskListItem> items) {
     final orders = items.map((item) => item.order).toList();
-    return OrderRank.hasNearZeroOrder(orders) || OrderRank.needsNormalization(orders);
+    return OrderRank.needsNormalization(orders);
   }
 
   Future<void> _normalizeTaskOrders() async {
@@ -628,14 +632,20 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   }
 
   /// The field tasks are currently grouped by (drives board columns).
-  TaskSortFields? get _primaryGroupField =>
-      widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field;
+  TaskSortFields? get _primaryGroupField => _isGroupingSuppressed
+      ? null
+      : (widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field);
 
   Map<String, List<TaskListItem>> _groupTasks() {
     if (_tasks == null) return {};
 
     final groupedTasks = <String, List<TaskListItem>>{};
     final filteredTasks = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList();
+
+    if (_isGroupingSuppressed) {
+      groupedTasks[''] = filteredTasks;
+      return groupedTasks;
+    }
 
     // Check grouping settings
     final primarySortField =
@@ -1202,7 +1212,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     final groupEntries = groupedTasks.entries.toList();
 
     return ListView.builder(
-        key: ValueKey('list_content_${widget.forceOriginalLayout}'),
+        key: ValueKey('list_content_$_isCustomOrderActive'),
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
@@ -1237,7 +1247,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
                 // Nested Independent List
                 if (!collapsedGroups.contains(groupName))
-                  if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout)
+                  if (_isCustomOrderActive)
                     ReorderableListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -1334,7 +1344,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             );
           } else if (showLoadMore) {
             return Padding(
-              key: ValueKey('load_more_button_list_${widget.forceOriginalLayout}'),
+              key: ValueKey('load_more_button_list_$_isCustomOrderActive'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
@@ -1343,7 +1353,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             );
           } else if (showInfinityLoading) {
             return Padding(
-              key: ValueKey('loading_indicator_list_${widget.forceOriginalLayout}'),
+              key: ValueKey('loading_indicator_list_$_isCustomOrderActive'),
               padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
               child: const Center(child: CircularProgressIndicator()),
             );
@@ -1362,7 +1372,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     if (index >= visualItems.length) {
       if (showLoadMore) {
         return Padding(
-          key: ValueKey('load_more_button_sliver_list_${widget.forceOriginalLayout}'),
+          key: ValueKey('load_more_button_sliver_list_$_isCustomOrderActive'),
           padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
           child: Center(
             child: LoadMoreButton(onPressed: onLoadMore),
@@ -1370,7 +1380,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         );
       } else if (showInfinityLoading) {
         return Padding(
-          key: ValueKey('loading_indicator_sliver_list_${widget.forceOriginalLayout}'),
+          key: ValueKey('loading_indicator_sliver_list_$_isCustomOrderActive'),
           padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
           child: const Center(child: CircularProgressIndicator()),
         );
@@ -1421,7 +1431,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           onPressed: () => widget.onSelectTask?.call(task),
         ));
       }
-      if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+      if (_isCustomOrderActive) {
         trailingButtons.add(ReorderableDragStartListener(
           key: ValueKey('sliver_trailing_drag_${task.id}'),
           index: index,
@@ -1446,7 +1456,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           transparent: widget.transparentCards,
           trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
           isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          isCustomOrder: widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
+          isCustomOrder: _isCustomOrderActive,
         ),
       );
     }
@@ -1482,7 +1492,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
 
-    if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+    if (_isCustomOrderActive) {
       return SliverReorderableList(
         itemCount: totalCount,
         onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, visualItems),

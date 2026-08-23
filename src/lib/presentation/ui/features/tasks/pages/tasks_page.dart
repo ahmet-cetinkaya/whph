@@ -71,7 +71,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
   String? _searchQuery;
   bool _showNoTagsFilter = false;
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
-  bool _forceOriginalLayout = false;
   TaskViewMode _viewMode = TaskViewMode.list;
   TaskCalendarService? _calendarService;
 
@@ -237,13 +236,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     _updateCalendarFilters();
   }
 
-  void _onLayoutToggleChange(bool forceOriginalLayout) {
-    if (!mounted) return;
-    setState(() {
-      _forceOriginalLayout = forceOriginalLayout;
-    });
-  }
-
   void _updateCalendarFilters() {
     if (_calendarService == null || _viewMode != TaskViewMode.calendar) return;
     _calendarService!.setFilters(
@@ -263,13 +255,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
     setState(() {
       _viewMode = mode;
 
-      // When switching to board mode, ensure grouping is enabled with status
-      if (mode == TaskViewMode.board) {
-        // Only apply board defaults if grouping is not already enabled
-        if (!_sortConfig.enableGrouping || _sortConfig.groupOption == null) {
-          _sortConfig = TaskDefaults.boardSorting;
-        }
-      }
+      _sortConfig = TaskDefaults.sortConfigForViewMode(mode, _sortConfig);
 
       if (mode == TaskViewMode.calendar) {
         _calendarService ??= container.resolve<TaskCalendarService>();
@@ -467,9 +453,7 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
               showSubTasksToggle: true,
               hasItems: true,
               sortConfig: _sortConfig,
-              forceOriginalLayout: _forceOriginalLayout,
               onSortChange: _onSortConfigChange,
-              onLayoutToggleChange: _onLayoutToggleChange,
               settingKeyVariantSuffix: tasksListOptionsSettingsKeySuffix,
               onSettingsLoaded: _onSettingsLoaded,
               viewMode: _viewMode,
@@ -508,7 +492,6 @@ class _TasksPageState extends State<TasksPage> with AutomaticKeepAliveClientMixi
                         onList: _onDataListed,
                         onTaskCompleted: _onTaskCompleted,
                         enableReordering: !_showCompletedTasks && _sortConfig.useCustomOrder,
-                        forceOriginalLayout: _forceOriginalLayout,
                         sortConfig: _sortConfig,
                         useParentScroll: false,
                         paginationMode: PaginationMode.infinityScroll,
