@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/core/domain/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
 import 'package:whph/main.dart' as app_main;
@@ -571,6 +572,44 @@ void main() {
 
       // Act & Assert - Subtasks are rendered as flat list items, not inside the card
       expect(find.text('Subtask 1'), findsNothing);
+    });
+
+    testWidgets('incomplete task checkbox border uses priority color', (tester) async {
+      final priorityTask = TaskListItem(
+        id: 'priority-task-id',
+        title: 'Priority Task',
+        isCompleted: false,
+        priority: EisenhowerPriority.urgentImportant,
+        statusId: TaskStatusConstants.todoId,
+        tags: [],
+        subTasks: [],
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: TaskCard(
+              taskItem: priorityTask,
+              onOpenDetails: () {},
+              onCompleted: (id) {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final checkbox = tester.widget<Container>(find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.decoration is BoxDecoration &&
+            (widget.decoration! as BoxDecoration).shape == BoxShape.circle,
+      ));
+      final decoration = checkbox.decoration! as BoxDecoration;
+
+      expect(
+        (decoration.border! as Border).top.color,
+        TaskUiConstants.getPriorityColor(EisenhowerPriority.urgentImportant),
+      );
     });
   });
 }
