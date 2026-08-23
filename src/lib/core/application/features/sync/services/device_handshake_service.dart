@@ -18,6 +18,18 @@ class DeviceHandshakeService {
       final uri = Uri.parse('ws://$ipAddress:$port');
       channel = WebSocketChannel.connect(uri);
 
+      // Await readiness explicitly and handle the error here. Otherwise
+      // channel.ready's error completion is never observed and Dart
+      // reports it as an unhandled async error to the global zone handler,
+      // on top of the expected onError callback below - doubling log noise
+      // for every unreachable IP during LAN device discovery.
+      try {
+        await channel.ready;
+      } catch (e) {
+        Logger.debug('WebSocket connection failed during handshake with $ipAddress:$port - $e');
+        return null;
+      }
+
       // Set up a completer for the response
       final completer = Completer<DeviceInfo?>();
 
@@ -80,7 +92,12 @@ class DeviceHandshakeService {
           }
         },
         onError: (error) {
-          Logger.error('WebSocket error during handshake: $error');
+          // Expected during LAN device discovery: most scanned IPs are not
+          // running WHPH, so "No route to host" / "Connection refused" here
+          // is normal and not worth surfacing as an ERROR (or to the global
+          // zone error handler) - it would otherwise flood the log for every
+          // unreachable address in the scanned subnet.
+          Logger.debug('WebSocket error during handshake: $error');
           if (!completer.isCompleted) {
             completer.complete(null);
           }
