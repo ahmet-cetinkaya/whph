@@ -6,6 +6,8 @@ import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart' hide test, expect, setUpAll, group, tearDownAll;
 import 'package:test/test.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/migrations/migration_v35_to_v36.dart';
 import 'generated/schema.dart';
 
 void main() {
@@ -76,14 +78,299 @@ void main() {
 
       await db.close();
     });
+
+    test('v35 to v36 preserves legacy order, partitions, fields, and children', () async {
+      final schema35 = await verifier.schemaAt(35);
+      final db = TestAppDatabase(schema35.newConnection(), 35);
+      addTearDown(db.close);
+      const early = 1000;
+      const late = 2000;
+
+      await _insertHabit(db, 'habit-three', late, 3.0);
+      await _insertHabit(db, 'habit-one', late, 1.0);
+      await _insertHabit(db, 'habit-two', late, 2.0);
+      await _insertHabit(db, 'habit-tie-b', early, 0.0);
+      await _insertHabit(db, 'habit-tie-a', early, 0.0);
+      await db.customStatement(
+        'INSERT INTO habit_record_table '
+        '(id, created_date, habit_id, occurred_at) VALUES (?, ?, ?, ?)',
+        ['record-one', early, 'habit-one', early],
+      );
+      await db.customStatement(
+        'INSERT INTO habit_record_table '
+        '(id, created_date, habit_id, occurred_at) VALUES (?, ?, ?, ?)',
+        ['record-two', late, 'habit-one', late],
+      );
+      await db.customStatement(
+        'INSERT INTO habit_tag_table '
+        '(id, created_date, habit_id, tag_id) VALUES (?, ?, ?, ?)',
+        ['habit-tag-one', early, 'habit-one', 'tag-one'],
+      );
+      await db.customStatement(
+        'INSERT INTO habit_time_record_table '
+        '(id, created_date, habit_id, duration) VALUES (?, ?, ?, ?)',
+        ['habit-time-one', early, 'habit-one', 60],
+      );
+
+      await _insertNote(db, 'note-two', late, 2.0);
+      await _insertNote(db, 'note-one', early, 1.0);
+      await _insertStatus(db, 'status-two', late, 2.0);
+      await _insertStatus(db, 'status-one', early, 1.0);
+      await _insertTask(db, id: 'parent', createdDate: early, order: 0.0);
+      await _insertTask(db, id: 'root-two', createdDate: late, order: 2.0);
+      await _insertTask(db, id: 'root-one', createdDate: late, order: 1.0);
+      await _insertTask(db, id: 'child-two', createdDate: late, order: 2.0, parentTaskId: 'parent');
+      await _insertTask(
+        db,
+        id: 'parent-two',
+        createdDate: late,
+        order: 3.0,
+      );
+      await _insertTask(
+        db,
+        id: 'second-child',
+        createdDate: early,
+        order: 0.0,
+        parentTaskId: 'parent-two',
+      );
+      await _insertTask(
+        db,
+        id: 'child-one',
+        createdDate: early,
+        order: 1.0,
+        parentTaskId: 'parent',
+        statusId: 'status-one',
+        plannedReminderTime: 2,
+        deadlineReminderTime: 3,
+        plannedOffset: 15,
+        deadlineOffset: 30,
+      );
+      await db.customStatement(
+        'INSERT INTO task_tag_table '
+        '(id, created_date, task_id, tag_id) VALUES (?, ?, ?, ?)',
+        ['task-tag-one', early, 'child-one', 'tag-one'],
+      );
+      await db.customStatement(
+        'INSERT INTO task_time_record_table '
+        '(id, created_date, task_id, duration) VALUES (?, ?, ?, ?)',
+        ['task-time-one', early, 'child-one', 60],
+      );
+
+      final legacyOrders = await _legacyOrders(db);
+      final legacyCounts = await _tableCounts(db);
+
+      await _migrateV35ToV36(db);
+
+      expect(await _columnType(db, 'habit_table', 'order'), 'TEXT');
+      expect(await _columnType(db, 'note_table', 'order'), 'TEXT');
+      expect(await _columnType(db, 'task_status_table', 'order'), 'TEXT');
+      expect(await _columnType(db, 'task_table', 'order'), 'TEXT');
+
+      expect(
+        await _orderedIds(db, 'habit_table'),
+        legacyOrders['habit_table'],
+      );
+      expect(await _orderedIds(db, 'note_table'), legacyOrders['note_table']);
+      expect(
+        await _orderedIds(db, 'task_status_table'),
+        legacyOrders['task_status_table'],
+      );
+      expect(await _orderedTaskIds(db, null), legacyOrders['root_tasks']);
+      expect(
+        await _orderedTaskIds(db, 'parent'),
+        legacyOrders['parent_tasks'],
+      );
+      expect(
+        await _orderedTaskIds(db, 'parent-two'),
+        legacyOrders['parent_two_tasks'],
+      );
+      expect(await _tableCounts(db), legacyCounts);
+      await _expectCanonicalDistinctRanks(db, 'habit_table');
+      await _expectCanonicalDistinctRanks(db, 'note_table');
+      await _expectCanonicalDistinctRanks(db, 'task_status_table');
+      await _expectCanonicalDistinctRanks(db, 'task_table');
+
+      final child = await db.customSelect(
+        'SELECT status_id, planned_date_reminder_time, deadline_date_reminder_time, '
+        'planned_date_reminder_custom_offset, deadline_date_reminder_custom_offset '
+        'FROM task_table WHERE id = ?',
+        variables: [Variable.withString('child-one')],
+      ).getSingle();
+      expect(child.data, containsPair('status_id', 'status-one'));
+      expect(child.data, containsPair('planned_date_reminder_time', 2));
+      expect(child.data, containsPair('deadline_date_reminder_time', 3));
+      expect(child.data, containsPair('planned_date_reminder_custom_offset', 15));
+      expect(child.data, containsPair('deadline_date_reminder_custom_offset', 30));
+      expect(await _count(db, 'habit_record_table'), 2);
+      expect(await _count(db, 'habit_tag_table'), 1);
+      expect(await _count(db, 'habit_time_record_table'), 1);
+      expect(await _count(db, 'task_tag_table'), 1);
+      expect(await _count(db, 'task_time_record_table'), 1);
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+    });
+
+    test('v35 to v36 migration is a no-op when ranks are already text', () async {
+      final schema35 = await verifier.schemaAt(35);
+      final db = TestAppDatabase(schema35.newConnection(), 35);
+      addTearDown(db.close);
+      await _insertHabit(db, 'habit-two', 2000, 2.0);
+      await _insertHabit(db, 'habit-one', 1000, 1.0);
+      await _migrateV35ToV36(db);
+      final before = await _rankMap(db, 'habit_table');
+
+      await migrateV35ToV36(db, Migrator(db), Schema36(database: db));
+
+      expect(await _rankMap(db, 'habit_table'), before);
+      expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
+    });
   });
 }
 
-class TestAppDatabase extends AppDatabase {
-  final int _targetVersion;
+Future<void> _insertHabit(AppDatabase db, String id, int createdDate, double order) => db.customStatement(
+      'INSERT INTO habit_table '
+      '(id, created_date, name, description, has_reminder, reminder_days, has_goal, '
+      'target_frequency, period_days, "order") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, createdDate, id, '', 0, '', 0, 1, 7, order],
+    );
 
-  TestAppDatabase(super.e, this._targetVersion);
+Future<void> _insertNote(AppDatabase db, String id, int createdDate, double order) => db.customStatement(
+      'INSERT INTO note_table (id, title, created_date, "order") VALUES (?, ?, ?, ?)',
+      [id, id, createdDate, order],
+    );
+
+Future<void> _insertStatus(AppDatabase db, String id, int createdDate, double order) => db.customStatement(
+      'INSERT INTO task_status_table (id, created_date, name, "order") VALUES (?, ?, ?, ?)',
+      [id, createdDate, id, order],
+    );
+
+Future<void> _insertTask(
+  AppDatabase db, {
+  required String id,
+  required int createdDate,
+  required double order,
+  String? parentTaskId,
+  String? statusId,
+  int plannedReminderTime = 0,
+  int deadlineReminderTime = 0,
+  int? plannedOffset,
+  int? deadlineOffset,
+}) =>
+    db.customStatement(
+      'INSERT INTO task_table '
+      '(id, parent_task_id, title, status_id, created_date, "order", '
+      'planned_date_reminder_time, deadline_date_reminder_time, '
+      'planned_date_reminder_custom_offset, deadline_date_reminder_custom_offset) '
+      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        id,
+        parentTaskId,
+        id,
+        statusId,
+        createdDate,
+        order,
+        plannedReminderTime,
+        deadlineReminderTime,
+        plannedOffset,
+        deadlineOffset,
+      ],
+    );
+
+Future<List<String>> _orderedIds(AppDatabase db, String table) async {
+  final rows = await db.customSelect('SELECT id FROM $table ORDER BY "order" ASC').get();
+  return rows.map((row) => row.read<String>('id')).toList();
+}
+
+Future<List<String>> _orderedTaskIds(AppDatabase db, String? parentTaskId) async {
+  final predicate = parentTaskId == null ? 'parent_task_id IS NULL' : 'parent_task_id = ?';
+  final variables = parentTaskId == null ? const <Variable>[] : [Variable.withString(parentTaskId)];
+  final rows = await db
+      .customSelect(
+        'SELECT id FROM task_table WHERE $predicate ORDER BY "order" ASC',
+        variables: variables,
+      )
+      .get();
+  return rows.map((row) => row.read<String>('id')).toList();
+}
+
+Future<void> _expectCanonicalDistinctRanks(AppDatabase db, String table) async {
+  final rows = await db.customSelect('SELECT "order" FROM $table ORDER BY "order" ASC').get();
+  final ranks = rows.map((row) => row.read<String>('order')).toList();
+  expect(ranks.toSet(), hasLength(ranks.length));
+  expect(ranks, everyElement(matches(RegExp(r'^[0-9A-Za-z]*[1-9A-Za-z]$'))));
+}
+
+Future<int> _count(AppDatabase db, String table) async {
+  final row = await db.customSelect('SELECT COUNT(*) AS count FROM $table').getSingle();
+  return row.read<int>('count');
+}
+
+Future<Map<String, String>> _rankMap(AppDatabase db, String table) async {
+  final rows = await db.customSelect('SELECT id, "order" FROM $table').get();
+  return {for (final row in rows) row.read<String>('id'): row.read<String>('order')};
+}
+
+Future<void> _migrateV35ToV36(AppDatabase db) async {
+  await db.customStatement('PRAGMA foreign_keys = OFF');
+  try {
+    await db.transaction(() => migrateV35ToV36(db, Migrator(db), Schema36(database: db)));
+  } finally {
+    await db.customStatement('PRAGMA foreign_keys = ON');
+  }
+}
+
+Future<String?> _columnType(AppDatabase db, String table, String column) async {
+  final columns = await db.customSelect('PRAGMA table_info($table)').get();
+  return columns.where((row) => row.read<String>('name') == column).map((row) => row.read<String>('type')).firstOrNull;
+}
+
+Future<Map<String, List<String>>> _legacyOrders(AppDatabase db) async => {
+      'habit_table': await _legacyOrderedIds(db, 'habit_table'),
+      'note_table': await _legacyOrderedIds(db, 'note_table'),
+      'task_status_table': await _legacyOrderedIds(db, 'task_status_table'),
+      'root_tasks': await _legacyOrderedTaskIds(db, null),
+      'parent_tasks': await _legacyOrderedTaskIds(db, 'parent'),
+      'parent_two_tasks': await _legacyOrderedTaskIds(db, 'parent-two'),
+    };
+
+Future<List<String>> _legacyOrderedIds(AppDatabase db, String table) async {
+  final rows = await db.customSelect('SELECT id FROM $table ORDER BY "order" ASC, created_date ASC, id ASC').get();
+  return rows.map((row) => row.read<String>('id')).toList();
+}
+
+Future<List<String>> _legacyOrderedTaskIds(AppDatabase db, String? parentTaskId) async {
+  final predicate = parentTaskId == null ? 'parent_task_id IS NULL' : 'parent_task_id = ?';
+  final variables = parentTaskId == null ? const <Variable>[] : [Variable.withString(parentTaskId)];
+  final rows = await db
+      .customSelect(
+        'SELECT id FROM task_table WHERE $predicate '
+        'ORDER BY "order" ASC, created_date ASC, id ASC',
+        variables: variables,
+      )
+      .get();
+  return rows.map((row) => row.read<String>('id')).toList();
+}
+
+Future<Map<String, int>> _tableCounts(AppDatabase db) async => {
+      for (final table in _preservedTables) table: await _count(db, table),
+    };
+
+const _preservedTables = [
+  'habit_table',
+  'note_table',
+  'task_status_table',
+  'task_table',
+  'habit_record_table',
+  'habit_tag_table',
+  'habit_time_record_table',
+  'task_tag_table',
+  'task_time_record_table',
+];
+
+class TestAppDatabase extends AppDatabase {
+  int targetVersion;
+
+  TestAppDatabase(super.e, this.targetVersion);
 
   @override
-  int get schemaVersion => _targetVersion;
+  int get schemaVersion => targetVersion;
 }

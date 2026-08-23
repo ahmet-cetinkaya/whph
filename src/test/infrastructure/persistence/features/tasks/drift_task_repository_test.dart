@@ -256,9 +256,9 @@ void main() {
       test('should retrieve tasks with custom ordering', () async {
         // Arrange - Create tasks with specific order values to test ordering functionality
         final tasks = [
-          Task(id: 'task-order-a', createdDate: DateTime.utc(2024, 1, 1), title: 'Task A', order: 3.0), // Highest order
-          Task(id: 'task-order-b', createdDate: DateTime.utc(2024, 1, 1), title: 'Task B', order: 1.0), // Lowest order
-          Task(id: 'task-order-c', createdDate: DateTime.utc(2024, 1, 1), title: 'Task C', order: 2.0), // Middle order
+          Task(id: 'task-order-a', createdDate: DateTime.utc(2024, 1, 1), title: 'Task A', order: 'W'), // Highest order
+          Task(id: 'task-order-b', createdDate: DateTime.utc(2024, 1, 1), title: 'Task B', order: 'U'), // Lowest order
+          Task(id: 'task-order-c', createdDate: DateTime.utc(2024, 1, 1), title: 'Task C', order: 'V'), // Middle order
         ];
 
         for (final task in tasks) {
@@ -1539,6 +1539,28 @@ void main() {
         expect(resultExcluded.items.length, 1);
         expect(resultExcluded.items.any((t) => t.id == task1.id), isTrue);
         expect(resultExcluded.items.any((t) => t.id == task2.id), isFalse);
+      });
+
+      test('orders canonical ranks identically in SQLite and Dart', () async {
+        final ranks = ['z', 'aV', 'U', '0000001', 'a'];
+        final expected = [...ranks]..sort();
+
+        for (final (index, rank) in ranks.indexed) {
+          await repository.add(Task(
+            id: 'rank-$index',
+            createdDate: DateTime.utc(2024, 1, 1),
+            title: 'rank-$index',
+            order: rank,
+          ));
+        }
+
+        final rows = await database
+            .customSelect(
+              'SELECT "order" FROM task_table ORDER BY "order" ASC',
+            )
+            .get();
+
+        expect(rows.map((row) => row.read<String>('order')), orderedEquals(expected));
       });
     });
   });
