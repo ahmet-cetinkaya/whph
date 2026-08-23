@@ -49,6 +49,11 @@ class SyncCommunicationService implements ISyncCommunicationService {
           startTime: startTime,
         );
 
+        // Close our end explicitly. A sync of ~250 pages opens a connection
+        // per page; leaving the successful ones for the peer to tear down
+        // holds sockets open against the server's connection limits longer
+        // than necessary.
+        await socket.close();
         return response;
       } catch (e) {
         attempt++;
