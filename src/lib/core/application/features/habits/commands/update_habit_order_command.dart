@@ -69,13 +69,18 @@ class UpdateHabitOrderCommandHandler implements IRequestHandler<UpdateHabitOrder
       afterId: request.afterHabitId,
       idOf: (h) => h.id,
       orderOf: (h) => h.order,
-      setOrder: (h, order) => h.order = order,
     );
 
     if (placement.requiresRenormalization) {
+      // Apply the computed ranks right before persisting — the only place
+      // these entities are written to.
+      for (final sibling in placement.renumbered!) {
+        sibling.order = placement.renumberedOrder![sibling.id]!;
+      }
       // Single transactional batch — all-or-nothing renumbering.
       await _habitRepository.updateMultiple(placement.renumbered!);
     } else {
+      habit.order = placement.order;
       await _habitRepository.update(habit);
     }
 

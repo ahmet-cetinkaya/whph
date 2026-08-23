@@ -1,34 +1,44 @@
 import 'package:acore/acore.dart';
 
 /// The outcome of resolving where a moved item should land and what its new
-/// order value is, given the authoritative order-sorted sibling set.
+/// order value(s) should be, given the authoritative order-sorted sibling
+/// set. Pure data: computing a placement never mutates [moved] or any
+/// sibling — the caller applies the returned rank(s) to its own entities
+/// right before persisting them, which is also the only place those
+/// entities are ever written to.
 class ReorderPlacement<T> {
   /// The 0-based insertion index within the sibling set (which excludes the
   /// moved item), clamped to `[0, siblings.length]`.
   final int position;
 
-  /// When `false`, [order] is a gap-safe value to assign to the moved item and
-  /// only that item needs persisting.
+  /// When `false`, [order] is a gap-safe value for the moved item and only
+  /// that item needs persisting (with its order set to [order]).
   ///
   /// When `true`, the whole sibling set could no longer accept a reliable
   /// midpoint insertion (duplicate/collapsed/overflowing orders); the caller
-  /// must renumber every sibling. Use [renumbered] for the fully-ordered list
-  /// with clean sequential ranks already assigned.
+  /// must renumber every sibling. [renumbered] holds each affected entity —
+  /// including the moved one — in final order; [renumberedOrder] holds the
+  /// rank to assign each one, keyed by id.
   final bool requiresRenormalization;
 
-  /// The order to assign to the moved item (valid in both branches).
+  /// The order for the moved item (valid in both branches).
   final String order;
 
-  /// Present only when [requiresRenormalization] is `true`: the full sibling
-  /// set (including the moved item) in final order with clean orders already
-  /// assigned to each element via the caller-supplied `setOrder`.
+  /// Present only when [requiresRenormalization] is `true`: every entity that
+  /// needs its order persisted, including the moved one, in final order.
   final List<T>? renumbered;
+
+  /// Present only when [requiresRenormalization] is `true`: id → new rank for
+  /// every entity in [renumbered]. The caller assigns
+  /// `entity.order = renumberedOrder[idOf(entity)]!` before persisting.
+  final Map<String, String>? renumberedOrder;
 
   const ReorderPlacement({
     required this.position,
     required this.requiresRenormalization,
     required this.order,
     this.renumbered,
+    this.renumberedOrder,
   });
 }
 
@@ -38,14 +48,15 @@ class ReorderPlacement<T> {
 ///
 /// Feature command handlers stay thin: they fetch the entity and its
 /// order-sorted siblings via their own repository, delegate to
-/// [computePlacement], then persist either the single moved entity or the whole
-/// renumbered set in one transactional batch.
+/// [computePlacement], apply the returned rank(s) to their own entities, then
+/// persist either the single moved entity or the whole renumbered set in one
+/// transactional batch.
 class SiblingReorderService {
   const SiblingReorderService();
 
-  /// Computes where [movedId] should land among [siblings] (which must exclude
-  /// the moved item and be sorted ascending by order) and what order value(s)
-  /// to persist.
+  /// Computes where [moved] should land among [siblings] (which must exclude
+  /// the moved item and be sorted ascending by order) and what order
+  /// value(s) to persist. Never mutates [moved] or any sibling.
   ///
   /// Position is resolved with the following precedence (a stale hint that no
   /// longer resolves is skipped, so the command degrades gracefully when a
@@ -61,7 +72,6 @@ class SiblingReorderService {
     String? afterId,
     required String Function(T item) idOf,
     required String Function(T item) orderOf,
-    required void Function(T item, String order) setOrder,
   }) {
     final position = _resolvePosition(
       siblings: siblings,
@@ -82,12 +92,10 @@ class SiblingReorderService {
         siblings: siblings,
         position: position,
         idOf: idOf,
-        setOrder: setOrder,
       );
 
     try {
       final newOrder = OrderRank.neighborRank(beforeOrder: beforeOrder, afterOrder: afterOrder);
-      setOrder(moved, newOrder);
       return ReorderPlacement<T>(
         position: position,
         requiresRenormalization: false,
@@ -99,7 +107,6 @@ class SiblingReorderService {
         siblings: siblings,
         position: position,
         idOf: idOf,
-        setOrder: setOrder,
       );
     }
   }
@@ -109,21 +116,24 @@ class SiblingReorderService {
     required List<T> siblings,
     required int position,
     required String Function(T item) idOf,
-    required void Function(T item, String order) setOrder,
   }) {
-    final ordered = List<T>.from(siblings);
-    final clampedPosition = position.clamp(0, ordered.length);
-    ordered.insert(clampedPosition, moved);
-    final placedOrder = OrderRank.assignSequential<T>(
+    final clampedPosition = position.clamp(0, siblings.length);
+    final ordered = List<T>.from(siblings)..insert(clampedPosition, moved);
+    final movedId = idOf(moved);
+
+    final renumberedOrder = <String, String>{};
+    OrderRank.assignSequential<T>(
       ordered,
-      setOrder: setOrder,
-      isPlaced: (item) => idOf(item) == idOf(moved),
+      setOrder: (item, order) => renumberedOrder[idOf(item)] = order,
+      isPlaced: (item) => idOf(item) == movedId,
     );
+
     return ReorderPlacement<T>(
       position: clampedPosition,
       requiresRenormalization: true,
-      order: placedOrder,
+      order: renumberedOrder[movedId]!,
       renumbered: ordered,
+      renumberedOrder: renumberedOrder,
     );
   }
 

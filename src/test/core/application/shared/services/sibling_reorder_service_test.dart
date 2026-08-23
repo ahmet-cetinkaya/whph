@@ -23,7 +23,6 @@ ReorderPlacement<_Sibling> _placeBetween(
     afterId: afterId,
     idOf: (item) => item.id,
     orderOf: (item) => item.order,
-    setOrder: (item, order) => item.order = order,
   );
 }
 
@@ -39,11 +38,15 @@ void main() {
       expect(placement.order, isNot('U'));
       expect(placement.renumbered, hasLength(3));
       expect(placement.renumbered!.map((item) => item.id), ['first', 'moved', 'second']);
+      // computePlacement must not mutate the entities it was given — the
+      // caller applies renumberedOrder itself right before persisting.
+      expect(first.order, 'U');
+      expect(second.order, 'U');
       expect(
-        placement.renumbered!.map((item) => item.order).toList(),
+        placement.renumbered!.map((item) => placement.renumberedOrder![item.id]).toList(),
         orderedEquals(['F', 'V', 'k']),
       );
-      expect(placement.order, placement.renumbered![placement.position].order);
+      expect(placement.order, placement.renumberedOrder![placement.renumbered![placement.position].id]);
     });
 
     test('renormalizes when the neighbour midpoint exceeds the maximum rank length', () {
@@ -55,11 +58,14 @@ void main() {
       expect(placement.requiresRenormalization, isTrue);
       expect(placement.order, 'V');
       expect(placement.renumbered!.map((item) => item.id), ['lower', 'moved', 'upper']);
+      // computePlacement must not mutate the entities it was given.
+      expect(lower.order, 'A' * 32);
+      expect(upper.order, '${'A' * 31}B');
       expect(
-        placement.renumbered!.map((item) => item.order).toList(),
+        placement.renumbered!.map((item) => placement.renumberedOrder![item.id]).toList(),
         orderedEquals(['F', 'V', 'k']),
       );
-      expect(placement.order, placement.renumbered![placement.position].order);
+      expect(placement.order, placement.renumberedOrder![placement.renumbered![placement.position].id]);
     });
 
     test('falls back to the target index when the before sibling is stale', () {

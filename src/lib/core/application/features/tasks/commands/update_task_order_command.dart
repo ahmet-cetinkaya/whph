@@ -84,13 +84,18 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
       afterId: request.afterTaskId,
       idOf: (t) => t.id,
       orderOf: (t) => t.order,
-      setOrder: (t, order) => t.order = order,
     );
 
     if (placement.requiresRenormalization) {
+      // Apply the computed ranks right before persisting — the only place
+      // these entities are written to.
+      for (final sibling in placement.renumbered!) {
+        sibling.order = placement.renumberedOrder![sibling.id]!;
+      }
       // Single transactional batch — all-or-nothing renumbering.
       await _taskRepository.updateMultiple(placement.renumbered!);
     } else {
+      task.order = placement.order;
       await _taskRepository.update(task);
     }
 
