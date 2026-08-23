@@ -17,6 +17,7 @@ shift
 
 # Enter the flake dev shell (finds flake.nix via REPO_ROOT), cd into the target
 # subdirectory, then exec the requested command with its arguments intact.
+# shellcheck disable=SC2016 # The inner Bash must expand these positional parameters.
 exec nix develop "$REPO_ROOT" --command bash -c '
   cd "$1/$2" || exit 1
   shift 2
