@@ -268,8 +268,10 @@ void main() {
         );
 
         // Assert
-        expect(result, isFalse); // Should return false due to communication failure
-        verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(1);
+        expect(result, isFalse); // Should return false after exhausting page retries
+        // The failing page is re-attempted before the entity sync is abandoned,
+        // so a transient failure does not discard pages the peer already accepted.
+        verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(3);
       });
 
       test('should handle empty target IP', () async {
