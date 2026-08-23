@@ -3,7 +3,7 @@ import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/core/domain/features/notes/note.dart';
 
 abstract class INoteRepository extends app.IRepository<Note, String> {
-  Future<void> updateNoteOrder(List<String> noteIds, List<double> orders);
+  Future<void> updateNoteOrder(List<String> noteIds, List<String> orders);
 
   /// Gets a paginated list of notes with their associated tags included
   @override

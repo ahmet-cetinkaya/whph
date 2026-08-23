@@ -3,7 +3,7 @@ import 'package:whph/core/application/features/notes/services/abstraction/i_note
 
 class UpdateNoteOrderCommand implements IRequest<UpdateNoteOrderCommandResponse> {
   final List<String> noteIds;
-  final List<double> orders;
+  final List<String> orders;
 
   UpdateNoteOrderCommand({
     required this.noteIds,

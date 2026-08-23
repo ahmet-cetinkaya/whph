@@ -31,7 +31,7 @@ class GetNoteQueryResponse {
   String id;
   String title;
   String? content;
-  double order;
+  String order;
   DateTime createdDate;
   DateTime? modifiedDate;
   List<NoteTagDto> tags;

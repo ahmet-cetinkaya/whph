@@ -30,7 +30,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? statusId;
   final List<String>? tagIdsToAdd;
   final String? parentTaskId;
-  final double? order;
+  final String? order;
   final ReminderTime? plannedDateReminderTime;
   final int? plannedDateReminderCustomOffset;
   final ReminderTime? deadlineDateReminderTime;
@@ -334,9 +334,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         customOrder: [CustomOrder(field: "order", direction: SortDirection.desc)],
       );
 
-      const int orderStep = 1000;
-      final lastOrder = lastTasks.items.isNotEmpty ? lastTasks.items.first.order : 0;
-      final newOrder = request.order ?? ((lastOrder + orderStep).toDouble());
+      final lastOrder = lastTasks.items.isNotEmpty ? lastTasks.items.first.order : null;
+      final newOrder = request.order ?? OrderRank.neighborRank(beforeOrder: lastOrder, afterOrder: null);
 
       // Resolve default reminder for new task
       ReminderTime plannedDateReminderTime;
