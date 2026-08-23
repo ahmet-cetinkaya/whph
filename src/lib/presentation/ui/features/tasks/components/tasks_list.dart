@@ -766,7 +766,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
           UpdateTaskOrderCommand(
             taskId: task.id,
-            parentTaskId: widget.parentTaskId,
             targetIndex: clampedTargetIndex,
             beforeTaskId: beforeTaskId,
             afterTaskId: afterTaskId,

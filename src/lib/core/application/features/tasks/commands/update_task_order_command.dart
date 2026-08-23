@@ -4,8 +4,8 @@ import 'package:whph/core/application/shared/services/sibling_reorder_service.da
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 
-/// Reorders a task within its sibling set (tasks sharing the same
-/// [parentTaskId]) so that it lands exactly at the requested drop position.
+/// Reorders a task within its sibling set (tasks sharing the same parent) so
+/// that it lands exactly at the requested drop position.
 ///
 /// The command is *identity-first, index-fallback*: the UI reports where the
 /// item was dropped via [beforeTaskId]/[afterTaskId] neighbor hints, with
@@ -17,18 +17,23 @@ import 'package:whph/core/application/features/tasks/constants/task_translation_
 /// guarantees the persisted order matches the visual drop position after a
 /// refresh.
 ///
+/// Sibling scope is always the moved task's *own* [Task.parentTaskId], read
+/// from the persisted task rather than supplied by the caller. A flat "show
+/// sub-tasks" list can display siblings from different parent scopes side by
+/// side, and the UI has no reliable way to report the dragged item's true
+/// scope — deriving it from the loaded task is the only source that can't
+/// disagree with where the task actually lives.
+///
 /// Position precedence (see [SiblingReorderService]): [afterTaskId] →
 /// [beforeTaskId] → [targetIndex].
 class UpdateTaskOrderCommand implements IRequest<UpdateTaskOrderResponse> {
   final String taskId;
-  final String? parentTaskId;
   final int targetIndex;
   final String? beforeTaskId;
   final String? afterTaskId;
 
   UpdateTaskOrderCommand({
     required this.taskId,
-    this.parentTaskId,
     required this.targetIndex,
     this.beforeTaskId,
     this.afterTaskId,
@@ -51,17 +56,21 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
     SiblingReorderService reorderService = const SiblingReorderService(),
   }) : _reorderService = reorderService;
 
-  /// Tasks reorder only among siblings with the same [parentTaskId]; habits are intentionally global.
+  /// Tasks reorder only among siblings with the same parent; habits are intentionally global.
   @override
   Future<UpdateTaskOrderResponse> call(UpdateTaskOrderCommand request) async {
     final task = await _taskRepository.getById(request.taskId);
     if (task == null) throw BusinessException('Task not found', TaskTranslationKeys.taskNotFoundError);
 
+    // Scope is the moved task's own parent, never a caller-supplied value —
+    // see the class doc for why.
+    final scopeParentId = task.parentTaskId;
+
     // Authoritative sibling list (excludes the moved task), order-sorted.
     final siblings = await _taskRepository.getAll(
       customWhereFilter: CustomWhereFilter(
-        'parent_task_id ${request.parentTaskId != null ? '= ?' : 'IS NULL'} AND id != ? AND deleted_date IS NULL',
-        request.parentTaskId != null ? [request.parentTaskId!, task.id] : [task.id],
+        'parent_task_id ${scopeParentId != null ? '= ?' : 'IS NULL'} AND id != ? AND deleted_date IS NULL',
+        scopeParentId != null ? [scopeParentId, task.id] : [task.id],
       ),
       customOrder: [CustomOrder(field: "order")],
     );
