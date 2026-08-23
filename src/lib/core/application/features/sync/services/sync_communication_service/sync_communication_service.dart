@@ -13,21 +13,24 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 /// - [SyncDtoSerializer] for DTO-to-JSON conversion
 /// - [SyncMessageSerializer] for WebSocket message handling
 class SyncCommunicationService implements ISyncCommunicationService {
-  static const int _websocketPort = 44040;
+  static const int _defaultWebsocketPort = 44040;
 
   final SyncDtoSerializer _dtoSerializer = SyncDtoSerializer();
   final SyncMessageSerializer _messageSerializer = SyncMessageSerializer();
   final int _maxRetries;
   final Duration _baseTimeout;
   final Duration Function(int attempt) _retryBackoff;
+  final int _websocketPort;
 
   SyncCommunicationService({
     int maxRetries = 3,
     Duration baseTimeout = const Duration(seconds: 15),
     Duration Function(int attempt)? retryBackoff,
+    int websocketPort = _defaultWebsocketPort,
   })  : _maxRetries = maxRetries,
         _baseTimeout = baseTimeout,
-        _retryBackoff = retryBackoff ?? _defaultRetryBackoff {
+        _retryBackoff = retryBackoff ?? _defaultRetryBackoff,
+        _websocketPort = websocketPort {
     Logger.info('SyncCommunicationService initialized');
   }
 
@@ -69,7 +72,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
         final totalTime = DateTime.now().difference(startTime).inMilliseconds;
         Logger.warning('WebSocket attempt $attempt failed after ${totalTime}ms: $e');
 
-        await socket?.close();
+        _closeSocket(socket);
 
         if (attempt >= _maxRetries) {
           Logger.error('All WebSocket attempts failed. Final error: $e');
@@ -104,18 +107,15 @@ class SyncCommunicationService implements ISyncCommunicationService {
   }) async {
     final completer = Completer<SyncCommunicationResponse>();
     unawaited(completer.future.then<void>((_) {}, onError: (_, __) {}));
-    Timer? timeoutTimer;
+    late final Timer timeoutTimer;
 
     timeoutTimer = Timer(timeout, () async {
-      if (!completer.isCompleted) {
-        final message = 'WebSocket timeout after ${timeout.inSeconds} seconds (attempt ${attempt + 1}/$_maxRetries)';
-        Logger.error('⏰ $message');
-        // Complete with an error (not a value) so the retry loop in
-        // sendPaginatedDataToDevice actually catches this and retries,
-        // instead of treating the timeout as a final non-retryable result.
-        await socket.close();
-        completer.completeError(TimeoutException(message, timeout));
-      }
+      if (completer.isCompleted) return;
+
+      final message = 'WebSocket timeout after ${timeout.inSeconds} seconds (attempt ${attempt + 1}/$_maxRetries)';
+      Logger.error('⏰ $message');
+      completer.completeError(TimeoutException(message, timeout));
+      _closeSocket(socket);
     });
 
     // Convert DTO to JSON
@@ -147,8 +147,9 @@ class SyncCommunicationService implements ISyncCommunicationService {
     Logger.debug('Sending message via WebSocket (${serializedMessage.length} bytes)');
     socket.add(serializedMessage);
 
-    // Listen for response
-    await for (final responseMessage in socket) {
+    socket.listen((responseMessage) async {
+      if (completer.isCompleted) return;
+
       try {
         final responseTime = DateTime.now().difference(transmissionStartTime).inMilliseconds;
         Logger.debug(
@@ -157,21 +158,27 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
         final response = await _processResponse(responseMessage, timeoutTimer, startTime);
         if (response != null) {
-          completer.complete(response);
-          break;
+          if (!completer.isCompleted) {
+            completer.complete(response);
+          }
         }
       } catch (e) {
         Logger.error('Error processing WebSocket response: $e');
-        completer.complete(SyncCommunicationResponse(
-          success: false,
-          isComplete: true,
-          error: 'Operation failed',
-        ));
-        break;
+        if (!completer.isCompleted) {
+          completer.complete(SyncCommunicationResponse(
+            success: false,
+            isComplete: true,
+            error: 'Operation failed',
+          ));
+        }
       }
-    }
+    }, onError: (Object error, StackTrace stackTrace) {
+      if (!completer.isCompleted) {
+        completer.completeError(error, stackTrace);
+      }
+    });
 
-    return await completer.future;
+    return completer.future;
   }
 
   /// Processes a WebSocket response message
@@ -306,5 +313,13 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
   Future<void> _yieldToUIThread() async {
     await Future.delayed(Duration.zero);
+  }
+
+  void _closeSocket(WebSocket? socket) {
+    if (socket == null) return;
+
+    unawaited(socket.close().catchError((Object error, StackTrace stackTrace) {
+      Logger.warning('Failed to close WebSocket: $error');
+    }));
   }
 }
