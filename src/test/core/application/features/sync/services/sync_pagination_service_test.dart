@@ -271,7 +271,7 @@ void main() {
         expect(result, isFalse); // Should return false after exhausting page retries
         // The failing page is re-attempted before the entity sync is abandoned,
         // so a transient failure does not discard pages the peer already accepted.
-        verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(3);
+        verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(2);
       });
 
       test('should handle empty target IP', () async {

@@ -44,9 +44,12 @@ class _BuildSendResult {
 /// Orchestrates sync operations by delegating to specialized helpers
 class SyncPaginationService implements ISyncPaginationService {
   /// How many times a single page is attempted before the entity sync is
-  /// abandoned. The communication layer already retries the transport itself;
-  /// this covers a page that fails even after those transport retries.
-  static const int _maxPageAttempts = 3;
+  /// abandoned. The communication layer already retries the transport itself
+  /// (3 attempts with escalating timeouts), so this only covers a page that
+  /// failed even after those. Kept at 2 deliberately: the two layers multiply,
+  /// and a higher value would stall the sync for many minutes on a peer that
+  /// has genuinely gone away.
+  static const int _maxPageAttempts = 2;
 
   /// Base delay between page re-attempts, multiplied by the attempt number.
   static const Duration _pageRetryBackoff = Duration(seconds: 2);
