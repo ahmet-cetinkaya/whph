@@ -13,16 +13,25 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 /// - [SyncDtoSerializer] for DTO-to-JSON conversion
 /// - [SyncMessageSerializer] for WebSocket message handling
 class SyncCommunicationService implements ISyncCommunicationService {
-  static const int _maxRetries = 3;
-  static const int _baseTimeoutSeconds = 15;
   static const int _websocketPort = 44040;
 
   final SyncDtoSerializer _dtoSerializer = SyncDtoSerializer();
   final SyncMessageSerializer _messageSerializer = SyncMessageSerializer();
+  final int _maxRetries;
+  final Duration _baseTimeout;
+  final Duration Function(int attempt) _retryBackoff;
 
-  SyncCommunicationService() {
+  SyncCommunicationService({
+    int maxRetries = 3,
+    Duration baseTimeout = const Duration(seconds: 15),
+    Duration Function(int attempt)? retryBackoff,
+  })  : _maxRetries = maxRetries,
+        _baseTimeout = baseTimeout,
+        _retryBackoff = retryBackoff ?? _defaultRetryBackoff {
     Logger.info('SyncCommunicationService initialized');
   }
+
+  static Duration _defaultRetryBackoff(int attempt) => Duration(seconds: attempt * 2);
 
   @override
   Future<SyncCommunicationResponse> sendPaginatedDataToDevice(String ipAddress, PaginatedSyncDataDto dto) async {
@@ -37,7 +46,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
     while (attempt < _maxRetries) {
       WebSocket? socket;
       try {
-        final timeout = Duration(seconds: _baseTimeoutSeconds * (attempt + 1));
+        final timeout = _baseTimeout * (attempt + 1);
         socket = await WebSocket.connect(getWebSocketUrl(ipAddress)).timeout(timeout);
 
         final response = await _executeSync(
@@ -71,7 +80,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
           );
         }
 
-        final backoffDelay = Duration(seconds: attempt * 2);
+        final backoffDelay = _retryBackoff(attempt);
         Logger.debug('Waiting ${backoffDelay.inSeconds}s before retry...');
         await Future.delayed(backoffDelay);
       }
@@ -94,17 +103,18 @@ class SyncCommunicationService implements ISyncCommunicationService {
     required DateTime startTime,
   }) async {
     final completer = Completer<SyncCommunicationResponse>();
+    unawaited(completer.future.then<void>((_) {}, onError: (_, __) {}));
     Timer? timeoutTimer;
 
-    timeoutTimer = Timer(timeout, () {
+    timeoutTimer = Timer(timeout, () async {
       if (!completer.isCompleted) {
         final message = 'WebSocket timeout after ${timeout.inSeconds} seconds (attempt ${attempt + 1}/$_maxRetries)';
         Logger.error('⏰ $message');
         // Complete with an error (not a value) so the retry loop in
         // sendPaginatedDataToDevice actually catches this and retries,
         // instead of treating the timeout as a final non-retryable result.
+        await socket.close();
         completer.completeError(TimeoutException(message, timeout));
-        socket.close();
       }
     });
 
