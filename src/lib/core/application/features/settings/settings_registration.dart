@@ -112,6 +112,7 @@ void registerSettingsFeature(
         noteTagRepository: noteTagRepository,
         migrationService: container.resolve<IImportDataMigrationService>(),
         compressionService: container.resolve<ICompressionService>(),
+        mediator: mediator,
       ),
     );
 }

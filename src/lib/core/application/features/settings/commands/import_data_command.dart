@@ -7,6 +7,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
+import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -14,6 +15,7 @@ import 'package:whph/core/application/features/tags/services/abstraction/i_tag_t
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/core/application/features/tasks/commands/normalize_task_orders_command.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
@@ -88,6 +90,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   final INoteTagRepository noteTagRepository;
   final IImportDataMigrationService migrationService;
   final ICompressionService compressionService;
+  final Mediator mediator;
 
   late final List<ImportConfig> _importConfigs;
 
@@ -111,6 +114,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     required this.noteTagRepository,
     required this.migrationService,
     required this.compressionService,
+    required this.mediator,
   }) {
     _importConfigs = [
       ImportConfig<Tag>(
@@ -146,7 +150,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       ImportConfig<Habit>(
         name: 'habits',
         repository: habitRepository,
-        fromJson: (json) => JsonMapper.deserialize<Habit>(jsonEncode(json))!,
+        fromJson: (json) => JsonMapper.deserialize<Habit>(jsonEncode(_normalizeOrder(json)))!,
       ),
       ImportConfig<HabitRecord>(
         name: 'habitRecords',
@@ -161,7 +165,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       ImportConfig<Task>(
         name: 'tasks',
         repository: taskRepository,
-        fromJson: (json) => JsonMapper.deserialize<Task>(jsonEncode(json))!,
+        fromJson: (json) => JsonMapper.deserialize<Task>(jsonEncode(_normalizeOrder(json)))!,
       ),
       ImportConfig<TaskTag>(
         name: 'taskTags',
@@ -191,7 +195,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       ImportConfig<Note>(
         name: 'notes',
         repository: noteRepository,
-        fromJson: (json) => JsonMapper.deserialize<Note>(jsonEncode(json))!,
+        fromJson: (json) => JsonMapper.deserialize<Note>(jsonEncode(_normalizeOrder(json)))!,
       ),
       ImportConfig<NoteTag>(
         name: 'noteTags',
@@ -199,6 +203,33 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         fromJson: (json) => JsonMapper.deserialize<NoteTag>(jsonEncode(json))!,
       ),
     ];
+  }
+
+  Map<String, dynamic> _normalizeOrder(Map<String, dynamic> entityJson) {
+    final order = entityJson['order'];
+    final normalizedOrder = switch (order) {
+      num() => OrderRank.fromLegacyDouble(order.toDouble()),
+      String() when !OrderRank.needsNormalization([order]) => order,
+      _ => OrderRank.initialRank,
+    };
+
+    return {...entityJson, 'order': normalizedOrder};
+  }
+
+  Future<void> _normalizeImportedOrders(Map<String, dynamic> data) async {
+    await mediator.send<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse>(
+      const NormalizeHabitOrdersCommand(),
+    );
+
+    final parentTaskIds = (data['tasks'] as List? ?? const []).whereType<Map<String, dynamic>>().map((task) {
+      final parentTaskId = task['parentTaskId'];
+      return parentTaskId is String ? parentTaskId : null;
+    }).toSet();
+    for (final parentTaskId in parentTaskIds) {
+      await mediator.send<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse>(
+        NormalizeTaskOrdersCommand(parentTaskId: parentTaskId),
+      );
+    }
   }
 
   /// Creates a backup of current database before import
@@ -437,6 +468,8 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
             totalImported += items.length;
           }
         }
+
+        await _normalizeImportedOrders(data);
 
         if (kDebugMode) {
           print('Import completed successfully: $totalImported total items imported');
