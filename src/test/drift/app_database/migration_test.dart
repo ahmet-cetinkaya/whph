@@ -313,8 +313,25 @@ void main() {
         await _insertTask(db, id: entry.key, createdDate: createdDate++, order: entry.value);
       }
 
+      // A single large subtask partition: the ordered-task grouping path
+      // that previously rebuilt its accumulator list on every row is only
+      // exercised when one parent scope holds many rows, not by many
+      // single-row partitions.
+      const subtaskCount = 500;
+      await _insertTask(db, id: 'parent-with-many-children', createdDate: 4000, order: 0.5);
+      for (var index = 0; index < subtaskCount; index++) {
+        await _insertTask(
+          db,
+          id: 'child-${index.toString().padLeft(4, '0')}',
+          createdDate: 6000 + index,
+          order: index.toDouble(),
+          parentTaskId: 'parent-with-many-children',
+        );
+      }
+
       final legacyHabits = await _legacyOrderedIds(db, 'habit_table');
       final legacyRootTasks = await _legacyOrderedTaskIds(db, null);
+      final legacyChildren = await _legacyOrderedTaskIds(db, 'parent-with-many-children');
       final legacyCounts = await _tableCounts(db);
 
       await _migrateV35ToV36(db);
@@ -323,9 +340,10 @@ void main() {
       // negative, zero, denormal and overflow-prone legacy values.
       expect(await _orderedIds(db, 'habit_table'), legacyHabits);
       expect(await _orderedTaskIds(db, null), legacyRootTasks);
+      expect(await _orderedTaskIds(db, 'parent-with-many-children'), legacyChildren);
       expect(await _tableCounts(db), legacyCounts);
       await _expectCanonicalDistinctRanks(db, 'habit_table');
-      await _expectCanonicalDistinctRanks(db, 'task_table');
+      await _expectCanonicalDistinctRanksPerTaskParent(db);
       expect(await db.customSelect('PRAGMA foreign_key_check').get(), isEmpty);
 
       // Ranks must stay short enough that later drag-and-drop can still insert
@@ -408,6 +426,22 @@ Future<void> _expectCanonicalDistinctRanks(AppDatabase db, String table) async {
   final ranks = rows.map((row) => row.read<String>('order')).toList();
   expect(ranks.toSet(), hasLength(ranks.length));
   expect(ranks, everyElement(matches(RegExp(r'^[0-9A-Za-z]*[1-9A-Za-z]$'))));
+}
+
+/// Like [_expectCanonicalDistinctRanks], but scoped per parent partition:
+/// task_table ranks are only guaranteed distinct among true siblings, so two
+/// tasks under different parents may legitimately share a rank.
+Future<void> _expectCanonicalDistinctRanksPerTaskParent(AppDatabase db) async {
+  final rows =
+      await db.customSelect('SELECT parent_task_id, "order" FROM task_table ORDER BY parent_task_id ASC').get();
+  final ranksByParent = <String?, List<String>>{};
+  for (final row in rows) {
+    ranksByParent.putIfAbsent(row.readNullable<String>('parent_task_id'), () => []).add(row.read<String>('order'));
+  }
+  for (final ranks in ranksByParent.values) {
+    expect(ranks.toSet(), hasLength(ranks.length));
+    expect(ranks, everyElement(matches(RegExp(r'^[0-9A-Za-z]*[1-9A-Za-z]$'))));
+  }
 }
 
 Future<int> _count(AppDatabase db, String table) async {

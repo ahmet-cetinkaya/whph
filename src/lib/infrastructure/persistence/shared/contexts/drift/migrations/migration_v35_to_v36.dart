@@ -104,7 +104,7 @@ Future<List<List<String>>> _orderedTaskIds(AppDatabase db) async {
   final groups = <String?, List<String>>{};
   for (final row in rows) {
     final parentTaskId = row.readNullable<String>('parent_task_id');
-    groups[parentTaskId] = [...(groups[parentTaskId] ?? const []), row.read<String>('id')];
+    groups.putIfAbsent(parentTaskId, () => []).add(row.read<String>('id'));
   }
   return groups.values.toList();
 }
