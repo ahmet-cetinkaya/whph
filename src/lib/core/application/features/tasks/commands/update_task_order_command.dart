@@ -67,6 +67,9 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
     final scopeParentId = task.parentTaskId;
 
     // Authoritative sibling list (excludes the moved task), order-sorted.
+    // The repository's SQL ORDER BY on `order` uses SQLite's default BINARY
+    // collation, which agrees byte-for-byte with Dart's String.compareTo for
+    // OrderRank's ASCII base-62 alphabet — no redundant re-sort needed.
     final siblings = await _taskRepository.getAll(
       customWhereFilter: CustomWhereFilter(
         'parent_task_id ${scopeParentId != null ? '= ?' : 'IS NULL'} AND id != ? AND deleted_date IS NULL',
@@ -74,7 +77,6 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
       ),
       customOrder: [CustomOrder(field: "order")],
     );
-    siblings.sort((a, b) => a.order.compareTo(b.order));
 
     final placement = _reorderService.computePlacement(
       moved: task,

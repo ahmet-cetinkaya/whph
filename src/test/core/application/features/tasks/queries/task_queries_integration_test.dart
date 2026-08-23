@@ -443,6 +443,45 @@ void main() {
         expect(
             nonCustomResult.items.map((task) => task.id).toList(), ['task-5', 'task-4', 'task-3', 'task-2', 'task-1']);
       });
+
+      test('reorder handler trusts SQL ORDER BY on mixed-case ranks without a redundant Dart re-sort', () async {
+        // OrderRank's base-62 alphabet is 0-9A-Za-z: digits, then uppercase,
+        // then lowercase. SQLite's default BINARY collation sorts by byte
+        // value, which happens to place '9' < 'A' < 'Z' < 'a' < 'z' — the
+        // same order OrderRank relies on. If a COLLATE NOCASE crept into the
+        // sibling query, uppercase and lowercase ranks would compare equal
+        // and this exact case-mixed sequence would come back scrambled.
+        final tasks = [
+          Task(id: 'digit', title: 'digit', createdDate: DateTime.utc(2024, 1, 1), order: '5'),
+          Task(id: 'upper', title: 'upper', createdDate: DateTime.utc(2024, 1, 2), order: 'M'),
+          Task(id: 'lower', title: 'lower', createdDate: DateTime.utc(2024, 1, 3), order: 'm'),
+        ];
+        for (final task in tasks) {
+          await taskRepository.add(task);
+        }
+        final updateOrder = UpdateTaskOrderCommandHandler(taskRepository);
+
+        // Move 'lower' to land strictly between 'digit' and 'upper' —
+        // beforeTaskId is the neighbor that ends up immediately before the
+        // moved item, afterTaskId the one immediately after. This only
+        // produces the expected rank if the handler's sibling list is
+        // already correctly ordered straight from SQL.
+        await updateOrder(UpdateTaskOrderCommand(
+          taskId: 'lower',
+          targetIndex: 1,
+          beforeTaskId: 'digit',
+          afterTaskId: 'upper',
+        ));
+
+        final result = await getListTasksHandler(GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          filterByParentTaskId: null,
+          sortByCustomSort: true,
+          groupBy: null,
+        ));
+        expect(result.items.map((task) => task.id).toList(), ['digit', 'lower', 'upper']);
+      });
     });
   });
 }

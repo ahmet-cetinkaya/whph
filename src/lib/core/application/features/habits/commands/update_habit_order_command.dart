@@ -55,11 +55,13 @@ class UpdateHabitOrderCommandHandler implements IRequestHandler<UpdateHabitOrder
     if (habit == null) throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
 
     // Authoritative sibling list (all other non-deleted habits), order-sorted.
+    // The repository's SQL ORDER BY on `order` uses SQLite's default BINARY
+    // collation, which agrees byte-for-byte with Dart's String.compareTo for
+    // OrderRank's ASCII base-62 alphabet — no redundant re-sort needed.
     final siblings = await _habitRepository.getAll(
       customWhereFilter: CustomWhereFilter('id != ? AND deleted_date IS NULL', [habit.id]),
       customOrder: [CustomOrder(field: "order")],
     );
-    siblings.sort((a, b) => a.order.compareTo(b.order));
 
     final placement = _reorderService.computePlacement(
       moved: habit,
