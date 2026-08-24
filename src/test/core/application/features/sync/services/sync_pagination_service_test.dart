@@ -268,8 +268,61 @@ void main() {
         );
 
         // Assert
-        expect(result, isFalse); // Should return false due to communication failure
-        verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(1);
+        expect(result, isFalse); // Should return false after exhausting page retries
+        // The failing page is re-attempted before the entity sync is abandoned,
+        // so a transient failure does not discard pages the peer already accepted.
+        verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(2);
+      });
+
+      test('should recover from transient page-send failure on retry', () async {
+        // Arrange
+        final pageData = PaginatedSyncData<HabitRecord>(
+          data: SyncData<HabitRecord>(
+            createSync: [],
+            updateSync: [],
+            deleteSync: [],
+          ),
+          pageIndex: 0,
+          pageSize: 50,
+          totalPages: 1,
+          totalItems: 0,
+          isLastPage: true,
+          entityType: 'HabitRecord',
+        );
+
+        mockSyncConfig = MockPaginatedSyncConfig('HabitRecord',
+            mockGetPaginatedSyncData: (DateTime lastSync, int pageIndex, int pageSize, String? entityType) async =>
+                pageData);
+        when(mockConfigurationService.getAllConfigurations()).thenReturn([mockSyncConfig]);
+
+        int callCount = 0;
+        when(mockCommunicationService.sendPaginatedDataToDevice(any, any))
+            .thenAnswer((_) async {
+              callCount++;
+              if (callCount == 1) {
+                return SyncCommunicationResponse(
+                  success: false,
+                  isComplete: false,
+                  error: 'Network error',
+                );
+              }
+
+              return SyncCommunicationResponse(
+                success: true,
+                isComplete: true,
+              );
+            });
+
+        // Act
+        final result = await service.syncEntityWithPagination(
+          mockSyncConfig,
+          testDevice,
+          lastSyncDate,
+        );
+
+        // Assert
+        expect(result, isTrue);
+        verify(mockCommunicationService.sendPaginatedDataToDevice(any, any)).called(2);
       });
 
       test('should handle empty target IP', () async {

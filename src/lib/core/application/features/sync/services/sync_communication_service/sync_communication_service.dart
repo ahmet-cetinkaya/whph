@@ -13,16 +13,28 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 /// - [SyncDtoSerializer] for DTO-to-JSON conversion
 /// - [SyncMessageSerializer] for WebSocket message handling
 class SyncCommunicationService implements ISyncCommunicationService {
-  static const int _maxRetries = 3;
-  static const int _baseTimeoutSeconds = 15;
-  static const int _websocketPort = 44040;
+  static const int _defaultWebsocketPort = 44040;
 
   final SyncDtoSerializer _dtoSerializer = SyncDtoSerializer();
   final SyncMessageSerializer _messageSerializer = SyncMessageSerializer();
+  final int _maxRetries;
+  final Duration _baseTimeout;
+  final Duration Function(int attempt) _retryBackoff;
+  final int _websocketPort;
 
-  SyncCommunicationService() {
+  SyncCommunicationService({
+    int maxRetries = 3,
+    Duration baseTimeout = const Duration(seconds: 15),
+    Duration Function(int attempt)? retryBackoff,
+    int websocketPort = _defaultWebsocketPort,
+  })  : _maxRetries = maxRetries,
+        _baseTimeout = baseTimeout,
+        _retryBackoff = retryBackoff ?? _defaultRetryBackoff,
+        _websocketPort = websocketPort {
     Logger.info('SyncCommunicationService initialized');
   }
+
+  static Duration _defaultRetryBackoff(int attempt) => Duration(seconds: attempt * 2);
 
   @override
   Future<SyncCommunicationResponse> sendPaginatedDataToDevice(String ipAddress, PaginatedSyncDataDto dto) async {
@@ -37,7 +49,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
     while (attempt < _maxRetries) {
       WebSocket? socket;
       try {
-        final timeout = Duration(seconds: _baseTimeoutSeconds * (attempt + 1));
+        final timeout = _baseTimeout * (attempt + 1);
         socket = await WebSocket.connect(getWebSocketUrl(ipAddress)).timeout(timeout);
 
         final response = await _executeSync(
@@ -49,13 +61,18 @@ class SyncCommunicationService implements ISyncCommunicationService {
           startTime: startTime,
         );
 
+        // Close our end explicitly. A sync of ~250 pages opens a connection
+        // per page; leaving the successful ones for the peer to tear down
+        // holds sockets open against the server's connection limits longer
+        // than necessary.
+        await socket.close();
         return response;
       } catch (e) {
         attempt++;
         final totalTime = DateTime.now().difference(startTime).inMilliseconds;
         Logger.warning('WebSocket attempt $attempt failed after ${totalTime}ms: $e');
 
-        await socket?.close();
+        _closeSocket(socket);
 
         if (attempt >= _maxRetries) {
           Logger.error('All WebSocket attempts failed. Final error: $e');
@@ -66,7 +83,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
           );
         }
 
-        final backoffDelay = Duration(seconds: attempt * 2);
+        final backoffDelay = _retryBackoff(attempt);
         Logger.debug('Waiting ${backoffDelay.inSeconds}s before retry...');
         await Future.delayed(backoffDelay);
       }
@@ -89,18 +106,16 @@ class SyncCommunicationService implements ISyncCommunicationService {
     required DateTime startTime,
   }) async {
     final completer = Completer<SyncCommunicationResponse>();
-    Timer? timeoutTimer;
+    unawaited(completer.future.then<void>((_) {}, onError: (_, __) {}));
+    late final Timer timeoutTimer;
 
-    timeoutTimer = Timer(timeout, () {
-      if (!completer.isCompleted) {
-        Logger.error('⏰ WebSocket timeout after ${timeout.inSeconds} seconds (attempt ${attempt + 1}/$_maxRetries)');
-        completer.complete(SyncCommunicationResponse(
-          success: false,
-          isComplete: true,
-          error: 'Operation failed',
-        ));
-        socket.close();
-      }
+    timeoutTimer = Timer(timeout, () async {
+      if (completer.isCompleted) return;
+
+      final message = 'WebSocket timeout after ${timeout.inSeconds} seconds (attempt ${attempt + 1}/$_maxRetries)';
+      Logger.error('⏰ $message');
+      completer.completeError(TimeoutException(message, timeout));
+      _closeSocket(socket);
     });
 
     // Convert DTO to JSON
@@ -132,8 +147,9 @@ class SyncCommunicationService implements ISyncCommunicationService {
     Logger.debug('Sending message via WebSocket (${serializedMessage.length} bytes)');
     socket.add(serializedMessage);
 
-    // Listen for response
-    await for (final responseMessage in socket) {
+    socket.listen((responseMessage) async {
+      if (completer.isCompleted) return;
+
       try {
         final responseTime = DateTime.now().difference(transmissionStartTime).inMilliseconds;
         Logger.debug(
@@ -142,21 +158,27 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
         final response = await _processResponse(responseMessage, timeoutTimer, startTime);
         if (response != null) {
-          completer.complete(response);
-          break;
+          if (!completer.isCompleted) {
+            completer.complete(response);
+          }
         }
       } catch (e) {
         Logger.error('Error processing WebSocket response: $e');
-        completer.complete(SyncCommunicationResponse(
-          success: false,
-          isComplete: true,
-          error: 'Operation failed',
-        ));
-        break;
+        if (!completer.isCompleted) {
+          completer.complete(SyncCommunicationResponse(
+            success: false,
+            isComplete: true,
+            error: 'Operation failed',
+          ));
+        }
       }
-    }
+    }, onError: (Object error, StackTrace stackTrace) {
+      if (!completer.isCompleted) {
+        completer.completeError(error, stackTrace);
+      }
+    });
 
-    return await completer.future;
+    return completer.future;
   }
 
   /// Processes a WebSocket response message
@@ -291,5 +313,13 @@ class SyncCommunicationService implements ISyncCommunicationService {
 
   Future<void> _yieldToUIThread() async {
     await Future.delayed(Duration.zero);
+  }
+
+  void _closeSocket(WebSocket? socket) {
+    if (socket == null) return;
+
+    unawaited(socket.close().catchError((Object error, StackTrace stackTrace) {
+      Logger.warning('Failed to close WebSocket: $error');
+    }));
   }
 }

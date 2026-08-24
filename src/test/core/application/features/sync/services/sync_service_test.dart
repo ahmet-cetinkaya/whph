@@ -452,6 +452,38 @@ void main() {
         // Assert
         verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(3);
       });
+
+      test('should guard against concurrent invocations', () async {
+        // Arrange
+        final mediatorCompleter = Completer<PaginatedSyncCommandResponse>();
+        final mediatorStarted = Completer<void>();
+
+        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .thenAnswer((_) {
+          mediatorStarted.complete();
+          return mediatorCompleter.future;
+        });
+
+        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+
+        // Act
+        final firstSyncFuture = syncService.runPaginatedSync(isManual: true);
+        await mediatorStarted.future;
+        final secondSyncFuture = syncService.runPaginatedSync(isManual: false);
+        mediatorCompleter.complete(PaginatedSyncCommandResponse(
+          isComplete: true,
+          hasErrors: false,
+          errorMessages: [],
+          syncedDeviceCount: 1,
+          hadMeaningfulSync: true,
+        ));
+
+        await firstSyncFuture;
+        await secondSyncFuture;
+
+        // Assert
+        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
+      });
     });
 
     group('Edge Cases Tests', () {
