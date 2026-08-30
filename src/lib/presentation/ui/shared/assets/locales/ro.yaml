@@ -256,6 +256,8 @@ shared:
     ascending: Crescător
     custom_order:
       description: Activează drag and drop pentru a reordona elementele
+      hide_indicator_tooltip: Ascunde indicatorul de tragere
+      show_indicator_tooltip: Afișează indicatorul de tragere
       title: Sortare personalizată
     descending: Descrescător
     disable_reordering_tooltip: Dezactivează modul de reordonare

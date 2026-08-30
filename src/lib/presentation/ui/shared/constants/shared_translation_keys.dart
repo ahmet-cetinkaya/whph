@@ -212,6 +212,8 @@ class SharedTranslationKeys extends application.SharedTranslationKeys {
 
   static const String sortCustomTitle = 'shared.sort.custom_order.title';
   static const String sortCustomDescription = 'shared.sort.custom_order.description';
+  static const String sortCustomHideIndicatorTooltip = 'shared.sort.custom_order.hide_indicator_tooltip';
+  static const String sortCustomShowIndicatorTooltip = 'shared.sort.custom_order.show_indicator_tooltip';
   static const String sortResetToDefault = 'shared.sort.reset_to_default';
   static const String sortAscending = 'shared.sort.ascending';
   static const String sortDescending = 'shared.sort.descending';

@@ -255,6 +255,8 @@ shared:
     ascending: За зростанням
     custom_order:
       description: Увімкніть перетягування для зміни порядку елементів
+      hide_indicator_tooltip: Сховати індикатор перетягування
+      show_indicator_tooltip: Показати індикатор перетягування
       title: Користувацьке сортування
     descending: За спаданням
     disable_reordering_tooltip: Вимкнути режим перестановки

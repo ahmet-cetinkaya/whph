@@ -256,6 +256,8 @@ shared:
     ascending: Aufsteigend
     custom_order:
       description: Drag & Drop aktivieren, um Elemente neu zu ordnen
+      hide_indicator_tooltip: Ziehsymbol ausblenden
+      show_indicator_tooltip: Ziehsymbol anzeigen
       title: Benutzerdefinierte Sortierung
     descending: Absteigend
     disable_reordering_tooltip: Neuordnung deaktivieren

@@ -250,6 +250,8 @@ shared:
     ascending: Vzestupně
     custom_order:
       description: Povolit přetahování pro změnu pořadí položek
+      hide_indicator_tooltip: Skrýt indikátor přetažení
+      show_indicator_tooltip: Zobrazit indikátor přetažení
       title: Vlastní řazení
     descending: Sestupně
     disable_reordering_tooltip: Zakázat režim přeřazení

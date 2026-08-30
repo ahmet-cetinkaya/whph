@@ -250,6 +250,8 @@ shared:
     ascending: Stigende
     custom_order:
       description: Aktiver træk og slip for at ændre rækkefølge af elementer
+      hide_indicator_tooltip: Skjul trækindikator
+      show_indicator_tooltip: Vis trækindikator
       title: Brugerdefineret sortering
     descending: Faldende
     disable_reordering_tooltip: Deaktiver omorganiseringstilstand

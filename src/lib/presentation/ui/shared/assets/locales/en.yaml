@@ -263,6 +263,8 @@ shared:
     ascending: Ascending
     custom_order:
       description: Enable drag and drop to reorder items
+      hide_indicator_tooltip: Hide drag indicator
+      show_indicator_tooltip: Show drag indicator
       title: Custom Sort
     descending: Descending
     disable_reordering_tooltip: Disable reordering mode

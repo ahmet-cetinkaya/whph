@@ -263,6 +263,8 @@ shared:
     ascending: Crescente
     custom_order:
       description: Ativar arrastar e soltar para reordenar itens
+      hide_indicator_tooltip: Ocultar indicador de arrasto
+      show_indicator_tooltip: Mostrar indicador de arrasto
       title: Ordenação personalizada
     descending: Decrescente
     disable_reordering_tooltip: Desativar modo de reordenação

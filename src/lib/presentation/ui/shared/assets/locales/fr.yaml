@@ -268,6 +268,8 @@ shared:
     ascending: Croissant
     custom_order:
       description: Activer le glisser-déposer pour réorganiser les éléments
+      hide_indicator_tooltip: Masquer l'indicateur de glissement
+      show_indicator_tooltip: Afficher l'indicateur de glissement
       title: Tri personnalisé
     descending: Décroissant
     disable_reordering_tooltip: Désactiver le mode de réorganisation

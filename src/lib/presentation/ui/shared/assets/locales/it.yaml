@@ -270,6 +270,8 @@ shared:
     ascending: Crescente
     custom_order:
       description: Abilita trascina e rilascia per riordinare gli elementi
+      hide_indicator_tooltip: Nascondi indicatore di trascinamento
+      show_indicator_tooltip: Mostra indicatore di trascinamento
       title: Ordinamento personalizzato
     descending: Decrescente
     disable_reordering_tooltip: Disabilita modalità riordinamento
