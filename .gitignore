@@ -5,22 +5,23 @@
 #.vscode/
 
 # AI Agent files
+*AGENTS.md
+*CLAUDE.md
+*GEMINI.md
+*QWEN.md
 .claude/
 .gemini/
 .kilo/
+.omo/
 .opencode/
 .qwen/
 .serena/
 .sisyphus/
 .specify/
-*AGENTS.md
-*CLAUDE.md
-*GEMINI.md
-*QWEN.md
 docs/.tasks/
+graphify-out/
 PROJECT_INDEX.json
 PROJECT_INDEX.md
-graphify-out/
 
 # FVM Version Cache
 .fvm/
