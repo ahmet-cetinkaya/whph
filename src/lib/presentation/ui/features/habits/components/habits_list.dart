@@ -107,11 +107,25 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
   bool get _isCustomOrderActive => widget.enableReordering && widget.sortConfig?.useCustomOrder == true;
 
-  /// Custom sort outranks grouping: the query must not group so a
-  /// previously-saved grouping cannot leak through.
-  bool get _isGroupingSuppressed => widget.sortConfig?.useCustomOrder ?? false;
+  HabitListStyle get _effectiveStyle =>
+      _isCustomOrderActive && _showCustomSortIndicator && widget.style == HabitListStyle.grid
+          ? HabitListStyle.list
+          : widget.style;
 
-  HabitListStyle get _effectiveStyle => _isCustomOrderActive ? HabitListStyle.list : widget.style;
+  /// Whether the drag indicator is rendered. When hidden, reordering stays
+  /// reachable through a whole-card long press.
+  bool get _showCustomSortIndicator => widget.sortConfig?.showCustomSortIndicator ?? true;
+
+  /// Whether the list renders group headers.
+  bool get _showGroupHeaders =>
+      ((widget.sortConfig?.orderOptions.isNotEmpty ?? false) || (widget.sortConfig?.groupOption != null)) &&
+      (widget.sortConfig?.enableGrouping ?? false);
+
+  /// The map key [_groupHabits] files [habit] under. When grouping is off the
+  /// whole list lives in a single unnamed bucket, even though the query may
+  /// still fill `groupName` from the saved sort field — keying off `groupName`
+  /// there finds no bucket and silently drops the reorder.
+  String _groupKeyOf(HabitListItem habit) => _showGroupHeaders ? (habit.groupName ?? '') : '';
 
   @override
   void initState() {
@@ -297,8 +311,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           filterByArchived: _currentFilters.filterByArchived,
           search: _currentFilters.search,
           sortBy: _currentFilters.sortConfig?.orderOptions,
+          // A saved groupOption stays in settings while grouping is toggled
+          // off, so it must not reach the query — under custom sort it would
+          // partition the manual ranks by a group the user disabled.
           groupBy:
-              (_currentFilters.sortConfig?.useCustomOrder ?? false) ? null : _currentFilters.sortConfig?.groupOption,
+              (_currentFilters.sortConfig?.enableGrouping ?? false) ? _currentFilters.sortConfig?.groupOption : null,
           sortByCustomSort: _currentFilters.sortConfig?.useCustomOrder ?? false,
           customTagSortOrder: _currentFilters.sortConfig?.customTagSortOrder,
           excludeCompletedForDate: _currentFilters.excludeCompletedForDate,
@@ -530,11 +547,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
     final groupedHabits = <String, List<HabitListItem>>{};
 
-    final bool showHeaders = !_isGroupingSuppressed &&
-        ((widget.sortConfig?.orderOptions.isNotEmpty ?? false) || (widget.sortConfig?.groupOption != null)) &&
-        (widget.sortConfig?.enableGrouping ?? false);
-
-    if (!showHeaders) {
+    if (!_showGroupHeaders) {
       groupedHabits[''] = _habitList!.items;
       return groupedHabits;
     }
@@ -546,7 +559,15 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       }
       groupedHabits[groupName]!.add(habit);
     }
-    return groupedHabits;
+
+    final sortedGroups = groupedHabits.entries.toList()
+      ..sort((a, b) {
+        final aLabel = a.value.first.isGroupNameTranslatable ? _translationService.translate(a.key) : a.key;
+        final bLabel = b.value.first.isGroupNameTranslatable ? _translationService.translate(b.key) : b.key;
+        final labelComparison = aLabel.toLowerCase().compareTo(bLabel.toLowerCase());
+        return labelComparison != 0 ? labelComparison : a.key.compareTo(b.key);
+      });
+    return Map.fromEntries(sortedGroups);
   }
 
   /// Returns a map of group name to whether it should be translated
@@ -596,6 +617,14 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       pageIndex: _habitList!.pageIndex,
       pageSize: _habitList!.pageSize,
     );
+
+    // The grouped/visual caches are derived from _habitList.items, and the
+    // build path only rebuilds them when they are null. Without this
+    // invalidation the optimistic reorder would be invisible: the list would
+    // keep rendering the pre-drag order until the post-command refresh
+    // landed, making the item appear to snap back and then jump into place.
+    _cachedGroupedHabits = null;
+    _cachedVisualItems = null;
   }
 
   Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<HabitListItem> groupHabits) async {
@@ -724,25 +753,31 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
                       },
                       itemBuilder: (context, i) {
                         final habit = habits[i];
+                        final card = AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 100),
+                          child: HabitCard(
+                            key: ValueKey('habit_card_${habit.id}'),
+                            habit: habit,
+                            onOpenDetails: () => widget.onClickHabit(habit),
+                            style: _effectiveStyle,
+                            dateRange: widget.dateRange,
+                            isDateLabelShowing: false,
+                            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+                            showDragHandle: _showCustomSortIndicator,
+                            dragIndex: !habit.isArchived ? i : null,
+                            isThreeStateEnabled: widget.isThreeStateEnabled,
+                            isReverseDayOrder: widget.isReverseDayOrder,
+                          ),
+                        );
+
                         return Padding(
                           key: ValueKey('list_reorderable_${habit.id}_$_effectiveStyle'),
                           padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 100),
-                            child: HabitCard(
-                              key: ValueKey('habit_card_${habit.id}'),
-                              habit: habit,
-                              onOpenDetails: () => widget.onClickHabit(habit),
-                              style: _effectiveStyle,
-                              dateRange: widget.dateRange,
-                              isDateLabelShowing: false,
-                              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-                              showDragHandle: true,
-                              dragIndex: !habit.isArchived ? i : null,
-                              isThreeStateEnabled: widget.isThreeStateEnabled,
-                              isReverseDayOrder: widget.isReverseDayOrder,
-                            ),
-                          ),
+                          // Without the handle the card itself is the only
+                          // affordance left, so it must start the drag.
+                          child: (_showCustomSortIndicator || habit.isArchived)
+                              ? card
+                              : ReorderableDelayedDragStartListener(index: i, child: card),
                         );
                       },
                     )
@@ -796,19 +831,30 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         });
   }
 
+  /// The exact visual-item list most recently handed to the reorder callback.
+  /// Recorded so tests replay against what the widget really built, including
+  /// grid rows, rather than a separately reconstructed list.
+  List<VisualItem<HabitListItem>>? _lastReorderableItems;
+
+  /// Drives the sliver reorder path against the list's current visual items.
+  /// Exposed so tests can exercise the real drop handling without simulating
+  /// a full pointer drag, which cannot reliably express pre-removal indices.
+  @visibleForTesting
+  void onSliverReorderForTest(int oldIndex, int newIndex) {
+    final items = _lastReorderableItems;
+    if (items == null) return;
+    _onSliverReorder(oldIndex, newIndex, items);
+  }
+
   void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<HabitListItem>> visualItems) {
     if (oldIndex < 0 || oldIndex >= visualItems.length) return;
-    if (newIndex < 0 || newIndex >= visualItems.length) return;
-
-    if (oldIndex < newIndex) {
-      newIndex -= 1; // Adjust for downward move per SliverReorderableList behavior
-    }
+    if (newIndex < 0 || newIndex > visualItems.length) return;
 
     final oldItem = visualItems[oldIndex];
     if (oldItem is! VisualItemSingle<HabitListItem>) return;
 
     final habit = oldItem.data;
-    final groupName = habit.groupName ?? '';
+    final groupName = _groupKeyOf(habit);
 
     final groupedHabits = _groupHabits();
     final groupHabits = groupedHabits[groupName] ?? [];
@@ -817,17 +863,43 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final habitGroupIndex = groupHabits.indexWhere((h) => h.id == habit.id);
     if (habitGroupIndex == -1) return;
 
+    if (!_isWithinGroupSpan(newIndex, groupName, visualItems)) return;
+
+    // SliverReorderableList reports newIndex in *pre-removal* coordinates, so
+    // counting the moved item's own group-mates below must skip it exactly
+    // once. Skipping it here AND separately decrementing newIndex for
+    // downward moves would subtract twice, landing the item one slot short.
     int targetGroupIndex = 0;
     for (int i = 0; i < newIndex; i++) {
       if (i == oldIndex) continue;
 
       final item = visualItems[i];
-      if (item is VisualItemSingle<HabitListItem> && item.data.groupName == groupName) {
+      // Key the candidate the same way the moved item was keyed, so the two
+      // always agree on which bucket they belong to.
+      if (item is VisualItemSingle<HabitListItem> && _groupKeyOf(item.data) == groupName) {
         targetGroupIndex++;
       }
     }
 
     _onReorderInGroup(habitGroupIndex, targetGroupIndex, groupHabits);
+  }
+
+  /// Whether a pre-removal destination index still lands inside the group the
+  /// moved item came from. A drop past the group's visible span is a
+  /// cross-group move, which reorder must ignore rather than silently clamp to
+  /// the boundary — clamping would reorder a group the user never dragged in.
+  bool _isWithinGroupSpan(int newIndex, String groupName, List<VisualItem<HabitListItem>> visualItems) {
+    int? firstInGroup;
+    int? lastInGroup;
+    for (int i = 0; i < visualItems.length; i++) {
+      final item = visualItems[i];
+      if (item is VisualItemSingle<HabitListItem> && _groupKeyOf(item.data) == groupName) {
+        firstInGroup ??= i;
+        lastInGroup = i;
+      }
+    }
+    if (firstInGroup == null) return false;
+    return newIndex >= firstInGroup && newIndex <= lastInGroup! + 1;
   }
 
   @override
@@ -876,21 +948,28 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       );
     } else if (item is VisualItemSingle<HabitListItem>) {
       final habit = item.data;
+      final isDraggable = _isCustomOrderActive && !habit.isArchived;
+      final card = HabitCard(
+        key: ValueKey('sliver_habit_card_${habit.id}'),
+        habit: habit,
+        onOpenDetails: () => widget.onClickHabit(habit),
+        style: _effectiveStyle,
+        dateRange: widget.dateRange,
+        isDateLabelShowing: false,
+        isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+        showDragHandle: _isCustomOrderActive && _showCustomSortIndicator,
+        dragIndex: isDraggable ? index : null,
+        isReverseDayOrder: widget.isReverseDayOrder,
+      );
+
       return Padding(
         key: ValueKey('sliver_list_${habit.id}_$_effectiveStyle'),
         padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-        child: HabitCard(
-          key: ValueKey('sliver_habit_card_${habit.id}'),
-          habit: habit,
-          onOpenDetails: () => widget.onClickHabit(habit),
-          style: _effectiveStyle,
-          dateRange: widget.dateRange,
-          isDateLabelShowing: false,
-          isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          showDragHandle: _isCustomOrderActive,
-          dragIndex: _isCustomOrderActive && !habit.isArchived ? index : null,
-          isReverseDayOrder: widget.isReverseDayOrder,
-        ),
+        // Without the handle the card itself is the only affordance left, so
+        // it must start the drag.
+        child: (isDraggable && !_showCustomSortIndicator)
+            ? ReorderableDelayedDragStartListener(index: index, child: card)
+            : card,
       );
     } else if (item is VisualItemRow<HabitListItem>) {
       return Padding(
@@ -955,9 +1034,14 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
     final showInfinityLoading =
         _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
-    final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
+    // Must be derived from the *filtered* list, since that is what both the
+    // item builder and the reorder callback index into. Counting the
+    // unfiltered list would over-report the item count whenever a group is
+    // collapsed, misaligning every index passed to onReorder.
+    final totalCount = filteredVisualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
 
     if (_isCustomOrderActive) {
+      _lastReorderableItems = filteredVisualItems;
       return SliverReorderableList(
         itemCount: totalCount,
         onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, filteredVisualItems),
