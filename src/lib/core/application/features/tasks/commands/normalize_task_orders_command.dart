@@ -35,14 +35,26 @@ class NormalizeTaskOrdersCommandHandler
         'parent_task_id ${request.parentTaskId != null ? '= ?' : 'IS NULL'} AND deleted_date IS NULL',
         request.parentTaskId != null ? [request.parentTaskId!] : [],
       ),
-      customOrder: [CustomOrder(field: "order")],
+      customOrder: [
+        CustomOrder(field: "order", direction: SortDirection.asc),
+        CustomOrder(field: "created_date", direction: SortDirection.asc),
+        CustomOrder(field: "id", direction: SortDirection.asc),
+      ],
     );
 
     if (tasks.isEmpty) {
       return NormalizeTaskOrdersResponse(0);
     }
 
-    tasks.sort((a, b) => a.order.compareTo(b.order));
+    tasks.sort((a, b) {
+      final orderComparison = a.order.compareTo(b.order);
+      if (orderComparison != 0) return orderComparison;
+
+      final createdDateComparison = a.createdDate.compareTo(b.createdDate);
+      if (createdDateComparison != 0) return createdDateComparison;
+
+      return a.id.compareTo(b.id);
+    });
 
     OrderRank.assignSequential<Task>(tasks, setOrder: (task, order) => task.order = order);
     await _taskRepository.updateMultiple(tasks);
