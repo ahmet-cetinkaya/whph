@@ -364,7 +364,9 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
   /// Detects duplicate or non-canonical ranks that require normalization.
   bool _shouldNormalizeOrders(List<HabitListItem> items) {
-    final orders = items.map((item) => item.order).toList();
+    // Grouping changes display order, not global rank validity. Inspect a
+    // rank-sorted copy so crossing a group boundary is not an inversion.
+    final orders = items.map((item) => item.order).toList()..sort();
     return OrderRank.needsNormalization(orders);
   }
 

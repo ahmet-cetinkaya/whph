@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:mockito/mockito.dart';
+import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
 import 'package:whph/core/application/features/habits/commands/update_habit_order_command.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
@@ -99,7 +100,13 @@ class FakeContainer extends Fake implements IContainer {
 /// applying each one the way the real handler would so a follow-up query
 /// reflects the persisted result.
 class ReorderMediator extends Fake implements Mediator {
-  ReorderMediator(this.order, {this.archived = const {}, this.totalItemCount, this.groupNameOf});
+  ReorderMediator(
+    this.order, {
+    this.archived = const {},
+    this.totalItemCount,
+    this.groupNameOf,
+    this.rankOfHabit = const {},
+  });
 
   List<String> order;
   final Set<String> archived;
@@ -108,7 +115,9 @@ class ReorderMediator extends Fake implements Mediator {
   /// Mirrors the real query, which fills `groupName` from the request's
   /// primary sort field regardless of whether the UI renders group headers.
   final String? Function(String id)? groupNameOf;
+  final Map<String, String> rankOfHabit;
   final List<UpdateHabitOrderCommand> commands = [];
+  int normalizationRequests = 0;
 
   @override
   Future<TResponse> send<TRequest extends IRequest<TResponse>, TResponse extends Object?>(TRequest request) async {
@@ -124,7 +133,7 @@ class ReorderMediator extends Fake implements Mediator {
               isGroupNameTranslatable: groupNameOf != null,
               // Canonical, well-spaced base-62 ranks so the widget does not
               // trigger its "orders need normalization" repair path.
-              order: String.fromCharCode('F'.codeUnitAt(0) + index * 5),
+              order: rankOfHabit[id] ?? String.fromCharCode('F'.codeUnitAt(0) + index * 5),
             ),
         ],
         totalItemCount: totalItemCount ?? order.length,
@@ -148,6 +157,10 @@ class ReorderMediator extends Fake implements Mediator {
       order = next;
       return UpdateHabitOrderResponse(command.habitId, command.habitId) as TResponse;
     }
+    if (request is NormalizeHabitOrdersCommand) {
+      normalizationRequests++;
+      return NormalizeHabitOrdersResponse(order.length) as TResponse;
+    }
     if (request is GetListHabitRecordsQuery) {
       return GetListHabitRecordsQueryResponse(
         items: const [],
@@ -169,11 +182,18 @@ void main() {
     Set<String> archived = const {},
     int? totalItemCount,
     String? Function(String id)? groupNameOf,
+    Map<String, String> rankOfHabit = const {},
     Map<String, String> translations = const {},
   }) {
     fakeContainer = FakeContainer();
     app_main.container = fakeContainer;
-    mediator = ReorderMediator(order, archived: archived, totalItemCount: totalItemCount, groupNameOf: groupNameOf);
+    mediator = ReorderMediator(
+      order,
+      archived: archived,
+      totalItemCount: totalItemCount,
+      groupNameOf: groupNameOf,
+      rankOfHabit: rankOfHabit,
+    );
 
     final translationService = MockTranslationService(translations);
     fakeContainer.register<Mediator>(mediator);
@@ -525,6 +545,42 @@ void main() {
       expect(mediator.commands, hasLength(1));
       expect(mediator.commands.single.habitId, 'habit-a1');
       expect(renderedOrder(tester), ['habit-a2', 'habit-a1', 'habit-b1', 'habit-b2']);
+    });
+
+    testWidgets('group-prefixed custom sort does not normalize valid ranks from the flattened display order',
+        (tester) async {
+      setUpContainer(
+        ['habit-a1', 'habit-a2', 'habit-b1', 'habit-b2'],
+        groupNameOf: (id) => id.startsWith('habit-a') ? 'alpha' : 'beta',
+        rankOfHabit: const {
+          'habit-a1': 'V',
+          'habit-a2': 'k',
+          'habit-b1': 'F',
+          'habit-b2': 'U',
+        },
+      );
+
+      await pumpSliverHabitList(
+        tester,
+        sortConfig: const SortConfig<HabitSortFields>(
+          orderOptions: [
+            SortOptionWithTranslationKey(
+              field: HabitSortFields.tag,
+              direction: SortDirection.asc,
+              translationKey: 'shared.tags',
+            ),
+          ],
+          useCustomOrder: true,
+          enableGrouping: true,
+          groupOption: SortOptionWithTranslationKey(
+            field: HabitSortFields.tag,
+            direction: SortDirection.asc,
+            translationKey: 'shared.tags',
+          ),
+        ),
+      );
+
+      expect(mediator.normalizationRequests, 0);
     });
 
     testWidgets('a drop past the source group into another group is ignored', (tester) async {
