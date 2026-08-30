@@ -193,11 +193,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
             },
           };
 
-  /// Custom order outranks grouping in list mode, so the grouping control is
-  /// inert there. Board mode is grouped by status by definition and keeps it.
-  bool get _isGroupingSuppressed =>
-      widget.viewMode != TaskViewMode.board && (widget.sortConfig?.useCustomOrder ?? false);
-
   @override
   void initSettingKey() {
     settingKey = widget.settingKeyVariantSuffix != null
@@ -707,7 +702,6 @@ class _TaskListOptionsState extends PersistentListOptionsBaseState<TaskListOptio
                   GroupDialogButton<TaskSortFields>(
                     iconColor: Theme.of(context).primaryColor,
                     tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
-                    isDisabled: _isGroupingSuppressed,
                     config: widget.sortConfig ??
                         (widget.viewMode == TaskViewMode.board ? TaskDefaults.boardSorting : TaskDefaults.sorting),
                     onConfigChanged: widget.onSortChange!,

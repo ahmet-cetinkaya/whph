@@ -329,8 +329,10 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
 
-    // Custom order outranks grouping, so the grouping control is inert while it is on.
-    final bool isGroupingSuppressed = widget.sortConfig?.useCustomOrder ?? false;
+    // The visible drag handles are the custom-order editing mode. Only that
+    // mode locks Today to list style; hidden handles keep grid/list selectable.
+    final bool isCustomOrderEditing =
+        (widget.sortConfig?.useCustomOrder ?? false) && (widget.sortConfig?.showCustomSortIndicator ?? true);
 
     // Calculate whether we need the filter row at all
     final bool showAnyFilters = ((widget.showTagFilter && widget.onTagFilterChange != null) ||
@@ -351,7 +353,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Style Toggle Button
-                if (widget.showViewStyleOption && widget.onHabitListStyleChange != null)
+                if (widget.showViewStyleOption && widget.onHabitListStyleChange != null && !isCustomOrderEditing)
                   FilterIconButton(
                     icon: _getIconForStyle(widget.habitListStyle),
                     iconSize: AppTheme.iconSizeMedium,
@@ -485,7 +487,6 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                   GroupDialogButton<HabitSortFields>(
                     iconColor: Theme.of(context).primaryColor,
                     tooltip: _translationService.translate(SharedTranslationKeys.sortEnableGrouping),
-                    isDisabled: isGroupingSuppressed,
                     config: widget.sortConfig ??
                         SortConfig<HabitSortFields>(
                           orderOptions: [
