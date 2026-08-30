@@ -41,6 +41,11 @@ void main() {
 
     expect(response.order.compareTo(tasks[3].order), greaterThan(0));
     expect(response.order.compareTo(tasks[4].order), lessThan(0));
+    final capturedOrders = verify(taskRepository.getAll(
+      customWhereFilter: anyNamed('customWhereFilter'),
+      customOrder: captureAnyNamed('customOrder'),
+    )).captured.single as List<CustomOrder>;
+    expect(capturedOrders.map((order) => order.field), ['order', 'created_date', 'id']);
     verify(taskRepository.update(moved)).called(1);
   });
 

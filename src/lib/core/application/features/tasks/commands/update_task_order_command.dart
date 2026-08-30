@@ -75,7 +75,11 @@ class UpdateTaskOrderCommandHandler implements IRequestHandler<UpdateTaskOrderCo
         'parent_task_id ${scopeParentId != null ? '= ?' : 'IS NULL'} AND id != ? AND deleted_date IS NULL',
         scopeParentId != null ? [scopeParentId, task.id] : [task.id],
       ),
-      customOrder: [CustomOrder(field: "order")],
+      customOrder: [
+        CustomOrder(field: "order", direction: SortDirection.asc),
+        CustomOrder(field: "created_date", direction: SortDirection.asc),
+        CustomOrder(field: "id", direction: SortDirection.asc),
+      ],
     );
 
     final placement = _reorderService.computePlacement(
