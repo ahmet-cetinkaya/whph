@@ -545,7 +545,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             }
 
             // Check if we need to normalize very small orders
-            if (widget.enableReordering && _shouldNormalizeOrders(_tasks!.items)) {
+            if (_isCustomOrderActive && _shouldNormalizeOrders(_tasks!.items)) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) {
                   _normalizeTaskOrders().catchError((e, stackTrace) {
@@ -598,7 +598,14 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   /// Detects duplicate or non-canonical ranks that require normalization before
   /// the next reorder to keep drops landing where dropped.
   bool _shouldNormalizeOrders(List<TaskListItem> items) {
-    final orders = items.map((item) => item.order).toList();
+    // A flat include-subtasks result mixes independent sibling scopes whose
+    // ranks may legitimately overlap. The reorder handler repairs the moved
+    // task's authoritative scope on demand.
+    if (widget.includeSubTasks) return false;
+
+    // Grouping changes display order, not rank validity. Inspect a rank-sorted
+    // copy so crossing a group boundary is not mistaken for an inversion.
+    final orders = items.map((item) => item.order).toList()..sort();
     return OrderRank.needsNormalization(orders);
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:mockito/mockito.dart';
+import 'package:whph/core/application/features/tasks/commands/normalize_task_orders_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
@@ -119,11 +120,18 @@ class FakeContainer extends Fake implements IContainer {
 /// Serves two grouped runs of tasks and records the reorder commands the
 /// widget issues, so an ignored drop is observable as "no command at all".
 class GroupedReorderMediator extends Fake implements Mediator {
-  GroupedReorderMediator(this.groupOfTask);
+  GroupedReorderMediator(
+    this.groupOfTask, {
+    this.orderOfTask = const {},
+    this.parentOfTask = const {},
+  });
 
   /// Task id -> group name, in render order.
   final Map<String, String> groupOfTask;
+  final Map<String, String> orderOfTask;
+  final Map<String, String?> parentOfTask;
   final List<UpdateTaskOrderCommand> commands = [];
+  int normalizationRequests = 0;
 
   @override
   Future<TResponse> send<TRequest extends IRequest<TResponse>, TResponse extends Object?>(TRequest request) async {
@@ -138,9 +146,10 @@ class GroupedReorderMediator extends Fake implements Mediator {
               isCompleted: false,
               groupName: entry.value,
               isGroupNameTranslatable: true,
+              parentTaskId: parentOfTask[entry.key],
               // Well-spaced base-62 ranks so the widget does not trigger its
               // "orders need normalization" repair path.
-              order: String.fromCharCode('F'.codeUnitAt(0) + index * 5),
+              order: orderOfTask[entry.key] ?? String.fromCharCode('F'.codeUnitAt(0) + index * 5),
             ),
         ],
         totalItemCount: groupOfTask.length,
@@ -152,6 +161,10 @@ class GroupedReorderMediator extends Fake implements Mediator {
       final command = request as UpdateTaskOrderCommand;
       commands.add(command);
       return UpdateTaskOrderResponse(command.taskId, command.taskId) as TResponse;
+    }
+    if (request is NormalizeTaskOrdersCommand) {
+      normalizationRequests++;
+      return NormalizeTaskOrdersResponse(groupOfTask.length) as TResponse;
     }
     if (request is GetListTaskStatusesQuery) {
       return GetListTaskStatusesQueryResponse(
@@ -190,6 +203,8 @@ void main() {
   /// Visual indices: 0 header, 1 a1, 2 a2, 3 header, 4 b1, 5 b2.
   void setUpContainer({
     Map<String, String>? groupOfTask,
+    Map<String, String> orderOfTask = const {},
+    Map<String, String?> parentOfTask = const {},
     Map<String, String> translations = const {},
   }) {
     fakeContainer = FakeContainer();
@@ -202,6 +217,8 @@ void main() {
             'task-b1': 'beta',
             'task-b2': 'beta',
           },
+      orderOfTask: orderOfTask,
+      parentOfTask: parentOfTask,
     );
 
     final translationService = MockTranslationService(translations);
@@ -218,15 +235,21 @@ void main() {
     ErrorHelper.initialize(translationService);
   }
 
-  Future<void> pumpGroupedSliverTaskList(WidgetTester tester) async {
+  Future<void> pumpGroupedSliverTaskList(
+    WidgetTester tester, {
+    SortConfig<TaskSortFields>? sortConfig,
+    bool includeSubTasks = false,
+    bool settle = true,
+  }) async {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: CustomScrollView(
           slivers: [
             TaskList(
-              sortConfig: _groupedCustomSort(),
+              sortConfig: sortConfig ?? _groupedCustomSort(),
               viewMode: TaskViewMode.list,
               enableReordering: true,
+              includeSubTasks: includeSubTasks,
               useSliver: true,
               onClickTask: (_) {},
             ),
@@ -234,7 +257,12 @@ void main() {
         ),
       ),
     ));
-    await tester.pumpAndSettle();
+    if (settle) {
+      await tester.pumpAndSettle();
+    } else {
+      await tester.pump();
+      await tester.pump();
+    }
   }
 
   setUp(setUpContainer);
@@ -251,6 +279,51 @@ void main() {
 
     expect(mediator.commands, hasLength(1));
     expect(mediator.commands.single.taskId, 'task-a1');
+  });
+
+  testWidgets('group-prefixed custom sort does not normalize valid ranks from the flattened display order',
+      (tester) async {
+    setUpContainer(
+      orderOfTask: const {
+        'task-a1': 'V',
+        'task-a2': 'k',
+        'task-b1': 'F',
+        'task-b2': 'U',
+      },
+    );
+
+    await pumpGroupedSliverTaskList(tester, settle: false);
+
+    expect(mediator.normalizationRequests, 0);
+  });
+
+  testWidgets('mixed parent scopes do not dispatch root-only automatic normalization', (tester) async {
+    setUpContainer(
+      groupOfTask: const {
+        'root-task': '',
+        'child-a': '',
+        'child-b': '',
+      },
+      orderOfTask: const {
+        'root-task': 'U',
+        'child-a': 'U',
+        'child-b': 'U',
+      },
+      parentOfTask: const {
+        'root-task': null,
+        'child-a': 'parent-a',
+        'child-b': 'parent-b',
+      },
+    );
+
+    await pumpGroupedSliverTaskList(
+      tester,
+      sortConfig: const SortConfig<TaskSortFields>(orderOptions: [], useCustomOrder: true),
+      includeSubTasks: true,
+      settle: false,
+    );
+
+    expect(mediator.normalizationRequests, 0);
   });
 
   testWidgets('reordering a task dismisses its visible schedule tooltip before the sliver detaches it', (tester) async {
