@@ -7,12 +7,17 @@ class SortConfig<T> {
   final SortOptionWithTranslationKey<T>? groupOption;
   final List<String>? customTagSortOrder;
 
+  /// Whether custom-sort surfaces render their drag indicator. Hiding it keeps
+  /// reordering available through a whole-card long press.
+  final bool showCustomSortIndicator;
+
   const SortConfig({
     required this.orderOptions,
     this.useCustomOrder = false,
     this.enableGrouping = false,
     this.groupOption,
     this.customTagSortOrder,
+    this.showCustomSortIndicator = true,
   });
 
   SortConfig<T> copyWith({
@@ -21,6 +26,7 @@ class SortConfig<T> {
     bool? enableGrouping,
     SortOptionWithTranslationKey<T>? groupOption,
     List<String>? customTagSortOrder,
+    bool? showCustomSortIndicator,
   }) {
     return SortConfig<T>(
       orderOptions: orderOptions ?? this.orderOptions,
@@ -28,6 +34,7 @@ class SortConfig<T> {
       enableGrouping: enableGrouping ?? this.enableGrouping,
       groupOption: groupOption ?? this.groupOption,
       customTagSortOrder: customTagSortOrder ?? this.customTagSortOrder,
+      showCustomSortIndicator: showCustomSortIndicator ?? this.showCustomSortIndicator,
     );
   }
 
@@ -43,6 +50,8 @@ class SortConfig<T> {
           ? SortOptionWithTranslationKey.fromJson(json['groupOption'] as Map<String, dynamic>, fromJsonT)
           : null,
       customTagSortOrder: (json['customTagSortOrder'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      // Settings persisted before the preference existed must keep showing it.
+      showCustomSortIndicator: json['showCustomSortIndicator'] as bool? ?? true,
     );
   }
 
@@ -53,6 +62,7 @@ class SortConfig<T> {
       'enableGrouping': enableGrouping,
       'groupOption': groupOption?.toJson(toJsonT),
       'customTagSortOrder': customTagSortOrder,
+      'showCustomSortIndicator': showCustomSortIndicator,
     };
   }
 }

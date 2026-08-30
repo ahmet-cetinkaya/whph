@@ -69,6 +69,8 @@ class HabitListOptionSettings {
             : null,
         enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
         groupOption: groupOption,
+        // Settings persisted before the preference existed must keep showing it.
+        showCustomSortIndicator: sortConfigJson['showCustomSortIndicator'] as bool? ?? true,
       );
     }
 
@@ -121,6 +123,7 @@ class HabitListOptionSettings {
         'useCustomOrder': sortConfig!.useCustomOrder,
         'customTagSortOrder': sortConfig!.customTagSortOrder,
         'enableGrouping': sortConfig!.enableGrouping,
+        'showCustomSortIndicator': sortConfig!.showCustomSortIndicator,
         'groupOption': sortConfig!.groupOption != null
             ? {
                 'field': sortConfig!.groupOption!.field.toString().split('.').last,

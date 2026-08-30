@@ -68,4 +68,50 @@ void main() {
       expect(settings.toJson().containsKey('forceOriginalLayout'), isFalse);
     });
   });
+
+  group('custom sort indicator preference', () {
+    /// A sort-config payload whose indicator preference the caller controls, so
+    /// the legacy default and an explicitly-hidden value can be told apart.
+    Map<String, dynamic> sortConfigJson({bool? showCustomSortIndicator}) => <String, dynamic>{
+          'orderOptions': [
+            {'field': 'createdDate', 'direction': 'desc', 'translationKey': 'shared.created_date'},
+          ],
+          'useCustomOrder': true,
+          'enableGrouping': false,
+          if (showCustomSortIndicator != null) 'showCustomSortIndicator': showCustomSortIndicator,
+        };
+
+    test('TaskListOptionSettings defaults the missing preference to visible and round-trips false', () {
+      final legacySettings = TaskListOptionSettings.fromJson(<String, dynamic>{
+        'sortConfig': sortConfigJson(),
+      });
+      final hiddenSettings = TaskListOptionSettings.fromJson(<String, dynamic>{
+        'sortConfig': sortConfigJson(showCustomSortIndicator: false),
+      });
+
+      expect(legacySettings.sortConfig!.showCustomSortIndicator, isTrue);
+      expect(hiddenSettings.sortConfig!.showCustomSortIndicator, isFalse);
+      // The preference must survive a full save/load cycle, not just the read.
+      expect(
+        TaskListOptionSettings.fromJson(hiddenSettings.toJson()).sortConfig!.showCustomSortIndicator,
+        isFalse,
+      );
+    });
+
+    test('HabitListOptionSettings defaults the missing preference to visible and round-trips false', () {
+      final legacySettings = HabitListOptionSettings.fromJson(<String, dynamic>{
+        'sortConfig': sortConfigJson(),
+      });
+      final hiddenSettings = HabitListOptionSettings.fromJson(<String, dynamic>{
+        'sortConfig': sortConfigJson(showCustomSortIndicator: false),
+      });
+
+      expect(legacySettings.sortConfig!.showCustomSortIndicator, isTrue);
+      expect(hiddenSettings.sortConfig!.showCustomSortIndicator, isFalse);
+      expect(
+        HabitListOptionSettings.fromJson(hiddenSettings.toJson()).sortConfig!.showCustomSortIndicator,
+        isFalse,
+      );
+    });
+  });
 }
