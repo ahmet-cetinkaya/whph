@@ -112,8 +112,8 @@ class FakeContainer extends Fake implements IContainer {
 }
 
 /// Records the queries the list widgets actually construct, so grouping
-/// suppression can be asserted at the query-construction site rather than
-/// merely on the disabled state of a button.
+/// grouping coexistence can be asserted at the query-construction site rather
+/// than merely on the enabled state of a button.
 class RecordingMediator extends Fake implements Mediator {
   final List<GetListTasksQuery> taskQueries = [];
   final List<GetListHabitsQuery> habitQueries = [];
@@ -158,7 +158,10 @@ class RecordingMediator extends Fake implements Mediator {
   }
 }
 
-SortConfig<TaskSortFields> _taskConfig({required bool useCustomOrder}) => SortConfig<TaskSortFields>(
+/// A config whose `groupOption` is always present, so `enableGrouping` is the
+/// only thing distinguishing active grouping from a stale saved group field.
+SortConfig<TaskSortFields> _taskConfig({required bool useCustomOrder, bool enableGrouping = true}) =>
+    SortConfig<TaskSortFields>(
       orderOptions: const [
         SortOptionWithTranslationKey(
           field: TaskSortFields.status,
@@ -167,7 +170,7 @@ SortConfig<TaskSortFields> _taskConfig({required bool useCustomOrder}) => SortCo
         ),
       ],
       useCustomOrder: useCustomOrder,
-      enableGrouping: true,
+      enableGrouping: enableGrouping,
       groupOption: const SortOptionWithTranslationKey(
         field: TaskSortFields.status,
         direction: SortDirection.asc,
@@ -175,7 +178,8 @@ SortConfig<TaskSortFields> _taskConfig({required bool useCustomOrder}) => SortCo
       ),
     );
 
-SortConfig<HabitSortFields> _habitConfig({required bool useCustomOrder}) => SortConfig<HabitSortFields>(
+SortConfig<HabitSortFields> _habitConfig({required bool useCustomOrder, bool enableGrouping = true}) =>
+    SortConfig<HabitSortFields>(
       orderOptions: const [
         SortOptionWithTranslationKey(
           field: HabitSortFields.tag,
@@ -184,7 +188,7 @@ SortConfig<HabitSortFields> _habitConfig({required bool useCustomOrder}) => Sort
         ),
       ],
       useCustomOrder: useCustomOrder,
-      enableGrouping: true,
+      enableGrouping: enableGrouping,
       groupOption: const SortOptionWithTranslationKey(
         field: HabitSortFields.tag,
         direction: SortDirection.asc,
@@ -238,17 +242,15 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  group('TaskList query grouping suppression', () {
-    testWidgets('list mode with custom sort sends enableGrouping:false and groupBy:null', (tester) async {
+  group('TaskList query grouping coexistence', () {
+    testWidgets('list mode with custom sort keeps configured grouping', (tester) async {
       await pumpTaskList(tester, sortConfig: _taskConfig(useCustomOrder: true), viewMode: TaskViewMode.list);
 
       expect(mediator.taskQueries, isNotEmpty);
       final query = mediator.taskQueries.last;
-      // A persisted grouping must not leak through: disabling the button alone
-      // never clears an already-enabled config.
       expect(query.sortByCustomSort, isTrue);
-      expect(query.enableGrouping, isFalse);
-      expect(query.groupBy, isNull);
+      expect(query.enableGrouping, isTrue);
+      expect(query.groupBy?.field, TaskSortFields.status);
     });
 
     testWidgets('board mode with custom sort keeps grouping active', (tester) async {
@@ -269,9 +271,26 @@ void main() {
       expect(query.enableGrouping, isTrue);
       expect(query.groupBy?.field, TaskSortFields.status);
     });
+
+    testWidgets('a stale saved groupOption is not sent while grouping is disabled', (tester) async {
+      // Disabling grouping leaves groupOption in the persisted settings. If it
+      // still reached the query, custom sort would rank items only *within*
+      // that dormant group instead of globally.
+      await pumpTaskList(
+        tester,
+        sortConfig: _taskConfig(useCustomOrder: true, enableGrouping: false),
+        viewMode: TaskViewMode.list,
+      );
+
+      expect(mediator.taskQueries, isNotEmpty);
+      final query = mediator.taskQueries.last;
+      expect(query.sortByCustomSort, isTrue);
+      expect(query.enableGrouping, isFalse);
+      expect(query.groupBy, isNull);
+    });
   });
 
-  group('HabitsList query grouping suppression', () {
+  group('HabitsList query grouping coexistence', () {
     Future<void> pumpHabitsList(WidgetTester tester, {required SortConfig<HabitSortFields> sortConfig}) async {
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
@@ -291,13 +310,13 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('custom sort sends groupBy:null', (tester) async {
+    testWidgets('custom sort keeps configured grouping', (tester) async {
       await pumpHabitsList(tester, sortConfig: _habitConfig(useCustomOrder: true));
 
       expect(mediator.habitQueries, isNotEmpty);
       final query = mediator.habitQueries.last;
       expect(query.sortByCustomSort, isTrue);
-      expect(query.groupBy, isNull);
+      expect(query.groupBy?.field, HabitSortFields.tag);
     });
 
     testWidgets('without custom sort grouping is preserved', (tester) async {
@@ -307,6 +326,15 @@ void main() {
       final query = mediator.habitQueries.last;
       expect(query.sortByCustomSort, isFalse);
       expect(query.groupBy?.field, HabitSortFields.tag);
+    });
+
+    testWidgets('a stale saved groupOption is not sent while grouping is disabled', (tester) async {
+      await pumpHabitsList(tester, sortConfig: _habitConfig(useCustomOrder: true, enableGrouping: false));
+
+      expect(mediator.habitQueries, isNotEmpty);
+      final query = mediator.habitQueries.last;
+      expect(query.sortByCustomSort, isTrue);
+      expect(query.groupBy, isNull);
     });
   });
 }
