@@ -43,6 +43,17 @@ class _BuildSendResult {
 /// Implementation of sync pagination service
 /// Orchestrates sync operations by delegating to specialized helpers
 class SyncPaginationService implements ISyncPaginationService {
+  /// How many times a single page is attempted before the entity sync is
+  /// abandoned. The communication layer already retries the transport itself
+  /// (3 attempts with escalating timeouts), so this only covers a page that
+  /// failed even after those. Kept at 2 deliberately: the two layers multiply,
+  /// and a higher value would stall the sync for many minutes on a peer that
+  /// has genuinely gone away.
+  static const int _maxPageAttempts = 2;
+
+  /// Base delay between page re-attempts, multiplied by the attempt number.
+  static const Duration _pageRetryBackoff = Duration(seconds: 2);
+
   final ISyncCommunicationService _communicationService;
   final ISyncConfigurationService _configurationService;
 
@@ -101,7 +112,7 @@ class SyncPaginationService implements ISyncPaginationService {
 
       while (hasMorePages && !_isSyncCancelled) {
         try {
-          final pageResult = await _syncNextPage(
+          final pageResult = await _syncPageWithRetries(
             config: config,
             syncDevice: syncDevice,
             targetIp: targetIp,
@@ -249,6 +260,54 @@ class SyncPaginationService implements ISyncPaginationService {
   @override
   void validateAndCleanStalePendingData() {
     _serverPaginationHandler.validateAndCleanStalePendingData();
+  }
+
+  /// Syncs a single page, re-attempting the same page a few times before
+  /// giving up on the whole entity.
+  ///
+  /// Without this, one transient page failure discards every page already
+  /// accepted by the peer: the entity fails, the device fails, lastSyncDate
+  /// is never written, and the next run restarts the entire initial sync from
+  /// page 0. Re-sending only the failed page keeps prior progress.
+  Future<_PageSyncResult> _syncPageWithRetries({
+    required PaginatedSyncConfig config,
+    required SyncDevice syncDevice,
+    required String targetIp,
+    required DateTime effectiveLastSyncDate,
+    required int pageIndex,
+    required int lastReceivedServerPage,
+    required int totalServerPages,
+  }) async {
+    for (int attempt = 1; attempt <= _maxPageAttempts; attempt++) {
+      final pageResult = await _syncNextPage(
+        config: config,
+        syncDevice: syncDevice,
+        targetIp: targetIp,
+        effectiveLastSyncDate: effectiveLastSyncDate,
+        pageIndex: pageIndex,
+        lastReceivedServerPage: lastReceivedServerPage,
+        totalServerPages: totalServerPages,
+      );
+
+      if (pageResult.success) return pageResult;
+
+      if (_isSyncCancelled) {
+        Logger.warning('Sync for ${config.name} was cancelled while retrying page $pageIndex');
+        return pageResult;
+      }
+
+      if (attempt == _maxPageAttempts) {
+        Logger.error('${config.name} page $pageIndex failed after $attempt attempts, aborting entity sync');
+        return pageResult;
+      }
+
+      final backoff = _pageRetryBackoff * attempt;
+      Logger.warning(
+          '${config.name} page $pageIndex failed (attempt $attempt/$_maxPageAttempts), retrying in ${backoff.inSeconds}s');
+      await Future.delayed(backoff);
+    }
+
+    throw StateError('Unreachable: page retry loop exited without a result');
   }
 
   /// Result of syncing a single page

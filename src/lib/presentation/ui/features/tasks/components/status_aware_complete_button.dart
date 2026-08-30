@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_complete_button.dart';
+import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/status_loader_mixin.dart';
 import 'package:whph/presentation/ui/features/tasks/utils/task_status_display.dart';
 
@@ -10,6 +12,7 @@ class StatusAwareCompleteButton extends StatefulWidget {
   final String taskId;
   final bool isCompleted;
   final String? statusId;
+  final EisenhowerPriority? priority;
   final VoidCallback? onToggleCompleted;
   final double subTasksCompletionPercentage;
   final double size;
@@ -19,6 +22,7 @@ class StatusAwareCompleteButton extends StatefulWidget {
     required this.taskId,
     required this.isCompleted,
     this.statusId,
+    this.priority,
     this.onToggleCompleted,
     this.subTasksCompletionPercentage = 0.0,
     this.size = 24,
@@ -60,6 +64,7 @@ class _StatusAwareCompleteButtonState extends State<StatusAwareCompleteButton>
       isCompleted: widget.isCompleted,
       onToggleCompleted: widget.onToggleCompleted,
       color: _resolveStatusColor(),
+      borderColor: widget.priority == null ? null : TaskUiConstants.getPriorityColor(widget.priority),
       subTasksCompletionPercentage: widget.subTasksCompletionPercentage,
       size: widget.size,
     );

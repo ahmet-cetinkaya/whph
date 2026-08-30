@@ -25,6 +25,7 @@ class SyncService implements ISyncService {
   Timer? _reconnectTimer;
   int _reconnectAttempts = 0;
   static const int _maxReconnectAttempts = 3;
+  bool _syncInProgress = false;
 
   @override
   Stream<bool> get onSyncComplete => _syncCompleteController.stream;
@@ -96,6 +97,12 @@ class SyncService implements ISyncService {
   /// Runs paginated sync operation - this is now the primary sync method
   @override
   Future<void> runPaginatedSync({bool isManual = false}) async {
+    if (_syncInProgress) {
+      Logger.debug('Sync already in progress, ignoring duplicate runPaginatedSync call (manual: $isManual)');
+      return;
+    }
+    _syncInProgress = true;
+
     try {
       // Update sync status to syncing
       updateSyncStatus(SyncStatus(
@@ -206,6 +213,8 @@ class SyncService implements ISyncService {
 
       // Schedule reset to idle after error delay
       _scheduleErrorReset();
+    } finally {
+      _syncInProgress = false;
     }
   }
 

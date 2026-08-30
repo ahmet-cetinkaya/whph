@@ -42,7 +42,6 @@ void startWebSocketServer() async {
 
           ws.listen(
             (data) async {
-              Logger.debug('Received message: $data');
               await _handleWebSocketMessage(data.toString(), ws);
             },
             onError: (e) {
