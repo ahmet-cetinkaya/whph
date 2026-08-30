@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:collection/collection.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
@@ -78,14 +77,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   bool _hasExplicitlySelectedNone = false;
   bool _needsStateUpdate = false;
   bool _hasAutoOpened = false;
-  late Map<String, String> _selectedTagLabels;
 
   @override
   void initState() {
     _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
-    _selectedTagLabels = Map.fromEntries(
-      widget.initialSelectedTags.map((e) => MapEntry(e.value, e.label)),
-    );
     _hasExplicitlySelectedNone = widget.showNoneOption &&
         (_selectedTags.isEmpty && (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
 
@@ -113,9 +108,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
     if (_selectedTagsChanged(oldWidget.initialSelectedTags, widget.initialSelectedTags)) {
       _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
-      _selectedTagLabels = Map.fromEntries(
-        widget.initialSelectedTags.map((e) => MapEntry(e.value, e.label)),
-      );
       _needsStateUpdate = true;
     }
 
@@ -176,6 +168,9 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     return false;
   }
 
+  String? _getInitialSelectedTagLabel(String tagId) =>
+      widget.initialSelectedTags.firstWhereOrNull((tag) => tag.value == tagId)?.label;
+
   Future<void> _getTags({required int pageIndex, String? search}) async {
     await AsyncErrorHandler.execute<GetListTagsQueryResponse>(
       context: context,
@@ -227,19 +222,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
     // Construct the updated list of DropdownOptions to pass back
     final List<DropdownOption<String>> updatedTags = _selectedTags.map((tagId) {
-      // Find tag name
-      String label = '';
-      if (_tags != null) {
-        try {
-          final tag = _tags!.items.firstWhere((t) => t.id == tagId);
-          label = tag.name;
-        } catch (e, stackTrace) {
-          const errorCode = 'tag_select_tag_not_found';
-          Logger.warning('$errorCode: Tag not found for id: $tagId',
-              component: 'TagSelectDropdown', error: e, stackTrace: stackTrace);
-          label = _translationService.translate(SharedTranslationKeys.untitled);
-        }
-      }
+      final tag = _tags?.items.firstWhereOrNull((item) => item.id == tagId);
+      final label = tag?.name ??
+          _getInitialSelectedTagLabel(tagId) ??
+          _translationService.translate(SharedTranslationKeys.untitled);
       return DropdownOption(label: label, value: tagId);
     }).toList();
 
@@ -300,20 +286,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     } else if (_selectedTags.isNotEmpty && _tags != null) {
       final uniqueSelectedTagIds = _selectedTags.toSet().toList();
       final selectedTagNames = uniqueSelectedTagIds.map((id) {
-        try {
-          final tag = _tags!.items.firstWhereOrNull((t) => t.id == id);
-          if (tag != null) {
-            return tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled);
-          }
-          // Use fallback label from initialSelectedTags if tag not found
-          final fallbackLabel = _selectedTagLabels[id];
-          return fallbackLabel ?? _translationService.translate(SharedTranslationKeys.untitled);
-        } catch (e, stackTrace) {
-          const errorCode = 'tag_select_tag_not_found';
-          Logger.warning('$errorCode: Tag not found for id: $id',
-              component: 'TagSelectDropdown', error: e, stackTrace: stackTrace);
-          return _selectedTagLabels[id] ?? _translationService.translate(SharedTranslationKeys.untitled);
+        final tag = _tags!.items.firstWhereOrNull((t) => t.id == id);
+        if (tag != null) {
+          return tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled);
         }
+        final fallbackLabel = _getInitialSelectedTagLabel(id);
+        return fallbackLabel ?? _translationService.translate(SharedTranslationKeys.untitled);
       }).toList();
 
       if (widget.showSelectedInDropdown) {
@@ -340,13 +318,11 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             }
 
             final tag = tagsResponse.items.firstWhereOrNull((t) => t.id == id);
-            // Use fallback label from initialSelectedTags if tag not found in current page
-            final fallbackLabel = _selectedTagLabels[id];
+            final fallbackLabel = _getInitialSelectedTagLabel(id);
             if (tag == null && fallbackLabel == null) {
               return SizedBox.shrink(key: ValueKey('empty_no_tag_$id'));
             }
 
-            // Use tag data if available, otherwise use fallback label
             final displayName =
                 tag?.name ?? fallbackLabel ?? _translationService.translate(SharedTranslationKeys.untitled);
             final tagType = tag?.type ?? TagType.label;
@@ -357,7 +333,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               index: index,
               child: GestureDetector(
                 onTap: () async {
-                  // Only show options dialog if tag data is available
                   if (tag == null) return;
 
                   final result = await TagOptionsDialog.show(
@@ -374,7 +349,10 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                     final List<DropdownOption<String>> updatedTags =
                         uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
                       final tagItem = currentTags.items.firstWhereOrNull((t) => t.id == tagId);
-                      return DropdownOption(label: tagItem?.name ?? '', value: tagId);
+                      return DropdownOption(
+                        label: tagItem?.name ?? _getInitialSelectedTagLabel(tagId) ?? '',
+                        value: tagId,
+                      );
                     }).toList();
 
                     widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
