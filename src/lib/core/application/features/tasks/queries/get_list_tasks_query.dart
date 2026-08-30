@@ -225,7 +225,10 @@ class GetListTasksQueryHandler implements IRequestHandler<GetListTasksQuery, Get
   List<CustomOrder> _getCustomOrders(GetListTasksQuery request) {
     if (request.sortByCustomSort) {
       final customOrders = <CustomOrder>[];
-      if (request.groupBy != null) {
+      // A stale saved groupBy must not partition the custom order while
+      // grouping is off, otherwise the manual ranks apply only within the
+      // dormant group field instead of globally.
+      if (request.enableGrouping && request.groupBy != null) {
         _addCustomOrder(customOrders, request.groupBy!);
       }
       return [

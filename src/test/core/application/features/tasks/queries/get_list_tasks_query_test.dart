@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/tasks/queries/get_list_tasks_quer
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
+import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
@@ -127,6 +128,56 @@ void main() {
                 filter: argThat(predicate<TaskQueryFilter>((f) => f.includeNullDates == true), named: 'filter'),
                 includeDeleted: false))
             .called(1);
+      });
+
+      group('custom sort ordering', () {
+        /// Captures the CustomOrder list the handler hands to the repository,
+        /// which is the only observable form the ordering decision takes.
+        Future<List<String>> capturedOrderFields(GetListTasksQuery query) async {
+          when(taskRepository.getListWithDetails(
+            pageIndex: anyNamed('pageIndex'),
+            pageSize: anyNamed('pageSize'),
+            filter: anyNamed('filter'),
+            includeDeleted: anyNamed('includeDeleted'),
+          )).thenAnswer((_) async => PaginatedList(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 10));
+
+          await handler(query);
+
+          final captured = verify(taskRepository.getListWithDetails(
+            pageIndex: anyNamed('pageIndex'),
+            pageSize: anyNamed('pageSize'),
+            filter: captureAnyNamed('filter'),
+            includeDeleted: anyNamed('includeDeleted'),
+          )).captured.single as TaskQueryFilter;
+
+          return (captured.sortBy ?? const <CustomOrder>[]).map((order) => order.field).toList();
+        }
+
+        /// The two cases below differ only in `enableGrouping`, so the group
+        /// field must be one that does not pull in status resolution.
+        GetListTasksQuery customSortQuery({required bool enableGrouping}) => GetListTasksQuery(
+              pageIndex: 0,
+              pageSize: 10,
+              sortByCustomSort: true,
+              enableGrouping: enableGrouping,
+              groupBy: SortOption(field: TaskSortFields.priority, direction: SortDirection.asc),
+            );
+
+        test('a stale groupBy does not prefix the order while grouping is disabled', () async {
+          // Disabling grouping leaves groupBy in the saved settings. Prefixing
+          // the manual ranks with it would rank items only within that dormant
+          // group instead of globally.
+          final fields = await capturedOrderFields(customSortQuery(enableGrouping: false));
+
+          expect(fields, ['order', 'created_date', 'id']);
+        });
+
+        test('an active groupBy still prefixes the order', () async {
+          final fields = await capturedOrderFields(customSortQuery(enableGrouping: true));
+
+          expect(fields.first, isNot('order'), reason: 'grouping must still partition the custom order');
+          expect(fields.sublist(fields.length - 3), ['order', 'created_date', 'id']);
+        });
       });
 
       test('should propagate errors', () async {
