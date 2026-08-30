@@ -5,11 +5,6 @@ sealed class _Item {
   const _Item();
 }
 
-class _Header extends _Item {
-  const _Header(this.title);
-  final String title;
-}
-
 class _Single extends _Item {
   const _Single(this.id, this.groupName);
   final String id;
@@ -22,7 +17,7 @@ class _Single extends _Item {
 ///
 /// Returns (movedGroupIndex, targetGroupIndex) or null when the drop is
 /// rejected.
-(int, int)? sliverReorderIndices(
+(int, int)? _sliverReorderIndices(
   int oldIndex,
   int newIndex,
   List<_Item> visualItems,
@@ -65,7 +60,7 @@ void main() {
 
     test('moving an item UP lands where the user dropped it', () {
       // Drag 'd' (index 3) up to slot 1 -> expected order a, d, b, c
-      final result = sliverReorderIndices(3, 1, flat);
+      final result = _sliverReorderIndices(3, 1, flat);
       expect(result, isNotNull);
       final (moved, target) = result!;
       expect(moved, 3);
@@ -79,7 +74,7 @@ void main() {
       // item twice — so every downward drag landed one slot short of where
       // it was dropped. Dragging 'a' (0) to sit after 'c' (newIndex 3) must
       // target group index 2, not 1.
-      final result = sliverReorderIndices(0, 3, flat);
+      final result = _sliverReorderIndices(0, 3, flat);
       expect(result, isNotNull);
       final (moved, target) = result!;
       expect(moved, 0);
@@ -92,7 +87,7 @@ void main() {
 
     test('moving an item down by one slot advances it by exactly one', () {
       // Drag 'a' (0) just past 'b' -> expected order b, a, c, d => target 1
-      final result = sliverReorderIndices(0, 2, flat);
+      final result = _sliverReorderIndices(0, 2, flat);
       expect(result, isNotNull);
       final (_, target) = result!;
       expect(target, 1);

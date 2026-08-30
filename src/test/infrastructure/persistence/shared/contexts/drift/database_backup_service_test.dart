@@ -40,10 +40,7 @@ void main() {
 
     await service.createBackupBeforeMigration(35, 36);
 
-    final backups = await tempDir
-        .list()
-        .where((entity) => entity.path.contains('backup_v35_to_v36'))
-        .toList();
+    final backups = await tempDir.list().where((entity) => entity.path.contains('backup_v35_to_v36')).toList();
     expect(backups, hasLength(1));
     expect(await File(backups.single.path).length(), await dbFile.length());
   });

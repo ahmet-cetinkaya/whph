@@ -6,7 +6,6 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
 import 'package:whph/core/application/features/habits/commands/update_habit_order_command.dart';
-import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habits_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';

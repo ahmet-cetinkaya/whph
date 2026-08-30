@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/habits/commands/update_habit_order_command.dart';
-import 'package:whph/core/application/features/habits/models/habit_list_item.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
