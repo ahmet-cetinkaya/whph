@@ -235,7 +235,11 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   Future<void> _normalizeImportedTaskOrders() async {
     final allTasks = await taskRepository.getAll(
       customWhereFilter: CustomWhereFilter('deleted_date IS NULL', []),
-      customOrder: [CustomOrder(field: "order")],
+      customOrder: [
+        CustomOrder(field: "order", direction: SortDirection.asc),
+        CustomOrder(field: "created_date", direction: SortDirection.asc),
+        CustomOrder(field: "id", direction: SortDirection.asc),
+      ],
     );
     if (allTasks.isEmpty) return;
 

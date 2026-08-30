@@ -334,10 +334,11 @@ void main() {
 
       // Consolidated into one fetch and one batch update, not N pairs (one
       // per distinct parent scope).
-      verify(contextTaskRepository.getAll(
+      final capturedOrders = verify(contextTaskRepository.getAll(
         customWhereFilter: anyNamed('customWhereFilter'),
-        customOrder: anyNamed('customOrder'),
-      )).called(1);
+        customOrder: captureAnyNamed('customOrder'),
+      )).captured.single as List<CustomOrder>;
+      expect(capturedOrders.map((order) => order.field), ['order', 'created_date', 'id']);
       verify(contextTaskRepository.updateMultiple(any)).called(1);
     });
 
