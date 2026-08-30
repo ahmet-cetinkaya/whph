@@ -250,6 +250,8 @@ shared:
     ascending: По возрастанию
     custom_order:
       description: Включить перетаскивание для изменения порядка элементов
+      hide_indicator_tooltip: Скрыть индикатор перетаскивания
+      show_indicator_tooltip: Показать индикатор перетаскивания
       title: Пользовательская сортировка
     descending: По убыванию
     disable_reordering_tooltip: Отключить режим перестановки

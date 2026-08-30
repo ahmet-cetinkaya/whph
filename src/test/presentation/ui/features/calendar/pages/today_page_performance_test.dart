@@ -157,7 +157,7 @@ List<HabitListItem> generateDemoHabits(int count) {
             hasGoal: i % 3 == 0,
             targetFrequency: 1,
             periodDays: 1,
-            order: i.toDouble(),
+            order: OrderRank.fromLegacyDouble(i.toDouble()),
             groupName: i % 5 == 0 ? 'Group ${i ~/ 5}' : null,
           ));
 }
@@ -171,7 +171,7 @@ List<TaskListItem> generateDemoTasks(int count) {
             title: 'Demo Task $i',
             priority: null,
             isCompleted: false,
-            order: i.toDouble(),
+            order: OrderRank.fromLegacyDouble(i.toDouble()),
             groupName: i % 5 == 0 ? 'Group ${i ~/ 5}' : null,
             createdDate: DateTime.now(),
           ));

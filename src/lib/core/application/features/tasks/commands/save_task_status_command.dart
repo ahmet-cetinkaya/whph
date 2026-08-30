@@ -11,7 +11,7 @@ class SaveTaskStatusCommand implements IRequest<SaveTaskStatusCommandResponse> {
   final String? id;
   final String name;
   final String? color;
-  final double? order;
+  final String? order;
 
   SaveTaskStatusCommand({
     this.id,
@@ -79,7 +79,7 @@ class SaveTaskStatusCommandHandler implements IRequestHandler<SaveTaskStatusComm
         createdDate: DateTime.now().toUtc(),
         name: request.name,
         color: request.color,
-        order: request.order ?? 0.0,
+        order: request.order ?? OrderRank.initialRank,
       );
       await _taskStatusRepository.add(status);
     }

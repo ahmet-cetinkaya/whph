@@ -248,6 +248,8 @@ shared:
     ascending: Artan
     custom_order:
       description: Öğeleri yeniden sıralamak için sürükleyi etkinleştirin
+      hide_indicator_tooltip: Sürükleme göstergesini gizle
+      show_indicator_tooltip: Sürükleme göstergesini göster
       title: Özel Sıralama
     descending: Azalan
     disable_reordering_tooltip: Yeniden sıralama modunu devre dışı bırak

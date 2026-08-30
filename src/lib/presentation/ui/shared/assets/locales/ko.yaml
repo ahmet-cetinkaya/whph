@@ -245,6 +245,8 @@ shared:
     ascending: 오름차순
     custom_order:
       description: 드래그 앤 드롭으로 항목 순서 변경
+      hide_indicator_tooltip: 드래그 표시기 숨기기
+      show_indicator_tooltip: 드래그 표시기 표시
       title: 사용자 정의 정렬
     descending: 내림차순
     disable_reordering_tooltip: 재정렬 모드 비활성화

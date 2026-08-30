@@ -1,3 +1,4 @@
+import 'package:acore/acore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/domain/features/tasks/task_status.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
@@ -13,7 +14,7 @@ void main() {
         modifiedDate: modified,
         name: 'In Progress',
         color: '4CAF50',
-        order: 2.5,
+        order: 'V',
         isBuiltIn: false,
         isDoneStatus: false,
       );
@@ -25,7 +26,7 @@ void main() {
       expect(restored.modifiedDate, equals(modified));
       expect(restored.name, equals('In Progress'));
       expect(restored.color, equals('4CAF50'));
-      expect(restored.order, equals(2.5));
+      expect(restored.order, equals('V'));
       expect(restored.isBuiltIn, isFalse);
       expect(restored.isDoneStatus, isFalse);
     });
@@ -39,7 +40,7 @@ void main() {
 
       expect(restored.name, isEmpty);
       expect(restored.color, isNull);
-      expect(restored.order, equals(0.0));
+      expect(restored.order, equals(OrderRank.initialRank));
       expect(restored.isBuiltIn, isFalse);
       expect(restored.isDoneStatus, isFalse);
     });

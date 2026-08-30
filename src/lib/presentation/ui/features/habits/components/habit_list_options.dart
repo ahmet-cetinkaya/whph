@@ -66,15 +66,6 @@ class HabitListOptions extends PersistentListOptionsBase {
   /// Whether to show the sort button
   final bool showSortButton;
 
-  /// Whether to show the layout toggle button when custom sort is enabled
-  final bool showLayoutToggle;
-
-  /// Whether to force the original layout even with custom sort
-  final bool forceOriginalLayout;
-
-  /// Callback when layout toggle changes
-  final Function(bool)? onLayoutToggleChange;
-
   /// Current habit list style
   final HabitListStyle habitListStyle;
 
@@ -105,9 +96,6 @@ class HabitListOptions extends PersistentListOptionsBase {
     this.showArchiveFilter = true,
     this.showSearchFilter = true,
     this.showSortButton = true,
-    this.showLayoutToggle = true,
-    this.forceOriginalLayout = false,
-    this.onLayoutToggleChange,
     this.habitListStyle = HabitListStyle.grid,
     this.onHabitListStyleChange,
     this.showViewStyleOption = false,
@@ -205,10 +193,6 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
         widget.onSortChange!(filterSettings.sortConfig!);
       }
 
-      if (widget.onLayoutToggleChange != null) {
-        widget.onLayoutToggleChange!(filterSettings.forceOriginalLayout);
-      }
-
       if (widget.onHabitListStyleChange != null) {
         widget.onHabitListStyleChange!(filterSettings.habitListStyle);
       }
@@ -234,7 +218,6 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
           filterByArchived: widget.filterByArchived,
           search: lastSearchQuery,
           sortConfig: widget.sortConfig,
-          forceOriginalLayout: widget.forceOriginalLayout,
           habitListStyle: widget.habitListStyle,
         );
 
@@ -263,7 +246,6 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
       filterByArchived: widget.filterByArchived,
       search: lastSearchQuery,
       sortConfig: widget.sortConfig,
-      forceOriginalLayout: widget.forceOriginalLayout,
       habitListStyle: widget.habitListStyle,
     ).toJson();
 
@@ -284,7 +266,6 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
         widget.showNoTagsFilter != oldWidget.showNoTagsFilter ||
         widget.filterByArchived != oldWidget.filterByArchived ||
         widget.sortConfig != oldWidget.sortConfig ||
-        widget.forceOriginalLayout != oldWidget.forceOriginalLayout ||
         widget.habitListStyle != oldWidget.habitListStyle;
 
     if (hasNonSearchChanges) {
@@ -348,12 +329,16 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
 
+    // The visible drag handles are the custom-order editing mode. Only that
+    // mode locks Today to list style; hidden handles keep grid/list selectable.
+    final bool isCustomOrderEditing =
+        (widget.sortConfig?.useCustomOrder ?? false) && (widget.sortConfig?.showCustomSortIndicator ?? true);
+
     // Calculate whether we need the filter row at all
     final bool showAnyFilters = ((widget.showTagFilter && widget.onTagFilterChange != null) ||
         (widget.showArchiveFilter && widget.onArchiveFilterChange != null) ||
         (widget.showSearchFilter && widget.onSearchChange != null) ||
-        (widget.showSortButton && widget.onSortChange != null) ||
-        (widget.showLayoutToggle && widget.sortConfig?.useCustomOrder == true));
+        (widget.showSortButton && widget.onSortChange != null));
 
     // If no filters to show or settings not loaded, don't render anything
     if (!showAnyFilters || !isSettingLoaded) return const SizedBox.shrink();
@@ -368,7 +353,7 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Style Toggle Button
-                if (widget.showViewStyleOption && widget.onHabitListStyleChange != null)
+                if (widget.showViewStyleOption && widget.onHabitListStyleChange != null && !isCustomOrderEditing)
                   FilterIconButton(
                     icon: _getIconForStyle(widget.habitListStyle),
                     iconSize: AppTheme.iconSizeMedium,
@@ -495,20 +480,6 @@ class _HabitListOptionsState extends PersistentListOptionsBaseState<HabitListOpt
                     ],
                     showCustomOrderOption: true,
                     customOrderConfigurators: _customOrderConfigurators,
-                  ),
-
-                // Layout toggle button (only show when custom sort is enabled)
-                if (widget.showLayoutToggle &&
-                    widget.sortConfig?.useCustomOrder == true &&
-                    widget.onLayoutToggleChange != null)
-                  FilterIconButton(
-                    icon: widget.forceOriginalLayout ? Icons.reorder_outlined : Icons.reorder,
-                    iconSize: AppTheme.iconSizeMedium,
-                    color: !widget.forceOriginalLayout ? primaryColor : Colors.grey,
-                    tooltip: widget.forceOriginalLayout
-                        ? _translationService.translate(SharedTranslationKeys.enableReorderingTooltip)
-                        : _translationService.translate(SharedTranslationKeys.disableReorderingTooltip),
-                    onPressed: () => widget.onLayoutToggleChange!(!widget.forceOriginalLayout),
                   ),
 
                 // Group button

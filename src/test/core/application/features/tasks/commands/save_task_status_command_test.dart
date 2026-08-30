@@ -9,7 +9,7 @@ void main() {
       const id = 'test-id';
       const name = 'In Progress';
       const color = '4CAF50';
-      const order = 2.5;
+      const order = 'U';
 
       // Act
       final command = SaveTaskStatusCommand(

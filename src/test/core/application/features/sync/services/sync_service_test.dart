@@ -458,8 +458,7 @@ void main() {
         final mediatorCompleter = Completer<PaginatedSyncCommandResponse>();
         final mediatorStarted = Completer<void>();
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
-            .thenAnswer((_) {
+        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).thenAnswer((_) {
           mediatorStarted.complete();
           return mediatorCompleter.future;
         });

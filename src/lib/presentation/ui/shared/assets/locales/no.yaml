@@ -250,6 +250,8 @@ shared:
     ascending: Stigende
     custom_order:
       description: Aktiver dra og slipp for å omorganisere elementer
+      hide_indicator_tooltip: Skjul dra-indikator
+      show_indicator_tooltip: Vis dra-indikator
       title: Tilpasset sortering
     descending: Synkende
     disable_reordering_tooltip: Deaktiver omorganiseringsmodus

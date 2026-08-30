@@ -31,7 +31,7 @@ void main() {
       final modifiedDate = DateTime.utc(2026, 1, 3);
       const name = 'In Progress';
       const color = '4CAF50';
-      const order = 2.5;
+      const order = 'U';
       const isBuiltIn = false;
       const isDoneStatus = false;
 
@@ -72,7 +72,7 @@ void main() {
         modifiedDate: modifiedDate,
         name: name,
         color: null,
-        order: 1.0,
+        order: 'U',
         isBuiltIn: true,
         isDoneStatus: true,
       );
@@ -98,7 +98,7 @@ void main() {
         modifiedDate: modifiedDate,
         name: '',
         color: 'FF5722',
-        order: 1.0,
+        order: 'U',
         isBuiltIn: true,
         isDoneStatus: false,
       );

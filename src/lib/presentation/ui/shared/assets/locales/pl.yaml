@@ -252,6 +252,8 @@ shared:
     ascending: Rosnąco
     custom_order:
       description: Włącz przeciąganie i upuszczanie aby zmienić kolejność elementów
+      hide_indicator_tooltip: Ukryj wskaźnik przeciągania
+      show_indicator_tooltip: Pokaż wskaźnik przeciągania
       title: Sortowanie niestandardowe
     descending: Malejąco
     disable_reordering_tooltip: Wyłącz tryb zmiany kolejności

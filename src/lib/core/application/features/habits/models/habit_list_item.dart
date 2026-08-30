@@ -1,4 +1,5 @@
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:acore/acore.dart';
 
 class HabitListItem {
   final String id;
@@ -12,7 +13,7 @@ class HabitListItem {
   final DateTime? archivedDate;
   final DateTime? createdDate;
   final DateTime? modifiedDate;
-  final double? order;
+  final String order;
   final bool hasGoal;
   final int? dailyTarget;
   final int targetFrequency;
@@ -32,7 +33,7 @@ class HabitListItem {
     this.archivedDate,
     this.createdDate,
     this.modifiedDate,
-    this.order,
+    this.order = OrderRank.initialRank,
     this.hasGoal = false,
     this.dailyTarget,
     this.targetFrequency = 1,
@@ -55,7 +56,7 @@ class HabitListItem {
     DateTime? archivedDate,
     DateTime? createdDate,
     DateTime? modifiedDate,
-    double? order,
+    String? order,
     bool? hasGoal,
     int? dailyTarget,
     int? targetFrequency,

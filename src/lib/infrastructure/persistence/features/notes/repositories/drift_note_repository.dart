@@ -13,7 +13,7 @@ class NoteTable extends Table {
   TextColumn get id => text()();
   TextColumn get title => text()();
   TextColumn get content => text().nullable()();
-  RealColumn get order => real().withDefault(const Constant(0.0))();
+  TextColumn get order => text().withDefault(const Constant('U'))();
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
@@ -44,13 +44,13 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
   }
 
   @override
-  Future<void> updateNoteOrder(List<String> noteIds, List<double> orders) async {
+  Future<void> updateNoteOrder(List<String> noteIds, List<String> orders) async {
     await database.transaction(() async {
       for (var i = 0; i < noteIds.length; i++) {
         await database.customUpdate(
           'UPDATE note_table SET "order" = ? WHERE id = ?',
           variables: [
-            Variable<double>(orders[i]),
+            Variable<String>(orders[i]),
             Variable<String>(noteIds[i]),
           ],
           updates: {table},

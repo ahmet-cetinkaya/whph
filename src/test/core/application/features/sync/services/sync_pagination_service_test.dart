@@ -296,22 +296,21 @@ void main() {
         when(mockConfigurationService.getAllConfigurations()).thenReturn([mockSyncConfig]);
 
         int callCount = 0;
-        when(mockCommunicationService.sendPaginatedDataToDevice(any, any))
-            .thenAnswer((_) async {
-              callCount++;
-              if (callCount == 1) {
-                return SyncCommunicationResponse(
-                  success: false,
-                  isComplete: false,
-                  error: 'Network error',
-                );
-              }
+        when(mockCommunicationService.sendPaginatedDataToDevice(any, any)).thenAnswer((_) async {
+          callCount++;
+          if (callCount == 1) {
+            return SyncCommunicationResponse(
+              success: false,
+              isComplete: false,
+              error: 'Network error',
+            );
+          }
 
-              return SyncCommunicationResponse(
-                success: true,
-                isComplete: true,
-              );
-            });
+          return SyncCommunicationResponse(
+            success: true,
+            isComplete: true,
+          );
+        });
 
         // Act
         final result = await service.syncEntityWithPagination(

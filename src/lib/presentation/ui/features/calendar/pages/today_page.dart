@@ -90,14 +90,12 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
   SortConfig<TaskSortFields> _taskSortConfig = TaskDefaults.sorting.copyWith(
     enableGrouping: false,
   );
-  bool _taskForceOriginalLayout = false;
   TaskViewMode _viewMode = TaskViewMode.list;
   TaskCalendarService? _calendarService;
 
   // Habit list options state
   static const String _habitFilterOptionsSettingKeySuffix = 'TODAY_PAGE';
   SortConfig<HabitSortFields> _habitSortConfig = HabitDefaults.sorting;
-  bool _habitForceOriginalLayout = false;
   HabitListStyle _habitListStyle = HabitDefaults.defaultListStyle;
   bool _isThreeStateEnabled = false;
 
@@ -246,14 +244,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     }
   }
 
-  void _onTaskLayoutToggleChange(bool forceOriginalLayout) {
-    if (mounted) {
-      setState(() {
-        _taskForceOriginalLayout = forceOriginalLayout;
-      });
-    }
-  }
-
   void _onViewModeChange(TaskViewMode mode) {
     if (mounted) {
       setState(() {
@@ -277,14 +267,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
     if (mounted) {
       setState(() {
         _habitListStyle = style;
-      });
-    }
-  }
-
-  void _onHabitLayoutToggleChange(bool forceOriginalLayout) {
-    if (mounted) {
-      setState(() {
-        _habitForceOriginalLayout = forceOriginalLayout;
       });
     }
   }
@@ -455,7 +437,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                           selectedTagIds: _selectedTagFilter,
                           showNoTagsFilter: _showNoTagsFilter,
                           sortConfig: _habitSortConfig,
-                          forceOriginalLayout: _habitForceOriginalLayout,
                           onTagFilterChange: (
                             List<DropdownOption<String>> tags,
                             bool isNoneSelected,
@@ -466,7 +447,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                             });
                           },
                           onSortChange: _onHabitSortConfigChange,
-                          onLayoutToggleChange: _onHabitLayoutToggleChange,
                           onHabitListStyleChange: _onHabitListStyleChange,
                           habitListStyle: _habitListStyle,
                           showViewStyleOption: true,
@@ -494,7 +474,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                   excludeCompletedForDate: _todayStart,
                   sortConfig: _habitSortConfig,
                   enableReordering: _habitSortConfig.useCustomOrder,
-                  forceOriginalLayout: _habitForceOriginalLayout,
                   onClickHabit: (habit) => _openHabitDetails(context, habit.id),
                   onHabitCompleted: _onHabitCompleted,
                   onListing: _onHabitsListed,
@@ -545,9 +524,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                                     });
                                   },
                                   sortConfig: _taskSortConfig,
-                                  forceOriginalLayout: _taskForceOriginalLayout,
                                   onSortChange: _onSortConfigChange,
-                                  onLayoutToggleChange: _onTaskLayoutToggleChange,
                                   viewMode: _viewMode,
                                   onViewModeChange: _onViewModeChange,
                                   hasItems: true,
@@ -590,7 +567,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                       height: MediaQuery.of(context).size.height * 0.6,
                       child: TaskList(
                         key: ValueKey(
-                          'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
+                          'task_list_${_taskSortConfig.useCustomOrder}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
                         ),
                         filterByCompleted: _showCompletedTasks,
                         filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
@@ -609,7 +586,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                         onTaskCompleted: _onTaskCompleted,
                         onList: _onTasksListed,
                         enableReordering: _taskSortConfig.useCustomOrder,
-                        forceOriginalLayout: _taskForceOriginalLayout,
                         showDoneOverlayWhenEmpty: true,
                         sortConfig: _taskSortConfig,
                         viewMode: _viewMode,
@@ -619,7 +595,7 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                 else
                   TaskList(
                     key: ValueKey(
-                      'task_list_${_taskForceOriginalLayout}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
+                      'task_list_${_taskSortConfig.useCustomOrder}_${_selectedTagFilter?.join(',') ?? 'noTags'}${_showNoTagsFilter ? 'none' : 'some'}${_showCompletedTasks ? 'completed' : 'incomplete'}${_taskSearchQuery ?? 'no-search'}',
                     ),
                     filterByCompleted: _showCompletedTasks,
                     filterByTags: _showNoTagsFilter ? [] : _selectedTagFilter,
@@ -638,7 +614,6 @@ class _TodayPageState extends State<TodayPage> with SingleTickerProviderStateMix
                     onTaskCompleted: _onTaskCompleted,
                     onList: _onTasksListed,
                     enableReordering: _taskSortConfig.useCustomOrder,
-                    forceOriginalLayout: _taskForceOriginalLayout,
                     showDoneOverlayWhenEmpty: true,
                     sortConfig: _taskSortConfig,
                     viewMode: _viewMode,

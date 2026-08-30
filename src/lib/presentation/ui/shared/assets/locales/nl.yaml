@@ -256,6 +256,8 @@ shared:
     ascending: Oplopend
     custom_order:
       description: Schakel slepen en neerzetten in om items opnieuw te ordenen
+      hide_indicator_tooltip: Sleepindicator verbergen
+      show_indicator_tooltip: Sleepindicator tonen
       title: Aangepaste sortering
     descending: Aflopend
     disable_reordering_tooltip: Herordenmodus uitschakelen

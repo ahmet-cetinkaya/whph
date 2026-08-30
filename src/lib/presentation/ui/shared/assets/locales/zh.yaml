@@ -244,6 +244,8 @@ shared:
     ascending: 升序
     custom_order:
       description: 拖放以重新排序项目
+      hide_indicator_tooltip: 隐藏拖动指示器
+      show_indicator_tooltip: 显示拖动指示器
       title: 自定义排序
     descending: 降序
     disable_reordering_tooltip: 禁用重新排序模式

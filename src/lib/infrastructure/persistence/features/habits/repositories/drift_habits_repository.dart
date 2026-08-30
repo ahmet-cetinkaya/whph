@@ -31,7 +31,7 @@ class HabitTable extends Table {
   // Daily target settings for multiple occurrences per day
   IntColumn get dailyTarget => integer().nullable()();
 
-  RealColumn get order => real().withDefault(const Constant(0.0))();
+  TextColumn get order => text().withDefault(const Constant('U'))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -79,15 +79,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
 
     final reminderDays = result != null ? result.data['reminder_days'] as String : '';
     return reminderDays;
-  }
-
-  @override
-  Future<void> updateAll(List<Habit> habits) async {
-    await database.transaction(() async {
-      for (final habit in habits) {
-        await database.update(table).replace(toCompanion(habit));
-      }
-    });
   }
 
   @override

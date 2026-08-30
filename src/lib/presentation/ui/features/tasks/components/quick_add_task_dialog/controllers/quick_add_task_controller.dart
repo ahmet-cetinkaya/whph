@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -382,7 +383,7 @@ class QuickAddTaskController extends ChangeNotifier {
             tags: _selectedTags.map((t) => TaskDataTag(id: t.value, name: t.label)).toList(),
             isCompleted: false,
             parentTaskId: _initialParentTaskId,
-            order: 0.0,
+            order: OrderRank.initialRank,
             createdDate: DateTime.now().toUtc(),
           );
           onTaskCreated!(response.id, taskData);

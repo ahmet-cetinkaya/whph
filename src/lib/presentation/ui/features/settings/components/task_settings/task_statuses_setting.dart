@@ -39,11 +39,6 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
   final Map<String, String?> _lastSyncedNames = {};
   final Map<String, Timer> _debounces = {};
 
-  /// Order step for reordering statuses. Using 1000.0 allows for up to 999
-  /// insertions between any two statuses before collisions occur. This provides
-  /// sufficient space for drag-and-drop reordering without requiring a full
-  /// reindex on every move.
-  static const double _orderStep = 1000.0;
   static const Duration _debounceDelay = Duration(milliseconds: 500);
 
   @override
@@ -211,13 +206,17 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
 
   Future<void> _add() async {
     final newName = _translationService.translate(TaskTranslationKeys.statusNewDefaultName);
-    final maxOrder = _statuses.isEmpty ? 0.0 : _statuses.map((s) => s.order).reduce((a, b) => a > b ? a : b);
+    final lastOrder =
+        _statuses.isEmpty ? null : _statuses.map((s) => s.order).reduce((a, b) => a.compareTo(b) > 0 ? a : b);
 
     await AsyncErrorHandler.execute<SaveTaskStatusCommandResponse>(
       context: context,
       errorMessage: _translationService.translate(SharedTranslationKeys.savingError),
       operation: () => _mediator.send<SaveTaskStatusCommand, SaveTaskStatusCommandResponse>(
-        SaveTaskStatusCommand(name: newName, order: maxOrder + _orderStep),
+        SaveTaskStatusCommand(
+          name: newName,
+          order: OrderRank.neighborRank(beforeOrder: lastOrder, afterOrder: null),
+        ),
       ),
       onSuccess: (_) => _load(),
     );
@@ -255,11 +254,16 @@ class _TaskStatusesSettingState extends State<TaskStatusesSetting> {
     try {
       // Collect all statuses to update in a single batch operation
       final orderedStatuses = <OrderedStatus>[];
+      final calculatedOrders = <String, String>{};
+      OrderRank.assignSequential<TaskStatusListItem>(
+        reordered,
+        setOrder: (status, order) => calculatedOrders[status.id] = order,
+      );
       for (var i = 0; i < reordered.length; i++) {
         final status = reordered[i];
         // Skip built-in statuses - they cannot be reordered
         if (status.isBuiltIn) continue;
-        final newOrder = (i + 1) * _orderStep;
+        final newOrder = calculatedOrders[status.id]!;
         if (status.order != newOrder) {
           orderedStatuses.add(OrderedStatus(id: status.id, order: newOrder));
         }

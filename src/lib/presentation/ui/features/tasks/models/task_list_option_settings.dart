@@ -31,9 +31,6 @@ class TaskListOptionSettings {
   /// Current sort configuration
   final SortConfig<TaskSortFields>? sortConfig;
 
-  /// Whether to force the original layout even with custom sort
-  final bool forceOriginalLayout;
-
   /// Show subtasks toggle
   final bool showSubTasks;
 
@@ -49,7 +46,6 @@ class TaskListOptionSettings {
     this.search,
     this.showCompletedTasks = false,
     this.sortConfig,
-    this.forceOriginalLayout = false,
     this.showSubTasks = false,
     this.viewMode = TaskViewMode.list,
   });
@@ -116,6 +112,8 @@ class TaskListOptionSettings {
             : null,
         enableGrouping: sortConfigJson['enableGrouping'] as bool? ?? false,
         groupOption: groupOption,
+        // Settings persisted before the preference existed must keep showing it.
+        showCustomSortIndicator: sortConfigJson['showCustomSortIndicator'] as bool? ?? true,
       );
     }
 
@@ -129,7 +127,6 @@ class TaskListOptionSettings {
       search: json['search'] as String?,
       showCompletedTasks: json['showCompletedTasks'] as bool? ?? false,
       sortConfig: sortConfig,
-      forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
       showSubTasks: json['showSubTasks'] as bool? ?? false,
       viewMode: TaskViewModeParse.fromName(json['viewMode'] as String?),
     );
@@ -141,7 +138,6 @@ class TaskListOptionSettings {
       'showNoTagsFilter': showNoTagsFilter,
       'showCompletedTasks': showCompletedTasks,
       'search': search, // Always include search, even if null
-      'forceOriginalLayout': forceOriginalLayout,
       'showSubTasks': showSubTasks,
       'viewMode': viewMode.name,
     };
@@ -176,6 +172,7 @@ class TaskListOptionSettings {
         'useCustomOrder': sortConfig!.useCustomOrder,
         'customTagSortOrder': sortConfig!.customTagSortOrder,
         'enableGrouping': sortConfig!.enableGrouping,
+        'showCustomSortIndicator': sortConfig!.showCustomSortIndicator,
         'groupOption': sortConfig!.groupOption != null
             ? {
                 'field': sortConfig!.groupOption!.field.toString().split('.').last,

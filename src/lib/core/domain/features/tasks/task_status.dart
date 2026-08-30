@@ -11,7 +11,7 @@ class TaskStatus extends BaseEntity<String> {
   String? color;
 
   /// Column/group order.
-  double order;
+  String order;
 
   /// Built-in statuses (todo & done) cannot be deleted.
   bool isBuiltIn;
@@ -26,7 +26,7 @@ class TaskStatus extends BaseEntity<String> {
     super.deletedDate,
     required this.name,
     this.color,
-    this.order = 0.0,
+    this.order = OrderRank.initialRank,
     this.isBuiltIn = false,
     this.isDoneStatus = false,
   });
@@ -53,11 +53,10 @@ class TaskStatus extends BaseEntity<String> {
         throw FormatException('Missing or invalid createdDate field');
       }
 
-      double order = 0.0;
+      String order = OrderRank.initialRank;
       final orderValue = json['order'];
-      if (orderValue is num) {
-        order = orderValue.toDouble();
-      }
+      if (orderValue is String && !OrderRank.needsNormalization([orderValue])) order = orderValue;
+      if (orderValue is num) order = OrderRank.fromLegacyDouble(orderValue.toDouble());
 
       final modifiedDate = json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null;
       final deletedDate = json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null;

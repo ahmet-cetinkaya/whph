@@ -20,27 +20,40 @@ class DatabaseBackupService {
 
   String get _dbFileName => kDebugMode ? 'debug_$_databaseName' : _databaseName;
 
-  /// Creates a backup of the database before migration
+  /// Creates a backup of the database before migration.
+  ///
+  /// A migration rewrites user data in place with no other recovery path, so
+  /// a failure to create this backup must abort the migration rather than be
+  /// logged and ignored — proceeding without a recovery copy would leave the
+  /// user with no way back if the migration itself turns out to be wrong.
   Future<void> createBackupBeforeMigration(int from, int to) async {
     if (_isTestMode) return;
 
-    try {
-      final dbFolder = await _getApplicationDirectory();
-      final dbFile = File(p.join(dbFolder.path, _dbFileName));
+    final dbFolder = await _getApplicationDirectory();
+    final dbFile = File(p.join(dbFolder.path, _dbFileName));
 
-      if (await dbFile.exists()) {
-        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').replaceAll('.', '-');
-        final backupFile = File(p.join(
-          dbFolder.path,
-          'backup_v${from}_to_v${to}_$timestamp.db',
-        ));
-
-        await dbFile.copy(backupFile.path);
-        Logger.info('Database backup created: ${backupFile.path}');
-      }
-    } catch (e) {
-      Logger.warning('Failed to create database backup: $e');
+    if (!await dbFile.exists()) {
+      // Nothing to protect: a fresh install has no prior data to lose.
+      return;
     }
+
+    final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').replaceAll('.', '-');
+    final backupFile = File(p.join(
+      dbFolder.path,
+      'backup_v${from}_to_v${to}_$timestamp.db',
+    ));
+
+    try {
+      await dbFile.copy(backupFile.path);
+    } catch (e, stackTrace) {
+      throw StateError('Failed to create pre-migration backup (v$from to v$to): $e\n$stackTrace');
+    }
+
+    if (!await backupFile.exists() || await backupFile.length() != await dbFile.length()) {
+      throw StateError('Pre-migration backup for v$from to v$to did not verify: ${backupFile.path}');
+    }
+
+    Logger.info('Database backup created: ${backupFile.path}');
   }
 
   /// Lists available database backups for recovery

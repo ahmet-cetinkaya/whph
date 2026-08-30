@@ -11,7 +11,7 @@ class ReorderTaskStatusesCommand implements IRequest<ReorderTaskStatusesCommandR
 
 class OrderedStatus {
   final String id;
-  final double order;
+  final String order;
 
   OrderedStatus({required this.id, required this.order});
 }

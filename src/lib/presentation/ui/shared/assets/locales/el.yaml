@@ -270,6 +270,8 @@ shared:
     ascending: Αύξουσα
     custom_order:
       description: Ενεργοποίηση μεταφοράς και απόθεσης για αναδιάταξη στοιχείων
+      hide_indicator_tooltip: Απόκρυψη ένδειξης μεταφοράς
+      show_indicator_tooltip: Εμφάνιση ένδειξης μεταφοράς
       title: Προσαρμοσμένη ταξινόμηση
     descending: Φθίνουσα
     disable_reordering_tooltip: Απενεργοποίηση λειτουργίας αναδιάταξης

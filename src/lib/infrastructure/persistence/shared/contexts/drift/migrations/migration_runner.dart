@@ -36,10 +36,11 @@ import 'migration_v31_to_v32.dart';
 import 'migration_v32_to_v33.dart';
 import 'migration_v33_to_v34.dart';
 import 'migration_v34_to_v35.dart';
+import 'migration_v35_to_v36.dart';
 
 /// Extension on AppDatabase to run all migration steps.
 extension MigrationRunner on AppDatabase {
-  int get currentMigration => 35;
+  int get currentMigration => 36;
 
   /// Executes all migration steps from [from] version to [to] version.
   Future<void> runMigrationSteps(Migrator m, int from, int to) async {
@@ -84,6 +85,7 @@ extension MigrationRunner on AppDatabase {
         from32To33: (m, schema) => migrateV32ToV33(this, m, schema),
         from33To34: (m, schema) => migrateV33ToV34(this, m, schema),
         from34To35: (m, schema) => migrateV34ToV35(this, m, schema),
+        from35To36: (m, schema) => migrateV35ToV36(this, m, schema),
       )(m, from, stepsTarget);
     }
   }

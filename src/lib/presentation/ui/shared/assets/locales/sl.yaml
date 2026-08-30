@@ -250,6 +250,8 @@ shared:
     ascending: Naraščajoče
     custom_order:
       description: Omogoči povleci in spusti za preureditev elementov
+      hide_indicator_tooltip: Skrij indikator vlečenja
+      show_indicator_tooltip: Pokaži indikator vlečenja
       title: Razvrščanje po meri
     descending: Padajoče
     disable_reordering_tooltip: Onemogoči način prerazporeditve

@@ -17,16 +17,12 @@ class NoteListOptionSettings {
   /// Current sort configuration
   final SortConfig<NoteSortFields>? sortConfig;
 
-  /// Whether to force the original layout even with custom sort
-  final bool forceOriginalLayout;
-
   /// Default constructor
   NoteListOptionSettings({
     this.selectedTagIds,
     this.showNoTagsFilter = false,
     this.search,
     this.sortConfig,
-    this.forceOriginalLayout = false,
   });
 
   /// Create settings from a JSON map
@@ -73,7 +69,6 @@ class NoteListOptionSettings {
       showNoTagsFilter: json['showNoTagsFilter'] as bool? ?? false,
       search: json['search'] as String?,
       sortConfig: sortConfig,
-      forceOriginalLayout: json['forceOriginalLayout'] as bool? ?? false,
     );
   }
 
@@ -82,7 +77,6 @@ class NoteListOptionSettings {
     final Map<String, dynamic> json = {
       'showNoTagsFilter': showNoTagsFilter,
       'search': search, // Always include search, even if null
-      'forceOriginalLayout': forceOriginalLayout,
     };
 
     if (selectedTagIds != null) {

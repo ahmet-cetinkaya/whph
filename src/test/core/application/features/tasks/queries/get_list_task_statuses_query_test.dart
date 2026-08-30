@@ -68,7 +68,7 @@ void main() {
           id: 'status-1',
           name: 'Todo',
           color: 'FF5722',
-          order: 1.0,
+          order: 'F',
           isBuiltIn: true,
           isDoneStatus: false,
         ),
@@ -76,7 +76,7 @@ void main() {
           id: 'status-2',
           name: 'Done',
           color: '4CAF50',
-          order: 2.0,
+          order: 'k',
           isBuiltIn: true,
           isDoneStatus: true,
         ),
@@ -117,7 +117,7 @@ void main() {
         id: 'test-id',
         name: 'In Progress',
         color: '2196F3',
-        order: 3.5,
+        order: 'z',
         isBuiltIn: false,
         isDoneStatus: false,
       );
@@ -126,7 +126,7 @@ void main() {
       expect(item.id, 'test-id');
       expect(item.name, 'In Progress');
       expect(item.color, '2196F3');
-      expect(item.order, 3.5);
+      expect(item.order, 'z');
       expect(item.isBuiltIn, isFalse);
       expect(item.isDoneStatus, isFalse);
     });
@@ -137,7 +137,7 @@ void main() {
         id: 'builtin-id',
         name: '',
         color: 'FF5722',
-        order: 1.0,
+        order: 'F',
         isBuiltIn: true,
         isDoneStatus: false,
       );
@@ -153,7 +153,7 @@ void main() {
         id: 'test-id',
         name: 'Custom',
         color: null,
-        order: 1.0,
+        order: 'F',
         isBuiltIn: false,
         isDoneStatus: false,
       );

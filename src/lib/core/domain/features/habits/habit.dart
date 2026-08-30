@@ -23,7 +23,7 @@ class Habit extends BaseEntity<String> {
   int? dailyTarget; // How many times per day (null = 1 for backward compatibility)
 
   // Custom order for sorting
-  double order = 0.0;
+  String order = OrderRank.initialRank;
 
   Habit({
     required super.id,
@@ -41,7 +41,7 @@ class Habit extends BaseEntity<String> {
     this.targetFrequency = 1,
     this.periodDays = 1,
     this.dailyTarget,
-    this.order = 0.0,
+    this.order = OrderRank.initialRank,
   });
 
   // REMINDER RELATED METHODS
@@ -198,11 +198,10 @@ class Habit extends BaseEntity<String> {
       periodDays = periodDaysValue.toInt();
     }
 
-    double order = 0.0;
+    String order = OrderRank.initialRank;
     final orderValue = json['order'];
-    if (orderValue is num) {
-      order = orderValue.toDouble();
-    }
+    if (orderValue is String && !OrderRank.needsNormalization([orderValue])) order = orderValue;
+    if (orderValue is num) order = OrderRank.fromLegacyDouble(orderValue.toDouble());
 
     int? dailyTarget;
     final dailyTargetValue = json['dailyTarget'];

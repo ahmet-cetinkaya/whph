@@ -5,7 +5,6 @@ import 'package:acore/acore.dart' as acore;
 
 abstract class IHabitRepository extends app.IRepository<Habit, String> {
   Future<String> getReminderDaysById(String id);
-  Future<void> updateAll(List<Habit> habits);
   Future<acore.PaginatedList<HabitListItem>> getHabitListItems(
     int pageIndex,
     int pageSize, {

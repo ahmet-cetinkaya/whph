@@ -245,6 +245,8 @@ shared:
     ascending: 昇順
     custom_order:
       description: ドラッグ&ドロップでアイテムを並び替え
+      hide_indicator_tooltip: ドラッグインジケーターを非表示
+      show_indicator_tooltip: ドラッグインジケーターを表示
       title: カスタムソート
     descending: 降順
     disable_reordering_tooltip: 並び替えモードを無効にする

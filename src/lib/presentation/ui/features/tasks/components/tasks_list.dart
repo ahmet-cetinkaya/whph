@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
 import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
+import 'package:whph/core/application/features/tasks/commands/normalize_task_orders_command.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/remove_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
@@ -68,7 +69,6 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
   final bool showSelectButton;
   final bool transparentCards;
   final bool enableReordering;
-  final bool forceOriginalLayout;
   final bool useParentScroll;
   final bool useSliver;
 
@@ -114,7 +114,6 @@ class TaskList extends StatefulWidget implements IPaginatedWidget {
     this.showSelectButton = false,
     this.transparentCards = false,
     this.enableReordering = false,
-    this.forceOriginalLayout = false,
     this.useParentScroll = true,
     this.useSliver = false,
     this.showDoneOverlayWhenEmpty = false,
@@ -166,6 +165,18 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
   @override
   bool get hasNextPage => _tasks?.hasNext ?? false;
+
+  /// Reordering is available only when custom sort is the active ordering.
+  bool get _isCustomOrderActive =>
+      widget.enableReordering && widget.filterByCompleted != true && (widget.sortConfig?.useCustomOrder ?? false);
+
+  /// Whether the drag indicator is rendered. When hidden, reordering stays
+  /// reachable through a whole-card long press.
+  bool get _showCustomSortIndicator => widget.sortConfig?.showCustomSortIndicator ?? true;
+
+  /// Grouping is active only when the user enabled it; a saved `groupOption`
+  /// alone does not group.
+  bool get _isGroupingEnabled => widget.sortConfig?.enableGrouping ?? true;
 
   @override
   void initState() {
@@ -247,36 +258,51 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     });
   }
 
+  /// Drives the sliver reorder path against the list's current visual items.
+  /// Exposed so tests can exercise the real drop handling without simulating
+  /// a full pointer drag, which cannot reliably express pre-removal indices.
+  @visibleForTesting
+  void onSliverReorderForTest(int oldIndex, int newIndex) {
+    _cachedGroupedTasks ??= _groupTasks();
+    _cachedVisualItems ??= VisualItemUtils.getVisualItems<TaskListItem>(
+      groupedItems: _cachedGroupedTasks!,
+      groupTranslatable: _getGroupTranslatableMap(),
+    );
+    _onSliverReorder(oldIndex, newIndex, _cachedVisualItems!.cast<VisualItem<TaskListItem>>());
+  }
+
   void _onSliverReorder(int oldIndex, int newIndex, List<VisualItem<TaskListItem>> visualItems) {
     // Validate bounds before index manipulation
     if (oldIndex < 0 || oldIndex >= visualItems.length) return;
-    if (newIndex < 0 || newIndex >= visualItems.length) return;
-
-    // Adjust newIndex when moving item downward (as per SliverReorderableList behavior)
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
+    if (newIndex < 0 || newIndex > visualItems.length) return;
 
     final oldItem = visualItems[oldIndex];
     if (oldItem is! VisualItemSingle<TaskListItem>) return;
 
     final task = oldItem.data;
-    final groupName = task.groupName ?? '';
-
     final groupedTasks = _groupTasks();
+    final groupName = _groupKeyOf(task);
+
     final groupTasks = groupedTasks[groupName] ?? [];
     if (groupTasks.isEmpty) return;
 
     final taskGroupIndex = groupTasks.indexWhere((t) => t.id == task.id);
     if (taskGroupIndex == -1) return;
 
-    // Calculate target index within the group by counting preceding items of the same group
+    if (!_isWithinGroupSpan(newIndex, groupName, visualItems)) return;
+
+    // SliverReorderableList reports newIndex in *pre-removal* coordinates, so
+    // counting the moved item's own group-mates below must skip it exactly
+    // once. Skipping it here AND separately decrementing newIndex for
+    // downward moves would subtract twice, landing the item one slot short.
     int targetGroupIndex = 0;
     for (int i = 0; i < newIndex; i++) {
       if (i == oldIndex) continue;
 
       final item = visualItems[i];
-      if (item is VisualItemSingle<TaskListItem> && item.data.groupName == groupName) {
+      // Key the candidate the same way the moved item was keyed, so the two
+      // always agree on which bucket they belong to.
+      if (item is VisualItemSingle<TaskListItem> && _groupKeyOf(item.data) == groupName) {
         targetGroupIndex++;
       }
     }
@@ -284,11 +310,59 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     _onReorderInGroup(taskGroupIndex, targetGroupIndex, groupTasks);
   }
 
+  /// Whether a pre-removal destination index still lands inside the group the
+  /// moved item came from. A drop past the group's visible span is a
+  /// cross-group move, which reorder must ignore rather than silently clamp to
+  /// the boundary — clamping would reorder a group the user never dragged in.
+  bool _isWithinGroupSpan(int newIndex, String groupName, List<VisualItem<TaskListItem>> visualItems) {
+    int? firstInGroup;
+    int? lastInGroup;
+    for (int i = 0; i < visualItems.length; i++) {
+      final item = visualItems[i];
+      if (item is VisualItemSingle<TaskListItem> && _groupKeyOf(item.data) == groupName) {
+        firstInGroup ??= i;
+        lastInGroup = i;
+      }
+    }
+    if (firstInGroup == null) return false;
+    return newIndex >= firstInGroup && newIndex <= lastInGroup! + 1;
+  }
+
+  /// The map key [_groupTasks] files [task] under. When the list renders no
+  /// headers every item lives in a single unnamed bucket, even though the
+  /// query still fills `groupName` — keying off `groupName` there finds no
+  /// bucket and silently drops the reorder.
+  String _groupKeyOf(TaskListItem task) => _showGroupHeaders(_visibleTasks()) ? (task.groupName ?? '') : '';
+
+  List<TaskListItem> _visibleTasks() =>
+      _tasks == null ? const [] : _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList();
+
+  /// Date groupings collapse to a single unnamed bucket when everything falls
+  /// in today, so the header decision cannot be derived from the sort field
+  /// alone.
+  bool _showGroupHeaders(List<TaskListItem> filteredTasks) {
+    if (!_isGroupingEnabled) return false;
+
+    final primarySortField =
+        widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field;
+    final isGroupedByDate = primarySortField == TaskSortFields.createdDate ||
+        primarySortField == TaskSortFields.deadlineDate ||
+        primarySortField == TaskSortFields.plannedDate ||
+        primarySortField == TaskSortFields.modifiedDate;
+
+    if (isGroupedByDate && filteredTasks.isNotEmpty) {
+      final firstGroup = filteredTasks.first.groupName;
+      final multipleGroups = filteredTasks.any((t) => t.groupName != firstGroup);
+      if (!multipleGroups && firstGroup == SharedTranslationKeys.today) return false;
+    }
+
+    return true;
+  }
+
   @override
   void didUpdateWidget(TaskList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final isLayoutChanged = oldWidget.forceOriginalLayout != widget.forceOriginalLayout;
     final isFilterChanged = _isFilterChanged(oldWidget);
     final isViewModeChanged = oldWidget.viewMode != widget.viewMode;
 
@@ -312,7 +386,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       return;
     }
 
-    if ((isLayoutChanged || isFilterChanged) && mounted) {
+    if ((isFilterChanged) && mounted) {
       _refreshDebounce?.cancel();
       _pendingRefresh = false;
 
@@ -416,9 +490,12 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           filterByParentTaskId: widget.parentTaskId,
           areParentAndSubTasksIncluded: widget.includeSubTasks,
           sortBy: widget.sortConfig?.orderOptions,
-          groupBy: widget.sortConfig?.groupOption,
+          // A saved groupOption stays in settings while grouping is toggled
+          // off, so it must not reach the query — under custom sort it would
+          // partition the manual ranks by a group the user disabled.
+          groupBy: _isGroupingEnabled ? widget.sortConfig?.groupOption : null,
           sortByCustomSort: widget.sortConfig?.useCustomOrder ?? false,
-          enableGrouping: widget.sortConfig?.enableGrouping ?? true,
+          enableGrouping: _isGroupingEnabled,
           customTagSortOrder: widget.sortConfig?.customTagSortOrder,
           ignoreArchivedTagVisibility: widget.ignoreArchivedTagVisibility,
         );
@@ -468,7 +545,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             }
 
             // Check if we need to normalize very small orders
-            if (widget.enableReordering && _shouldNormalizeOrders(_tasks!.items)) {
+            if (_isCustomOrderActive && _shouldNormalizeOrders(_tasks!.items)) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) {
                   _normalizeTaskOrders().catchError((e, stackTrace) {
@@ -518,56 +595,31 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     _backLastScrollPosition();
   }
 
-  // Helper method to check and normalize very small orders
+  /// Detects duplicate or non-canonical ranks that require normalization before
+  /// the next reorder to keep drops landing where dropped.
   bool _shouldNormalizeOrders(List<TaskListItem> items) {
-    return items.any((item) => item.order.abs() < 1e-10 || (item.order > 0 && item.order < 1e-6));
+    // A flat include-subtasks result mixes independent sibling scopes whose
+    // ranks may legitimately overlap. The reorder handler repairs the moved
+    // task's authoritative scope on demand.
+    if (widget.includeSubTasks) return false;
+
+    // Grouping changes display order, not rank validity. Inspect a rank-sorted
+    // copy so crossing a group boundary is not mistaken for an inversion.
+    final orders = items.map((item) => item.order).toList()..sort();
+    return OrderRank.needsNormalization(orders);
   }
 
   Future<void> _normalizeTaskOrders() async {
     if (_tasks == null) return;
 
     try {
-      final items = _tasks!.items;
-      final shouldNormalize = _shouldNormalizeOrders(items);
+      if (!_shouldNormalizeOrders(_tasks!.items)) return;
 
-      if (!shouldNormalize) return;
-
-      // Sort items by current order to maintain relative positioning
-      final sortedItems = List<TaskListItem>.from(items)..sort((a, b) => a.order.compareTo(b.order));
-
-      int successCount = 0;
-      int failureCount = 0;
-
-      // Normalize orders with proper spacing
-      for (int i = 0; i < sortedItems.length; i++) {
-        final newOrder = (i + 1) * OrderRank.initialStep;
-        final item = sortedItems[i];
-
-        if ((item.order - newOrder).abs() > 1e-10) {
-          try {
-            await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-              UpdateTaskOrderCommand(
-                taskId: item.id,
-                parentTaskId: widget.parentTaskId,
-                beforeTaskOrder: item.order,
-                afterTaskOrder: newOrder,
-              ),
-            );
-            successCount++;
-          } catch (e, stackTrace) {
-            failureCount++;
-            Logger.error(
-              'Failed to normalize order for task ${item.id}',
-              error: e,
-              stackTrace: stackTrace,
-            );
-          }
-        }
-      }
-
-      if (failureCount > 0) {
-        Logger.warning('Completed normalization with $failureCount failures and $successCount successes.');
-      }
+      // Renumber the whole sibling set in a single batch operation. The handler
+      // preserves relative order while assigning clean, well-spaced values.
+      await _mediator.send<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse>(
+        NormalizeTaskOrdersCommand(parentTaskId: widget.parentTaskId),
+      );
 
       // Refresh to get updated orders
       await refresh();
@@ -657,35 +709,17 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   }
 
   /// The field tasks are currently grouped by (drives board columns).
-  TaskSortFields? get _primaryGroupField =>
-      widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field;
+  TaskSortFields? get _primaryGroupField => _isGroupingEnabled
+      ? (widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field)
+      : null;
 
   Map<String, List<TaskListItem>> _groupTasks() {
     if (_tasks == null) return {};
 
     final groupedTasks = <String, List<TaskListItem>>{};
-    final filteredTasks = _tasks!.items.where((task) => task.id != widget.selectedTask?.id).toList();
+    final filteredTasks = _visibleTasks();
 
-    // Check grouping settings
-    final primarySortField =
-        widget.sortConfig?.groupOption?.field ?? widget.sortConfig?.orderOptions.firstOrNull?.field;
-    final isGroupedByDate = primarySortField == TaskSortFields.createdDate ||
-        primarySortField == TaskSortFields.deadlineDate ||
-        primarySortField == TaskSortFields.plannedDate ||
-        primarySortField == TaskSortFields.modifiedDate;
-
-    // Logic to determine if headers are shown
-    bool showHeaders = true;
-    if (isGroupedByDate && filteredTasks.isNotEmpty) {
-      final firstGroup = filteredTasks.first.groupName;
-      bool multipleGroups = filteredTasks.any((t) => t.groupName != firstGroup);
-      if (!multipleGroups && firstGroup == SharedTranslationKeys.today) {
-        showHeaders = false;
-      }
-    }
-
-    if (!showHeaders) {
-      // Everything in one default group
+    if (!_showGroupHeaders(filteredTasks)) {
       groupedTasks[''] = filteredTasks;
       return groupedTasks;
     }
@@ -697,7 +731,15 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       }
       groupedTasks[groupName]!.add(task);
     }
-    return groupedTasks;
+
+    final sortedGroups = groupedTasks.entries.toList()
+      ..sort((a, b) {
+        final labelComparison = _getGroupDisplayLabel(a.key, a.value)
+            .toLowerCase()
+            .compareTo(_getGroupDisplayLabel(b.key, b.value).toLowerCase());
+        return labelComparison != 0 ? labelComparison : a.key.compareTo(b.key);
+      });
+    return Map.fromEntries(sortedGroups);
   }
 
   /// Returns a map of group name to whether it should be translated
@@ -709,6 +751,54 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     };
   }
 
+  /// Optimistically moves [task] to [clampedTargetIndex] within its group in the
+  /// local list, so the drop looks instant before the command round-trips.
+  /// [reducedGroup] is the group with the moved item already removed.
+  /// Must be called inside `setState`.
+  void _applyOptimisticReorder(TaskListItem task, List<TaskListItem> reducedGroup, int clampedTargetIndex) {
+    final reorderedAllItems = List<TaskListItem>.from(_tasks!.items);
+    final globalIndex = reorderedAllItems.indexWhere((t) => t.id == task.id);
+    if (globalIndex == -1) return;
+
+    reorderedAllItems.removeAt(globalIndex);
+
+    int globalNewIndex;
+    if (clampedTargetIndex < reducedGroup.length) {
+      // Insert before the anchor item at the target slot.
+      final anchorItem = reducedGroup[clampedTargetIndex];
+      globalNewIndex = reorderedAllItems.indexWhere((t) => t.id == anchorItem.id);
+    } else if (reducedGroup.isNotEmpty) {
+      // Insert after the last item of the group.
+      final lastItem = reducedGroup.last;
+      globalNewIndex = reorderedAllItems.indexWhere((t) => t.id == lastItem.id) + 1;
+    } else {
+      // Sole member of its group: keep its current global position.
+      globalNewIndex = globalIndex;
+    }
+
+    if (globalNewIndex != -1) {
+      globalNewIndex = globalNewIndex.clamp(0, reorderedAllItems.length);
+      reorderedAllItems.insert(globalNewIndex, task);
+    } else {
+      reorderedAllItems.insert(globalIndex, task);
+    }
+
+    _tasks = GetListTasksQueryResponse(
+      items: reorderedAllItems,
+      totalItemCount: _tasks!.totalItemCount,
+      pageIndex: _tasks!.pageIndex,
+      pageSize: _tasks!.pageSize,
+    );
+
+    // The grouped/visual caches are derived from _tasks.items, and the build
+    // path only rebuilds them when they are null. Without this invalidation
+    // the optimistic reorder would be invisible: the list would keep
+    // rendering the pre-drag order until the post-command refresh landed,
+    // making the item appear to snap back and then jump into place.
+    _cachedGroupedTasks = null;
+    _cachedVisualItems = null;
+  }
+
   Future<void> _onReorderInGroup(int oldIndex, int targetIndex, List<TaskListItem> groupTasks) async {
     if (!mounted) return;
     if (oldIndex < 0 || oldIndex >= groupTasks.length) return;
@@ -716,66 +806,24 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     _dragStateNotifier.startDragging();
 
     final task = groupTasks[oldIndex];
-    final originalOrder = task.order;
 
-    // Apply visual update immediately
-    setState(() {
-      final reorderedAllItems = List<TaskListItem>.from(_tasks!.items);
-      final globalIndex = reorderedAllItems.indexWhere((t) => t.id == task.id);
+    // The group with the moved item removed — computed once and reused for both
+    // the optimistic UI reorder and the neighbor-id resolution, so the two can
+    // never disagree.
+    final reducedGroup = List<TaskListItem>.from(groupTasks)..removeAt(oldIndex);
+    final clampedTargetIndex = targetIndex.clamp(0, reducedGroup.length);
 
-      if (globalIndex != -1) {
-        reorderedAllItems.removeAt(globalIndex);
+    // Apply visual update immediately for a flicker-free drop.
+    setState(() => _applyOptimisticReorder(task, reducedGroup, clampedTargetIndex));
 
-        int globalNewIndex;
-        final reducedGroup = List<TaskListItem>.from(groupTasks)..removeAt(oldIndex);
+    // Resolve the neighbor ids at the drop position. The command handler is the
+    // single source of truth for rank computation; the UI only reports where
+    // the item was dropped.
+    final beforeTaskId = clampedTargetIndex > 0 ? reducedGroup[clampedTargetIndex - 1].id : null;
+    final afterTaskId = clampedTargetIndex < reducedGroup.length ? reducedGroup[clampedTargetIndex].id : null;
 
-        if (targetIndex < reducedGroup.length) {
-          // Inserting before an item in the group
-          final anchorItem = reducedGroup[targetIndex];
-          globalNewIndex = reorderedAllItems.indexWhere((t) => t.id == anchorItem.id);
-        } else {
-          // Inserting at the end of the group
-          if (reducedGroup.isNotEmpty) {
-            final lastItem = reducedGroup.last;
-            globalNewIndex = reorderedAllItems.indexWhere((t) => t.id == lastItem.id) + 1;
-          } else {
-            // Group became empty (except this item), put it back at original relative position locally?
-            globalNewIndex = globalIndex;
-          }
-        }
-
-        if (globalNewIndex != -1) {
-          if (globalNewIndex < 0) globalNewIndex = 0;
-          if (globalNewIndex > reorderedAllItems.length) globalNewIndex = reorderedAllItems.length;
-
-          reorderedAllItems.insert(globalNewIndex, task);
-        } else {
-          reorderedAllItems.insert(globalIndex, task);
-        }
-
-        _tasks = GetListTasksQueryResponse(
-          items: reorderedAllItems,
-          totalItemCount: _tasks!.totalItemCount,
-          pageIndex: _tasks!.pageIndex,
-          pageSize: _tasks!.pageSize,
-        );
-      }
-    });
-
-    final existingOrders = groupTasks.map((item) => item.order).toList()..removeAt(oldIndex);
-    double targetOrder;
-
-    if (targetIndex == 0) {
-      final firstOrder = existingOrders.isNotEmpty ? existingOrders.first : OrderRank.initialStep;
-      targetOrder = firstOrder - OrderRank.initialStep;
-    } else if (targetIndex >= existingOrders.length) {
-      final lastOrder = existingOrders.isNotEmpty ? existingOrders.last : 0.0;
-      targetOrder = lastOrder + OrderRank.initialStep;
-    } else {
-      targetOrder = OrderRank.getTargetOrder(existingOrders, targetIndex);
-    }
-
-    if ((targetOrder - originalOrder).abs() < 1e-10) {
+    // No-op if the item is already at the target slot within the group.
+    if (oldIndex == clampedTargetIndex) {
       _dragStateNotifier.stopDragging();
       return;
     }
@@ -784,28 +832,14 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       context: context,
       errorMessage: _translationService.translate(SharedTranslationKeys.unexpectedError),
       operation: () async {
-        try {
-          await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-            UpdateTaskOrderCommand(
-              taskId: task.id,
-              parentTaskId: widget.parentTaskId,
-              beforeTaskOrder: originalOrder,
-              afterTaskOrder: targetOrder,
-            ),
-          );
-        } on RankGapTooSmallException {
-          // Fallback for RankGapTooSmallException: Try to recover by placing the item at the end of the group
-          // with a larger spacing. This helps to resolve the inconsistent order values.
-          final retryTargetOrder = (groupTasks.isNotEmpty ? groupTasks.last.order : 0.0) + OrderRank.initialStep * 2;
-          await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
-            UpdateTaskOrderCommand(
-              taskId: task.id,
-              parentTaskId: widget.parentTaskId,
-              beforeTaskOrder: originalOrder,
-              afterTaskOrder: retryTargetOrder,
-            ),
-          );
-        }
+        await _mediator.send<UpdateTaskOrderCommand, UpdateTaskOrderResponse>(
+          UpdateTaskOrderCommand(
+            taskId: task.id,
+            targetIndex: clampedTargetIndex,
+            beforeTaskId: beforeTaskId,
+            afterTaskId: afterTaskId,
+          ),
+        );
       },
       onSuccess: () {
         _dragStateNotifier.stopDragging();
@@ -1246,7 +1280,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     final groupEntries = groupedTasks.entries.toList();
 
     return ListView.builder(
-        key: ValueKey('list_content_${widget.forceOriginalLayout}'),
+        key: ValueKey('list_content_$_isCustomOrderActive'),
         controller: widget.useParentScroll ? null : _scrollController,
         shrinkWrap: widget.useParentScroll,
         physics: widget.useParentScroll ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
@@ -1281,7 +1315,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
 
                 // Nested Independent List
                 if (!collapsedGroups.contains(groupName))
-                  if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout)
+                  if (_isCustomOrderActive)
                     ReorderableListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -1311,31 +1345,39 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
                             onPressed: () => widget.onSelectTask?.call(task),
                           ));
                         }
-                        trailingButtons.add(ReorderableDragStartListener(
-                          key: ValueKey('trailing_drag_${task.id}'),
-                          index: i,
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
-                            child: Icon(Icons.drag_handle, color: Colors.grey),
-                          ),
-                        ));
+                        if (_showCustomSortIndicator) {
+                          trailingButtons.add(ReorderableDragStartListener(
+                            key: ValueKey('trailing_drag_${task.id}'),
+                            index: i,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: AppTheme.size2XSmall),
+                              child: Icon(Icons.drag_handle, color: Colors.grey),
+                            ),
+                          ));
+                        }
+
+                        final card = TaskCard(
+                          key: ValueKey('task_card_${task.id}'),
+                          taskItem: task,
+                          onOpenDetails: () => widget.onClickTask(task),
+                          onCompleted:
+                              widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
+                          onScheduled: (task.isCompleted || widget.onScheduleTask == null)
+                              ? null
+                              : () => widget.onScheduleTask!(task, DateTime.now()),
+                          transparent: widget.transparentCards,
+                          trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
+                          isDense: isDense,
+                        );
 
                         return Padding(
                             key: ValueKey('task_padding_reorderable_${task.id}'),
                             padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                            child: TaskCard(
-                              key: ValueKey('task_card_${task.id}'),
-                              taskItem: task,
-                              onOpenDetails: () => widget.onClickTask(task),
-                              onCompleted:
-                                  widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
-                              onScheduled: (task.isCompleted || widget.onScheduleTask == null)
-                                  ? null
-                                  : () => widget.onScheduleTask!(task, DateTime.now()),
-                              transparent: widget.transparentCards,
-                              trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-                              isDense: isDense,
-                            ));
+                            // Without the handle the card itself is the only
+                            // affordance left, so it must start the drag.
+                            child: _showCustomSortIndicator
+                                ? card
+                                : ReorderableDelayedDragStartListener(index: i, child: card));
                       },
                     )
                   else if (!collapsedGroups.contains(groupName))
@@ -1378,7 +1420,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             );
           } else if (showLoadMore) {
             return Padding(
-              key: ValueKey('load_more_button_list_${widget.forceOriginalLayout}'),
+              key: ValueKey('load_more_button_list_$_isCustomOrderActive'),
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(
                   child: LoadMoreButton(
@@ -1387,7 +1429,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             );
           } else if (showInfinityLoading) {
             return Padding(
-              key: ValueKey('loading_indicator_list_${widget.forceOriginalLayout}'),
+              key: ValueKey('loading_indicator_list_$_isCustomOrderActive'),
               padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
               child: const Center(child: CircularProgressIndicator()),
             );
@@ -1406,7 +1448,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     if (index >= visualItems.length) {
       if (showLoadMore) {
         return Padding(
-          key: ValueKey('load_more_button_sliver_list_${widget.forceOriginalLayout}'),
+          key: ValueKey('load_more_button_sliver_list_$_isCustomOrderActive'),
           padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
           child: Center(
             child: LoadMoreButton(onPressed: onLoadMore),
@@ -1414,7 +1456,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         );
       } else if (showInfinityLoading) {
         return Padding(
-          key: ValueKey('loading_indicator_sliver_list_${widget.forceOriginalLayout}'),
+          key: ValueKey('loading_indicator_sliver_list_$_isCustomOrderActive'),
           padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
           child: const Center(child: CircularProgressIndicator()),
         );
@@ -1465,7 +1507,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
           onPressed: () => widget.onSelectTask?.call(task),
         ));
       }
-      if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+      if (_isCustomOrderActive && _showCustomSortIndicator) {
         trailingButtons.add(ReorderableDragStartListener(
           key: ValueKey('sliver_trailing_drag_${task.id}'),
           index: index,
@@ -1476,22 +1518,28 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         ));
       }
 
+      final card = TaskCard(
+        key: ValueKey('sliver_task_card_${task.id}'),
+        taskItem: task,
+        onOpenDetails: () => widget.onClickTask(task),
+        onCompleted: widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
+        onScheduled: (task.isCompleted || widget.onScheduleTask == null)
+            ? null
+            : () => widget.onScheduleTask!(task, DateTime.now()),
+        transparent: widget.transparentCards,
+        trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
+        isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+        isCustomOrder: _isCustomOrderActive,
+      );
+
       return Padding(
         key: ValueKey('sliver_task_padding_reorderable_${task.id}'),
         padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-        child: TaskCard(
-          key: ValueKey('sliver_task_card_${task.id}'),
-          taskItem: task,
-          onOpenDetails: () => widget.onClickTask(task),
-          onCompleted: widget.onTaskCompleted != null ? (taskId) => widget.onTaskCompleted!(taskId) : null,
-          onScheduled: (task.isCompleted || widget.onScheduleTask == null)
-              ? null
-              : () => widget.onScheduleTask!(task, DateTime.now()),
-          transparent: widget.transparentCards,
-          trailingButtons: trailingButtons.isNotEmpty ? trailingButtons : null,
-          isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-          isCustomOrder: widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout,
-        ),
+        // Without the handle the card itself is the only affordance left, so
+        // it must start the drag.
+        child: (_isCustomOrderActive && !_showCustomSortIndicator)
+            ? ReorderableDelayedDragStartListener(index: index, child: card)
+            : card,
       );
     }
     return SizedBox.shrink(key: ValueKey('task_item_empty_$index'));
@@ -1526,9 +1574,17 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
 
-    if (widget.enableReordering && widget.filterByCompleted != true && !widget.forceOriginalLayout) {
+    if (_isCustomOrderActive) {
       return SliverReorderableList(
         itemCount: totalCount,
+        // Dismiss at drag start, not at drop: an open tooltip stays anchored to
+        // the dragged sliver child, whose layout offset is null while the
+        // reorder reparents and moves it.
+        onReorderStart: (_) {
+          Tooltip.dismissAllToolTips();
+          _dragStateNotifier.startDragging();
+        },
+        onReorderEnd: (_) => _dragStateNotifier.stopDragging(),
         onReorder: (oldIndex, newIndex) => _onSliverReorder(oldIndex, newIndex, visualItems),
         proxyDecorator: (child, index, animation) => Material(
           elevation: 2,

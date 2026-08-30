@@ -258,6 +258,8 @@ shared:
     ascending: Nouseva
     custom_order:
       description: Ota käyttöön vedä ja pudota kohteiden uudelleenjärjestämiseksi
+      hide_indicator_tooltip: Piilota vetokahva
+      show_indicator_tooltip: Näytä vetokahva
       title: Mukautettu järjestys
     descending: Laskeva
     disable_reordering_tooltip: Poista uudelleenjärjestystila käytöstä

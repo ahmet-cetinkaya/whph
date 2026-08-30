@@ -1,0 +1,60 @@
+// Zed run tasks for WHPH (Flutter). Open with `task: spawn` from the palette.
+//
+// Every task runs inside the Nix dev shell via scripts/zed_nix_run.sh, because
+// the Linux desktop build needs native tooling (ninja, CMake, GTK/X11/Wayland
+// libs) that only `nix develop` provides. Without it, `fvm flutter run` fails
+// on NixOS with "CMake Error ... ninja ... No such file or directory".
+//
+// NOTE: after editing this file, reload Zed's task cache — run
+// `task: spawn` (not `task: rerun`) and pick the task, or reopen the project.
+// See: https://zed.dev/docs/tasks
+[
+  {
+    "label": "whph: run (Linux)",
+    "command": "$ZED_WORKTREE_ROOT/scripts/zed_nix_run.sh src fvm flutter run -d linux",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "whph: run (demo mode)",
+    "command": "$ZED_WORKTREE_ROOT/scripts/zed_nix_run.sh src fvm flutter run -d linux --dart-define DEMO_MODE=true",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "whph: test",
+    "command": "$ZED_WORKTREE_ROOT/scripts/zed_nix_run.sh src fvm flutter test",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "whph: pub get",
+    "command": "$ZED_WORKTREE_ROOT/scripts/zed_nix_run.sh src fvm flutter pub get",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "whph: codegen (build_runner + drift)",
+    "command": "$ZED_WORKTREE_ROOT/scripts/zed_nix_run.sh . rps gen",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "whph: check (format + lint + test)",
+    "command": "$ZED_WORKTREE_ROOT/scripts/zed_nix_run.sh . rps check",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  }
+]

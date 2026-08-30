@@ -216,6 +216,53 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
     });
   }
 
+  /// Toggles only the drag-indicator visibility; custom sort itself stays on,
+  /// and reordering stays reachable through a whole-card long press.
+  void _toggleIndicatorVisibility() {
+    setState(() {
+      _currentConfig = _currentConfig.copyWith(
+        showCustomSortIndicator: !_currentConfig.showCustomSortIndicator,
+      );
+      widget.onConfigChanged(_currentConfig);
+    });
+  }
+
+  Widget _buildIndicatorVisibilityButton() {
+    final bool isIndicatorVisible = _currentConfig.showCustomSortIndicator;
+
+    return IconButton(
+      key: const ValueKey('custom_sort_indicator_toggle'),
+      onPressed: _toggleIndicatorVisibility,
+      tooltip: widget.translationService.translate(
+        isIndicatorVisible
+            ? SharedTranslationKeys.sortCustomHideIndicatorTooltip
+            : SharedTranslationKeys.sortCustomShowIndicatorTooltip,
+      ),
+      icon: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Icon(
+            Icons.drag_handle,
+            size: AppTheme.iconSizeMedium,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          Positioned(
+            right: -2,
+            bottom: -2,
+            child: Icon(
+              key: const ValueKey('custom_sort_indicator_badge'),
+              isIndicatorVisible ? Icons.visibility : Icons.visibility_off,
+              size: AppTheme.iconSizeSmall,
+              color: isIndicatorVisible
+                  ? Theme.of(context).colorScheme.primary
+                  : AppTheme.secondaryTextColor.withValues(alpha: 0.7),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isDisabled = _currentConfig.useCustomOrder;
@@ -258,26 +305,34 @@ class _SortDialogState<T> extends State<_SortDialog<T>> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (widget.showCustomOrderOption) ...[
-                  Card(
-                    elevation: 0,
-                    color: AppTheme.surface1,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
-                    child: SwitchListTile.adaptive(
-                      value: _currentConfig.useCustomOrder,
-                      onChanged: _toggleCustomOrder,
-                      title: Text(
-                        widget.translationService.translate(SharedTranslationKeys.sortCustomTitle),
-                        style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Card(
+                          elevation: 0,
+                          color: AppTheme.surface1,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius)),
+                          child: SwitchListTile.adaptive(
+                            value: _currentConfig.useCustomOrder,
+                            onChanged: _toggleCustomOrder,
+                            title: Text(
+                              widget.translationService.translate(SharedTranslationKeys.sortCustomTitle),
+                              style: AppTheme.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              widget.translationService.translate(SharedTranslationKeys.sortCustomDescription),
+                              style: AppTheme.bodySmall,
+                            ),
+                            secondary: StyledIcon(
+                              Icons.low_priority,
+                              isActive: _currentConfig.useCustomOrder,
+                            ),
+                          ),
+                        ),
                       ),
-                      subtitle: Text(
-                        widget.translationService.translate(SharedTranslationKeys.sortCustomDescription),
-                        style: AppTheme.bodySmall,
-                      ),
-                      secondary: StyledIcon(
-                        Icons.low_priority,
-                        isActive: _currentConfig.useCustomOrder,
-                      ),
-                    ),
+                      if (_currentConfig.useCustomOrder) _buildIndicatorVisibilityButton(),
+                    ],
                   ),
                   const SizedBox(height: AppTheme.sizeSmall),
                 ],

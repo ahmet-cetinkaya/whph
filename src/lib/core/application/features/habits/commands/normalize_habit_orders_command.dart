@@ -21,36 +21,34 @@ class NormalizeHabitOrdersCommandHandler
 
   @override
   Future<NormalizeHabitOrdersResponse> call(NormalizeHabitOrdersCommand request) async {
-    // Get all non-deleted habits
+    // Match the visible list's tie-breakers so normalization preserves its order.
     final allHabits = await _habitRepository.getAll(
       customWhereFilter: CustomWhereFilter('deleted_date IS NULL', []),
-      customOrder: [CustomOrder(field: "order")],
+      customOrder: [
+        CustomOrder(field: "order", direction: SortDirection.asc),
+        CustomOrder(field: "created_date", direction: SortDirection.asc),
+        CustomOrder(field: "id", direction: SortDirection.asc),
+      ],
     );
 
     if (allHabits.isEmpty) {
       return NormalizeHabitOrdersResponse(0);
     }
 
-    // Sort by current order to maintain relative positions
-    allHabits.sort((a, b) => a.order.compareTo(b.order));
+    allHabits.sort((a, b) {
+      final orderComparison = a.order.compareTo(b.order);
+      if (orderComparison != 0) return orderComparison;
 
-    // Use single timestamp for all updates in the batch
-    final now = DateTime.now().toUtc();
+      final createdDateComparison = a.createdDate.compareTo(b.createdDate);
+      if (createdDateComparison != 0) return createdDateComparison;
 
-    // Assign new normalized orders
-    double orderStep = OrderRank.initialStep;
-    final habitsToUpdate = <Habit>[];
+      return a.id.compareTo(b.id);
+    });
 
-    for (var habit in allHabits) {
-      habit.order = orderStep;
-      habit.modifiedDate = now;
-      habitsToUpdate.add(habit);
-      orderStep += OrderRank.initialStep;
-    }
+    // Assign clean, evenly spaced orders and batch update in one transaction.
+    OrderRank.assignSequential<Habit>(allHabits, setOrder: (habit, order) => habit.order = order);
+    await _habitRepository.updateMultiple(allHabits);
 
-    // Batch update all habits
-    await _habitRepository.updateAll(habitsToUpdate);
-
-    return NormalizeHabitOrdersResponse(habitsToUpdate.length);
+    return NormalizeHabitOrdersResponse(allHabits.length);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:acore/acore.dart';
 
 class TaskListItem {
   final String id;
@@ -17,7 +18,7 @@ class TaskListItem {
   final int totalElapsedTime;
   final String? parentTaskId;
   final double subTasksCompletionPercentage;
-  final double order;
+  final String order;
   final List<TaskListItem> subTasks;
   final ReminderTime plannedDateReminderTime;
   final ReminderTime deadlineDateReminderTime;
@@ -39,7 +40,7 @@ class TaskListItem {
     this.estimatedTime,
     this.parentTaskId,
     this.subTasksCompletionPercentage = 0,
-    this.order = 0.0,
+    this.order = OrderRank.initialRank,
     this.subTasks = const [],
     this.totalElapsedTime = 0,
     this.plannedDateReminderTime = ReminderTime.none,
@@ -64,7 +65,7 @@ class TaskListItem {
     int? totalElapsedTime,
     String? parentTaskId,
     double? subTasksCompletionPercentage,
-    double? order,
+    String? order,
     List<TaskListItem>? subTasks,
     ReminderTime? plannedDateReminderTime,
     ReminderTime? deadlineDateReminderTime,

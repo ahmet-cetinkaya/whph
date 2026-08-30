@@ -250,6 +250,8 @@ shared:
     ascending: Stigande
     custom_order:
       description: Aktivera dra och släpp för att ordna om objekt
+      hide_indicator_tooltip: Dölj dragindikator
+      show_indicator_tooltip: Visa dragindikator
       title: Anpassad sortering
     descending: Fallande
     disable_reordering_tooltip: Inaktivera omordningsläge

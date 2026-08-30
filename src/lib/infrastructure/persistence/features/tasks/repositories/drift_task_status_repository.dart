@@ -13,7 +13,7 @@ class TaskStatusTable extends Table {
   DateTimeColumn get deletedDate => dateTime().nullable()();
   TextColumn get name => text()();
   TextColumn get color => text().nullable()();
-  RealColumn get order => real().withDefault(const Constant(0.0))();
+  TextColumn get order => text().withDefault(const Constant('U'))();
   BoolColumn get isBuiltIn => boolean().withDefault(const Constant(false))();
   BoolColumn get isDoneStatus => boolean().withDefault(const Constant(false))();
 

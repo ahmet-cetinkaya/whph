@@ -20,7 +20,7 @@ class TaskStatusListItem {
   final String id;
   final String name;
   final String? color;
-  final double order;
+  final String order;
   final bool isBuiltIn;
   final bool isDoneStatus;
 
@@ -96,7 +96,7 @@ class GetListTaskStatusesQueryHandler
     Set<String> existingIds,
     String id,
     String defaultColor,
-    double defaultOrder,
+    String defaultOrder,
   ) {
     if (existingIds.contains(id)) return;
 

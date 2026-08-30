@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
+import 'package:whph/core/application/features/tasks/commands/update_task_order_command.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_status_repository.dart';
@@ -9,6 +10,7 @@ import 'package:whph/core/application/features/tasks/models/task_sort_fields.dar
 
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:acore/acore.dart';
 
 void main() {
@@ -231,7 +233,7 @@ void main() {
             deletedDate: null,
             completedAt: null,
             priority: EisenhowerPriority.urgentImportant,
-            order: 0);
+            order: 'U');
         final task2 = Task(
             id: '2',
             title: 'Banana',
@@ -240,7 +242,7 @@ void main() {
             deletedDate: null,
             completedAt: null,
             priority: EisenhowerPriority.urgentImportant,
-            order: 0);
+            order: 'U');
         final task3 = Task(
             id: '3',
             title: 'apple 2',
@@ -249,7 +251,7 @@ void main() {
             deletedDate: null,
             completedAt: null,
             priority: EisenhowerPriority.urgentImportant,
-            order: 0);
+            order: 'U');
         final task4 = Task(
             id: '4',
             title: 'card',
@@ -258,7 +260,7 @@ void main() {
             deletedDate: null,
             completedAt: null,
             priority: EisenhowerPriority.urgentImportant,
-            order: 0);
+            order: 'U');
 
         await taskRepository.add(task1);
         await taskRepository.add(task2);
@@ -278,6 +280,207 @@ void main() {
         expect(result.items[1].title, 'apple 2');
         expect(result.items[2].title, 'Banana');
         expect(result.items[3].title, 'card');
+      });
+
+      test('orders custom-sorted tasks by rank, creation date, and id across repeated queries', () async {
+        // Given
+        final createdDate = DateTime.utc(2024, 1, 1);
+        final tasks = [
+          Task(id: 'custom-c', title: 'A', createdDate: createdDate, parentTaskId: null, order: 'V'),
+          Task(id: 'custom-b', title: 'B', createdDate: createdDate, parentTaskId: null, order: 'U'),
+          Task(id: 'custom-a', title: 'C', createdDate: createdDate, parentTaskId: null, order: 'U'),
+        ];
+        for (final task in tasks) {
+          await taskRepository.add(task);
+        }
+        final query = GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          sortBy: [SortOption(field: TaskSortFields.title, direction: SortDirection.asc)],
+          sortByCustomSort: true,
+          enableGrouping: true,
+        );
+
+        // When
+        final results = await Future.wait(List.generate(5, (_) => getListTasksHandler(query)));
+
+        // Then
+        for (final result in results) {
+          expect(result.items.map((task) => task.id), ['custom-a', 'custom-b', 'custom-c']);
+        }
+      });
+
+      test('keeps status grouping ahead of custom task ordering', () async {
+        // Given
+        final tasks = [
+          Task(
+              id: 'todo-later',
+              title: 'Todo later',
+              createdDate: DateTime.utc(2024, 1, 2),
+              parentTaskId: null,
+              statusId: 'todo',
+              order: 'V'),
+          Task(
+              id: 'done-first',
+              title: 'Done first',
+              createdDate: DateTime.utc(2024, 1, 1),
+              parentTaskId: null,
+              statusId: 'done',
+              order: 'U'),
+          Task(
+              id: 'todo-first',
+              title: 'Todo first',
+              createdDate: DateTime.utc(2024, 1, 1),
+              parentTaskId: null,
+              statusId: 'todo',
+              order: 'U'),
+        ];
+        for (final task in tasks) {
+          await taskRepository.add(task);
+        }
+
+        // When
+        final result = await getListTasksHandler(GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          enableGrouping: true,
+          groupBy: SortOption(field: TaskSortFields.status, direction: SortDirection.asc),
+          sortByCustomSort: true,
+        ));
+
+        // Then
+        expect(result.items.map((task) => task.id), ['done-first', 'todo-first', 'todo-later']);
+      });
+
+      test('custom sort e2e reorders tasks through commands and queries', () async {
+        final tasks = [
+          Task(
+              id: 'task-1',
+              title: 'Echo',
+              createdDate: DateTime.utc(2024, 1, 1),
+              parentTaskId: null,
+              statusId: TaskStatusConstants.todoId,
+              order: 'U'),
+          Task(
+              id: 'task-2',
+              title: 'Delta',
+              createdDate: DateTime.utc(2024, 1, 2),
+              parentTaskId: null,
+              statusId: TaskStatusConstants.doneId,
+              order: 'V'),
+          Task(
+              id: 'task-3',
+              title: 'Charlie',
+              createdDate: DateTime.utc(2024, 1, 3),
+              parentTaskId: null,
+              statusId: TaskStatusConstants.todoId,
+              order: 'W'),
+          Task(
+              id: 'task-4',
+              title: 'Bravo',
+              createdDate: DateTime.utc(2024, 1, 4),
+              parentTaskId: null,
+              statusId: TaskStatusConstants.doneId,
+              order: 'X'),
+          Task(
+              id: 'task-5',
+              title: 'Alpha',
+              createdDate: DateTime.utc(2024, 1, 5),
+              parentTaskId: null,
+              statusId: TaskStatusConstants.todoId,
+              order: 'Y'),
+        ];
+        for (final task in tasks) {
+          await taskRepository.add(task);
+        }
+        final updateOrder = UpdateTaskOrderCommandHandler(taskRepository);
+
+        Future<void> expectCustomOrder(List<String> expectedIds) async {
+          final result = await getListTasksHandler(GetListTasksQuery(
+            pageIndex: 0,
+            pageSize: 10,
+            filterByParentTaskId: null,
+            sortByCustomSort: true,
+            groupBy: null,
+          ));
+          expect(result.items.map((task) => task.id).toList(), expectedIds);
+        }
+
+        await updateOrder(UpdateTaskOrderCommand(
+          taskId: 'task-5',
+          targetIndex: 0,
+        ));
+        await expectCustomOrder(['task-5', 'task-1', 'task-2', 'task-3', 'task-4']);
+
+        await updateOrder(UpdateTaskOrderCommand(
+          taskId: 'task-1',
+          targetIndex: 2,
+        ));
+        await expectCustomOrder(['task-5', 'task-2', 'task-1', 'task-3', 'task-4']);
+
+        await updateOrder(UpdateTaskOrderCommand(
+          taskId: 'task-5',
+          targetIndex: 4,
+        ));
+        await expectCustomOrder(['task-2', 'task-1', 'task-3', 'task-4', 'task-5']);
+
+        final groupedResult = await getListTasksHandler(GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          sortByCustomSort: true,
+          enableGrouping: true,
+          groupBy: SortOption(field: TaskSortFields.status, direction: SortDirection.asc),
+        ));
+        expect(groupedResult.items.map((task) => task.id).toList(), ['task-1', 'task-3', 'task-5', 'task-2', 'task-4']);
+
+        final nonCustomResult = await getListTasksHandler(GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          sortByCustomSort: false,
+          enableGrouping: false,
+          sortBy: [SortOption(field: TaskSortFields.title, direction: SortDirection.asc)],
+        ));
+        expect(
+            nonCustomResult.items.map((task) => task.id).toList(), ['task-5', 'task-4', 'task-3', 'task-2', 'task-1']);
+      });
+
+      test('reorder handler trusts SQL ORDER BY on mixed-case ranks without a redundant Dart re-sort', () async {
+        // OrderRank's base-62 alphabet is 0-9A-Za-z: digits, then uppercase,
+        // then lowercase. SQLite's default BINARY collation sorts by byte
+        // value, which happens to place '9' < 'A' < 'Z' < 'a' < 'z' — the
+        // same order OrderRank relies on. If a COLLATE NOCASE crept into the
+        // sibling query, uppercase and lowercase ranks would compare equal
+        // and this exact case-mixed sequence would come back scrambled.
+        final tasks = [
+          Task(id: 'digit', title: 'digit', createdDate: DateTime.utc(2024, 1, 1), order: '5'),
+          Task(id: 'upper', title: 'upper', createdDate: DateTime.utc(2024, 1, 2), order: 'M'),
+          Task(id: 'lower', title: 'lower', createdDate: DateTime.utc(2024, 1, 3), order: 'm'),
+        ];
+        for (final task in tasks) {
+          await taskRepository.add(task);
+        }
+        final updateOrder = UpdateTaskOrderCommandHandler(taskRepository);
+
+        // Move 'lower' to land strictly between 'digit' and 'upper' —
+        // beforeTaskId is the neighbor that ends up immediately before the
+        // moved item, afterTaskId the one immediately after. This only
+        // produces the expected rank if the handler's sibling list is
+        // already correctly ordered straight from SQL.
+        await updateOrder(UpdateTaskOrderCommand(
+          taskId: 'lower',
+          targetIndex: 1,
+          beforeTaskId: 'digit',
+          afterTaskId: 'upper',
+        ));
+
+        final result = await getListTasksHandler(GetListTasksQuery(
+          pageIndex: 0,
+          pageSize: 10,
+          filterByParentTaskId: null,
+          sortByCustomSort: true,
+          groupBy: null,
+        ));
+        expect(result.items.map((task) => task.id).toList(), ['digit', 'lower', 'upper']);
       });
     });
   });

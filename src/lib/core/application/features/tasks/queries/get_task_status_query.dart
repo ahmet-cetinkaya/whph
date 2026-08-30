@@ -16,7 +16,7 @@ class GetTaskStatusQueryResponse {
   final DateTime? deletedDate;
   final String name;
   final String? color;
-  final double order;
+  final String order;
   final bool isBuiltIn;
   final bool isDoneStatus;
 
@@ -27,7 +27,7 @@ class GetTaskStatusQueryResponse {
     this.deletedDate,
     required this.name,
     this.color,
-    this.order = 0.0,
+    this.order = OrderRank.initialRank,
     this.isBuiltIn = false,
     this.isDoneStatus = false,
   });

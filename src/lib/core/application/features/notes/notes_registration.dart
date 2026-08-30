@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/delete_note_command.dart';
+import 'package:whph/core/application/features/notes/commands/normalize_note_orders_command.dart';
 import 'package:whph/core/application/features/notes/commands/remove_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
 import 'package:whph/core/application/features/notes/commands/update_note_order_command.dart';
@@ -45,6 +46,10 @@ void registerNotesFeature(
 
   mediator.registerHandler<UpdateNoteTagsOrderCommand, void, UpdateNoteTagsOrderCommandHandler>(
     () => UpdateNoteTagsOrderCommandHandler(noteTagRepository: noteTagRepository),
+  );
+
+  mediator.registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
+    () => NormalizeNoteOrdersCommandHandler(noteRepository),
   );
 
   // Register Query Handlers

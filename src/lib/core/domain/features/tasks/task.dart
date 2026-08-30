@@ -57,7 +57,7 @@ class Task extends BaseEntity<String> {
   DateTime? completedAt;
   String? statusId;
   String? parentTaskId;
-  double order = 0;
+  String order = OrderRank.initialRank;
 
   // Reminder settings
   @JsonProperty(defaultValue: 'ReminderTime.none')
@@ -118,7 +118,7 @@ class Task extends BaseEntity<String> {
     this.completedAt,
     this.statusId,
     this.parentTaskId,
-    this.order = 0.0,
+    this.order = OrderRank.initialRank,
     this.plannedDateReminderTime = ReminderTime.none,
     this.deadlineDateReminderTime = ReminderTime.none,
     this.plannedDateReminderCustomOffset,
@@ -193,7 +193,7 @@ class Task extends BaseEntity<String> {
     Object? completedAt = _copyWithSentinel,
     Object? statusId = _copyWithSentinel,
     Object? parentTaskId = _copyWithSentinel,
-    double? order,
+    String? order,
     ReminderTime? plannedDateReminderTime,
     ReminderTime? deadlineDateReminderTime,
     Object? plannedDateReminderCustomOffset = _copyWithSentinel,
@@ -288,11 +288,10 @@ class Task extends BaseEntity<String> {
         estimatedTime = estimatedTimeValue.toInt();
       }
 
-      double order = 0.0;
+      String order = OrderRank.initialRank;
       final orderValue = json['order'];
-      if (orderValue is num) {
-        order = orderValue.toDouble();
-      }
+      if (orderValue is String && !OrderRank.needsNormalization([orderValue])) order = orderValue;
+      if (orderValue is num) order = OrderRank.fromLegacyDouble(orderValue.toDouble());
 
       int? recurrenceInterval;
       final intervalValue = json['recurrenceInterval'];

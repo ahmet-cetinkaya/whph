@@ -53,7 +53,7 @@ class TaskDataMapper {
       completedAt: convertToDateTime(data['completed_at']),
       statusId: data['status_id'] as String?,
       parentTaskId: data['parent_task_id'] as String?,
-      order: (data['order'] is num) ? (data['order'] as num).toDouble() : 0.0,
+      order: data['order'] as String? ?? 'U',
       plannedDateReminderCustomOffset: data['planned_date_reminder_custom_offset'] as int?,
       deadlineDateReminderCustomOffset: data['deadline_date_reminder_custom_offset'] as int?,
     );

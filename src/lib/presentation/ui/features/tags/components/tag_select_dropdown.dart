@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/application/features/tags/models/tag_sort_fields.dart';
+import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_select_dialog.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -17,7 +18,6 @@ import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/tags/pages/tag_details_page.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_options_dialog.dart';
 import 'package:acore/acore.dart' show SortDirection, SortOption;
-import 'package:whph/core/domain/features/tags/tag.dart';
 
 class TagSelectDropdown extends StatefulWidget {
   final List<DropdownOption<String>> initialSelectedTags;
@@ -37,8 +37,7 @@ class TagSelectDropdown extends StatefulWidget {
   final bool initialShowNoTagsFilter;
   final bool autoOpen; // NEW: Auto-open overlay on first build
 
-  final Function(List<DropdownOption<String>>, bool isNoneSelected)
-      onTagsSelected;
+  final Function(List<DropdownOption<String>>, bool isNoneSelected) onTagsSelected;
   final Widget? headerAction;
   final ButtonStyle? buttonStyle;
 
@@ -77,14 +76,13 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   List<String> _selectedTags = [];
   bool _hasExplicitlySelectedNone = false;
   bool _needsStateUpdate = false;
-  bool _hasAutoOpened = false; // NEW: Track if we've already auto-opened
+  bool _hasAutoOpened = false;
 
   @override
   void initState() {
     _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
     _hasExplicitlySelectedNone = widget.showNoneOption &&
-        (_selectedTags.isEmpty &&
-            (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
+        (_selectedTags.isEmpty && (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
 
     if (_hasExplicitlySelectedNone) {
       _selectedTags.clear();
@@ -108,8 +106,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   void didUpdateWidget(TagSelectDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (_selectedTagsChanged(
-        oldWidget.initialSelectedTags, widget.initialSelectedTags)) {
+    if (_selectedTagsChanged(oldWidget.initialSelectedTags, widget.initialSelectedTags)) {
       _selectedTags = widget.initialSelectedTags.map((e) => e.value).toList();
       _needsStateUpdate = true;
     }
@@ -122,8 +119,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     if (oldWidget.initialShowNoTagsFilter != widget.initialShowNoTagsFilter ||
         oldWidget.initialNoneSelected != widget.initialNoneSelected) {
       _hasExplicitlySelectedNone = widget.showNoneOption &&
-          (_selectedTags.isEmpty &&
-              (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
+          (_selectedTags.isEmpty && (widget.initialShowNoTagsFilter || widget.initialNoneSelected));
 
       if (_hasExplicitlySelectedNone) {
         _selectedTags.clear();
@@ -148,9 +144,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     }
 
     // NEW: Auto-open if autoOpen changes to true
-    if (widget.autoOpen != oldWidget.autoOpen &&
-        widget.autoOpen &&
-        !_hasAutoOpened) {
+    if (widget.autoOpen != oldWidget.autoOpen && widget.autoOpen && !_hasAutoOpened) {
       _hasAutoOpened = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -160,8 +154,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     }
   }
 
-  bool _selectedTagsChanged(List<DropdownOption<String>> oldTags,
-      List<DropdownOption<String>> newTags) {
+  bool _selectedTagsChanged(List<DropdownOption<String>> oldTags, List<DropdownOption<String>> newTags) {
     if (oldTags.length != newTags.length) {
       return true;
     }
@@ -176,15 +169,12 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
   }
 
   String? _getInitialSelectedTagLabel(String tagId) =>
-      widget.initialSelectedTags
-          .firstWhereOrNull((tag) => tag.value == tagId)
-          ?.label;
+      widget.initialSelectedTags.firstWhereOrNull((tag) => tag.value == tagId)?.label;
 
   Future<void> _getTags({required int pageIndex, String? search}) async {
     await AsyncErrorHandler.execute<GetListTagsQueryResponse>(
       context: context,
-      errorMessage:
-          _translationService.translate(TagTranslationKeys.errorLoading),
+      errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
       operation: () async {
         final query = GetListTagsQuery(
           pageIndex: pageIndex,
@@ -198,24 +188,20 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
             ),
           ],
         );
-        return await _mediator
-            .send<GetListTagsQuery, GetListTagsQueryResponse>(query);
+        return await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
       },
       onSuccess: (result) {
         if (mounted) {
           setState(() {
             if (widget.excludeTagIds.isNotEmpty) {
-              result.items
-                  .removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
+              result.items.removeWhere((tag) => widget.excludeTagIds.contains(tag.id));
             }
 
             if (_tags == null) {
               _tags = result;
             } else {
               final existingIds = _tags!.items.map((t) => t.id).toSet();
-              final newItems = result.items
-                  .where((t) => !existingIds.contains(t.id))
-                  .toList();
+              final newItems = result.items.where((t) => !existingIds.contains(t.id)).toList();
               _tags!.items.addAll(newItems);
               _tags!.pageIndex = result.pageIndex;
             }
@@ -236,7 +222,6 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
 
     // Construct the updated list of DropdownOptions to pass back
     final List<DropdownOption<String>> updatedTags = _selectedTags.map((tagId) {
-      // Find tag name
       final tag = _tags?.items.firstWhereOrNull((item) => item.id == tagId);
       final label = tag?.name ??
           _getInitialSelectedTagLabel(tagId) ??
@@ -265,8 +250,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
     );
 
     if (result != null && result is Map && mounted) {
-      final selectedOptions =
-          result['selectedTags'] as List<DropdownOption<String>>;
+      final selectedOptions = result['selectedTags'] as List<DropdownOption<String>>;
       final isNoneSelected = result['isNoneSelected'] as bool;
 
       setState(() {
@@ -298,20 +282,16 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
           color: widget.color ?? Theme.of(context).iconTheme.color,
         ),
       );
-      displayTooltip =
-          _translationService.translate(SharedTranslationKeys.noneOption);
+      displayTooltip = _translationService.translate(SharedTranslationKeys.noneOption);
     } else if (_selectedTags.isNotEmpty && _tags != null) {
       final uniqueSelectedTagIds = _selectedTags.toSet().toList();
       final selectedTagNames = uniqueSelectedTagIds.map((id) {
         final tag = _tags!.items.firstWhereOrNull((t) => t.id == id);
         if (tag != null) {
-          return tag.name.isNotEmpty
-              ? tag.name
-              : _translationService.translate(SharedTranslationKeys.untitled);
+          return tag.name.isNotEmpty ? tag.name : _translationService.translate(SharedTranslationKeys.untitled);
         }
         final fallbackLabel = _getInitialSelectedTagLabel(id);
-        return fallbackLabel ??
-            _translationService.translate(SharedTranslationKeys.untitled);
+        return fallbackLabel ?? _translationService.translate(SharedTranslationKeys.untitled);
       }).toList();
 
       if (widget.showSelectedInDropdown) {
@@ -343,9 +323,8 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               return SizedBox.shrink(key: ValueKey('empty_no_tag_$id'));
             }
 
-            final displayName = tag?.name ??
-                fallbackLabel ??
-                _translationService.translate(SharedTranslationKeys.untitled);
+            final displayName =
+                tag?.name ?? fallbackLabel ?? _translationService.translate(SharedTranslationKeys.untitled);
             final tagType = tag?.type ?? TagType.label;
             final tagColor = tag?.color;
 
@@ -368,21 +347,15 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                     if (currentTags == null) return;
 
                     final List<DropdownOption<String>> updatedTags =
-                        uniqueSelectedTagIds
-                            .where((tagId) => tagId != id)
-                            .map((tagId) {
-                      final tagItem = currentTags.items
-                          .firstWhereOrNull((item) => item.id == tagId);
+                        uniqueSelectedTagIds.where((tagId) => tagId != id).map((tagId) {
+                      final tagItem = currentTags.items.firstWhereOrNull((t) => t.id == tagId);
                       return DropdownOption(
-                        label: tagItem?.name ??
-                            _getInitialSelectedTagLabel(tagId) ??
-                            '',
+                        label: tagItem?.name ?? _getInitialSelectedTagLabel(tagId) ?? '',
                         value: tagId,
                       );
                     }).toList();
 
-                    widget.onTagsSelected(
-                        updatedTags, _hasExplicitlySelectedNone);
+                    widget.onTagsSelected(updatedTags, _hasExplicitlySelectedNone);
                     setState(() {
                       _selectedTags.removeWhere((tagId) => tagId == id);
                     });
@@ -408,8 +381,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                       Text(
                           displayName.isNotEmpty
                               ? displayName
-                              : _translationService
-                                  .translate(SharedTranslationKeys.untitled),
+                              : _translationService.translate(SharedTranslationKeys.untitled),
                           style: AppTheme.labelSmall),
                     ],
                   ),
@@ -467,9 +439,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (widget.showSelectedInDropdown &&
-            _selectedTags.isNotEmpty &&
-            _tags != null)
+        if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
           Flexible(
             child: displayWidget,
           )
@@ -497,9 +467,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
                   tooltip: displayTooltip ?? '',
                   style: widget.buttonStyle,
                 ),
-        if (widget.showSelectedInDropdown &&
-            _selectedTags.isNotEmpty &&
-            _tags != null)
+        if (widget.showSelectedInDropdown && _selectedTags.isNotEmpty && _tags != null)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: IconButton(
@@ -511,8 +479,7 @@ class _TagSelectDropdownState extends State<TagSelectDropdown> {
               ),
               iconSize: widget.iconSize ?? AppTheme.iconSizeMedium,
               onPressed: () => _showTagSelectionModal(context),
-              tooltip: _translationService
-                  .translate(TagTranslationKeys.selectTooltip),
+              tooltip: _translationService.translate(TagTranslationKeys.selectTooltip),
               style: widget.buttonStyle,
             ),
           ),

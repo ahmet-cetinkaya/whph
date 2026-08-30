@@ -1,5 +1,6 @@
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:acore/acore.dart';
 
 /// Model class for task data used when creating or updating tasks
 class TaskData {
@@ -12,7 +13,7 @@ class TaskData {
   final List<String> tagIds;
   final bool isCompleted;
   final String? parentTaskId;
-  final double order;
+  final String order;
   final DateTime createdDate;
 
   TaskData({
@@ -25,7 +26,7 @@ class TaskData {
     this.tagIds = const [],
     this.isCompleted = false,
     this.parentTaskId,
-    this.order = 0.0,
+    this.order = OrderRank.initialRank,
     DateTime? createdDate,
   }) : createdDate = createdDate ?? DateTime.now().toUtc();
 
@@ -41,7 +42,7 @@ class TaskData {
         tagIds: (map['tagIds'] as List<dynamic>?)?.cast<String>() ?? [],
         isCompleted: map['isCompleted'] as bool? ?? false,
         parentTaskId: map['parentTaskId'] as String?,
-        order: (map['order'] as num?)?.toDouble() ?? 0.0,
+        order: map['order'] as String? ?? OrderRank.initialRank,
         createdDate: map['createdDate'] as DateTime? ?? DateTime.now().toUtc(),
       );
 
@@ -69,7 +70,7 @@ class TaskData {
     List<String>? tagIds,
     bool? isCompleted,
     String? parentTaskId,
-    double? order,
+    String? order,
     DateTime? createdDate,
   }) =>
       TaskData(

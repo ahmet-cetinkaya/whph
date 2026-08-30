@@ -107,8 +107,8 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         customOrder: [CustomOrder(field: "order", direction: SortDirection.desc)],
       );
 
-      final lastOrder = lastHabits.items.isNotEmpty ? lastHabits.items.first.order : 0;
-      final newOrder = (lastOrder + OrderRank.initialStep).toDouble();
+      final lastOrder = lastHabits.items.isNotEmpty ? lastHabits.items.first.order : null;
+      final newOrder = OrderRank.neighborRank(beforeOrder: lastOrder, afterOrder: null);
 
       // Create habit with default values
       habit = Habit(
@@ -126,7 +126,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
         periodDays: request.periodDays ?? 1,
         dailyTarget: request.dailyTarget ?? 1,
         archivedDate: request.archivedDate,
-        order: newOrder, // Set the calculated order
+        order: newOrder,
       );
 
       // Set reminder days using the helper method

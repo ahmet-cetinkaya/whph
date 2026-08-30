@@ -7,6 +7,7 @@ import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart' hide test, expect, setUpAll, group, tearDownAll;
 import 'package:test/test.dart';
+import 'package:acore/acore.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'generated/schema.dart';
 
@@ -197,7 +198,11 @@ void main() {
 
       final orderColumn = columnInfo.first.data;
       expect(orderColumn['notnull'], 1, reason: 'order column should be NOT NULL');
-      expect(orderColumn['dflt_value'], '0.0', reason: 'order column should have default value 0.0');
+      expect(
+        orderColumn['dflt_value'],
+        "'${OrderRank.initialRank}'",
+        reason: 'order column should have the canonical initial-rank default',
+      );
 
       await db.close();
     });
