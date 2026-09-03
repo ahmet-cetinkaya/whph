@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_record_re
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
@@ -362,5 +363,129 @@ void main() {
     // Total days (strict): 2
     // Avg: (0.5 + 1.0) / 2 = 0.75
     expect(result.statistics.overallScore, 0.75);
+  });
+
+  group('bad habit statistics', () {
+    Habit badHabit({required DateTime createdDate, DateTime? archivedDate}) => Habit(
+          id: habitId,
+          type: HabitType.bad,
+          name: 'Bad habit',
+          description: '',
+          createdDate: createdDate,
+          archivedDate: archivedDate,
+        );
+
+    HabitRecord record(String id, DateTime day, HabitRecordStatus status) => HabitRecord(
+          id: id,
+          habitId: habitId,
+          status: status,
+          occurredAt: day,
+          createdDate: day,
+        );
+
+    Future<GetHabitQueryResponse> getStatistics(Habit habit, List<HabitRecord> records) async {
+      when(habitRepository.getById(habitId, includeDeleted: false)).thenAnswer((_) async => habit);
+      when(settingRepository.getByKey(SettingKeys.habitThreeStateEnabled)).thenAnswer((_) async => null);
+      habitRecordRepository.setRecords(records);
+      return handler(GetHabitQuery(id: habitId));
+    }
+
+    test('Given ten flawless applicable days When loaded Then score and running streak are perfect', () async {
+      final today = DateTime.now();
+      final creationDay = DateTime(today.year, today.month, today.day).subtract(const Duration(days: 9));
+      final complete =
+          record('preserved-complete', creationDay.add(const Duration(days: 3)), HabitRecordStatus.complete);
+
+      final response = await getStatistics(badHabit(createdDate: creationDay), [complete]);
+
+      expect(response.statistics.overallScore, 1.0);
+      expect(response.statistics.topStreaks.single.days, 10);
+      expect(response.statistics.topStreaks.single.endDate, DateTime(today.year, today.month, today.day));
+    });
+
+    test('Given one failure in ten days When loaded Then only the applicable failure lowers the score', () async {
+      final creationDay = DateTime(2026, 2, 10);
+      final archiveDay = creationDay.add(const Duration(days: 9));
+      final records = [
+        record('failure', creationDay.add(const Duration(days: 4)), HabitRecordStatus.notDone),
+        record('ignored-complete', creationDay.add(const Duration(days: 6)), HabitRecordStatus.complete),
+        record('pre-creation-failure', creationDay.subtract(const Duration(days: 1)), HabitRecordStatus.notDone),
+      ];
+
+      final response = await getStatistics(badHabit(createdDate: creationDay, archivedDate: archiveDay), records);
+
+      expect(response.statistics.overallScore, 0.9);
+      expect(response.statistics.totalRecords, 1);
+    });
+
+    test('Given creation today When loaded Then the denominator contains that single day', () async {
+      final today = DateTime.now();
+      final creationDay = DateTime(today.year, today.month, today.day, 23, 30);
+
+      final response = await getStatistics(badHabit(createdDate: creationDay), const []);
+
+      expect(response.statistics.overallScore, 1.0);
+      expect(response.statistics.topStreaks.single.days, 1);
+    });
+
+    test('Given creation after today When loaded Then empty metrics are finite', () async {
+      final today = DateTime.now();
+      final futureCreationDay = DateTime(today.year, today.month, today.day).add(const Duration(days: 1));
+
+      final response = await getStatistics(badHabit(createdDate: futureCreationDay), const []);
+
+      expect(response.statistics.overallScore, 0.0);
+      expect(response.statistics.monthlyScore, 0.0);
+      expect(response.statistics.yearlyScore, 0.0);
+      expect(response.statistics.topStreaks, isEmpty);
+    });
+
+    test('Given a failure between past and current success runs When loaded Then it breaks the streak', () async {
+      final today = DateTime.now();
+      final endDay = DateTime(today.year, today.month, today.day);
+      final creationDay = endDay.subtract(const Duration(days: 9));
+      final failureDay = creationDay.add(const Duration(days: 3));
+
+      final response = await getStatistics(
+        badHabit(createdDate: creationDay),
+        [record('break', failureDay, HabitRecordStatus.notDone)],
+      );
+
+      expect(response.statistics.topStreaks.map((streak) => streak.days), [6, 3]);
+      expect(response.statistics.topStreaks.first.endDate, endDay);
+      expect(response.statistics.topStreaks.last.endDate, failureDay.subtract(const Duration(days: 1)));
+    });
+
+    test('Given creation and archive bounds When loaded Then only inclusive applicable days are scored', () async {
+      final creationDay = DateTime(2026, 3, 30, 23, 30);
+      final archiveDay = DateTime(2026, 4, 1, 0, 30);
+      final records = [
+        record('before', DateTime(2026, 3, 29), HabitRecordStatus.notDone),
+        record('creation-day', DateTime(2026, 3, 30), HabitRecordStatus.notDone),
+        record('after-archive', DateTime(2026, 4, 2), HabitRecordStatus.notDone),
+      ];
+
+      final response = await getStatistics(badHabit(createdDate: creationDay, archivedDate: archiveDay), records);
+
+      expect(response.statistics.overallScore, closeTo(2 / 3, 0.0001));
+      expect(response.statistics.monthlyScore, 1.0);
+      expect(response.statistics.yearlyScore, closeTo(2 / 3, 0.0001));
+    });
+
+    test('Given a UTC failure near midnight When loaded Then its local calendar day breaks the streak', () async {
+      final occurredAt = DateTime.utc(2026, 4, 13, 0, 30);
+      final localFailure = occurredAt.toLocal();
+      final failureDay = DateTime(localFailure.year, localFailure.month, localFailure.day);
+      final creationDay = failureDay.subtract(const Duration(days: 2));
+      final archiveDay = failureDay.add(const Duration(days: 2));
+
+      final response = await getStatistics(
+        badHabit(createdDate: creationDay, archivedDate: archiveDay),
+        [record('utc-failure', occurredAt, HabitRecordStatus.notDone)],
+      );
+
+      expect(response.statistics.overallScore, 0.8);
+      expect(response.statistics.topStreaks.map((streak) => streak.days), [2, 2]);
+    });
   });
 }

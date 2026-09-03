@@ -1,10 +1,12 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
@@ -64,6 +66,7 @@ class GetHabitQueryResponse extends Habit {
     required super.createdDate,
     super.modifiedDate,
     super.deletedDate,
+    super.type = HabitType.good,
     required super.name,
     required super.description,
     super.estimatedTime,
@@ -122,6 +125,7 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       id: habit.id,
       createdDate: habit.createdDate,
       modifiedDate: habit.modifiedDate,
+      type: habit.type,
       name: habit.name,
       description: habit.description,
       estimatedTime: habit.estimatedTime,
@@ -163,6 +167,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
   Future<HabitStatistics> _calculateStatistics(Habit habit, List<HabitRecord> records,
       {bool isThreeStateEnabled = false}) async {
+    if (habit.type == HabitType.bad) {
+      return _calculateBadHabitStatistics(habit, records, DateTime.now());
+    }
+
     // Use archive date as end date for archived habits
     final endDate = habit.archivedDate?.toLocal() ?? DateTime.now();
     final startOfMonth = DateTime(endDate.year, endDate.month, 1);
@@ -310,6 +318,98 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       daysGoalMet: daysGoalMet,
       totalDaysWithGoal: totalDaysWithGoal,
     );
+  }
+
+  HabitStatistics _calculateBadHabitStatistics(Habit habit, List<HabitRecord> records, DateTime now) {
+    final today = DateTimeHelper.toLocalDateTime(now);
+    final creationDate = DateTimeHelper.toLocalDateTime(habit.createdDate);
+    final archiveDate = habit.archivedDate == null ? null : DateTimeHelper.toLocalDateTime(habit.archivedDate!);
+    final startDay = DateTime(creationDate.year, creationDate.month, creationDate.day);
+    final todayDay = DateTime(today.year, today.month, today.day);
+    final archiveDay = archiveDate == null ? null : DateTime(archiveDate.year, archiveDate.month, archiveDate.day);
+    final endDay = archiveDay != null && archiveDay.isBefore(todayDay) ? archiveDay : todayDay;
+    if (startDay.isAfter(endDay)) return _emptyBadHabitStatistics();
+
+    final stateSource = const HabitDayStateResolver().createSource(
+      habit: habit,
+      records: records,
+      now: now,
+    );
+    final dailyScores = <DateTime, double>{};
+    final yearlyFrequency = <int, int>{};
+    final streaks = <HabitStreak>[];
+    DateTime? streakStart;
+    var applicableDays = 0;
+    var successfulDays = 0;
+    var failedDays = 0;
+    var monthlyApplicableDays = 0;
+    var monthlySuccessfulDays = 0;
+    var yearlyApplicableDays = 0;
+    var yearlySuccessfulDays = 0;
+
+    for (var day = startDay; !day.isAfter(endDay); day = DateTime(day.year, day.month, day.day + 1)) {
+      final state = stateSource.resolve(day);
+      if (state == HabitDayState.notApplicable) continue;
+
+      final isSuccessful = state == HabitDayState.successful;
+      applicableDays++;
+      if (isSuccessful) {
+        successfulDays++;
+        streakStart ??= day;
+      } else {
+        failedDays++;
+        _addBadHabitStreak(streaks, streakStart, day.subtract(const Duration(days: 1)));
+        streakStart = null;
+      }
+
+      if (day.year == endDay.year) {
+        yearlyApplicableDays++;
+        if (isSuccessful) {
+          yearlySuccessfulDays++;
+          yearlyFrequency[day.month] = (yearlyFrequency[day.month] ?? 0) + 1;
+        }
+      }
+      if (day.year == endDay.year && day.month == endDay.month) {
+        monthlyApplicableDays++;
+        if (isSuccessful) monthlySuccessfulDays++;
+        dailyScores[day] = isSuccessful ? 1.0 : 0.0;
+      }
+    }
+
+    _addBadHabitStreak(streaks, streakStart, endDay);
+    streaks.sort((a, b) {
+      final daysComparison = b.days.compareTo(a.days);
+      return daysComparison != 0 ? daysComparison : b.endDate.compareTo(a.endDate);
+    });
+
+    return HabitStatistics(
+      overallScore: successfulDays / applicableDays,
+      monthlyScore: monthlyApplicableDays == 0 ? 0.0 : monthlySuccessfulDays / monthlyApplicableDays,
+      yearlyScore: yearlyApplicableDays == 0 ? 0.0 : yearlySuccessfulDays / yearlyApplicableDays,
+      totalRecords: failedDays,
+      monthlyScores: dailyScores.entries.toList(),
+      topStreaks: streaks.take(5).toList(),
+      yearlyFrequency: yearlyFrequency,
+    );
+  }
+
+  HabitStatistics _emptyBadHabitStatistics() => HabitStatistics(
+        overallScore: 0.0,
+        monthlyScore: 0.0,
+        yearlyScore: 0.0,
+        totalRecords: 0,
+        monthlyScores: const [],
+        topStreaks: const [],
+        yearlyFrequency: const {},
+      );
+
+  void _addBadHabitStreak(List<HabitStreak> streaks, DateTime? startDate, DateTime endDate) {
+    if (startDate == null || endDate.isBefore(startDate)) return;
+    streaks.add(HabitStreak(
+      startDate: startDate,
+      endDate: endDate,
+      days: endDate.difference(startDate).inDays + 1,
+    ));
   }
 
   /// Counts the number of unique days with records matching the specified status
