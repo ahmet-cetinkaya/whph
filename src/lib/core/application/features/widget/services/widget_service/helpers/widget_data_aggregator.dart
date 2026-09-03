@@ -15,6 +15,11 @@ import 'package:whph/presentation/ui/features/habits/constants/habit_defaults.da
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/core/application/features/tasks/models/task_sort_fields.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
+import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
+import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
@@ -183,17 +188,38 @@ class WidgetDataAggregator {
 
     for (final habit in habitsResult.items) {
       final todayRecords = habitRecordsMap[habit.id] ?? [];
-      final currentCompletionCount = todayRecords.length;
+      final records = todayRecords.cast<HabitRecord>();
+      final dailyState = const HabitDayStateResolver()
+          .createSource(
+            habit: Habit(
+              id: habit.id,
+              createdDate: habit.createdDate ?? startOfDay,
+              type: habit.type,
+              name: habit.name,
+              description: '',
+              archivedDate: habit.archivedDate,
+              hasGoal: habit.hasGoal,
+              dailyTarget: habit.dailyTarget,
+            ),
+            records: records,
+            now: startOfDay,
+          )
+          .resolve(startOfDay);
+      final currentCompletionCount = records.where((record) => record.status == HabitRecordStatus.complete).length;
       final hasGoal = habit.hasGoal;
       final dailyTarget = hasGoal ? (habit.dailyTarget ?? 1) : 1;
       final isDailyTargetMet = currentCompletionCount >= dailyTarget;
-      final isCompletedToday = currentCompletionCount > 0;
+      final isCompletedToday = dailyState == HabitDayState.successful;
       bool isPeriodGoalMet = false;
 
-      final isDailyGoalMet = hasGoal ? (habit.periodDays > 1 ? isPeriodGoalMet : isDailyTargetMet) : isDailyTargetMet;
+      final isDailyGoalMet = habit.type == HabitType.bad
+          ? isCompletedToday
+          : hasGoal
+              ? (habit.periodDays > 1 ? isPeriodGoalMet : isDailyTargetMet)
+              : isDailyTargetMet;
 
       DateTime? completedAt;
-      if (isDailyGoalMet && todayRecords.isNotEmpty) {
+      if (habit.type == HabitType.good && isDailyGoalMet && todayRecords.isNotEmpty) {
         final lastRecord = todayRecords.last;
         completedAt = lastRecord.occurredAt;
       }
@@ -209,6 +235,8 @@ class WidgetDataAggregator {
       habits.add(WidgetHabitData(
         id: habit.id,
         name: habit.name,
+        type: habit.type,
+        dailyState: dailyState,
         isCompletedToday: isCompletedToday,
         hasGoal: hasGoal,
         dailyTarget: dailyTarget,

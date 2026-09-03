@@ -10,14 +10,14 @@ class HabitNotificationHandler implements IHabitNotificationHandler {
   final Mediator mediator;
 
   @override
-  void Function(String habitId)? onHabitCompleted;
+  void Function(String habitId)? onHabitActionHandled;
 
   HabitNotificationHandler(this.mediator);
 
   @override
-  Future<void> handleNotificationHabitCompletion(String habitId) async {
+  Future<void> handleNotificationHabitAction(String habitId) async {
     try {
-      Logger.info('HabitNotificationHandler: Completing habit from notification: $habitId');
+      Logger.info('HabitNotificationHandler: Handling notification action for habit: $habitId');
 
       await mediator.send<CompleteHabitCommand, CompleteHabitCommandResponse>(
         CompleteHabitCommand(
@@ -26,11 +26,11 @@ class HabitNotificationHandler implements IHabitNotificationHandler {
         ),
       );
 
-      Logger.info('HabitNotificationHandler: Habit completed successfully from notification');
-      onHabitCompleted?.call(habitId);
+      Logger.info('HabitNotificationHandler: Habit notification action handled successfully: $habitId');
+      onHabitActionHandled?.call(habitId);
     } on BusinessException catch (e, stackTrace) {
       Logger.error(
-        '[$TaskErrorIds.notificationActionFailed] HabitNotificationHandler: Failed to complete habit',
+        '[${TaskErrorIds.notificationActionFailed}] HabitNotificationHandler: Failed notification action for habit: $habitId',
         error: e,
         stackTrace: stackTrace,
       );

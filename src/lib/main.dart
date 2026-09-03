@@ -158,15 +158,15 @@ Future<void> main(List<String> args) async {
     final habitNotificationHandler = tempContainer.resolve<IHabitNotificationHandler>();
     final habitsService = tempContainer.resolve<HabitsService>();
 
-    // Wire up UI refresh callback for habit completions from notifications
-    habitNotificationHandler.onHabitCompleted = (habitId) {
+    // Wire up UI refresh callback for habit actions from notifications
+    habitNotificationHandler.onHabitActionHandled = (habitId) {
       habitsService.notifyHabitRecordAdded(habitId);
     };
 
     NotificationPayloadService.setupNotificationListener(
       payloadHandler,
       onTaskCompletion: taskNotificationHandler.handleNotificationTaskCompletion,
-      onHabitCompletion: habitNotificationHandler.handleNotificationHabitCompletion,
+      onHabitCompletion: habitNotificationHandler.handleNotificationHabitAction,
     );
 
     // Process any pending task completions from notifications that arrived while app was closed
@@ -176,7 +176,7 @@ Future<void> main(List<String> args) async {
 
     // Process any pending habit completions
     await NotificationPayloadService.processPendingHabitCompletions(
-      habitNotificationHandler.handleNotificationHabitCompletion,
+      habitNotificationHandler.handleNotificationHabitAction,
     );
 
     // Get translation service for app wrapper
