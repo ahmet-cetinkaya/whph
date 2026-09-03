@@ -51,6 +51,7 @@ class HabitDetailsController extends ChangeNotifier {
 
   final Set<String> _visibleOptionalFields = {};
 
+  static const String keyType = 'type';
   static const String keyTags = 'tags';
   static const String keyEstimatedTime = 'estimatedTime';
   static const String keyElapsedTime = 'elapsedTime';
@@ -265,6 +266,7 @@ class HabitDetailsController extends ChangeNotifier {
   void _processFieldVisibility() {
     if (_habit == null) return;
 
+    if (_hasFieldContent(keyType)) _visibleOptionalFields.add(keyType);
     if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
     if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
     if (_hasFieldContent(keyElapsedTime)) _visibleOptionalFields.add(keyElapsedTime);
@@ -278,6 +280,8 @@ class HabitDetailsController extends ChangeNotifier {
     if (_habit == null) return false;
 
     switch (fieldKey) {
+      case keyType:
+        return _habit!.type != HabitType.good;
       case keyTags:
         return _habitTags != null && _habitTags!.items.isNotEmpty;
       case keyEstimatedTime:

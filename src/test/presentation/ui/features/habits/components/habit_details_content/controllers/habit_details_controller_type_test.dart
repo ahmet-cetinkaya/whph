@@ -243,4 +243,55 @@ void main() {
       expect(controller.habit!.dailyTarget, 1);
     });
   });
+
+  group('HabitDetailsController type as optional field', () {
+    testWidgets('stays hidden and chip-offered for a good habit', (tester) async {
+      await loadHabit(tester, buildHabit());
+
+      expect(controller.isFieldVisible(HabitDetailsController.keyType), isFalse,
+          reason: 'Good is the default type, so the selector must not clutter the table');
+      expect(controller.shouldShowAsChip(HabitDetailsController.keyType), isTrue);
+    });
+
+    testWidgets('becomes visible when toggled through the chip', (tester) async {
+      await loadHabit(tester, buildHabit());
+
+      controller.toggleOptionalField(HabitDetailsController.keyType);
+      await tester.pump();
+
+      expect(controller.isFieldVisible(HabitDetailsController.keyType), isTrue);
+      expect(controller.shouldShowAsChip(HabitDetailsController.keyType), isFalse);
+    });
+
+    testWidgets('is auto-visible for a bad habit', (tester) async {
+      await loadHabit(tester, buildHabit(type: HabitType.bad, hasGoal: false));
+
+      expect(controller.isFieldVisible(HabitDetailsController.keyType), isTrue,
+          reason: 'A non-default type is content that must always be shown');
+      expect(controller.shouldShowAsChip(HabitDetailsController.keyType), isFalse);
+    });
+
+    testWidgets('stays visible but read-only for an archived bad habit', (tester) async {
+      await loadHabit(
+        tester,
+        buildHabit(type: HabitType.bad, hasGoal: false, archivedDate: DateTime.utc(2026, 2, 1)),
+      );
+
+      expect(controller.isFieldVisible(HabitDetailsController.keyType), isTrue);
+      expect(controller.isTypeReadOnly, isTrue);
+    });
+
+    testWidgets('turns visible after switching a good habit to bad', (tester) async {
+      await loadHabit(tester, buildHabit());
+      final context = await pumpContext(tester);
+
+      controller.toggleOptionalField(HabitDetailsController.keyType);
+      await controller.updateType(HabitType.bad, habitId, context);
+      await tester.pump();
+
+      expect(controller.isFieldVisible(HabitDetailsController.keyType), isTrue);
+      expect(controller.shouldShowAsChip(HabitDetailsController.keyType), isFalse,
+          reason: 'Content-bearing fields are never offered back as a chip');
+    });
+  });
 }

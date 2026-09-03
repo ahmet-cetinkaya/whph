@@ -220,6 +220,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     final translationService = _controller.translationService;
 
     final List<String> availableChipFields = [
+      if (!habit.isArchived) HabitDetailsController.keyType,
       HabitDetailsController.keyTags,
       HabitDetailsController.keyTimer,
       HabitDetailsController.keyElapsedTime,
@@ -277,16 +278,17 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           // Detail Table
           DetailTable(
             rowData: [
-              DetailTableRowData(
-                label: translationService.translate(HabitTranslationKeys.typeLabel),
-                icon: HabitUiConstants.habitIcon,
-                widget: HabitTypeSelector(
-                  type: habit.type,
-                  isReadOnly: _controller.isTypeReadOnly,
-                  translationService: translationService,
-                  onChanged: (type) => _controller.updateType(type, widget.habitId, context),
+              if (_controller.isFieldVisible(HabitDetailsController.keyType))
+                DetailTableRowData(
+                  label: translationService.translate(HabitTranslationKeys.typeLabel),
+                  icon: HabitUiConstants.habitIcon,
+                  widget: HabitTypeSelector(
+                    type: habit.type,
+                    isReadOnly: _controller.isTypeReadOnly,
+                    translationService: translationService,
+                    onChanged: (type) => _controller.updateType(type, widget.habitId, context),
+                  ),
                 ),
-              ),
               if (_controller.isFieldVisible(HabitDetailsController.keyTags))
                 HabitTagsSection(
                   habitTags: _controller.habitTags,
