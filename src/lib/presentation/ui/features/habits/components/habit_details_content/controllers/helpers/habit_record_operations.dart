@@ -5,7 +5,6 @@ import 'package:whph/core/application/features/habits/commands/save_habit_time_r
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
-import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 
@@ -13,17 +12,14 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 class HabitRecordOperations {
   final Mediator _mediator;
   final ITranslationService _translationService;
-  final ISoundManagerService _soundManagerService;
   final HabitsService _habitsService;
 
   HabitRecordOperations({
     required Mediator mediator,
     required ITranslationService translationService,
-    required ISoundManagerService soundManagerService,
     required HabitsService habitsService,
   })  : _mediator = mediator,
         _translationService = translationService,
-        _soundManagerService = soundManagerService,
         _habitsService = habitsService;
 
   /// Toggles habit record status for a specific date.
@@ -41,7 +37,6 @@ class HabitRecordOperations {
         await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
-        _soundManagerService.playHabitCompletion();
         // Notify both added/removed as status might change
         _habitsService.notifyHabitRecordAdded(habitId);
         onSuccess?.call();
@@ -64,7 +59,6 @@ class HabitRecordOperations {
         await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
-        _soundManagerService.playHabitCompletion();
         _habitsService.notifyHabitRecordAdded(habitId);
         onSuccess?.call();
       },

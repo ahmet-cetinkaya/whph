@@ -110,6 +110,7 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
 
             await _mediator.send(SaveHabitCommand(
               id: habit.id,
+              type: habit.type,
               name: habit.name,
               description: habit.description,
               estimatedTime: habit.estimatedTime,
