@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
@@ -11,7 +13,9 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
+import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 // Fakes
@@ -32,7 +36,16 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
   @override
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(
       String habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) async {
-    return PaginatedList(items: List.from(records), totalItemCount: records.length, pageIndex: 0, pageSize: 10);
+    final matchingRecords = records
+        .where((record) =>
+            record.habitId == habitId && !record.occurredAt.isBefore(startDate) && !record.occurredAt.isAfter(endDate))
+        .toList();
+    return PaginatedList(
+      items: matchingRecords,
+      totalItemCount: matchingRecords.length,
+      pageIndex: pageIndex,
+      pageSize: pageSize,
+    );
   }
 
   @override
@@ -50,16 +63,22 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
 }
 
 class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepository {
+  final List<HabitTimeRecord> records = [];
+
   @override
   Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) async {
-    return [];
+    return records.where((record) => record.habitId == habitId).toList();
   }
 
   @override
-  Future<void> delete(HabitTimeRecord record) async {}
+  Future<void> delete(HabitTimeRecord record) async {
+    records.remove(record);
+  }
 
   @override
-  Future<void> add(HabitTimeRecord record) async {}
+  Future<void> add(HabitTimeRecord record) async {
+    records.add(record);
+  }
 }
 
 class FakeSettingRepository extends Fake implements ISettingRepository {
@@ -81,11 +100,14 @@ class FakeSettingRepository extends Fake implements ISettingRepository {
 }
 
 void main() {
+  tz_data.initializeTimeZones();
+
   late ToggleHabitCompletionCommandHandler handler;
   late FakeHabitRepository fakeHabitRepository;
   late FakeHabitRecordRepository fakeHabitRecordRepository;
   late FakeHabitTimeRecordRepository fakeHabitTimeRecordRepository;
   late FakeSettingRepository fakeSettingRepository;
+  late ({DateTime start, DateTime end}) Function(DateTime) dayRangeResolver;
 
   setUp(() {
     // Setup in-memory database for transaction support
@@ -96,6 +118,7 @@ void main() {
     fakeHabitRecordRepository = FakeHabitRecordRepository();
     fakeHabitTimeRecordRepository = FakeHabitTimeRecordRepository();
     fakeSettingRepository = FakeSettingRepository();
+    dayRangeResolver = HabitDayStateResolver.utcRangeFor;
 
     final operationsService = HabitRecordOperationsService(
       habitRecordRepository: fakeHabitRecordRepository,
@@ -107,12 +130,89 @@ void main() {
       habitRecordRepository: fakeHabitRecordRepository,
       settingsRepository: fakeSettingRepository,
       operationsService: operationsService,
+      dayRangeResolver: (date) => dayRangeResolver(date),
     );
   });
 
   tearDown(() async {
     await AppDatabase.instance().close();
     AppDatabase.resetInstance();
+  });
+
+  group('Bad Habit', () {
+    const habitId = 'habit-bad';
+    final date = DateTime(2026, 1, 11, 9);
+
+    setUp(() {
+      fakeHabitRepository.setHabit(Habit(
+        id: habitId,
+        createdDate: DateTime(2026, 1, 1),
+        type: HabitType.bad,
+        name: 'Avoid habit',
+        description: 'Test',
+        estimatedTime: 15,
+      ));
+    });
+
+    test('no marker -> notDone marker -> no marker while preserving complete history', () async {
+      // Given
+      final preservedComplete = HabitRecord(
+        id: 'historical-complete',
+        habitId: habitId,
+        occurredAt: date.toUtc(),
+        createdDate: date.toUtc(),
+        status: HabitRecordStatus.complete,
+      );
+      fakeHabitRecordRepository.records.add(preservedComplete);
+
+      // When
+      await handler.call(ToggleHabitCompletionCommand(habitId: habitId, date: date));
+
+      // Then
+      expect(fakeHabitRecordRepository.records.where((record) => record.status == HabitRecordStatus.notDone),
+          hasLength(1));
+      expect(fakeHabitRecordRepository.records, contains(preservedComplete));
+      expect(fakeHabitTimeRecordRepository.records, isEmpty);
+
+      // When
+      await handler.call(ToggleHabitCompletionCommand(habitId: habitId, date: date));
+
+      // Then
+      expect(fakeHabitRecordRepository.records.where((record) => record.status == HabitRecordStatus.notDone), isEmpty);
+      expect(fakeHabitRecordRepository.records, contains(preservedComplete));
+      expect(fakeHabitTimeRecordRepository.records, isEmpty);
+    });
+
+    test('adds the intended marker without deleting the adjacent marker on a 23-hour local day', () async {
+      // Given
+      final location = tz.getLocation('America/New_York');
+      final targetDate = tz.TZDateTime(location, 2026, 3, 8, 12);
+      dayRangeResolver = (date) => HabitDayStateResolver.utcRangeFor(
+            date,
+            localDateTime: (year, month, day) => tz.TZDateTime(location, year, month, day),
+          );
+      final dayRange = dayRangeResolver(targetDate);
+      final adjacentMarker = HabitRecord(
+        id: 'next-day-marker',
+        habitId: habitId,
+        occurredAt: tz.TZDateTime(location, 2026, 3, 9, 0, 30).toUtc(),
+        createdDate: targetDate.toUtc(),
+        status: HabitRecordStatus.notDone,
+      );
+      fakeHabitRecordRepository.records.add(adjacentMarker);
+
+      // When
+      await handler.call(ToggleHabitCompletionCommand(habitId: habitId, date: targetDate));
+
+      // Then
+      expect(dayRange.end.difference(dayRange.start) + const Duration(microseconds: 1), const Duration(hours: 23));
+      final markers = fakeHabitRecordRepository.records.where(
+        (record) => record.status == HabitRecordStatus.notDone,
+      );
+      expect(markers, hasLength(2));
+      expect(markers, contains(adjacentMarker));
+      expect(markers.where((record) => tz.TZDateTime.from(record.occurredAt, location).day == 8), hasLength(1));
+    });
   });
 
   group('Single Occurrence Habit', () {

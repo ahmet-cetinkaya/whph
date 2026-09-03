@@ -32,6 +32,38 @@ class HabitRecordOperationsService {
     await _habitRecordRepository.add(habitRecord);
   }
 
+  Future<void> toggleBadHabitMarker(
+    String habitId,
+    DateTime occurredAt,
+    Iterable<HabitRecord> dayRecords,
+  ) async {
+    final notDoneRecords = dayRecords.where((record) => record.status == HabitRecordStatus.notDone).toList();
+    if (notDoneRecords.isEmpty) {
+      await addHabitRecord(habitId, occurredAt, HabitRecordStatus.notDone, DateTime.now().toUtc());
+      return;
+    }
+
+    for (final record in notDoneRecords) {
+      await _habitRecordRepository.delete(record);
+    }
+  }
+
+  Future<void> ensureBadHabitMarker(
+    String habitId,
+    DateTime occurredAt,
+    Iterable<HabitRecord> dayRecords,
+  ) async {
+    final notDoneRecords = dayRecords.where((record) => record.status == HabitRecordStatus.notDone).toList();
+    if (notDoneRecords.isEmpty) {
+      await addHabitRecord(habitId, occurredAt, HabitRecordStatus.notDone, DateTime.now().toUtc());
+      return;
+    }
+
+    for (final duplicate in notDoneRecords.skip(1)) {
+      await _habitRecordRepository.delete(duplicate);
+    }
+  }
+
   Future<void> addTimeRecordIfComplete(
     Habit habit,
     String habitId,

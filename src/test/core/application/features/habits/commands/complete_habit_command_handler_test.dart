@@ -1,5 +1,7 @@
 import 'package:acore/acore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:whph/core/application/features/habits/commands/complete_habit_command.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
@@ -8,7 +10,9 @@ import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
+import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 class FakeHabitRepository extends Fake implements IHabitRepository {
@@ -104,10 +108,13 @@ class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepo
 }
 
 void main() {
+  tz_data.initializeTimeZones();
+
   late CompleteHabitCommandHandler handler;
   late FakeHabitRepository habitRepository;
   late FakeHabitRecordRepository habitRecordRepository;
   late FakeHabitTimeRecordRepository habitTimeRecordRepository;
+  late ({DateTime start, DateTime end}) Function(DateTime) dayRangeResolver;
 
   setUp(() {
     AppDatabase.resetInstance();
@@ -116,6 +123,7 @@ void main() {
     habitRepository = FakeHabitRepository();
     habitRecordRepository = FakeHabitRecordRepository();
     habitTimeRecordRepository = FakeHabitTimeRecordRepository();
+    dayRangeResolver = HabitDayStateResolver.utcRangeFor;
 
     final operationsService = HabitRecordOperationsService(
       habitRecordRepository: habitRecordRepository,
@@ -126,12 +134,82 @@ void main() {
       habitRepository: habitRepository,
       habitRecordRepository: habitRecordRepository,
       operationsService: operationsService,
+      dayRangeResolver: (date) => dayRangeResolver(date),
     );
   });
 
   tearDown(() async {
     await AppDatabase.instance().close();
     AppDatabase.resetInstance();
+  });
+
+  test('duplicate completion for a bad habit keeps one notDone marker and preserves complete history', () async {
+    // Given
+    const habitId = 'habit-bad-notification';
+    final date = DateTime(2026, 1, 11, 9);
+    final preservedComplete = HabitRecord(
+      id: 'preserved-complete',
+      habitId: habitId,
+      occurredAt: date.toUtc(),
+      createdDate: date.toUtc(),
+      status: HabitRecordStatus.complete,
+    );
+    habitRepository.setHabit(Habit(
+      id: habitId,
+      createdDate: DateTime(2026, 1, 1),
+      type: HabitType.bad,
+      name: 'Avoid habit',
+      description: 'Test',
+      estimatedTime: 15,
+    ));
+    habitRecordRepository.records.add(preservedComplete);
+
+    // When
+    await handler.call(CompleteHabitCommand(habitId: habitId, date: date));
+    await handler.call(CompleteHabitCommand(habitId: habitId, date: date));
+
+    // Then
+    expect(habitRecordRepository.records.where((record) => record.status == HabitRecordStatus.notDone), hasLength(1));
+    expect(habitRecordRepository.records, contains(preservedComplete));
+    expect(habitTimeRecordRepository.records, isEmpty);
+  });
+
+  test('bad habit completion keeps one marker on a 25-hour local day', () async {
+    // Given
+    const habitId = 'habit-bad-fall-dst';
+    final location = tz.getLocation('America/New_York');
+    final targetDate = tz.TZDateTime(location, 2026, 11, 1, 12);
+    dayRangeResolver = (date) => HabitDayStateResolver.utcRangeFor(
+          date,
+          localDateTime: (year, month, day) => tz.TZDateTime(location, year, month, day),
+        );
+    final dayRange = dayRangeResolver(targetDate);
+    final existingMarker = HabitRecord(
+      id: 'fall-marker',
+      habitId: habitId,
+      occurredAt: tz.TZDateTime(location, 2026, 11, 1, 23, 30).toUtc(),
+      createdDate: targetDate.toUtc(),
+      status: HabitRecordStatus.notDone,
+    );
+    habitRepository.setHabit(Habit(
+      id: habitId,
+      createdDate: tz.TZDateTime(location, 2026, 10, 1).toUtc(),
+      type: HabitType.bad,
+      name: 'Avoid habit',
+      description: 'Test',
+      estimatedTime: 15,
+    ));
+    habitRecordRepository.records.add(existingMarker);
+
+    // When
+    await handler.call(CompleteHabitCommand(habitId: habitId, date: targetDate));
+
+    // Then
+    expect(dayRange.end.difference(dayRange.start) + const Duration(microseconds: 1), const Duration(hours: 25));
+    expect(
+      habitRecordRepository.records.where((record) => record.status == HabitRecordStatus.notDone),
+      [existingMarker],
+    );
   });
 
   test('throws BusinessException when habit is not found', () async {
