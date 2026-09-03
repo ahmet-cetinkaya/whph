@@ -360,11 +360,34 @@ habits:
     open_details_hint: Відкрити деталі звички
     complete_habit_hint: Завершити звичку
     completion_status_hint: Стан виконання звички
+    habit_type_hint: Тип звички
+    avoid_habit_hint: Позначити звичку як уникнуту
+    perform_habit_hint: Позначити звичку як виконану
+    undo_hint: Скасувати сьогоднішній запис
+    checkbox_avoided_hint: Позначено означає, що ви уникнули цієї звички сьогодні
+    checkbox_performed_hint: Позначено означає, що ви виконали цю звичку сьогодні
+    calendar_day_hint: Стан запису за день
   actions:
     mark_complete: Позначити як виконане
     mark_not_done: Позначити як невиконане
     clear_status: Очистити статус
+    mark_avoided: Позначити як Уникнуто
+    mark_performed: Позначити як Виконано
+    undo: Скасувати
   status:
     complete: Виконано
     not_done: Не виконано
     skipped: Пропущено
+    avoided: Уникнуто
+    performed: Виконано
+  types:
+    label: Тип Звички
+    good: Хороша Звичка
+    bad: Погана Звичка
+    good_description: Звичка, яку ви хочете сформувати та повторювати.
+    bad_description: Звичка, якої ви хочете позбутися та уникати.
+    help_title: Хороші та погані звички
+    help_content: >-
+      У хороших звичок день вважається успішним, коли ви її виконуєте. Погані звички працюють
+      навпаки; день вважається успішним, коли ви її уникаєте, а позначка про виконання записує
+      невдачу.

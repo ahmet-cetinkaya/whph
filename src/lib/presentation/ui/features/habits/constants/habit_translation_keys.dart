@@ -145,14 +145,35 @@ class HabitTranslationKeys extends application.HabitTranslationKeys {
   static const String openDetailsHint = 'habits.accessibility.open_details_hint';
   static const String completeHabitHint = 'habits.accessibility.complete_habit_hint';
   static const String completionStatusHint = 'habits.accessibility.completion_status_hint';
+  static const String habitTypeHint = 'habits.accessibility.habit_type_hint';
+  static const String avoidHabitHint = 'habits.accessibility.avoid_habit_hint';
+  static const String performHabitHint = 'habits.accessibility.perform_habit_hint';
+  static const String undoHint = 'habits.accessibility.undo_hint';
+  static const String checkboxAvoidedHint = 'habits.accessibility.checkbox_avoided_hint';
+  static const String checkboxPerformedHint = 'habits.accessibility.checkbox_performed_hint';
+  static const String calendarDayHint = 'habits.accessibility.calendar_day_hint';
 
   // Status
   static const String statusComplete = 'habits.status.complete';
   static const String statusNotDone = 'habits.status.not_done';
   static const String statusSkipped = 'habits.status.skipped';
+  static const String statusAvoided = 'habits.status.avoided';
+  static const String statusPerformed = 'habits.status.performed';
 
   // Actions
   static const String actionMarkComplete = 'habits.actions.mark_complete';
   static const String actionMarkNotDone = 'habits.actions.mark_not_done';
   static const String actionClearStatus = 'habits.actions.clear_status';
+  static const String actionMarkAvoided = 'habits.actions.mark_avoided';
+  static const String actionMarkPerformed = 'habits.actions.mark_performed';
+  static const String actionUndo = 'habits.actions.undo';
+
+  // Habit Types
+  static const String typeLabel = 'habits.types.label';
+  static const String typeGood = 'habits.types.good';
+  static const String typeBad = 'habits.types.bad';
+  static const String typeGoodDescription = 'habits.types.good_description';
+  static const String typeBadDescription = 'habits.types.bad_description';
+  static const String typeHelpTitle = 'habits.types.help_title';
+  static const String typeHelpContent = 'habits.types.help_content';
 }

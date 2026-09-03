@@ -356,11 +356,34 @@ habits:
     open_details_hint: Otwórz szczegóły nawyku
     complete_habit_hint: Ukończ nawyk
     completion_status_hint: Status completion nawyku
+    habit_type_hint: Typ nawyku
+    avoid_habit_hint: Oznacz nawyk jako uniknięty
+    perform_habit_hint: Oznacz nawyk jako wykonany
+    undo_hint: Cofnij dzisiejszy wpis
+    checkbox_avoided_hint: Zaznaczone oznacza, że dziś uniknąłeś tego nawyku
+    checkbox_performed_hint: Zaznaczone oznacza, że dziś wykonałeś ten nawyk
+    calendar_day_hint: Status wpisu dnia
   actions:
     mark_complete: Oznacz jako ukończone
     mark_not_done: Oznacz jako nieukończone
     clear_status: Wyczyść status
+    mark_avoided: Oznacz jako Uniknięty
+    mark_performed: Oznacz jako Wykonany
+    undo: Cofnij
   status:
     complete: Ukończone
     not_done: Nieukończone
     skipped: Pominięto
+    avoided: Uniknięty
+    performed: Wykonany
+  types:
+    label: Typ Nawyku
+    good: Dobry Nawyk
+    bad: Zły Nawyk
+    good_description: Nawyk, który chcesz zbudować i powtarzać.
+    bad_description: Nawyk, który chcesz porzucić i którego chcesz unikać.
+    help_title: Dobre i złe nawyki
+    help_content: >-
+      W dobrych nawykach dzień liczy się jako udany, gdy je wykonasz. Złe nawyki działają
+      odwrotnie; dzień liczy się jako udany, gdy ich unikniesz, a oznaczenie jako wykonany
+      zapisuje niepowodzenie.

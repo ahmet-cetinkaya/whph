@@ -302,11 +302,32 @@ habits:
     open_details_hint: 習慣の詳細を開く
     complete_habit_hint: 習慣を完了する
     completion_status_hint: 習慣の完了状況
+    habit_type_hint: 習慣の種類
+    avoid_habit_hint: 習慣を回避済みとしてマーク
+    perform_habit_hint: 習慣を実行済みとしてマーク
+    undo_hint: 今日の記録を元に戻す
+    checkbox_avoided_hint: チェックは今日この習慣を回避したことを意味します
+    checkbox_performed_hint: チェックは今日この習慣を実行したことを意味します
+    calendar_day_hint: 日ごとの記録状況
   actions:
     mark_complete: 完了としてマーク
     mark_not_done: 未完了としてマーク
     clear_status: ステータスをクリア
+    mark_avoided: 回避済みとしてマーク
+    mark_performed: 実行済みとしてマーク
+    undo: 元に戻す
   status:
     complete: 完了
     not_done: 未完了
     skipped: スキップ済み
+    avoided: 回避済み
+    performed: 実行済み
+  types:
+    label: 習慣の種類
+    good: 良い習慣
+    bad: 悪い習慣
+    good_description: 身につけて繰り返したい習慣です。
+    bad_description: やめて避けたい習慣です。
+    help_title: 良い習慣と悪い習慣
+    help_content: >-
+      良い習慣では、実行した日が成功として記録されます。悪い習慣はその逆で、回避した日が成功となり、実行済みとしてマークすると失敗として記録されます。

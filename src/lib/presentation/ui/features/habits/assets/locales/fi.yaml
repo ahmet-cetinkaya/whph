@@ -383,11 +383,34 @@ habits:
     open_details_hint: Avaa tavan tiedot
     complete_habit_hint: Tee tapa valmiiksi
     completion_status_hint: Tavan completion status
+    habit_type_hint: Tavan tyyppi
+    avoid_habit_hint: Merkitse tapa vältetyksi
+    perform_habit_hint: Merkitse tapa suoritetuksi
+    undo_hint: Kumoa tämän päivän merkintä
+    checkbox_avoided_hint: Valittu tarkoittaa, että vältit tämän tavan tänään
+    checkbox_performed_hint: Valittu tarkoittaa, että suoritit tämän tavan tänään
+    calendar_day_hint: Päivän merkinnän tila
   actions:
     mark_complete: Merkitse valmiiksi
     mark_not_done: Merkitse tekemättömäksi
     clear_status: Tyhjennä tila
+    mark_avoided: Merkitse Vältetyksi
+    mark_performed: Merkitse Suoritetuksi
+    undo: Kumoa
   status:
     complete: Valmis
     not_done: Tekemättä
     skipped: Ohitettu
+    avoided: Vältetty
+    performed: Suoritettu
+  types:
+    label: Tavan Tyyppi
+    good: Hyvä Tapa
+    bad: Huono Tapa
+    good_description: Tapa, jonka haluat rakentaa ja toistaa.
+    bad_description: Tapa, josta haluat päästä eroon ja jota haluat välttää.
+    help_title: Hyvät ja huonot tavat
+    help_content: >-
+      Hyvissä tavoissa päivä lasketaan onnistuneeksi, kun suoritat sen. Huonot tavat toimivat
+      päinvastoin; päivä lasketaan onnistuneeksi, kun vältät sen, ja suoritetuksi
+      merkitseminen kirjaa epäonnistumisen.

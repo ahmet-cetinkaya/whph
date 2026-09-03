@@ -341,11 +341,34 @@ habits:
     open_details_hint: Alışkanlık detaylarını aç
     complete_habit_hint: Alışkanlığı tamamla
     completion_status_hint: Alışkanlık tamamlanma durumu
+    habit_type_hint: Alışkanlık türü
+    avoid_habit_hint: Alışkanlığı kaçınıldı olarak işaretle
+    perform_habit_hint: Alışkanlığı yapıldı olarak işaretle
+    undo_hint: Bugünkü kaydı geri al
+    checkbox_avoided_hint: İşaretli olması bugün bu alışkanlıktan kaçındığınız anlamına gelir
+    checkbox_performed_hint: İşaretli olması bugün bu alışkanlığı yaptığınız anlamına gelir
+    calendar_day_hint: Gün kayıt durumu
   actions:
     mark_complete: Tamamlandı Olarak İşaretle
     mark_not_done: Tamamlanmadı Olarak İşaretle
     clear_status: Durumu Temizle
+    mark_avoided: Kaçınıldı Olarak İşaretle
+    mark_performed: Yapıldı Olarak İşaretle
+    undo: Geri Al
   status:
     complete: Tamamlandı
     not_done: Tamamlanmadı
     skipped: Atlandı
+    avoided: Kaçınıldı
+    performed: Yapıldı
+  types:
+    label: Alışkanlık Türü
+    good: İyi Alışkanlık
+    bad: Kötü Alışkanlık
+    good_description: Geliştirmek ve tekrarlamak istediğiniz bir alışkanlık.
+    bad_description: Bırakmak ve kaçınmak istediğiniz bir alışkanlık.
+    help_title: İyi ve Kötü Alışkanlıklar
+    help_content: >-
+      İyi alışkanlıklarda bir gün, onu yaptığınızda başarılı sayılır. Kötü alışkanlıklar tam
+      tersidir; bir gün ondan kaçındığınızda başarılı sayılır ve yapıldı olarak işaretlemek
+      bir başarısızlık kaydeder.
