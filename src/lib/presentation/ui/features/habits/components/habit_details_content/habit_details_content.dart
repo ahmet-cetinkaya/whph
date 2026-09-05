@@ -11,6 +11,7 @@ import 'package:whph/presentation/ui/features/habits/components/habit_details_co
 import 'package:whph/presentation/ui/features/habits/components/habit_details_content/components/habit_time_section.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_details_content/components/habit_timer_section.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_details_content/controllers/habit_details_controller.dart';
+import 'package:whph/presentation/ui/features/habits/components/habit_type_selector.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
@@ -219,6 +220,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     final translationService = _controller.translationService;
 
     final List<String> availableChipFields = [
+      if (!habit.isArchived) HabitDetailsController.keyType,
       HabitDetailsController.keyTags,
       HabitDetailsController.keyTimer,
       HabitDetailsController.keyElapsedTime,
@@ -274,72 +276,75 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
           const SizedBox(height: AppTheme.size2XSmall),
 
           // Detail Table
-          if (_controller.isFieldVisible(HabitDetailsController.keyTags) ||
-              _controller.isFieldVisible(HabitDetailsController.keyEstimatedTime) ||
-              _controller.isFieldVisible(HabitDetailsController.keyElapsedTime) ||
-              _controller.isFieldVisible(HabitDetailsController.keyTimer) ||
-              _controller.isFieldVisible(HabitDetailsController.keyReminder) ||
-              _controller.isFieldVisible(HabitDetailsController.keyGoal) ||
-              habit.archivedDate != null) ...[
-            DetailTable(
-              rowData: [
-                if (_controller.isFieldVisible(HabitDetailsController.keyTags))
-                  HabitTagsSection(
-                    habitTags: _controller.habitTags,
+          DetailTable(
+            rowData: [
+              if (_controller.isFieldVisible(HabitDetailsController.keyType))
+                DetailTableRowData(
+                  label: translationService.translate(HabitTranslationKeys.typeLabel),
+                  icon: HabitUiConstants.habitIcon,
+                  widget: HabitTypeSelector(
+                    type: habit.type,
+                    isReadOnly: _controller.isTypeReadOnly,
                     translationService: translationService,
-                    onTagsSelected: (tags) => _controller.processTagChanges(tags, widget.habitId, context),
-                    autoOpenDropdown: _autoOpenField == HabitDetailsController.keyTags,
-                  ).build(),
-                if (_controller.isFieldVisible(HabitDetailsController.keyTimer))
-                  HabitTimerSection.build(
-                    context: context,
-                    translationService: translationService,
-                    onTimerStop: (duration) => _controller.onTimerStop(duration, widget.habitId),
+                    onChanged: (type) => _controller.updateType(type, widget.habitId, context),
                   ),
-                if (_controller.isFieldVisible(HabitDetailsController.keyElapsedTime))
-                  HabitTimeSection.buildElapsedTime(
-                    totalDuration: _controller.totalDuration,
-                    translationService: translationService,
-                    onTap: _showHabitTimeLoggingDialog,
-                  ),
-                if (_controller.isFieldVisible(HabitDetailsController.keyEstimatedTime))
-                  HabitTimeSection.buildEstimatedTime(
-                    estimatedTime: habit.estimatedTime,
-                    translationService: translationService,
-                    onValueChanged: (value) {
-                      _controller.updateEstimatedTime(value, widget.habitId, context);
-                    },
-                    translations: HabitTimeSection.getNumericInputTranslations(translationService),
-                  ),
-                if (_controller.isFieldVisible(HabitDetailsController.keyReminder))
-                  HabitReminderSection.build(
-                    context: context,
-                    hasReminder: habit.hasReminder,
-                    reminderSummaryText: _controller.getReminderSummaryText(),
-                    translationService: translationService,
-                    onTap: () => _controller.openReminderDialog(context, widget.habitId),
-                  ),
-                if (_controller.isFieldVisible(HabitDetailsController.keyGoal))
-                  HabitGoalSection.build(
-                    context: context,
-                    hasGoal: habit.hasGoal,
-                    targetFrequency: habit.targetFrequency,
-                    periodDays: habit.periodDays,
-                    dailyTarget: habit.dailyTarget ?? 1,
-                    isArchived: isArchived,
-                    translationService: translationService,
-                    onTap: () => _controller.openGoalDialog(context, widget.habitId),
-                  ),
-                if (habit.archivedDate != null)
-                  HabitArchivedSection.build(
-                    context: context,
-                    archivedDate: habit.archivedDate!,
-                    translationService: translationService,
-                  ),
-              ],
-              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
-            ),
-          ],
+                ),
+              if (_controller.isFieldVisible(HabitDetailsController.keyTags))
+                HabitTagsSection(
+                  habitTags: _controller.habitTags,
+                  translationService: translationService,
+                  onTagsSelected: (tags) => _controller.processTagChanges(tags, widget.habitId, context),
+                  autoOpenDropdown: _autoOpenField == HabitDetailsController.keyTags,
+                ).build(),
+              if (_controller.isFieldVisible(HabitDetailsController.keyTimer))
+                HabitTimerSection.build(
+                  context: context,
+                  translationService: translationService,
+                  onTimerStop: (duration) => _controller.onTimerStop(duration, widget.habitId),
+                ),
+              if (_controller.isFieldVisible(HabitDetailsController.keyElapsedTime))
+                HabitTimeSection.buildElapsedTime(
+                  totalDuration: _controller.totalDuration,
+                  translationService: translationService,
+                  onTap: _showHabitTimeLoggingDialog,
+                ),
+              if (_controller.isFieldVisible(HabitDetailsController.keyEstimatedTime))
+                HabitTimeSection.buildEstimatedTime(
+                  estimatedTime: habit.estimatedTime,
+                  translationService: translationService,
+                  onValueChanged: (value) {
+                    _controller.updateEstimatedTime(value, widget.habitId, context);
+                  },
+                  translations: HabitTimeSection.getNumericInputTranslations(translationService),
+                ),
+              if (_controller.isFieldVisible(HabitDetailsController.keyReminder))
+                HabitReminderSection.build(
+                  context: context,
+                  hasReminder: habit.hasReminder,
+                  reminderSummaryText: _controller.getReminderSummaryText(),
+                  translationService: translationService,
+                  onTap: () => _controller.openReminderDialog(context, widget.habitId),
+                ),
+              if (_controller.isFieldVisible(HabitDetailsController.keyGoal))
+                HabitGoalSection.build(
+                  context: context,
+                  hasGoal: habit.hasGoal,
+                  targetFrequency: habit.targetFrequency,
+                  periodDays: habit.periodDays,
+                  dailyTarget: habit.dailyTarget ?? 1,
+                  isArchived: isArchived,
+                  translationService: translationService,
+                  onTap: () => _controller.openGoalDialog(context, widget.habitId),
+                ),
+              if (habit.archivedDate != null)
+                HabitArchivedSection.build(
+                  context: context,
+                  archivedDate: habit.archivedDate!,
+                  translationService: translationService,
+                ),
+            ],
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
+          ),
 
           // Description Table
           if (_controller.isFieldVisible(HabitDetailsController.keyDescription)) ...[
@@ -408,6 +413,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                 context,
               ),
               habitId: widget.habitId,
+              habitType: habit.type,
+              createdDate: DateTimeHelper.toLocalDateTime(habit.createdDate),
               archivedDate: habit.archivedDate != null ? DateTimeHelper.toLocalDateTime(habit.archivedDate!) : null,
               hasGoal: habit.hasGoal,
               targetFrequency: habit.targetFrequency,

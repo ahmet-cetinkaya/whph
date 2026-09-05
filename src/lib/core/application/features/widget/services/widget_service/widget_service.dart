@@ -90,24 +90,27 @@ class WidgetService {
       developer.log('Action: $action', name: 'WidgetService');
       developer.log('Item ID: $itemId', name: 'WidgetService');
 
-      developer.log('Showing completion feedback...', name: 'WidgetService');
-      await _feedbackManager.showCompletionFeedback(action, itemId);
-      developer.log('Completion feedback shown', name: 'WidgetService');
-
+      late final bool isCompletion;
       switch (action) {
         case 'toggle_task':
           developer.log('Processing task toggle for ID: $itemId', name: 'WidgetService');
-          await _toggleHelper.toggleTask(itemId);
+          isCompletion = await _toggleHelper.toggleTask(itemId);
           developer.log('Task $itemId toggled successfully', name: 'WidgetService');
           break;
         case 'toggle_habit':
           developer.log('Processing habit toggle for ID: $itemId', name: 'WidgetService');
-          await _toggleHelper.toggleHabit(itemId);
+          isCompletion = await _toggleHelper.toggleHabit(itemId);
           developer.log('Habit $itemId toggled successfully', name: 'WidgetService');
           break;
         default:
           developer.log('ERROR: Unknown widget action: $action', name: 'WidgetService');
           return;
+      }
+
+      if (isCompletion) {
+        developer.log('Showing completion feedback...', name: 'WidgetService');
+        await _feedbackManager.showCompletionFeedback(action, itemId);
+        developer.log('Completion feedback shown', name: 'WidgetService');
       }
 
       developer.log('Updating widget after successful $action...', name: 'WidgetService');

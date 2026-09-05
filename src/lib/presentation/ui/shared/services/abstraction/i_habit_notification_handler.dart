@@ -1,5 +1,5 @@
 abstract class IHabitNotificationHandler {
-  void Function(String habitId)? onHabitCompleted;
+  void Function(String habitId)? onHabitActionHandled;
 
-  Future<void> handleNotificationHabitCompletion(String habitId);
+  Future<void> handleNotificationHabitAction(String habitId);
 }

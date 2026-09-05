@@ -365,11 +365,34 @@ habits:
     open_details_hint: Open habit details
     complete_habit_hint: Complete habit
     completion_status_hint: Habit completion status
+    habit_type_hint: Habit type
+    avoid_habit_hint: Mark habit as avoided
+    perform_habit_hint: Mark habit as performed
+    undo_hint: Undo today's record
+    checkbox_avoided_hint: Checked means you avoided this habit today
+    checkbox_performed_hint: Checked means you performed this habit today
+    calendar_day_hint: Day record status
   actions:
     mark_complete: Mark as Complete
     mark_not_done: Mark as Not Done
     clear_status: Clear Status
+    mark_avoided: Mark as Avoided
+    mark_performed: Mark as Performed
+    undo: Undo
   status:
     complete: Complete
     not_done: Not Done
     skipped: Skipped
+    avoided: Avoided
+    performed: Performed
+  types:
+    label: Habit Type
+    good: Good Habit
+    bad: Bad Habit
+    good_description: A habit you want to build and repeat.
+    bad_description: A habit you want to break and avoid.
+    help_title: Good and Bad Habits
+    help_content: >-
+      Good habits count a day as successful when you perform them. Bad habits work the
+      opposite way: a day counts as successful when you avoid them, and marking one as
+      performed records a failure.

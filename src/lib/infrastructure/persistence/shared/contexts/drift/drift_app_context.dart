@@ -13,6 +13,7 @@ import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/core/domain/features/habits/habit_tag.dart';
@@ -130,7 +131,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 36;
+  int get schemaVersion => 37;
 
   /// Validates migration version numbers
   void _validateMigrationVersions(int from, int to) {

@@ -302,11 +302,32 @@ habits:
     open_details_hint: 打开习惯详情
     complete_habit_hint: 完成习惯
     completion_status_hint: 习惯完成状态
+    habit_type_hint: 习惯类型
+    avoid_habit_hint: 将习惯标记为已避免
+    perform_habit_hint: 将习惯标记为已执行
+    undo_hint: 撤销今天的记录
+    checkbox_avoided_hint: 勾选表示您今天避免了此习惯
+    checkbox_performed_hint: 勾选表示您今天执行了此习惯
+    calendar_day_hint: 每日记录状态
   actions:
     mark_complete: 标记为已完成
     mark_not_done: 标记为未完成
     clear_status: 清除状态
+    mark_avoided: 标记为已避免
+    mark_performed: 标记为已执行
+    undo: 撤销
   status:
     complete: 已完成
     not_done: 未完成
     skipped: 已跳过
+    avoided: 已避免
+    performed: 已执行
+  types:
+    label: 习惯类型
+    good: 好习惯
+    bad: 坏习惯
+    good_description: 您想要养成并重复的习惯。
+    bad_description: 您想要戒除并避免的习惯。
+    help_title: 好习惯与坏习惯
+    help_content: >-
+      对于好习惯，执行的当天记为成功。坏习惯则相反；避免的当天记为成功，而标记为已执行则记录为失败。

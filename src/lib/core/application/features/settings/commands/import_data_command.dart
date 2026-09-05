@@ -150,7 +150,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       ImportConfig<Habit>(
         name: 'habits',
         repository: habitRepository,
-        fromJson: (json) => JsonMapper.deserialize<Habit>(jsonEncode(_normalizeOrder(json)))!,
+        fromJson: (json) => Habit.fromJson(_normalizeOrder(json)),
       ),
       ImportConfig<HabitRecord>(
         name: 'habitRecords',

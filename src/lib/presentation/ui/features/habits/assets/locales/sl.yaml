@@ -382,11 +382,33 @@ habits:
     open_details_hint: Odpri podrobnosti navade
     complete_habit_hint: Dokončaj navado
     completion_status_hint: Status dokončanja navade
+    habit_type_hint: Vrsta navade
+    avoid_habit_hint: Označi navado kot izogibano
+    perform_habit_hint: Označi navado kot izvedeno
+    undo_hint: Razveljavi današnji zapis
+    checkbox_avoided_hint: Označeno pomeni, da ste se danes tej navadi izognili
+    checkbox_performed_hint: Označeno pomeni, da ste danes to navado izvedli
+    calendar_day_hint: Stanje dnevnega zapisa
   actions:
     mark_complete: Označi kot dokončano
     mark_not_done: Označi kot nedokončano
     clear_status: Počisti stanje
+    mark_avoided: Označi kot Izogibano
+    mark_performed: Označi kot Izvedeno
+    undo: Razveljavi
   status:
     complete: Dokončano
     not_done: Nedokončano
     skipped: Preskočeno
+    avoided: Izogibano
+    performed: Izvedeno
+  types:
+    label: Vrsta Navade
+    good: Dobra Navada
+    bad: Slaba Navada
+    good_description: Navada, ki jo želite zgraditi in ponavljati.
+    bad_description: Navada, ki se je želite znebiti in se ji izogniti.
+    help_title: Dobre in slabe navade
+    help_content: >-
+      Pri dobrih navadah dan šteje kot uspešen, ko jo izvedete. Slabe navade delujejo obratno;
+      dan šteje kot uspešen, ko se ji izognete, oznaka izvedeno pa zabeleži neuspeh.

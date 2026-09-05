@@ -1,10 +1,10 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
+import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
-import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
-import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:acore/acore.dart';
 
 class AddHabitRecordCommand implements IRequest<AddHabitRecordCommandResponse> {
@@ -22,34 +22,44 @@ class AddHabitRecordCommandResponse {}
 class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse> {
   final IHabitRecordRepository _habitRecordRepository;
   final IHabitRepository _habitRepository;
-  final IHabitTimeRecordRepository _habitTimeRecordRepository;
+  final HabitRecordOperationsService _operationsService;
 
   AddHabitRecordCommandHandler({
     required IHabitRecordRepository habitRecordRepository,
     required IHabitRepository habitRepository,
-    required IHabitTimeRecordRepository habitTimeRecordRepository,
+    required HabitRecordOperationsService operationsService,
   })  : _habitRecordRepository = habitRecordRepository,
         _habitRepository = habitRepository,
-        _habitTimeRecordRepository = habitTimeRecordRepository;
+        _operationsService = operationsService;
 
   @override
   Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
-    // Create the habit record
-    await _habitRecordRepository.add(HabitRecord(
-      id: KeyHelper.generateStringId(),
-      createdDate: DateTime.now().toUtc(),
-      habitId: request.habitId,
-      occurredAt: request.occurredAt,
-    ));
-
-    // Add estimated time if habit has it
     final habit = await _habitRepository.getById(request.habitId);
-    if (habit?.estimatedTime != null && habit!.estimatedTime! > 0) {
-      await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
-        repository: _habitTimeRecordRepository,
-        habitId: request.habitId,
-        targetDate: request.occurredAt,
-        estimatedDuration: habit.estimatedTime! * 60,
+    if (habit?.type == HabitType.bad) {
+      final dayRange = HabitDayStateResolver.utcRangeFor(request.occurredAt);
+      final records = await _habitRecordRepository.getListByHabitIdAndRangeDate(
+        request.habitId,
+        dayRange.start,
+        dayRange.end,
+        0,
+        1000,
+      );
+      await _operationsService.ensureBadHabitMarker(request.habitId, request.occurredAt, records.items);
+      return AddHabitRecordCommandResponse();
+    }
+
+    await _operationsService.addHabitRecord(
+      request.habitId,
+      request.occurredAt,
+      HabitRecordStatus.complete,
+      DateTime.now().toUtc(),
+    );
+    if (habit != null) {
+      await _operationsService.addTimeRecordIfComplete(
+        habit,
+        request.habitId,
+        request.occurredAt,
+        HabitRecordStatus.complete,
       );
     }
 

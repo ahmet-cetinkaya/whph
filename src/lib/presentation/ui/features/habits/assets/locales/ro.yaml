@@ -313,11 +313,34 @@ habits:
     open_details_hint: Deschide detalii obicei
     complete_habit_hint: Completează obiceiul
     completion_status_hint: Starea de completion a obiceiului
+    habit_type_hint: Tipul obiceiului
+    avoid_habit_hint: Marchează obiceiul ca evitat
+    perform_habit_hint: Marchează obiceiul ca efectuat
+    undo_hint: Anulează înregistrarea de azi
+    checkbox_avoided_hint: Bifat înseamnă că ai evitat acest obicei astăzi
+    checkbox_performed_hint: Bifat înseamnă că ai efectuat acest obicei astăzi
+    calendar_day_hint: Starea înregistrării zilei
   actions:
     mark_complete: Marchează ca finalizat
     mark_not_done: Marchează ca nefinalizat
     clear_status: Șterge starea
+    mark_avoided: Marchează ca Evitat
+    mark_performed: Marchează ca Efectuat
+    undo: Anulează
   status:
     complete: Finalizat
     not_done: Nefinalizat
     skipped: Sărit
+    avoided: Evitat
+    performed: Efectuat
+  types:
+    label: Tipul Obiceiului
+    good: Obicei Bun
+    bad: Obicei Rău
+    good_description: Un obicei pe care vrei să îl construiești și să îl repeți.
+    bad_description: Un obicei de care vrei să scapi și pe care vrei să îl eviți.
+    help_title: Obiceiuri bune și rele
+    help_content: >-
+      La obiceiurile bune, o zi contează ca reușită atunci când le efectuezi. Obiceiurile rele
+      funcționează invers; o zi contează ca reușită atunci când le eviți, iar marcarea ca
+      efectuat înregistrează un eșec.

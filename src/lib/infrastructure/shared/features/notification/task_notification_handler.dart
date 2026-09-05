@@ -23,7 +23,7 @@ class TaskNotificationHandler implements ITaskNotificationHandler {
       Logger.info('TaskNotificationHandler: Task completed successfully from notification');
     } on BusinessException catch (e, stackTrace) {
       Logger.error(
-        '[$TaskErrorIds.notificationActionFailed] TaskNotificationHandler: Failed to complete task',
+        '[${TaskErrorIds.notificationActionFailed}] TaskNotificationHandler: Failed to complete task',
         error: e,
         stackTrace: stackTrace,
       );

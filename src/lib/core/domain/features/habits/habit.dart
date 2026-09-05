@@ -2,8 +2,12 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart';
 
+import 'habit_type.dart';
+
 @jsonSerializable
 class Habit extends BaseEntity<String> {
+  @JsonProperty(defaultValue: 'HabitType.good')
+  HabitType type;
   String name;
   String description;
   int? estimatedTime;
@@ -30,13 +34,14 @@ class Habit extends BaseEntity<String> {
     required super.createdDate,
     super.modifiedDate,
     super.deletedDate,
+    this.type = HabitType.good,
     required this.name,
     required this.description,
     this.estimatedTime,
     this.archivedDate,
     this.hasReminder = false,
     this.reminderTime,
-    String reminderDays = "",
+    this.reminderDays = "",
     this.hasGoal = false,
     this.targetFrequency = 1,
     this.periodDays = 1,
@@ -57,7 +62,9 @@ class Habit extends BaseEntity<String> {
     }
 
     try {
-      final result = reminderDays.split(',').where((s) => s.isNotEmpty).map((s) {
+      final result = reminderDays.split(',').where((s) => s.isNotEmpty).map((
+        s,
+      ) {
         final trimmed = s.trim();
         return int.parse(trimmed);
       }).toList();
@@ -165,6 +172,7 @@ class Habit extends BaseEntity<String> {
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
+        'type': type.name,
         'name': name,
         'description': description,
         'estimatedTime': estimatedTime,
@@ -214,6 +222,7 @@ class Habit extends BaseEntity<String> {
       createdDate: DateTime.parse(json['createdDate'] as String),
       modifiedDate: json['modifiedDate'] != null ? DateTime.parse(json['modifiedDate'] as String) : null,
       deletedDate: json['deletedDate'] != null ? DateTime.parse(json['deletedDate'] as String) : null,
+      type: HabitType.fromJson(json['type']),
       name: json['name'] as String,
       description: json['description'] as String,
       estimatedTime: estimatedTime,

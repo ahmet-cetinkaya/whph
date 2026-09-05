@@ -11,6 +11,8 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 
 /// Implementation of the reminder service for Android platforms using native APIs
 class AndroidReminderService implements IReminderService {
@@ -545,9 +547,28 @@ class AndroidReminderService implements IReminderService {
 
   /// Get the translated action button text if payload contains taskId or habitId
   String? _getActionButtonText(String? payload) {
-    if (payload != null && (payload.contains('taskId') || payload.contains('habitId'))) {
-      return _translateText('shared.buttons.done', payload);
+    if (payload == null) return null;
+
+    try {
+      final payloadData = jsonDecode(payload);
+      if (payloadData is! Map<String, dynamic>) return null;
+
+      final arguments = payloadData['arguments'];
+      if (arguments is! Map<String, dynamic>) return null;
+      if (arguments['taskId'] != null) return _translateText('shared.buttons.done', payload);
+      if (arguments['habitId'] == null) return null;
+
+      final actionKey = arguments['habitType'] == HabitType.bad.name
+          ? HabitTranslationKeys.actionMarkPerformed
+          : HabitTranslationKeys.actionMarkComplete;
+      return _translateText(actionKey, payload);
+    } on FormatException catch (error, stackTrace) {
+      Logger.error(
+        'AndroidReminderService: Failed to read notification action payload',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return null;
     }
-    return null;
   }
 }

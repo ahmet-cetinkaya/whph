@@ -7,6 +7,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 
 /// Helper class for habit field labels and icons.
 class HabitFieldHelpers {
+  static const String keyType = 'type';
   static const String keyTags = 'tags';
   static const String keyEstimatedTime = 'estimatedTime';
   static const String keyElapsedTime = 'elapsedTime';
@@ -17,6 +18,8 @@ class HabitFieldHelpers {
 
   static String getFieldLabel(String fieldKey, ITranslationService translationService) {
     switch (fieldKey) {
+      case keyType:
+        return translationService.translate(HabitTranslationKeys.typeLabel);
       case keyTags:
         return translationService.translate(HabitTranslationKeys.tagsLabel);
       case keyEstimatedTime:
@@ -38,6 +41,8 @@ class HabitFieldHelpers {
 
   static IconData getFieldIcon(String fieldKey) {
     switch (fieldKey) {
+      case keyType:
+        return HabitUiConstants.habitIcon;
       case keyTags:
         return TagUiConstants.tagIcon;
       case keyEstimatedTime:

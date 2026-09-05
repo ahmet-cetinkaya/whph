@@ -390,11 +390,34 @@ habits:
     open_details_hint: Apri dettagli abitudine
     complete_habit_hint: Completa abitudine
     completion_status_hint: Stato di completion dell''abitudine
+    habit_type_hint: Tipo di abitudine
+    avoid_habit_hint: Segna abitudine come evitata
+    perform_habit_hint: Segna abitudine come eseguita
+    undo_hint: Annulla la registrazione di oggi
+    checkbox_avoided_hint: Selezionato significa che hai evitato questa abitudine oggi
+    checkbox_performed_hint: Selezionato significa che hai eseguito questa abitudine oggi
+    calendar_day_hint: Stato della registrazione del giorno
   actions:
     mark_complete: Segna come completato
     mark_not_done: Segna come non fatto
     clear_status: Cancella stato
+    mark_avoided: Segna come Evitata
+    mark_performed: Segna come Eseguita
+    undo: Annulla
   status:
     complete: Completato
     not_done: Non fatto
     skipped: Saltato
+    avoided: Evitata
+    performed: Eseguita
+  types:
+    label: Tipo di Abitudine
+    good: Buona Abitudine
+    bad: Cattiva Abitudine
+    good_description: Un'abitudine che vuoi costruire e ripetere.
+    bad_description: Un'abitudine che vuoi abbandonare ed evitare.
+    help_title: Buone e cattive abitudini
+    help_content: >-
+      Per le buone abitudini, un giorno conta come riuscito quando le esegui. Le cattive
+      abitudini funzionano al contrario; un giorno conta come riuscito quando le eviti, e
+      segnarla come eseguita registra un fallimento.

@@ -389,11 +389,34 @@ habits:
     open_details_hint: Gewoontedetails openen
     complete_habit_hint: Gewoonte voltooien
     completion_status_hint: Gewoonte completion status
+    habit_type_hint: Gewoontetype
+    avoid_habit_hint: Gewoonte markeren als vermeden
+    perform_habit_hint: Gewoonte markeren als uitgevoerd
+    undo_hint: Registratie van vandaag ongedaan maken
+    checkbox_avoided_hint: Aangevinkt betekent dat je deze gewoonte vandaag hebt vermeden
+    checkbox_performed_hint: Aangevinkt betekent dat je deze gewoonte vandaag hebt uitgevoerd
+    calendar_day_hint: Status van dagregistratie
   actions:
     mark_complete: Markeren als voltooid
     mark_not_done: Markeren als niet gedaan
     clear_status: Status wissen
+    mark_avoided: Markeren als Vermeden
+    mark_performed: Markeren als Uitgevoerd
+    undo: Ongedaan maken
   status:
     complete: Voltooid
     not_done: Niet gedaan
     skipped: Overgeslagen
+    avoided: Vermeden
+    performed: Uitgevoerd
+  types:
+    label: Gewoontetype
+    good: Goede Gewoonte
+    bad: Slechte Gewoonte
+    good_description: Een gewoonte die je wilt opbouwen en herhalen.
+    bad_description: Een gewoonte die je wilt afleren en vermijden.
+    help_title: Goede en slechte gewoonten
+    help_content: >-
+      Bij goede gewoonten telt een dag als geslaagd wanneer je ze uitvoert. Slechte gewoonten
+      werken andersom; een dag telt als geslaagd wanneer je ze vermijdt, en markeren als
+      uitgevoerd legt een mislukking vast.

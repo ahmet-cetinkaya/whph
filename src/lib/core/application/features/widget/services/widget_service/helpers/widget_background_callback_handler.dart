@@ -10,6 +10,7 @@ import 'package:whph/core/application/features/habits/queries/get_habit_query.da
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/presentation/ui/shared/services/app_bootstrap_service.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
 import 'package:whph/main.dart' as app_main;
@@ -69,7 +70,7 @@ FutureOr<void> widgetBackgroundCallback(Uri? data) async {
           await _backgroundToggleTask(mediator, container, itemId);
           break;
         case 'toggle_habit':
-          await _backgroundToggleHabit(mediator, container, itemId);
+          await backgroundToggleHabit(mediator, container, itemId);
           break;
         default:
           Logger.error('Unknown action in background callback: $action');
@@ -142,7 +143,7 @@ Future<void> _backgroundToggleTask(Mediator mediator, IContainer container, Stri
 }
 
 /// Background habit toggle function with smart behavior for multiple occurrences
-Future<void> _backgroundToggleHabit(Mediator mediator, IContainer container, String habitId) async {
+Future<void> backgroundToggleHabit(Mediator mediator, IContainer container, String habitId) async {
   try {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
@@ -151,6 +152,14 @@ Future<void> _backgroundToggleHabit(Mediator mediator, IContainer container, Str
     final habit = await mediator.send<GetHabitQuery, GetHabitQueryResponse>(
       GetHabitQuery(id: habitId),
     );
+
+    if (habit.type == HabitType.bad) {
+      await mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
+        ToggleHabitCompletionCommand(habitId: habitId, date: today),
+      );
+      return;
+    }
+
     final hasCustomGoals = habit.hasGoal;
     final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
 

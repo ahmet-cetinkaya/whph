@@ -1,9 +1,11 @@
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 
 class HabitListItem {
   final String id;
   final String name;
+  final HabitType type;
   final List<TagListItem> tags;
   final int? estimatedTime;
   final int? actualTime; // Total logged time in minutes
@@ -24,6 +26,7 @@ class HabitListItem {
   const HabitListItem({
     required this.id,
     required this.name,
+    this.type = HabitType.good,
     this.tags = const [],
     this.estimatedTime,
     this.actualTime,
@@ -47,6 +50,7 @@ class HabitListItem {
   HabitListItem copyWith({
     String? id,
     String? name,
+    HabitType? type,
     List<TagListItem>? tags,
     int? estimatedTime,
     int? actualTime,
@@ -67,6 +71,7 @@ class HabitListItem {
     return HabitListItem(
       id: id ?? this.id,
       name: name ?? this.name,
+      type: type ?? this.type,
       tags: tags ?? this.tags,
       estimatedTime: estimatedTime ?? this.estimatedTime,
       actualTime: actualTime ?? this.actualTime,

@@ -5,6 +5,8 @@ import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:acore/acore.dart' as acore;
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view/habit_calendar_color_helper.dart';
+import 'package:whph/presentation/ui/features/habits/utils/habit_day_presenter.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
@@ -70,6 +72,10 @@ class HabitCardCalendar extends StatelessWidget {
   }
 
   Widget _buildCalendarDay(BuildContext context, DateTime date) {
+    if (habit.type == HabitType.bad) {
+      return _buildBadHabitDay(context, date);
+    }
+
     final isDisabled = _isDateDisabled(date);
     final localDate = acore.DateTimeHelper.toLocalDateTime(date);
     final isToday = acore.DateTimeHelper.isSameDay(localDate, DateTime.now());
@@ -345,6 +351,89 @@ class HabitCardCalendar extends StatelessWidget {
                         ),
                       ),
                   ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Bad habits are binary: the shared day-state policy decides success,
+  /// failure, or neutral, so goal badges and the three-state cycle never apply.
+  Widget _buildBadHabitDay(BuildContext context, DateTime date) {
+    final localDate = acore.DateTimeHelper.toLocalDateTime(date);
+    final isToday = acore.DateTimeHelper.isSameDay(localDate, DateTime.now());
+    final isMobileCalendar = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
+    final useLargeSize = !isDense || isMobileCalendar;
+    final double daySize = isMobileCalendar ? 36.0 : HabitUiConstants.calendarDaySize;
+
+    final visual = HabitDayPresenter(
+      habitId: habit.id,
+      habitType: habit.type,
+      createdDate: habit.createdDate,
+      archivedDate: archivedDate,
+      records: habitRecords,
+    ).visualFor(date);
+
+    final labelColor =
+        isToday ? themeService.primaryColor : AppTheme.textColor.withValues(alpha: visual.isInteractive ? 1 : 0.5);
+
+    return SizedBox(
+      width: daySize,
+      height: isDateLabelShowing
+          ? (useLargeSize
+              ? daySize * 1.5
+              : (isDense ? HabitUiConstants.calendarDaySize * 1.5 : HabitUiConstants.calendarDaySize * 2))
+          : daySize,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (isDateLabelShowing) ...[
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  acore.DateTimeHelper.getWeekday(localDate.weekday),
+                  style: AppTheme.bodySmall.copyWith(color: labelColor),
+                ),
+              ),
+            ),
+            SizedBox(height: isDense ? 1 : 2),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  localDate.day.toString(),
+                  style: AppTheme.bodySmall.copyWith(color: labelColor),
+                ),
+              ),
+            ),
+            const Spacer(),
+          ],
+          Semantics(
+            label: visual.statusKey,
+            hint: visual.actionKey,
+            button: visual.isInteractive,
+            child: SizedBox(
+              width: daySize,
+              height: daySize,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: visual.isInteractive ? () => onDayTap(date) : null,
+                  borderRadius: BorderRadius.circular(AppTheme.sizeSmall),
+                  child: Center(
+                    child: Icon(
+                      visual.icon,
+                      size: isMobileCalendar
+                          ? AppTheme.iconSizeMedium
+                          : (isDense ? AppTheme.iconSizeSmall : AppTheme.iconSizeMedium),
+                      color: visual.color,
+                    ),
+                  ),
                 ),
               ),
             ),

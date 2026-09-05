@@ -371,11 +371,34 @@ habits:
     open_details_hint: Gewohnheitsdetails öffnen
     complete_habit_hint: Gewohnheit abschließen
     completion_status_hint: Abschlussstatus der Gewohnheit
+    habit_type_hint: Gewohnheitstyp
+    avoid_habit_hint: Gewohnheit als vermieden markieren
+    perform_habit_hint: Gewohnheit als ausgeführt markieren
+    undo_hint: Heutigen Eintrag rückgängig machen
+    checkbox_avoided_hint: Aktiviert bedeutet, dass Sie diese Gewohnheit heute vermieden haben
+    checkbox_performed_hint: Aktiviert bedeutet, dass Sie diese Gewohnheit heute ausgeführt haben
+    calendar_day_hint: Status des Tageseintrags
   actions:
     mark_complete: Als abgeschlossen markieren
     mark_not_done: Als nicht erledigt markieren
     clear_status: Status löschen
+    mark_avoided: Als vermieden markieren
+    mark_performed: Als ausgeführt markieren
+    undo: Rückgängig
   status:
     complete: Abgeschlossen
     not_done: Nicht erledigt
     skipped: Übersprungen
+    avoided: Vermieden
+    performed: Ausgeführt
+  types:
+    label: Gewohnheitstyp
+    good: Gute Gewohnheit
+    bad: Schlechte Gewohnheit
+    good_description: Eine Gewohnheit, die Sie aufbauen und wiederholen möchten.
+    bad_description: Eine Gewohnheit, die Sie ablegen und vermeiden möchten.
+    help_title: Gute und schlechte Gewohnheiten
+    help_content: >-
+      Bei guten Gewohnheiten gilt ein Tag als erfolgreich, wenn Sie sie ausführen. Bei
+      schlechten Gewohnheiten ist es umgekehrt; ein Tag gilt als erfolgreich, wenn Sie sie
+      vermeiden, und eine Markierung als ausgeführt wird als Misserfolg erfasst.

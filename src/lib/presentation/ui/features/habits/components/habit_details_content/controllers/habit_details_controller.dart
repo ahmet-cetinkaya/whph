@@ -13,8 +13,10 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
+import 'package:whph/presentation/ui/features/habits/utils/habit_day_presenter.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -33,6 +35,7 @@ class HabitDetailsController extends ChangeNotifier {
   late final HabitTagOperations _tagOperations;
   late final HabitRecordOperations _recordOperations;
   late final HabitDialogHelper _dialogHelper;
+  late final ISoundManagerService _soundManagerService;
 
   GetHabitQueryResponse? _habit;
   GetListHabitRecordsQueryResponse? _habitRecords;
@@ -48,6 +51,7 @@ class HabitDetailsController extends ChangeNotifier {
 
   final Set<String> _visibleOptionalFields = {};
 
+  static const String keyType = 'type';
   static const String keyTags = 'tags';
   static const String keyEstimatedTime = 'estimatedTime';
   static const String keyElapsedTime = 'elapsedTime';
@@ -78,9 +82,9 @@ class HabitDetailsController extends ChangeNotifier {
     _recordOperations = HabitRecordOperations(
       mediator: _mediator,
       translationService: _translationService,
-      soundManagerService: resolvedSoundManager,
       habitsService: _habitsService,
     );
+    _soundManagerService = resolvedSoundManager;
     _dialogHelper = HabitDialogHelper(translationService: _translationService);
   }
 
@@ -182,6 +186,7 @@ class HabitDetailsController extends ChangeNotifier {
   }
 
   void _updateHabitFields(GetHabitQueryResponse result) {
+    _habit!.type = result.type;
     _habit!.name = result.name;
     _habit!.description = result.description;
     _habit!.estimatedTime = result.estimatedTime;
@@ -191,6 +196,7 @@ class HabitDetailsController extends ChangeNotifier {
     _habit!.hasGoal = result.hasGoal;
     _habit!.targetFrequency = result.targetFrequency;
     _habit!.periodDays = result.periodDays;
+    _habit!.dailyTarget = result.dailyTarget;
     _habit!.archivedDate = result.archivedDate;
   }
 
@@ -260,6 +266,7 @@ class HabitDetailsController extends ChangeNotifier {
   void _processFieldVisibility() {
     if (_habit == null) return;
 
+    if (_hasFieldContent(keyType)) _visibleOptionalFields.add(keyType);
     if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
     if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
     if (_hasFieldContent(keyElapsedTime)) _visibleOptionalFields.add(keyElapsedTime);
@@ -273,6 +280,8 @@ class HabitDetailsController extends ChangeNotifier {
     if (_habit == null) return false;
 
     switch (fieldKey) {
+      case keyType:
+        return _habit!.type != HabitType.good;
       case keyTags:
         return _habitTags != null && _habitTags!.items.isNotEmpty;
       case keyEstimatedTime:
@@ -301,8 +310,53 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isFieldVisible(String fieldKey) => _visibleOptionalFields.contains(fieldKey);
-  bool shouldShowAsChip(String fieldKey) => !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
+  bool isFieldVisible(String fieldKey) => _isFieldSupported(fieldKey) && _visibleOptionalFields.contains(fieldKey);
+  bool shouldShowAsChip(String fieldKey) =>
+      _isFieldSupported(fieldKey) && !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
+
+  /// Goals only describe repetition targets, which are meaningless for habits
+  /// the user wants to avoid entirely.
+  bool _isFieldSupported(String fieldKey) => !(fieldKey == keyGoal && _habit?.type == HabitType.bad);
+
+  /// Archived habits are read-only, so their type cannot be switched.
+  bool get isTypeReadOnly => _habit?.isArchived ?? true;
+
+  Future<void> updateType(HabitType type, String habitId, BuildContext context) async {
+    if (_habit == null || isTypeReadOnly || _habit!.type == type) return;
+
+    final previousType = _habit!.type;
+    final previousHasGoal = _habit!.hasGoal;
+    final previousTargetFrequency = _habit!.targetFrequency;
+    final previousPeriodDays = _habit!.periodDays;
+    final previousDailyTarget = _habit!.dailyTarget;
+    final previousGoalWasVisible = _visibleOptionalFields.contains(keyGoal);
+
+    _habit!.type = type;
+    _habit!.hasGoal = false;
+    _habit!.targetFrequency = 1;
+    _habit!.periodDays = 1;
+    _habit!.dailyTarget = 1;
+    if (type == HabitType.bad) _visibleOptionalFields.remove(keyGoal);
+    notifyListeners();
+
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    // The change above is optimistic, so a failed save must not leave the UI
+    // showing a type and blanked goal settings the database never accepted.
+    await saveHabitImmediately(
+      habitId,
+      context,
+      onError: (_) {
+        if (_habit == null) return;
+        _habit!.type = previousType;
+        _habit!.hasGoal = previousHasGoal;
+        _habit!.targetFrequency = previousTargetFrequency;
+        _habit!.periodDays = previousPeriodDays;
+        _habit!.dailyTarget = previousDailyTarget;
+        if (previousGoalWasVisible) _visibleOptionalFields.add(keyGoal);
+        notifyListeners();
+      },
+    );
+  }
 
   void saveHabitDebounced(String habitId, BuildContext context, {String? name}) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -311,7 +365,12 @@ class HabitDetailsController extends ChangeNotifier {
     });
   }
 
-  Future<void> saveHabitImmediately(String habitId, BuildContext context, {String? name}) async {
+  Future<void> saveHabitImmediately(
+    String habitId,
+    BuildContext context, {
+    String? name,
+    void Function(Object error)? onError,
+  }) async {
     if (_habit == null) return;
 
     await AsyncErrorHandler.executeVoid(
@@ -326,6 +385,7 @@ class HabitDetailsController extends ChangeNotifier {
         onHabitUpdated?.call();
         notifyListeners();
       },
+      onError: onError,
     );
   }
 
@@ -351,6 +411,7 @@ class HabitDetailsController extends ChangeNotifier {
 
     return SaveHabitCommand(
       id: habitId,
+      type: _habit!.type,
       name: name ?? _habit!.name,
       description: description ?? _habit!.description,
       estimatedTime: _habit!.estimatedTime,
@@ -415,16 +476,35 @@ class HabitDetailsController extends ChangeNotifier {
   }
 
   Future<void> toggleHabitRecordForDay(DateTime date, String habitId, BuildContext context) async {
+    // Capture the pre-toggle verdict: a day that was not already a good-habit
+    // success becomes one. Bad habits are never celebrated, because avoiding
+    // one is the absence of a failure rather than an achievement.
+    final becomesSuccess = _habit?.type == HabitType.good && !_isGoodHabitSuccess(date);
+
     await _recordOperations.toggleHabitRecord(
       habitId: habitId,
       date: date,
       context: context,
       onSuccess: () {
+        if (becomesSuccess) _soundManagerService.playHabitCompletion();
         loadHabitRecordsForMonth(_currentMonth, habitId, context);
         loadHabitStatisticsOnly(habitId, context);
         onHabitUpdated?.call();
       },
     );
+  }
+
+  bool _isGoodHabitSuccess(DateTime date) {
+    final habit = _habit;
+    if (habit == null) return false;
+
+    return HabitDayPresenter(
+      habitId: habit.id,
+      habitType: habit.type,
+      createdDate: habit.createdDate,
+      archivedDate: habit.archivedDate,
+      records: _habitRecords?.items,
+    ).isCelebratedSuccess(date);
   }
 
   Future<void> createHabitRecord(String habitId, DateTime date, BuildContext context) async {

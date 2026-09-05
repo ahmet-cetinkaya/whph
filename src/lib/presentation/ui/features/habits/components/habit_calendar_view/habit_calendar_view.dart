@@ -10,10 +10,14 @@ import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.da
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view/habit_calendar_color_helper.dart';
+import 'package:whph/presentation/ui/features/habits/utils/habit_day_presenter.dart';
 
 class HabitCalendarView extends StatefulWidget {
   final String habitId;
+  final HabitType habitType;
+  final DateTime? createdDate;
   final DateTime currentMonth;
   final List<HabitRecordListItem> records;
   final Function(DateTime) onToggle;
@@ -35,6 +39,8 @@ class HabitCalendarView extends StatefulWidget {
     required this.onToggle,
     required this.onPreviousMonth,
     required this.onNextMonth,
+    this.habitType = HabitType.good,
+    this.createdDate,
     this.onRecordChanged,
     this.archivedDate,
     this.hasGoal = false,
@@ -231,6 +237,10 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       }
     });
 
+    // Indexing the records is O(records), so the presenter is built once per grid
+    // rather than per cell. `late` keeps it unbuilt for good habits, which never read it.
+    late final HabitDayPresenter presenter = _createPresenter();
+
     return GridView.count(
       crossAxisCount: 7,
       shrinkWrap: true,
@@ -238,11 +248,60 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       childAspectRatio: 1,
       mainAxisSpacing: HabitUiConstants.gridSpacing,
       crossAxisSpacing: HabitUiConstants.gridSpacing,
-      children: days.map((date) => _buildCalendarDay(date)).toList(),
+      children: days.map((date) => _buildCalendarDay(date, presenter)).toList(),
     );
   }
 
-  Widget _buildCalendarDay(DateTime date) {
+  HabitDayPresenter _createPresenter() => HabitDayPresenter(
+        habitId: widget.habitId,
+        habitType: widget.habitType,
+        createdDate: widget.createdDate,
+        archivedDate: widget.archivedDate,
+        records: widget.records,
+      );
+
+  /// Bad habits are binary: the shared day-state policy decides success,
+  /// failure, or neutral, so goal badges and the three-state cycle never apply.
+  Widget _buildBadHabitDay(DateTime date, HabitDayPresenter presenter) {
+    final isCurrentMonth = date.month == widget.currentMonth.month;
+    final visual = presenter.visualFor(date);
+
+    return OutlinedButton(
+      onPressed: visual.isInteractive ? () => _handleDayTap(date) : null,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: visual.color.withValues(alpha: 0.12),
+        disabledBackgroundColor:
+            isCurrentMonth ? AppTheme.surface2.withValues(alpha: 0.3) : AppTheme.surface2.withValues(alpha: 0.1),
+        padding: EdgeInsets.zero,
+        side: BorderSide(color: AppTheme.dividerColor.withValues(alpha: isCurrentMonth ? 0.3 : 0.1), width: 1.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      ),
+      child: Semantics(
+        label: visual.statusKey,
+        hint: visual.actionKey,
+        button: visual.isInteractive,
+        child: Stack(
+          children: [
+            Center(child: Icon(visual.icon, color: visual.color, size: 18)),
+            Positioned(
+              bottom: 2,
+              right: 4,
+              child: Text(
+                date.day.toString(),
+                style: TextStyle(color: AppTheme.textColor.withValues(alpha: 0.5), fontSize: 12),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCalendarDay(DateTime date, HabitDayPresenter presenter) {
+    if (widget.habitType == HabitType.bad) {
+      return _buildBadHabitDay(date, presenter);
+    }
+
     final maxDate = widget.archivedDate ?? DateTime.now();
     bool isFutureDate = date.isAfter(maxDate);
     bool isCurrentMonth = date.month == widget.currentMonth.month;
@@ -388,9 +447,15 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
   }
 
   Future<void> _handleDayTap(DateTime date) async {
+    // The parent reloads records asynchronously, so the post-toggle state is not
+    // observable here. Calendar taps toggle a day binary, so a day that was not
+    // already a success becomes one — and only good habits are celebrated.
+    final becomesSuccess = widget.habitType == HabitType.good && !_createPresenter().isCelebratedSuccess(date);
+
     await widget.onToggle(date);
     widget.onRecordChanged?.call();
-    _soundManagerService.playHabitCompletion();
+
+    if (becomesSuccess) _soundManagerService.playHabitCompletion();
   }
 
   bool _isSameDay(DateTime date1, DateTime date2) {

@@ -70,7 +70,7 @@ void registerHabitsFeature(
       () => AddHabitRecordCommandHandler(
         habitRecordRepository: habitRecordRepository,
         habitRepository: habitRepository,
-        habitTimeRecordRepository: habitTimeRecordRepository,
+        operationsService: habitRecordOperationsService,
       ),
     )
     ..registerHandler<CompleteHabitCommand, CompleteHabitCommandResponse, CompleteHabitCommandHandler>(
@@ -91,6 +91,7 @@ void registerHabitsFeature(
       () => DeleteHabitRecordCommandHandler(
         habitRecordRepository: habitRecordRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
+        habitRepository: habitRepository,
       ),
     )
     ..registerHandler<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(

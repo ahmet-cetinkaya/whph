@@ -61,17 +61,20 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   void _removeEventListeners() {
     _habitsService.onHabitUpdated.removeListener(_handleHabitChanged);
     _habitsService.onHabitRecordAdded.removeListener(_handleHabitRecordChanged);
-    _habitsService.onHabitRecordRemoved.removeListener(_handleHabitRecordChanged);
+    _habitsService.onHabitRecordRemoved
+        .removeListener(_handleHabitRecordChanged);
   }
 
   void _handleHabitChanged() {
-    if (!mounted || _habitsService.onHabitUpdated.value != widget.habitId) return;
+    if (!mounted || _habitsService.onHabitUpdated.value != widget.habitId)
+      return;
     _debouncedLoadData();
   }
 
   void _handleHabitRecordChanged() {
     if (!mounted) return;
-    String? habitId = _habitsService.onHabitRecordAdded.value ?? _habitsService.onHabitRecordRemoved.value;
+    String? habitId = _habitsService.onHabitRecordAdded.value ??
+        _habitsService.onHabitRecordRemoved.value;
     if (habitId != widget.habitId) return;
     _debouncedLoadData();
   }
@@ -93,10 +96,12 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   Future<void> _getHabit() async {
     await AsyncErrorHandler.execute<GetHabitQueryResponse>(
       context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.loadingDetailsError),
+      errorMessage: _translationService
+          .translate(HabitTranslationKeys.loadingDetailsError),
       operation: () async {
         final query = GetHabitQuery(id: widget.habitId);
-        return await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(query);
+        return await _mediator
+            .send<GetHabitQuery, GetHabitQueryResponse>(query);
       },
       onSuccess: (result) {
         if (mounted) {
@@ -111,7 +116,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
   Future<void> _getHabitRecords() async {
     await AsyncErrorHandler.execute<GetListHabitRecordsQueryResponse>(
       context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.loadingRecordsError),
+      errorMessage: _translationService
+          .translate(HabitTranslationKeys.loadingRecordsError),
       operation: () async {
         // Get all records by using a wide date range
         final now = DateTime.now();
@@ -124,7 +130,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
           pageIndex: 0,
           pageSize: 1000,
         );
-        return await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(query);
+        return await _mediator.send<GetListHabitRecordsQuery,
+            GetListHabitRecordsQueryResponse>(query);
       },
       onSuccess: (result) {
         if (mounted) {
@@ -138,7 +145,9 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
 
   Widget _buildStatusBanner() {
     final firstRecordDate = _habitRecords!.items.isNotEmpty
-        ? _habitRecords!.items.map((r) => r.date).reduce((a, b) => a.isBefore(b) ? a : b)
+        ? _habitRecords!.items
+            .map((r) => r.date)
+            .reduce((a, b) => a.isBefore(b) ? a : b)
         : _habit!.createdDate;
 
     return Container(
@@ -161,10 +170,13 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              _translationService.translate(HabitTranslationKeys.statisticsArchivedWarning, namedArgs: {
-                'startDate': DateTimeHelper.formatDate(firstRecordDate),
-                'archivedDate': DateTimeHelper.formatDate(DateTimeHelper.toLocalDateTime(_habit!.archivedDate!))
-              }),
+              _translationService.translate(
+                  HabitTranslationKeys.statisticsArchivedWarning,
+                  namedArgs: {
+                    'startDate': DateTimeHelper.formatDate(firstRecordDate),
+                    'archivedDate': DateTimeHelper.formatDate(
+                        DateTimeHelper.toLocalDateTime(_habit!.archivedDate!))
+                  }),
               style: AppTheme.bodyMedium.copyWith(
                 color: Colors.blue[700],
               ),
@@ -185,7 +197,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(
-          title: _translationService.translate(HabitTranslationKeys.statisticsLabel),
+          title: _translationService
+              .translate(HabitTranslationKeys.statisticsLabel),
         ),
         const SizedBox(height: AppTheme.sizeSmall),
         if (_habit!.archivedDate != null) ...[
@@ -210,29 +223,40 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
               Row(
                 children: [
                   Expanded(
-                      child: _buildStatCard(_translationService.translate(HabitTranslationKeys.overall),
+                      child: _buildStatCard(
+                          _translationService
+                              .translate(HabitTranslationKeys.overall),
                           _habit!.statistics.overallScore)),
                   const SizedBox(width: 8),
-                  if (_habit!.hasGoal && _habit!.statistics.goalSuccessRate != null) ...[
+                  if (_habit!.hasGoal &&
+                      _habit!.statistics.goalSuccessRate != null) ...[
                     Expanded(
                       child: _buildStatCard(
-                        _translationService.translate(HabitTranslationKeys.currentGoal),
+                        _translationService
+                            .translate(HabitTranslationKeys.currentGoal),
                         _habit!.statistics.goalSuccessRate!,
-                        customValue: "${_habit!.statistics.daysGoalMet}/${_habit!.statistics.totalDaysWithGoal}",
+                        customValue:
+                            "${_habit!.statistics.daysGoalMet}/${_habit!.statistics.totalDaysWithGoal}",
                       ),
                     ),
                     const SizedBox(width: 8),
                   ],
                   Expanded(
-                      child: _buildStatCard(_translationService.translate(HabitTranslationKeys.monthly),
+                      child: _buildStatCard(
+                          _translationService
+                              .translate(HabitTranslationKeys.monthly),
                           _habit!.statistics.monthlyScore)),
                   const SizedBox(width: 8),
                   Expanded(
                       child: _buildStatCard(
-                          _translationService.translate(HabitTranslationKeys.yearly), _habit!.statistics.yearlyScore)),
+                          _translationService
+                              .translate(HabitTranslationKeys.yearly),
+                          _habit!.statistics.yearlyScore)),
                   const SizedBox(width: 8),
                   Expanded(
-                      child: _buildStatCard(_translationService.translate(HabitTranslationKeys.records),
+                      child: _buildStatCard(
+                          _translationService
+                              .translate(HabitTranslationKeys.records),
                           _habit!.statistics.totalRecords.toDouble(),
                           isCount: true)),
                 ],
@@ -244,7 +268,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
     );
   }
 
-  Widget _buildStatCard(String label, double value, {bool isCount = false, String? subtitle, String? customValue}) {
+  Widget _buildStatCard(String label, double value,
+      {bool isCount = false, String? subtitle, String? customValue}) {
     // Calculate percentage for the background bar
     double percentage = isCount ? 0 : value.clamp(0.0, 1.0);
 
@@ -261,7 +286,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                     flex: (percentage * 100).toInt(),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: _themeService.primaryColor.withValues(alpha: 0.1),
+                        color:
+                            _themeService.primaryColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
@@ -275,7 +301,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
             ),
           // Content
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeMedium, horizontal: AppTheme.sizeSmall),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppTheme.sizeMedium, horizontal: AppTheme.sizeSmall),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -292,7 +319,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                         (isCount
                             ? HabitUiConstants.formatRecordCount(value.toInt())
                             : HabitUiConstants.formatScore(value)),
-                    style: AppTheme.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                    style: AppTheme.bodyMedium
+                        .copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   if (subtitle != null) ...[
@@ -311,6 +339,9 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
       ),
     );
   }
+
+  /// Score axis spans 0..1 and is labelled in 20% steps.
+  static const double _scoreAxisInterval = 0.2;
 
   Widget _buildScoreChart() {
     return Card(
@@ -339,7 +370,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                 ),
                 const SizedBox(width: AppTheme.sizeMedium),
                 Text(
-                  _translationService.translate(HabitTranslationKeys.scoreTrends),
+                  _translationService
+                      .translate(HabitTranslationKeys.scoreTrends),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -357,23 +389,34 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                       sideTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 50,
+                        interval: _scoreAxisInterval,
                         getTitlesWidget: (value, meta) {
                           return Text('${(value * 100).toInt()}%');
                         },
                       ),
                     ),
-                    rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        // One label per month index; without this fl_chart picks a
+                        // fractional interval and renders each month label twice.
+                        interval: 1,
                         getTitlesWidget: (value, meta) {
-                          if (value.toInt() >= 0 && value.toInt() < _habit!.statistics.monthlyScores.length) {
-                            final date = _habit!.statistics.monthlyScores[value.toInt()].key;
+                          if (value.toInt() >= 0 &&
+                              value.toInt() <
+                                  _habit!.statistics.monthlyScores.length) {
+                            final date = _habit!
+                                .statistics.monthlyScores[value.toInt()].key;
                             return Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
-                                _translationService.translate(SharedTranslationKeys.getShortMonthKey(date.month)),
+                                _translationService.translate(
+                                    SharedTranslationKeys.getShortMonthKey(
+                                        date.month)),
                                 style: AppTheme.bodySmall,
                               ),
                             );
@@ -389,7 +432,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                       spots: _habit!.statistics.monthlyScores
                           .asMap()
                           .entries
-                          .map((e) => FlSpot(e.key.toDouble(), double.parse(e.value.value.toStringAsFixed(2))))
+                          .map((e) => FlSpot(e.key.toDouble(),
+                              double.parse(e.value.value.toStringAsFixed(2))))
                           .toList(),
                       isCurved: true,
                       color: _themeService.primaryColor,
@@ -398,7 +442,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                       dotData: FlDotData(show: true),
                       belowBarData: BarAreaData(
                         show: true,
-                        color: _themeService.primaryColor.withAlpha((255 * 0.2).toInt()),
+                        color: _themeService.primaryColor
+                            .withAlpha((255 * 0.2).toInt()),
                       ),
                     ),
                   ],
@@ -440,7 +485,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                 ),
                 const SizedBox(width: AppTheme.sizeMedium),
                 Text(
-                  _translationService.translate(HabitTranslationKeys.topStreaks),
+                  _translationService
+                      .translate(HabitTranslationKeys.topStreaks),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -487,7 +533,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
               ),
               const SizedBox(height: AppTheme.sizeSmall),
               Text(
-                _translationService.translate(HabitTranslationKeys.noStreaksYet),
+                _translationService
+                    .translate(HabitTranslationKeys.noStreaksYet),
                 style: AppTheme.bodyMedium.copyWith(
                   color: _themeService.primaryColor.withValues(alpha: 0.7),
                 ),
@@ -528,28 +575,32 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                       children: [
                         TweenAnimationBuilder(
                           duration: const Duration(milliseconds: 500),
-                          tween: Tween<double>(begin: 0, end: streak.days / maxDays),
+                          tween: Tween<double>(
+                              begin: 0, end: streak.days / maxDays),
                           builder: (context, double value, child) {
                             return Container(
                               width: (constraints.maxWidth / 2) * value,
                               height: 24,
                               decoration: BoxDecoration(
                                 color: _themeService.primaryColor,
-                                borderRadius: BorderRadius.horizontal(left: Radius.circular(4)),
+                                borderRadius: BorderRadius.horizontal(
+                                    left: Radius.circular(4)),
                               ),
                             );
                           },
                         ),
                         TweenAnimationBuilder(
                           duration: const Duration(milliseconds: 500),
-                          tween: Tween<double>(begin: 0, end: streak.days / maxDays),
+                          tween: Tween<double>(
+                              begin: 0, end: streak.days / maxDays),
                           builder: (context, double value, child) {
                             return Container(
                               width: (constraints.maxWidth / 2) * value,
                               height: 24,
                               decoration: BoxDecoration(
                                 color: _themeService.primaryColor,
-                                borderRadius: BorderRadius.horizontal(right: Radius.circular(4)),
+                                borderRadius: BorderRadius.horizontal(
+                                    right: Radius.circular(4)),
                               ),
                             );
                           },
@@ -558,9 +609,13 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
                     ),
                     // Display text with appropriate unit
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0, vertical: 2.0),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surface
+                            .withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
@@ -584,7 +639,8 @@ class _HabitStatisticsViewState extends State<HabitStatisticsView> {
             width: 60,
             child: Text(
               DateTimeHelper.formatDate(streak.endDate, format: 'M/d'),
-              style: const TextStyle(fontSize: AppTheme.fontSizeSmall, color: Colors.grey),
+              style: const TextStyle(
+                  fontSize: AppTheme.fontSizeSmall, color: Colors.grey),
             ),
           ),
         ],

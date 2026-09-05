@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:acore/acore.dart' as acore;
@@ -12,6 +13,7 @@ class HabitTable extends Table {
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
+  IntColumn get type => intEnum<HabitType>().withDefault(const Constant(0))();
   TextColumn get name => text()();
   TextColumn get description => text()();
   IntColumn get estimatedTime => integer().nullable()();
@@ -54,6 +56,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       createdDate: entity.createdDate,
       modifiedDate: Value(entity.modifiedDate),
       deletedDate: Value(entity.deletedDate),
+      type: Value(entity.type),
       name: entity.name,
       description: entity.description,
       estimatedTime: Value(entity.estimatedTime),
@@ -203,7 +206,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     if (customOrder?.isNotEmpty == true) {
       final orderClauses = customOrder!.map((order) {
         if (order.field == "actual_time") {
-          return "COALESCE(TOTAL(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+          return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else if (order.field == "name") {
           return "h.${order.field} IS NULL, h.${order.field} COLLATE NOCASE ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else if (order.field.trim().startsWith('(')) {
@@ -221,7 +224,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
 
     final query = database.customSelect(
       """
-      SELECT h.* ${hasActualTimeSort ? ', COALESCE(TOTAL(htr.duration), 0) as total_duration' : ''}
+      SELECT h.* ${hasActualTimeSort ? ', COALESCE(SUM(htr.duration), 0) as total_duration' : ''}
       FROM habit_table h
       $joinClause
       ${whereClause ?? ''}
@@ -240,31 +243,34 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     final rows = await query.get();
 
     final items = await Future.wait(rows.map((row) async {
-      final habitOrFuture = table.map(row.data);
-      // Ensure we have the Habit object, whether mapped sync or async
-      final habit = habitOrFuture is Future<Habit> ? await habitOrFuture : habitOrFuture;
-      final totalDurationValue = hasActualTimeSort ? row.data['total_duration'] : 0;
-      int totalDuration = 0;
-      if (totalDurationValue is num) {
-        totalDuration = totalDurationValue.round();
-      }
+      final id = row.read<String>('id');
+      final type = HabitType.fromId(row.read<int>('type'));
+      final name = row.read<String>('name');
+      final estimatedTime = row.readNullable<int>('estimated_time');
+      final hasReminder = row.read<bool>('has_reminder');
+      final reminderTime = row.readNullable<String>('reminder_time');
+      final reminderDays = row.read<String>('reminder_days');
+      final totalDuration = hasActualTimeSort ? row.read<int>('total_duration') : 0;
 
       return HabitListItem(
-        id: habit.id,
-        name: habit.name,
-        estimatedTime: habit.estimatedTime,
+        id: id,
+        type: type,
+        name: name,
+        estimatedTime: estimatedTime,
         actualTime: totalDuration > 0 ? (totalDuration / 60).round() : null,
-        hasReminder: habit.hasReminder,
-        reminderTime: habit.reminderTime,
-        reminderDays: habit.getReminderDaysAsList(),
-        archivedDate: habit.archivedDate,
-        createdDate: habit.createdDate,
-        modifiedDate: habit.modifiedDate,
-        order: habit.order,
-        hasGoal: habit.hasGoal,
-        dailyTarget: habit.dailyTarget,
-        targetFrequency: habit.targetFrequency,
-        periodDays: habit.periodDays,
+        hasReminder: hasReminder,
+        reminderTime: reminderTime,
+        reminderDays: reminderDays.isNotEmpty
+            ? reminderDays.split(',').where((s) => s.isNotEmpty).map((s) => int.parse(s.trim())).toList()
+            : <int>[],
+        archivedDate: row.readNullable<DateTime>('archived_date'),
+        createdDate: row.read<DateTime>('created_date'),
+        modifiedDate: row.readNullable<DateTime>('modified_date'),
+        order: row.read<String>('order'),
+        hasGoal: row.read<bool>('has_goal'),
+        dailyTarget: row.readNullable<int>('daily_target'),
+        targetFrequency: row.read<int>('target_frequency'),
+        periodDays: row.read<int>('period_days'),
         tags: [], // Tags will be populated separately
       );
     }));

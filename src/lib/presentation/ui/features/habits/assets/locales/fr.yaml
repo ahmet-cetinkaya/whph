@@ -393,11 +393,34 @@ habits:
     open_details_hint: Ouvrir les détails de l''habitude
     complete_habit_hint: Compléter l''habitude
     completion_status_hint: Statut de completion de l''habitude
+    habit_type_hint: Type d'habitude
+    avoid_habit_hint: Marquer l'habitude comme évitée
+    perform_habit_hint: Marquer l'habitude comme réalisée
+    undo_hint: Annuler l'enregistrement du jour
+    checkbox_avoided_hint: Coché signifie que vous avez évité cette habitude aujourd'hui
+    checkbox_performed_hint: Coché signifie que vous avez réalisé cette habitude aujourd'hui
+    calendar_day_hint: Statut de l'enregistrement du jour
   actions:
     mark_complete: Marquer comme terminé
     mark_not_done: Marquer comme non fait
     clear_status: Effacer le statut
+    mark_avoided: Marquer comme évitée
+    mark_performed: Marquer comme réalisée
+    undo: Annuler
   status:
     complete: Terminé
     not_done: Non fait
     skipped: Passé
+    avoided: Évitée
+    performed: Réalisée
+  types:
+    label: Type d'habitude
+    good: Bonne habitude
+    bad: Mauvaise habitude
+    good_description: Une habitude que vous souhaitez construire et répéter.
+    bad_description: Une habitude que vous souhaitez abandonner et éviter.
+    help_title: Bonnes et mauvaises habitudes
+    help_content: >-
+      Pour les bonnes habitudes, une journée est réussie lorsque vous les réalisez. Les
+      mauvaises habitudes fonctionnent à l'inverse; une journée est réussie lorsque vous les
+      évitez, et les marquer comme réalisées enregistre un échec.

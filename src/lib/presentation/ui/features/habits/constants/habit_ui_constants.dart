@@ -8,6 +8,12 @@ class HabitUiConstants {
   static const IconData statisticsIcon = Icons.analytics;
   static const IconData recordIcon = Icons.link;
   static const IconData noRecordIcon = Icons.close;
+
+  /// A bad-habit day that was successfully avoided.
+  static const IconData badSuccessIcon = Icons.shield_outlined;
+
+  /// A day outside the habit's active window, so no judgement applies.
+  static const IconData notApplicableIcon = Icons.remove;
   static const IconData previousIcon = Icons.arrow_back;
   static const IconData nextIcon = Icons.arrow_forward;
   static const IconData lockIcon = Icons.lock;
@@ -18,6 +24,7 @@ class HabitUiConstants {
   static const Color completedColor = Colors.green;
   static const Color inCompletedColor = Colors.red;
   static Color get skippedColor => Colors.grey.withValues(alpha: 0.5);
+  static Color get notApplicableColor => Colors.grey.withValues(alpha: 0.35);
   static const Color estimatedTimeColor = Colors.blue;
 
   // Dimensions

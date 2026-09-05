@@ -10,6 +10,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_remi
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/infrastructure/shared/features/notification/abstractions/i_notification_payload_handler.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
@@ -367,11 +368,18 @@ class ReminderService {
             days: reminderDaysList,
             payload: _notificationPayloadHandler.createNavigationPayload(
               route: HabitsPage.route,
-              arguments: {'habitId': habit.id},
+              arguments: {
+                'habitId': habit.id,
+                'habitType': habit.type.name,
+              },
             ),
           );
-        } catch (e) {
-          // Silently skip errors during habit reminder scheduling
+        } catch (error, stackTrace) {
+          Logger.error(
+            'ReminderService: Failed to schedule habit reminder: ${habit.id}',
+            error: error,
+            stackTrace: stackTrace,
+          );
         }
       }
     }
@@ -441,6 +449,8 @@ class ReminderService {
   }
 
   Future<bool> _isHabitDailyTargetMet(Habit habit) async {
+    if (habit.type == HabitType.bad) return false;
+
     final now = DateTime.now();
     final startOfDay = DateTime(now.year, now.month, now.day);
     final endOfDay = startOfDay.add(const Duration(days: 1)).subtract(const Duration(microseconds: 1));

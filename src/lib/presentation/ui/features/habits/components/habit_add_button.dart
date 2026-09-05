@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/core/application/features/habits/commands/save_habit_command.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -32,6 +33,9 @@ class HabitAddButton extends StatefulWidget {
   /// Whether to initialize the habit with an archive status
   final bool? initialArchived;
 
+  /// The habit type to create; good habits are the default.
+  final HabitType initialType;
+
   const HabitAddButton({
     super.key,
     this.buttonColor,
@@ -41,6 +45,7 @@ class HabitAddButton extends StatefulWidget {
     this.initialName,
     this.initialDescription,
     this.initialArchived,
+    this.initialType = HabitType.good,
   });
 
   @override
@@ -61,6 +66,7 @@ class _HabitAddButtonState extends State<HabitAddButton> {
           name: widget.initialName ?? "",
           description: widget.initialDescription ?? "",
           archivedDate: widget.initialArchived == true ? DateTime.now() : null,
+          type: widget.initialType,
         );
         return await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
       },

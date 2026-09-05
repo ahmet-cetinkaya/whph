@@ -6,8 +6,11 @@ import 'package:acore/acore.dart' as acore;
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
+import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_ui_constants.dart';
+import 'package:whph/presentation/ui/features/habits/utils/habit_day_presenter.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 
 class HabitCheckbox extends StatelessWidget {
   final HabitListItem habit;
@@ -30,6 +33,14 @@ class HabitCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
+    final isMobileCalendar = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
+    final double buttonSize = isMobileCalendar ? 36.0 : HabitUiConstants.calendarDaySize;
+    final double iconSize = AppTheme.iconSizeMedium;
+
+    if (habit.type == HabitType.bad) {
+      return _buildBadHabitCheckbox(today, buttonSize, iconSize);
+    }
+
     final todayRecord = _getRecordForDate(today);
     final status = todayRecord?.status ?? HabitRecordStatus.skipped;
     final isSkipped = status == HabitRecordStatus.skipped && _isSkipped(today);
@@ -37,12 +48,6 @@ class HabitCheckbox extends StatelessWidget {
     final todayCount = _countRecordsForDate(today);
     final hasCustomGoals = habit.hasGoal;
     final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
-    final isMobileCalendar = AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium);
-
-    // Increase touch target sizes to match TaskCard (approx 36-40px)
-    // For mobile calendar view, we want larger buttons despite being in compact layout
-    final double buttonSize = isMobileCalendar ? 36.0 : HabitUiConstants.calendarDaySize;
-    final double iconSize = AppTheme.iconSizeMedium;
 
     // For habits with custom goals and dailyTarget > 1, show completion badge
     if (hasCustomGoals && dailyTarget > 1) {
@@ -93,15 +98,62 @@ class HabitCheckbox extends StatelessWidget {
     }
 
     // For habits without custom goals, show traditional icon
+    return Semantics(
+      label: HabitTranslationKeys.completeHabitHint,
+      button: true,
+      child: _buildTapTarget(
+        size: buttonSize,
+        icon: icon,
+        iconSize: iconSize,
+        color: color,
+        isEnabled: !isDisabled,
+      ),
+    );
+  }
+
+  /// Bad habits are binary: an applicable day with no recorded failure is a
+  /// success, so the global three-state visual cycle never applies to them.
+  Widget _buildBadHabitCheckbox(DateTime today, double buttonSize, double iconSize) {
+    final presenter = HabitDayPresenter(
+      habitId: habit.id,
+      habitType: habit.type,
+      createdDate: habit.createdDate,
+      archivedDate: archivedDate,
+      records: habitRecords,
+      now: today,
+    );
+    final visual = presenter.visualFor(today);
+
+    return Semantics(
+      label: visual.statusKey,
+      hint: visual.actionKey,
+      button: visual.isInteractive,
+      child: _buildTapTarget(
+        size: buttonSize,
+        icon: visual.icon,
+        iconSize: iconSize,
+        color: visual.color,
+        isEnabled: visual.isInteractive,
+      ),
+    );
+  }
+
+  Widget _buildTapTarget({
+    required double size,
+    required IconData icon,
+    required double iconSize,
+    required Color color,
+    required bool isEnabled,
+  }) {
     return SizedBox(
-      width: buttonSize,
-      height: buttonSize,
+      width: size,
+      height: size,
       child: Material(
         color: Colors.transparent,
         shape: const CircleBorder(),
         clipBehavior: Clip.hardEdge,
         child: InkWell(
-          onTap: isDisabled ? null : onTap,
+          onTap: isEnabled ? onTap : null,
           child: Center(
             child: Icon(
               icon,

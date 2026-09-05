@@ -315,11 +315,32 @@ habits:
     open_details_hint: 습관 세부정보 열기
     complete_habit_hint: 습관 완료
     completion_status_hint: 습관 완료 상태
+    habit_type_hint: 습관 유형
+    avoid_habit_hint: 습관을 피함으로 표시
+    perform_habit_hint: 습관을 실행함으로 표시
+    undo_hint: 오늘 기록 실행 취소
+    checkbox_avoided_hint: 체크는 오늘 이 습관을 피했음을 의미합니다
+    checkbox_performed_hint: 체크는 오늘 이 습관을 실행했음을 의미합니다
+    calendar_day_hint: 일별 기록 상태
   actions:
     mark_complete: 완료로 표시
     mark_not_done: 미완료로 표시
     clear_status: 상태 지우기
+    mark_avoided: 피함으로 표시
+    mark_performed: 실행함으로 표시
+    undo: 실행 취소
   status:
     complete: 완료
     not_done: 미완료
     skipped: 건너뜀
+    avoided: 피함
+    performed: 실행함
+  types:
+    label: 습관 유형
+    good: 좋은 습관
+    bad: 나쁜 습관
+    good_description: 만들고 반복하고 싶은 습관입니다.
+    bad_description: 끊고 피하고 싶은 습관입니다.
+    help_title: 좋은 습관과 나쁜 습관
+    help_content: >-
+      좋은 습관은 실행한 날이 성공으로 기록됩니다. 나쁜 습관은 그 반대로, 피한 날이 성공이 되며 실행함으로 표시하면 실패로 기록됩니다.
