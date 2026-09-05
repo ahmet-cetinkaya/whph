@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/habits/queries/get_habit_query.da
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_record_command.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 
 /// Helper class for toggling task and habit completion states in the foreground.
 class WidgetToggleHelper {
@@ -14,7 +15,7 @@ class WidgetToggleHelper {
   WidgetToggleHelper({required Mediator mediator}) : _mediator = mediator;
 
   /// Toggles the completion state of a task.
-  Future<void> toggleTask(String taskId) async {
+  Future<bool> toggleTask(String taskId) async {
     try {
       final taskResult = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
         GetTaskQuery(id: taskId),
@@ -47,6 +48,7 @@ class WidgetToggleHelper {
           recurrenceConfiguration: taskResult.recurrenceConfiguration,
         ),
       );
+      return newCompletedAt != null;
     } catch (e, stackTrace) {
       Logger.error('Error toggling task $taskId: $e');
       Logger.debug('Stack trace: $stackTrace');
@@ -55,7 +57,7 @@ class WidgetToggleHelper {
   }
 
   /// Toggles the completion state of a habit with smart behavior for multiple occurrences.
-  Future<void> toggleHabit(String habitId) async {
+  Future<bool> toggleHabit(String habitId) async {
     try {
       final today = DateTime.now();
       final startOfDay = DateTime(today.year, today.month, today.day);
@@ -64,6 +66,14 @@ class WidgetToggleHelper {
       final habit = await _mediator.send<GetHabitQuery, GetHabitQueryResponse>(
         GetHabitQuery(id: habitId),
       );
+
+      if (habit.type == HabitType.bad) {
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
+          ToggleHabitCompletionCommand(habitId: habitId, date: today),
+        );
+        return false;
+      }
+
       final hasCustomGoals = habit.hasGoal;
       final dailyTarget = hasCustomGoals ? (habit.dailyTarget ?? 1) : 1;
 
@@ -84,12 +94,14 @@ class WidgetToggleHelper {
           await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(
             ToggleHabitCompletionCommand(habitId: habitId, date: today, useIncrementalBehavior: true),
           );
+          return true;
         } else {
           for (final record in recordsResult.items) {
             await _mediator.send<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse>(
               DeleteHabitRecordCommand(id: record.id),
             );
           }
+          return false;
         }
       } else {
         if (todayCount > 0) {
@@ -103,6 +115,7 @@ class WidgetToggleHelper {
             ToggleHabitCompletionCommand(habitId: habitId, date: today, useIncrementalBehavior: true),
           );
         }
+        return todayCount == 0;
       }
     } catch (e, stackTrace) {
       Logger.error('Error toggling habit $habitId: $e');

@@ -390,11 +390,34 @@ habits:
     open_details_hint: Abrir detalhes do hábito
     complete_habit_hint: Completar hábito
     completion_status_hint: Status de completion do hábito
+    habit_type_hint: Tipo de hábito
+    avoid_habit_hint: Marcar hábito como evitado
+    perform_habit_hint: Marcar hábito como realizado
+    undo_hint: Desfazer o registo de hoje
+    checkbox_avoided_hint: Marcado significa que evitou este hábito hoje
+    checkbox_performed_hint: Marcado significa que realizou este hábito hoje
+    calendar_day_hint: Estado do registo do dia
   actions:
     mark_complete: Marcar como concluído
     mark_not_done: Marcar como não feito
     clear_status: Limpar estado
+    mark_avoided: Marcar como Evitado
+    mark_performed: Marcar como Realizado
+    undo: Desfazer
   status:
     complete: Concluído
     not_done: Não feito
     skipped: Pulado
+    avoided: Evitado
+    performed: Realizado
+  types:
+    label: Tipo de Hábito
+    good: Bom Hábito
+    bad: Mau Hábito
+    good_description: Um hábito que quer construir e repetir.
+    bad_description: Um hábito que quer abandonar e evitar.
+    help_title: Bons e maus hábitos
+    help_content: >-
+      Nos bons hábitos, um dia conta como bem-sucedido quando os realiza. Os maus hábitos
+      funcionam ao contrário; um dia conta como bem-sucedido quando os evita, e marcá-lo como
+      realizado regista uma falha.

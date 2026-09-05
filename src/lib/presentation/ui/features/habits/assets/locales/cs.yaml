@@ -379,11 +379,34 @@ habits:
     open_details_hint: Otevřít podrobnosti zvyku
     complete_habit_hint: Dokončit zvyk
     completion_status_hint: Stav dokončení zvyku
+    habit_type_hint: Typ zvyku
+    avoid_habit_hint: Označit zvyk jako vyhnutý
+    perform_habit_hint: Označit zvyk jako vykonaný
+    undo_hint: Vrátit dnešní záznam
+    checkbox_avoided_hint: Zaškrtnuto znamená, že jste se dnes tomuto zvyku vyhnuli
+    checkbox_performed_hint: Zaškrtnuto znamená, že jste dnes tento zvyk vykonali
+    calendar_day_hint: Stav denního záznamu
   actions:
     mark_complete: Označit jako hotové
     mark_not_done: Označit jako nehotové
     clear_status: Vymazat stav
+    mark_avoided: Označit jako Vyhnuto
+    mark_performed: Označit jako Vykonáno
+    undo: Zpět
   status:
     complete: Hotovo
     not_done: Nehotovo
     skipped: Přeskočeno
+    avoided: Vyhnuto
+    performed: Vykonáno
+  types:
+    label: Typ Zvyku
+    good: Dobrý Zvyk
+    bad: Špatný Zvyk
+    good_description: Zvyk, který chcete budovat a opakovat.
+    bad_description: Zvyk, kterého se chcete zbavit a vyhnout se mu.
+    help_title: Dobré a špatné zvyky
+    help_content: >-
+      U dobrých zvyků se den počítá jako úspěšný, když je vykonáte. Špatné zvyky fungují
+      opačně; den se počítá jako úspěšný, když se jim vyhnete, a označení jako vykonaný
+      zaznamená neúspěch.

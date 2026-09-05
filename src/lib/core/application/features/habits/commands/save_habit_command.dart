@@ -5,6 +5,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/core/domain/features/habits/habit_constants.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 
 class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
   final String? id;
@@ -19,6 +20,7 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
   final int? targetFrequency;
   final int? periodDays;
   final int? dailyTarget;
+  final HabitType type;
 
   SaveHabitCommand({
     this.id,
@@ -33,6 +35,7 @@ class SaveHabitCommand implements IRequest<SaveHabitCommandResponse> {
     this.targetFrequency,
     this.periodDays,
     this.dailyTarget,
+    this.type = HabitType.good,
   }) : archivedDate = archivedDate != null ? DateTimeHelper.toUtcDateTime(archivedDate) : null;
 }
 
@@ -67,6 +70,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       final reminderDaysFromDb = await _habitRepository.getReminderDaysById(request.id!);
       habit.reminderDays = reminderDaysFromDb;
 
+      habit.type = request.type;
       habit.name = request.name;
       habit.description = request.description;
       habit.estimatedTime = request.estimatedTime != null && request.estimatedTime! >= 0 ? request.estimatedTime : null;
@@ -84,17 +88,16 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       }
 
       // Update goal settings if provided
-      if (request.hasGoal != null) {
-        habit.hasGoal = request.hasGoal!;
-      }
-      if (request.targetFrequency != null) {
-        habit.targetFrequency = request.targetFrequency!;
-      }
-      if (request.periodDays != null) {
-        habit.periodDays = request.periodDays!;
-      }
-      if (request.dailyTarget != null) {
-        habit.dailyTarget = request.dailyTarget!;
+      if (request.type == HabitType.bad) {
+        habit.hasGoal = false;
+        habit.targetFrequency = 1;
+        habit.periodDays = 1;
+        habit.dailyTarget = 1;
+      } else {
+        if (request.hasGoal != null) habit.hasGoal = request.hasGoal!;
+        if (request.targetFrequency != null) habit.targetFrequency = request.targetFrequency!;
+        if (request.periodDays != null) habit.periodDays = request.periodDays!;
+        if (request.dailyTarget != null) habit.dailyTarget = request.dailyTarget!;
       }
 
       await _habitRepository.update(habit);
@@ -114,6 +117,7 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       habit = Habit(
         id: KeyHelper.generateStringId(),
         createdDate: DateTime.now().toUtc(),
+        type: request.type,
         name: request.name,
         description: request.description,
         estimatedTime: request.estimatedTime != null && request.estimatedTime! >= 0
@@ -121,10 +125,10 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
             : HabitConstants.defaultEstimatedTime,
         hasReminder: request.hasReminder ?? false,
         reminderTime: request.reminderTime,
-        hasGoal: request.hasGoal ?? false,
-        targetFrequency: request.targetFrequency ?? 1,
-        periodDays: request.periodDays ?? 1,
-        dailyTarget: request.dailyTarget ?? 1,
+        hasGoal: request.type == HabitType.bad ? false : request.hasGoal ?? false,
+        targetFrequency: request.type == HabitType.bad ? 1 : request.targetFrequency ?? 1,
+        periodDays: request.type == HabitType.bad ? 1 : request.periodDays ?? 1,
+        dailyTarget: request.type == HabitType.bad ? 1 : request.dailyTarget,
         archivedDate: request.archivedDate,
         order: newOrder,
       );

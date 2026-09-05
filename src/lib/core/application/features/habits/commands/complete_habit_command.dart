@@ -2,11 +2,13 @@ import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
+import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 class CompleteHabitCommand implements IRequest<CompleteHabitCommandResponse> {
@@ -25,20 +27,23 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
   final IHabitRepository _habitRepository;
   final IHabitRecordRepository _habitRecordRepository;
   final HabitRecordOperationsService _operationsService;
+  final HabitDayRangeResolver _dayRangeResolver;
 
   CompleteHabitCommandHandler({
     required IHabitRepository habitRepository,
     required IHabitRecordRepository habitRecordRepository,
     required HabitRecordOperationsService operationsService,
+    HabitDayRangeResolver dayRangeResolver = HabitDayStateResolver.utcRangeFor,
   })  : _habitRepository = habitRepository,
         _habitRecordRepository = habitRecordRepository,
-        _operationsService = operationsService;
+        _operationsService = operationsService,
+        _dayRangeResolver = dayRangeResolver;
 
   @override
   Future<CompleteHabitCommandResponse> call(CompleteHabitCommand request) async {
-    final targetDate = DateTimeHelper.toLocalDateTime(request.date);
-    final startOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day).toUtc();
-    final endOfDay = startOfDay.add(const Duration(days: 1)).subtract(const Duration(microseconds: 1));
+    final dayRange = _dayRangeResolver(request.date);
+    final startOfDay = dayRange.start;
+    final endOfDay = dayRange.end;
 
     await AppDatabase.instance().transaction(() async {
       final habit = await _habitRepository.getById(request.habitId);
@@ -57,6 +62,15 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
         0,
         1000,
       );
+
+      if (habit.type == HabitType.bad) {
+        await _operationsService.ensureBadHabitMarker(
+          request.habitId,
+          request.date,
+          habitRecords.items,
+        );
+        return;
+      }
 
       final dayRecords = habitRecords.items;
       final completeRecords = dayRecords.where((record) => record.status == HabitRecordStatus.complete).toList();

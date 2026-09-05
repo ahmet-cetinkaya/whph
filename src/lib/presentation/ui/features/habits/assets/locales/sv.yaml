@@ -249,11 +249,34 @@ habits:
     open_details_hint: Öppna vana detaljer
     complete_habit_hint: Slutför vana
     completion_status_hint: Vanans completion status
+    habit_type_hint: Vanetyp
+    avoid_habit_hint: Markera vana som undviken
+    perform_habit_hint: Markera vana som utförd
+    undo_hint: Ångra dagens registrering
+    checkbox_avoided_hint: Markerat betyder att du undvek denna vana idag
+    checkbox_performed_hint: Markerat betyder att du utförde denna vana idag
+    calendar_day_hint: Status för dagens registrering
   actions:
     mark_complete: Markera som slutförd
     mark_not_done: Markera som ej klar
     clear_status: Rensa status
+    mark_avoided: Markera som Undviken
+    mark_performed: Markera som Utförd
+    undo: Ångra
   status:
     complete: Slutförd
     not_done: Ej klar
     skipped: Överhoppad
+    avoided: Undviken
+    performed: Utförd
+  types:
+    label: Vanetyp
+    good: God Vana
+    bad: Dålig Vana
+    good_description: En vana du vill bygga upp och upprepa.
+    bad_description: En vana du vill bryta och undvika.
+    help_title: Goda och dåliga vanor
+    help_content: >-
+      För goda vanor räknas en dag som lyckad när du utför dem. Dåliga vanor fungerar tvärtom;
+      en dag räknas som lyckad när du undviker dem, och att markera en som utförd registrerar
+      ett misslyckande.

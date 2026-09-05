@@ -9,6 +9,8 @@ import 'package:whph/core/application/shared/utils/validation_utils.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
 import 'package:whph/core/application/features/habits/utils/habit_grouping_helper.dart';
 import 'package:whph/core/application/features/habits/models/habit_list_item.dart';
+import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 export 'package:whph/core/application/features/habits/models/habit_list_item.dart';
 
 class GetListHabitsQuery implements IRequest<GetListHabitsQueryResponse> {
@@ -151,25 +153,83 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
     if (request.excludeCompleted) {
       final now = DateTime.now();
       final startDate = DateTime(now.year, now.month, now.day).toUtc();
-      final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59).toUtc();
-      conditions.add(
-          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.occurred_at > ? AND habit_record_table.occurred_at < ? AND habit_record_table.deleted_date IS NULL) < COALESCE(habit_table.daily_target, 1)");
-      variables.add(startDate);
-      variables.add(endDate);
+      final endDate = DateTime(now.year, now.month, now.day, 23, 59, 59, 999).toUtc();
+      conditions.add('''(
+        (habit_table.type != ? AND
+          (SELECT COUNT(*) FROM habit_record_table
+           WHERE habit_record_table.habit_id = habit_table.id
+             AND habit_record_table.occurred_at >= ?
+             AND habit_record_table.occurred_at <= ?
+             AND habit_record_table.deleted_date IS NULL) < COALESCE(habit_table.daily_target, 1))
+        OR
+        (habit_table.type = ? AND (
+          habit_table.created_date > ?
+          OR habit_table.archived_date < ?
+          OR EXISTS (
+            SELECT 1 FROM habit_record_table
+            WHERE habit_record_table.habit_id = habit_table.id
+              AND habit_record_table.occurred_at >= ?
+              AND habit_record_table.occurred_at <= ?
+              AND habit_record_table.status = ?
+              AND habit_record_table.deleted_date IS NULL
+          )
+        ))
+      )''');
+      variables.addAll([
+        HabitType.bad.id,
+        startDate,
+        endDate,
+        HabitType.bad.id,
+        endDate,
+        startDate,
+        startDate,
+        endDate,
+        HabitRecordStatus.notDone.index,
+      ]);
     }
 
-    // Exclude habits completed for a specific date (only daily target check in SQL)
     if (request.excludeCompletedForDate != null) {
-      final startDate = DateTime(request.excludeCompletedForDate!.year, request.excludeCompletedForDate!.month,
-              request.excludeCompletedForDate!.day)
-          .toUtc();
-      final endDate = DateTime(request.excludeCompletedForDate!.year, request.excludeCompletedForDate!.month,
-              request.excludeCompletedForDate!.day, 23, 59, 59, 999)
-          .toUtc();
-      conditions.add(
-          "(SELECT COUNT(*) FROM habit_record_table WHERE habit_record_table.habit_id = habit_table.id AND habit_record_table.occurred_at >= ? AND habit_record_table.occurred_at <= ? AND habit_record_table.deleted_date IS NULL) < COALESCE(habit_table.daily_target, 1)");
-      variables.add(startDate);
-      variables.add(endDate);
+      final requestedDate = request.excludeCompletedForDate!;
+      final startDate = DateTime(requestedDate.year, requestedDate.month, requestedDate.day).toUtc();
+      final endDate = DateTime(requestedDate.year, requestedDate.month, requestedDate.day, 23, 59, 59, 999).toUtc();
+      final now = DateTime.now();
+      final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999).toUtc();
+      conditions.add('''(
+        (habit_table.type != ? AND (
+          habit_table.has_goal = 1
+          OR (SELECT COUNT(*) FROM habit_record_table
+              WHERE habit_record_table.habit_id = habit_table.id
+                AND habit_record_table.occurred_at >= ?
+                AND habit_record_table.occurred_at <= ?
+                AND habit_record_table.deleted_date IS NULL) < COALESCE(habit_table.daily_target, 1)))
+        OR
+        (habit_table.type = ? AND (
+          habit_table.created_date > ?
+          OR habit_table.archived_date < ?
+          OR ? > ?
+          OR EXISTS (
+            SELECT 1 FROM habit_record_table
+            WHERE habit_record_table.habit_id = habit_table.id
+              AND habit_record_table.occurred_at >= ?
+              AND habit_record_table.occurred_at <= ?
+              AND habit_record_table.status = ?
+              AND habit_record_table.deleted_date IS NULL
+          )
+        ))
+      )''');
+      variables.addAll([
+        HabitType.bad.id,
+        startDate,
+        endDate,
+        HabitType.bad.id,
+        endDate,
+        startDate,
+        startDate,
+        todayEnd,
+        startDate,
+        endDate,
+        HabitRecordStatus.notDone.index,
+      ]);
     }
 
     if (request.filterNoTags) {
@@ -297,94 +357,22 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
   }
 
   /// Filters habits with period-aware completion logic
-  Future<List<HabitListItem>> _filterHabitsWithPeriodAwareness(List<HabitListItem> habits, DateTime targetDate) async {
-    final List<HabitListItem> filteredHabits = [];
-    final today = DateTime(targetDate.year, targetDate.month, targetDate.day);
-    final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
+  Future<List<HabitListItem>> _filterHabitsWithPeriodAwareness(List<HabitListItem> habits, DateTime date) async {
+    final filteredHabits = <HabitListItem>[];
 
-    // Identify period-based habits and their date ranges
-    final periodHabits = habits.where((habit) => habit.hasGoal && habit.periodDays > 1).toList();
-    final Map<String, dynamic> habitPeriodData = {};
-
-    // Calculate the earliest period start date to fetch all needed records in one query
-    DateTime? earliestPeriodStart;
-
-    for (final habit in periodHabits) {
-      final periodStartDate = today.subtract(Duration(days: habit.periodDays - 1));
-      final periodStartOfDay = DateTime(periodStartDate.year, periodStartDate.month, periodStartDate.day);
-
-      habitPeriodData[habit.id] = {
-        'periodStartOfDay': periodStartOfDay,
-        'dailyTarget': habit.dailyTarget ?? 1,
-        'targetFrequency': habit.targetFrequency,
-      };
-
-      if (earliestPeriodStart == null || periodStartOfDay.isBefore(earliestPeriodStart)) {
-        earliestPeriodStart = periodStartOfDay;
-      }
-    }
-
-    // Batch fetch all period records for all period-based habits in a single query
-    Map<String, List<dynamic>> allHabitRecords = {};
-    if (periodHabits.isNotEmpty && earliestPeriodStart != null) {
-      final habitIds = periodHabits.map((habit) => habit.id).toList();
-
-      // Use a custom where filter to get all records for all habits in the period range
-      final whereFilter = CustomWhereFilter(
-        "habit_id IN (${habitIds.map((_) => '?').join(',')}) AND occurred_at >= ? AND occurred_at <= ? AND deleted_date IS NULL",
-        [...habitIds, earliestPeriodStart, endOfDay],
-      );
-
-      final allRecords = await _habitRecordRepository.getList(
-        0,
-        habitIds.length * 100, // Sufficient for multiple periods
-        customWhereFilter: whereFilter,
-      );
-
-      // Group records by habit ID
-      for (final record in allRecords.items) {
-        allHabitRecords.putIfAbsent(record.habitId, () => []).add(record);
-      }
-    }
-
-    // Process each habit using pre-fetched data
     for (final habit in habits) {
-      bool shouldInclude = true;
-
-      if (habit.hasGoal && habit.periodDays > 1) {
-        // For period-based goals, check if period goal is already met using pre-fetched records
-        final periodData = habitPeriodData[habit.id];
-        final periodStartOfDay = periodData['periodStartOfDay'] as DateTime;
-        final dailyTarget = periodData['dailyTarget'] as int;
-        final targetFrequency = periodData['targetFrequency'] as int;
-
-        final habitRecords = allHabitRecords[habit.id] ?? [];
-
-        // Filter records to the specific period for this habit and group by date
-        final recordsByDate = <DateTime, List>{};
-        for (final record in habitRecords) {
-          final recordDate = DateTime(record.occurredAt.year, record.occurredAt.month, record.occurredAt.day);
-          if (!recordDate.isBefore(periodStartOfDay) && !recordDate.isAfter(today)) {
-            recordsByDate.putIfAbsent(recordDate, () => []).add(record);
-          }
-        }
-
-        // Count days that meet the daily target
-        int completedDaysInPeriod = 0;
-        for (final entry in recordsByDate.entries) {
-          if (entry.value.length >= dailyTarget) {
-            completedDaysInPeriod++;
-          }
-        }
-
-        // If period goal is met, exclude this habit
-        if (completedDaysInPeriod >= targetFrequency) {
-          shouldInclude = false;
-        }
+      if (habit.type == HabitType.bad || !habit.hasGoal) {
+        filteredHabits.add(habit);
+        continue;
       }
-      // For daily habits, the SQL filtering already handled them correctly
 
-      if (shouldInclude) {
+      final periodStart = date.subtract(Duration(days: habit.periodDays - 1));
+      final records = await _habitRecordRepository.getListByHabitIdAndRangeDate(
+          habit.id, periodStart, date, 0, habit.targetFrequency);
+
+      final completedCount = records.items.where((record) => record.status == HabitRecordStatus.complete).length;
+
+      if (completedCount < habit.targetFrequency) {
         filteredHabits.add(habit);
       }
     }

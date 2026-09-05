@@ -47,6 +47,28 @@ void main() {
   });
 
   group('specific migration scenarios', () {
+    test('v36 to v37 defaults legacy habits to good', () async {
+      // Given
+      final schema36 = await verifier.schemaAt(36);
+      final db = TestAppDatabase(schema36.newConnection(), 37);
+      addTearDown(db.close);
+      await db.customStatement(
+        'INSERT INTO habit_table (id, created_date, name, description) '
+        'VALUES (?, ?, ?, ?)',
+        ['legacy-habit', 1000, 'Legacy habit', 'Created before habit types'],
+      );
+
+      // When
+      await verifier.migrateAndValidate(db, 37);
+
+      // Then
+      final migratedHabit = await db.customSelect(
+        'SELECT type FROM habit_table WHERE id = ?',
+        variables: [Variable.withString('legacy-habit')],
+      ).getSingle();
+      expect(migratedHabit.read<int>('type'), 0);
+    });
+
     test('migration from v29 to v30 sets default status to 0 (Complete)', () async {
       final schema29 = await verifier.schemaAt(29);
       // Use TestAppDatabase to enforce schema version 30 during this test

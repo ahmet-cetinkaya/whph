@@ -2,10 +2,12 @@
 
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/habit_record_operations_service.dart';
+import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:acore/acore.dart';
 
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
@@ -32,16 +34,19 @@ class ToggleHabitCompletionCommandHandler
   final IHabitRecordRepository _habitRecordRepository;
   final ISettingRepository _settingsRepository;
   final HabitRecordOperationsService _operationsService;
+  final HabitDayRangeResolver _dayRangeResolver;
 
   ToggleHabitCompletionCommandHandler({
     required IHabitRepository habitRepository,
     required IHabitRecordRepository habitRecordRepository,
     required ISettingRepository settingsRepository,
     required HabitRecordOperationsService operationsService,
+    HabitDayRangeResolver dayRangeResolver = HabitDayStateResolver.utcRangeFor,
   })  : _habitRepository = habitRepository,
         _habitRecordRepository = habitRecordRepository,
         _settingsRepository = settingsRepository,
-        _operationsService = operationsService;
+        _operationsService = operationsService,
+        _dayRangeResolver = dayRangeResolver;
 
   @override
   Future<ToggleHabitCompletionCommandResponse> call(ToggleHabitCompletionCommand request) async {
@@ -54,9 +59,9 @@ class ToggleHabitCompletionCommandHandler
       );
     }
 
-    final targetDate = DateTimeHelper.toLocalDateTime(request.date);
-    final startOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day).toUtc();
-    final endOfDay = startOfDay.add(const Duration(days: 1)).subtract(const Duration(microseconds: 1));
+    final dayRange = _dayRangeResolver(request.date);
+    final startOfDay = dayRange.start;
+    final endOfDay = dayRange.end;
 
     final habitRecords = await _habitRecordRepository.getListByHabitIdAndRangeDate(
       request.habitId,
@@ -65,6 +70,15 @@ class ToggleHabitCompletionCommandHandler
       0,
       1000,
     );
+
+    if (habit.type == HabitType.bad) {
+      await _operationsService.toggleBadHabitMarker(
+        request.habitId,
+        request.date,
+        habitRecords.items,
+      );
+      return ToggleHabitCompletionCommandResponse();
+    }
 
     final dailyCompletionCount = habitRecords.items
         .where((record) => DateTimeHelper.isSameDay(

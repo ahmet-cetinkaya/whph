@@ -372,11 +372,34 @@ habits:
     open_details_hint: Åbn vanedetaljer
     complete_habit_hint: Fuldfør vane
     completion_status_hint: Fuldførelsesstatus for vane
+    habit_type_hint: Vanetype
+    avoid_habit_hint: Marker vane som undgået
+    perform_habit_hint: Marker vane som udført
+    undo_hint: Fortryd dagens registrering
+    checkbox_avoided_hint: Markeret betyder, at du undgik denne vane i dag
+    checkbox_performed_hint: Markeret betyder, at du udførte denne vane i dag
+    calendar_day_hint: Status for dagens registrering
   actions:
     mark_complete: Marker som fuldført
     mark_not_done: Marker som ikke udført
     clear_status: Ryd status
+    mark_avoided: Marker som Undgået
+    mark_performed: Marker som Udført
+    undo: Fortryd
   status:
     complete: Fuldført
     not_done: Ikke udført
     skipped: Sprunget over
+    avoided: Undgået
+    performed: Udført
+  types:
+    label: Vanetype
+    good: God Vane
+    bad: Dårlig Vane
+    good_description: En vane, du vil opbygge og gentage.
+    bad_description: En vane, du vil bryde og undgå.
+    help_title: Gode og dårlige vaner
+    help_content: >-
+      For gode vaner tæller en dag som vellykket, når du udfører dem. Dårlige vaner fungerer
+      omvendt; en dag tæller som vellykket, når du undgår dem, og at markere en som udført
+      registrerer en fiasko.

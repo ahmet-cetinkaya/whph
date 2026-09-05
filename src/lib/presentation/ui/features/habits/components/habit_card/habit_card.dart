@@ -19,6 +19,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/models/habit_list_style.dart';
+import 'package:whph/presentation/ui/features/habits/utils/habit_day_presenter.dart';
 
 // Extracted Components
 import 'package:whph/presentation/ui/features/habits/components/habit_card/habit_card_header.dart';
@@ -166,7 +167,7 @@ class _HabitCardState extends State<HabitCard> {
         await _refreshHabitRecords();
         _habitsService.notifyHabitRecordAdded(_habitId);
         _timeDataService.notifyTimeDataChanged();
-        _soundManagerService.playHabitCompletion();
+        _playCompletionSoundIfSucceeded(date);
       },
     );
   }
@@ -188,9 +189,24 @@ class _HabitCardState extends State<HabitCard> {
         await _refreshHabitRecords();
         _habitsService.notifyHabitRecordAdded(_habitId);
         _timeDataService.notifyTimeDataChanged();
-        _soundManagerService.playHabitCompletion();
+        _playCompletionSoundIfSucceeded(today);
       },
     );
+  }
+
+  /// Celebrates only a real good-habit success. Avoiding a bad habit is the
+  /// absence of a failure, so neither recording nor undoing one is an
+  /// achievement, and undoing a good-habit record is not either.
+  void _playCompletionSoundIfSucceeded(DateTime date) {
+    final succeeded = HabitDayPresenter(
+      habitId: _habitId,
+      habitType: widget.habit.type,
+      createdDate: widget.habit.createdDate,
+      archivedDate: _archivedDate,
+      records: _habitRecords?.items,
+    ).isCelebratedSuccess(date);
+
+    if (succeeded) _soundManagerService.playHabitCompletion();
   }
 
   @override
