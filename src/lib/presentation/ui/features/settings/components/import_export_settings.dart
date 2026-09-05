@@ -12,6 +12,7 @@ import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.da
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart';
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
@@ -510,7 +511,9 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           if (response.fileContent is! String) {
             throw Exception('Invalid content type for export file. Expected String.');
           }
-          dataBytes = Uint8List.fromList((response.fileContent as String).codeUnits);
+          // UTF-8, not codeUnits: codeUnits truncates every non-Latin-1 rune to
+          // a single byte and corrupts CJK text in the exported file.
+          dataBytes = utf8.encode(response.fileContent as String);
           isTextFile = true;
         }
 
