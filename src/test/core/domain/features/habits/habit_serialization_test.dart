@@ -73,6 +73,37 @@ void main() {
       },
     );
   });
+
+  group('HabitType persistence ids', () {
+    test(
+      'Given the enum when read by id then stored rows keep their meaning',
+      () {
+        expect(HabitType.fromId(0), HabitType.good);
+        expect(HabitType.fromId(1), HabitType.bad);
+      },
+    );
+
+    test(
+      'Given an id no build knows when read then it defaults to good',
+      () {
+        expect(HabitType.fromId(7), HabitType.good);
+        expect(HabitType.fromId(-1), HabitType.good);
+        expect(HabitType.fromId(null), HabitType.good);
+      },
+    );
+
+    test(
+      'Given the Drift column stores ordinals then each id must match its index',
+      () {
+        // The Drift column is `intEnum<HabitType>()`, which persists the
+        // declaration index. Reordering variants without renumbering `id` would
+        // silently reinterpret every stored row.
+        for (final type in HabitType.values) {
+          expect(type.id, type.index, reason: '${type.name} id must equal its ordinal');
+        }
+      },
+    );
+  });
 }
 
 Map<String, dynamic> _legacyPayload() => {

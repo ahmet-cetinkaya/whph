@@ -244,7 +244,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
 
     final items = await Future.wait(rows.map((row) async {
       final id = row.read<String>('id');
-      final type = HabitType.values[row.read<int>('type')];
+      final type = HabitType.fromId(row.read<int>('type'));
       final name = row.read<String>('name');
       final estimatedTime = row.readNullable<int>('estimated_time');
       final hasReminder = row.read<bool>('has_reminder');

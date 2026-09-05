@@ -121,6 +121,26 @@ void main() {
       expect(list.items.single.type, HabitType.bad);
     });
 
+    test('falls back to good for an out-of-range persisted habit type', () async {
+      await habitRepository.add(Habit(
+        id: 'corrupt-type',
+        name: 'Corrupt',
+        createdDate: DateTime.utc(2024, 1, 1),
+        description: '',
+      ));
+      // A row written by a newer version, or a hand-edited database, can hold a
+      // type this build does not know about.
+      await database.customStatement("UPDATE habit_table SET type = 7 WHERE id = 'corrupt-type'");
+
+      final list = await getListHabitsHandler(GetListHabitsQuery(
+        pageIndex: 0,
+        pageSize: 10,
+        sortBy: [SortOption(field: HabitSortFields.name, direction: SortDirection.asc)],
+      ));
+
+      expect(list.items.single.type, HabitType.good);
+    });
+
     test('sorts habits by actual time and reports accumulated minutes', () async {
       final createdDate = DateTime.utc(2024, 1, 1);
       await habitRepository.add(Habit(
