@@ -487,5 +487,61 @@ void main() {
       expect(response.statistics.overallScore, 0.8);
       expect(response.statistics.topStreaks.map((streak) => streak.days), [2, 2]);
     });
+
+    test('Given a recently created habit When loaded Then the trend spans the trailing twelve months', () async {
+      final today = DateTime.now();
+      final endDay = DateTime(today.year, today.month, today.day);
+      final creationDay = endDay.subtract(const Duration(days: 9));
+
+      final response = await getStatistics(badHabit(createdDate: creationDay), const []);
+
+      final trend = response.statistics.monthlyScores;
+      expect(trend.length, 12);
+      expect(trend.map((entry) => DateTime(entry.key.year, entry.key.month)).toSet().length, 12);
+      expect(trend.every((entry) => entry.key.day == 1), isTrue);
+      expect(trend.last.key, DateTime(endDay.year, endDay.month, 1));
+      expect(trend.first.key, DateTime(endDay.year, endDay.month - 11, 1));
+      expect(trend.every((entry) => entry.value.isFinite), isTrue);
+    });
+
+    test('Given months without applicable days When loaded Then those months score zero', () async {
+      final today = DateTime.now();
+      final endDay = DateTime(today.year, today.month, today.day);
+      final creationDay = endDay.subtract(const Duration(days: 9));
+
+      final response = await getStatistics(badHabit(createdDate: creationDay), const []);
+
+      final trend = response.statistics.monthlyScores;
+      final monthsBeforeCreation =
+          trend.where((entry) => entry.key.isBefore(DateTime(creationDay.year, creationDay.month, 1)));
+      expect(monthsBeforeCreation, isNotEmpty);
+      expect(monthsBeforeCreation.every((entry) => entry.value == 0.0), isTrue);
+    });
+
+    test('Given failures across two months When loaded Then each month keeps its own average', () async {
+      final creationDay = DateTime(2026, 3, 1);
+      final archiveDay = DateTime(2026, 4, 10);
+      final records = [
+        record('march-failure', DateTime(2026, 3, 5), HabitRecordStatus.notDone),
+        record('april-failure', DateTime(2026, 4, 2), HabitRecordStatus.notDone),
+        record('april-second-failure', DateTime(2026, 4, 3), HabitRecordStatus.notDone),
+      ];
+
+      final response = await getStatistics(badHabit(createdDate: creationDay, archivedDate: archiveDay), records);
+
+      final trend = Map.fromEntries(response.statistics.monthlyScores);
+      expect(trend[DateTime(2026, 3, 1)], closeTo(30 / 31, 0.0001));
+      expect(trend[DateTime(2026, 4, 1)], closeTo(8 / 10, 0.0001));
+      expect(trend[DateTime(2026, 2, 1)], 0.0);
+    });
+
+    test('Given creation after today When loaded Then the trend is empty', () async {
+      final today = DateTime.now();
+      final futureCreationDay = DateTime(today.year, today.month, today.day).add(const Duration(days: 1));
+
+      final response = await getStatistics(badHabit(createdDate: futureCreationDay), const []);
+
+      expect(response.statistics.monthlyScores, isEmpty);
+    });
   });
 }

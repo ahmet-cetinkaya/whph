@@ -22,7 +22,8 @@ class HabitStreak {
   final DateTime startDate;
   final DateTime endDate;
   final int days;
-  final int? completions; // For goal-based streaks, this represents the number of completed periods
+  final int?
+      completions; // For goal-based streaks, this represents the number of completed periods
 
   HabitStreak({
     required this.startDate,
@@ -84,7 +85,8 @@ class GetHabitQueryResponse extends Habit {
   }
 }
 
-class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQueryResponse> {
+class GetHabitQueryHandler
+    implements IRequestHandler<GetHabitQuery, GetHabitQueryResponse> {
   late final IHabitRepository _habitRepository;
   late final IHabitRecordRepository _habitRecordRepository;
   late final ISettingRepository _settingsRepository;
@@ -101,7 +103,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
   Future<GetHabitQueryResponse> call(GetHabitQuery request) async {
     Habit? habit = await _habitRepository.getById(request.id!);
     if (habit == null) {
-      throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
+      throw BusinessException(
+          'Habit not found', HabitTranslationKeys.habitNotFoundError);
     }
 
     // Get all records for statistics calculation using pagination
@@ -109,16 +112,24 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     final habitRecords = records.where((r) => r.deletedDate == null).toList();
 
     // Get 3-state setting
-    final setting = await _settingsRepository.getByKey(SettingKeys.habitThreeStateEnabled);
-    final isThreeStateEnabled = setting != null && setting.getValue<bool>() == true;
+    final setting =
+        await _settingsRepository.getByKey(SettingKeys.habitThreeStateEnabled);
+    final isThreeStateEnabled =
+        setting != null && setting.getValue<bool>() == true;
 
     // Update statistics calculation to handle archived habits and 3-state setting
-    final statistics = await _calculateStatistics(habit, habitRecords, isThreeStateEnabled: isThreeStateEnabled);
+    final statistics = await _calculateStatistics(habit, habitRecords,
+        isThreeStateEnabled: isThreeStateEnabled);
 
     // Get the reminderDays directly from the database
-    final reminderDaysResult = await _habitRepository.getReminderDaysById(habit.id);
+    final reminderDaysResult =
+        await _habitRepository.getReminderDaysById(habit.id);
     final reminderDaysList = reminderDaysResult.isNotEmpty
-        ? reminderDaysResult.split(',').where((s) => s.isNotEmpty).map((s) => int.parse(s.trim())).toList()
+        ? reminderDaysResult
+            .split(',')
+            .where((s) => s.isNotEmpty)
+            .map((s) => int.parse(s.trim()))
+            .toList()
         : <int>[];
 
     return GetHabitQueryResponse(
@@ -165,7 +176,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     return allRecords;
   }
 
-  Future<HabitStatistics> _calculateStatistics(Habit habit, List<HabitRecord> records,
+  Future<HabitStatistics> _calculateStatistics(
+      Habit habit, List<HabitRecord> records,
       {bool isThreeStateEnabled = false}) async {
     if (habit.type == HabitType.bad) {
       return _calculateBadHabitStatistics(habit, records, DateTime.now());
@@ -183,7 +195,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     final recordsByDate = <DateTime, List<HabitRecord>>{};
     for (final record in records) {
       if (record.status == HabitRecordStatus.complete) {
-        final dateKey = DateTime(record.recordDate.year, record.recordDate.month, record.recordDate.day);
+        final dateKey = DateTime(record.recordDate.year,
+            record.recordDate.month, record.recordDate.day);
         recordsByDate.putIfAbsent(dateKey, () => []).add(record);
       }
     }
@@ -191,58 +204,68 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     final dailyScores = <DateTime, double>{};
     for (final entry in recordsByDate.entries) {
       final dailyScore = entry.value.length / dailyTarget;
-      dailyScores[entry.key] = dailyScore > 1.0 ? 1.0 : dailyScore; // Cap at 1.0
+      dailyScores[entry.key] =
+          dailyScore > 1.0 ? 1.0 : dailyScore; // Cap at 1.0
     }
 
     // Calculate overall score based on first record date
     var overallScore = 0.0;
     if (records.isNotEmpty) {
-      final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
+      final sortedRecords = records.toList()
+        ..sort((a, b) => a.recordDate.compareTo(b.recordDate));
       final firstRecordDate = sortedRecords.first.recordDate;
       int daysFromFirstRecord;
 
       if (isThreeStateEnabled) {
-        daysFromFirstRecord = _countActiveDaysInRange(sortedRecords, firstRecordDate, endDate);
+        daysFromFirstRecord =
+            _countActiveDaysInRange(sortedRecords, firstRecordDate, endDate);
         if (daysFromFirstRecord == 0) daysFromFirstRecord = 1;
       } else {
         daysFromFirstRecord = endDate.difference(firstRecordDate).inDays + 1;
       }
 
       // Calculate average daily score
-      final totalScore = dailyScores.values.fold(0.0, (sum, score) => sum + score);
+      final totalScore =
+          dailyScores.values.fold(0.0, (sum, score) => sum + score);
       overallScore = totalScore / daysFromFirstRecord;
     }
 
     // Calculate monthly score based on daily scores
     int daysInCurrentMonth;
     if (isThreeStateEnabled) {
-      daysInCurrentMonth = _countActiveDaysInRange(records, startOfMonth, endDate);
+      daysInCurrentMonth =
+          _countActiveDaysInRange(records, startOfMonth, endDate);
       if (daysInCurrentMonth == 0) daysInCurrentMonth = 1;
     } else {
       daysInCurrentMonth = endDate.difference(startOfMonth).inDays + 1;
     }
 
     final monthlyDailyScores = dailyScores.entries
-        .where(
-            (entry) => entry.key.isAfter(startOfMonth.subtract(const Duration(days: 1))) && !entry.key.isAfter(endDate))
+        .where((entry) =>
+            entry.key.isAfter(startOfMonth.subtract(const Duration(days: 1))) &&
+            !entry.key.isAfter(endDate))
         .map((entry) => entry.value);
-    final monthlyTotalScore = monthlyDailyScores.fold(0.0, (sum, score) => sum + score);
+    final monthlyTotalScore =
+        monthlyDailyScores.fold(0.0, (sum, score) => sum + score);
     final monthlyScore = monthlyTotalScore / daysInCurrentMonth;
 
     // Calculate yearly score based on daily scores
     int daysInCurrentYear;
     if (isThreeStateEnabled) {
-      daysInCurrentYear = _countActiveDaysInRange(records, startOfYear, endDate);
+      daysInCurrentYear =
+          _countActiveDaysInRange(records, startOfYear, endDate);
       if (daysInCurrentYear == 0) daysInCurrentYear = 1;
     } else {
       daysInCurrentYear = endDate.difference(startOfYear).inDays + 1;
     }
 
     final yearlyDailyScores = dailyScores.entries
-        .where(
-            (entry) => entry.key.isAfter(startOfYear.subtract(const Duration(days: 1))) && !entry.key.isAfter(endDate))
+        .where((entry) =>
+            entry.key.isAfter(startOfYear.subtract(const Duration(days: 1))) &&
+            !entry.key.isAfter(endDate))
         .map((entry) => entry.value);
-    final yearlyTotalScore = yearlyDailyScores.fold(0.0, (sum, score) => sum + score);
+    final yearlyTotalScore =
+        yearlyDailyScores.fold(0.0, (sum, score) => sum + score);
     final yearlyScore = yearlyTotalScore / daysInCurrentYear;
 
     // Calculate monthly scores for the last 12 months using daily scores
@@ -250,18 +273,23 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     for (var i = 11; i >= 0; i--) {
       final month = DateTime(endDate.year, endDate.month - i, 1);
       final nextMonth = DateTime(month.year, month.month + 1, 1);
-      final monthEnd = i == 0 ? endDate : nextMonth.subtract(const Duration(days: 1));
+      final monthEnd =
+          i == 0 ? endDate : nextMonth.subtract(const Duration(days: 1));
 
       final monthlyDailyScoresForMonth = dailyScores.entries
-          .where((entry) => !entry.key.isBefore(month) && !entry.key.isAfter(monthEnd))
+          .where((entry) =>
+              !entry.key.isBefore(month) && !entry.key.isAfter(monthEnd))
           .map((entry) => entry.value);
 
-      final monthTotalScore = monthlyDailyScoresForMonth.fold(0.0, (sum, score) => sum + score);
+      final monthTotalScore =
+          monthlyDailyScoresForMonth.fold(0.0, (sum, score) => sum + score);
 
       int daysInMonth;
       if (isThreeStateEnabled) {
         daysInMonth = _countActiveDaysInRange(records, month, monthEnd);
-        if (daysInMonth == 0) daysInMonth = 1; // Avoid division by zero if no records (score 0 anyway)
+        if (daysInMonth == 0)
+          daysInMonth =
+              1; // Avoid division by zero if no records (score 0 anyway)
       } else {
         daysInMonth = monthEnd.difference(month).inDays + 1;
       }
@@ -271,7 +299,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
     // Calculate top streaks up to archive date if archived, using daily scores
     final streaks = _calculateStreaks(records,
-        habit: habit, endDate: habit.archivedDate, dailyScores: dailyScores, isThreeStateEnabled: isThreeStateEnabled);
+        habit: habit,
+        endDate: habit.archivedDate,
+        dailyScores: dailyScores,
+        isThreeStateEnabled: isThreeStateEnabled);
     final topStreaks = streaks.take(5).toList();
 
     // Calculate yearly frequency
@@ -279,7 +310,9 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
     for (final record in records) {
       if (record.status == HabitRecordStatus.complete) {
-        final dayOfYear = record.recordDate.difference(DateTime(record.recordDate.year, 1, 1)).inDays;
+        final dayOfYear = record.recordDate
+            .difference(DateTime(record.recordDate.year, 1, 1))
+            .inDays;
         yearlyFrequency[dayOfYear] = (yearlyFrequency[dayOfYear] ?? 0) + 1;
       }
     }
@@ -291,7 +324,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
     if (habit.hasGoal) {
       final periodEnd = endDate;
-      final periodStart = periodEnd.subtract(Duration(days: habit.periodDays - 1));
+      final periodStart =
+          periodEnd.subtract(Duration(days: habit.periodDays - 1));
 
       final recordsInCurrentPeriod = records
           .where((record) =>
@@ -302,7 +336,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
       daysGoalMet = recordsInCurrentPeriod;
       totalDaysWithGoal = habit.targetFrequency;
-      goalSuccessRate = recordsInCurrentPeriod.toDouble() / habit.targetFrequency;
+      goalSuccessRate =
+          recordsInCurrentPeriod.toDouble() / habit.targetFrequency;
       if (goalSuccessRate > 1.0) goalSuccessRate = 1.0;
     }
 
@@ -310,7 +345,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       overallScore: overallScore,
       monthlyScore: monthlyScore,
       yearlyScore: yearlyScore,
-      totalRecords: records.where((r) => r.status == HabitRecordStatus.complete).length,
+      totalRecords:
+          records.where((r) => r.status == HabitRecordStatus.complete).length,
       monthlyScores: monthlyScores,
       topStreaks: topStreaks,
       yearlyFrequency: yearlyFrequency,
@@ -320,14 +356,22 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     );
   }
 
-  HabitStatistics _calculateBadHabitStatistics(Habit habit, List<HabitRecord> records, DateTime now) {
+  HabitStatistics _calculateBadHabitStatistics(
+      Habit habit, List<HabitRecord> records, DateTime now) {
     final today = DateTimeHelper.toLocalDateTime(now);
     final creationDate = DateTimeHelper.toLocalDateTime(habit.createdDate);
-    final archiveDate = habit.archivedDate == null ? null : DateTimeHelper.toLocalDateTime(habit.archivedDate!);
-    final startDay = DateTime(creationDate.year, creationDate.month, creationDate.day);
+    final archiveDate = habit.archivedDate == null
+        ? null
+        : DateTimeHelper.toLocalDateTime(habit.archivedDate!);
+    final startDay =
+        DateTime(creationDate.year, creationDate.month, creationDate.day);
     final todayDay = DateTime(today.year, today.month, today.day);
-    final archiveDay = archiveDate == null ? null : DateTime(archiveDate.year, archiveDate.month, archiveDate.day);
-    final endDay = archiveDay != null && archiveDay.isBefore(todayDay) ? archiveDay : todayDay;
+    final archiveDay = archiveDate == null
+        ? null
+        : DateTime(archiveDate.year, archiveDate.month, archiveDate.day);
+    final endDay = archiveDay != null && archiveDay.isBefore(todayDay)
+        ? archiveDay
+        : todayDay;
     if (startDay.isAfter(endDay)) return _emptyBadHabitStatistics();
 
     final stateSource = const HabitDayStateResolver().createSource(
@@ -335,19 +379,19 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
       records: records,
       now: now,
     );
-    final dailyScores = <DateTime, double>{};
+    final dayCountsByMonth = <DateTime, _BadHabitDayCounts>{};
     final yearlyFrequency = <int, int>{};
     final streaks = <HabitStreak>[];
     DateTime? streakStart;
     var applicableDays = 0;
     var successfulDays = 0;
     var failedDays = 0;
-    var monthlyApplicableDays = 0;
-    var monthlySuccessfulDays = 0;
     var yearlyApplicableDays = 0;
     var yearlySuccessfulDays = 0;
 
-    for (var day = startDay; !day.isAfter(endDay); day = DateTime(day.year, day.month, day.day + 1)) {
+    for (var day = startDay;
+        !day.isAfter(endDay);
+        day = DateTime(day.year, day.month, day.day + 1)) {
       final state = stateSource.resolve(day);
       if (state == HabitDayState.notApplicable) continue;
 
@@ -358,9 +402,15 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
         streakStart ??= day;
       } else {
         failedDays++;
-        _addBadHabitStreak(streaks, streakStart, day.subtract(const Duration(days: 1)));
+        _addBadHabitStreak(
+            streaks, streakStart, day.subtract(const Duration(days: 1)));
         streakStart = null;
       }
+
+      final month = DateTime(day.year, day.month, 1);
+      dayCountsByMonth[month] =
+          (dayCountsByMonth[month] ?? const _BadHabitDayCounts())
+              .add(isSuccessful);
 
       if (day.year == endDay.year) {
         yearlyApplicableDays++;
@@ -369,28 +419,44 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
           yearlyFrequency[day.month] = (yearlyFrequency[day.month] ?? 0) + 1;
         }
       }
-      if (day.year == endDay.year && day.month == endDay.month) {
-        monthlyApplicableDays++;
-        if (isSuccessful) monthlySuccessfulDays++;
-        dailyScores[day] = isSuccessful ? 1.0 : 0.0;
-      }
     }
 
     _addBadHabitStreak(streaks, streakStart, endDay);
     streaks.sort((a, b) {
       final daysComparison = b.days.compareTo(a.days);
-      return daysComparison != 0 ? daysComparison : b.endDate.compareTo(a.endDate);
+      return daysComparison != 0
+          ? daysComparison
+          : b.endDate.compareTo(a.endDate);
     });
+
+    final currentMonthCounts =
+        dayCountsByMonth[DateTime(endDay.year, endDay.month, 1)] ??
+            const _BadHabitDayCounts();
 
     return HabitStatistics(
       overallScore: successfulDays / applicableDays,
-      monthlyScore: monthlyApplicableDays == 0 ? 0.0 : monthlySuccessfulDays / monthlyApplicableDays,
-      yearlyScore: yearlyApplicableDays == 0 ? 0.0 : yearlySuccessfulDays / yearlyApplicableDays,
+      monthlyScore: currentMonthCounts.successRate,
+      yearlyScore: yearlyApplicableDays == 0
+          ? 0.0
+          : yearlySuccessfulDays / yearlyApplicableDays,
       totalRecords: failedDays,
-      monthlyScores: dailyScores.entries.toList(),
+      monthlyScores: _buildBadHabitTrend(endDay, dayCountsByMonth),
       topStreaks: streaks.take(5).toList(),
       yearlyFrequency: yearlyFrequency,
     );
+  }
+
+  /// Builds the trailing 12-month success rate trend (oldest to newest), keyed by the
+  /// first day of each month so it matches the good habit trend contract.
+  List<MapEntry<DateTime, double>> _buildBadHabitTrend(
+    DateTime endDay,
+    Map<DateTime, _BadHabitDayCounts> dayCountsByMonth,
+  ) {
+    return List.generate(12, (index) {
+      final month = DateTime(endDay.year, endDay.month - (11 - index), 1);
+      final counts = dayCountsByMonth[month] ?? const _BadHabitDayCounts();
+      return MapEntry(month, counts.successRate);
+    });
   }
 
   HabitStatistics _emptyBadHabitStatistics() => HabitStatistics(
@@ -403,7 +469,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
         yearlyFrequency: const {},
       );
 
-  void _addBadHabitStreak(List<HabitStreak> streaks, DateTime? startDate, DateTime endDate) {
+  void _addBadHabitStreak(
+      List<HabitStreak> streaks, DateTime? startDate, DateTime endDate) {
     if (startDate == null || endDate.isBefore(startDate)) return;
     streaks.add(HabitStreak(
       startDate: startDate,
@@ -414,13 +481,16 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
 
   /// Counts the number of unique days with records matching the specified status
   /// within the given date range (inclusive).
-  int _countActiveDaysInRange(List<HabitRecord> records, DateTime startDate, DateTime endDate) {
+  int _countActiveDaysInRange(
+      List<HabitRecord> records, DateTime startDate, DateTime endDate) {
     return records
         .where((r) =>
-            (r.status == HabitRecordStatus.complete || r.status == HabitRecordStatus.notDone) &&
+            (r.status == HabitRecordStatus.complete ||
+                r.status == HabitRecordStatus.notDone) &&
             !r.recordDate.isBefore(startDate) &&
             !r.recordDate.isAfter(endDate))
-        .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
+        .map((r) =>
+            DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
         .toSet()
         .length;
   }
@@ -433,14 +503,19 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     if (records.isEmpty) return [];
 
     if (habit.hasGoal) {
-      return _calculateGoalBasedStreaks(records, habit, endDate, dailyScores: dailyScores);
+      return _calculateGoalBasedStreaks(records, habit, endDate,
+          dailyScores: dailyScores);
     } else {
       return _calculateConsecutiveDayStreaks(records, endDate,
-          minDays: 2, dailyScores: dailyScores, habit: habit, isThreeStateEnabled: isThreeStateEnabled);
+          minDays: 2,
+          dailyScores: dailyScores,
+          habit: habit,
+          isThreeStateEnabled: isThreeStateEnabled);
     }
   }
 
-  List<HabitStreak> _calculateConsecutiveDayStreaks(List<HabitRecord> records, DateTime? endDate,
+  List<HabitStreak> _calculateConsecutiveDayStreaks(
+      List<HabitRecord> records, DateTime? endDate,
       {int minDays = 2,
       required Map<DateTime, double> dailyScores,
       required Habit habit,
@@ -448,13 +523,17 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     if (dailyScores.isEmpty) return [];
 
     // Logic using daily scores - a day is complete if score >= 1.0
-    final completeDays = dailyScores.entries.where((entry) => entry.value >= 1.0).map((entry) => entry.key).toList()
+    final completeDays = dailyScores.entries
+        .where((entry) => entry.value >= 1.0)
+        .map((entry) => entry.key)
+        .toList()
       ..sort();
 
     // Find explicit "Not Done" days
     final notDoneDays = records
         .where((r) => r.status == HabitRecordStatus.notDone)
-        .map((r) => DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
+        .map((r) =>
+            DateTime(r.recordDate.year, r.recordDate.month, r.recordDate.day))
         .toSet();
 
     if (completeDays.isEmpty) return [];
@@ -502,7 +581,10 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
                 startDate: streakStart,
                 endDate: lastDate,
                 days: isThreeStateEnabled
-                    ? completeDays.where((d) => !d.isBefore(streakStart) && !d.isAfter(lastDate)).length
+                    ? completeDays
+                        .where((d) =>
+                            !d.isBefore(streakStart) && !d.isAfter(lastDate))
+                        .length
                     : lastDate.difference(streakStart).inDays + 1,
               ));
             }
@@ -514,12 +596,15 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     }
 
     // Add the last streak if it exists and respects the end date
-    if (lastDate.difference(streakStart).inDays >= minDays - 1 && (endDate == null || !lastDate.isAfter(endDate))) {
+    if (lastDate.difference(streakStart).inDays >= minDays - 1 &&
+        (endDate == null || !lastDate.isAfter(endDate))) {
       streaks.add(HabitStreak(
         startDate: streakStart,
         endDate: lastDate,
         days: isThreeStateEnabled
-            ? completeDays.where((d) => !d.isBefore(streakStart) && !d.isAfter(lastDate)).length
+            ? completeDays
+                .where((d) => !d.isBefore(streakStart) && !d.isAfter(lastDate))
+                .length
             : lastDate.difference(streakStart).inDays + 1,
       ));
     }
@@ -529,11 +614,13 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     return streaks;
   }
 
-  List<HabitStreak> _calculateGoalBasedStreaks(List<HabitRecord> records, Habit habit, DateTime? endDate,
+  List<HabitStreak> _calculateGoalBasedStreaks(
+      List<HabitRecord> records, Habit habit, DateTime? endDate,
       {required Map<DateTime, double> dailyScores}) {
     if (records.isEmpty) return [];
 
-    final sortedRecords = records.toList()..sort((a, b) => a.recordDate.compareTo(b.recordDate));
+    final sortedRecords = records.toList()
+      ..sort((a, b) => a.recordDate.compareTo(b.recordDate));
     final streaks = <HabitStreak>[];
 
     // Calculate streaks based on goal periods
@@ -542,7 +629,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     var consecutiveSuccessfulPeriods = 0;
 
     while (currentPeriodStart.isBefore(endDate ?? DateTime.now())) {
-      final currentPeriodEnd = currentPeriodStart.add(Duration(days: habit.periodDays - 1));
+      final currentPeriodEnd =
+          currentPeriodStart.add(Duration(days: habit.periodDays - 1));
 
       // Count complete days in current period (daily score >= 1.0)
       final completeDaysInPeriod = dailyScores.entries
@@ -572,7 +660,8 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
         consecutiveSuccessfulPeriods = 0;
       }
 
-      currentPeriodStart = currentPeriodStart.add(Duration(days: habit.periodDays));
+      currentPeriodStart =
+          currentPeriodStart.add(Duration(days: habit.periodDays));
     }
 
     // Add the last streak if it exists
@@ -589,4 +678,21 @@ class GetHabitQueryHandler implements IRequestHandler<GetHabitQuery, GetHabitQue
     streaks.sort((a, b) => b.days.compareTo(a.days));
     return streaks;
   }
+}
+
+/// Applicable day tally for a single month of a bad habit.
+class _BadHabitDayCounts {
+  final int applicableDays;
+  final int successfulDays;
+
+  const _BadHabitDayCounts({this.applicableDays = 0, this.successfulDays = 0});
+
+  /// Months without applicable days score 0.0 because there is no activity to credit.
+  double get successRate =>
+      applicableDays == 0 ? 0.0 : successfulDays / applicableDays;
+
+  _BadHabitDayCounts add(bool isSuccessful) => _BadHabitDayCounts(
+        applicableDays: applicableDays + 1,
+        successfulDays: successfulDays + (isSuccessful ? 1 : 0),
+      );
 }
