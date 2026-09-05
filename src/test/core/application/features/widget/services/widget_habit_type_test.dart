@@ -71,6 +71,19 @@ void main() {
       expect(decoded.type, HabitType.good);
       expect(decoded.dailyState, HabitDayState.incomplete);
     });
+
+    test('unrecognized habit type and daily state fall back to defaults', () {
+      final decoded = WidgetHabitData.fromJson({
+        'id': 'forward-compatible-habit',
+        'name': 'Written by a newer app version',
+        'type': 'neutral',
+        'dailyState': 'skipped',
+        'isCompletedToday': false,
+      });
+
+      expect(decoded.type, HabitType.good);
+      expect(decoded.dailyState, HabitDayState.incomplete);
+    });
   });
 
   group('widget habit actions', () {

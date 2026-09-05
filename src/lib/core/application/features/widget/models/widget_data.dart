@@ -55,8 +55,10 @@ class WidgetHabitData {
     return WidgetHabitData(
       id: json['id'] as String,
       name: json['name'] as String,
-      type: HabitType.values.byName(json['type'] as String? ?? HabitType.good.name),
-      dailyState: HabitDayState.values.byName(json['dailyState'] as String? ?? HabitDayState.incomplete.name),
+      // The widget blob outlives app upgrades and downgrades, so an unknown name
+      // from a newer version must degrade to the default instead of throwing.
+      type: HabitType.fromJson(json['type']),
+      dailyState: HabitDayState.values.asNameMap()[json['dailyState']] ?? HabitDayState.incomplete,
       isCompletedToday: json['isCompletedToday'] as bool,
       hasGoal: json['hasGoal'] as bool? ?? false,
       dailyTarget: json['dailyTarget'] as int? ?? 1,
