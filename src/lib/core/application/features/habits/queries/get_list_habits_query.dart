@@ -176,10 +176,10 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         ))
       )''');
       variables.addAll([
-        HabitType.bad.index,
+        HabitType.bad.id,
         startDate,
         endDate,
-        HabitType.bad.index,
+        HabitType.bad.id,
         endDate,
         startDate,
         startDate,
@@ -218,10 +218,10 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         ))
       )''');
       variables.addAll([
-        HabitType.bad.index,
+        HabitType.bad.id,
         startDate,
         endDate,
-        HabitType.bad.index,
+        HabitType.bad.id,
         endDate,
         startDate,
         startDate,
