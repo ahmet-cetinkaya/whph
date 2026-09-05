@@ -324,6 +324,13 @@ class HabitDetailsController extends ChangeNotifier {
   Future<void> updateType(HabitType type, String habitId, BuildContext context) async {
     if (_habit == null || isTypeReadOnly || _habit!.type == type) return;
 
+    final previousType = _habit!.type;
+    final previousHasGoal = _habit!.hasGoal;
+    final previousTargetFrequency = _habit!.targetFrequency;
+    final previousPeriodDays = _habit!.periodDays;
+    final previousDailyTarget = _habit!.dailyTarget;
+    final previousGoalWasVisible = _visibleOptionalFields.contains(keyGoal);
+
     _habit!.type = type;
     _habit!.hasGoal = false;
     _habit!.targetFrequency = 1;
@@ -333,7 +340,22 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
 
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    await saveHabitImmediately(habitId, context);
+    // The change above is optimistic, so a failed save must not leave the UI
+    // showing a type and blanked goal settings the database never accepted.
+    await saveHabitImmediately(
+      habitId,
+      context,
+      onError: (_) {
+        if (_habit == null) return;
+        _habit!.type = previousType;
+        _habit!.hasGoal = previousHasGoal;
+        _habit!.targetFrequency = previousTargetFrequency;
+        _habit!.periodDays = previousPeriodDays;
+        _habit!.dailyTarget = previousDailyTarget;
+        if (previousGoalWasVisible) _visibleOptionalFields.add(keyGoal);
+        notifyListeners();
+      },
+    );
   }
 
   void saveHabitDebounced(String habitId, BuildContext context, {String? name}) {
@@ -343,7 +365,12 @@ class HabitDetailsController extends ChangeNotifier {
     });
   }
 
-  Future<void> saveHabitImmediately(String habitId, BuildContext context, {String? name}) async {
+  Future<void> saveHabitImmediately(
+    String habitId,
+    BuildContext context, {
+    String? name,
+    void Function(Object error)? onError,
+  }) async {
     if (_habit == null) return;
 
     await AsyncErrorHandler.executeVoid(
@@ -358,6 +385,7 @@ class HabitDetailsController extends ChangeNotifier {
         onHabitUpdated?.call();
         notifyListeners();
       },
+      onError: onError,
     );
   }
 

@@ -10,6 +10,7 @@ import 'package:whph/presentation/ui/features/habits/components/habit_details_co
 import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 
 import 'habit_details_controller_type_test.mocks.dart';
 
@@ -110,6 +111,8 @@ void main() {
     sentCommands = [];
 
     when(mockTranslationService.translate(any, namedArgs: anyNamed('namedArgs'))).thenReturn('translated');
+    // The save path surfaces failures through ErrorHelper's static translator.
+    ErrorHelper.initialize(mockTranslationService);
     when(mockHabitsService.onHabitUpdated).thenReturn(ValueNotifier<String?>(null));
     when(mockHabitsService.onHabitRecordAdded).thenReturn(ValueNotifier<String?>(null));
     when(mockHabitsService.onHabitRecordRemoved).thenReturn(ValueNotifier<String?>(null));
@@ -241,6 +244,26 @@ void main() {
       expect(controller.habit!.type, HabitType.bad,
           reason: 'Stale controller state must not survive a reload of a changed type');
       expect(controller.habit!.dailyTarget, 1);
+    });
+
+    testWidgets('restores the previous type and goal settings when the save fails', (tester) async {
+      await loadHabit(tester, buildHabit());
+      final context = await pumpContext(tester);
+
+      when(mockMediator.send<SaveHabitCommand, SaveHabitCommandResponse>(argThat(isA<SaveHabitCommand>())))
+          .thenThrow(Exception('save failed'));
+
+      await controller.updateType(HabitType.bad, habitId, context);
+      await tester.pump();
+
+      final habit = controller.habit!;
+      expect(habit.type, HabitType.good, reason: 'A failed save must not leave the UI showing the new type');
+      expect(habit.hasGoal, isTrue, reason: 'Goal settings were only wiped for the type switch that failed');
+      expect(habit.targetFrequency, 3);
+      expect(habit.periodDays, 7);
+      expect(habit.dailyTarget, 2);
+      expect(controller.isFieldVisible(HabitDetailsController.keyGoal), isTrue,
+          reason: 'The goal field must come back when the switch to bad is rolled back');
     });
   });
 
