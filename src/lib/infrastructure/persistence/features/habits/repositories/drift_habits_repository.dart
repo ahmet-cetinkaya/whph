@@ -206,7 +206,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     if (customOrder?.isNotEmpty == true) {
       final orderClauses = customOrder!.map((order) {
         if (order.field == "actual_time") {
-          return "COALESCE(TOTAL(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
+          return "COALESCE(SUM(htr.duration), 0) ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else if (order.field == "name") {
           return "h.${order.field} IS NULL, h.${order.field} COLLATE NOCASE ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}";
         } else if (order.field.trim().startsWith('(')) {
@@ -225,7 +225,6 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     final query = database.customSelect(
       """
       SELECT h.* ${hasActualTimeSort ? ', COALESCE(SUM(htr.duration), 0) as total_duration' : ''}
-      ${hasActualTimeSort ? ', COALESCE(TOTAL(htr.duration), 0) as total_duration' : ''}
       FROM habit_table h
       $joinClause
       ${whereClause ?? ''}

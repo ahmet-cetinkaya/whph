@@ -5,10 +5,12 @@ import 'package:whph/core/application/features/habits/commands/update_habit_orde
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habits_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_tags_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_records_repository.dart';
+import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
+import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/habits/models/habit_sort_fields.dart';
@@ -19,6 +21,7 @@ void main() {
     late DriftHabitRepository habitRepository;
     late DriftHabitTagRepository habitTagsRepository;
     late DriftHabitRecordRepository habitRecordRepository;
+    late DriftHabitTimeRecordRepository habitTimeRecordRepository;
     late GetListHabitsQueryHandler getListHabitsHandler;
 
     setUpAll(() async {
@@ -31,6 +34,7 @@ void main() {
       habitRepository = DriftHabitRepository.withDatabase(database);
       habitTagsRepository = DriftHabitTagRepository.withDatabase(database);
       habitRecordRepository = DriftHabitRecordRepository.withDatabase(database);
+      habitTimeRecordRepository = DriftHabitTimeRecordRepository.withDatabase(database);
 
       getListHabitsHandler = GetListHabitsQueryHandler(
         habitRepository: habitRepository,
@@ -115,6 +119,51 @@ void main() {
 
       expect(storedHabit!.type, HabitType.bad);
       expect(list.items.single.type, HabitType.bad);
+    });
+
+    test('sorts habits by actual time and reports accumulated minutes', () async {
+      final createdDate = DateTime.utc(2024, 1, 1);
+      await habitRepository.add(Habit(
+        id: 'low-duration',
+        name: 'Low',
+        createdDate: createdDate,
+        description: '',
+      ));
+      await habitRepository.add(Habit(
+        id: 'high-duration',
+        name: 'High',
+        createdDate: createdDate,
+        description: '',
+      ));
+
+      await habitTimeRecordRepository.add(HabitTimeRecord(
+        id: 'time-low',
+        habitId: 'low-duration',
+        duration: 600,
+        createdDate: createdDate,
+      ));
+      await habitTimeRecordRepository.add(HabitTimeRecord(
+        id: 'time-high-1',
+        habitId: 'high-duration',
+        duration: 900,
+        createdDate: createdDate,
+      ));
+      await habitTimeRecordRepository.add(HabitTimeRecord(
+        id: 'time-high-2',
+        habitId: 'high-duration',
+        duration: 900,
+        createdDate: createdDate,
+      ));
+
+      final result = await getListHabitsHandler(GetListHabitsQuery(
+        pageIndex: 0,
+        pageSize: 10,
+        sortBy: [SortOption(field: HabitSortFields.actualTime, direction: SortDirection.desc)],
+      ));
+
+      expect(result.items.map((item) => item.id).toList(), ['high-duration', 'low-duration']);
+      expect(result.items.first.actualTime, 30);
+      expect(result.items.last.actualTime, 10);
     });
 
     test('orders custom-sorted habits by rank, creation date, and id', () async {
