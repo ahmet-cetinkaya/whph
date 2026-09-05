@@ -34,6 +34,15 @@ class HabitNotificationHandler implements IHabitNotificationHandler {
         error: e,
         stackTrace: stackTrace,
       );
+    } catch (e, stackTrace) {
+      // This is the outermost frame of a fire-and-forget notification callback,
+      // so an infrastructure failure would otherwise be diagnosable from nothing.
+      Logger.error(
+        '[${TaskErrorIds.notificationActionFailed}] HabitNotificationHandler: Unexpected failure for habit: $habitId',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      rethrow;
     }
   }
 }
