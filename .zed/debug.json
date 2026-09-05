@@ -1,14 +1,22 @@
 // Zed debug configuration for WHPH (Flutter).
 // The Flutter project lives in `src/`, so cwd points there.
-// Flutter is launched inside the Nix dev shell (scripts/zed_nix_flutter.sh) so
-// the session gets the SDK + native runtime deps (ninja, CMake, GTK/X11/Wayland)
-// that `nix develop` provides.
+//
+// `useFvm` is REQUIRED: the Dart extension does not auto-detect FVM. Without it
+// the adapter looks for a bare `flutter` on PATH and aborts with
+// "flutter not found in PATH" — this project pins Flutter via FVM (src/.fvmrc)
+// and never puts a plain `flutter` on PATH.
+//
+// NIXOS NOTE: the extension resolves the binary with worktree.which("fvm")
+// BEFORE this config's `env` map is applied, and it ignores `customTool`
+// entirely (zed-extensions/dart, src/dart.rs). A project-local PATH override
+// therefore cannot make it enter the Nix dev shell, and the Linux build fails
+// to link ("ld: cannot find -lgstapp-1.0"). The fix lives outside the repo: a
+// `fvm` shim on ~/.local/bin that re-enters `nix develop` for flake projects.
+// See docs/build/LINUX-DEPENDENCIES.md.
+//
 // `deviceId` pins the target device because multiple devices (Linux desktop +
 // Chrome) are usually connected and Flutter otherwise aborts with "More than
-// one device connected". A `-d` CLI flag on the wrapper does NOT work here:
-// the debug adapter launches the real `flutter run` itself over DAP, not via
-// the argv this script receives, so device selection must go through the
-// launch config's `deviceId` field instead.
+// one device connected".
 // The Dart extension requires the `type` field ("flutter" here).
 // See: https://zed.dev/docs/debugger
 [
@@ -20,7 +28,6 @@
     "program": "lib/main.dart",
     "cwd": "$ZED_WORKTREE_ROOT/src",
     "deviceId": "linux",
-    "customTool": "$ZED_WORKTREE_ROOT/scripts/zed_nix_flutter.sh",
-    "customToolReplacesArgs": 0
+    "useFvm": true
   }
 ]

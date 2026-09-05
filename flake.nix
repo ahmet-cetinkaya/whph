@@ -176,9 +176,16 @@
           export NIX_LDFLAGS="-L${pkgs.libepoxy}/lib -L${pkgs.fontconfig}/lib $NIX_LDFLAGS"
           export LDFLAGS="-Wl,-rpath-link,${pkgs.lib.makeLibraryPath linuxBuildInputs} $LDFLAGS"
 
-          # CMake linker flags for Flutter build
-          export CMAKE_EXE_LINKER_FLAGS="-Wl,-rpath-link,${pkgs.lib.makeLibraryPath linuxBuildInputs}"
-          export CMAKE_SHARED_LINKER_FLAGS="-Wl,-rpath-link,${pkgs.lib.makeLibraryPath linuxBuildInputs}"
+          # CMake linker flags for Flutter build.
+          # `-L` is REQUIRED in addition to `-rpath-link`: ld uses -rpath-link only to
+          # resolve indirect dependencies, never as a library *search* path. Plugins that
+          # link with bare `-l` flags (e.g. audioplayers_linux -> -lgstapp-1.0, -lglib-2.0)
+          # otherwise fail with "cannot find -lgstapp-1.0", since CMake emits no -L itself.
+          export CMAKE_LIBRARY_L_FLAGS="${
+            pkgs.lib.concatMapStringsSep " " (p: "-L${p}/lib") linuxBuildInputs
+          }"
+          export CMAKE_EXE_LINKER_FLAGS="$CMAKE_LIBRARY_L_FLAGS -Wl,-rpath-link,${pkgs.lib.makeLibraryPath linuxBuildInputs}"
+          export CMAKE_SHARED_LINKER_FLAGS="$CMAKE_LIBRARY_L_FLAGS -Wl,-rpath-link,${pkgs.lib.makeLibraryPath linuxBuildInputs}"
 
           # Dart build configuration
           export DART_WARN_ON_DART_2_XX_BREAKING_CHANGES=false
