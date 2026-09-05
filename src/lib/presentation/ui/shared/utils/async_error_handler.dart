@@ -42,7 +42,7 @@ class AsyncErrorHandler {
       if (!checkMounted || context.mounted) {
         ErrorHelper.showUnexpectedError(
           context,
-          e is Exception ? e : Exception(e.toString()),
+          e,
           stackTrace,
           message: errorMessage,
           position: errorPosition,
@@ -94,7 +94,7 @@ class AsyncErrorHandler {
       if (!checkMounted || context.mounted) {
         ErrorHelper.showUnexpectedError(
           context,
-          e is Exception ? e : Exception(e.toString()),
+          e,
           stackTrace,
           message: errorMessage,
           position: errorPosition,
@@ -149,7 +149,7 @@ class AsyncErrorHandler {
       if (context.mounted) {
         ErrorHelper.showUnexpectedError(
           context,
-          e is Exception ? e : Exception(e.toString()),
+          e,
           stackTrace,
           message: errorMessage,
           position: errorPosition,

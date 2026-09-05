@@ -7,6 +7,7 @@ import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/utils/error_report_formatter.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 class ErrorHelper {
@@ -63,8 +64,8 @@ class ErrorHelper {
         'device': Platform.localHostname,
         'os': Platform.operatingSystem,
         'osVersion': Platform.operatingSystemVersion,
-        'error': error.toString(),
-        'stackTrace': stackTrace.toString(),
+        'error': describeError(error),
+        'stackTrace': describeStackTrace(stackTrace),
       },
     );
 

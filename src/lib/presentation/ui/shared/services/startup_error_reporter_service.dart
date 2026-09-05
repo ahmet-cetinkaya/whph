@@ -4,6 +4,7 @@ import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/background_translation_service.dart';
 import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
+import 'package:whph/presentation/ui/shared/utils/error_report_formatter.dart';
 
 /// Service for reporting app startup errors
 class StartupErrorReporterService {
@@ -15,7 +16,7 @@ class StartupErrorReporterService {
   /// Sends a startup error report via email
   void reportError() {
     final error = _errorState.startupError ?? 'Unknown startup error';
-    final stackTrace = _errorState.startupStackTrace ?? StackTrace.empty;
+    final stackTrace = _errorState.startupStackTrace;
 
     String errorBody = _translationService.translate(
       SharedTranslationKeys.errorReportTemplate,
@@ -25,8 +26,8 @@ class StartupErrorReporterService {
         'device': Platform.localHostname,
         'os': Platform.operatingSystem,
         'osVersion': Platform.operatingSystemVersion,
-        'error': error.toString(),
-        'stackTrace': stackTrace.toString(),
+        'error': describeError(error),
+        'stackTrace': describeStackTrace(stackTrace),
       },
     );
 
@@ -41,9 +42,9 @@ OS: ${Platform.operatingSystem}
 OS Version: ${Platform.operatingSystemVersion}
 Error Message:
 ```
-$error
+${describeError(error)}
 Stack Trace:
-$stackTrace
+${describeStackTrace(stackTrace)}
 ```
 
 Please help me resolve this issue.

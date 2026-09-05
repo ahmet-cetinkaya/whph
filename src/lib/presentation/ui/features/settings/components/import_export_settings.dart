@@ -12,7 +12,6 @@ import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.da
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 import 'dart:typed_data';
 import 'package:whph/presentation/ui/features/settings/components/settings_menu_tile.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
@@ -443,24 +442,15 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           Navigator.of(context).pop();
         }
       },
+      // AsyncErrorHandler already surfaces the error with the stack trace it
+      // caught; reporting it again here would only add a trace pointing at this
+      // callback instead of the failure.
       onError: (e) {
         Logger.error("Import failed: $e");
 
         if (context.mounted) {
           // Hide loading overlay
           OverlayNotificationHelper.hideNotification();
-
-          // Show error overlay notification
-          if (e is BusinessException) {
-            ErrorHelper.showError(context, e);
-          } else {
-            ErrorHelper.showUnexpectedError(
-              context,
-              e,
-              StackTrace.current,
-              message: _translationService.translate(SettingsTranslationKeys.importError),
-            );
-          }
 
           // Reset importing state to allow retry
           setState(() {
@@ -557,23 +547,14 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
           Navigator.of(context).pop();
         }
       },
+      // AsyncErrorHandler already surfaces the error with the stack trace it
+      // caught; reporting it again here would only add a trace pointing at this
+      // callback instead of the failure.
       onError: (e) {
         Logger.error('Export failed: $e');
 
-        // Show error overlay notification
         if (context.mounted) {
           OverlayNotificationHelper.hideNotification();
-
-          if (e is BusinessException) {
-            ErrorHelper.showError(context, e);
-          } else {
-            ErrorHelper.showUnexpectedError(
-              context,
-              e,
-              StackTrace.current,
-              message: _translationService.translate(SettingsTranslationKeys.exportError),
-            );
-          }
         }
       },
     );
