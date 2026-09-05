@@ -237,6 +237,10 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       }
     });
 
+    // Indexing the records is O(records), so the presenter is built once per grid
+    // rather than per cell. `late` keeps it unbuilt for good habits, which never read it.
+    late final HabitDayPresenter presenter = _createPresenter();
+
     return GridView.count(
       crossAxisCount: 7,
       shrinkWrap: true,
@@ -244,11 +248,11 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
       childAspectRatio: 1,
       mainAxisSpacing: HabitUiConstants.gridSpacing,
       crossAxisSpacing: HabitUiConstants.gridSpacing,
-      children: days.map((date) => _buildCalendarDay(date)).toList(),
+      children: days.map((date) => _buildCalendarDay(date, presenter)).toList(),
     );
   }
 
-  HabitDayPresenter get _presenter => HabitDayPresenter(
+  HabitDayPresenter _createPresenter() => HabitDayPresenter(
         habitId: widget.habitId,
         habitType: widget.habitType,
         createdDate: widget.createdDate,
@@ -258,9 +262,9 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
 
   /// Bad habits are binary: the shared day-state policy decides success,
   /// failure, or neutral, so goal badges and the three-state cycle never apply.
-  Widget _buildBadHabitDay(DateTime date) {
+  Widget _buildBadHabitDay(DateTime date, HabitDayPresenter presenter) {
     final isCurrentMonth = date.month == widget.currentMonth.month;
-    final visual = _presenter.visualFor(date);
+    final visual = presenter.visualFor(date);
 
     return OutlinedButton(
       onPressed: visual.isInteractive ? () => _handleDayTap(date) : null,
@@ -293,9 +297,9 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     );
   }
 
-  Widget _buildCalendarDay(DateTime date) {
+  Widget _buildCalendarDay(DateTime date, HabitDayPresenter presenter) {
     if (widget.habitType == HabitType.bad) {
-      return _buildBadHabitDay(date);
+      return _buildBadHabitDay(date, presenter);
     }
 
     final maxDate = widget.archivedDate ?? DateTime.now();
@@ -446,7 +450,7 @@ class _HabitCalendarViewState extends State<HabitCalendarView> {
     // The parent reloads records asynchronously, so the post-toggle state is not
     // observable here. Calendar taps toggle a day binary, so a day that was not
     // already a success becomes one — and only good habits are celebrated.
-    final becomesSuccess = widget.habitType == HabitType.good && !_presenter.isCelebratedSuccess(date);
+    final becomesSuccess = widget.habitType == HabitType.good && !_createPresenter().isCelebratedSuccess(date);
 
     await widget.onToggle(date);
     widget.onRecordChanged?.call();
