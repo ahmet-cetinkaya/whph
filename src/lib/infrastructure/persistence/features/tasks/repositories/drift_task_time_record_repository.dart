@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
+import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
 
 @UseRowClass(TaskTimeRecord)
 class TaskTimeRecordTable extends Table {
@@ -49,7 +50,7 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
   }) async {
     final query = database.customSelect(
       '''
-      SELECT COALESCE(SUM(duration), 0) as total_duration
+      SELECT COALESCE(TOTAL(duration), 0) as total_duration
       FROM task_time_record_table
       WHERE task_id = ?
         AND deleted_date IS NULL
@@ -65,7 +66,7 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     );
 
     final result = await query.getSingleOrNull();
-    return result?.read<int>('total_duration') ?? 0;
+    return parseDurationAggregate(result?.data['total_duration']);
   }
 
   @override
@@ -79,7 +80,7 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     final placeholders = taskIds.map((_) => '?').join(',');
     final query = database.customSelect(
       '''
-      SELECT task_id, COALESCE(SUM(duration), 0) as total_duration
+      SELECT task_id, COALESCE(TOTAL(duration), 0) as total_duration
       FROM task_time_record_table
       WHERE task_id IN ($placeholders)
         AND deleted_date IS NULL
@@ -96,7 +97,10 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     );
 
     final results = await query.get();
-    final map = {for (final result in results) result.read<String>('task_id'): result.read<int>('total_duration')};
+    final map = {
+      for (final result in results)
+        result.read<String>('task_id'): parseDurationAggregate(result.data['total_duration'])
+    };
 
     // Ensure all taskIds have an entry, even if they have no time records
     for (final taskId in taskIds) {

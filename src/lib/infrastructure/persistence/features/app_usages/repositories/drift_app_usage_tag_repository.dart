@@ -6,6 +6,7 @@ import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
+import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
 
 @UseRowClass(AppUsageTag)
 class AppUsageTagTable extends Table {
@@ -24,6 +25,8 @@ class AppUsageTagTable extends Table {
 class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String, AppUsageTagTable>
     implements IAppUsageTagRepository {
   DriftAppUsageTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageTagTable);
+
+  DriftAppUsageTagRepository.withDatabase(AppDatabase db) : super(db, db.appUsageTagTable);
 
   @override
   Expression<String> getPrimaryKey(AppUsageTagTable t) {
@@ -91,7 +94,7 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
           t.name as tag_name,
           t.color as tag_color,
           COALESCE((
-            SELECT SUM(aur.duration)
+            SELECT TOTAL(aur.duration)
             FROM app_usage_tag_table aut
             JOIN app_usage_time_record_table aur ON aur.app_usage_id = aut.app_usage_id
             WHERE aut.tag_id = t.id
@@ -128,7 +131,7 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
         .map((row) => TagTimeData(
               tagId: row.read<String>('tag_id'),
               tagName: row.read<String>('tag_name'),
-              duration: row.read<int>('total_duration'),
+              duration: parseDurationAggregate(row.data['total_duration']),
               category: TagTimeCategory.appUsage,
               tagColor: row.read<String?>('tag_color'),
             ))

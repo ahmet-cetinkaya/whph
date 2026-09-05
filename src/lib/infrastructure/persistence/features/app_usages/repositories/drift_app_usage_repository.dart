@@ -24,6 +24,8 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     implements IAppUsageRepository {
   DriftAppUsageRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageTable);
 
+  DriftAppUsageRepository.withDatabase(AppDatabase db) : super(db, db.appUsageTable);
+
   @override
   Expression<String> getPrimaryKey(AppUsageTable t) {
     return t.id;
@@ -69,7 +71,7 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     final query = database.customSelect(
       '''
       WITH FilteredPeriodAppUsages AS (
-        SELECT au.id, au.name, COALESCE(SUM(autr.duration), 0) as total_duration
+        SELECT au.id, au.name, COALESCE(TOTAL(autr.duration), 0) as total_duration
         FROM app_usage_table au
         LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
           AND autr.deleted_date IS NULL

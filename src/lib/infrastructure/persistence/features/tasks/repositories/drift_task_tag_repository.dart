@@ -5,6 +5,7 @@ import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
+import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
 
 @UseRowClass(TaskTag)
 class TaskTagTable extends Table {
@@ -82,7 +83,7 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
           t.name as tag_name,
           t.color as tag_color,
           COALESCE((
-            SELECT SUM(tr.duration)
+            SELECT TOTAL(tr.duration)
             FROM task_tag_table tt
             JOIN task_time_record_table tr ON tr.task_id = tt.task_id
             WHERE tt.tag_id = t.id
@@ -119,7 +120,7 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
         .map((row) => TagTimeData(
               tagId: row.read<String>('tag_id'),
               tagName: row.read<String>('tag_name'),
-              duration: row.read<int>('total_duration'),
+              duration: parseDurationAggregate(row.data['total_duration']),
               category: TagTimeCategory.tasks,
               tagColor: row.read<String?>('tag_color'),
             ))

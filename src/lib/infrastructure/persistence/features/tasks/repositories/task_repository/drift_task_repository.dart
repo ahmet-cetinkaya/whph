@@ -503,7 +503,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
 
   TaskWithTotalDuration _mapToTaskWithTotalDuration(Map<String, dynamic> data) {
     final taskData = Map<String, dynamic>.from(data);
-    final totalDuration = taskData['total_duration'] as int? ?? 0;
+    final totalDuration = parseDurationAggregate(taskData['total_duration']);
     taskData.remove('total_duration');
 
     final task = _mapper.mapTaskFromRow(taskData);
@@ -627,7 +627,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
     if (subtaskIds.isNotEmpty) {
       final durationQuery = database.customSelect(
           '''
-         SELECT task_id, SUM(duration) as total_duration 
+         SELECT task_id, TOTAL(duration) as total_duration 
          FROM task_time_record_table 
          WHERE task_id IN (${subtaskIds.map((_) => '?').join(',')})
          AND deleted_date IS NULL
@@ -637,7 +637,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
           readsFrom: {database.taskTimeRecordTable});
       final durationResult = await durationQuery.get();
       for (final row in durationResult) {
-        subtaskDurationsMap[row.read<String>('task_id')] = row.read<int>('total_duration');
+        subtaskDurationsMap[row.read<String>('task_id')] = parseDurationAggregate(row.data['total_duration']);
       }
     }
 

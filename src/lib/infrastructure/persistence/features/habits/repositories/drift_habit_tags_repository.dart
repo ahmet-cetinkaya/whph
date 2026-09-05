@@ -8,6 +8,7 @@ import 'package:whph/core/application/features/tags/models/tag_time_data.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
 
 @UseRowClass(HabitTag)
 class HabitTagTable extends Table {
@@ -107,7 +108,7 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
           t.name as tag_name,
           t.color as tag_color,
           COALESCE((
-            SELECT SUM(h.estimated_time * 60 * (
+            SELECT TOTAL(h.estimated_time * 60 * (
               SELECT COUNT(*)
               FROM habit_record_table hr
               WHERE hr.habit_id = h.id
@@ -151,7 +152,7 @@ class DriftHabitTagRepository extends DriftBaseRepository<HabitTag, String, Habi
         .map((row) => TagTimeData(
               tagId: row.read<String>('tag_id'),
               tagName: row.read<String>('tag_name'),
-              duration: row.read<int>('total_duration'),
+              duration: parseDurationAggregate(row.data['total_duration']),
               category: TagTimeCategory.habits,
               tagColor: row.read<String?>('tag_color'),
             ))

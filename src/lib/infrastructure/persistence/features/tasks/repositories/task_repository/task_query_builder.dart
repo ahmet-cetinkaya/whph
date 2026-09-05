@@ -36,7 +36,7 @@ class TaskQueryBuilder {
       task_table.recurrence_end_date,
       task_table.recurrence_count,
       task_table.recurrence_parent_id,
-      (SELECT COALESCE(SUM(task_time_record_table.duration), 0)
+      (SELECT COALESCE(TOTAL(task_time_record_table.duration), 0)
        FROM task_time_record_table
        WHERE task_time_record_table.task_id = task_table.id
        AND task_time_record_table.deleted_date IS NULL) as total_duration

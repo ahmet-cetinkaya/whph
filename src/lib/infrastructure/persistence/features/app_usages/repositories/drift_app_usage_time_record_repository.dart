@@ -9,6 +9,7 @@ import 'package:whph/core/application/features/app_usages/models/app_usage_sort_
 import 'package:whph/presentation/ui/shared/models/sort_option_with_translation_key.dart';
 import 'package:whph/infrastructure/persistence/shared/repositories/drift/drift_base_repository.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph/infrastructure/persistence/shared/utils/persistence_utils.dart';
 
 @UseRowClass(AppUsageTimeRecord)
 class AppUsageTimeRecordTable extends Table {
@@ -27,6 +28,8 @@ class AppUsageTimeRecordTable extends Table {
 class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTimeRecord, String, AppUsageTimeRecordTable>
     implements IAppUsageTimeRecordRepository {
   DriftAppUsageTimeRecordRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageTimeRecordTable);
+
+  DriftAppUsageTimeRecordRepository.withDatabase(AppDatabase db) : super(db, db.appUsageTimeRecordTable);
 
   @override
   Expression<String> getPrimaryKey(AppUsageTimeRecordTable t) {
@@ -58,7 +61,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       '''
       SELECT 
         app_usage_id,
-        COALESCE(SUM(duration), 0) as total_duration
+        COALESCE(TOTAL(duration), 0) as total_duration
       FROM app_usage_time_record_table
       WHERE app_usage_id IN (${appUsageIds.map((_) => '?').join(', ')})
         AND deleted_date IS NULL
@@ -76,7 +79,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
 
     final results = await query.get();
 
-    return {for (final row in results) row.read<String>('app_usage_id'): row.read<int>('total_duration')};
+    return {
+      for (final row in results) row.read<String>('app_usage_id'): parseDurationAggregate(row.data['total_duration'])
+    };
   }
 
   @override
@@ -182,7 +187,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           au.display_name,
           au.color,
           au.device_name,
-          COALESCE(SUM(autr.duration), 0) as total_duration
+          COALESCE(TOTAL(autr.duration), 0) as total_duration
         FROM app_usage_table au
         LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id AND autr.deleted_date IS NULL
         ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
@@ -257,7 +262,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           au.display_name,
           au.color,
           au.device_name,
-          COALESCE(SUM(autr.duration), 0) as total_duration
+          COALESCE(TOTAL(autr.duration), 0) as total_duration
         FROM app_usage_table au
         LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id AND autr.deleted_date IS NULL
         ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
@@ -348,7 +353,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           displayName: row.read<String?>('display_name'),
           color: row.read<String?>('color'),
           deviceName: row.read<String?>('device_name'),
-          duration: row.read<int>('duration'),
+          duration: parseDurationAggregate(row.data['duration']),
           tags: [],
         );
       }
