@@ -5,20 +5,14 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 ///
 /// The controller is owned by the code that pushes the route, so it outlives
 /// rebuilds of the route content and never resets while the route is alive.
-class SheetMinimizeController extends ChangeNotifier {
-  bool _isMinimized = false;
+typedef SheetMinimizeController = ValueNotifier<bool>;
 
-  bool get isMinimized => _isMinimized;
+extension SheetMinimizeControls on SheetMinimizeController {
+  bool get isMinimized => value;
 
-  void minimize() => _setMinimized(true);
+  void minimize() => value = true;
 
-  void restore() => _setMinimized(false);
-
-  void _setMinimized(bool value) {
-    if (_isMinimized == value) return;
-    _isMinimized = value;
-    notifyListeners();
-  }
+  void restore() => value = false;
 }
 
 /// Exposes a [SheetMinimizeController] to the route content.
@@ -70,20 +64,22 @@ class MinimizableSheetRoute<T> extends ModalSheetRoute<T> {
 
 /// Mirrors the private container builder used by [showMaterialModalBottomSheet]
 /// so a custom route keeps the stock material sheet appearance.
-WidgetWithChildBuilder buildMaterialSheetContainer(BuildContext context) {
-  final theme = Theme.of(context);
-  final sheetTheme = theme.bottomSheetTheme;
+///
+/// The theme is resolved from the builder context rather than captured when the
+/// route is pushed, so the sheet repaints with the app when the theme changes
+/// while it is open.
+WidgetWithChildBuilder buildMaterialSheetContainer() {
+  return (builderContext, animation, child) {
+    final sheetTheme = Theme.of(builderContext).bottomSheetTheme;
 
-  return (builderContext, animation, child) => Theme(
-        data: theme,
-        child: Material(
-          color: sheetTheme.modalBackgroundColor ?? sheetTheme.backgroundColor,
-          elevation: sheetTheme.elevation ?? 0.0,
-          shape: sheetTheme.shape,
-          clipBehavior: sheetTheme.clipBehavior ?? Clip.none,
-          child: child,
-        ),
-      );
+    return Material(
+      color: sheetTheme.modalBackgroundColor ?? sheetTheme.backgroundColor,
+      elevation: sheetTheme.elevation ?? 0.0,
+      shape: sheetTheme.shape,
+      clipBehavior: sheetTheme.clipBehavior ?? Clip.none,
+      child: child,
+    );
+  };
 }
 
 /// The desktop counterpart of [MinimizableSheetRoute].

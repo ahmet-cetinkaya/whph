@@ -148,8 +148,7 @@ void main() {
 
         final offsetAfterRestore = scrollController.offset;
         await dragBackgroundList(tester);
-        expect(scrollController.offset, offsetAfterRestore,
-            reason: 'barrier must block scrolling again after restore');
+        expect(scrollController.offset, offsetAfterRestore, reason: 'barrier must block scrolling again after restore');
       });
     });
   }

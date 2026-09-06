@@ -94,9 +94,9 @@ class QuickAddTaskDialog extends StatefulWidget {
     );
 
     Future<T?> showDialogFuture;
-    if (isMobile) {
-      final minimizeController = SheetMinimizeController();
+    final minimizeController = SheetMinimizeController(false);
 
+    if (isMobile) {
       showDialogFuture = Navigator.of(context, rootNavigator: false).push(
         MinimizableSheetRoute<T>(
           minimizeController: minimizeController,
@@ -104,7 +104,7 @@ class QuickAddTaskDialog extends StatefulWidget {
           enableDrag: true,
           expanded: false,
           barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-          containerBuilder: buildMaterialSheetContainer(context),
+          containerBuilder: buildMaterialSheetContainer(),
           builder: (BuildContext context) {
             return SheetMinimizeScope(
               controller: minimizeController,
@@ -119,8 +119,6 @@ class QuickAddTaskDialog extends StatefulWidget {
         ),
       );
     } else {
-      final minimizeController = SheetMinimizeController();
-
       showDialogFuture = Navigator.of(context, rootNavigator: true).push(
         MinimizableDialogRoute<T>(
           minimizeController: minimizeController,
@@ -164,7 +162,7 @@ class QuickAddTaskDialog extends StatefulWidget {
         stackTrace: stackTrace,
       );
       return null;
-    });
+    }).whenComplete(minimizeController.dispose);
   }
 
   /// Wraps the desktop dialog so it collapses to a small floating bar in the
@@ -553,9 +551,11 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
               // Offstage keeps the collapsed desktop bar compact; the header
               // holds no user input, so removing it from layout is safe.
               Offstage(offstage: isMinimized, child: _buildDesktopHeader(theme)),
-            _buildTitleInput(theme, isMobile, isMinimized),
-            // Offstage (not a conditional child) keeps the action bar mounted while
-            // minimized, so tag/priority/date selections survive the collapse.
+            _buildTitleInput(theme, isMobile),
+            // Offstage rather than a conditional child: keeping the bar mounted
+            // avoids rebuilding it and re-running TagSelectDropdown's tag query
+            // on every collapse. The entered values themselves are safe either
+            // way - they live in the controller, not in these widgets.
             Flexible(
               child: Offstage(
                 offstage: isMinimized,
@@ -617,7 +617,9 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     );
   }
 
-  Widget _buildTitleInput(ThemeData theme, bool isMobile, bool isMinimized) {
+  Widget _buildTitleInput(ThemeData theme, bool isMobile) {
+    final isMinimized = SheetMinimizeScope.maybeOf(context)?.isMinimized ?? false;
+
     return TextField(
       controller: _titleController,
       focusNode: _focusNode,

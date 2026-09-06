@@ -15,7 +15,6 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/error_helper.dart';
 
-
 class MockTranslationService extends Mock implements ITranslationService {
   @override
   String translate(String key, {Map<String, String>? namedArgs, String? defaultValue}) => key;
@@ -90,13 +89,25 @@ class FakeContainer extends Fake implements IContainer {
   }
 }
 
+/// Tags the stub handler serves.
+///
+/// Non-empty on purpose: an empty list makes [TagSelectDropdown]'s selection
+/// path unreachable, so any test asserting that a chosen tag survives a
+/// minimize/restore cycle would pass vacuously.
+const stubTagNames = ['Work', 'Home'];
+
 /// Returns an empty tag page so [TagSelectDropdown] can settle without a database.
 class StubGetListTagsQueryHandler implements IRequestHandler<GetListTagsQuery, GetListTagsQueryResponse> {
   @override
   Future<GetListTagsQueryResponse> call(GetListTagsQuery request) async {
+    final items = <TagListItem>[
+      for (var index = 0; index < stubTagNames.length; index++)
+        TagListItem(id: 'tag-$index', name: stubTagNames[index]),
+    ];
+
     return GetListTagsQueryResponse(
-      items: const [],
-      totalItemCount: 0,
+      items: items,
+      totalItemCount: items.length,
       pageIndex: request.pageIndex,
       pageSize: request.pageSize,
     );
