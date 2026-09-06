@@ -401,6 +401,8 @@ tasks:
       planned_date_not_set: "予定: 未設定"
       lock: ロック
       unlock: ロック解除
+      minimize: 最小化
+      restore: 元に戻す
     new_task_default_title: 新しいタスク
   recurrence:
     count: 発生回数

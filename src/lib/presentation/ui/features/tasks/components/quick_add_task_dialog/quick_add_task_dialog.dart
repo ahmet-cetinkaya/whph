@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart' as acore;
@@ -18,9 +17,14 @@ import '../dialogs/priority_selection_dialog.dart';
 import 'dialogs/clear_fields_confirmation_dialog.dart';
 import 'controllers/quick_add_task_controller.dart';
 import 'components/quick_action_buttons_bar.dart';
+import 'minimizable_routes.dart';
 
 import '../task_date_picker_dialog.dart';
 import '../../pages/task_details_page.dart';
+
+/// Width of the collapsed desktop dialog, small enough to read as a floating
+/// bar instead of a dialog that merely lost its body.
+const double _minimizedDesktopDialogMaxWidth = 420.0;
 
 enum LockType {
   priority,
@@ -90,36 +94,40 @@ class QuickAddTaskDialog extends StatefulWidget {
     );
 
     Future<T?> showDialogFuture;
+    final minimizeController = SheetMinimizeController(false);
+
     if (isMobile) {
-      showDialogFuture = showMaterialModalBottomSheet<T>(
-        context: context,
-        isDismissible: true,
-        enableDrag: true,
-        useRootNavigator: false,
-        expand: false,
-        builder: (BuildContext context) {
-          return AnimatedPadding(
-            padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeInOut,
-            child: dialog,
-          );
-        },
+      showDialogFuture = Navigator.of(context, rootNavigator: false).push(
+        MinimizableSheetRoute<T>(
+          minimizeController: minimizeController,
+          isDismissible: true,
+          enableDrag: true,
+          expanded: false,
+          barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+          containerBuilder: buildMaterialSheetContainer(),
+          builder: (BuildContext context) {
+            return SheetMinimizeScope(
+              controller: minimizeController,
+              child: AnimatedPadding(
+                padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeInOut,
+                child: dialog,
+              ),
+            );
+          },
+        ),
       );
     } else {
-      showDialogFuture = showDialog<T>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) => Dialog(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: AppTheme.dialogMaxWidthMedium,
-                maxHeight: MediaQuery.of(context).size.height * 0.8,
-              ),
-              child: dialog,
-            ),
+      showDialogFuture = Navigator.of(context, rootNavigator: true).push(
+        MinimizableDialogRoute<T>(
+          minimizeController: minimizeController,
+          context: context,
+          themes: InheritedTheme.capture(from: context, to: Navigator.of(context, rootNavigator: true).context),
+          barrierDismissible: true,
+          builder: (BuildContext context) => SheetMinimizeScope(
+            controller: minimizeController,
+            child: _buildDesktopDialogShell(context, minimizeController, dialog),
           ),
         ),
       );
@@ -154,7 +162,37 @@ class QuickAddTaskDialog extends StatefulWidget {
         stackTrace: stackTrace,
       );
       return null;
-    });
+    }).whenComplete(minimizeController.dispose);
+  }
+
+  /// Wraps the desktop dialog so it collapses to a small floating bar in the
+  /// bottom-right corner instead of staying a centred, full-size dialog.
+  static Widget _buildDesktopDialogShell(
+    BuildContext context,
+    SheetMinimizeController minimizeController,
+    Widget dialog,
+  ) {
+    return AnimatedBuilder(
+      animation: minimizeController,
+      builder: (BuildContext context, _) {
+        final isMinimized = minimizeController.isMinimized;
+
+        return Dialog(
+          alignment: isMinimized ? Alignment.bottomRight : null,
+          insetPadding: EdgeInsets.all(isMinimized ? AppTheme.sizeXLarge : AppTheme.sizeLarge),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppTheme.containerBorderRadius),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isMinimized ? _minimizedDesktopDialogMaxWidth : AppTheme.dialogMaxWidthMedium,
+                maxHeight: MediaQuery.sizeOf(context).height * 0.8,
+              ),
+              child: dialog,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -476,10 +514,24 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
     );
   }
 
+  /// Collapses the sheet and drops the keyboard so the content behind is usable.
+  void _minimize() {
+    final minimizeController = SheetMinimizeScope.maybeOf(context);
+    if (minimizeController == null) return;
+
+    _focusNode.unfocus();
+    FocusScope.of(context).unfocus();
+    minimizeController.minimize();
+  }
+
+  void _restore() => SheetMinimizeScope.maybeOf(context)?.restore();
+
   @override
   Widget build(BuildContext context) {
     final isMobile = defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS;
     final theme = Theme.of(context);
+    final minimizeController = SheetMinimizeScope.maybeOf(context);
+    final isMinimized = minimizeController?.isMinimized ?? false;
 
     return Container(
       decoration: BoxDecoration(
@@ -493,24 +545,37 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (isMobile) _buildMobileDragHandle(theme) else _buildDesktopHeader(theme),
+            if (isMobile)
+              _buildMobileDragHandle(theme)
+            else
+              // Offstage keeps the collapsed desktop bar compact; the header
+              // holds no user input, so removing it from layout is safe.
+              Offstage(offstage: isMinimized, child: _buildDesktopHeader(theme)),
             _buildTitleInput(theme, isMobile),
+            // Offstage rather than a conditional child: keeping the bar mounted
+            // avoids rebuilding it and re-running TagSelectDropdown's tag query
+            // on every collapse. The entered values themselves are safe either
+            // way - they live in the controller, not in these widgets.
             Flexible(
-              child: Padding(
-                padding: EdgeInsets.only(top: AppTheme.sizeSmall),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: QuickActionButtonsBar(
-                    controller: _controller,
-                    descriptionController: _descriptionController,
-                    onShowPriorityDialog: _showPrioritySelectionDialog,
-                    onShowEstimatedTimeDialog: _showEstimatedTimeDialog,
-                    onShowDescriptionDialog: _showDescriptionDialog,
-                    onSelectPlannedDate: _selectPlannedDate,
-                    onSelectDeadlineDate: _selectDeadlineDate,
-                    onClearAllFields: _onClearAllFields,
-                    tagLockAction: _buildLockAction(() => _controller.lockTags, () => _toggleLock(LockType.tags)),
-                    isMobile: isMobile,
+              child: Offstage(
+                offstage: isMinimized,
+                child: Padding(
+                  padding: EdgeInsets.only(top: AppTheme.sizeSmall),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: QuickActionButtonsBar(
+                      controller: _controller,
+                      descriptionController: _descriptionController,
+                      onShowPriorityDialog: _showPrioritySelectionDialog,
+                      onShowEstimatedTimeDialog: _showEstimatedTimeDialog,
+                      onShowDescriptionDialog: _showDescriptionDialog,
+                      onSelectPlannedDate: _selectPlannedDate,
+                      onSelectDeadlineDate: _selectDeadlineDate,
+                      onClearAllFields: _onClearAllFields,
+                      tagLockAction: _buildLockAction(() => _controller.lockTags, () => _toggleLock(LockType.tags)),
+                      isMobile: isMobile,
+                      onMinimize: minimizeController == null ? null : _minimize,
+                    ),
                   ),
                 ),
               ),
@@ -553,10 +618,12 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
   }
 
   Widget _buildTitleInput(ThemeData theme, bool isMobile) {
+    final isMinimized = SheetMinimizeScope.maybeOf(context)?.isMinimized ?? false;
+
     return TextField(
       controller: _titleController,
       focusNode: _focusNode,
-      autofocus: true,
+      autofocus: !isMinimized,
       style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: _controller.translationService.translate(TaskTranslationKeys.quickTaskTitlePlaceholder),
@@ -564,12 +631,31 @@ class _QuickAddTaskDialogState extends State<QuickAddTaskDialog> {
         suffixIcon: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (isMinimized) _buildRestoreButton(theme),
             _buildOpenTaskButton(theme, isMobile),
             _buildSendButton(theme, isMobile),
           ],
         ),
       ),
       onSubmitted: (_) => _createTask(),
+    );
+  }
+
+  Widget _buildRestoreButton(ThemeData theme) {
+    return SizedBox(
+      width: AppTheme.buttonSizeLarge,
+      height: AppTheme.buttonSizeLarge,
+      child: IconButton(
+        icon: Icon(Icons.open_in_full, color: theme.colorScheme.onSurface.withValues(alpha: 0.7)),
+        onPressed: _restore,
+        iconSize: AppTheme.iconSizeMedium,
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(
+          minWidth: AppTheme.buttonSizeLarge,
+          minHeight: AppTheme.buttonSizeLarge,
+        ),
+        tooltip: _controller.translationService.translate(TaskTranslationKeys.quickTaskRestore),
+      ),
     );
   }
 

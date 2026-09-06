@@ -366,6 +366,8 @@ tasks:
       planned_date_not_set: "Planificat: Nu setat"
       lock: Blocare
       unlock: Deblocare
+      minimize: Minimizare
+      restore: Restaurare
     new_task_default_title: Sarcină nouă
   recurrence:
     count: Număr de apariții

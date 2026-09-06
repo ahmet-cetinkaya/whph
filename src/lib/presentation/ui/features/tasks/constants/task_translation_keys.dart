@@ -45,6 +45,8 @@ class TaskTranslationKeys extends application.TaskTranslationKeys {
   static const String taskAddedSuccessfully = 'tasks.quick_task.task_added_successfully';
   static const String quickTaskLock = 'tasks.quick_task.tooltips.lock';
   static const String quickTaskUnlock = 'tasks.quick_task.tooltips.unlock';
+  static const String quickTaskMinimize = 'tasks.quick_task.tooltips.minimize';
+  static const String quickTaskRestore = 'tasks.quick_task.tooltips.restore';
 
   // Estimated Time Dialog
   static const String estimatedTimeDescription = 'tasks.estimated_time.description';

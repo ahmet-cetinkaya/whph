@@ -444,6 +444,8 @@ tasks:
       planned_date_not_set: "Geplant: Nicht festgelegt"
       lock: Sperren
       unlock: Entsperren
+      minimize: Minimieren
+      restore: Wiederherstellen
     new_task_default_title: Neue Aufgabe
   recurrence:
     count: Anzahl der Wiederholungen

@@ -362,6 +362,8 @@ tasks:
       planned_date_not_set: "Gepland: Niet ingesteld"
       lock: Vergrendelen
       unlock: Ontgrendelen
+      minimize: Minimaliseren
+      restore: Herstellen
     new_task_default_title: Nieuwe taak
   recurrence:
     count: Aantal herhalingen

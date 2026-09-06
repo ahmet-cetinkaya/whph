@@ -400,6 +400,8 @@ tasks:
       planned_date_not_set: "Planlanan: Ayarlanmadı"
       lock: Kilitle
       unlock: Kilidi Aç
+      minimize: Küçült
+      restore: Geri Yükle
   recurrence:
     count: Tekrarlama sayısı
     custom: Özel

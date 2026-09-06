@@ -398,6 +398,8 @@ tasks:
       planned_date_not_set: 计划日期：未设置
       lock: 锁定
       unlock: 解锁
+      minimize: 最小化
+      restore: 还原
     new_task_default_title: 新任务
   recurrence:
     count: 发生次数

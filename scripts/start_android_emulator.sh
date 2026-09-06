@@ -71,7 +71,12 @@ echo "Booting AVD '$avd_name'..."
 # group, and a merely nohup'd child stays in that group - the emulator would die
 # moments after this script reported success, leaving the debug session to fail
 # with "device 'emulator-5554' not found". A new session detaches it for good.
-setsid "$EMULATOR" -avd "$avd_name" -netdelay none -netspeed full \
+# `-gpu swangle` overrides whatever the AVD stores. Android Studio writes the
+# mode `swiftshader_indirect`, which emulator 37 no longer accepts; it falls back
+# to `auto`, picks the host GPU, and on a Wayland session without working host
+# GL it renders nothing - the window opens but stays black and the device never
+# reports sys.boot_completed. swangle is the supported software renderer.
+setsid "$EMULATOR" -avd "$avd_name" -gpu swangle -netdelay none -netspeed full \
   >/tmp/whph_emulator.log 2>&1 < /dev/null &
 disown 2>/dev/null || true
 

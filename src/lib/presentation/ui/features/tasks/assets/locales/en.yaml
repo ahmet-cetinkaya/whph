@@ -349,6 +349,8 @@ tasks:
       planned_date_not_set: "Planned: Not set"
       lock: Lock
       unlock: Unlock
+      minimize: Minimize
+      restore: Restore
   recurrence:
     count: Number of occurrences
     custom: Custom

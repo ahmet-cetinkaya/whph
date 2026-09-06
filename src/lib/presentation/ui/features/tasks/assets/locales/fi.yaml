@@ -357,6 +357,8 @@ tasks:
       planned_date_not_set: "Suunniteltu: Ei asetettu"
       lock: Lukitse
       unlock: Avaa lukitus
+      minimize: Pienennä
+      restore: Palauta
     new_task_default_title: Uusi tehtävä
   recurrence:
     count: Toistojen Määrä
