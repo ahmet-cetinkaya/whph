@@ -442,6 +442,8 @@ tasks:
       planned_date_not_set: "Planlagt: Ikke sat"
       lock: Lås
       unlock: Lås op
+      minimize: Minimer
+      restore: Gendan
     new_task_default_title: Ny opgave
   recurrence:
     count: Antal forekomster

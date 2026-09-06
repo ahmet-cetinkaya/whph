@@ -407,6 +407,8 @@ tasks:
       planned_date_not_set: "계획일: 설정되지 않음"
       lock: 잠금
       unlock: 잠금 해제
+      minimize: 최소화
+      restore: 복원
     new_task_default_title: 새 작업
   recurrence:
     count: 발생 횟수

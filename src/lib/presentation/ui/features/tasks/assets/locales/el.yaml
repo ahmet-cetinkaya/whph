@@ -370,6 +370,8 @@ tasks:
       planned_date_not_set: "Προγραμματισμένο: Δεν ορίστηκε"
       lock: Κλείδωμα
       unlock: Ξεκλείδωμα
+      minimize: Ελαχιστοποίηση
+      restore: Επαναφορά
     new_task_default_title: Νέα εργασία
   recurrence:
     count: Αριθμός επαναλήψεων

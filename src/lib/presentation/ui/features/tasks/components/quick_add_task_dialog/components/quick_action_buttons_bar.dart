@@ -21,6 +21,10 @@ class QuickActionButtonsBar extends StatelessWidget {
   final Widget? tagLockAction;
   final bool isMobile;
 
+  /// Collapses the sheet so the content behind it becomes reachable.
+  /// Null when the host cannot collapse, which hides the affordance entirely.
+  final VoidCallback? onMinimize;
+
   const QuickActionButtonsBar({
     super.key,
     required this.controller,
@@ -33,6 +37,7 @@ class QuickActionButtonsBar extends StatelessWidget {
     required this.onClearAllFields,
     this.tagLockAction,
     required this.isMobile,
+    this.onMinimize,
   });
 
   @override
@@ -59,7 +64,20 @@ class QuickActionButtonsBar extends StatelessWidget {
         _buildDeadlineDateButton(theme, iconSize),
         SizedBox(width: buttonGap),
         _buildClearButton(theme, iconSize),
+        if (onMinimize != null) ...[
+          SizedBox(width: buttonGap),
+          _buildMinimizeButton(theme, iconSize),
+        ],
       ],
+    );
+  }
+
+  Widget _buildMinimizeButton(ThemeData theme, double iconSize) {
+    return QuickActionIconButton(
+      icon: Icons.close_fullscreen,
+      onPressed: onMinimize!,
+      tooltip: controller.translationService.translate(TaskTranslationKeys.quickTaskMinimize),
+      iconSize: iconSize,
     );
   }
 

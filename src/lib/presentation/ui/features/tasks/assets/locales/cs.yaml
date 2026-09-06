@@ -440,6 +440,8 @@ tasks:
       planned_date_not_set: "Plánováno: Není nastaveno"
       lock: Uzamknout
       unlock: Odemknout
+      minimize: Minimalizovat
+      restore: Obnovit
     new_task_default_title: Nový úkol
   recurrence:
     count: Počet výskytů

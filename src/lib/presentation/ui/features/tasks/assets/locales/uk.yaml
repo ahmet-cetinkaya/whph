@@ -441,6 +441,8 @@ tasks:
       planned_date_not_set: "Заплановано: Не встановлено"
       lock: Заблокувати
       unlock: Розблокувати
+      minimize: Згорнути
+      restore: Відновити
     new_task_default_title: Нове завдання
   recurrence:
     count: Кількість повторень

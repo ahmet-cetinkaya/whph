@@ -360,6 +360,8 @@ tasks:
       planned_date_not_set: "Planlagt: Ikke satt"
       lock: Lås
       unlock: Lås opp
+      minimize: Minimer
+      restore: Gjenopprett
     new_task_default_title: Ny oppgave
   recurrence:
     count: Antall forekomster

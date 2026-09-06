@@ -444,6 +444,8 @@ tasks:
       planned_date_not_set: "Pianificato: Non impostato"
       lock: Blocca
       unlock: Sblocca
+      minimize: Riduci a icona
+      restore: Ripristina
     new_task_default_title: Nuova attività
   recurrence:
     count: Numero di occorrenze
