@@ -15,10 +15,16 @@
 // See docs/build/LINUX-DEPENDENCIES.md.
 //
 // `deviceId` pins the target device because multiple devices (Linux desktop +
-// Chrome) are usually connected and Flutter otherwise aborts with "More than
-// one device connected".
+// Chrome + Android emulator) are usually connected and Flutter otherwise aborts
+// with "More than one device connected".
 // The Dart extension requires the `type` field ("flutter" here).
 // See: https://zed.dev/docs/debugger
+//
+// ANDROID: the adapter resolves `deviceId` against devices Flutter can already
+// see, so a stopped AVD makes the session fail with "Device ... not found". The
+// Android entries therefore run `scripts/start_android_emulator.sh` first via
+// `build`, which boots the AVD and blocks until `sys.boot_completed` flips.
+// That script is idempotent, so an already-running emulator is reused.
 [
   {
     "label": "whph",
@@ -29,5 +35,32 @@
     "cwd": "$ZED_WORKTREE_ROOT/src",
     "deviceId": "linux",
     "useFvm": true
+  },
+  {
+    "label": "whph (Android emulator)",
+    "adapter": "Dart",
+    "type": "flutter",
+    "request": "launch",
+    "program": "lib/main.dart",
+    "cwd": "$ZED_WORKTREE_ROOT/src",
+    "deviceId": "emulator-5554",
+    "useFvm": true,
+    "build": {
+      "command": "$ZED_WORKTREE_ROOT/scripts/start_android_emulator.sh"
+    }
+  },
+  {
+    "label": "whph (Android emulator, demo mode)",
+    "adapter": "Dart",
+    "type": "flutter",
+    "request": "launch",
+    "program": "lib/main.dart",
+    "cwd": "$ZED_WORKTREE_ROOT/src",
+    "deviceId": "emulator-5554",
+    "useFvm": true,
+    "toolArgs": ["--dart-define", "DEMO_MODE=true"],
+    "build": {
+      "command": "$ZED_WORKTREE_ROOT/scripts/start_android_emulator.sh"
+    }
   }
 ]
