@@ -84,7 +84,7 @@ class _DefaultPageSettingsState extends State<DefaultPageSettings> {
   Future<void> _showPageSelectionDialog() async {
     await ResponsiveDialogHelper.showResponsiveDialog(
       context: context,
-      size: DialogSize.min,
+      size: DialogSize.medium,
       child: _DefaultPageSelectDialog(
         pages: _selectablePages,
         selectedRoute: _selectedRoute,
@@ -132,19 +132,47 @@ class _DefaultPageSelectDialog extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(translationService.translate(SettingsTranslationKeys.defaultPageDialogTitle)),
+        elevation: 0,
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: AppTheme.sizeSmall),
-        children: pages.map((page) {
-          final isSelected = page.route == selectedRoute;
-          return ListTile(
-            leading: Icon(page.icon),
-            title: Text(translationService.translate(page.titleKey)),
-            trailing: isSelected ? const Icon(Icons.check) : null,
-            selected: isSelected,
-            onTap: () => onSelected(page.route!),
-          );
-        }).toList(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: AppTheme.sizeSmall),
+            for (final page in pages) _buildPageTile(context, page),
+            const SizedBox(height: AppTheme.sizeLarge),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPageTile(BuildContext context, NavItem page) {
+    final isSelected = page.route == selectedRoute;
+
+    return Card(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppTheme.sizeMedium,
+        vertical: AppTheme.sizeXSmall,
+      ),
+      elevation: isSelected ? 4 : 1,
+      child: ListTile(
+        leading: Icon(page.icon),
+        title: Text(
+          translationService.translate(page.titleKey),
+          style: AppTheme.bodyMedium.copyWith(
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        trailing: isSelected
+            ? Icon(
+                Icons.check_circle,
+                color: Theme.of(context).primaryColor,
+              )
+            : Icon(
+                Icons.radio_button_unchecked,
+                color: Theme.of(context).colorScheme.onSurface.withAlpha((255 * 0.4).toInt()),
+              ),
+        onTap: () => onSelected(page.route!),
       ),
     );
   }

@@ -21,18 +21,16 @@ class AppRoutes {
   static final defaultRouteName = TodayPage.route;
   static final defaultRoute = TodayPage();
 
-  /// The page for [routeName], falling back to the default page when the name
-  /// is null or no longer maps to anything - a stored setting can outlive the
-  /// page it points at.
-  static Widget pageForRoute(String? routeName) {
-    if (routeName == null) return defaultRoute;
-
-    return Builder(
-      builder: (context) {
-        final route = onGenerateRoute(RouteSettings(name: routeName)) as PageRouteBuilder;
-        return route.pageBuilder(context, kAlwaysCompleteAnimation, kAlwaysCompleteAnimation);
-      },
-    );
+  /// Builds the app's first page as a single named route.
+  ///
+  /// Naming it matters: the navigation bar reads the current route to decide
+  /// what to highlight, so an unnamed first page (what `home:` produces) makes
+  /// it fall back to Today whichever page the user actually landed on. Keeping
+  /// it to one route matters too: Flutter's own handling of `initialRoute`
+  /// would also push '/', which resolves to Today, leaving the chosen page on
+  /// top of a page nobody asked for.
+  static List<Route<dynamic>> buildInitialRoutes(String? routeName) {
+    return [onGenerateRoute(RouteSettings(name: routeName ?? defaultRouteName))];
   }
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

@@ -145,10 +145,8 @@ class _AppState extends State<App> {
             theme: _themeService.themeData,
             debugShowCheckedModeBanner: false,
             onGenerateRoute: AppRoutes.onGenerateRoute,
-            // `home:`, not `initialRoute:`. The latter also generates a route
-            // for '/', which AppRoutes maps to Today, leaving a stray Today
-            // page underneath the chosen one for Back to land on.
-            home: AppRoutes.pageForRoute(widget.initialRoute),
+            initialRoute: widget.initialRoute ?? AppRoutes.defaultRouteName,
+            onGenerateInitialRoutes: AppRoutes.buildInitialRoutes,
           ),
         );
       },

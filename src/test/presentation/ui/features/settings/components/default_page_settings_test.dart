@@ -64,10 +64,13 @@ void main() {
     await tester.tap(find.byType(ListTile));
     await tester.pumpAndSettle();
 
-    final todayEntry = tester.widget<ListTile>(
-      find.ancestor(of: find.text(SharedTranslationKeys.navToday).last, matching: find.byType(ListTile)),
+    expect(
+      find.descendant(
+        of: find.ancestor(of: find.text(SharedTranslationKeys.navToday).last, matching: find.byType(ListTile)),
+        matching: find.byIcon(Icons.check_circle),
+      ),
+      findsOneWidget,
     );
-    expect(todayEntry.selected, isTrue);
   });
 
   testWidgets('saves the picked page and reflects it on the tile', (WidgetTester tester) async {
@@ -82,7 +85,34 @@ void main() {
     expect(find.text(SharedTranslationKeys.navTasks), findsOneWidget);
   });
 
+  testWidgets('opens as a dialog rather than filling the screen', (WidgetTester tester) async {
+    // DialogSize.min hands the child back unwrapped, so a Scaffold-based picker
+    // covers the whole window instead of sitting in a dialog like the other
+    // settings do.
+    tester.view.physicalSize = const Size(1600, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await pumpSettings(tester);
+    await tester.tap(find.byType(ListTile));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Dialog), findsOneWidget);
+
+    // The Dialog widget itself spans the window; what must stay bounded is the
+    // picker inside it.
+    final pickerSize = tester.getSize(find.byType(Scaffold).last);
+    expect(pickerSize.width, lessThan(1600));
+    expect(pickerSize.height, lessThan(1200));
+  });
+
   testWidgets('offers every section, with Today among them', (WidgetTester tester) async {
+    // Tall enough to hold the whole list: the picker scrolls, so a short
+    // surface would hide entries and make the assertions below meaningless.
+    tester.view.physicalSize = const Size(1200, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
     await pumpSettings(tester);
 
     await tester.tap(find.byType(ListTile));
