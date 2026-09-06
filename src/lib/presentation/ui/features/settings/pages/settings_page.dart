@@ -21,6 +21,7 @@ import 'package:whph/presentation/ui/features/settings/constants/settings_transl
 import 'package:whph/presentation/ui/features/settings/components/import_export_settings.dart';
 import 'package:whph/presentation/ui/features/settings/components/advanced_settings_tile.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
+import 'package:whph/presentation/ui/features/settings/components/default_page_settings.dart';
 
 class SettingsPage extends StatefulWidget {
   static const String route = '/settings';
@@ -34,19 +35,28 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   // Track loading state for each settings tile
   bool _startupLoaded = false;
+  bool _defaultPageLoaded = false;
   bool _notificationLoaded = false;
   bool _themeLoaded = false;
   bool _soundLoaded = false;
 
   /// Check if all settings tiles have finished loading
   bool get _isPageFullyLoaded {
-    return _startupLoaded && _notificationLoaded && _themeLoaded && _soundLoaded;
+    return _startupLoaded && _defaultPageLoaded && _notificationLoaded && _themeLoaded && _soundLoaded;
   }
 
   void _onStartupLoaded() {
     if (mounted) {
       setState(() {
         _startupLoaded = true;
+      });
+    }
+  }
+
+  void _onDefaultPageLoaded() {
+    if (mounted) {
+      setState(() {
+        _defaultPageLoaded = true;
       });
     }
   }
@@ -97,6 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     LanguageSettings(),
                     StartupSettings(onLoaded: _onStartupLoaded),
+                    DefaultPageSettings(onLoaded: _onDefaultPageLoaded),
                     if (PlatformUtils.isMobile) PermissionSettings(),
                   ],
                 ),

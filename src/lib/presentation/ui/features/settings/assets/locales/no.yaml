@@ -45,6 +45,10 @@ settings:
     description: Eksporter dataene dine i ulike formater eller importer data fra backup-filer
     select_action: Velg import/eksport handling
     title: Import/Eksport
+  default_page:
+    dialog_title: Velg standardsiden
+    save_error: Kunne ikke lagre standardsiden
+    title: Standardside
   language:
     choose_title: Velg språket ditt
     dialog_info: "{count} språk tilgjengelig."

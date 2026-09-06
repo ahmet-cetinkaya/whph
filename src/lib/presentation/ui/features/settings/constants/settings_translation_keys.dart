@@ -27,6 +27,9 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String soundSettings = 'settings.sound.settings';
 
   // Startup Settings
+  static const String defaultPageTitle = 'settings.default_page.title';
+  static const String defaultPageDialogTitle = 'settings.default_page.dialog_title';
+  static const String defaultPageSaveError = 'settings.default_page.save_error';
   static const String startupTitle = 'settings.startup.title';
   static const String startupPermissionTitle = 'settings.permissions.startup.title';
   static const String startupSubtitle = 'settings.startup.subtitle';

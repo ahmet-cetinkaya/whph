@@ -43,6 +43,10 @@ settings:
     description: 다양한 형식으로 데이터를 내보내거나 백업 파일에서 데이터를 가져올 수 있습니다
     select_action: 가져오기/내보내기 작업 선택
     title: 가져오기/내보내기
+  default_page:
+    dialog_title: 기본 페이지 선택
+    save_error: 기본 페이지를 저장하지 못했습니다
+    title: 기본 페이지
   language:
     choose_title: 언어 선택
     dialog_info: "{count}개 언어 사용 가능."

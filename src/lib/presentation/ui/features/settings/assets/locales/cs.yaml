@@ -49,6 +49,10 @@ settings:
       souborů
     select_action: Vyberte akci import/export
     title: Import/Export
+  default_page:
+    dialog_title: Vyberte výchozí stránku
+    save_error: Uložení výchozí stránky se nezdařilo
+    title: Výchozí stránka
   language:
     choose_title: Vyberte svůj jazyk
     dialog_info: "{count} jazyků dostupných."

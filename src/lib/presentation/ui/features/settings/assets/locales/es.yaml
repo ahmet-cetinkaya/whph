@@ -49,6 +49,10 @@ settings:
       de copia de seguridad
     select_action: Seleccionar acción de importar/exportar
     title: Importar/Exportar
+  default_page:
+    dialog_title: Elige la página predeterminada
+    save_error: No se pudo guardar la página predeterminada
+    title: Página predeterminada
   language:
     choose_title: Elige tu idioma
     dialog_info: "{count} idiomas disponibles."

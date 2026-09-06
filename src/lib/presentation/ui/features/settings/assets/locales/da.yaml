@@ -47,6 +47,10 @@ settings:
       backup-filer
     select_action: Vælg import/eksport handling
     title: Import/Eksport
+  default_page:
+    dialog_title: Vælg standardsiden
+    save_error: Kunne ikke gemme standardsiden
+    title: Standardside
   language:
     choose_title: Vælg dit sprog
     dialog_info: "{count} sprog tilgængelige."

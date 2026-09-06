@@ -43,6 +43,10 @@ settings:
     description: さまざまな形式でデータをエクスポートしたり、バックアップファイルからデータをインポートできます
     select_action: インポート/エクスポートアクションを選択
     title: インポート/エクスポート
+  default_page:
+    dialog_title: デフォルトページを選択
+    save_error: デフォルトページを保存できませんでした
+    title: デフォルトページ
   language:
     choose_title: 言語を選択
     dialog_info: "{count}言語利用可能。"

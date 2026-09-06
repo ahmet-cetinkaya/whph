@@ -47,6 +47,10 @@ settings:
     description: Esporta i tuoi dati in vari formati o importa dati da file di backup
     select_action: Seleziona azione importa/esporta
     title: Importa/Esporta
+  default_page:
+    dialog_title: Scegli la pagina predefinita
+    save_error: Salvataggio della pagina predefinita non riuscito
+    title: Pagina predefinita
   language:
     choose_title: Scegli la tua lingua
     dialog_info: "{count} lingue disponibili."

@@ -49,6 +49,10 @@ settings:
       veri içe aktarın
     select_action: İç/Dışa aktarma işlemi seçin
     title: İçe/Dışa Aktar
+  default_page:
+    dialog_title: Varsayılan sayfayı seçin
+    save_error: Varsayılan sayfa kaydedilemedi
+    title: Varsayılan sayfa
   language:
     choose_title: Dilini seç
     dialog_info: "{count} dil mevcut."
