@@ -56,5 +56,29 @@
     "use_new_terminal": false,
     "allow_concurrent_runs": false,
     "reveal": "always"
+  },
+  {
+    "label": "whph: start Android emulator",
+    "command": "$ZED_WORKTREE_ROOT/scripts/start_android_emulator.sh",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "whph: run (Android emulator)",
+    "command": "$ZED_WORKTREE_ROOT/scripts/start_android_emulator.sh && $ZED_WORKTREE_ROOT/scripts/zed_nix_run.sh src fvm flutter run -d emulator-5554",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
+  },
+  {
+    "label": "whph: run (Android emulator, demo mode)",
+    "command": "$ZED_WORKTREE_ROOT/scripts/start_android_emulator.sh && $ZED_WORKTREE_ROOT/scripts/zed_nix_run.sh src fvm flutter run -d emulator-5554 --dart-define DEMO_MODE=true",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always"
   }
 ]
