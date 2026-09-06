@@ -51,6 +51,10 @@ settings:
       back-upbestanden
     select_action: Selecteer import/export-actie
     title: Import/Export
+  default_page:
+    dialog_title: Kies de standaardpagina
+    save_error: Opslaan van de standaardpagina mislukt
+    title: Standaardpagina
   language:
     choose_title: Kies uw taal
     dialog_info: "{count} talen beschikbaar."

@@ -23,6 +23,9 @@ import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/infrastructure/android/features/share/android_share_service.dart';
 import 'package:whph/infrastructure/android/features/share/share_to_create_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 
 /// Global navigator key for accessing context throughout the application
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -182,6 +185,10 @@ Future<void> main(List<String> args) async {
     // Get translation service for app wrapper
     final translationService = tempContainer.resolve<ITranslationService>();
 
+    // Resolved before runApp because MaterialApp needs the route synchronously;
+    // reading it later would show Today first and then jump to the chosen page.
+    final defaultPageRoute = await _readDefaultPageRoute(tempContainer);
+
     // Set up share intent handling for Android (must be AFTER initializeCoreServices)
     AndroidShareService.setupShareListener(
       onSharedText: (text, subject) async {
@@ -216,6 +223,7 @@ Future<void> main(List<String> args) async {
           navigatorKey: navigatorKey,
           container: tempContainer,
           startupErrorState: startupErrorState,
+          initialRoute: defaultPageRoute,
         ),
       ),
     );
@@ -251,6 +259,23 @@ Future<void> main(List<String> args) async {
     // Log the error to the console
     debugPrint('Uncaught error on app startup: \n$error\n$stack');
   });
+}
+
+/// Returns the route the app should open on, or null to fall back to Today.
+///
+/// Never throws: the setting is a convenience, so a failed read must not stop
+/// the app from launching.
+Future<String?> _readDefaultPageRoute(IContainer appContainer) async {
+  try {
+    final mediator = appContainer.resolve<Mediator>();
+    final setting = await mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
+      GetSettingQuery(key: SettingKeys.defaultPage),
+    );
+    return setting?.value;
+  } catch (e, stackTrace) {
+    Logger.error('Failed to read the default page setting: $e', stackTrace: stackTrace);
+    return null;
+  }
 }
 
 /// Cleanup resources before app exit

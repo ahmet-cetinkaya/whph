@@ -21,6 +21,20 @@ class AppRoutes {
   static final defaultRouteName = TodayPage.route;
   static final defaultRoute = TodayPage();
 
+  /// The page for [routeName], falling back to the default page when the name
+  /// is null or no longer maps to anything - a stored setting can outlive the
+  /// page it points at.
+  static Widget pageForRoute(String? routeName) {
+    if (routeName == null) return defaultRoute;
+
+    return Builder(
+      builder: (context) {
+        final route = onGenerateRoute(RouteSettings(name: routeName)) as PageRouteBuilder;
+        return route.pageBuilder(context, kAlwaysCompleteAnimation, kAlwaysCompleteAnimation);
+      },
+    );
+  }
+
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     Widget page;
     final arguments = settings.arguments as Map<String, dynamic>?;

@@ -49,6 +49,10 @@ settings:
       из файлов резервных копий
     select_action: Выбрать действие импорта/экспорта
     title: Импорт/Экспорт
+  default_page:
+    dialog_title: Выберите страницу по умолчанию
+    save_error: Не удалось сохранить страницу по умолчанию
+    title: Страница по умолчанию
   language:
     choose_title: Выберите свой язык
     dialog_info: "{count} языков доступно."

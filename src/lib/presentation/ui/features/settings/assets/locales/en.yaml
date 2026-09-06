@@ -50,6 +50,10 @@ settings:
     backup_description: Restore your application data from a .whph backup file
     external_apps_title: Import Tasks (CSV)
     external_apps_description: Import tasks from other applications via CSV file
+  default_page:
+    dialog_title: Choose the default page
+    save_error: Failed to save the default page
+    title: Default page
   language:
     choose_title: Choose your language
     dialog_info: "{count} languages available."

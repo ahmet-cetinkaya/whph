@@ -43,6 +43,10 @@ settings:
     description: 以各种格式导出您的数据或从备份文件导入数据
     select_action: 选择导入/导出操作
     title: 导入/导出
+  default_page:
+    dialog_title: 选择默认页面
+    save_error: 无法保存默认页面
+    title: 默认页面
   language:
     choose_title: 选择您的语言
     dialog_info: "{count}种语言可用。"

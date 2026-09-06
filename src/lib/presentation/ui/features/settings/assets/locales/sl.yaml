@@ -49,6 +49,10 @@ settings:
       datotek za varnostno kopijo
     select_action: Izberite dejanje uvoza/izvoza
     title: Uvoz/Izvoz
+  default_page:
+    dialog_title: Izberite privzeto stran
+    save_error: Shranjevanje privzete strani ni uspelo
+    title: Privzeta stran
   language:
     choose_title: Izberite jezik
     dialog_info: "{count} jezikov na voljo."

@@ -9,6 +9,7 @@ class SettingKeys {
 
   // Startup settings
   static const String startAtStartup = 'START_AT_STARTUP';
+  static const String defaultPage = 'DEFAULT_PAGE';
 
   // Pomodoro Timer settings
   static const String workTime = 'WORK_TIME';

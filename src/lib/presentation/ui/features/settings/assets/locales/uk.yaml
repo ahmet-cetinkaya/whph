@@ -51,6 +51,10 @@ settings:
       резервних копій
     select_action: Виберіть дію імпорту/експорту
     title: Імпорт/Експорт
+  default_page:
+    dialog_title: Виберіть сторінку за замовчуванням
+    save_error: Не вдалося зберегти сторінку за замовчуванням
+    title: Сторінка за замовчуванням
   language:
     choose_title: Виберіть свою мову
     dialog_info: "{count} мов доступно."

@@ -49,6 +49,10 @@ settings:
       de backup
     select_action: Selecione a ação de import/export
     title: Importar/Exportar
+  default_page:
+    dialog_title: Escolha a página padrão
+    save_error: Falha ao salvar a página padrão
+    title: Página padrão
   language:
     choose_title: Escolha seu idioma
     dialog_info: "{count} idiomas disponíveis."

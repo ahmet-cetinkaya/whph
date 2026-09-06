@@ -51,6 +51,10 @@ settings:
       depuis des fichiers de sauvegarde
     select_action: Sélectionner l'action d'import/export
     title: Import/Export
+  default_page:
+    dialog_title: Choisir la page par défaut
+    save_error: Échec de l'enregistrement de la page par défaut
+    title: Page par défaut
   language:
     choose_title: Choisissez votre langue
     dialog_info: "{count} langues disponibles."

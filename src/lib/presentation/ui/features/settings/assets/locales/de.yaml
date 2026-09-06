@@ -51,6 +51,10 @@ settings:
       Sie Daten aus Backup-Dateien
     select_action: Import-/Export-Aktion auswählen
     title: Import/Export
+  default_page:
+    dialog_title: Standardseite auswählen
+    save_error: Standardseite konnte nicht gespeichert werden
+    title: Standardseite
   language:
     choose_title: Wählen Sie Ihre Sprache
     dialog_info: "{count} Sprachen verfügbar."

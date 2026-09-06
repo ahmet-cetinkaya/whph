@@ -47,6 +47,10 @@ settings:
     description: Vie tietosi eri muodoissa tai tuo tietoja varmuuskopiointitiedostoista
     select_action: Valitse tuo/vie-toiminto
     title: Tuonti/Vienti
+  default_page:
+    dialog_title: Valitse oletussivu
+    save_error: Oletussivun tallentaminen epäonnistui
+    title: Oletussivu
   language:
     choose_title: Valitse kieli
     dialog_info: "{count} kieltä saatavilla."

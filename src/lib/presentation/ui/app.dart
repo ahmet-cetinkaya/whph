@@ -23,6 +23,7 @@ class App extends StatefulWidget {
     required this.navigatorKey,
     required this.container,
     this.startupErrorState,
+    this.initialRoute,
   });
 
   static final GlobalKey repaintBoundaryKey = GlobalKey();
@@ -30,6 +31,7 @@ class App extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   final IContainer container;
   final AppStartupErrorState? startupErrorState;
+  final String? initialRoute;
 
   @override
   State<App> createState() => _AppState();
@@ -143,7 +145,10 @@ class _AppState extends State<App> {
             theme: _themeService.themeData,
             debugShowCheckedModeBanner: false,
             onGenerateRoute: AppRoutes.onGenerateRoute,
-            home: AppRoutes.defaultRoute,
+            // `home:`, not `initialRoute:`. The latter also generates a route
+            // for '/', which AppRoutes maps to Today, leaving a stray Today
+            // page underneath the chosen one for Back to land on.
+            home: AppRoutes.pageForRoute(widget.initialRoute),
           ),
         );
       },

@@ -49,6 +49,10 @@ settings:
       kopii zapasowej
     select_action: Wybierz akcję importu/eksportu
     title: Import/Eksport
+  default_page:
+    dialog_title: Wybierz stronę domyślną
+    save_error: Nie udało się zapisać strony domyślnej
+    title: Strona domyślna
   language:
     choose_title: Wybierz swój język
     dialog_info: "{count} języków dostępnych."
