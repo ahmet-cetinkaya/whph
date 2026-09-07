@@ -4,6 +4,7 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_completion_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
@@ -262,12 +263,19 @@ class AndroidServerSyncService extends AndroidSyncService {
             Logger.info(
                 'Mobile server paginated sync processing completed ${response.hasErrors ? "with errors" : "successfully"}');
 
+            final completionPayload = await SyncCompletionService(mediator).recordCompletion(
+              syncDeviceData: paginatedSyncData['syncDevice'] as Map<String, dynamic>?,
+              isComplete: response.isComplete,
+              succeeded: !response.hasErrors,
+            );
+
             final responseData = {
               'paginatedSyncDataDto': response.paginatedSyncDataDto?.toJson(),
               'success': !response.hasErrors,
               'isComplete': response.isComplete,
               'timestamp': DateTime.now().toIso8601String(),
-              'server_type': 'mobile'
+              'server_type': 'mobile',
+              ...completionPayload,
             };
 
             if (response.hasErrors) {

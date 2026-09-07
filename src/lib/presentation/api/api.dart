@@ -9,8 +9,7 @@ import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
-import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
+import 'package:whph/core/application/features/sync/services/sync_completion_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 
@@ -174,17 +173,18 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
           final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
           Logger.info('Paginated sync processing completed successfully');
 
-          try {
-            await _updateServerSideLastSyncDate(paginatedSyncData);
-          } catch (e) {
-            Logger.debug('Could not update server-side lastSyncDate: $e');
-          }
+          final completionPayload = await SyncCompletionService(mediator).recordCompletion(
+            syncDeviceData: paginatedSyncData['syncDevice'] as Map<String, dynamic>?,
+            isComplete: response.isComplete,
+            succeeded: true,
+          );
 
           WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
             'paginatedSyncDataDto': response.paginatedSyncDataDto?.toJson(),
             'success': true,
             'isComplete': response.isComplete,
-            'timestamp': DateTime.now().toIso8601String()
+            'timestamp': DateTime.now().toIso8601String(),
+            ...completionPayload,
           });
           socket.add(JsonMapper.serialize(responseMessage));
           Logger.info('Paginated sync response sent to client');
@@ -310,60 +310,5 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
       }
     }
     rethrow;
-  }
-}
-
-Future<void> _updateServerSideLastSyncDate(Map<String, dynamic> paginatedSyncData) async {
-  try {
-    final syncDeviceData = paginatedSyncData['syncDevice'] as Map<String, dynamic>?;
-    if (syncDeviceData == null) {
-      Logger.debug('Cannot update lastSyncDate: missing syncDevice information');
-      return;
-    }
-
-    final clientLastSyncDate = syncDeviceData['lastSyncDate'] as String?;
-    if (clientLastSyncDate == null) {
-      Logger.debug('Cannot update lastSyncDate: missing lastSyncDate from client');
-      return;
-    }
-
-    final DateTime clientSyncTimestamp = DateTime.parse(clientLastSyncDate);
-
-    final mediator = container.resolve<Mediator>();
-
-    final clientIp = syncDeviceData['fromIp'] as String?;
-    final serverIp = syncDeviceData['toIp'] as String?;
-
-    if (clientIp == null || serverIp == null) {
-      Logger.debug('Cannot update lastSyncDate: missing IP information in syncDevice');
-      return;
-    }
-
-    final getSyncQuery = GetSyncDeviceQuery(
-      fromIP: clientIp,
-      toIP: serverIp,
-      fromDeviceId: syncDeviceData['fromDeviceId'] as String? ?? '',
-      toDeviceId: syncDeviceData['toDeviceId'] as String? ?? '',
-    );
-    final syncResponse = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(getSyncQuery);
-
-    if (syncResponse != null) {
-      final updateCommand = SaveSyncDeviceCommand(
-        id: syncResponse.id,
-        name: syncResponse.name,
-        fromIP: syncResponse.fromIp,
-        toIP: syncResponse.toIp,
-        fromDeviceId: syncResponse.fromDeviceId,
-        toDeviceId: syncResponse.toDeviceId,
-        lastSyncDate: clientSyncTimestamp,
-      );
-
-      await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(updateCommand);
-      Logger.debug('Server-side lastSyncDate updated with client timestamp: $clientSyncTimestamp');
-    } else {
-      Logger.debug('Sync device not found for IP pair: $clientIp -> $serverIp');
-    }
-  } catch (e) {
-    Logger.error('Failed to update server-side lastSyncDate: $e');
   }
 }
