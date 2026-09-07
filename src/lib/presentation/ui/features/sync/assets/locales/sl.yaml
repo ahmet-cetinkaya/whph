@@ -199,6 +199,8 @@ sync:
     unnamed_device: Nepoimenovana naprava
     never_synced: Nikoli sinhronizirano
     remove_device: Odstrani napravo
+    last_sync_succeeded: Zadnja sinhronizacija je uspela
+    last_sync_failed: Zadnja sinhronizacija ni uspela
   error:
     scan: Napaka pri skeniranju
   errors:

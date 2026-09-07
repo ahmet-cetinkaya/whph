@@ -166,6 +166,8 @@ sync:
     unnamed_device: 未命名设备
     never_synced: 从未同步
     remove_device: 移除设备
+    last_sync_succeeded: 上次同步成功
+    last_sync_failed: 上次同步失败
   error:
     scan: 扫描失败
   errors:

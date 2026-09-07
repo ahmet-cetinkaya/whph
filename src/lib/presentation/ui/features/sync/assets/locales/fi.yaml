@@ -182,6 +182,8 @@ sync:
     unnamed_device: Nimetön laite
     never_synced: Ei koskaan synkronoitu
     remove_device: Poista laite
+    last_sync_succeeded: Viimeisin synkronointi onnistui
+    last_sync_failed: Viimeisin synkronointi epäonnistui
   error:
     scan: Skannaus epäonnistui
   errors:

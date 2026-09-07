@@ -180,6 +180,8 @@ sync:
     unnamed_device: Unbenanntes Gerät
     never_synced: Nie synchronisiert
     remove_device: Gerät entfernen
+    last_sync_succeeded: Letzte Synchronisierung erfolgreich
+    last_sync_failed: Letzte Synchronisierung fehlgeschlagen
   error:
     scan: Scan fehlgeschlagen
   errors:

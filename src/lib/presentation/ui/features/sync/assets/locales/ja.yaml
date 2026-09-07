@@ -169,6 +169,8 @@ sync:
     unnamed_device: 名前のないデバイス
     never_synced: 未同期
     remove_device: デバイスを削除
+    last_sync_succeeded: 前回の同期に成功しました
+    last_sync_failed: 前回の同期に失敗しました
   error:
     scan: スキャンに失敗しました
   errors:

@@ -170,6 +170,8 @@ sync:
     unnamed_device: 이름 없는 기기
     never_synced: 동기화된 적 없음
     remove_device: 기기 제거
+    last_sync_succeeded: 마지막 동기화 성공
+    last_sync_failed: 마지막 동기화 실패
   error:
     scan: 스캔에 실패했습니다
   errors:

@@ -158,4 +158,8 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String serverModeInactive = 'sync.server.mode_inactive';
   static const String neverSynced = 'sync.devices.never_synced';
   static const String removeDevice = 'sync.devices.remove_device';
+
+  // Per-device last sync result indicator
+  static const String lastSyncSucceeded = 'sync.devices.last_sync_succeeded';
+  static const String lastSyncFailed = 'sync.devices.last_sync_failed';
 }

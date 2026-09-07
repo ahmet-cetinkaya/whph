@@ -179,6 +179,8 @@ sync:
     unnamed_device: Unavngiven enhed
     never_synced: Aldrig synkroniseret
     remove_device: Fjern enhed
+    last_sync_succeeded: Seneste synkronisering lykkedes
+    last_sync_failed: Seneste synkronisering mislykkedes
   error:
     scan: Scanning fejlede
   errors:
