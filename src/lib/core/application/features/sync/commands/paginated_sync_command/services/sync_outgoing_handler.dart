@@ -186,17 +186,11 @@ class SyncOutgoingHandler {
     final updatedSyncDevices = <SyncDevice>[];
 
     for (final syncDevice in successfulDevices) {
-      final newSyncDate = DateTime.now();
+      final newSyncDate = _resolveSyncDate(syncDevice);
       Logger.info('Before update: device ${syncDevice.id} lastSyncDate=${syncDevice.lastSyncDate}');
 
       syncDevice.lastSyncDate = newSyncDate;
       await _syncDeviceRepository.update(syncDevice);
-
-      // Add small delay to ensure database update is fully committed
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      // Verify the update
-      await _verifySyncDateUpdate(syncDevice);
 
       updatedSyncDevices.add(syncDevice);
     }
@@ -204,26 +198,15 @@ class SyncOutgoingHandler {
     return updatedSyncDevices;
   }
 
-  Future<void> _verifySyncDateUpdate(SyncDevice syncDevice) async {
-    final verificationDevice = await _syncDeviceRepository.getById(syncDevice.id);
-    if (verificationDevice != null) {
-      if (verificationDevice.lastSyncDate == null) {
-        Logger.warning('CRITICAL: Database update verification failed - lastSyncDate is still null after update!');
-        // Retry the update once more to ensure it persists
-        await _syncDeviceRepository.update(syncDevice);
-        await Future.delayed(const Duration(milliseconds: 100));
+  /// Prefers the completion timestamp the peer generated and persisted, so both
+  /// devices agree on a single value instead of each recording its own clock.
+  DateTime _resolveSyncDate(SyncDevice syncDevice) {
+    final serverSyncDate = _paginationService.getServerSyncCompletedAt(syncDevice.id);
+    if (serverSyncDate != null) return serverSyncDate;
 
-        // Verify again after retry
-        final retryVerification = await _syncDeviceRepository.getById(syncDevice.id);
-        if (retryVerification != null && retryVerification.lastSyncDate != null) {
-          Logger.info('Database update verification passed after retry - lastSyncDate properly persisted');
-        } else {
-          Logger.error('Database update verification failed even after retry!');
-        }
-      }
-    } else {
-      Logger.error('CRITICAL: Could not re-read sync device ${syncDevice.id} from database for verification');
-    }
+    Logger.warning(
+        'Device ${syncDevice.id} did not return a sync completion timestamp; falling back to the local clock');
+    return DateTime.now().toUtc();
   }
 
   OutgoingSyncResult _handleOutgoingSyncError(dynamic e) {

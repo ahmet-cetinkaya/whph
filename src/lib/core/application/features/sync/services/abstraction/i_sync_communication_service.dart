@@ -8,11 +8,18 @@ class SyncCommunicationResponse {
   final String? error;
   final PaginatedSyncDataDto? responseData;
 
+  /// Completion timestamp generated and persisted by the peer that received the
+  /// sync. Both devices store this single value so neither depends on the
+  /// other's clock. Null when the peer predates the mutual-acknowledgment
+  /// protocol or the sync did not complete successfully.
+  final DateTime? syncCompletedAt;
+
   SyncCommunicationResponse({
     required this.success,
     required this.isComplete,
     this.error,
     this.responseData,
+    this.syncCompletedAt,
   });
 }
 

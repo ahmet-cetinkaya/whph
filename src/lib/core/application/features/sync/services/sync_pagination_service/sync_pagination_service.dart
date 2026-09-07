@@ -230,6 +230,11 @@ class SyncPaginationService implements ISyncPaginationService {
   List<String> get activeEntityTypes => _activeEntityTypes.toList();
 
   @override
+  DateTime? getServerSyncCompletedAt(String deviceId) {
+    return _serverPaginationHandler.getServerSyncCompletedAt(deviceId);
+  }
+
+  @override
   int getLastSentServerPage(String deviceId, String entityType) {
     return _serverPaginationHandler.getLastSentServerPage(deviceId, entityType);
   }
@@ -371,6 +376,7 @@ class SyncPaginationService implements ISyncPaginationService {
 
     final trackResult = _handleServerResponse(
       config.name,
+      syncDevice.id,
       sendResult.response,
       lastReceivedServerPage,
       totalServerPages,
@@ -449,10 +455,16 @@ class SyncPaginationService implements ISyncPaginationService {
     int totalServerPages,
   }) _handleServerResponse(
     String entityType,
+    String deviceId,
     SyncCommunicationResponse response,
     int lastReceivedServerPage,
     int totalServerPages,
   ) {
+    final syncCompletedAt = response.syncCompletedAt;
+    if (syncCompletedAt != null) {
+      _serverPaginationHandler.recordServerSyncCompletedAt(deviceId, syncCompletedAt);
+    }
+
     if (response.isComplete || response.responseData == null) {
       return (lastReceivedServerPage: lastReceivedServerPage, totalServerPages: totalServerPages);
     }
