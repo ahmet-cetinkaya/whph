@@ -180,6 +180,8 @@ sync:
     unnamed_device: Nepojmenované zařízení
     never_synced: Nikdy nesynchronizováno
     remove_device: Odebrat zařízení
+    last_sync_succeeded: Poslední synchronizace proběhla úspěšně
+    last_sync_failed: Poslední synchronizace selhala
   error:
     scan: Selhání skenování
   errors:

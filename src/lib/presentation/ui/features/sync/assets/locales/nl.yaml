@@ -181,6 +181,8 @@ sync:
     unnamed_device: Naamloos apparaat
     never_synced: Nooit gesynchroniseerd
     remove_device: Apparaat verwijderen
+    last_sync_succeeded: Laatste synchronisatie geslaagd
+    last_sync_failed: Laatste synchronisatie mislukt
   error:
     scan: Scan mislukt
   errors:

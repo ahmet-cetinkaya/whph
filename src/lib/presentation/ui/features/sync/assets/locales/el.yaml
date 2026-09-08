@@ -186,6 +186,8 @@ sync:
     unnamed_device: Ακατονομασία Συσκευή
     never_synced: Ποτέ συγχρονισμένο
     remove_device: Κατάργηση συσκευής
+    last_sync_succeeded: Ο τελευταίος συγχρονισμός ολοκληρώθηκε με επιτυχία
+    last_sync_failed: Ο τελευταίος συγχρονισμός απέτυχε
   error:
     scan: Αποτυχία σάρωσης
   errors:

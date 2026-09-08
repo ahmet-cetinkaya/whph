@@ -200,6 +200,8 @@ sync:
     unnamed_device: Dispozitiv fără nume
     never_synced: Niciodată sincronizat
     remove_device: Eliminare dispozitiv
+    last_sync_succeeded: Ultima sincronizare a reușit
+    last_sync_failed: Ultima sincronizare a eșuat
   error:
     scan: Eroare la scanare
   errors:

@@ -182,6 +182,8 @@ sync:
     unnamed_device: Dispositivo sem nome
     never_synced: Nunca sincronizado
     remove_device: Remover dispositivo
+    last_sync_succeeded: Última sincronização bem-sucedida
+    last_sync_failed: Falha na última sincronização
   error:
     scan: Erro ao escanear
   errors:

@@ -197,6 +197,8 @@ sync:
     unnamed_device: Unnamed enhet
     never_synced: Aldri synkronisert
     remove_device: Fjern enhet
+    last_sync_succeeded: Siste synkronisering vellykket
+    last_sync_failed: Siste synkronisering mislyktes
   error:
     scan: Skanning mislyktes
   errors:

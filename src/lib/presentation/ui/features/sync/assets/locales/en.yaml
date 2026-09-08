@@ -191,6 +191,8 @@ sync:
     unnamed_device: Unnamed Device
     never_synced: Never synced
     remove_device: Remove Device
+    last_sync_succeeded: Last sync succeeded
+    last_sync_failed: Last sync failed
   error:
     scan: Failed to scan
   errors:

@@ -338,6 +338,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                         onRemove: _removeDevice,
                         isBeingSynced: _currentSyncStatus.isSyncing &&
                             _currentSyncStatus.currentDeviceId == _list!.items[index].id,
+                        lastSyncResult: lastSyncResultOf(_list!.items[index].id),
                       ),
                     );
                   },

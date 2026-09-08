@@ -4,6 +4,7 @@ import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/utils/network_utils.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_completion_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
@@ -342,6 +343,19 @@ class DesktopServerSyncService extends SyncService {
               },
             ));
       } else {
+        // Local sync records store the peer as "from" and this device as "to",
+        // which is the inverse of the outgoing-request device built above.
+        final completionPayload = await SyncCompletionService(mediator).recordCompletion(
+          syncDeviceData: {
+            'fromIp': syncDevice.toIp,
+            'toIp': syncDevice.fromIp,
+            'fromDeviceId': syncDevice.toDeviceId,
+            'toDeviceId': syncDevice.fromDeviceId,
+          },
+          isComplete: true,
+          succeeded: true,
+        );
+
         _sendMessage(
             socket,
             WebSocketMessage(
@@ -350,7 +364,8 @@ class DesktopServerSyncService extends SyncService {
                 'success': true,
                 'isComplete': true,
                 'message': 'No data available',
-                'timestamp': DateTime.now().toIso8601String()
+                'timestamp': DateTime.now().toIso8601String(),
+                ...completionPayload,
               },
             ));
       }

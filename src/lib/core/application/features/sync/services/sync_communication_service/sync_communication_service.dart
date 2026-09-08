@@ -4,6 +4,7 @@ import 'package:whph/core/application/features/sync/models/paginated_sync_data_d
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_communication_service/helpers/sync_dto_serializer.dart';
 import 'package:whph/core/application/features/sync/services/sync_communication_service/helpers/sync_message_serializer.dart';
+import 'package:whph/core/application/features/sync/services/sync_completion_service.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
@@ -255,6 +256,7 @@ class SyncCommunicationService implements ISyncCommunicationService {
         success: true,
         isComplete: isComplete,
         responseData: serverResponseData,
+        syncCompletedAt: _parseSyncCompletedAt(responseData[syncCompletedAtPayloadKey]),
       );
     } else {
       final error = responseData['error'] as String? ?? 'Unknown error';
@@ -265,6 +267,20 @@ class SyncCommunicationService implements ISyncCommunicationService {
         error: error,
       );
     }
+  }
+
+  /// Parses the peer's completion timestamp, tolerating peers that omit or
+  /// malform it — a bad timestamp must not fail an otherwise successful sync.
+  DateTime? _parseSyncCompletedAt(dynamic rawValue) {
+    if (rawValue == null) return null;
+
+    final parsed = DateTime.tryParse(rawValue as String);
+    if (parsed == null) {
+      Logger.warning('Server sent an unparsable $syncCompletedAtPayloadKey value: $rawValue');
+      return null;
+    }
+
+    return parsed.toUtc();
   }
 
   @override

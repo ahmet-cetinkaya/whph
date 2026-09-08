@@ -41,6 +41,10 @@ abstract class ISyncPaginationService {
   /// Returns a map containing totalPages and totalItems for the entity type
   Map<String, int> getServerPaginationMetadata(String entityType);
 
+  /// Gets the completion timestamp the peer generated for the last sync with
+  /// the given device, or null if the peer never reported one
+  DateTime? getServerSyncCompletedAt(String deviceId);
+
   /// Updates server pagination metadata from sync response
   void updateServerPaginationMetadata(
     String entityType,

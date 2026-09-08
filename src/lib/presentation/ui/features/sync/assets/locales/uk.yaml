@@ -199,6 +199,8 @@ sync:
     unnamed_device: Безіменний пристрій
     never_synced: Ніколи не синхронізовано
     remove_device: Видалити пристрій
+    last_sync_succeeded: Останню синхронізацію виконано успішно
+    last_sync_failed: Останню синхронізацію не вдалося виконати
   error:
     scan: Помилка сканування
   errors:

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/main.dart';
@@ -11,6 +12,10 @@ enum NotificationPosition { top, bottom }
 class OverlayNotificationHelper {
   static OverlayEntry? _currentOverlay;
 
+  /// A persistent error stays until the user closes it, so transient
+  /// notifications must not be allowed to steal the slot from under it.
+  static bool _isPersistentErrorVisible = false;
+
   static void showNotification({
     required BuildContext context,
     required String message,
@@ -20,7 +25,13 @@ class OverlayNotificationHelper {
     VoidCallback? onTap,
     Widget? actionWidget,
     NotificationPosition position = NotificationPosition.bottom,
+    bool isPersistentError = false,
   }) {
+    if (_isPersistentErrorVisible && !isPersistentError) {
+      Logger.debug('Dropping notification "$message": a persistent error is still on screen.');
+      return;
+    }
+
     hideNotification();
 
     OverlayState? overlayState;
@@ -34,12 +45,13 @@ class OverlayNotificationHelper {
       return;
     }
 
+    _isPersistentErrorVisible = isPersistentError;
     _currentOverlay = OverlayEntry(
       builder: (ctx) => _NotificationOverlay(
         message: message,
         backgroundColor: backgroundColor ?? AppTheme.errorColor,
         icon: icon,
-        duration: duration,
+        duration: isPersistentError ? null : duration,
         onTap: onTap,
         onDismiss: hideNotification,
         actionWidget: actionWidget,
@@ -50,10 +62,12 @@ class OverlayNotificationHelper {
     overlayState.insert(_currentOverlay!);
   }
 
+  /// Errors are persistent, so [duration] is accepted only to keep existing
+  /// call sites compiling and is deliberately ignored.
   static void showError({
     required BuildContext context,
     required String message,
-    Duration duration = const Duration(seconds: 5),
+    Duration? duration,
     VoidCallback? onTap,
     Widget? actionWidget,
     NotificationPosition position = NotificationPosition.bottom,
@@ -63,10 +77,10 @@ class OverlayNotificationHelper {
       message: message,
       backgroundColor: AppTheme.errorColor,
       icon: Icons.error_outline,
-      duration: duration,
       onTap: onTap,
       actionWidget: actionWidget,
       position: position,
+      isPersistentError: true,
     );
   }
 
@@ -144,6 +158,7 @@ class OverlayNotificationHelper {
   static void hideNotification() {
     _currentOverlay?.remove();
     _currentOverlay = null;
+    _isPersistentErrorVisible = false;
   }
 }
 
@@ -162,7 +177,10 @@ class _NotificationOverlay extends StatefulWidget {
   final String message;
   final Color backgroundColor;
   final IconData? icon;
-  final Duration duration;
+
+  /// A null duration means the notification never dismisses itself and instead
+  /// offers a close button.
+  final Duration? duration;
   final VoidCallback? onTap;
   final VoidCallback onDismiss;
   final Widget? actionWidget;
@@ -193,10 +211,15 @@ class _NotificationOverlayState extends State<_NotificationOverlay> with SingleT
 
     _animationController.forward();
 
-    _dismissTimer = Timer(widget.duration, () {
-      _animationController.reverse().then((_) {
-        widget.onDismiss();
-      });
+    final duration = widget.duration;
+    if (duration != null) {
+      _dismissTimer = Timer(duration, _dismiss);
+    }
+  }
+
+  void _dismiss() {
+    _animationController.reverse().then((_) {
+      widget.onDismiss();
     });
   }
 
@@ -256,6 +279,13 @@ class _NotificationOverlayState extends State<_NotificationOverlay> with SingleT
                     if (widget.actionWidget != null) ...[
                       const SizedBox(width: 12),
                       widget.actionWidget!,
+                    ],
+                    if (widget.duration == null) ...[
+                      const SizedBox(width: 12),
+                      IconButton(
+                        icon: Icon(Icons.close, color: contrastingTextColor),
+                        onPressed: _dismiss,
+                      ),
                     ],
                   ],
                 ),

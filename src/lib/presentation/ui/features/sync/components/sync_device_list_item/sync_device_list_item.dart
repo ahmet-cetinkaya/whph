@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show DateTimeHelper;
+import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -15,11 +16,16 @@ class SyncDeviceListItemWidget extends StatefulWidget {
   final void Function(String) onRemove;
   final bool isBeingSynced;
 
+  /// Outcome of this device's most recent sync attempt in the current app
+  /// session; null when it has not been synced since the app started.
+  final SyncState? lastSyncResult;
+
   const SyncDeviceListItemWidget({
     super.key,
     required this.item,
     required this.onRemove,
     this.isBeingSynced = false,
+    this.lastSyncResult,
   });
 
   @override
@@ -154,6 +160,7 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
+                          ..._buildLastSyncResultIndicator(),
                         ],
                       ),
                     ],
@@ -188,5 +195,22 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
         ),
       ),
     );
+  }
+
+  List<Widget> _buildLastSyncResultIndicator() {
+    final (icon, color, tooltipKey) = switch (widget.lastSyncResult) {
+      SyncState.completed => (Icons.check_circle, AppTheme.successColor, SyncTranslationKeys.lastSyncSucceeded),
+      SyncState.error => (Icons.warning_amber, AppTheme.warningColor, SyncTranslationKeys.lastSyncFailed),
+      _ => (null, null, null),
+    };
+    if (icon == null) return const [];
+
+    return [
+      const SizedBox(width: 4),
+      Tooltip(
+        message: _translationService.translate(tooltipKey!),
+        child: Icon(icon, size: 12, color: color),
+      ),
+    ];
   }
 }

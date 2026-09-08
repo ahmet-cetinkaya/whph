@@ -183,6 +183,8 @@ sync:
     unnamed_device: İsimsiz Cihaz
     never_synced: Hiç senkronize edilmedi
     remove_device: Cihazı Kaldır
+    last_sync_succeeded: Son senkronizasyon başarılı
+    last_sync_failed: Son senkronizasyon başarısız
   error:
     scan: Tarama hatası
   errors:

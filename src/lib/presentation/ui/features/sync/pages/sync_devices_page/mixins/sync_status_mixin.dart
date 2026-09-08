@@ -35,8 +35,13 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
   SyncState? _lastProcessedState;
   DateTime? _lastSyncActivityTime;
   bool _isServerSyncActive = false;
+  final Map<String, SyncState> _lastSyncResultByDeviceId = {};
 
   bool get isServerSyncActive => _isServerSyncActive;
+
+  /// Outcome of the given device's most recent sync attempt in this app
+  /// session, or null when it has not been synced since the app started.
+  SyncState? lastSyncResultOf(String deviceId) => _lastSyncResultByDeviceId[deviceId];
 
   /// Initialize sync status listeners
   void setupSyncStatusListeners() {
@@ -58,6 +63,7 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
     _syncStatusSubscription = syncService.syncStatusStream.listen((status) {
       if (mounted) {
         currentSyncStatus = status;
+        _recordLastSyncResult(status);
         Logger.info(
             'Sync status received: ${status.state} (manual: ${status.isManual}) - serverMode: $isServerMode, syncActive: $_isServerSyncActive');
 
@@ -112,6 +118,16 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
     } else {
       Logger.info('Server sync service is same as main sync service - no additional listener needed');
     }
+  }
+
+  /// Remembers the terminal outcome per device so each list item can show its
+  /// own last result without opening a second stream subscription.
+  void _recordLastSyncResult(SyncStatus status) {
+    final deviceId = status.currentDeviceId;
+    if (deviceId == null) return;
+    if (status.state != SyncState.completed && status.state != SyncState.error) return;
+
+    _lastSyncResultByDeviceId[deviceId] = status.state;
   }
 
   void _handleServerModeSyncStatusWithDebounce(SyncStatus status) {
