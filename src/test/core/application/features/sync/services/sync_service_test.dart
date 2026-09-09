@@ -10,6 +10,7 @@ import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:whph/core/application/shared/services/mcp_restore_barrier.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 import 'sync_service_test.mocks.dart';
@@ -31,12 +32,17 @@ void main() {
 
       // Set up AppDatabase in test mode with temporary directory
       AppDatabase.isTestMode = true;
-      AppDatabase.testDirectory = await Directory.systemTemp.createTemp('whph_test_');
+      AppDatabase.testDirectory =
+          await Directory.systemTemp.createTemp('whph_test_');
 
       // Initialize the database instance to avoid lazy initialization during tests
       AppDatabase.setInstanceForTesting(AppDatabase.forTesting());
 
-      syncService = DesktopSyncService(mockMediator, mockDeviceIdService);
+      syncService = DesktopSyncService(
+        mockMediator,
+        mockDeviceIdService,
+        restoreBarrier: McpRestoreBarrier(),
+      );
       statusStreamController = StreamController<SyncStatus>.broadcast();
     });
 
@@ -74,14 +80,17 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         final statusStates = <SyncState>[];
-        final statusSubscription = syncService.syncStatusStream.listen((status) {
+        final statusSubscription =
+            syncService.syncStatusStream.listen((status) {
           statusStates.add(status.state);
         });
 
@@ -93,7 +102,9 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 500));
 
         // Assert
-        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
+        verify(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .called(1);
         expect(statusStates, contains(SyncState.syncing));
         expect(statusStates, contains(SyncState.completed));
 
@@ -116,11 +127,13 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         final completedEvents = <bool>[];
         final completer = Completer<void>();
@@ -139,7 +152,8 @@ void main() {
         // Wait for async completion notification (with timeout for safety)
         await completer.future.timeout(
           const Duration(seconds: 5),
-          onTimeout: () => throw Exception('Timeout waiting for sync completion notification'),
+          onTimeout: () => throw Exception(
+              'Timeout waiting for sync completion notification'),
         );
 
         await subscription.cancel();
@@ -149,7 +163,9 @@ void main() {
         expect(completedEvents.first, true);
       });
 
-      test('should not notify sync completion for background sync with no meaningful activity', () async {
+      test(
+          'should not notify sync completion for background sync with no meaningful activity',
+          () async {
         // Arrange
         final response = PaginatedSyncCommandResponse(
           isComplete: true,
@@ -159,11 +175,13 @@ void main() {
           hadMeaningfulSync: false,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         bool syncCompleted = false;
         syncService.onSyncComplete.listen((_) {
@@ -187,17 +205,21 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act
         await syncService.runPaginatedSync();
 
         // Assert - No way to directly test private field, but the behavior should be consistent
-        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
+        verify(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .called(1);
       });
     });
 
@@ -212,11 +234,13 @@ void main() {
           hadMeaningfulSync: false,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         final statusStates = <SyncState>[];
         final errorMessages = <String>[];
@@ -242,11 +266,13 @@ void main() {
 
       test('should handle sync command exception', () async {
         // Arrange
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenThrow(Exception('Network error'));
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         final statusStates = <SyncState>[];
         final errorMessages = <String>[];
@@ -272,11 +298,13 @@ void main() {
 
       test('should reset to idle state after error with delay', () async {
         // Arrange
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenThrow(Exception('Test error'));
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act
         await syncService.runPaginatedSync();
@@ -291,14 +319,18 @@ void main() {
     group('Timeout Scenario Tests', () {
       test('should handle timeout in sync command', () async {
         // Arrange
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).thenAnswer((_) async {
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .thenAnswer((_) async {
           // Simulate a shorter timeout for test performance
           await Future.delayed(const Duration(milliseconds: 50));
-          throw TimeoutException('Sync operation timed out', const Duration(milliseconds: 50));
+          throw TimeoutException(
+              'Sync operation timed out', const Duration(milliseconds: 50));
         });
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         final statusStates = <SyncState>[];
         final errorMessages = <String>[];
@@ -326,7 +358,8 @@ void main() {
     });
 
     group('Data Consistency Tests', () {
-      test('should maintain consistent sync status throughout operation', () async {
+      test('should maintain consistent sync status throughout operation',
+          () async {
         // Arrange
         final response = PaginatedSyncCommandResponse(
           isComplete: true,
@@ -336,11 +369,13 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         final statusUpdates = <SyncStatus>[];
         final completer = Completer<void>();
@@ -359,7 +394,8 @@ void main() {
         // Wait for the completed status (with timeout for safety)
         await completer.future.timeout(
           const Duration(seconds: 5),
-          onTimeout: () => throw Exception('Timeout waiting for sync completion'),
+          onTimeout: () =>
+              throw Exception('Timeout waiting for sync completion'),
         );
 
         await subscription.cancel();
@@ -370,7 +406,8 @@ void main() {
         expect(statusUpdates.first.isManual, true);
         expect(statusUpdates.first.lastSyncTime, isNotNull);
 
-        final completedStatus = statusUpdates.firstWhere((status) => status.state == SyncState.completed);
+        final completedStatus = statusUpdates
+            .firstWhere((status) => status.state == SyncState.completed);
         expect(completedStatus.isManual, true);
         expect(completedStatus.lastSyncTime, isNotNull);
       });
@@ -385,11 +422,13 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         DateTime? initialSyncTime = syncService.currentSyncStatus.lastSyncTime;
 
@@ -399,13 +438,17 @@ void main() {
         // Assert
         expect(syncService.currentSyncStatus.lastSyncTime, isNotNull);
         if (initialSyncTime != null) {
-          expect(syncService.currentSyncStatus.lastSyncTime!.isAfter(initialSyncTime), true);
+          expect(
+              syncService.currentSyncStatus.lastSyncTime!
+                  .isAfter(initialSyncTime),
+              true);
         }
       });
     });
 
     group('Synchronization Order Tests', () {
-      test('should call mediator send exactly once per sync operation', () async {
+      test('should call mediator send exactly once per sync operation',
+          () async {
         // Arrange
         final response = PaginatedSyncCommandResponse(
           isComplete: true,
@@ -415,17 +458,21 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act
         await syncService.runPaginatedSync();
 
         // Assert
-        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
+        verify(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .called(1);
       });
 
       test('should handle sequential sync operations correctly', () async {
@@ -438,11 +485,13 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act
         await syncService.runPaginatedSync();
@@ -450,7 +499,9 @@ void main() {
         await syncService.runPaginatedSync();
 
         // Assert
-        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(3);
+        verify(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .called(3);
       });
 
       test('should guard against concurrent invocations', () async {
@@ -458,12 +509,15 @@ void main() {
         final mediatorCompleter = Completer<PaginatedSyncCommandResponse>();
         final mediatorStarted = Completer<void>();
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).thenAnswer((_) {
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .thenAnswer((_) {
           mediatorStarted.complete();
           return mediatorCompleter.future;
         });
 
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act
         final firstSyncFuture = syncService.runPaginatedSync(isManual: true);
@@ -481,7 +535,9 @@ void main() {
         await secondSyncFuture;
 
         // Assert
-        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
+        verify(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .called(1);
       });
     });
 
@@ -496,11 +552,13 @@ void main() {
           hadMeaningfulSync: false,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         final statusStates = <SyncState>[];
         syncService.syncStatusStream.listen((status) {
@@ -527,11 +585,13 @@ void main() {
           hadMeaningfulSync: false,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act
         await syncService.runPaginatedSync();
@@ -553,11 +613,13 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         int completionCount = 0;
         syncService.onSyncComplete.listen((_) {
@@ -565,8 +627,10 @@ void main() {
         });
 
         // Act - Run multiple times to test notification behavior
-        await syncService.runPaginatedSync(isManual: false); // Background sync with meaningful activity
-        await Future.delayed(const Duration(milliseconds: 50)); // Small delay between syncs
+        await syncService.runPaginatedSync(
+            isManual: false); // Background sync with meaningful activity
+        await Future.delayed(
+            const Duration(milliseconds: 50)); // Small delay between syncs
         await syncService.runPaginatedSync(isManual: true); // Manual sync
 
         // Wait for async completion notifications
@@ -672,17 +736,21 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act
         await syncService.runSync(isManual: true);
 
         // Assert
-        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
+        verify(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .called(1);
       });
 
       test('startSync should initialize sync system', () async {
@@ -695,11 +763,13 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
         // Mock the device ID service which is used by DesktopSyncService internally
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act & Assert
         // For DesktopSyncService, startSync tries to start server mode which may fail
@@ -717,7 +787,8 @@ void main() {
     });
 
     group('Database Integrity Tests', () {
-      test('should auto-fix on manual sync even without timestamp issues', () async {
+      test('should auto-fix on manual sync even without timestamp issues',
+          () async {
         // Arrange
         final response = PaginatedSyncCommandResponse(
           isComplete: true,
@@ -727,10 +798,12 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act - Manual sync should trigger integrity check
         await syncService.runPaginatedSync(isManual: true);
@@ -739,10 +812,14 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 100));
 
         // Assert
-        verify(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any)).called(1);
+        verify(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+            .called(1);
       });
 
-      test('should auto-fix on background sync when timestamp inconsistencies detected', () async {
+      test(
+          'should auto-fix on background sync when timestamp inconsistencies detected',
+          () async {
         // Note: This test documents the expected behavior.
         // The actual timestamp inconsistency detection and auto-fix is tested
         // in database_integrity_service_test.dart. Here we verify that
@@ -757,10 +834,12 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act - Background sync should complete successfully
         await syncService.runPaginatedSync(isManual: false);
@@ -777,7 +856,8 @@ void main() {
         // This is tested directly in database_integrity_service_test.dart
       });
 
-      test('should validate database integrity after successful sync', () async {
+      test('should validate database integrity after successful sync',
+          () async {
         // Arrange
         final response = PaginatedSyncCommandResponse(
           isComplete: true,
@@ -787,10 +867,12 @@ void main() {
           hadMeaningfulSync: true,
         );
 
-        when(mockMediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
+        when(mockMediator
+                .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(any))
             .thenAnswer((_) async => response);
 
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'test-device-id');
 
         // Act
         await syncService.runPaginatedSync(isManual: true);

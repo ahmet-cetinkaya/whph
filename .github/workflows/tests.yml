@@ -30,6 +30,53 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  test-mcp:
+    name: MCP Contracts and Official Client
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Initialize Submodules
+        uses: ./.github/actions/setup-repository
+
+      - name: Setup Flutter with FVM
+        uses: ./.github/actions/setup-fvm
+        with:
+          cache-key-suffix: "mcp-tests"
+
+      - name: Install Flutter Dependencies
+        uses: ./.github/actions/install-flutter-deps
+
+      - name: Setup Node.js for the official MCP client
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: scripts/mcp-smoke/package-lock.json
+
+      - name: Install official MCP client dependencies
+        run: npm ci --prefix scripts/mcp-smoke
+
+      - name: Generate code
+        run: |
+          cd src
+          fvm dart run build_runner build --delete-conflicting-outputs
+
+      - name: Run MCP contracts and production client integration
+        run: |
+          cd src
+          fvm flutter test \
+            test/presentation/mcp/ \
+            test/infrastructure/shared/features/mcp/ \
+            test/infrastructure/persistence/shared/contexts/drift/mcp_restore_barrier_test.dart \
+            test/integration/mcp_data_management_test.dart \
+            test/integration/mcp_mutation_parity_test.dart \
+            test/integration/mcp_user_actions_test.dart
+
   test:
     name: Run All Tests
     runs-on: ubuntu-latest

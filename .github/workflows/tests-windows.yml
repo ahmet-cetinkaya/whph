@@ -5,14 +5,20 @@ on:
     branches: [ main, develop ]
     paths:
       - 'src/lib/infrastructure/windows/**'
+      - 'src/lib/**/mcp/**'
       - 'src/test/infrastructure/windows/**'
-      - '.github/workflows/windows-tests.yml'
+      - 'src/test/**/mcp/**'
+      - 'src/pubspec.lock'
+      - '.github/workflows/tests-windows.yml'
   pull_request:
     branches: [ main, develop ]
     paths:
       - 'src/lib/infrastructure/windows/**'
+      - 'src/lib/**/mcp/**'
       - 'src/test/infrastructure/windows/**'
-      - '.github/workflows/windows-tests.yml'
+      - 'src/test/**/mcp/**'
+      - 'src/pubspec.lock'
+      - '.github/workflows/tests-windows.yml'
   workflow_dispatch:
 
 concurrency:
@@ -52,6 +58,15 @@ jobs:
         run: |
           cd src
           fvm flutter test test/infrastructure/windows/
+
+      - name: Run MCP platform contracts
+        shell: bash
+        run: |
+          cd src
+          fvm flutter test \
+            test/presentation/mcp/ \
+            test/infrastructure/shared/features/mcp/ \
+            test/infrastructure/persistence/shared/contexts/drift/mcp_restore_barrier_test.dart
 
       - name: Upload test results
         if: always()

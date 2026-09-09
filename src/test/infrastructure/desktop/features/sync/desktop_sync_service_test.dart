@@ -7,6 +7,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:whph/core/application/shared/services/mcp_restore_barrier.dart';
 
 import 'desktop_sync_service_test.mocks.dart';
 
@@ -18,7 +19,8 @@ import 'desktop_sync_service_test.mocks.dart';
 /// Helper to clean up existing socket bindings that might conflict
 Future<void> _cleanupExistingSockets() async {
   try {
-    final socket = await Socket.connect('127.0.0.1', 44040, timeout: const Duration(milliseconds: 100));
+    final socket = await Socket.connect('127.0.0.1', 44040,
+        timeout: const Duration(milliseconds: 100));
     await socket.close();
     // If we can connect, something is already using the port
     // Give it time to be released
@@ -40,10 +42,15 @@ void main() {
 
       mockDeviceIdService = MockIDeviceIdService();
       mockMediator = MockMediator();
-      service = DesktopSyncService(mockMediator, mockDeviceIdService);
+      service = DesktopSyncService(
+        mockMediator,
+        mockDeviceIdService,
+        restoreBarrier: McpRestoreBarrier(),
+      );
 
       // Setup default device ID
-      when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+      when(mockDeviceIdService.getDeviceId())
+          .thenAnswer((_) async => 'test-device-id');
     });
 
     tearDown(() async {
@@ -73,10 +80,12 @@ void main() {
           await firstSwitch;
 
           // Should be in server mode (or disabled if server failed to start)
-          expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+          expect(service.currentMode,
+              isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
         } catch (e) {
           // If server fails to start due to port conflict, that's acceptable in test environment
-          expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+          expect(service.currentMode,
+              isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
         }
 
         expect(service.isModeSwitching, isFalse);
@@ -85,10 +94,12 @@ void main() {
       test('should handle mode switch from disabled to server', () async {
         try {
           await service.switchToMode(DesktopSyncMode.server);
-          expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+          expect(service.currentMode,
+              isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
         } catch (e) {
           // If server fails to start due to port conflict, that's acceptable in test environment
-          expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+          expect(service.currentMode,
+              isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
         }
         expect(service.isModeSwitching, isFalse);
       });
@@ -99,7 +110,8 @@ void main() {
           await service.switchToMode(DesktopSyncMode.server);
         } catch (e) {
           // If server fails to start, continue with disabled mode
-          expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+          expect(service.currentMode,
+              isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
         }
 
         // Then switch to client mode
@@ -117,16 +129,19 @@ void main() {
         expect(service.currentMode, equals(DesktopSyncMode.disabled));
       });
 
-      test('should reset mode switching flag after successful switch', () async {
+      test('should reset mode switching flag after successful switch',
+          () async {
         expect(service.isModeSwitching, isFalse);
 
         try {
           await service.switchToMode(DesktopSyncMode.server);
           // If successful, should be in server mode
-          expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+          expect(service.currentMode,
+              isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
         } catch (e) {
           // If server fails to start, that's acceptable in test environment
-          expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+          expect(service.currentMode,
+              isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
         }
 
         expect(service.isModeSwitching, isFalse);
@@ -142,7 +157,8 @@ void main() {
           await service.switchToMode(DesktopSyncMode.server).timeout(
             const Duration(seconds: 10),
             onTimeout: () {
-              throw TimeoutException('Mode start operation timed out', const Duration(seconds: 10));
+              throw TimeoutException('Mode start operation timed out',
+                  const Duration(seconds: 10));
             },
           );
         } catch (e) {
@@ -150,12 +166,17 @@ void main() {
         }
 
         stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(11000)); // Should timeout before 10 seconds
+        expect(stopwatch.elapsedMilliseconds,
+            lessThan(11000)); // Should timeout before 10 seconds
       });
 
       test('should recover from inconsistent state on startup', () async {
         // Create a new service instance to test startup recovery
-        final recoveryService = DesktopSyncService(mockMediator, mockDeviceIdService);
+        final recoveryService = DesktopSyncService(
+          mockMediator,
+          mockDeviceIdService,
+          restoreBarrier: McpRestoreBarrier(),
+        );
 
         try {
           // Verify initial state is clean
@@ -195,7 +216,8 @@ void main() {
         } catch (e) {
           // If server fails to start, continue with disabled mode
         }
-        expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+        expect(service.currentMode,
+            isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
 
         await service.switchToMode(DesktopSyncMode.client);
         expect(service.currentMode, equals(DesktopSyncMode.client));
@@ -210,7 +232,8 @@ void main() {
         } catch (e) {
           // If server fails to start, continue with disabled mode
         }
-        expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+        expect(service.currentMode,
+            isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
 
         // Request same mode again
         try {
@@ -218,7 +241,8 @@ void main() {
         } catch (e) {
           // If server fails to start, continue with disabled mode
         }
-        expect(service.currentMode, isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
+        expect(service.currentMode,
+            isIn([DesktopSyncMode.server, DesktopSyncMode.disabled]));
       });
     });
   });

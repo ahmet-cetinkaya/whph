@@ -24,8 +24,9 @@ optimized for each platform's unique characteristics.
   environments
 - **Intelligent Insights**: Application usage tracking and analytics to enhance
   focus and productivity
-- **Privacy-First**: Open-source with local data storage and optional
-  peer-to-peer synchronization
+- **Privacy-First**: Open-source with local data storage, optional peer-to-peer
+  synchronization, and user-authorized, loopback-only [MCP access](MCP.md) for
+  external agents
 
 ---
 
