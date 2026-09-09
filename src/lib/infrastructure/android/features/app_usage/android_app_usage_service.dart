@@ -2,12 +2,16 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_transaction_service.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class AndroidAppUsageService extends BaseAppUsageService {
-  static final appUsageStatsChannel = MethodChannel(AndroidAppConstants.channels.appUsageStats);
-  static final workManagerChannel = MethodChannel(AndroidAppConstants.channels.workManager);
+  static final appUsageStatsChannel =
+      MethodChannel(AndroidAppConstants.channels.appUsageStats);
+  static final workManagerChannel =
+      MethodChannel(AndroidAppConstants.channels.workManager);
 
   AndroidAppUsageService(
     super.appUsageRepository,
@@ -18,12 +22,16 @@ class AndroidAppUsageService extends BaseAppUsageService {
   );
 
   @override
-  Future<void> startTracking() async {
+  Future<void> startTracking(
+      {ApplicationMutationGuard? authorizeCommit}) async {
     final hasPermission = await checkUsageStatsPermission();
     if (!hasPermission) {
-      Logger.warning('Usage stats permission not granted. Cannot start tracking.');
-      return;
+      Logger.warning(
+          'Usage stats permission not granted. Cannot start tracking.');
+      throw const AppUsagePermissionRequiredException();
     }
+
+    await ensureMutationAuthorized(authorizeCommit);
 
     // Run a diagnostic comparison for the last hour to help debug accuracy issues
     final now = DateTime.now();
@@ -32,6 +40,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
     // Initial fetch - use direct today collection instead of hour-by-hour
     await collectTodayUsageDirectly();
+
+    await ensureMutationAuthorized(authorizeCommit);
 
     // Start WorkManager periodic work for background collection
     await _startWorkManagerTracking();
@@ -48,6 +58,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
       Logger.info('WorkManager periodic app usage tracking started');
     } catch (e) {
       Logger.error('Failed to start WorkManager tracking: $e');
+      rethrow;
     }
   }
 
@@ -55,7 +66,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
   void _setupWorkManagerListener() {
     appUsageStatsChannel.setMethodCallHandler((call) async {
       if (call.method == 'triggerCollection') {
-        Logger.info('WorkManager triggered app usage collection - using DIRECT today method');
+        Logger.info(
+            'WorkManager triggered app usage collection - using DIRECT today method');
         await collectTodayUsageDirectly();
       }
     });
@@ -63,9 +75,11 @@ class AndroidAppUsageService extends BaseAppUsageService {
 
   /// Gets accurate foreground usage data using the native Android UsageStatsManager.
   /// This method filters for foreground activity only and matches Digital Wellbeing accuracy.
-  Future<Map<String, dynamic>> _getAccurateForegroundUsage(int startTimeMs, int endTimeMs) async {
+  Future<Map<String, dynamic>> _getAccurateForegroundUsage(
+      int startTimeMs, int endTimeMs) async {
     try {
-      final result = await appUsageStatsChannel.invokeMethod<Map<dynamic, dynamic>>(
+      final result =
+          await appUsageStatsChannel.invokeMethod<Map<dynamic, dynamic>>(
         'getAccurateForegroundUsage',
         {
           'startTime': startTimeMs,
@@ -86,7 +100,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
         }
       });
 
-      Logger.info('Retrieved accurate usage data for ${typedResult.length} apps');
+      Logger.info(
+          'Retrieved accurate usage data for ${typedResult.length} apps');
       return typedResult;
     } catch (e) {
       Logger.error('Error getting accurate foreground usage: $e');
@@ -98,9 +113,11 @@ class AndroidAppUsageService extends BaseAppUsageService {
   /// This bypasses the accumulation issue and matches Digital Wellbeing's approach.
   Future<Map<String, dynamic>> _getTodayUsageDirectly() async {
     try {
-      Logger.info('Getting TODAY\'S usage directly from Android (bypassing hour collection)');
+      Logger.info(
+          'Getting TODAY\'S usage directly from Android (bypassing hour collection)');
 
-      final result = await appUsageStatsChannel.invokeMethod<Map<dynamic, dynamic>>(
+      final result =
+          await appUsageStatsChannel.invokeMethod<Map<dynamic, dynamic>>(
         'getTodayForegroundUsage',
       );
 
@@ -117,11 +134,12 @@ class AndroidAppUsageService extends BaseAppUsageService {
         }
       });
 
-      Logger.info('Retrieved TODAY\'S usage data for ${typedResult.length} apps (direct method)');
+      Logger.info(
+          'Retrieved TODAY\'S usage data for ${typedResult.length} apps (direct method)');
       return typedResult;
     } catch (e) {
       Logger.error('Error getting today\'s usage directly: $e');
-      return {};
+      rethrow;
     }
   }
 
@@ -132,6 +150,7 @@ class AndroidAppUsageService extends BaseAppUsageService {
       Logger.info('WorkManager app usage tracking stopped');
     } catch (e) {
       Logger.error('Failed to stop WorkManager tracking: $e');
+      rethrow;
     }
 
     periodicTimer?.cancel();
@@ -145,11 +164,12 @@ class AndroidAppUsageService extends BaseAppUsageService {
   Future<bool> checkUsageStatsPermission() async {
     try {
       // Check usage statistics permission from Kotlin side
-      final hasPermission = await appUsageStatsChannel.invokeMethod<bool>('checkUsageStatsPermission');
+      final hasPermission = await appUsageStatsChannel
+          .invokeMethod<bool>('checkUsageStatsPermission');
       return hasPermission ?? false;
     } catch (e) {
       Logger.error('Error checking usage stats permission: $e');
-      return false;
+      rethrow;
     }
   }
 
@@ -173,14 +193,15 @@ class AndroidAppUsageService extends BaseAppUsageService {
       Logger.info('Time range: $startTime to $endTime');
 
       // Use the event-based method to get usage data
-      final usageMap =
-          await _getAccurateForegroundUsage(startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch);
+      final usageMap = await _getAccurateForegroundUsage(
+          startTime.millisecondsSinceEpoch, endTime.millisecondsSinceEpoch);
       Logger.info('--- EVENT-BASED FOREGROUND METHOD ---');
       for (final entry in usageMap.entries) {
         final usageData = entry.value as Map<String, dynamic>;
         final usageTimeSeconds = usageData['usageTimeSeconds'] as int;
         final appName = usageData['appName'] as String;
-        Logger.info('$appName: ${usageTimeSeconds}s (${(usageTimeSeconds / 60).toStringAsFixed(1)}m)');
+        Logger.info(
+            '$appName: ${usageTimeSeconds}s (${(usageTimeSeconds / 60).toStringAsFixed(1)}m)');
       }
 
       Logger.info('=== END DIAGNOSTIC ===');
@@ -193,7 +214,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
   /// This method directly queries Android for today's data and stores it as a single record.
   Future<void> collectTodayUsageDirectly() async {
     try {
-      Logger.info('=== COLLECTING TODAY\'S USAGE DIRECTLY (NO HOUR ACCUMULATION) ===');
+      Logger.info(
+          '=== COLLECTING TODAY\'S USAGE DIRECTLY (NO HOUR ACCUMULATION) ===');
 
       // Get today's usage directly from Android
       final todayUsageMap = await _getTodayUsageDirectly();
@@ -224,7 +246,9 @@ class AndroidAppUsageService extends BaseAppUsageService {
         }
 
         // Apply reasonable daily cap (12 hours max)
-        final cappedSeconds = usageTimeSeconds > (12 * 60 * 60) ? (12 * 60 * 60) : usageTimeSeconds;
+        final cappedSeconds = usageTimeSeconds > (12 * 60 * 60)
+            ? (12 * 60 * 60)
+            : usageTimeSeconds;
 
         // Save as a single record for today
         await saveTimeRecord(
@@ -235,12 +259,15 @@ class AndroidAppUsageService extends BaseAppUsageService {
         );
 
         recordsSaved++;
-        Logger.info('Saved TODAY\'S usage: $appName = ${cappedSeconds}s (${(cappedSeconds / 60).toInt()}m) - DIRECT');
+        Logger.info(
+            'Saved TODAY\'S usage: $appName = ${cappedSeconds}s (${(cappedSeconds / 60).toInt()}m) - DIRECT');
       }
 
-      Logger.info('=== COMPLETED: Saved $recordsSaved direct today records ===');
+      Logger.info(
+          '=== COMPLETED: Saved $recordsSaved direct today records ===');
     } catch (e) {
       Logger.error('Error collecting today\'s usage directly: $e');
+      rethrow;
     }
   }
 
@@ -257,7 +284,8 @@ class AndroidAppUsageService extends BaseAppUsageService {
       );
 
       if (existingRecords.isNotEmpty) {
-        Logger.info('Clearing ${existingRecords.length} existing records for today before direct collection');
+        Logger.info(
+            'Clearing ${existingRecords.length} existing records for today before direct collection');
 
         for (final record in existingRecords) {
           record.deletedDate = DateTime.now().toUtc();
@@ -266,19 +294,22 @@ class AndroidAppUsageService extends BaseAppUsageService {
       }
     } catch (e) {
       Logger.error('Error clearing today\'s records: $e');
+      rethrow;
     }
   }
 
   /// Public method to test accuracy of usage calculation for debugging purposes.
   /// This can be called from the Flutter UI to test the event-based method for specific time ranges.
-  Future<Map<String, dynamic>> testUsageAccuracy({DateTime? startTime, DateTime? endTime}) async {
+  Future<Map<String, dynamic>> testUsageAccuracy(
+      {DateTime? startTime, DateTime? endTime}) async {
     final now = DateTime.now();
     final start = startTime ?? now.subtract(const Duration(hours: 1));
     final end = endTime ?? now;
 
     try {
       // Get usage from the event-based method only
-      final usageMap = await _getAccurateForegroundUsage(start.millisecondsSinceEpoch, end.millisecondsSinceEpoch);
+      final usageMap = await _getAccurateForegroundUsage(
+          start.millisecondsSinceEpoch, end.millisecondsSinceEpoch);
 
       return {
         'timeRange': {

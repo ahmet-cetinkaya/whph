@@ -29,11 +29,17 @@ class DesktopServerSyncService extends SyncService {
   bool _isServerMode = false;
   Timer? _serverKeepAlive;
 
-  final WebSocketConnectionManager _connectionManager = WebSocketConnectionManager();
-  final WebSocketMessageValidator _messageValidator = const WebSocketMessageValidator();
+  final WebSocketConnectionManager _connectionManager =
+      WebSocketConnectionManager();
+  final WebSocketMessageValidator _messageValidator =
+      const WebSocketMessageValidator();
   final IDeviceIdService _deviceIdService;
 
-  DesktopServerSyncService(super.mediator, this._deviceIdService) {
+  DesktopServerSyncService(
+    super.mediator,
+    this._deviceIdService, {
+    required super.restoreBarrier,
+  }) {
     _connectionManager.validateAndCleanConnectionState();
   }
 
@@ -41,7 +47,8 @@ class DesktopServerSyncService extends SyncService {
     try {
       Logger.info('Attempting to start desktop WebSocket server...');
 
-      _server = await HttpServer.bind(InternetAddress.anyIPv4, webSocketPort, shared: true);
+      _server = await HttpServer.bind(InternetAddress.anyIPv4, webSocketPort,
+          shared: true);
       _isServerMode = true;
       _startServerKeepAlive();
       _handleServerConnections();
@@ -62,15 +69,18 @@ class DesktopServerSyncService extends SyncService {
     await for (HttpRequest req in server) {
       try {
         if (req.headers.value('upgrade')?.toLowerCase() == 'websocket') {
-          final clientIP = req.connectionInfo?.remoteAddress.address ?? '127.0.0.1';
+          final clientIP =
+              req.connectionInfo?.remoteAddress.address ?? '127.0.0.1';
 
           if (!_connectionManager.canAcceptNewConnection(clientIP)) {
-            _rejectConnection(req, HttpStatus.serviceUnavailable, 'Connection limit exceeded');
+            _rejectConnection(req, HttpStatus.serviceUnavailable,
+                'Connection limit exceeded');
             continue;
           }
 
           if (!NetworkUtils.isPrivateIP(clientIP)) {
-            _rejectConnection(req, HttpStatus.forbidden, 'Only private network connections allowed');
+            _rejectConnection(req, HttpStatus.forbidden,
+                'Only private network connections allowed');
             continue;
           }
 
@@ -94,7 +104,8 @@ class DesktopServerSyncService extends SyncService {
             cancelOnError: true,
           );
         } else {
-          _rejectConnection(req, HttpStatus.upgradeRequired, 'WebSocket upgrade required');
+          _rejectConnection(
+              req, HttpStatus.upgradeRequired, 'WebSocket upgrade required');
         }
       } catch (e) {
         Logger.error('Request handling error: $e');
@@ -135,7 +146,8 @@ class DesktopServerSyncService extends SyncService {
         return;
       }
 
-      if (parsedMessage == null || !_messageValidator.isValidWebSocketMessage(parsedMessage)) {
+      if (parsedMessage == null ||
+          !_messageValidator.isValidWebSocketMessage(parsedMessage)) {
         _sendError(socket, 'Invalid message structure');
         return;
       }
@@ -214,10 +226,12 @@ class DesktopServerSyncService extends SyncService {
         ));
   }
 
-  Future<void> _handleClientConnect(WebSocketMessage message, WebSocket socket) async {
+  Future<void> _handleClientConnect(
+      WebSocketMessage message, WebSocket socket) async {
     try {
       final data = message.data as Map<String, dynamic>;
-      Logger.info('Client connecting: ${data['clientName']} (${data['clientId']})');
+      Logger.info(
+          'Client connecting: ${data['clientName']} (${data['clientId']})');
 
       _sendMessage(
           socket,
@@ -234,8 +248,11 @@ class DesktopServerSyncService extends SyncService {
           ));
     } catch (e) {
       Logger.error('Failed to handle client connect: $e');
-      _sendMessage(socket,
-          WebSocketMessage(type: 'client_connected', data: {'success': false, 'message': 'Connection failed: $e'}));
+      _sendMessage(
+          socket,
+          WebSocketMessage(
+              type: 'client_connected',
+              data: {'success': false, 'message': 'Connection failed: $e'}));
     }
   }
 
@@ -244,7 +261,10 @@ class DesktopServerSyncService extends SyncService {
         socket,
         WebSocketMessage(
           type: 'heartbeat_response',
-          data: {'timestamp': DateTime.now().toIso8601String(), 'serverStatus': 'healthy'},
+          data: {
+            'timestamp': DateTime.now().toIso8601String(),
+            'serverStatus': 'healthy'
+          },
         ));
   }
 
@@ -256,16 +276,19 @@ class DesktopServerSyncService extends SyncService {
           type: 'sync_deprecated',
           data: {
             'success': false,
-            'message': 'Legacy sync is deprecated. Please use paginated_sync endpoint.',
+            'message':
+                'Legacy sync is deprecated. Please use paginated_sync endpoint.',
             'timestamp': DateTime.now().toIso8601String()
           },
         ));
   }
 
-  Future<void> _handlePaginatedSyncStart(WebSocketMessage message, WebSocket socket) async {
+  Future<void> _handlePaginatedSyncStart(
+      WebSocketMessage message, WebSocket socket) async {
     try {
       final data = message.data as Map<String, dynamic>?;
-      if (data == null) throw FormatException('paginated_sync_start message missing data');
+      if (data == null)
+        throw FormatException('paginated_sync_start message missing data');
 
       Logger.info('Client (${data['clientId']}) initiated paginated sync');
       _sendMessage(
@@ -283,15 +306,19 @@ class DesktopServerSyncService extends SyncService {
       Logger.error('Failed to handle paginated_sync_start: $e');
       _sendMessage(
           socket,
-          WebSocketMessage(
-              type: 'paginated_sync_error', data: {'success': false, 'message': 'Failed to start paginated sync: $e'}));
+          WebSocketMessage(type: 'paginated_sync_error', data: {
+            'success': false,
+            'message': 'Failed to start paginated sync: $e'
+          }));
     }
   }
 
-  Future<void> _handlePaginatedSyncRequest(WebSocketMessage message, WebSocket socket) async {
+  Future<void> _handlePaginatedSyncRequest(
+      WebSocketMessage message, WebSocket socket) async {
     try {
       final data = message.data as Map<String, dynamic>?;
-      if (data == null) throw FormatException('paginated_sync_request message missing data');
+      if (data == null)
+        throw FormatException('paginated_sync_request message missing data');
 
       final entityType = data['entityType'] as String?;
       final pageIndex = data['pageIndex'] as int?;
@@ -302,7 +329,8 @@ class DesktopServerSyncService extends SyncService {
         throw FormatException('Missing required fields');
       }
 
-      Logger.info('Client requested page $pageIndex of $entityType (size: $pageSize)');
+      Logger.info(
+          'Client requested page $pageIndex of $entityType (size: $pageSize)');
 
       final deviceId = await _deviceIdService.getDeviceId();
       final syncDevice = SyncDevice(
@@ -328,7 +356,8 @@ class DesktopServerSyncService extends SyncService {
       );
 
       final command = PaginatedSyncCommand(paginatedSyncDataDto: requestDto);
-      final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+      final response = await mediator
+          .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
       if (response.paginatedSyncDataDto != null) {
         _sendMessage(
@@ -345,7 +374,8 @@ class DesktopServerSyncService extends SyncService {
       } else {
         // Local sync records store the peer as "from" and this device as "to",
         // which is the inverse of the outgoing-request device built above.
-        final completionPayload = await SyncCompletionService(mediator).recordCompletion(
+        final completionPayload =
+            await SyncCompletionService(mediator).recordCompletion(
           syncDeviceData: {
             'fromIp': syncDevice.toIp,
             'toIp': syncDevice.fromIp,
@@ -373,18 +403,23 @@ class DesktopServerSyncService extends SyncService {
       Logger.error('Failed to handle paginated_sync_request: $e');
       _sendMessage(
           socket,
-          WebSocketMessage(
-              type: 'paginated_sync_error', data: {'success': false, 'message': 'Failed to process data request: $e'}));
+          WebSocketMessage(type: 'paginated_sync_error', data: {
+            'success': false,
+            'message': 'Failed to process data request: $e'
+          }));
     }
   }
 
-  Future<void> _handlePaginatedSync(WebSocketMessage message, WebSocket socket) async {
+  Future<void> _handlePaginatedSync(
+      WebSocketMessage message, WebSocket socket) async {
     try {
       final data = message.data;
-      if (data == null) throw FormatException('Paginated sync message missing data');
+      if (data == null)
+        throw FormatException('Paginated sync message missing data');
 
-      final command =
-          PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(data as Map<String, dynamic>));
+      final command = PaginatedSyncCommand(
+          paginatedSyncDataDto:
+              PaginatedSyncDataDto.fromJson(data as Map<String, dynamic>));
 
       final response = await mediator
           .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command)
@@ -405,19 +440,25 @@ class DesktopServerSyncService extends SyncService {
             },
           ));
 
-      await _connectionManager.closeSocketGracefully(socket, 1000, 'Paginated sync completed');
+      await _connectionManager.closeSocketGracefully(
+          socket, 1000, 'Paginated sync completed');
     } catch (e) {
       Logger.error('Paginated sync failed: $e');
       _sendMessage(
-          socket, WebSocketMessage(type: 'paginated_sync_error', data: {'success': false, 'message': e.toString()}));
-      await _connectionManager.closeSocketGracefully(socket, 1011, 'Paginated sync failed');
+          socket,
+          WebSocketMessage(
+              type: 'paginated_sync_error',
+              data: {'success': false, 'message': e.toString()}));
+      await _connectionManager.closeSocketGracefully(
+          socket, 1011, 'Paginated sync failed');
     }
   }
 
   void _startServerKeepAlive() {
     _serverKeepAlive = Timer.periodic(const Duration(minutes: 2), (_) {
       if (_server != null && _isServerMode) {
-        Logger.debug('Server heartbeat - Active connections: ${_connectionManager.connectionCount}');
+        Logger.debug(
+            'Server heartbeat - Active connections: ${_connectionManager.connectionCount}');
         _connectionManager.recycleIdleConnections();
         _connectionManager.cleanupExpiredConnections();
       }
@@ -449,9 +490,12 @@ class DesktopServerSyncService extends SyncService {
     super.dispose();
   }
 
-  void _sendMessage(WebSocket socket, WebSocketMessage message) => socket.add(JsonMapper.serialize(message));
-  void _sendError(WebSocket socket, String message) =>
-      _sendMessage(socket, WebSocketMessage(type: 'error', data: {'message': message, 'server_type': 'desktop'}));
+  void _sendMessage(WebSocket socket, WebSocketMessage message) =>
+      socket.add(JsonMapper.serialize(message));
+  void _sendError(WebSocket socket, String message) => _sendMessage(
+      socket,
+      WebSocketMessage(
+          type: 'error', data: {'message': message, 'server_type': 'desktop'}));
 
   String _getServerLocalIp() {
     try {

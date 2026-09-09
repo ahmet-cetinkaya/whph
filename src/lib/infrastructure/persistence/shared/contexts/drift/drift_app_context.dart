@@ -5,6 +5,8 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
+import 'package:whph/core/application/shared/services/mcp_restore_barrier.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
@@ -51,6 +53,7 @@ import 'package:whph/infrastructure/persistence/features/tasks/repositories/drif
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/database_backup_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/migrations/migrations.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/restore_barrier_query_interceptor.dart';
 
 part 'drift_app_context.g.dart';
 
@@ -81,6 +84,8 @@ String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
   ],
 )
 class AppDatabase extends _$AppDatabase {
+  final IRestoreBarrier restoreBarrier;
+
   static AppDatabase? _instance;
   static bool isTestMode = false;
   static Directory? testDirectory;
@@ -117,17 +122,38 @@ class AppDatabase extends _$AppDatabase {
     _backupService = null;
   }
 
-  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
+  factory AppDatabase([QueryExecutor? executor]) {
+    return AppDatabase.withRestoreBarrier(
+      executor ?? _openConnection(),
+      McpRestoreBarrier(),
+    );
+  }
+
+  @protected
+  AppDatabase.withRestoreBarrier(QueryExecutor executor, this.restoreBarrier)
+      : super(executor.interceptWith(
+          RestoreBarrierQueryInterceptor(restoreBarrier),
+        ));
 
   // Constructor for testing
-  AppDatabase.withExecutor(super.executor) {
+  factory AppDatabase.withExecutor(
+    QueryExecutor executor, {
+    IRestoreBarrier? restoreBarrier,
+  }) {
     isTestMode = true;
+    return AppDatabase.withRestoreBarrier(
+      executor,
+      restoreBarrier ?? McpRestoreBarrier(),
+    );
   }
 
   // Constructor for testing with in-memory database
-  factory AppDatabase.forTesting() {
+  factory AppDatabase.forTesting({IRestoreBarrier? restoreBarrier}) {
     isTestMode = true;
-    return AppDatabase(NativeDatabase.memory());
+    return AppDatabase.withExecutor(
+      NativeDatabase.memory(),
+      restoreBarrier: restoreBarrier,
+    );
   }
 
   @override
@@ -211,6 +237,17 @@ class AppDatabase extends _$AppDatabase {
 
   /// Creates a manual database backup
   Future<File?> createDatabaseBackup() => backupService.createDatabaseBackup();
+
+  Future<File> createRestoreSnapshot() {
+    if (!restoreBarrier.isRestoreOwner) {
+      throw StateError('Restore snapshots require exclusive database access');
+    }
+    return backupService.createConsistentSnapshot(
+      writeSnapshot: (destinationPath) => customStatement(
+        "VACUUM INTO '${destinationPath.replaceAll("'", "''")}'",
+      ),
+    );
+  }
 
   /// Resets the database by closing the connection and deleting the database file
   Future<void> resetDatabase() {

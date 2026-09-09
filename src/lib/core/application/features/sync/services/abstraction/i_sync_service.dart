@@ -2,7 +2,7 @@ import 'package:whph/core/application/features/sync/models/paginated_sync_data.d
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 
 abstract class ISyncService {
-  void startSync();
+  Future<void> startSync();
   void stopSync();
   void dispose();
   Future<void> runSync({bool isManual = false});

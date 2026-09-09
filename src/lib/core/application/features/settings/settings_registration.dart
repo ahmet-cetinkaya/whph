@@ -18,12 +18,14 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
@@ -77,6 +79,7 @@ void registerSettingsFeature(
         appUsageTagRuleRepository: appUsageTagRuleRepository,
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
         habitRecordRepository: habitRecordRepository,
+        habitTimeRecordRepository: container.resolve<IHabitTimeRecordRepository>(),
         habitRepository: habitRepository,
         habitTagRepository: habitTagRepository,
         settingRepository: settingRepository,
@@ -84,6 +87,7 @@ void registerSettingsFeature(
         tagRepository: tagRepository,
         tagTagRepository: tagTagRepository,
         taskRepository: taskRepository,
+        taskStatusRepository: container.resolve<ITaskStatusRepository>(),
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
         noteRepository: noteRepository,
@@ -99,6 +103,7 @@ void registerSettingsFeature(
         appUsageTagRuleRepository: appUsageTagRuleRepository,
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
         habitRecordRepository: habitRecordRepository,
+        habitTimeRecordRepository: container.resolve<IHabitTimeRecordRepository>(),
         habitRepository: habitRepository,
         habitTagRepository: habitTagRepository,
         settingRepository: settingRepository,
@@ -106,6 +111,7 @@ void registerSettingsFeature(
         tagRepository: tagRepository,
         tagTagRepository: tagTagRepository,
         taskRepository: taskRepository,
+        taskStatusRepository: container.resolve<ITaskStatusRepository>(),
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
         noteRepository: noteRepository,

@@ -18,8 +18,14 @@ class SettingTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftSettingRepository extends DriftBaseRepository<Setting, String, SettingTable> implements ISettingRepository {
-  DriftSettingRepository() : super(AppDatabase.instance(), AppDatabase.instance().settingTable);
+class DriftSettingRepository
+    extends DriftBaseRepository<Setting, String, SettingTable>
+    implements ISettingRepository {
+  DriftSettingRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().settingTable);
+
+  DriftSettingRepository.withDatabase(AppDatabase database)
+      : super(database, database.settingTable);
 
   @override
   Expression<String> getPrimaryKey(SettingTable t) {
@@ -48,5 +54,30 @@ class DriftSettingRepository extends DriftBaseRepository<Setting, String, Settin
 
     final result = await query.getSingleOrNull();
     return result;
+  }
+
+  @override
+  Future<DateTime?> updateIfRevision(
+      Setting setting, DateTime expectedRevision) async {
+    final nextRevision = nextDatabaseRevision(expectedRevision);
+    final affectedRows = await database.customUpdate(
+      '''
+        UPDATE setting_table
+        SET key = ?, value = ?, value_type = ?, modified_date = ?
+        WHERE id = ? AND deleted_date IS NULL
+          AND (modified_date = ? OR (modified_date IS NULL AND created_date = ?))
+      ''',
+      variables: [
+        Variable<String>(setting.key),
+        Variable<String>(setting.value),
+        Variable<int>(setting.valueType.index),
+        Variable.withDateTime(nextRevision),
+        Variable<String>(setting.id),
+        Variable.withDateTime(expectedRevision),
+        Variable.withDateTime(expectedRevision),
+      ],
+      updates: {table},
+    );
+    return affectedRows == 1 ? nextRevision : null;
   }
 }
