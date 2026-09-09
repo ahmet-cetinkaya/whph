@@ -4,6 +4,10 @@ import 'package:whph/core/domain/shared/constants/app_assets.dart';
 import 'package:whph/infrastructure/desktop/features/system_tray/desktop_system_tray_service.dart';
 
 class FlatpakSystemTrayService extends DesktopSystemTrayService {
+  FlatpakSystemTrayService({
+    required super.shutdownApplication,
+  });
+
   @override
   Future<void> setIcon(TrayIconType type) async {
     try {
