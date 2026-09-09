@@ -57,6 +57,37 @@ settings:
     choose_title: Izberite jezik
     dialog_info: "{count} jezikov na voljo."
     title: Jezik
+  mcp:
+    title: Povezave agentov AI
+    description: Dovolite odobrenim lokalnim agentom AI uporabo izbranih funkcij WHPH.
+    status: Stanje lokalnega strežnika MCP
+    running: Deluje
+    stopped: Ustavljen
+    port: Vrata
+    save_port: Shrani vrata
+    transfer_directory: Imenik za prenos
+    choose_directory: Izberite imenik za prenos
+    connections: Aktivne povezave
+    no_connections: Ni aktivnih povezav agentov.
+    create_connection: Dodaj povezavo
+    connection_name: Ime povezave
+    permissions: Dovoljenja
+    create: Ustvari in kopiraj žeton
+    rotate: Obnovi žeton
+    revoke: Prekliči povezavo
+    rotate_confirm: Obnoviti žeton te povezave? Stari žeton bo takoj prenehal delovati.
+    revoke_confirm: Takoj preklicati to povezavo?
+    confirm: Potrdi
+    cancel: Prekliči
+    token_copied: Novi žeton je kopiran. Ne bo več prikazan.
+    storage_unavailable: Varna shramba nastavitev MCP ni na voljo.
+    approvals: Čakajoče odobritve
+    no_approvals: Nobena operacija ne čaka na odobritev.
+    approve: Odobri
+    reject: Zavrni
+    refresh: Osveži čakajoče odobritve
+    approvals_load_error: Čakajočih odobritev ni bilo mogoče naložiti.
+    approval_update_error: Odločitve o odobritvi ni bilo mogoče shraniti.
   notifications:
     disable_error: Spodletelo je pri onemogočanju obvestil
     enable_error: Spodletelo je pri omogočanju obvestil

@@ -55,6 +55,37 @@ settings:
     choose_title: Valitse kieli
     dialog_info: "{count} kieltä saatavilla."
     title: Kieli
+  mcp:
+    title: Tekoälyagenttien yhteydet
+    description: Salli hyväksyttyjen paikallisten tekoälyagenttien käyttää valittuja WHPH-toimintoja.
+    status: Paikallisen MCP-palvelimen tila
+    running: Käynnissä
+    stopped: Pysäytetty
+    port: Portti
+    save_port: Tallenna portti
+    transfer_directory: Siirtohakemisto
+    choose_directory: Valitse siirtohakemisto
+    connections: Aktiiviset yhteydet
+    no_connections: Ei aktiivisia agenttiyhteyksiä.
+    create_connection: Lisää yhteys
+    connection_name: Yhteyden nimi
+    permissions: Käyttöoikeudet
+    create: Luo ja kopioi tunnus
+    rotate: Uusi tunnus
+    revoke: Peruuta yhteys
+    rotate_confirm: Uusitaanko tämän yhteyden tunnus? Vanha tunnus lakkaa toimimasta heti.
+    revoke_confirm: Peruutetaanko tämä yhteys heti?
+    confirm: Vahvista
+    cancel: Peruuta
+    token_copied: Uusi tunnus kopioitiin. Sitä ei näytetä uudelleen.
+    storage_unavailable: MCP-asetusten suojattu tallennustila ei ole käytettävissä.
+    approvals: Odottavat hyväksynnät
+    no_approvals: Yksikään toiminto ei odota hyväksyntää.
+    approve: Hyväksy
+    reject: Hylkää
+    refresh: Päivitä odottavat hyväksynnät
+    approvals_load_error: Odottavia hyväksyntöjä ei voitu ladata.
+    approval_update_error: Hyväksyntäpäätöstä ei voitu tallentaa.
   notifications:
     disable_error: Ilmoitusten poistaminen käytöstä epäonnistui
     enable_error: Ilmoitusten käyttöönotto epäonnistui

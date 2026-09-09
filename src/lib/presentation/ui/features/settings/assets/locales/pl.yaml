@@ -57,6 +57,37 @@ settings:
     choose_title: Wybierz swój język
     dialog_info: "{count} języków dostępnych."
     title: Język
+  mcp:
+    title: Połączenia agentów AI
+    description: Zezwól zatwierdzonym lokalnym agentom AI na korzystanie z wybranych funkcji WHPH.
+    status: Stan lokalnego serwera MCP
+    running: Działa
+    stopped: Zatrzymany
+    port: Port
+    save_port: Zapisz port
+    transfer_directory: Katalog transferowy
+    choose_directory: Wybierz katalog transferowy
+    connections: Aktywne połączenia
+    no_connections: Brak aktywnych połączeń agentów.
+    create_connection: Dodaj połączenie
+    connection_name: Nazwa połączenia
+    permissions: Uprawnienia
+    create: Utwórz i skopiuj token
+    rotate: Odnów token
+    revoke: Unieważnij połączenie
+    rotate_confirm: Odnowić token tego połączenia? Stary token natychmiast przestanie działać.
+    revoke_confirm: Natychmiast unieważnić to połączenie?
+    confirm: Potwierdź
+    cancel: Anuluj
+    token_copied: Nowy token został skopiowany. Nie zostanie ponownie wyświetlony.
+    storage_unavailable: Bezpieczna pamięć ustawień MCP jest niedostępna.
+    approvals: Oczekujące zatwierdzenia
+    no_approvals: Żadne operacje nie oczekują na zatwierdzenie.
+    approve: Zatwierdź
+    reject: Odrzuć
+    refresh: Odśwież oczekujące zatwierdzenia
+    approvals_load_error: Nie udało się wczytać oczekujących zatwierdzeń.
+    approval_update_error: Nie udało się zapisać decyzji o zatwierdzeniu.
   notifications:
     disable_error: Nie udało się wyłączyć powiadomień
     enable_error: Nie udało się włączyć powiadomień

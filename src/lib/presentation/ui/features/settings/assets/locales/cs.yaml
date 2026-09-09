@@ -57,6 +57,37 @@ settings:
     choose_title: Vyberte svůj jazyk
     dialog_info: "{count} jazyků dostupných."
     title: Jazyk
+  mcp:
+    title: Připojení agentů AI
+    description: Umožněte schváleným místním agentům AI používat vybrané funkce WHPH.
+    status: Stav místního serveru MCP
+    running: Spuštěno
+    stopped: Zastaveno
+    port: Port
+    save_port: Uložit port
+    transfer_directory: Přenosový adresář
+    choose_directory: Vybrat přenosový adresář
+    connections: Aktivní připojení
+    no_connections: Žádná aktivní připojení agentů.
+    create_connection: Přidat připojení
+    connection_name: Název připojení
+    permissions: Oprávnění
+    create: Vytvořit a zkopírovat token
+    rotate: Obnovit token
+    revoke: Zrušit připojení
+    rotate_confirm: Obnovit token tohoto připojení? Starý token okamžitě přestane fungovat.
+    revoke_confirm: Okamžitě zrušit toto připojení?
+    confirm: Potvrdit
+    cancel: Zrušit
+    token_copied: Nový token byl zkopírován. Už se znovu nezobrazí.
+    storage_unavailable: Zabezpečené úložiště nastavení MCP není k dispozici.
+    approvals: Čekající schválení
+    no_approvals: Žádné operace nečekají na schválení.
+    approve: Schválit
+    reject: Zamítnout
+    refresh: Obnovit čekající schválení
+    approvals_load_error: Čekající schválení se nepodařilo načíst.
+    approval_update_error: Rozhodnutí o schválení se nepodařilo uložit.
   notifications:
     disable_error: Selhání vypnutí notifikací
     enable_error: Selhání zapnutí notifikací

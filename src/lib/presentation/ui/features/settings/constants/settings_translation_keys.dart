@@ -48,6 +48,38 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String exportDataTitle = 'settings.export_data.title';
   static const String permissionsTitle = 'settings.permissions.title';
 
+  // MCP Settings
+  static const String mcpTitle = 'settings.mcp.title';
+  static const String mcpDescription = 'settings.mcp.description';
+  static const String mcpStatus = 'settings.mcp.status';
+  static const String mcpRunning = 'settings.mcp.running';
+  static const String mcpStopped = 'settings.mcp.stopped';
+  static const String mcpPort = 'settings.mcp.port';
+  static const String mcpSavePort = 'settings.mcp.save_port';
+  static const String mcpTransferDirectory = 'settings.mcp.transfer_directory';
+  static const String mcpChooseDirectory = 'settings.mcp.choose_directory';
+  static const String mcpConnections = 'settings.mcp.connections';
+  static const String mcpNoConnections = 'settings.mcp.no_connections';
+  static const String mcpCreateConnection = 'settings.mcp.create_connection';
+  static const String mcpConnectionName = 'settings.mcp.connection_name';
+  static const String mcpPermissions = 'settings.mcp.permissions';
+  static const String mcpCreate = 'settings.mcp.create';
+  static const String mcpRotate = 'settings.mcp.rotate';
+  static const String mcpRevoke = 'settings.mcp.revoke';
+  static const String mcpRotateConfirm = 'settings.mcp.rotate_confirm';
+  static const String mcpRevokeConfirm = 'settings.mcp.revoke_confirm';
+  static const String mcpConfirm = 'settings.mcp.confirm';
+  static const String mcpCancel = 'settings.mcp.cancel';
+  static const String mcpTokenCopied = 'settings.mcp.token_copied';
+  static const String mcpStorageUnavailable = 'settings.mcp.storage_unavailable';
+  static const String mcpApprovals = 'settings.mcp.approvals';
+  static const String mcpNoApprovals = 'settings.mcp.no_approvals';
+  static const String mcpApprove = 'settings.mcp.approve';
+  static const String mcpReject = 'settings.mcp.reject';
+  static const String mcpRefresh = 'settings.mcp.refresh';
+  static const String mcpApprovalsLoadError = 'settings.mcp.approvals_load_error';
+  static const String mcpApprovalUpdateError = 'settings.mcp.approval_update_error';
+
   // Export Data
   static const String exportSelectPath = 'settings.export.select_path';
   static const String exportSuccess = 'settings.export.success';

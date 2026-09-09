@@ -55,6 +55,37 @@ settings:
     choose_title: Scegli la tua lingua
     dialog_info: "{count} lingue disponibili."
     title: Lingua
+  mcp:
+    title: Connessioni degli agenti IA
+    description: Consenti agli agenti IA locali approvati di usare le funzionalità selezionate di WHPH.
+    status: Stato del server MCP locale
+    running: In esecuzione
+    stopped: Arrestato
+    port: Porta
+    save_port: Salva porta
+    transfer_directory: Directory di trasferimento
+    choose_directory: Scegli la directory di trasferimento
+    connections: Connessioni attive
+    no_connections: Nessuna connessione agente attiva.
+    create_connection: Aggiungi connessione
+    connection_name: Nome della connessione
+    permissions: Autorizzazioni
+    create: Crea e copia token
+    rotate: Rinnova token
+    revoke: Revoca connessione
+    rotate_confirm: Rinnovare il token di questa connessione? Il vecchio token smetterà immediatamente di funzionare.
+    revoke_confirm: Revocare immediatamente questa connessione?
+    confirm: Conferma
+    cancel: Annulla
+    token_copied: Il nuovo token è stato copiato. Non verrà mostrato di nuovo.
+    storage_unavailable: L'archiviazione sicura delle impostazioni MCP non è disponibile.
+    approvals: Approvazioni in attesa
+    no_approvals: Nessuna operazione è in attesa di approvazione.
+    approve: Approva
+    reject: Rifiuta
+    refresh: Aggiorna le approvazioni in attesa
+    approvals_load_error: Non è stato possibile caricare le approvazioni in attesa.
+    approval_update_error: Non è stato possibile salvare la decisione di approvazione.
   notifications:
     disable_error: Impossibile disabilitare le notifiche
     enable_error: Impossibile abilitare le notifiche

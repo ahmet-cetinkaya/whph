@@ -57,6 +57,37 @@ settings:
     choose_title: Выберите свой язык
     dialog_info: "{count} языков доступно."
     title: Язык
+  mcp:
+    title: Подключения ИИ-агентов
+    description: Разрешите одобренным локальным ИИ-агентам использовать выбранные функции WHPH.
+    status: Состояние локального MCP-сервера
+    running: Запущен
+    stopped: Остановлен
+    port: Порт
+    save_port: Сохранить порт
+    transfer_directory: Каталог передачи
+    choose_directory: Выбрать каталог передачи
+    connections: Активные подключения
+    no_connections: Нет активных подключений агентов.
+    create_connection: Добавить подключение
+    connection_name: Название подключения
+    permissions: Разрешения
+    create: Создать и скопировать токен
+    rotate: Обновить токен
+    revoke: Отозвать подключение
+    rotate_confirm: Обновить токен этого подключения? Старый токен немедленно перестанет работать.
+    revoke_confirm: Немедленно отозвать это подключение?
+    confirm: Подтвердить
+    cancel: Отмена
+    token_copied: Новый токен скопирован. Он больше не будет показан.
+    storage_unavailable: Безопасное хранилище настроек MCP недоступно.
+    approvals: Ожидающие одобрения
+    no_approvals: Нет операций, ожидающих одобрения.
+    approve: Одобрить
+    reject: Отклонить
+    refresh: Обновить ожидающие одобрения
+    approvals_load_error: Не удалось загрузить ожидающие одобрения.
+    approval_update_error: Не удалось сохранить решение об одобрении.
   notifications:
     disable_error: Не удалось отключить уведомления
     enable_error: Не удалось включить уведомления

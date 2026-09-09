@@ -59,6 +59,37 @@ settings:
     choose_title: Виберіть свою мову
     dialog_info: "{count} мов доступно."
     title: Мова
+  mcp:
+    title: Підключення ШІ-агентів
+    description: Дозвольте схваленим локальним ШІ-агентам використовувати вибрані функції WHPH.
+    status: Статус локального MCP-сервера
+    running: Працює
+    stopped: Зупинено
+    port: Порт
+    save_port: Зберегти порт
+    transfer_directory: Каталог передавання
+    choose_directory: Вибрати каталог передавання
+    connections: Активні підключення
+    no_connections: Немає активних підключень агентів.
+    create_connection: Додати підключення
+    connection_name: Назва підключення
+    permissions: Дозволи
+    create: Створити та скопіювати токен
+    rotate: Оновити токен
+    revoke: Відкликати підключення
+    rotate_confirm: Оновити токен цього підключення? Старий токен негайно перестане працювати.
+    revoke_confirm: Негайно відкликати це підключення?
+    confirm: Підтвердити
+    cancel: Скасувати
+    token_copied: Новий токен скопійовано. Його більше не буде показано.
+    storage_unavailable: Безпечне сховище налаштувань MCP недоступне.
+    approvals: Очікують на схвалення
+    no_approvals: Жодна операція не очікує на схвалення.
+    approve: Схвалити
+    reject: Відхилити
+    refresh: Оновити схвалення, що очікують
+    approvals_load_error: Не вдалося завантажити схвалення, що очікують.
+    approval_update_error: Не вдалося зберегти рішення щодо схвалення.
   notifications:
     disable_error: Не вдалося вимкнути сповіщення
     enable_error: Не вдалося увімкнути сповіщення

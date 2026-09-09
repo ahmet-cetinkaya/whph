@@ -22,6 +22,10 @@ import 'package:whph/presentation/ui/features/settings/components/import_export_
 import 'package:whph/presentation/ui/features/settings/components/advanced_settings_tile.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
 import 'package:whph/presentation/ui/features/settings/components/default_page_settings.dart';
+import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_access_service.dart';
+import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_operation_service.dart';
+import 'package:whph/presentation/ui/features/settings/components/mcp_settings.dart';
+import 'package:whph/presentation/ui/shared/services/mcp_runtime_service.dart';
 
 class SettingsPage extends StatefulWidget {
   static const String route = '/settings';
@@ -152,6 +156,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     SyncDevicesTile(),
                     const ImportExportSettings(),
                   ],
+                ),
+                const SizedBox(height: AppTheme.sizeLarge),
+
+                SectionHeader(title: translationService.translate(SettingsTranslationKeys.mcpTitle)),
+                const SizedBox(height: AppTheme.sizeSmall),
+                McpSettings(
+                  accessService: container.resolve<IMcpAccessService>(),
+                  runtimeService: container.resolve<McpRuntimeService>(),
+                  translationService: translationService,
+                  operationService: container.resolve<IMcpOperationService>(),
                 ),
                 const SizedBox(height: AppTheme.sizeLarge),
 
