@@ -57,6 +57,8 @@ settings:
     choose_title: Dilini seç
     dialog_info: "{count} dil mevcut."
     title: Dil
+  ai:
+    title: AI
   mcp:
     title: Yapay Zeka Agent Bağlantıları
     description: Onaylanan yerel yapay zeka agentlarının seçili WHPH özelliklerini kullanmasına izin verin.
@@ -88,6 +90,8 @@ settings:
     refresh: Bekleyen onayları yenile
     approvals_load_error: Bekleyen onaylar yüklenemedi.
     approval_update_error: Onay kararı kaydedilemedi.
+    select_all: Tümünü seç
+    clear_selection: Temizle
   notifications:
     disable_error: Bildirimler devre dışı bırakılamadı
     enable_error: Bildirimler etkinleştirilemedi

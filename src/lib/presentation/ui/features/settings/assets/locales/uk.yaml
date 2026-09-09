@@ -59,6 +59,8 @@ settings:
     choose_title: Виберіть свою мову
     dialog_info: "{count} мов доступно."
     title: Мова
+  ai:
+    title: AI
   mcp:
     title: Підключення ШІ-агентів
     description: Дозвольте схваленим локальним ШІ-агентам використовувати вибрані функції WHPH.
@@ -90,6 +92,8 @@ settings:
     refresh: Оновити схвалення, що очікують
     approvals_load_error: Не вдалося завантажити схвалення, що очікують.
     approval_update_error: Не вдалося зберегти рішення щодо схвалення.
+    select_all: Вибрати все
+    clear_selection: Очистити
   notifications:
     disable_error: Не вдалося вимкнути сповіщення
     enable_error: Не вдалося увімкнути сповіщення

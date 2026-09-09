@@ -59,6 +59,8 @@ settings:
     choose_title: Επιλέξτε τη γλώσσα σας
     dialog_info: "{count} γλώσσες διαθέσιμες."
     title: Γλώσσα
+  ai:
+    title: AI
   mcp:
     title: Συνδέσεις πρακτόρων AI
     description: Επιτρέψτε σε εγκεκριμένους τοπικούς πράκτορες AI να χρησιμοποιούν επιλεγμένες λειτουργίες του WHPH.
@@ -90,6 +92,8 @@ settings:
     refresh: Ανανέωση εκκρεμών εγκρίσεων
     approvals_load_error: Δεν ήταν δυνατή η φόρτωση των εκκρεμών εγκρίσεων.
     approval_update_error: Δεν ήταν δυνατή η αποθήκευση της απόφασης έγκρισης.
+    select_all: Επιλογή όλων
+    clear_selection: Εκκαθάριση
   notifications:
     disable_error: Αποτυχία απενεργοποίησης ειδοποιήσεων
     enable_error: Αποτυχία ενεργοποίησης ειδοποιήσεων

@@ -59,6 +59,8 @@ settings:
     choose_title: Wählen Sie Ihre Sprache
     dialog_info: "{count} Sprachen verfügbar."
     title: Sprache
+  ai:
+    title: AI
   mcp:
     title: Verbindungen mit KI-Agenten
     description: Erlauben Sie genehmigten lokalen KI-Agenten, ausgewählte WHPH-Funktionen zu nutzen.
@@ -90,6 +92,8 @@ settings:
     refresh: Ausstehende Genehmigungen aktualisieren
     approvals_load_error: Ausstehende Genehmigungen konnten nicht geladen werden.
     approval_update_error: Die Genehmigungsentscheidung konnte nicht gespeichert werden.
+    select_all: Alle auswählen
+    clear_selection: Leeren
   notifications:
     disable_error: Benachrichtigungen konnten nicht deaktiviert werden
     enable_error: Benachrichtigungen konnten nicht aktiviert werden

@@ -57,6 +57,8 @@ settings:
     choose_title: Выберите свой язык
     dialog_info: "{count} языков доступно."
     title: Язык
+  ai:
+    title: AI
   mcp:
     title: Подключения ИИ-агентов
     description: Разрешите одобренным локальным ИИ-агентам использовать выбранные функции WHPH.
@@ -88,6 +90,8 @@ settings:
     refresh: Обновить ожидающие одобрения
     approvals_load_error: Не удалось загрузить ожидающие одобрения.
     approval_update_error: Не удалось сохранить решение об одобрении.
+    select_all: Выбрать все
+    clear_selection: Очистить
   notifications:
     disable_error: Не удалось отключить уведомления
     enable_error: Не удалось включить уведомления

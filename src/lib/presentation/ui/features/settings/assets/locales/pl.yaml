@@ -57,6 +57,8 @@ settings:
     choose_title: Wybierz swój język
     dialog_info: "{count} języków dostępnych."
     title: Język
+  ai:
+    title: AI
   mcp:
     title: Połączenia agentów AI
     description: Zezwól zatwierdzonym lokalnym agentom AI na korzystanie z wybranych funkcji WHPH.
@@ -88,6 +90,8 @@ settings:
     refresh: Odśwież oczekujące zatwierdzenia
     approvals_load_error: Nie udało się wczytać oczekujących zatwierdzeń.
     approval_update_error: Nie udało się zapisać decyzji o zatwierdzeniu.
+    select_all: Zaznacz wszystko
+    clear_selection: Wyczyść
   notifications:
     disable_error: Nie udało się wyłączyć powiadomień
     enable_error: Nie udało się włączyć powiadomień

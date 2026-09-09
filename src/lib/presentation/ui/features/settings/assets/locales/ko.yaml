@@ -51,6 +51,8 @@ settings:
     choose_title: 언어 선택
     dialog_info: "{count}개 언어 사용 가능."
     title: 언어
+  ai:
+    title: AI
   mcp:
     title: AI 에이전트 연결
     description: 승인된 로컬 AI 에이전트가 선택한 WHPH 기능을 사용할 수 있도록 허용합니다.
@@ -82,6 +84,8 @@ settings:
     refresh: 보류 중인 승인 새로 고침
     approvals_load_error: 보류 중인 승인을 불러올 수 없습니다.
     approval_update_error: 승인 결정을 저장할 수 없습니다.
+    select_all: 모두 선택
+    clear_selection: 지우기
   notifications:
     disable_error: 알림 비활성화에 실패했습니다
     enable_error: 알림 활성화에 실패했습니다

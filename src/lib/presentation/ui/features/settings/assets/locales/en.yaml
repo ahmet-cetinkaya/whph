@@ -58,6 +58,8 @@ settings:
     choose_title: Choose your language
     dialog_info: "{count} languages available."
     title: Language
+  ai:
+    title: AI
   mcp:
     title: AI Agent Connections
     description: Allow approved local AI agents to use selected WHPH features.
@@ -89,6 +91,8 @@ settings:
     refresh: Refresh pending approvals
     approvals_load_error: Pending approvals could not be loaded.
     approval_update_error: The approval decision could not be saved.
+    select_all: Select all
+    clear_selection: Clear
   notifications:
     disable_error: Failed to disable notifications
     enable_error: Failed to enable notifications

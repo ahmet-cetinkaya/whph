@@ -57,6 +57,8 @@ settings:
     choose_title: Vyberte svůj jazyk
     dialog_info: "{count} jazyků dostupných."
     title: Jazyk
+  ai:
+    title: AI
   mcp:
     title: Připojení agentů AI
     description: Umožněte schváleným místním agentům AI používat vybrané funkce WHPH.
@@ -88,6 +90,8 @@ settings:
     refresh: Obnovit čekající schválení
     approvals_load_error: Čekající schválení se nepodařilo načíst.
     approval_update_error: Rozhodnutí o schválení se nepodařilo uložit.
+    select_all: Vybrat vše
+    clear_selection: Vymazat
   notifications:
     disable_error: Selhání vypnutí notifikací
     enable_error: Selhání zapnutí notifikací

@@ -53,6 +53,8 @@ settings:
     choose_title: Välj ditt språk
     dialog_info: "{count} språk tillgängliga."
     title: Språk
+  ai:
+    title: AI
   mcp:
     title: AI-agentanslutningar
     description: Tillåt godkända lokala AI-agenter att använda valda WHPH-funktioner.
@@ -84,6 +86,8 @@ settings:
     refresh: Uppdatera väntande godkännanden
     approvals_load_error: Det gick inte att läsa in väntande godkännanden.
     approval_update_error: Det gick inte att spara godkännandebeslutet.
+    select_all: Välj alla
+    clear_selection: Rensa
   notifications:
     disable_error: Misslyckades med att inaktivera notiser
     enable_error: Misslyckades med att aktivera notiser

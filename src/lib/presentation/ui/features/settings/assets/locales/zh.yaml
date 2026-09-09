@@ -51,6 +51,8 @@ settings:
     choose_title: 选择您的语言
     dialog_info: "{count}种语言可用。"
     title: 语言
+  ai:
+    title: AI
   mcp:
     title: AI 智能体连接
     description: 允许已获批准的本地 AI 智能体使用选定的 WHPH 功能。
@@ -82,6 +84,8 @@ settings:
     refresh: 刷新待处理的批准
     approvals_load_error: 无法加载待处理的批准。
     approval_update_error: 无法保存批准决定。
+    select_all: 全选
+    clear_selection: 清除
   notifications:
     disable_error: 禁用通知失败
     enable_error: 启用通知失败

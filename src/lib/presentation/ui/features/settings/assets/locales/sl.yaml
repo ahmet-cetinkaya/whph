@@ -57,6 +57,8 @@ settings:
     choose_title: Izberite jezik
     dialog_info: "{count} jezikov na voljo."
     title: Jezik
+  ai:
+    title: AI
   mcp:
     title: Povezave agentov AI
     description: Dovolite odobrenim lokalnim agentom AI uporabo izbranih funkcij WHPH.
@@ -88,6 +90,8 @@ settings:
     refresh: Osveži čakajoče odobritve
     approvals_load_error: Čakajočih odobritev ni bilo mogoče naložiti.
     approval_update_error: Odločitve o odobritvi ni bilo mogoče shraniti.
+    select_all: Izberi vse
+    clear_selection: Počisti
   notifications:
     disable_error: Spodletelo je pri onemogočanju obvestil
     enable_error: Spodletelo je pri omogočanju obvestil

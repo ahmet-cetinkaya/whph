@@ -55,6 +55,8 @@ settings:
     choose_title: Vælg dit sprog
     dialog_info: "{count} sprog tilgængelige."
     title: Sprog
+  ai:
+    title: AI
   mcp:
     title: AI-agentforbindelser
     description: Tillad godkendte lokale AI-agenter at bruge udvalgte WHPH-funktioner.
@@ -86,6 +88,8 @@ settings:
     refresh: Opdatér afventende godkendelser
     approvals_load_error: Afventende godkendelser kunne ikke indlæses.
     approval_update_error: Godkendelsesbeslutningen kunne ikke gemmes.
+    select_all: Vælg alle
+    clear_selection: Ryd
   notifications:
     disable_error: Kunne ikke deaktivere notifikationer
     enable_error: Kunne ikke aktivere notifikationer

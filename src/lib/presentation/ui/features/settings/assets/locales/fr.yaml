@@ -59,6 +59,8 @@ settings:
     choose_title: Choisissez votre langue
     dialog_info: "{count} langues disponibles."
     title: Langue
+  ai:
+    title: AI
   mcp:
     title: Connexions d'agents IA
     description: Autorisez les agents IA locaux approuvés à utiliser certaines fonctionnalités de WHPH.
@@ -90,6 +92,8 @@ settings:
     refresh: Actualiser les approbations en attente
     approvals_load_error: Les approbations en attente n'ont pas pu être chargées.
     approval_update_error: La décision d'approbation n'a pas pu être enregistrée.
+    select_all: Tout sélectionner
+    clear_selection: Effacer
   notifications:
     disable_error: Impossible de désactiver les notifications
     enable_error: Impossible d'activer les notifications

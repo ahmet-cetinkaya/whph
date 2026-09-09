@@ -51,6 +51,8 @@ settings:
     choose_title: 言語を選択
     dialog_info: "{count}言語利用可能。"
     title: 言語
+  ai:
+    title: AI
   mcp:
     title: AIエージェント接続
     description: 承認済みのローカルAIエージェントに、選択したWHPH機能の使用を許可します。
@@ -82,6 +84,8 @@ settings:
     refresh: 保留中の承認を更新
     approvals_load_error: 保留中の承認を読み込めませんでした。
     approval_update_error: 承認の決定を保存できませんでした。
+    select_all: すべて選択
+    clear_selection: クリア
   notifications:
     disable_error: 通知の無効化に失敗しました
     enable_error: 通知の有効化に失敗しました

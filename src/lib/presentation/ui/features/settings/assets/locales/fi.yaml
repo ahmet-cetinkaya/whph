@@ -55,6 +55,8 @@ settings:
     choose_title: Valitse kieli
     dialog_info: "{count} kieltä saatavilla."
     title: Kieli
+  ai:
+    title: AI
   mcp:
     title: Tekoälyagenttien yhteydet
     description: Salli hyväksyttyjen paikallisten tekoälyagenttien käyttää valittuja WHPH-toimintoja.
@@ -86,6 +88,8 @@ settings:
     refresh: Päivitä odottavat hyväksynnät
     approvals_load_error: Odottavia hyväksyntöjä ei voitu ladata.
     approval_update_error: Hyväksyntäpäätöstä ei voitu tallentaa.
+    select_all: Valitse kaikki
+    clear_selection: Tyhjennä
   notifications:
     disable_error: Ilmoitusten poistaminen käytöstä epäonnistui
     enable_error: Ilmoitusten käyttöönotto epäonnistui

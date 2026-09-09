@@ -113,18 +113,18 @@ void main() {
       expect(find.byType(Scrollbar), findsOneWidget);
       expect(
         tester
-            .widget<FilterChip>(
+            .widget<CheckboxListTile>(
               find.byKey(const Key('mcp-scope-tasks:read')),
             )
-            .selected,
+            .value,
         isTrue,
       );
       expect(
         tester
-            .widget<FilterChip>(
+            .widget<CheckboxListTile>(
               find.byKey(const Key('mcp-scope-tasks:write')),
             )
-            .selected,
+            .value,
         isFalse,
       );
 
@@ -143,6 +143,53 @@ void main() {
       expect(clipboardText, _FakeAccessService.issuedToken);
       expect(find.text(_FakeAccessService.issuedToken), findsNothing);
       expect(find.byKey(const Key('mcp-grant-created-grant')), findsOneWidget);
+    });
+
+    testWidgets('selects and clears all scopes with the bulk actions', (tester) async {
+      await pumpSettings(tester);
+      await tester.tap(find.byKey(const Key('mcp-create-connection')));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester
+            .widget<CheckboxListTile>(
+              find.byKey(const Key('mcp-scope-tasks:write')),
+            )
+            .value,
+        isFalse,
+      );
+
+      await tester.tap(find.byKey(const Key('mcp-scope-select-all')));
+      await tester.pump();
+      for (final scope in McpScopes.all) {
+        expect(
+          tester
+              .widget<CheckboxListTile>(
+                find.byKey(Key('mcp-scope-$scope')),
+              )
+              .value,
+          isTrue,
+          reason: 'scope $scope should be selected after Select all',
+        );
+      }
+
+      await tester.tap(find.byKey(const Key('mcp-scope-clear')));
+      await tester.pump();
+      for (final scope in [
+        McpScopes.tasksRead,
+        McpScopes.tasksWrite,
+        McpScopes.dataImport,
+      ]) {
+        expect(
+          tester
+              .widget<CheckboxListTile>(
+                find.byKey(Key('mcp-scope-$scope')),
+              )
+              .value,
+          isFalse,
+          reason: 'scope $scope should be cleared',
+        );
+      }
     });
 
     testWidgets('revokes an active connection immediately', (tester) async {
@@ -618,7 +665,11 @@ class _FakeTranslationService implements ITranslationService {
   Future<void> init() async {}
 
   @override
-  String translate(String key, {Map<String, String>? namedArgs}) => key;
+  String translate(String key, {Map<String, String>? namedArgs}) {
+    if (key == SettingsTranslationKeys.mcpSelectAll) return 'Select all';
+    if (key == SettingsTranslationKeys.mcpClearSelection) return 'Clear';
+    return key;
+  }
 
   @override
   Future<void> changeLanguage(BuildContext context, String languageCode) async {}

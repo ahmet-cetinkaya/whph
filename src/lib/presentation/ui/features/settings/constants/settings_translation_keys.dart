@@ -49,6 +49,7 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String permissionsTitle = 'settings.permissions.title';
 
   // MCP Settings
+  static const String aiTitle = 'settings.ai.title';
   static const String mcpTitle = 'settings.mcp.title';
   static const String mcpDescription = 'settings.mcp.description';
   static const String mcpStatus = 'settings.mcp.status';
@@ -79,6 +80,8 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   static const String mcpRefresh = 'settings.mcp.refresh';
   static const String mcpApprovalsLoadError = 'settings.mcp.approvals_load_error';
   static const String mcpApprovalUpdateError = 'settings.mcp.approval_update_error';
+  static const String mcpSelectAll = 'settings.mcp.select_all';
+  static const String mcpClearSelection = 'settings.mcp.clear_selection';
 
   // Export Data
   static const String exportSelectPath = 'settings.export.select_path';

@@ -59,6 +59,8 @@ settings:
     choose_title: Alegeți limba
     dialog_info: "{count} limbi disponibile."
     title: Limbă
+  ai:
+    title: AI
   mcp:
     title: Conexiuni ale agenților IA
     description: Permiteți agenților IA locali aprobați să utilizeze funcționalitățile WHPH selectate.
@@ -90,6 +92,8 @@ settings:
     refresh: Reîmprospătează aprobările în așteptare
     approvals_load_error: Nu s-au putut încărca aprobările în așteptare.
     approval_update_error: Decizia de aprobare nu a putut fi salvată.
+    select_all: Selectează tot
+    clear_selection: Șterge
   notifications:
     disable_error: Eșec la dezactivarea notificărilor
     enable_error: Eșec la activarea notificărilor

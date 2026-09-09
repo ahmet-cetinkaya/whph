@@ -59,6 +59,8 @@ settings:
     choose_title: Kies uw taal
     dialog_info: "{count} talen beschikbaar."
     title: Taal
+  ai:
+    title: AI
   mcp:
     title: AI-agentverbindingen
     description: Geef goedgekeurde lokale AI-agenten toegang tot geselecteerde WHPH-functies.
@@ -90,6 +92,8 @@ settings:
     refresh: Openstaande goedkeuringen vernieuwen
     approvals_load_error: Openstaande goedkeuringen konden niet worden geladen.
     approval_update_error: De goedkeuringsbeslissing kon niet worden opgeslagen.
+    select_all: Alles selecteren
+    clear_selection: Wissen
   notifications:
     disable_error: Notificaties uitschakelen mislukt
     enable_error: Notificaties inschakelen mislukt

@@ -370,6 +370,42 @@ class _CreateMcpConnectionDialog extends StatefulWidget {
 }
 
 class _CreateMcpConnectionDialogState extends State<_CreateMcpConnectionDialog> {
+  static final ButtonStyle _compactButtonStyle = TextButton.styleFrom(
+    visualDensity: VisualDensity.compact,
+    minimumSize: Size.zero,
+    padding: const EdgeInsets.symmetric(horizontal: AppTheme.sizeSmall),
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  );
+
+  static const Map<String, String> _scopeLabels = {
+    McpScopes.appRead: 'View app information',
+    McpScopes.dataExport: 'Export data',
+    McpScopes.dataImport: 'Import data',
+    McpScopes.habitsDelete: 'Delete habits',
+    McpScopes.habitsRead: 'View habits',
+    McpScopes.habitsWrite: 'Create and edit habits',
+    McpScopes.notesDelete: 'Delete notes',
+    McpScopes.notesRead: 'View notes',
+    McpScopes.notesWrite: 'Create and edit notes',
+    McpScopes.overviewRead: 'View overview',
+    McpScopes.settingsRead: 'View settings',
+    McpScopes.settingsWrite: 'Change settings',
+    McpScopes.syncManage: 'Manage sync',
+    McpScopes.syncRead: 'View sync status',
+    McpScopes.tagsDelete: 'Delete tags',
+    McpScopes.tagsRead: 'View tags',
+    McpScopes.tagsWrite: 'Create and edit tags',
+    McpScopes.tasksDelete: 'Delete tasks',
+    McpScopes.tasksRead: 'View tasks',
+    McpScopes.tasksWrite: 'Create and edit tasks',
+    McpScopes.timersRead: 'View timers',
+    McpScopes.timersWrite: 'Use timers',
+    McpScopes.usageDelete: 'Delete app usage',
+    McpScopes.usageRead: 'View app usage',
+    McpScopes.usageTrack: 'Track app usage',
+    McpScopes.usageWrite: 'Log app usage',
+  };
+
   static const _defaultScopes = {
     McpScopes.tasksRead,
     McpScopes.habitsRead,
@@ -406,7 +442,6 @@ class _CreateMcpConnectionDialogState extends State<_CreateMcpConnectionDialog> 
             thumbVisibility: true,
             child: SingleChildScrollView(
               controller: _scrollController,
-              padding: const EdgeInsets.only(right: AppTheme.sizeSmall),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -421,12 +456,60 @@ class _CreateMcpConnectionDialogState extends State<_CreateMcpConnectionDialog> 
                     ),
                   ),
                   const SizedBox(height: AppTheme.sizeSmall),
-                  Text(_translate(SettingsTranslationKeys.mcpPermissions)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(_translate(SettingsTranslationKeys.mcpPermissions)),
+                      Wrap(
+                        spacing: AppTheme.size2XSmall,
+                        children: [
+                          TextButton(
+                            key: const Key('mcp-scope-select-all'),
+                            style: _compactButtonStyle,
+                            onPressed: _selectedScopes.length == McpScopes.all.length
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _selectedScopes = Set.unmodifiable(McpScopes.all);
+                                    });
+                                  },
+                            child: Text(_translate(SettingsTranslationKeys.mcpSelectAll)),
+                          ),
+                          TextButton(
+                            key: const Key('mcp-scope-clear'),
+                            style: _compactButtonStyle,
+                            onPressed: _selectedScopes.isEmpty
+                                ? null
+                                : () {
+                                    setState(() {
+                                      _selectedScopes = <String>{};
+                                    });
+                                  },
+                            child: Text(_translate(SettingsTranslationKeys.mcpClearSelection)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: AppTheme.sizeSmall),
-                  Wrap(
-                    spacing: AppTheme.size2XSmall,
-                    runSpacing: AppTheme.size2XSmall,
-                    children: McpScopes.all.map(_buildScopeChip).toList(),
+                  ..._scopeLabels.entries.map(
+                    (entry) => CheckboxListTile(
+                      key: Key('mcp-scope-${entry.key}'),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: _selectedScopes.contains(entry.key),
+                      title: Text(entry.value, style: Theme.of(context).textTheme.bodyMedium),
+                      onChanged: (isSelected) {
+                        setState(() {
+                          _selectedScopes = Set.unmodifiable(
+                            (isSelected ?? false)
+                                ? {..._selectedScopes, entry.key}
+                                : _selectedScopes.where((value) => value != entry.key),
+                          );
+                        });
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -444,18 +527,6 @@ class _CreateMcpConnectionDialogState extends State<_CreateMcpConnectionDialog> 
             child: Text(_translate(SettingsTranslationKeys.mcpCreate)),
           ),
         ],
-      );
-
-  Widget _buildScopeChip(String scope) => FilterChip(
-        key: Key('mcp-scope-$scope'),
-        label: Text(scope),
-        selected: _selectedScopes.contains(scope),
-        onSelected: (isSelected) {
-          setState(() {
-            _selectedScopes = Set.unmodifiable(
-                isSelected ? {..._selectedScopes, scope} : _selectedScopes.where((value) => value != scope));
-          });
-        },
       );
 
   bool get _canCreate => _nameController.text.trim().isNotEmpty && _selectedScopes.isNotEmpty;
