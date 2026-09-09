@@ -16,6 +16,7 @@ import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
 import 'package:whph/presentation/ui/shared/widgets/startup_error_screen.dart';
 import 'package:whph/presentation/ui/shared/services/startup_error_reporter_service.dart';
 import 'package:whph/presentation/ui/shared/utils/context_manager.dart';
+import 'package:whph/presentation/ui/shared/services/mcp_runtime_service.dart';
 
 class App extends StatefulWidget {
   const App({
@@ -55,6 +56,7 @@ class _AppState extends State<App> {
 
     _lifecycleService = AppLifecycleService(
       widget.container.resolve<ISystemTrayService>(),
+      widget.container.resolve<McpRuntimeService>(),
     );
 
     _themeService = widget.container.resolve<IThemeService>();
