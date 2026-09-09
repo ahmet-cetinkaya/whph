@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/habits/services/habit_record_oper
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_events.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
@@ -45,6 +46,37 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
     final matching = records.where((record) => record.habitId == habitId).toList();
     return PaginatedList(items: matching, totalItemCount: matching.length, pageIndex: pageIndex, pageSize: pageSize);
   }
+}
+
+class FailingHabitRecordRepository extends FakeHabitRecordRepository {
+  @override
+  Future<void> add(HabitRecord record) => Future.error(StateError('write failed'));
+}
+
+class RecordingHabitEvents implements IHabitEvents {
+  RecordingHabitEvents({required this.records});
+
+  final FakeHabitRecordRepository records;
+  final List<String> addedHabitIds = [];
+  bool didObservePersistedRecord = false;
+
+  @override
+  void notifyHabitRecordAdded(String habitId) {
+    didObservePersistedRecord = records.records.any((record) => record.habitId == habitId);
+    addedHabitIds.add(habitId);
+  }
+
+  @override
+  void notifyHabitCreated(String habitId) {}
+
+  @override
+  void notifyHabitDeleted(String habitId) {}
+
+  @override
+  void notifyHabitRecordRemoved(String habitId) {}
+
+  @override
+  void notifyHabitUpdated(String habitId) {}
 }
 
 class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepository {
@@ -128,5 +160,59 @@ void main() {
 
     // Then
     expect(records.records, [complete]);
+  });
+
+  test('add command publishes only after the record is persisted', () async {
+    final habit = Habit(
+      id: 'good',
+      createdDate: DateTime(2026, 1, 1),
+      type: HabitType.good,
+      name: 'Exercise',
+      description: 'Test',
+    );
+    final records = FakeHabitRecordRepository();
+    final events = RecordingHabitEvents(records: records);
+    final handler = AddHabitRecordCommandHandler(
+      habitRecordRepository: records,
+      habitRepository: FakeHabitRepository(habit),
+      operationsService: HabitRecordOperationsService(
+        habitRecordRepository: records,
+        habitTimeRecordRepository: FakeHabitTimeRecordRepository(),
+      ),
+      habitEvents: events,
+    );
+
+    await handler.call(AddHabitRecordCommand(habitId: habit.id, occurredAt: date));
+
+    expect(events.addedHabitIds, [habit.id]);
+    expect(events.didObservePersistedRecord, isTrue);
+  });
+
+  test('add command publishes no event when persistence fails', () async {
+    final habit = Habit(
+      id: 'good',
+      createdDate: DateTime(2026, 1, 1),
+      type: HabitType.good,
+      name: 'Exercise',
+      description: 'Test',
+    );
+    final records = FailingHabitRecordRepository();
+    final events = RecordingHabitEvents(records: records);
+    final handler = AddHabitRecordCommandHandler(
+      habitRecordRepository: records,
+      habitRepository: FakeHabitRepository(habit),
+      operationsService: HabitRecordOperationsService(
+        habitRecordRepository: records,
+        habitTimeRecordRepository: FakeHabitTimeRecordRepository(),
+      ),
+      habitEvents: events,
+    );
+
+    await expectLater(
+      handler.call(AddHabitRecordCommand(habitId: habit.id, occurredAt: date)),
+      throwsA(isA<StateError>()),
+    );
+
+    expect(events.addedHabitIds, isEmpty);
   });
 }

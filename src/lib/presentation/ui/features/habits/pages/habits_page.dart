@@ -285,7 +285,6 @@ class _HabitsPageState extends State<HabitsPage> {
           key: _addHabitButtonKey,
           onHabitCreated: (String habitId) {
             if (!mounted) return;
-            _habitsService.notifyHabitCreated(habitId);
             _openDetails(habitId, context);
           },
           buttonColor: _themeService.primaryColor,

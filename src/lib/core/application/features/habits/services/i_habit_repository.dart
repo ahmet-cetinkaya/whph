@@ -1,9 +1,13 @@
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
+    as app;
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/application/features/habits/models/habit_list_item.dart';
 import 'package:acore/acore.dart' as acore;
 
 abstract class IHabitRepository extends app.IRepository<Habit, String> {
+  Future<DateTime?> updateIfRevision(Habit habit, DateTime expectedRevision);
+  Future<DateTime?> deleteIfRevision(String id, DateTime expectedRevision);
+
   Future<String> getReminderDaysById(String id);
   Future<acore.PaginatedList<HabitListItem>> getHabitListItems(
     int pageIndex,

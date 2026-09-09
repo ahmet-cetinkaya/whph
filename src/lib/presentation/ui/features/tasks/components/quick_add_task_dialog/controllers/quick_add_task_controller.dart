@@ -24,7 +24,6 @@ import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.da
 class QuickAddTaskController extends ChangeNotifier {
   final Mediator _mediator;
   final ITagRepository _tagRepository;
-  final TasksService _tasksService;
   final ITranslationService _translationService;
   final IThemeService _themeService;
   final IDefaultTaskSettingsService _defaultSettingsService;
@@ -109,7 +108,6 @@ class QuickAddTaskController extends ChangeNotifier {
     this.onTaskCreated,
   })  : _mediator = mediator ?? container.resolve<Mediator>(),
         _tagRepository = tagRepository ?? container.resolve<ITagRepository>(),
-        _tasksService = tasksService ?? container.resolve<TasksService>(),
         _translationService = translationService ?? container.resolve<ITranslationService>(),
         _themeService = themeService ?? container.resolve<IThemeService>(),
         _defaultSettingsService = defaultSettingsService ?? container.resolve<IDefaultTaskSettingsService>(),
@@ -362,8 +360,6 @@ class QuickAddTaskController extends ChangeNotifier {
         return await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
       },
       onSuccess: (response) {
-        _tasksService.notifyTaskCreated(response.id);
-
         OverlayNotificationHelper.showSuccess(
           context: context,
           message: _translationService.translate(

@@ -7,7 +7,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
-import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_events.dart';
 
 /// Command to complete a task by ID.
 ///
@@ -21,21 +21,24 @@ class CompleteTaskCommand implements IRequest<CompleteTaskCommandResponse> {
 
 class CompleteTaskCommandResponse {
   final String taskId;
+  final String? recurringTaskId;
 
-  CompleteTaskCommandResponse({required this.taskId});
+  CompleteTaskCommandResponse({required this.taskId, this.recurringTaskId});
 }
 
 class CompleteTaskCommandHandler implements IRequestHandler<CompleteTaskCommand, CompleteTaskCommandResponse> {
   final ITaskRepository _taskRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ITaskRecurrenceService _recurrenceService;
-  final TasksService _tasksService;
+  final Mediator _mediator;
+  final ITaskEvents _taskEvents;
 
   CompleteTaskCommandHandler(
     this._taskRepository,
     this._taskTimeRecordRepository,
     this._recurrenceService,
-    this._tasksService,
+    this._mediator,
+    this._taskEvents,
   );
 
   @override
@@ -47,23 +50,28 @@ class CompleteTaskCommandHandler implements IRequestHandler<CompleteTaskCommand,
         TaskErrorIds.taskNotFound,
       );
     }
-
-    task.completedAt = DateTime.now().toUtc();
-    task.statusId = TaskStatusConstants.doneId;
-
-    if (task.recurrenceType != RecurrenceType.none) {
-      task.setRecurrenceDays(_recurrenceService.getRecurrenceDays(task));
+    if (task.isCompleted) {
+      return CompleteTaskCommandResponse(taskId: command.id);
     }
 
-    await _taskRepository.update(task);
+    final completedTask = task.copyWith(
+      completedAt: DateTime.now().toUtc(),
+      statusId: TaskStatusConstants.doneId,
+    );
+
+    if (completedTask.recurrenceType != RecurrenceType.none) {
+      completedTask.setRecurrenceDays(_recurrenceService.getRecurrenceDays(completedTask));
+    }
+
+    await _taskRepository.update(completedTask);
 
     // Auto-add time record if task has estimated time but no existing time records
     // (matching SaveTaskCommand behavior for consistency)
-    if (task.estimatedTime != null && task.estimatedTime! > 0) {
+    if (completedTask.estimatedTime != null && completedTask.estimatedTime! > 0) {
       final existingTimeRecords = await _taskTimeRecordRepository.getList(
         0,
         1,
-        customWhereFilter: CustomWhereFilter('task_id = ? AND deleted_date IS NULL', [task.id]),
+        customWhereFilter: CustomWhereFilter('task_id = ? AND deleted_date IS NULL', [completedTask.id]),
       );
 
       if (existingTimeRecords.items.isEmpty) {
@@ -71,16 +79,16 @@ class CompleteTaskCommandHandler implements IRequestHandler<CompleteTaskCommand,
 
         await TaskTimeRecordService.addDurationToTaskTimeRecord(
           repository: _taskTimeRecordRepository,
-          taskId: task.id,
+          taskId: completedTask.id,
           targetDate: now,
-          durationToAdd: task.estimatedTime! * 60,
+          durationToAdd: completedTask.estimatedTime! * 60,
         );
       }
     }
 
-    // Notify UI to update and trigger recurring task creation
-    _tasksService.notifyTaskCompleted(command.id);
+    final recurringTaskId = await _recurrenceService.handleCompletedRecurringTask(command.id, _mediator);
+    _taskEvents.notifyTaskCompleted(command.id);
 
-    return CompleteTaskCommandResponse(taskId: command.id);
+    return CompleteTaskCommandResponse(taskId: command.id, recurringTaskId: recurringTaskId);
   }
 }

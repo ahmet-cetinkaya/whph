@@ -6,8 +6,10 @@ import 'package:acore/acore.dart';
 /// Service for managing habit time records with hour-based bucketing
 class HabitTimeRecordService {
   /// Creates hour boundaries for the given date
-  static (DateTime startOfHour, DateTime endOfHour) createHourBoundaries(DateTime targetDate) {
-    final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
+  static (DateTime startOfHour, DateTime endOfHour) createHourBoundaries(
+      DateTime targetDate) {
+    final startOfHour = DateTime.utc(
+        targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
     final endOfHour = startOfHour.add(const Duration(hours: 1));
     return (startOfHour, endOfHour);
   }
@@ -17,12 +19,15 @@ class HabitTimeRecordService {
     required IHabitTimeRecordRepository repository,
     required String habitId,
     required DateTime targetDate,
+    required bool isEstimated,
     int initialDuration = 0,
   }) async {
     final (startOfHour, endOfHour) = createHourBoundaries(targetDate);
 
-    final filter =
-        CustomWhereFilter('habit_id = ? AND created_date >= ? AND created_date < ?', [habitId, startOfHour, endOfHour]);
+    final filter = CustomWhereFilter(
+      'habit_id = ? AND created_date >= ? AND created_date < ? AND is_estimated = ?',
+      [habitId, startOfHour, endOfHour, isEstimated],
+    );
 
     final existingRecord = await repository.getFirst(filter);
 
@@ -36,7 +41,7 @@ class HabitTimeRecordService {
         habitId: habitId,
         duration: initialDuration,
         occurredAt: targetDate,
-        isEstimated: false, // Default to false, caller can specify if it's estimated
+        isEstimated: isEstimated,
       );
       await repository.add(newRecord);
       return newRecord;
@@ -55,14 +60,11 @@ class HabitTimeRecordService {
       repository: repository,
       habitId: habitId,
       targetDate: targetDate,
+      isEstimated: isEstimated,
       initialDuration: 0,
     );
 
     record.duration += durationToAdd;
-    // Update isEstimated flag if this is adding estimated time to a new record
-    if (record.duration == durationToAdd && isEstimated) {
-      record.isEstimated = true;
-    }
     await repository.update(record);
     return record;
   }
@@ -94,6 +96,7 @@ class HabitTimeRecordService {
       repository: repository,
       habitId: habitId,
       targetDate: targetDate,
+      isEstimated: false,
       initialDuration: 0,
     );
 

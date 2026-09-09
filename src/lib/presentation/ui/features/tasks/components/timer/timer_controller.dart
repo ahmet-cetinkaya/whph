@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_timer_session_service.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
@@ -14,19 +15,37 @@ import 'package:whph/presentation/ui/features/tasks/components/timer/alarm_cance
 
 void _safeInvoke(FutureOr<void> Function() callback, String name) {
   Future.sync(callback).catchError((e, stackTrace) {
-    Logger.error('$name callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+    Logger.error('$name callback failed',
+        component: 'TimerController', error: e, stackTrace: stackTrace);
   });
 }
 
-void _safeInvokeWithArg<T>(FutureOr<void> Function(T) callback, T arg, String name) {
+void _safeInvokeWithArg<T>(
+    FutureOr<void> Function(T) callback, T arg, String name) {
   Future.sync(() => callback(arg)).catchError((e, stackTrace) {
-    Logger.error('$name callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
+    Logger.error('$name callback failed',
+        component: 'TimerController', error: e, stackTrace: stackTrace);
   });
+}
+
+void _safeSharedOperation(Future<dynamic> operation, String name) {
+  unawaited(operation.then<void>((_) {}).catchError((error, stackTrace) {
+    Logger.error(
+      '$name failed',
+      component: 'TimerController',
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }));
 }
 
 class TimerController extends ChangeNotifier {
   final Mediator _mediator;
   final IReminderService _reminderService;
+  final ITimerSessionService? _sessionService;
+  final String? _sessionId;
+  final TimerSessionOwner? _sessionOwner;
+  final String? _selectedTaskId;
   static const _timerAlarmId = 'timer_alarm';
   static const _timerTickInterval = Duration(seconds: 1);
   static const _clockJumpDetectionThreshold = Duration(seconds: 30);
@@ -35,10 +54,23 @@ class TimerController extends ChangeNotifier {
   TimerController({
     required Mediator mediator,
     required IReminderService reminderService,
+    ITimerSessionService? sessionService,
+    String? sessionId,
+    TimerSessionOwner? sessionOwner,
+    String? selectedTaskId,
   })  : _mediator = mediator,
-        _reminderService = reminderService;
+        _reminderService = reminderService,
+        _sessionService = sessionService,
+        _sessionId = sessionId,
+        _sessionOwner = sessionOwner,
+        _selectedTaskId = selectedTaskId,
+        assert(
+          sessionService == null || (sessionId != null && sessionOwner != null),
+          'Shared timer sessions require a session id and owner',
+        );
 
   Timer? _timer;
+  StreamSubscription<TimerSessionState>? _sessionSubscription;
   Duration _remainingTime = const Duration();
   Duration _elapsedTime = const Duration();
   Duration _sessionTotalElapsed = const Duration();
@@ -127,7 +159,8 @@ class TimerController extends ChangeNotifier {
     _autoStartBreak = await _getBoolSetting(SettingKeys.autoStartBreak, false);
     _autoStartWork = await _getBoolSetting(SettingKeys.autoStartWork, false);
     _tickingEnabled = await _getBoolSetting(SettingKeys.tickingEnabled, false);
-    _keepScreenAwake = await _getBoolSetting(SettingKeys.keepScreenAwake, false);
+    _keepScreenAwake =
+        await _getBoolSetting(SettingKeys.keepScreenAwake, false);
     _tickingVolume = await _getSetting(SettingKeys.tickingVolume, 50);
     _tickingSpeed = await _getSetting(SettingKeys.tickingSpeed, 1);
 
@@ -142,12 +175,81 @@ class TimerController extends ChangeNotifier {
     _isLongBreak = false;
     _completedSessions = 0;
 
+    _initializeSharedSession();
+
+    notifyListeners();
+  }
+
+  void _initializeSharedSession() {
+    final sessionService = _sessionService;
+    final sessionId = _sessionId;
+    final sessionOwner = _sessionOwner;
+    if (sessionService == null || sessionId == null || sessionOwner == null)
+      return;
+
+    final state = sessionService.create(
+      sessionId: sessionId,
+      owner: sessionOwner,
+      settings: _sharedSettings,
+      selectedTaskId: _selectedTaskId,
+    );
+    _applySharedState(state);
+    _sessionSubscription ??= sessionService.changes
+        .where((state) => state.sessionId == sessionId)
+        .listen(_applySharedState);
+  }
+
+  TimerSessionSettings get _sharedSettings => TimerSessionSettings(
+        mode: switch (_timerMode) {
+          TimerMode.pomodoro => TimerSessionMode.pomodoro,
+          TimerMode.normal => TimerSessionMode.normal,
+          TimerMode.stopwatch => TimerSessionMode.stopwatch,
+        },
+        workDuration: Duration(minutes: _workDuration),
+        breakDuration: Duration(minutes: _breakDuration),
+        longBreakDuration: Duration(minutes: _longBreakDuration),
+        sessionsBeforeLongBreak: _sessionsCount,
+        autoStartBreak: _autoStartBreak,
+        autoStartWork: _autoStartWork,
+      );
+
+  void _applySharedState(TimerSessionState state) {
+    final previousAlarmPlaying = _isAlarmPlaying;
+    final previousTotalElapsed = _sessionTotalElapsed;
+    _isRunning = state.isRunning;
+    _isWorking = state.isWorking;
+    _isAlarmPlaying = state.isAlarmPlaying;
+    _isLongBreak = state.isLongBreak;
+    _remainingTime = state.remainingTime;
+    _elapsedTime = state.elapsedTime;
+    _sessionTotalElapsed = state.sessionTotalElapsed;
+    _currentWorkSessionElapsed = state.currentWorkSessionElapsed;
+    _completedSessions = state.completedSessions;
+    _timerMode = switch (state.settings.mode) {
+      TimerSessionMode.pomodoro => TimerMode.pomodoro,
+      TimerSessionMode.normal => TimerMode.normal,
+      TimerSessionMode.stopwatch => TimerMode.stopwatch,
+    };
+    _workDuration = state.settings.workDuration.inMinutes;
+    _breakDuration = state.settings.breakDuration.inMinutes;
+    _longBreakDuration = state.settings.longBreakDuration.inMinutes;
+    _sessionsCount = state.settings.sessionsBeforeLongBreak;
+    _autoStartBreak = state.settings.autoStartBreak;
+    _autoStartWork = state.settings.autoStartWork;
+    final tickDelta = state.sessionTotalElapsed - previousTotalElapsed;
+    if (tickDelta > Duration.zero) {
+      _safeInvokeWithArg((delta) => onTick?.call(delta), tickDelta, 'onTick');
+    }
+    if (!previousAlarmPlaying && state.isAlarmPlaying) {
+      _safeInvoke(() => onAlarmStart?.call(), 'onAlarmStart');
+    }
     notifyListeners();
   }
 
   Future<bool> _getBoolSetting(String key, bool defaultValue) async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
+      final response =
+          await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: key),
       );
       if (response == null) return defaultValue;
@@ -165,7 +267,8 @@ class TimerController extends ChangeNotifier {
 
   Future<TimerMode> _getTimerModeSetting() async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
+      final response =
+          await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.defaultTimerMode),
       );
       if (response == null) return TimerMode.pomodoro;
@@ -183,7 +286,8 @@ class TimerController extends ChangeNotifier {
 
   Future<int> _getSetting(String key, int defaultValue) async {
     try {
-      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
+      final response =
+          await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: key),
       );
       if (response == null) return defaultValue;
@@ -234,6 +338,10 @@ class TimerController extends ChangeNotifier {
 
   /// Start the timer
   void startTimer() {
+    if (_sessionService != null) {
+      _safeSharedOperation(_startSharedTimer(), 'startTimer');
+      return;
+    }
     if (_isRunning || _isAlarmPlaying) return;
 
     // Only reset elapsed times if starting a fresh session (not resuming from pause)
@@ -250,6 +358,12 @@ class TimerController extends ChangeNotifier {
     _isRunning = true;
     _startRegularTimer();
     notifyListeners();
+  }
+
+  Future<void> _startSharedTimer() async {
+    if (_isRunning || _isAlarmPlaying) return;
+    await _sessionService!.start(_sessionId!);
+    await Future.sync(() => onTimerStarted?.call());
   }
 
   void _startRegularTimer() {
@@ -324,7 +438,8 @@ class TimerController extends ChangeNotifier {
         _sessionTotalElapsed = initialElapsed + elapsedIncrement;
 
         if (isWorkingAtStart) {
-          _currentWorkSessionElapsed = initialCurrentWorkElapsed + elapsedIncrement;
+          _currentWorkSessionElapsed =
+              initialCurrentWorkElapsed + elapsedIncrement;
         }
 
         if (_timerMode == TimerMode.stopwatch) {
@@ -340,7 +455,8 @@ class TimerController extends ChangeNotifier {
         notifyListeners();
 
         // Check if countdown timer modes should finish
-        if (_timerMode != TimerMode.stopwatch && _remainingTime.inSeconds <= 0) {
+        if (_timerMode != TimerMode.stopwatch &&
+            _remainingTime.inSeconds <= 0) {
           _timer?.cancel();
           _isRunning = false;
           _cancelAlarm(AlarmCancelReason.naturalCompletion);
@@ -350,7 +466,8 @@ class TimerController extends ChangeNotifier {
 
           // Only auto-start next session in Pomodoro mode
           if (_timerMode == TimerMode.pomodoro) {
-            if ((_isWorking && _autoStartBreak) || (!_isWorking && _autoStartWork)) {
+            if ((_isWorking && _autoStartBreak) ||
+                (!_isWorking && _autoStartWork)) {
               Future.delayed(const Duration(seconds: 3), () {
                 try {
                   if (_isAlarmPlaying) {
@@ -385,6 +502,10 @@ class TimerController extends ChangeNotifier {
 
   /// Pause the timer
   void pauseTimer() {
+    if (_sessionService != null) {
+      _safeSharedOperation(_sessionService.pause(_sessionId!), 'pauseTimer');
+      return;
+    }
     _timer?.cancel();
     _startTimestamp = null;
     _cancelAlarm(AlarmCancelReason.pause);
@@ -395,6 +516,10 @@ class TimerController extends ChangeNotifier {
 
   /// Stop the timer
   void stopTimer() {
+    if (_sessionService != null) {
+      _safeSharedOperation(_stopSharedTimer(), 'stopTimer');
+      return;
+    }
     _timer?.cancel();
     _safeInvoke(() => onAlarmStop?.call(), 'onAlarmStop');
     _startTimestamp = null;
@@ -418,12 +543,24 @@ class TimerController extends ChangeNotifier {
 
     _currentWorkSessionElapsed = Duration.zero;
 
-    _safeInvokeWithArg((elapsed) => onTimerStopped?.call(elapsed), _sessionTotalElapsed, 'onTimerStopped');
+    _safeInvokeWithArg((elapsed) => onTimerStopped?.call(elapsed),
+        _sessionTotalElapsed, 'onTimerStopped');
     notifyListeners();
+  }
+
+  Future<void> _stopSharedTimer() async {
+    final elapsed = _sessionTotalElapsed;
+    await _sessionService!.stop(_sessionId!);
+    await Future.sync(() => onAlarmStop?.call());
+    await Future.sync(() => onTimerStopped?.call(elapsed));
   }
 
   /// Toggle between work and break (for Pomodoro mode)
   void toggleWorkBreak() {
+    if (_sessionService != null) {
+      _safeSharedOperation(_toggleSharedWorkBreak(), 'toggleWorkBreak');
+      return;
+    }
     _safeInvoke(() => onAlarmStop?.call(), 'onAlarmStop');
     _isAlarmPlaying = false;
 
@@ -459,7 +596,8 @@ class TimerController extends ChangeNotifier {
       }
 
       _remainingTime = Duration(
-        seconds: _minutesToSeconds(_isLongBreak ? _longBreakDuration : _breakDuration),
+        seconds: _minutesToSeconds(
+            _isLongBreak ? _longBreakDuration : _breakDuration),
       );
 
       _currentWorkSessionElapsed = Duration.zero;
@@ -476,11 +614,54 @@ class TimerController extends ChangeNotifier {
     startTimer();
   }
 
+  void startNextPhase() {
+    if (_timerMode == TimerMode.pomodoro) {
+      toggleWorkBreak();
+      return;
+    }
+    if (_sessionService != null) {
+      _safeSharedOperation(
+        _sessionService.restart(_sessionId!),
+        'startNextPhase',
+      );
+      return;
+    }
+    toggleWorkBreak();
+  }
+
+  Future<void> _toggleSharedWorkBreak() async {
+    final completedWorkDuration =
+        _isWorking ? _currentWorkSessionElapsed : Duration.zero;
+    await Future.sync(() => onAlarmStop?.call());
+    await _sessionService!.toggleWorkBreak(_sessionId!);
+    if (completedWorkDuration > Duration.zero) {
+      await Future.sync(
+          () => onWorkSessionComplete?.call(completedWorkDuration));
+    }
+  }
+
   /// Update settings from dialog
   void updateSettings(TimerSettings settings) {
+    if (_sessionService != null) {
+      _applySettings(settings);
+      _initializeSharedSession();
+      _safeSharedOperation(
+        _sessionService.updateSettings(_sessionId!, _sharedSettings),
+        'updateSettings',
+      );
+      return;
+    }
+    _applySettings(settings);
+
+    notifyListeners();
+  }
+
+  void _applySettings(TimerSettings settings) {
     // Cancel active timer and alarm before applying new settings
     _timer?.cancel();
-    _cancelAlarm(AlarmCancelReason.settingsUpdate);
+    if (_sessionService == null) {
+      _cancelAlarm(AlarmCancelReason.settingsUpdate);
+    }
     _startTimestamp = null;
 
     _isWorking = true;
@@ -505,12 +686,15 @@ class TimerController extends ChangeNotifier {
     } else {
       _remainingTime = Duration(seconds: _minutesToSeconds(_workDuration));
     }
-
-    notifyListeners();
   }
 
   @override
   void dispose() {
+    _sessionSubscription?.cancel();
+    if (_sessionService != null) {
+      super.dispose();
+      return;
+    }
     _timer?.cancel();
     _cancelAlarm(AlarmCancelReason.disposal);
     super.dispose();

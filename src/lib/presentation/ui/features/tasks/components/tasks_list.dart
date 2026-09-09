@@ -978,8 +978,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             recurrenceConfiguration: fullTask.recurrenceConfiguration,
           ),
         );
-
-        _tasksService.notifyTaskUpdated(task.id);
       },
       onSuccess: () {
         _dragStateNotifier.stopDragging();
@@ -1050,7 +1048,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             RemoveTaskTagCommand(id: sourceAssociation.id),
           );
         }
-
         _tasksService.notifyTaskUpdated(task.id);
       },
       onSuccess: () {
@@ -1123,7 +1120,6 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             recurrenceConfiguration: fullTask.recurrenceConfiguration,
           ),
         );
-        _tasksService.notifyTaskUpdated(task.id);
       },
       onSuccess: () {
         _dragStateNotifier.stopDragging();

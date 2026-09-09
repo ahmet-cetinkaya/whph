@@ -66,16 +66,10 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
           HabitArchiveButton(
             habitId: widget.habitId,
             buttonColor: _themeService.primaryColor,
-            onArchiveSuccess: () {
-              _habitsService.notifyHabitUpdated(widget.habitId);
-            },
           ),
           HabitDeleteButton(
             habitId: widget.habitId,
             buttonColor: _themeService.primaryColor,
-            onDeleteSuccess: () {
-              _habitsService.notifyHabitDeleted(widget.habitId);
-            },
           ),
         ],
       ),
@@ -87,9 +81,6 @@ class _HabitDetailsPageState extends State<HabitDetailsPage> {
               // Main Content
               HabitDetailsContent(
                 habitId: widget.habitId,
-                onHabitUpdated: () {
-                  _habitsService.notifyHabitUpdated(widget.habitId);
-                },
                 onNameUpdated: (_) {},
               ),
 

@@ -19,7 +19,6 @@ import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/ui/shared/models/dropdown_option.dart';
@@ -44,8 +43,6 @@ class TaskDetailsController extends ChangeNotifier {
   bool _isDeadlineDatePickerActive = false;
   bool _isTitleFieldActive = false;
   bool _isDescriptionFieldActive = false;
-
-  Duration _timeSinceLastSave = Duration.zero;
 
   final Set<String> _visibleOptionalFields = {};
 
@@ -268,7 +265,6 @@ class TaskDetailsController extends ChangeNotifier {
     try {
       final saveCommand = buildSaveCommand();
       await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(saveCommand);
-      _tasksService.notifyTaskUpdated(_task!.id);
       onTaskUpdated?.call();
     } catch (e, stackTrace) {
       Logger.error(
@@ -480,42 +476,6 @@ class TaskDetailsController extends ChangeNotifier {
     }
   }
 
-  // Timer operations
-  void handleTimerTick(Duration elapsedIncrement) {
-    _timeSinceLastSave += elapsedIncrement;
-    if (_timeSinceLastSave.inSeconds >= TaskUiConstants.kPeriodicSaveIntervalSeconds) {
-      saveTaskTime(_timeSinceLastSave);
-      _timeSinceLastSave = Duration.zero;
-    }
-  }
-
-  void saveTaskTime(Duration elapsed) {
-    if (_task?.id == null) return;
-    if (elapsed.inSeconds <= 0) return;
-
-    final command = AddTaskTimeRecordCommand(
-      duration: elapsed.inSeconds,
-      taskId: _task!.id,
-      customDateTime: DateTime.now(),
-    );
-    _mediator.send(command);
-    _tasksService.notifyTaskUpdated(_task!.id);
-  }
-
-  void onWorkSessionComplete(Duration totalElapsed) {
-    if (_timeSinceLastSave > Duration.zero) {
-      saveTaskTime(_timeSinceLastSave);
-      _timeSinceLastSave = Duration.zero;
-    }
-  }
-
-  void onTimerStop(Duration totalElapsed) {
-    if (_timeSinceLastSave > Duration.zero) {
-      saveTaskTime(_timeSinceLastSave);
-      _timeSinceLastSave = Duration.zero;
-    }
-  }
-
   // Time logging dialog
   Future<void> logTime({
     required BuildContext context,
@@ -539,9 +499,6 @@ class TaskDetailsController extends ChangeNotifier {
             customDateTime: date,
           ));
         }
-      },
-      onSuccess: () {
-        _tasksService.notifyTaskUpdated(_task!.id);
       },
     );
   }

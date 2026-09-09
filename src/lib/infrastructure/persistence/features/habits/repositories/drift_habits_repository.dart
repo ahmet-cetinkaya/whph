@@ -21,9 +21,10 @@ class HabitTable extends Table {
 
   // Reminder settings
   BoolColumn get hasReminder => boolean().withDefault(const Constant(false))();
-  TextColumn get reminderTime => text().nullable()(); // Stored as "HH:mm" format
-  TextColumn get reminderDays =>
-      text().withDefault(const Constant(''))(); // Stored as comma-separated values (e.g. "1,2,3,4,5,6,7")
+  TextColumn get reminderTime =>
+      text().nullable()(); // Stored as "HH:mm" format
+  TextColumn get reminderDays => text().withDefault(const Constant(
+      ''))(); // Stored as comma-separated values (e.g. "1,2,3,4,5,6,7")
 
   // Goal settings
   BoolColumn get hasGoal => boolean().withDefault(const Constant(false))();
@@ -39,8 +40,11 @@ class HabitTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable> implements IHabitRepository {
-  DriftHabitRepository() : super(AppDatabase.instance(), AppDatabase.instance().habitTable);
+class DriftHabitRepository
+    extends DriftBaseRepository<Habit, String, HabitTable>
+    implements IHabitRepository {
+  DriftHabitRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().habitTable);
 
   DriftHabitRepository.withDatabase(AppDatabase db) : super(db, db.habitTable);
 
@@ -50,7 +54,7 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
   }
 
   @override
-  Insertable<Habit> toCompanion(Habit entity) {
+  HabitTableCompanion toCompanion(Habit entity) {
     return HabitTableCompanion.insert(
       id: entity.id,
       createdDate: entity.createdDate,
@@ -73,6 +77,39 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
   }
 
   @override
+  Future<DateTime?> updateIfRevision(
+      Habit habit, DateTime expectedRevision) async {
+    final nextRevision = nextDatabaseRevision(expectedRevision);
+    final companion =
+        toCompanion(habit).copyWith(modifiedDate: Value(nextRevision));
+    final affected = await (database.update(table)
+          ..where((row) =>
+              row.id.equals(habit.id) &
+              row.deletedDate.isNull() &
+              (row.modifiedDate.equals(expectedRevision) |
+                  (row.modifiedDate.isNull() &
+                      row.createdDate.equals(expectedRevision)))))
+        .write(companion);
+    return affected == 1 ? nextRevision : null;
+  }
+
+  @override
+  Future<DateTime?> deleteIfRevision(
+      String id, DateTime expectedRevision) async {
+    final deletedAt = nextDatabaseRevision(expectedRevision);
+    final affected = await (database.update(table)
+          ..where((row) =>
+              row.id.equals(id) &
+              row.deletedDate.isNull() &
+              (row.modifiedDate.equals(expectedRevision) |
+                  (row.modifiedDate.isNull() &
+                      row.createdDate.equals(expectedRevision)))))
+        .write(HabitTableCompanion(
+            deletedDate: Value(deletedAt), modifiedDate: Value(deletedAt)));
+    return affected == 1 ? deletedAt : null;
+  }
+
+  @override
   Future<String> getReminderDaysById(String id) async {
     final result = await database.customSelect(
       'SELECT reminder_days FROM ${table.actualTableName} WHERE id = ?',
@@ -80,7 +117,8 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       readsFrom: {table},
     ).getSingleOrNull();
 
-    final reminderDays = result != null ? result.data['reminder_days'] as String : '';
+    final reminderDays =
+        result != null ? result.data['reminder_days'] as String : '';
     return reminderDays;
   }
 
@@ -89,21 +127,28 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       {bool includeDeleted = false,
       acore.CustomWhereFilter? customWhereFilter,
       List<acore.CustomOrder>? customOrder}) async {
-    final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
-    final hasNameSort = customOrder?.any((order) => order.field == "name") == true;
+    final hasActualTimeSort =
+        customOrder?.any((order) => order.field == "actual_time") == true;
+    final hasNameSort =
+        customOrder?.any((order) => order.field == "name") == true;
 
     if (!hasActualTimeSort && !hasNameSort) {
       // Use default implementation if no custom sorting needed
       return super.getList(pageIndex, pageSize,
-          includeDeleted: includeDeleted, customWhereFilter: customWhereFilter, customOrder: customOrder);
+          includeDeleted: includeDeleted,
+          customWhereFilter: customWhereFilter,
+          customOrder: customOrder);
     }
 
     // Build custom query with LEFT JOIN for actualTime sorting
     List<String> whereClauses = [
-      if (customWhereFilter != null) "(${customWhereFilter.query.replaceAll('habit_table.', 'h.')})",
+      if (customWhereFilter != null)
+        "(${customWhereFilter.query.replaceAll('habit_table.', 'h.')})",
       if (!includeDeleted) 'h.deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    String? whereClause = whereClauses.isNotEmpty
+        ? " WHERE ${whereClauses.join(' AND ')} "
+        : null;
 
     // Only include JOIN if we are sorting by actual_time
     final joinClause = hasActualTimeSort
@@ -141,7 +186,8 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       LIMIT ? OFFSET ?
       """,
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
@@ -157,13 +203,15 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       ${whereClause ?? ''}
       """,
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
     final totalCount = count?.data['count'] as int? ?? 0;
 
     return acore.PaginatedList(
-      items: await Future.wait(result.map((entity) => entity is Future<Habit> ? entity : Future.value(entity))),
+      items: await Future.wait(result.map(
+          (entity) => entity is Future<Habit> ? entity : Future.value(entity))),
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,
@@ -189,12 +237,16 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
     List<acore.CustomOrder>? customOrder,
   }) async {
     List<String> whereClauses = [
-      if (customWhereFilter != null) "(${customWhereFilter.query.replaceAll('habit_table.', 'h.')})",
+      if (customWhereFilter != null)
+        "(${customWhereFilter.query.replaceAll('habit_table.', 'h.')})",
       if (!includeDeleted) 'h.deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    String? whereClause = whereClauses.isNotEmpty
+        ? " WHERE ${whereClauses.join(' AND ')} "
+        : null;
 
-    final hasActualTimeSort = customOrder?.any((order) => order.field == "actual_time") == true;
+    final hasActualTimeSort =
+        customOrder?.any((order) => order.field == "actual_time") == true;
 
     // LEFT JOIN for actualTime aggregation and sorting
     // Only join if we are sorting/grouping by actual_time to avoid unnecessary aggregation
@@ -233,7 +285,8 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       LIMIT ? OFFSET ?
       """,
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
@@ -250,7 +303,8 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       final hasReminder = row.read<bool>('has_reminder');
       final reminderTime = row.readNullable<String>('reminder_time');
       final reminderDays = row.read<String>('reminder_days');
-      final totalDuration = hasActualTimeSort ? row.read<int>('total_duration') : 0;
+      final totalDuration =
+          hasActualTimeSort ? row.read<int>('total_duration') : 0;
 
       return HabitListItem(
         id: id,
@@ -261,7 +315,11 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
         hasReminder: hasReminder,
         reminderTime: reminderTime,
         reminderDays: reminderDays.isNotEmpty
-            ? reminderDays.split(',').where((s) => s.isNotEmpty).map((s) => int.parse(s.trim())).toList()
+            ? reminderDays
+                .split(',')
+                .where((s) => s.isNotEmpty)
+                .map((s) => int.parse(s.trim()))
+                .toList()
             : <int>[],
         archivedDate: row.readNullable<DateTime>('archived_date'),
         createdDate: row.read<DateTime>('created_date'),
@@ -282,7 +340,8 @@ class DriftHabitRepository extends DriftBaseRepository<Habit, String, HabitTable
       ${whereClause ?? ''}
       """,
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => _convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
     final totalCount = count?.data['count'] as int? ?? 0;

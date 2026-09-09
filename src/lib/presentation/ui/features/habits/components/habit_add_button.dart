@@ -9,7 +9,6 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 
 class HabitAddButton extends StatefulWidget {
   /// The color of the button icon
@@ -55,7 +54,6 @@ class HabitAddButton extends StatefulWidget {
 class _HabitAddButtonState extends State<HabitAddButton> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  final _habitsService = container.resolve<HabitsService>();
 
   Future<void> _createHabit(BuildContext context) async {
     await AsyncErrorHandler.execute<SaveHabitCommandResponse>(
@@ -71,8 +69,6 @@ class _HabitAddButtonState extends State<HabitAddButton> {
         return await _mediator.send<SaveHabitCommand, SaveHabitCommandResponse>(command);
       },
       onSuccess: (response) {
-        _habitsService.notifyHabitCreated(response.id);
-
         // If tag IDs were provided, add tags to the newly created habit
         if (widget.initialTagIds != null && widget.initialTagIds!.isNotEmpty) {
           _addTagsToHabit(response.id, widget.initialTagIds!);

@@ -22,8 +22,13 @@ class NoteTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> implements INoteRepository {
-  DriftNoteRepository() : super(AppDatabase.instance(), AppDatabase.instance().noteTable);
+class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable>
+    implements INoteRepository {
+  DriftNoteRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().noteTable);
+
+  DriftNoteRepository.withDatabase(AppDatabase database)
+      : super(database, database.noteTable);
 
   @override
   Expression<String> getPrimaryKey(NoteTable t) {
@@ -44,7 +49,55 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
   }
 
   @override
-  Future<void> updateNoteOrder(List<String> noteIds, List<String> orders) async {
+  Future<DateTime?> updateIfRevision(
+      Note note, DateTime expectedRevision) async {
+    final nextRevision = nextDatabaseRevision(expectedRevision);
+    final affectedRows = await database.customUpdate(
+      '''
+        UPDATE note_table
+        SET title = ?, content = ?, "order" = ?, modified_date = ?, deleted_date = ?
+        WHERE id = ? AND deleted_date IS NULL
+          AND (modified_date = ? OR (modified_date IS NULL AND created_date = ?))
+      ''',
+      variables: [
+        Variable<String>(note.title),
+        Variable<String>(note.content),
+        Variable<String>(note.order),
+        Variable.withDateTime(nextRevision),
+        Variable<DateTime>(note.deletedDate),
+        Variable<String>(note.id),
+        Variable.withDateTime(expectedRevision),
+        Variable.withDateTime(expectedRevision),
+      ],
+      updates: {table},
+    );
+    return affectedRows == 1 ? nextRevision : null;
+  }
+
+  @override
+  Future<bool> deleteIfRevision(String id, DateTime expectedRevision) async {
+    final affectedRows = await database.customUpdate(
+      '''
+        UPDATE note_table
+        SET deleted_date = ?, modified_date = ?
+        WHERE id = ? AND deleted_date IS NULL
+          AND (modified_date = ? OR (modified_date IS NULL AND created_date = ?))
+      ''',
+      variables: [
+        Variable.withDateTime(DateTime.now().toUtc()),
+        Variable.withDateTime(DateTime.now().toUtc()),
+        Variable<String>(id),
+        Variable.withDateTime(expectedRevision),
+        Variable.withDateTime(expectedRevision),
+      ],
+      updates: {table},
+    );
+    return affectedRows == 1;
+  }
+
+  @override
+  Future<void> updateNoteOrder(
+      List<String> noteIds, List<String> orders) async {
     await database.transaction(() async {
       for (var i = 0; i < noteIds.length; i++) {
         await database.customUpdate(
@@ -72,7 +125,9 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
+    String? whereClause = whereClauses.isNotEmpty
+        ? " WHERE ${whereClauses.join(' AND ')} "
+        : null;
 
     String? orderByClause;
     String? outerOrderByClause;
@@ -106,7 +161,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     final countResult = await database.customSelect(
       'SELECT COUNT(*) AS count FROM note_table${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+        if (customWhereFilter != null)
+          ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
 
@@ -148,7 +204,8 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> i
     ''';
 
     final List<Variable<Object>> variables = [
-      if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+      if (customWhereFilter != null)
+        ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       Variable.withInt(pageSize),
       Variable.withInt(pageIndex * pageSize)
     ];

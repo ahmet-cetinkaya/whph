@@ -9,6 +9,9 @@ import 'package:whph/core/application/features/tags/commands/add_tag_tag_command
 import 'package:whph/core/application/features/tags/commands/delete_tag_command.dart';
 import 'package:whph/core/application/features/tags/commands/remove_tag_tag_command.dart';
 import 'package:whph/core/application/features/tags/commands/save_tag_command.dart';
+import 'package:whph/core/application/features/tags/commands/set_tag_relationships_command.dart';
+import 'package:whph/core/application/features/tags/commands/update_tag_command.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_transaction_service.dart';
 import 'package:whph/core/application/features/tags/queries/get_elements_by_time_query.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tag_tags_query.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
@@ -16,6 +19,7 @@ import 'package:whph/core/application/features/tags/queries/get_tag_query.dart';
 import 'package:whph/core/application/features/tags/queries/get_tag_times_data_query.dart';
 import 'package:whph/core/application/features/tags/queries/get_top_tags_by_time_query.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
+import 'package:whph/core/application/features/tags/services/abstraction/i_tag_events.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
@@ -40,18 +44,21 @@ void registerTagsFeature(
   INoteTagRepository noteTagRepository,
 ) {
   mediator
-    ..registerHandler<GetListTagsQuery, GetListTagsQueryResponse, GetListTagsQueryHandler>(
+    ..registerHandler<GetListTagsQuery, GetListTagsQueryResponse,
+        GetListTagsQueryHandler>(
       () => GetListTagsQueryHandler(
         tagRepository: tagRepository,
       ),
     )
-    ..registerHandler<GetListTagTagsQuery, GetListTagTagsQueryResponse, GetListTagTagsQueryHandler>(
+    ..registerHandler<GetListTagTagsQuery, GetListTagTagsQueryResponse,
+        GetListTagTagsQueryHandler>(
       () => GetListTagTagsQueryHandler(
         tagRepository: tagRepository,
         tagTagRepository: tagTagRepository,
       ),
     )
-    ..registerHandler<GetTagTimesDataQuery, GetTagTimesDataQueryResponse, GetTagTimesDataQueryHandler>(
+    ..registerHandler<GetTagTimesDataQuery, GetTagTimesDataQueryResponse,
+        GetTagTimesDataQueryHandler>(
       () => GetTagTimesDataQueryHandler(
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
         appUsageTagRepository: appUsageTagRepository,
@@ -64,7 +71,8 @@ void registerTagsFeature(
         habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )
-    ..registerHandler<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse, GetTopTagsByTimeQueryHandler>(
+    ..registerHandler<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse,
+        GetTopTagsByTimeQueryHandler>(
       () => GetTopTagsByTimeQueryHandler(
         appUsageTagRepository: appUsageTagRepository,
         taskTagRepository: taskTagRepository,
@@ -76,7 +84,8 @@ void registerTagsFeature(
         tagRepository: tagRepository,
       ),
     )
-    ..registerHandler<GetElementsByTimeQuery, GetElementsByTimeQueryResponse, GetElementsByTimeQueryHandler>(
+    ..registerHandler<GetElementsByTimeQuery, GetElementsByTimeQueryResponse,
+        GetElementsByTimeQueryHandler>(
       () => GetElementsByTimeQueryHandler(
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
         appUsageTagRepository: appUsageTagRepository,
@@ -90,10 +99,33 @@ void registerTagsFeature(
         tagRepository: tagRepository,
       ),
     )
-    ..registerHandler<SaveTagCommand, SaveTagCommandResponse, SaveTagCommandHandler>(
-      () => SaveTagCommandHandler(tagRepository: tagRepository),
+    ..registerHandler<SaveTagCommand, SaveTagCommandResponse,
+        SaveTagCommandHandler>(
+      () => SaveTagCommandHandler(
+        tagRepository: tagRepository,
+        tagEvents: container.resolve<ITagEvents>(),
+        transactions: container.resolve<IApplicationTransactionService>(),
+      ),
     )
-    ..registerHandler<DeleteTagCommand, DeleteTagCommandResponse, DeleteTagCommandHandler>(
+    ..registerHandler<UpdateTagCommand, UpdateTagCommandResponse,
+        UpdateTagCommandHandler>(
+      () => UpdateTagCommandHandler(
+        tags: tagRepository,
+        events: container.resolve<ITagEvents>(),
+        transactions: container.resolve<IApplicationTransactionService>(),
+      ),
+    )
+    ..registerHandler<SetTagRelationshipsCommand,
+        SetTagRelationshipsCommandResponse, SetTagRelationshipsCommandHandler>(
+      () => SetTagRelationshipsCommandHandler(
+        tags: tagRepository,
+        relationships: tagTagRepository,
+        events: container.resolve<ITagEvents>(),
+        transactions: container.resolve<IApplicationTransactionService>(),
+      ),
+    )
+    ..registerHandler<DeleteTagCommand, DeleteTagCommandResponse,
+        DeleteTagCommandHandler>(
       () => DeleteTagCommandHandler(
         tagRepository: tagRepository,
         tagTagRepository: tagTagRepository,
@@ -101,12 +133,16 @@ void registerTagsFeature(
         habitTagsRepository: habitTagRepository,
         noteTagRepository: noteTagRepository,
         appUsageTagRepository: appUsageTagRepository,
+        tagEvents: container.resolve<ITagEvents>(),
+        transactions: container.resolve<IApplicationTransactionService>(),
       ),
     )
-    ..registerHandler<AddTagTagCommand, AddTagTagCommandResponse, AddTagTagCommandHandler>(
+    ..registerHandler<AddTagTagCommand, AddTagTagCommandResponse,
+        AddTagTagCommandHandler>(
       () => AddTagTagCommandHandler(tagTagRepository: tagTagRepository),
     )
-    ..registerHandler<RemoveTagTagCommand, RemoveTagTagCommandResponse, RemoveTagTagCommandHandler>(
+    ..registerHandler<RemoveTagTagCommand, RemoveTagTagCommandResponse,
+        RemoveTagTagCommandHandler>(
       () => RemoveTagTagCommandHandler(tagTagRepository: tagTagRepository),
     );
 }

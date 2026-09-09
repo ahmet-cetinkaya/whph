@@ -123,6 +123,20 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable> i
   DriftTaskRepository.withDatabase(AppDatabase appDatabase) : super(appDatabase, appDatabase.taskTable);
 
   @override
+  Future<DateTime?> updateIfRevision(Task task, DateTime expectedRevision) async {
+    final nextRevision = nextDatabaseRevision(expectedRevision);
+    final updatedTask = task.copyWith(modifiedDate: nextRevision);
+    final statement = database.update(table)
+      ..where((row) =>
+          row.id.equals(task.id) &
+          row.deletedDate.isNull() &
+          (row.modifiedDate.equals(expectedRevision) |
+              (row.modifiedDate.isNull() & row.createdDate.equals(expectedRevision))));
+    final affected = await statement.write(toCompanion(updatedTask));
+    return affected == 1 ? nextRevision : null;
+  }
+
+  @override
   Expression<String> getPrimaryKey(TaskTable t) {
     return t.id;
   }

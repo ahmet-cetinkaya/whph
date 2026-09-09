@@ -5,7 +5,6 @@ import 'package:whph/core/application/features/notes/commands/save_note_command.
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_ui_constants.dart';
-import 'package:whph/presentation/ui/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -36,7 +35,6 @@ class NoteAddButton extends StatefulWidget {
 
 class _NoteAddButtonState extends State<NoteAddButton> {
   final _mediator = container.resolve<Mediator>();
-  final _notesService = container.resolve<NotesService>();
   final _translationService = container.resolve<ITranslationService>();
   bool _isCreating = false;
 
@@ -77,8 +75,6 @@ class _NoteAddButtonState extends State<NoteAddButton> {
         return response;
       },
       onSuccess: (response) {
-        _notesService.notifyNoteCreated(response.id);
-
         if (widget.onNoteCreated != null) {
           widget.onNoteCreated!(response.id);
         }

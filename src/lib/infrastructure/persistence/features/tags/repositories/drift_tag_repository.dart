@@ -20,8 +20,10 @@ class TagTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> implements ITagRepository {
-  DriftTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().tagTable);
+class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable>
+    implements ITagRepository {
+  DriftTagRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().tagTable);
 
   // Constructor for testing with custom database
   DriftTagRepository.withDatabase(AppDatabase db) : super(db, db.tagTable);
@@ -43,6 +45,53 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
       isArchived: Value(entity.isArchived),
       type: Value(entity.type),
     );
+  }
+
+  @override
+  Future<DateTime?> updateIfRevision(Tag tag, DateTime expectedRevision) async {
+    final nextRevision = nextDatabaseRevision(expectedRevision);
+    final affectedRows = await database.customUpdate(
+      '''
+        UPDATE tag_table
+        SET name = ?, color = ?, is_archived = ?, type = ?, modified_date = ?
+        WHERE id = ? AND deleted_date IS NULL
+          AND (modified_date = ? OR (modified_date IS NULL AND created_date = ?))
+      ''',
+      variables: [
+        Variable<String>(tag.name),
+        Variable<String>(tag.color),
+        Variable<bool>(tag.isArchived),
+        Variable<int>(tag.type.index),
+        Variable.withDateTime(nextRevision),
+        Variable<String>(tag.id),
+        Variable.withDateTime(expectedRevision),
+        Variable.withDateTime(expectedRevision),
+      ],
+      updates: {table},
+    );
+    return affectedRows == 1 ? nextRevision : null;
+  }
+
+  @override
+  Future<bool> deleteIfRevision(String id, DateTime expectedRevision) async {
+    final now = DateTime.now().toUtc();
+    final affectedRows = await database.customUpdate(
+      '''
+        UPDATE tag_table
+        SET deleted_date = ?, modified_date = ?
+        WHERE id = ? AND deleted_date IS NULL
+          AND (modified_date = ? OR (modified_date IS NULL AND created_date = ?))
+      ''',
+      variables: [
+        Variable.withDateTime(now),
+        Variable.withDateTime(now),
+        Variable<String>(id),
+        Variable.withDateTime(expectedRevision),
+        Variable.withDateTime(expectedRevision),
+      ],
+      updates: {table},
+    );
+    return affectedRows == 1;
   }
 
   @override
@@ -79,7 +128,8 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
         AND t.deleted_date IS NULL
     ''';
 
-    final variables = tags.items.map((tag) => Variable<String>(tag.id)).toList();
+    final variables =
+        tags.items.map((tag) => Variable<String>(tag.id)).toList();
     final relatedTagRows = await (database.customSelect(
       relatedTagsQuery,
       variables: variables,
@@ -131,7 +181,8 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> impl
   Future<Map<String, Tag>> getByIds(List<String> tagIds) async {
     if (tagIds.isEmpty) return {};
 
-    final query = database.select(table)..where((t) => t.id.isIn(tagIds) & t.deletedDate.isNull());
+    final query = database.select(table)
+      ..where((t) => t.id.isIn(tagIds) & t.deletedDate.isNull());
 
     final tags = await query.get();
     return {for (final tag in tags) tag.id: tag};

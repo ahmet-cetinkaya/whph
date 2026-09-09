@@ -204,7 +204,6 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> with AutomaticKeepAli
         CompleteTaskCommand(id: taskId),
       );
 
-      _tasksService.notifyTaskCompleted(taskId);
       _hideCompletedTasks();
       _loadTaskDetails();
     } catch (e, stackTrace) {

@@ -6,7 +6,6 @@ import 'package:whph/core/application/features/habits/commands/save_habit_comman
 import 'package:whph/core/application/features/habits/queries/get_habit_query.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -38,7 +37,6 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _themeService = container.resolve<IThemeService>();
-  final _habitsService = container.resolve<HabitsService>();
   bool? _isArchived;
 
   @override
@@ -124,9 +122,6 @@ class _HabitArchiveButtonState extends State<HabitArchiveButton> {
             setState(() {
               _isArchived = newStatus;
             });
-
-            // Notify that the habit has been updated
-            _habitsService.notifyHabitUpdated(widget.habitId);
 
             widget.onArchiveSuccess?.call();
 

@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/habits/services/habit_record_oper
 import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_events.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
@@ -28,16 +29,19 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
   final IHabitRecordRepository _habitRecordRepository;
   final HabitRecordOperationsService _operationsService;
   final HabitDayRangeResolver _dayRangeResolver;
+  final IHabitEvents? _habitEvents;
 
   CompleteHabitCommandHandler({
     required IHabitRepository habitRepository,
     required IHabitRecordRepository habitRecordRepository,
     required HabitRecordOperationsService operationsService,
     HabitDayRangeResolver dayRangeResolver = HabitDayStateResolver.utcRangeFor,
+    IHabitEvents? habitEvents,
   })  : _habitRepository = habitRepository,
         _habitRecordRepository = habitRecordRepository,
         _operationsService = operationsService,
-        _dayRangeResolver = dayRangeResolver;
+        _dayRangeResolver = dayRangeResolver,
+        _habitEvents = habitEvents;
 
   @override
   Future<CompleteHabitCommandResponse> call(CompleteHabitCommand request) async {
@@ -94,6 +98,7 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
       await _clearRecords(request.habitId, startOfDay, endOfDay, dayRecords);
       await _addCompleteRecord(habit, request.habitId, request.date);
     });
+    _habitEvents?.notifyHabitRecordAdded(request.habitId);
 
     return CompleteHabitCommandResponse();
   }

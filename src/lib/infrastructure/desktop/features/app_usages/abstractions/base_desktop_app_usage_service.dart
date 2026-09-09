@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/base_app_usage_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_transaction_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
 abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
@@ -21,7 +22,8 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
   Future<String?> getActiveWindow();
 
   @override
-  Future<void> startTracking() async {
+  Future<void> startTracking({ApplicationMutationGuard? authorizeCommit}) async {
+    await ensureMutationAuthorized(authorizeCommit);
     _intervalTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       String? currentWindow = await getActiveWindow(); // <windowTitle>,<windowProcess>,<duration>
 

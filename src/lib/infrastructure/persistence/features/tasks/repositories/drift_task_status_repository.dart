@@ -28,6 +28,30 @@ class DriftTaskStatusRepository extends DriftBaseRepository<TaskStatus, String, 
   DriftTaskStatusRepository.withDatabase(AppDatabase db) : super(db, db.taskStatusTable);
 
   @override
+  Future<DateTime?> updateIfRevision(TaskStatus status, DateTime expectedRevision) async {
+    final nextRevision = nextDatabaseRevision(expectedRevision);
+    final updatedStatus = TaskStatus(
+      id: status.id,
+      createdDate: status.createdDate,
+      modifiedDate: nextRevision,
+      deletedDate: status.deletedDate,
+      name: status.name,
+      color: status.color,
+      order: status.order,
+      isBuiltIn: status.isBuiltIn,
+      isDoneStatus: status.isDoneStatus,
+    );
+    final statement = database.update(table)
+      ..where((row) =>
+          row.id.equals(status.id) &
+          row.deletedDate.isNull() &
+          (row.modifiedDate.equals(expectedRevision) |
+              (row.modifiedDate.isNull() & row.createdDate.equals(expectedRevision))));
+    final affected = await statement.write(toCompanion(updatedStatus));
+    return affected == 1 ? nextRevision : null;
+  }
+
+  @override
   Expression<String> getPrimaryKey(TaskStatusTable t) {
     return t.id;
   }

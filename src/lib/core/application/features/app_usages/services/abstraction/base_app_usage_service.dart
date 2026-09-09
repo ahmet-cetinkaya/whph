@@ -16,6 +16,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_filter_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_transaction_service.dart';
 
 abstract class BaseAppUsageService implements IAppUsageService {
   @protected
@@ -56,7 +57,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
   );
 
   @override
-  Future<void> startTracking();
+  Future<void> startTracking({ApplicationMutationGuard? authorizeCommit});
 
   @override
   Future<void> stopTracking() async {

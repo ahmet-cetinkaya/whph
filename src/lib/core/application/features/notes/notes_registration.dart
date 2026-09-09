@@ -4,11 +4,14 @@ import 'package:whph/core/application/features/notes/commands/delete_note_comman
 import 'package:whph/core/application/features/notes/commands/normalize_note_orders_command.dart';
 import 'package:whph/core/application/features/notes/commands/remove_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
+import 'package:whph/core/application/features/notes/commands/save_note_with_tags_command.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_transaction_service.dart';
 import 'package:whph/core/application/features/notes/commands/update_note_order_command.dart';
 import 'package:whph/core/application/features/notes/commands/update_note_tags_order_command.dart';
 import 'package:whph/core/application/features/notes/queries/get_note_query.dart';
 import 'package:whph/core/application/features/notes/queries/get_list_notes_query.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
+import 'package:whph/core/application/features/notes/services/abstraction/i_note_events.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:acore/acore.dart';
@@ -21,43 +24,97 @@ void registerNotesFeature(
   ITagRepository tagRepository,
 ) {
   // Register Command Handlers
-  mediator.registerHandler<SaveNoteCommand, SaveNoteCommandResponse, SaveNoteCommandHandler>(
-    () => SaveNoteCommandHandler(noteRepository: noteRepository),
-  );
-
-  mediator.registerHandler<DeleteNoteCommand, DeleteNoteCommandResponse, DeleteNoteCommandHandler>(
-    () => DeleteNoteCommandHandler(
+  mediator.registerHandler<SaveNoteCommand, SaveNoteCommandResponse,
+      SaveNoteCommandHandler>(
+    () => SaveNoteCommandHandler(
       noteRepository: noteRepository,
-      noteTagRepository: noteTagRepository,
+      noteEvents: container.resolve<INoteEvents>(),
     ),
   );
 
-  mediator.registerHandler<AddNoteTagCommand, AddNoteTagCommandResponse, AddNoteTagCommandHandler>(
+  mediator.registerHandler<UpdateNoteCommand, SaveNoteCommandResponse,
+      UpdateNoteCommandHandler>(
+    () => UpdateNoteCommandHandler(
+      noteRepository: noteRepository,
+      noteEvents: container.resolve<INoteEvents>(),
+    ),
+  );
+
+  mediator.registerHandler<SaveNoteWithTagsCommand, SaveNoteCommandResponse,
+      SaveNoteWithTagsCommandHandler>(
+    () => SaveNoteWithTagsCommandHandler(
+      notes: noteRepository,
+      noteTags: noteTagRepository,
+      tags: tagRepository,
+      events: container.resolve<INoteEvents>(),
+      transactions: container.resolve<IApplicationTransactionService>(),
+    ),
+  );
+
+  mediator.registerHandler<UpdateNoteWithTagsCommand, SaveNoteCommandResponse,
+      UpdateNoteWithTagsCommandHandler>(
+    () => UpdateNoteWithTagsCommandHandler(
+      notes: noteRepository,
+      noteTags: noteTagRepository,
+      tags: tagRepository,
+      events: container.resolve<INoteEvents>(),
+      transactions: container.resolve<IApplicationTransactionService>(),
+    ),
+  );
+
+  mediator.registerHandler<ReorderNoteWithRevisionCommand,
+      SaveNoteCommandResponse, ReorderNoteWithRevisionCommandHandler>(
+    () => ReorderNoteWithRevisionCommandHandler(
+      notes: noteRepository,
+      events: container.resolve<INoteEvents>(),
+      transactions: container.resolve<IApplicationTransactionService>(),
+    ),
+  );
+
+  mediator.registerHandler<DeleteNoteCommand, DeleteNoteCommandResponse,
+      DeleteNoteCommandHandler>(
+    () => DeleteNoteCommandHandler(
+      noteRepository: noteRepository,
+      noteTagRepository: noteTagRepository,
+      noteEvents: container.resolve<INoteEvents>(),
+      transactions: container.resolve<IApplicationTransactionService>(),
+    ),
+  );
+
+  mediator.registerHandler<AddNoteTagCommand, AddNoteTagCommandResponse,
+      AddNoteTagCommandHandler>(
     () => AddNoteTagCommandHandler(noteTagRepository: noteTagRepository),
   );
 
-  mediator.registerHandler<RemoveNoteTagCommand, RemoveNoteTagCommandResponse, RemoveNoteTagCommandHandler>(
+  mediator.registerHandler<RemoveNoteTagCommand, RemoveNoteTagCommandResponse,
+      RemoveNoteTagCommandHandler>(
     () => RemoveNoteTagCommandHandler(noteTagRepository: noteTagRepository),
   );
 
-  mediator.registerHandler<UpdateNoteOrderCommand, UpdateNoteOrderCommandResponse, UpdateNoteOrderCommandHandler>(
+  mediator.registerHandler<UpdateNoteOrderCommand,
+      UpdateNoteOrderCommandResponse, UpdateNoteOrderCommandHandler>(
     () => UpdateNoteOrderCommandHandler(noteRepository: noteRepository),
   );
 
-  mediator.registerHandler<UpdateNoteTagsOrderCommand, void, UpdateNoteTagsOrderCommandHandler>(
-    () => UpdateNoteTagsOrderCommandHandler(noteTagRepository: noteTagRepository),
+  mediator.registerHandler<UpdateNoteTagsOrderCommand, void,
+      UpdateNoteTagsOrderCommandHandler>(
+    () =>
+        UpdateNoteTagsOrderCommandHandler(noteTagRepository: noteTagRepository),
   );
 
-  mediator.registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
+  mediator.registerHandler<NormalizeNoteOrdersCommand,
+      NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
     () => NormalizeNoteOrdersCommandHandler(noteRepository),
   );
 
   // Register Query Handlers
-  mediator.registerHandler<GetNoteQuery, GetNoteQueryResponse, GetNoteQueryHandler>(
+  mediator
+      .registerHandler<GetNoteQuery, GetNoteQueryResponse, GetNoteQueryHandler>(
     () => GetNoteQueryHandler(noteRepository: noteRepository),
   );
 
-  mediator.registerHandler<GetListNotesQuery, GetListNotesQueryResponse, GetListNotesQueryHandler>(
+  mediator.registerHandler<GetListNotesQuery, GetListNotesQueryResponse,
+      GetListNotesQueryHandler>(
     () => GetListNotesQueryHandler(noteRepository: noteRepository),
   );
 }

@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_events.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
@@ -43,12 +44,15 @@ class SaveAppUsageCommandResponse {
 
 class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand, SaveAppUsageCommandResponse> {
   final IAppUsageRepository _appUsageRepository;
+  final IAppUsageEvents? _appUsageEvents;
 
-  SaveAppUsageCommandHandler({required IAppUsageRepository appUsageRepository})
-      : _appUsageRepository = appUsageRepository;
+  SaveAppUsageCommandHandler({required IAppUsageRepository appUsageRepository, IAppUsageEvents? appUsageEvents})
+      : _appUsageRepository = appUsageRepository,
+        _appUsageEvents = appUsageEvents;
 
   @override
   Future<SaveAppUsageCommandResponse> call(SaveAppUsageCommand request) async {
+    final isCreating = request.id == null;
     AppUsage? appUsage;
 
     if (request.id != null) {
@@ -73,6 +77,11 @@ class SaveAppUsageCommandHandler implements IRequestHandler<SaveAppUsageCommand,
       await _appUsageRepository.add(appUsage);
     }
 
+    if (isCreating) {
+      _appUsageEvents?.notifyAppUsageCreated(appUsage.id);
+    } else {
+      _appUsageEvents?.notifyAppUsageUpdated(appUsage.id);
+    }
     return SaveAppUsageCommandResponse(
       id: appUsage.id,
       name: appUsage.name,

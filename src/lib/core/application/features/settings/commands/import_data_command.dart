@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/commands/normalize_habit_orders_command.dart';
@@ -14,6 +15,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
@@ -25,10 +27,12 @@ import 'package:whph/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/domain/features/tags/tag_tag.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
+import 'package:whph/core/domain/features/tasks/task_status.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
+import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/core/domain/features/habits/habit_tag.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_tag.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart';
@@ -77,10 +81,12 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   final IAppUsageTagRuleRepository appUsageTagRuleRepository;
   final IHabitRepository habitRepository;
   final IHabitRecordRepository habitRecordRepository;
+  final IHabitTimeRecordRepository? habitTimeRecordRepository;
   final IHabitTagsRepository habitTagRepository;
   final ITagRepository tagRepository;
   final ITagTagRepository tagTagRepository;
   final ITaskRepository taskRepository;
+  final ITaskStatusRepository? taskStatusRepository;
   final ITaskTagRepository taskTagRepository;
   final ITaskTimeRecordRepository taskTimeRecordRepository;
   final ISettingRepository settingRepository;
@@ -101,10 +107,12 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     required this.appUsageTagRuleRepository,
     required this.habitRepository,
     required this.habitRecordRepository,
+    this.habitTimeRecordRepository,
     required this.habitTagRepository,
     required this.tagRepository,
     required this.tagTagRepository,
     required this.taskRepository,
+    this.taskStatusRepository,
     required this.taskTagRepository,
     required this.taskTimeRecordRepository,
     required this.settingRepository,
@@ -116,6 +124,8 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     required this.compressionService,
     required this.mediator,
   }) {
+    final importedHabitTimeRecords = habitTimeRecordRepository;
+    final importedTaskStatuses = taskStatusRepository;
     _importConfigs = [
       ImportConfig<Tag>(
         name: 'tags',
@@ -157,11 +167,23 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         repository: habitRecordRepository,
         fromJson: (json) => JsonMapper.deserialize<HabitRecord>(jsonEncode(json))!,
       ),
+      if (importedHabitTimeRecords != null)
+        ImportConfig<HabitTimeRecord>(
+          name: 'habitTimeRecords',
+          repository: importedHabitTimeRecords,
+          fromJson: (json) => HabitTimeRecord.fromJson(json),
+        ),
       ImportConfig<HabitTag>(
         name: 'habitTags',
         repository: habitTagRepository,
         fromJson: (json) => JsonMapper.deserialize<HabitTag>(jsonEncode(json))!,
       ),
+      if (importedTaskStatuses != null)
+        ImportConfig<TaskStatus>(
+          name: 'taskStatuses',
+          repository: importedTaskStatuses,
+          fromJson: (json) => TaskStatus.fromJson(json),
+        ),
       ImportConfig<Task>(
         name: 'tasks',
         repository: taskRepository,
@@ -538,10 +560,13 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       appUsageTagRuleRepository.truncate(),
       habitRepository.truncate(),
       habitRecordRepository.truncate(),
+      if (habitTimeRecordRepository != null)
+        habitTimeRecordRepository!.truncate(),
       habitTagRepository.truncate(),
       tagRepository.truncate(),
       tagTagRepository.truncate(),
       taskRepository.truncate(),
+      if (taskStatusRepository != null) taskStatusRepository!.truncate(),
       taskTagRepository.truncate(),
       taskTimeRecordRepository.truncate(),
       noteRepository.truncate(),

@@ -1,8 +1,13 @@
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
+    as app;
 import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/core/domain/features/notes/note.dart';
 
 abstract class INoteRepository extends app.IRepository<Note, String> {
+  Future<DateTime?> updateIfRevision(Note note, DateTime expectedRevision);
+
+  Future<bool> deleteIfRevision(String id, DateTime expectedRevision);
+
   Future<void> updateNoteOrder(List<String> noteIds, List<String> orders);
 
   /// Gets a paginated list of notes with their associated tags included

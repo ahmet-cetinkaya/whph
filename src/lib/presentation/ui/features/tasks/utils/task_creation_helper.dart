@@ -148,7 +148,6 @@ class TaskCreationHelper {
     required Function(String taskId, TaskData taskData)? onTaskCreated,
   }) {
     try {
-      _notifyTaskCreated(tasksService, response.id);
       _showSuccessMessage(context, translationService, draft.title);
       _invokeOnTaskCreatedCallback(
         onTaskCreated,
@@ -160,18 +159,6 @@ class TaskCreationHelper {
     } catch (e, stackTrace) {
       Logger.error(
         'Error handling task creation success',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    }
-  }
-
-  static void _notifyTaskCreated(TasksService tasksService, String taskId) {
-    try {
-      tasksService.notifyTaskCreated(taskId);
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Failed to notify task created',
         error: e,
         stackTrace: stackTrace,
       );

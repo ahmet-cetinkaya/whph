@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_timer_session_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
@@ -24,6 +25,9 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/tasks/models/timer_settings.dart';
 
 class AppTimer extends StatefulWidget {
+  final String sessionId;
+  final TimerSessionOwner sessionOwner;
+  final String? selectedTaskId;
   final void Function(Duration elapsedIncrement)? onTick;
   final VoidCallback? onTimerStart;
   final void Function(Duration elapsed)? onTimerStop;
@@ -32,6 +36,9 @@ class AppTimer extends StatefulWidget {
 
   const AppTimer({
     super.key,
+    required this.sessionId,
+    required this.sessionOwner,
+    this.selectedTaskId,
     this.onTick,
     this.onTimerStart,
     this.onTimerStop,
@@ -45,6 +52,7 @@ class AppTimer extends StatefulWidget {
 
 class _AppTimerState extends State<AppTimer> {
   late final TimerController _controller;
+  late final ITimerSessionService _sessionService;
   late final TimerSystemTrayHelper _systemTrayHelper;
   late final TimerSoundHelper _soundHelper;
   late final IWakelockService _wakelockService;
@@ -60,23 +68,27 @@ class _AppTimerState extends State<AppTimer> {
 
     // Setup action stream for background notification buttons
     NotificationPayloadService.setupActionStream();
-    _actionSubscription = NotificationPayloadService.actionStream.listen(_handleNotificationAction);
+    _actionSubscription = NotificationPayloadService.actionStream
+        .listen(_handleNotificationAction);
   }
 
   void _handleNotificationAction(String actionId) {
     if (!mounted) return;
 
-    if (actionId == AndroidAppConstants.intentActions.timerStop) {
+    if (actionId ==
+        _sessionAction(AndroidAppConstants.intentActions.timerStop)) {
       if (_controller.isRunning || _controller.isAlarmPlaying) {
         _controller.stopTimer();
       }
-    } else if (actionId == AndroidAppConstants.intentActions.timerStartWork) {
+    } else if (actionId ==
+        _sessionAction(AndroidAppConstants.intentActions.timerStartWork)) {
       if (!_controller.isWorking) {
-        _controller.toggleWorkBreak();
+        _controller.startNextPhase();
       }
-    } else if (actionId == AndroidAppConstants.intentActions.timerStartBreak) {
+    } else if (actionId ==
+        _sessionAction(AndroidAppConstants.intentActions.timerStartBreak)) {
       if (_controller.isWorking) {
-        _controller.toggleWorkBreak();
+        _controller.startNextPhase();
       }
     } else {
       Logger.warning(
@@ -85,6 +97,8 @@ class _AppTimerState extends State<AppTimer> {
       );
     }
   }
+
+  String _sessionAction(String actionId) => '$actionId:${widget.sessionId}';
 
   void _initializeServices() {
     final mediator = container.resolve<Mediator>();
@@ -95,7 +109,15 @@ class _AppTimerState extends State<AppTimer> {
     _wakelockService = container.resolve<IWakelockService>();
     final reminderService = container.resolve<IReminderService>();
 
-    _controller = TimerController(mediator: mediator, reminderService: reminderService);
+    _sessionService = container.resolve<ITimerSessionService>();
+    _controller = TimerController(
+      mediator: mediator,
+      reminderService: reminderService,
+      sessionService: _sessionService,
+      sessionId: widget.sessionId,
+      sessionOwner: widget.sessionOwner,
+      selectedTaskId: widget.selectedTaskId,
+    );
     _soundHelper = TimerSoundHelper(soundManagerService: soundManagerService);
     _systemTrayHelper = TimerSystemTrayHelper(
       systemTrayService: systemTrayService,
@@ -103,6 +125,16 @@ class _AppTimerState extends State<AppTimer> {
     );
 
     _setupControllerCallbacks();
+  }
+
+  @override
+  void didUpdateWidget(covariant AppTimer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedTaskId != widget.selectedTaskId &&
+        _sessionService.state(widget.sessionId) != null) {
+      unawaited(
+          _sessionService.selectTask(widget.sessionId, widget.selectedTaskId));
+    }
   }
 
   void _setupControllerCallbacks() {
@@ -113,8 +145,10 @@ class _AppTimerState extends State<AppTimer> {
     _controller.onAlarmStart = _handleAlarmStart;
     _controller.onAlarmStop = _handleAlarmStop;
     _controller.setAlarmText(
-      title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
-      body: _translationService.translate(TaskTranslationKeys.pomodoroTimerCompleted),
+      title: _translationService
+          .translate(TaskTranslationKeys.pomodoroNotificationTitle),
+      body: _translationService
+          .translate(TaskTranslationKeys.pomodoroTimerCompleted),
     );
   }
 
@@ -181,14 +215,15 @@ class _AppTimerState extends State<AppTimer> {
 
   void _sendNotification() {
     final completionMessage = _controller.isWorking
-        ? _translationService.translate(TaskTranslationKeys.pomodoroWorkSessionCompleted)
+        ? _translationService
+            .translate(TaskTranslationKeys.pomodoroWorkSessionCompleted)
         : _translationService.translate(_controller.isLongBreak
             ? TaskTranslationKeys.pomodoroLongBreakSessionCompleted
             : TaskTranslationKeys.pomodoroBreakSessionCompleted);
 
-    final actionId = _controller.isWorking
+    final actionId = _sessionAction(_controller.isWorking
         ? AndroidAppConstants.intentActions.timerStartBreak
-        : AndroidAppConstants.intentActions.timerStartWork;
+        : AndroidAppConstants.intentActions.timerStartWork);
 
     final actionTitle = _controller.isWorking
         ? _translationService.translate(TaskTranslationKeys.pomodoroStartBreak)
@@ -200,7 +235,8 @@ class _AppTimerState extends State<AppTimer> {
     );
 
     _notificationService.show(
-      title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
+      title: _translationService
+          .translate(TaskTranslationKeys.pomodoroNotificationTitle),
       body: completionMessage,
       options: NotificationOptions(
         actions: [
@@ -210,8 +246,9 @@ class _AppTimerState extends State<AppTimer> {
             showsUserInterface: false,
           ),
           NotificationAction(
-            AndroidAppConstants.intentActions.timerStop,
-            _translationService.translate(TaskTranslationKeys.pomodoroStopTimer),
+            _sessionAction(AndroidAppConstants.intentActions.timerStop),
+            _translationService
+                .translate(TaskTranslationKeys.pomodoroStopTimer),
             showsUserInterface: false,
           ),
         ],
@@ -222,7 +259,6 @@ class _AppTimerState extends State<AppTimer> {
   @override
   void dispose() {
     _actionSubscription?.cancel();
-    NotificationPayloadService.disposeActionStream();
     _soundHelper.dispose();
     _wakelockService.disable();
 
@@ -312,10 +348,13 @@ class _AppTimerState extends State<AppTimer> {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isActive = _controller.isRunning || _controller.isAlarmPlaying;
 
-    final double multiplier = widget.isMiniLayout ? 1.0 : (!isActive ? 1.0 : 2.0);
-    final double baseButtonSize = widget.isMiniLayout ? AppTheme.iconSizeSmall : AppTheme.iconSizeLarge;
-    final double baseSpacing =
-        widget.isMiniLayout ? AppTheme.size2XSmall : (screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge);
+    final double multiplier =
+        widget.isMiniLayout ? 1.0 : (!isActive ? 1.0 : 2.0);
+    final double baseButtonSize =
+        widget.isMiniLayout ? AppTheme.iconSizeSmall : AppTheme.iconSizeLarge;
+    final double baseSpacing = widget.isMiniLayout
+        ? AppTheme.size2XSmall
+        : (screenWidth < 600 ? AppTheme.sizeSmall : AppTheme.sizeLarge);
     final double buttonSize = baseButtonSize * multiplier;
     final double spacing = baseSpacing * multiplier;
 
@@ -359,7 +398,9 @@ class _AppTimerState extends State<AppTimer> {
     );
 
     return AnimatedContainer(
-      duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
+      duration: widget.isMiniLayout
+          ? Duration.zero
+          : const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       padding: EdgeInsets.zero,
       decoration: BoxDecoration(
@@ -382,7 +423,9 @@ class _AppTimerState extends State<AppTimer> {
               ),
             ),
           Padding(
-            padding: widget.isMiniLayout ? EdgeInsets.zero : const EdgeInsets.all(AppTheme.sizeMedium),
+            padding: widget.isMiniLayout
+                ? EdgeInsets.zero
+                : const EdgeInsets.all(AppTheme.sizeMedium),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               spacing: spacing,
@@ -395,10 +438,14 @@ class _AppTimerState extends State<AppTimer> {
                   ),
                 AnimatedDefaultTextStyle(
                   textAlign: TextAlign.center,
-                  duration: widget.isMiniLayout ? Duration.zero : const Duration(milliseconds: 300),
+                  duration: widget.isMiniLayout
+                      ? Duration.zero
+                      : const Duration(milliseconds: 300),
                   style: widget.isMiniLayout
                       ? AppTheme.bodyMedium
-                      : (isActive ? AppTheme.displayLarge : AppTheme.headlineMedium),
+                      : (isActive
+                          ? AppTheme.displayLarge
+                          : AppTheme.headlineMedium),
                   child: Text(
                     displayTime,
                     overflow: TextOverflow.ellipsis,
@@ -420,5 +467,6 @@ class _AppTimerState extends State<AppTimer> {
 }
 
 extension on TimerMode {
-  bool get isStopwatchOrNormal => this == TimerMode.stopwatch || this == TimerMode.normal;
+  bool get isStopwatchOrNormal =>
+      this == TimerMode.stopwatch || this == TimerMode.normal;
 }

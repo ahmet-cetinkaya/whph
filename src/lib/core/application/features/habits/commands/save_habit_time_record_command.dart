@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_events.dart';
 import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
 
 class SaveHabitTimeRecordCommand implements IRequest<SaveHabitTimeRecordCommandResponse> {
@@ -25,10 +26,13 @@ class SaveHabitTimeRecordCommandResponse {
 class SaveHabitTimeRecordCommandHandler
     implements IRequestHandler<SaveHabitTimeRecordCommand, SaveHabitTimeRecordCommandResponse> {
   final IHabitTimeRecordRepository _habitTimeRecordRepository;
+  final IHabitEvents? _habitEvents;
 
   SaveHabitTimeRecordCommandHandler({
     required IHabitTimeRecordRepository habitTimeRecordRepository,
-  }) : _habitTimeRecordRepository = habitTimeRecordRepository;
+    IHabitEvents? habitEvents,
+  })  : _habitTimeRecordRepository = habitTimeRecordRepository,
+        _habitEvents = habitEvents;
 
   @override
   Future<SaveHabitTimeRecordCommandResponse> call(SaveHabitTimeRecordCommand request) async {
@@ -40,6 +44,7 @@ class SaveHabitTimeRecordCommandHandler
       targetDate: targetDate,
       totalDuration: request.totalDuration,
     );
+    _habitEvents?.notifyHabitUpdated(request.habitId);
 
     return SaveHabitTimeRecordCommandResponse(id: record.id);
   }
