@@ -336,7 +336,7 @@ async function runManagementFlow(client) {
   await call(client, 'whph_sync_stop');
   const exported = await call(client, 'whph_data_export', { format: 'json' });
   const operation = await callForApproval(client, 'whph_data_import_prepare', {
-    artifactId: 'task-14-import.whph',
+    sourceName: 'task-14-import.whph',
     strategy: 'merge',
   });
   const operationState = await call(client, 'whph_operations_get', {
