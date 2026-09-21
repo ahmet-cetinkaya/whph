@@ -4,28 +4,50 @@ final _publicSettingNames = PublicSettingKey.values
     .map((key) => key.publicName)
     .toList(growable: false);
 
+// Per-key oneOf variants discriminated by key.const are not portable: some
+// MCP clients (Claude Code) ignore const in preflight validation and reject
+// values matching more than one branch. The union lives on value as anyOf
+// ("at least one" match); per-key enforcement stays in PublicSettingKey.
+final List<Map<String, dynamic>> _distinctValueSchemas = () {
+  final seen = <String>{};
+  return PublicSettingKey.values
+      .map(_valueSchema)
+      .where((schema) => seen.add(jsonEncode(schema)))
+      .toList(growable: false);
+}();
+
+String _summarizeSchema(Map<String, dynamic> schema) {
+  if (schema['type'] == 'boolean') return 'boolean';
+  final enumValues = schema['enum'];
+  if (enumValues is List && enumValues.isNotEmpty) {
+    return 'one of ${enumValues.join(', ')}';
+  }
+  final minimum = schema['minimum'];
+  final maximum = schema['maximum'];
+  if (minimum is int && maximum is int) return 'integer $minimum-$maximum';
+  final branches = schema['oneOf'];
+  if (branches is List && branches.isNotEmpty) {
+    return branches
+        .map((b) => _summarizeSchema(b as Map<String, dynamic>))
+        .join(' or ');
+  }
+  return 'see whph_settings_list';
+}
+
+final String _perKeyValuesSummary = PublicSettingKey.values
+    .map((key) => '${key.publicName}: ${_summarizeSchema(_valueSchema(key))}')
+    .join('; ');
+
 final JsonObject _settingsUpdateInputSchema = JsonObject.fromJson({
   'type': 'object',
   'properties': {
     'key': {'type': 'string', 'enum': _publicSettingNames},
-    'value': {},
+    'value': {'anyOf': _distinctValueSchemas},
     'expectedRevision': {'type': 'string', 'format': 'date-time'},
   },
   'required': ['key', 'value'],
   'additionalProperties': false,
-  'oneOf': PublicSettingKey.values.map(_settingVariantSchema).toList(),
 });
-
-Map<String, dynamic> _settingVariantSchema(PublicSettingKey key) => {
-      'type': 'object',
-      'properties': {
-        'key': {'const': key.publicName},
-        'value': _valueSchema(key),
-        'expectedRevision': {'type': 'string', 'format': 'date-time'},
-      },
-      'required': ['key', 'value'],
-      'additionalProperties': false,
-    };
 
 Map<String, dynamic> _valueSchema(PublicSettingKey key) => switch (key) {
       PublicSettingKey.themeMode => _enum(const ['auto', 'light', 'dark']),

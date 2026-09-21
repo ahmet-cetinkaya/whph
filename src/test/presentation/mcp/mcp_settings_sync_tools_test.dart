@@ -122,6 +122,43 @@ void main() {
     expectHiddenSettingsToBeClosed(encodedSchema);
   });
 
+  test('settings update input schema is portable across MCP clients',
+      () async {
+    final actions = SettingsActions(
+      repository: settingsRepository,
+      transactions: DriftApplicationTransactionService(database),
+      effects: effects,
+    );
+    final tools =
+        createSettingsTools(actions: actions, requestContext: requestContext);
+    final schema = tools
+        .singleWhere((tool) => tool.name == 'whph_settings_update')
+        .inputSchema
+        .toJson();
+    final encodedSchema = jsonEncode(schema);
+
+    // Some clients (Claude Code) ignore const in preflight validation, so a
+    // top-level oneOf discriminated by key.const rejects shared value types.
+    expect(encodedSchema, isNot(contains('"const"')));
+    expect(schema.containsKey('oneOf'), isFalse);
+
+    final valueSchema = schema['properties']!['value'] as Map<String, dynamic>;
+    final branches = valueSchema['anyOf'] as List;
+    final encodedBranches =
+        branches.map((branch) => jsonEncode(branch)).toList();
+    expect(encodedBranches, contains(contains('"type":"boolean"')));
+    expect(encodedBranches.any((b) => b.contains('"type":"integer"')), isTrue);
+    expect(encodedBranches.any((b) => b.contains('"enum"')), isTrue);
+
+    final keyEnum =
+        (schema['properties']!['key'] as Map<String, dynamic>)['enum']
+            as List;
+    expect(keyEnum,
+        equals(PublicSettingKey.values.map((k) => k.publicName).toList()));
+
+    expectHiddenSettingsToBeClosed(encodedSchema);
+  });
+
   test('reminder setting uses its typed enum and rejects invalid values',
       () async {
     final update = createSettingsTools(

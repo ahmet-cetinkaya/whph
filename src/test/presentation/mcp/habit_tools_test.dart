@@ -165,6 +165,7 @@ void main() {
         tools, 'whph_habits_create', {'name': 'Sugar', 'type': 'bad'});
     final goodId = good['id'] as String;
     final badId = bad['id'] as String;
+    final badHabitDate = DateTime.now().toIso8601String().substring(0, 10);
     final filtered = await _call(tools, 'whph_habits_list', {
       'search': 'Read',
       'tagIds': ['health'],
@@ -181,7 +182,7 @@ void main() {
     });
     await _call(tools, 'whph_habit_records_set', {
       'habitId': badId,
-      'date': '2026-09-08',
+      'date': badHabitDate,
       'status': 'not_done',
     });
     final listed = await _call(tools, 'whph_habit_records_list', {
@@ -203,8 +204,8 @@ void main() {
 
     final daily = await _call(tools, 'whph_habit_daily_results', {
       'habitId': badId,
-      'from': '2026-09-08',
-      'to': '2026-09-08',
+      'from': badHabitDate,
+      'to': badHabitDate,
     });
     expect(((daily['days'] as List).single as Map)['status'], 'failed');
 

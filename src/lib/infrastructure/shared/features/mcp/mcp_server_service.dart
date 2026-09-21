@@ -17,6 +17,11 @@ const _requestReadTimeout = Duration(seconds: 30);
 const _defaultOperationTimeout = Duration(seconds: 30);
 const _defaultExtendedOperationTimeout = Duration(seconds: 120);
 const _rateWindow = Duration(minutes: 1);
+/// Maximum time the request tail waits for a stuck operation (an approval,
+/// a stream, or an abandoned client) before releasing the grant slot so a
+/// single hung invocation can never wedge the whole grant at the concurrency
+/// limit (permanent 429).
+const _defaultOperationAbandonGrace = Duration(seconds: 10);
 
 typedef McpAuthenticatedServerBuilder = McpServer Function(
   McpAuthenticatedGrant grant,
@@ -41,6 +46,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     DateTime Function()? now,
     Duration operationTimeout = _defaultOperationTimeout,
     Duration extendedOperationTimeout = _defaultExtendedOperationTimeout,
+    Duration operationAbandonGrace = _defaultOperationAbandonGrace,
   })  : _accessService = accessService,
         _serverBuilder = serverBuilder,
         _restoreBarrier = restoreBarrier,
@@ -50,12 +56,14 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
         _allowEphemeralPort = allowEphemeralPort,
         _now = now ?? DateTime.now,
         _operationTimeout = operationTimeout,
-        _extendedOperationTimeout = extendedOperationTimeout {
+        _extendedOperationTimeout = extendedOperationTimeout,
+        _operationAbandonGrace = operationAbandonGrace {
     if (maximumRequestsPerMinute < 1 ||
         maximumConcurrentRequestsPerGrant < 1 ||
         maximumBodyBytes < 1 ||
         operationTimeout <= Duration.zero ||
-        extendedOperationTimeout <= Duration.zero) {
+        extendedOperationTimeout <= Duration.zero ||
+        operationAbandonGrace <= Duration.zero) {
       throw ArgumentError('MCP server limits must be positive');
     }
   }
@@ -70,6 +78,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   final DateTime Function() _now;
   final Duration _operationTimeout;
   final Duration _extendedOperationTimeout;
+  final Duration _operationAbandonGrace;
   final Random _random = Random.secure();
 
   HttpServer? _httpServer;
@@ -224,13 +233,15 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
         }
       } on TimeoutException {
         await _abortRequest(authorization, request);
-        try {
-          await operation;
-        } catch (_) {
-          // The timed-out SDK operation owns its terminal transport error.
-        }
+        await operation?.timeout(
+          _operationAbandonGrace,
+          onTimeout: () {},
+        );
       } finally {
-        await _waitForOperations(authorization);
+        await _waitForOperations(authorization).timeout(
+          _operationAbandonGrace,
+          onTimeout: () {},
+        );
         _clearRequestContext(authorization);
         _releaseGrantSlot(authenticated.grant.id);
       }

@@ -637,6 +637,64 @@ write-out = "\\n%{http_code}"
       expect(after.statusCode, HttpStatus.ok);
     });
 
+    test('permanently stuck handler releases the grant slot after the abandon grace',
+        () async {
+      final entered = Completer<void>();
+      final service = McpServerService(
+        accessService: access,
+        restoreBarrier: McpRestoreBarrier(),
+        allowEphemeralPort: true,
+        maximumConcurrentRequestsPerGrant: 1,
+        operationTimeout: const Duration(milliseconds: 100),
+        operationAbandonGrace: const Duration(milliseconds: 150),
+        serverBuilder: (grant, authorize, runInvocation) {
+          final registry = McpToolRegistry(
+            tools: [
+              _identityTool(
+                grant,
+                onCall: () async {
+                  entered.complete();
+                  await Completer<void>().future; // Never settles.
+                },
+              ),
+            ],
+            authorize: authorize,
+            runInvocation: runInvocation,
+          );
+          return createMcpServer(
+            serverInfo: const Implementation(name: 'whph-test', version: '1.0'),
+            tools: registry.discover(grant.scopes),
+          );
+        },
+      );
+      await service.start(port: 0);
+      addTearDown(service.stop);
+      final client = await _client(service, _tokenA);
+      addTearDown(client.close);
+
+      final call = client.callTool(
+        const CallToolRequest(name: 'whph_test_identity', arguments: {}),
+      );
+      await entered.future.timeout(const Duration(seconds: 1));
+      final during = await _post(
+        service,
+        token: _tokenA,
+        body: _modernRequest('during-stuck', Method.toolsList),
+      );
+      expect(during.statusCode, HttpStatus.tooManyRequests);
+      await expectLater(call, throwsA(anything));
+      // The abort surfaces on the client before the grace window elapses;
+      // wait past timeout + grace so the tail has released the slot even
+      // though the handler never settles.
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+      final after = await _post(
+        service,
+        token: _tokenA,
+        body: _modernRequest('after-stuck', Method.toolsList),
+      );
+      expect(after.statusCode, HttpStatus.ok);
+    });
+
     test('peer disconnect holds admission until its handler settles', () async {
       final entered = Completer<void>();
       final releaseHandler = Completer<void>();
@@ -863,6 +921,7 @@ Future<McpServerService> _startService(
   int maximumBodyBytes = 1024 * 1024,
   McpToolDefinition Function(McpAuthenticatedGrant)? toolFactory,
   IRestoreBarrier? restoreBarrier,
+  Duration? operationAbandonGrace,
 }) async {
   final service = _service(
     access,
@@ -871,6 +930,7 @@ Future<McpServerService> _startService(
     maximumBodyBytes: maximumBodyBytes,
     toolFactory: toolFactory,
     restoreBarrier: restoreBarrier,
+    operationAbandonGrace: operationAbandonGrace,
   );
   await service.start(port: 0);
   return service;
@@ -883,6 +943,7 @@ McpServerService _service(
   int maximumBodyBytes = 1024 * 1024,
   McpToolDefinition Function(McpAuthenticatedGrant)? toolFactory,
   IRestoreBarrier? restoreBarrier,
+  Duration? operationAbandonGrace,
 }) =>
     McpServerService(
       accessService: access,
@@ -890,6 +951,7 @@ McpServerService _service(
       maximumRequestsPerMinute: maximumRequestsPerMinute,
       maximumConcurrentRequestsPerGrant: maximumConcurrentRequestsPerGrant,
       maximumBodyBytes: maximumBodyBytes,
+      operationAbandonGrace: operationAbandonGrace ?? const Duration(seconds: 10),
       allowEphemeralPort: true,
       serverBuilder: (grant, authorize, runInvocation) {
         final registry = McpToolRegistry(

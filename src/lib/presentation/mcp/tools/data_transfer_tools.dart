@@ -53,9 +53,9 @@ List<McpToolDefinition> buildDataTransferTools({
         description:
             'Stages a WHPH basename from the user-selected transfer directory for local approval.',
         inputSchema: _object({
-          'artifactId': JsonSchema.string(minLength: 1, maxLength: 255),
+          'sourceName': JsonSchema.string(minLength: 1, maxLength: 255),
           'strategy': _enum(['merge', 'replace']),
-        }, required: const ['artifactId', 'strategy']),
+        }, required: const ['sourceName', 'strategy']),
         outputSchema: _preparedOutput,
         annotations: _additive,
         requiredScopes: const {McpScopes.dataImport},
@@ -69,7 +69,7 @@ List<McpToolDefinition> buildDataTransferTools({
             operation = await transferService.prepareImport(
               clientGrantId: grant.id,
               currentScopes: grant.scopes,
-              sourceName: arguments.requireString('artifactId'),
+              sourceName: arguments.requireString('sourceName'),
               strategy: McpDataImportStrategy.values
                   .byName(arguments.requireString('strategy')),
             );

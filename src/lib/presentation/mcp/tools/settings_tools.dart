@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mcp_dart/mcp_dart.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_access_service.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_server_service.dart';
@@ -58,7 +60,8 @@ List<McpToolDefinition> createSettingsTools({
       McpToolDefinition(
         name: 'whph_settings_update',
         description:
-            'Updates one allowlisted setting with optimistic concurrency and applies its user-visible effect.',
+            'Updates one allowlisted setting with optimistic concurrency and applies its user-visible effect. '
+            'Per-key accepted values: $_perKeyValuesSummary.',
         inputSchema: _settingsUpdateInputSchema,
         outputSchema: _settingsUpdateOutputSchema,
         annotations: _mutationAnnotations,

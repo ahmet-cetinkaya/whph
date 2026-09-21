@@ -318,7 +318,7 @@ void main() {
     final properties =
         tool.inputSchema.toJson()['properties'] as Map<String, dynamic>;
 
-    expect(properties.keys, {'artifactId', 'strategy'});
+    expect(properties.keys, {'sourceName', 'strategy'});
     expect(properties, isNot(contains('approved')));
     expect(tool.inputSchema.toJson()['additionalProperties'], isFalse);
   });
