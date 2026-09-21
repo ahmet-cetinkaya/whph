@@ -56,6 +56,14 @@ final class McpOperationStore {
   }
 
   Future<void> _save(List<McpOperation> operations) async {
+    final bytes = utf8.encode(jsonEncode({
+      'version': _operationDocumentVersion,
+      'operations': operations.map(_encode).toList(growable: false),
+    }));
+    if (bytes.length > _maximumOperationDocumentBytes) {
+      throw const FormatException('MCP operation store is too large');
+    }
+
     final file = await _resolveFile();
     final directory = file.parent;
     final directoryType =
@@ -69,13 +77,7 @@ final class McpOperationStore {
     }
     final temporary = File('${file.path}.$pid.tmp');
     try {
-      await temporary.writeAsString(
-        jsonEncode({
-          'version': _operationDocumentVersion,
-          'operations': operations.map(_encode).toList(growable: false),
-        }),
-        flush: true,
-      );
+      await temporary.writeAsBytes(bytes, flush: true);
       if (!Platform.isWindows) await _chmod(temporary.path, '600');
       await temporary.rename(file.path);
     } finally {

@@ -13,10 +13,13 @@ const _mcpPath = '/mcp';
 const _defaultMaximumBodyBytes = 1024 * 1024;
 const _defaultMaximumRequestsPerMinute = 120;
 const _defaultMaximumConcurrentRequestsPerGrant = 4;
+const _defaultMaximumLegacySessionsPerGrant = 4;
+const _defaultLegacySessionIdleTimeout = Duration(minutes: 15);
 const _requestReadTimeout = Duration(seconds: 30);
 const _defaultOperationTimeout = Duration(seconds: 30);
 const _defaultExtendedOperationTimeout = Duration(seconds: 120);
 const _rateWindow = Duration(minutes: 1);
+
 /// Maximum time the request tail waits for a stuck operation (an approval,
 /// a stream, or an abandoned client) before releasing the grant slot so a
 /// single hung invocation can never wedge the whole grant at the concurrency
@@ -41,6 +44,8 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     int maximumRequestsPerMinute = _defaultMaximumRequestsPerMinute,
     int maximumConcurrentRequestsPerGrant =
         _defaultMaximumConcurrentRequestsPerGrant,
+    int maximumLegacySessionsPerGrant = _defaultMaximumLegacySessionsPerGrant,
+    Duration legacySessionIdleTimeout = _defaultLegacySessionIdleTimeout,
     int maximumBodyBytes = _defaultMaximumBodyBytes,
     bool allowEphemeralPort = false,
     DateTime Function()? now,
@@ -52,6 +57,8 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
         _restoreBarrier = restoreBarrier,
         _maximumRequestsPerMinute = maximumRequestsPerMinute,
         _maximumConcurrentRequestsPerGrant = maximumConcurrentRequestsPerGrant,
+        _maximumLegacySessionsPerGrant = maximumLegacySessionsPerGrant,
+        _legacySessionIdleTimeout = legacySessionIdleTimeout,
         _maximumBodyBytes = maximumBodyBytes,
         _allowEphemeralPort = allowEphemeralPort,
         _now = now ?? DateTime.now,
@@ -60,7 +67,9 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
         _operationAbandonGrace = operationAbandonGrace {
     if (maximumRequestsPerMinute < 1 ||
         maximumConcurrentRequestsPerGrant < 1 ||
+        maximumLegacySessionsPerGrant < 1 ||
         maximumBodyBytes < 1 ||
+        legacySessionIdleTimeout <= Duration.zero ||
         operationTimeout <= Duration.zero ||
         extendedOperationTimeout <= Duration.zero ||
         operationAbandonGrace <= Duration.zero) {
@@ -73,6 +82,8 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   final IRestoreBarrier _restoreBarrier;
   final int _maximumRequestsPerMinute;
   final int _maximumConcurrentRequestsPerGrant;
+  final int _maximumLegacySessionsPerGrant;
+  final Duration _legacySessionIdleTimeout;
   final int _maximumBodyBytes;
   final bool _allowEphemeralPort;
   final DateTime Function() _now;
@@ -85,8 +96,10 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   StreamSubscription<HttpRequest>? _requestSubscription;
   StreamSubscription<McpAccessRevocation>? _revocationSubscription;
   Map<String, _BoundTransport> _sessions = const {};
+  Map<_BoundTransport, DateTime> _sessionLastUsed = const {};
+  Map<String, int> _initializingLegacySessions = const {};
   Set<_BoundTransport> _transports = const {};
-  Map<String, List<DateTime>> _rateWindows = const {};
+  Map<String, List<_RateLease>> _rateWindows = const {};
   Map<String, int> _activeRequests = const {};
   Map<_RequestAuthorization, AbortSignal> _requestSignals = const {};
   Map<_RequestAuthorization, Set<_BoundTransport>> _requestTransports =
@@ -151,6 +164,8 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
 
     final transports = _transports.toList(growable: false);
     _sessions = const {};
+    _sessionLastUsed = const {};
+    _initializingLegacySessions = const {};
     _transports = const {};
     _activeRequests = const {};
     _requestSignals = const {};
@@ -179,15 +194,18 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
         await _respond(request, HttpStatus.noContent, '');
         return;
       }
+      final anonymousLease = _takeRateLease(_anonymousRateKey(request));
+      if (anonymousLease == null) {
+        await _respondRateLimited(request);
+        return;
+      }
       final authenticated = await _authenticate(request);
       if (authenticated == null) {
-        if (!_takeRateSlot(_anonymousRateKey(request))) {
-          await _respondRateLimited(request);
-          return;
-        }
         await _respond(request, HttpStatus.unauthorized, 'Unauthorized');
         return;
       }
+      _releaseRateLease(anonymousLease);
+      await _pruneStaleSessions();
       if (!_takeRateSlot('grant:${authenticated.grant.id}')) {
         await _respondRateLimited(request);
         return;
@@ -312,6 +330,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
             request, HttpStatus.notFound, 'Session not found');
         return;
       }
+      _touchSession(existing);
       _associateRequestTransport(existing);
       await existing.transport.handleRequest(request, parsedBody);
       await request.response.done;
@@ -372,26 +391,35 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     McpAuthenticatedGrant grant,
     Object? parsedBody,
   ) async {
-    late _BoundTransport bound;
-    bound = _createTransport(
-      grant,
-      isStateless: false,
-      onSessionInitialized: (sessionId) {
-        _sessions = {..._sessions, sessionId: bound};
-      },
-    );
-    _addTransport(bound);
-    await bound.server.connect(bound.transport);
-    final sdkOnClose = bound.server.server.onclose;
-    bound.server.server.onclose = () {
-      try {
-        sdkOnClose?.call();
-      } finally {
-        _removeTransport(bound);
-      }
-    };
-    await bound.transport.handleRequest(request, parsedBody);
-    await request.response.done;
+    if (!_reserveLegacySession(grant.id)) {
+      await _respondRateLimited(request);
+      return;
+    }
+    try {
+      late _BoundTransport bound;
+      bound = _createTransport(
+        grant,
+        isStateless: false,
+        onSessionInitialized: (sessionId) {
+          _sessions = {..._sessions, sessionId: bound};
+          _touchSession(bound);
+        },
+      );
+      _addTransport(bound);
+      await bound.server.connect(bound.transport);
+      final sdkOnClose = bound.server.server.onclose;
+      bound.server.server.onclose = () {
+        try {
+          sdkOnClose?.call();
+        } finally {
+          _removeTransport(bound);
+        }
+      };
+      await bound.transport.handleRequest(request, parsedBody);
+      await request.response.done;
+    } finally {
+      _releaseLegacySessionReservation(grant.id);
+    }
   }
 
   _BoundTransport _createTransport(
@@ -547,20 +575,36 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     return base64UrlEncode(bytes).replaceAll('=', '');
   }
 
-  bool _takeRateSlot(String key) {
+  bool _takeRateSlot(String key) => _takeRateLease(key) != null;
+
+  _RateLease? _takeRateLease(String key) {
     final now = _now().toUtc();
     final cutoff = now.subtract(_rateWindow);
     final current = _rateWindows[key] ?? const [];
-    final retained = current.where((time) => time.isAfter(cutoff)).toList();
+    final retained =
+        current.where((lease) => lease.time.isAfter(cutoff)).toList();
     if (retained.length >= _maximumRequestsPerMinute) {
       _rateWindows = {..._rateWindows, key: List.unmodifiable(retained)};
-      return false;
+      return null;
     }
+    final lease = _RateLease(key, now);
     _rateWindows = {
       ..._rateWindows,
-      key: List.unmodifiable([...retained, now]),
+      key: List.unmodifiable([...retained, lease]),
     };
-    return true;
+    return lease;
+  }
+
+  void _releaseRateLease(_RateLease lease) {
+    _rateWindows = Map.unmodifiable(<String, List<_RateLease>>{
+      for (final entry in _rateWindows.entries)
+        if (entry.key != lease.key)
+          entry.key: entry.value
+        else if (entry.value.any((candidate) => identical(candidate, lease)))
+          entry.key: List.unmodifiable(
+            entry.value.where((candidate) => !identical(candidate, lease)),
+          ),
+    });
   }
 
   bool _acquireGrantSlot(String grantId) {
@@ -600,11 +644,61 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     });
   }
 
+  bool _reserveLegacySession(String grantId) {
+    final active =
+        _sessions.values.where((bound) => bound.grantId == grantId).length;
+    final initializing = _initializingLegacySessions[grantId] ?? 0;
+    if (active + initializing >= _maximumLegacySessionsPerGrant) return false;
+    _initializingLegacySessions = Map.unmodifiable({
+      ..._initializingLegacySessions,
+      grantId: initializing + 1,
+    });
+    return true;
+  }
+
+  void _releaseLegacySessionReservation(String grantId) {
+    final initializing = _initializingLegacySessions[grantId] ?? 0;
+    if (initializing <= 1) {
+      _initializingLegacySessions = Map.unmodifiable({
+        for (final entry in _initializingLegacySessions.entries)
+          if (entry.key != grantId) entry.key: entry.value,
+      });
+      return;
+    }
+    _initializingLegacySessions = Map.unmodifiable({
+      ..._initializingLegacySessions,
+      grantId: initializing - 1,
+    });
+  }
+
+  void _touchSession(_BoundTransport bound) {
+    _sessionLastUsed = Map.unmodifiable({
+      ..._sessionLastUsed,
+      bound: _now().toUtc(),
+    });
+  }
+
+  Future<void> _pruneStaleSessions() async {
+    final cutoff = _now().toUtc().subtract(_legacySessionIdleTimeout);
+    final stale = _sessionLastUsed.entries
+        .where((entry) => !entry.value.isAfter(cutoff))
+        .map((entry) => entry.key)
+        .toList(growable: false);
+    for (final bound in stale) {
+      _removeTransport(bound);
+      await bound.transport.close();
+    }
+  }
+
   void _removeTransport(_BoundTransport bound) {
     _transports = Set.unmodifiable(_transports.where((item) => item != bound));
     _sessions = Map.unmodifiable(Map.fromEntries(
       _sessions.entries.where((entry) => entry.value != bound),
     ));
+    _sessionLastUsed = Map.unmodifiable({
+      for (final entry in _sessionLastUsed.entries)
+        if (entry.key != bound) entry.key: entry.value,
+    });
   }
 
   Future<void> _closeGrantTransports(String grantId) async {
@@ -746,6 +840,13 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
       await request.response.close();
     } catch (_) {}
   }
+}
+
+final class _RateLease {
+  const _RateLease(this.key, this.time);
+
+  final String key;
+  final DateTime time;
 }
 
 final class _PresentedAuthorization {

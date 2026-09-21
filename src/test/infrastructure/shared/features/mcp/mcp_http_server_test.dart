@@ -186,6 +186,80 @@ write-out = "\\n%{http_code}"
       expect(rejected.statusCode, HttpStatus.unauthorized);
     });
 
+    test('caps legacy sessions per grant', () async {
+      final service = await _startService(
+        access,
+        maximumLegacySessionsPerGrant: 2,
+      );
+      addTearDown(service.stop);
+      final first = await _client(
+        service,
+        _tokenA,
+        protocol: McpProtocol.legacy,
+      );
+      final second = await _client(
+        service,
+        _tokenA,
+        protocol: McpProtocol.legacy,
+      );
+      addTearDown(first.close);
+      addTearDown(second.close);
+
+      await first.listTools();
+      await second.listTools();
+      final limited = await _post(
+        service,
+        token: _tokenA,
+        protocolVersion: latestInitializationProtocolVersion,
+        body: _legacyInitializeRequest('limited'),
+      );
+
+      expect(limited.statusCode, HttpStatus.tooManyRequests);
+    });
+
+    test('expires stale legacy sessions before admitting a fresh session',
+        () async {
+      var now = DateTime.utc(2026, 9, 8);
+      final service = await _startService(
+        access,
+        maximumLegacySessionsPerGrant: 1,
+        legacySessionIdleTimeout: const Duration(minutes: 1),
+        now: () => now,
+      );
+      addTearDown(service.stop);
+      final staleClient = await _client(
+        service,
+        _tokenA,
+        protocol: McpProtocol.legacy,
+      );
+      addTearDown(staleClient.close);
+      await staleClient.listTools();
+      final staleSessionId = _transport(staleClient).sessionId!;
+      now = now.add(const Duration(minutes: 1));
+
+      final stale = await _post(
+        service,
+        token: _tokenA,
+        sessionId: staleSessionId,
+        protocolVersion: latestInitializationProtocolVersion,
+        body: jsonEncode({
+          'jsonrpc': jsonRpcVersion,
+          'id': 'stale',
+          'method': Method.ping,
+        }),
+      );
+      final fresh = await _post(
+        service,
+        token: _tokenA,
+        protocolVersion: latestInitializationProtocolVersion,
+        body: _legacyInitializeRequest('fresh'),
+      );
+
+      expect(stale.statusCode, HttpStatus.notFound);
+      expect(fresh.statusCode, HttpStatus.ok);
+      expect(fresh.headers['mcp-session-id'], isNotNull);
+    });
+
     test('binds a legacy session to the grant that initialized it', () async {
       final service = await _startService(access);
       final ownerClient = await _client(
@@ -292,6 +366,43 @@ write-out = "\\n%{http_code}"
       expect(response.statusCode, HttpStatus.requestEntityTooLarge);
     });
 
+    test('rate-limits invalid bearer authentication before access lookup',
+        () async {
+      final service = await _startService(
+        access,
+        maximumRequestsPerMinute: 2,
+      );
+      addTearDown(service.stop);
+
+      final firstValid = await _post(
+        service,
+        token: _tokenA,
+        body: _modernRequest('valid-1', Method.toolsList),
+      );
+      final secondValid = await _post(
+        service,
+        token: _tokenA,
+        body: _modernRequest('valid-2', Method.toolsList),
+      );
+      expect(firstValid.statusCode, HttpStatus.ok);
+      expect(secondValid.statusCode, HttpStatus.ok);
+
+      final firstInvalid = await _post(service,
+          token: 'invalid-token-1',
+          body: _modernRequest('invalid-1', Method.toolsList));
+      final secondInvalid = await _post(service,
+          token: 'invalid-token-2',
+          body: _modernRequest('invalid-2', Method.toolsList));
+      final limitedInvalid = await _post(service,
+          token: 'invalid-token-3',
+          body: _modernRequest('invalid-3', Method.toolsList));
+
+      expect(firstInvalid.statusCode, HttpStatus.unauthorized);
+      expect(secondInvalid.statusCode, HttpStatus.unauthorized);
+      expect(limitedInvalid.statusCode, HttpStatus.tooManyRequests);
+      expect(access.authenticationCallCount, 4);
+    });
+
     test('limits anonymous rate and per-grant concurrency with Retry-After',
         () async {
       final entered = Completer<void>();
@@ -319,18 +430,25 @@ write-out = "\\n%{http_code}"
       final limitedOptions = await _request(service, method: 'OPTIONS');
       expect(limitedOptions.statusCode, HttpStatus.tooManyRequests);
       expect(limitedOptions.headers['retry-after'], ['60']);
+      final grantRateAccess = _FakeAccessService();
+      addTearDown(grantRateAccess.dispose);
+      final grantRateService = await _startService(
+        grantRateAccess,
+        maximumRequestsPerMinute: 2,
+      );
+      addTearDown(grantRateService.stop);
       final firstGrant = await _post(
-        service,
+        grantRateService,
         token: _tokenA,
         body: _modernRequest('grant-1', Method.toolsList),
       );
       final secondGrant = await _post(
-        service,
+        grantRateService,
         token: _tokenA,
         body: _modernRequest('grant-2', Method.toolsList),
       );
       final limitedGrant = await _post(
-        service,
+        grantRateService,
         token: _tokenA,
         body: _modernRequest('grant-3', Method.toolsList),
       );
@@ -637,7 +755,8 @@ write-out = "\\n%{http_code}"
       expect(after.statusCode, HttpStatus.ok);
     });
 
-    test('permanently stuck handler releases the grant slot after the abandon grace',
+    test(
+        'permanently stuck handler releases the grant slot after the abandon grace',
         () async {
       final entered = Completer<void>();
       final service = McpServerService(
@@ -918,7 +1037,10 @@ Future<McpServerService> _startService(
   IMcpAccessService access, {
   int maximumRequestsPerMinute = 120,
   int maximumConcurrentRequestsPerGrant = 4,
+  int maximumLegacySessionsPerGrant = 4,
+  Duration legacySessionIdleTimeout = const Duration(minutes: 15),
   int maximumBodyBytes = 1024 * 1024,
+  DateTime Function()? now,
   McpToolDefinition Function(McpAuthenticatedGrant)? toolFactory,
   IRestoreBarrier? restoreBarrier,
   Duration? operationAbandonGrace,
@@ -927,7 +1049,10 @@ Future<McpServerService> _startService(
     access,
     maximumRequestsPerMinute: maximumRequestsPerMinute,
     maximumConcurrentRequestsPerGrant: maximumConcurrentRequestsPerGrant,
+    maximumLegacySessionsPerGrant: maximumLegacySessionsPerGrant,
+    legacySessionIdleTimeout: legacySessionIdleTimeout,
     maximumBodyBytes: maximumBodyBytes,
+    now: now,
     toolFactory: toolFactory,
     restoreBarrier: restoreBarrier,
     operationAbandonGrace: operationAbandonGrace,
@@ -940,7 +1065,10 @@ McpServerService _service(
   IMcpAccessService access, {
   int maximumRequestsPerMinute = 120,
   int maximumConcurrentRequestsPerGrant = 4,
+  int maximumLegacySessionsPerGrant = 4,
+  Duration legacySessionIdleTimeout = const Duration(minutes: 15),
   int maximumBodyBytes = 1024 * 1024,
+  DateTime Function()? now,
   McpToolDefinition Function(McpAuthenticatedGrant)? toolFactory,
   IRestoreBarrier? restoreBarrier,
   Duration? operationAbandonGrace,
@@ -950,8 +1078,12 @@ McpServerService _service(
       restoreBarrier: restoreBarrier ?? McpRestoreBarrier(),
       maximumRequestsPerMinute: maximumRequestsPerMinute,
       maximumConcurrentRequestsPerGrant: maximumConcurrentRequestsPerGrant,
+      maximumLegacySessionsPerGrant: maximumLegacySessionsPerGrant,
+      legacySessionIdleTimeout: legacySessionIdleTimeout,
       maximumBodyBytes: maximumBodyBytes,
-      operationAbandonGrace: operationAbandonGrace ?? const Duration(seconds: 10),
+      now: now,
+      operationAbandonGrace:
+          operationAbandonGrace ?? const Duration(seconds: 10),
       allowEphemeralPort: true,
       serverBuilder: (grant, authorize, runInvocation) {
         final registry = McpToolRegistry(
@@ -1061,6 +1193,17 @@ McpToolDefinition _authorizationTool(
           McpToolResult.success({'authorized': await authorize()}),
     );
 
+String _legacyInitializeRequest(String id) => jsonEncode({
+      'jsonrpc': jsonRpcVersion,
+      'id': id,
+      'method': Method.initialize,
+      'params': {
+        'protocolVersion': latestInitializationProtocolVersion,
+        'capabilities': <String, Object?>{},
+        'clientInfo': {'name': 'raw-test', 'version': '1.0'},
+      },
+    });
+
 String _modernRequest(String id, String method) => jsonEncode({
       'jsonrpc': jsonRpcVersion,
       'id': id,
@@ -1160,6 +1303,7 @@ final class _FakeAccessService implements IMcpAccessService {
   final StreamController<McpAccessRevocation> _revocations =
       StreamController.broadcast();
   Map<String, (String, String)> _grants;
+  int authenticationCallCount = 0;
   Future<void> Function()? beforeScopedAuthentication;
 
   @override
@@ -1170,6 +1314,7 @@ final class _FakeAccessService implements IMcpAccessService {
     String token, {
     Set<String> requiredScopes = const {},
   }) async {
+    authenticationCallCount++;
     if (requiredScopes.isNotEmpty) await beforeScopedAuthentication?.call();
     final record = _grants[token];
     if (record == null || !const {_readScope}.containsAll(requiredScopes)) {

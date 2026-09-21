@@ -13,6 +13,9 @@ import 'package:whph/core/application/shared/services/abstraction/i_application_
 const mcpMaximumTransferInputBytes = 100 * 1024 * 1024;
 const mcpMaximumTransferUnpackedBytes = 500 * 1024 * 1024;
 const mcpMaximumArtifactChunkBytes = 256 * 1024;
+// At most 128 short-lived records fit comfortably in this 64 KiB document.
+const mcpMaximumTransferMetadataBytes = 64 * 1024;
+const mcpMaximumRetainedTransferMetadataEntries = 128;
 const _maximumStagedImportsPerClient = 5;
 const _artifactLifetime = Duration(hours: 1);
 const _stagingLifetime = Duration(minutes: 15);
@@ -41,27 +44,51 @@ final class McpTransferFileStore {
     required IMcpAccessService accessService,
     DateTime Function()? now,
     Random? random,
+    Future<void> Function()? beforeSaveIndex,
   })  : _applicationDirectoryService = applicationDirectoryService,
         _accessService = accessService,
         _now = now ?? DateTime.now,
-        _random = random ?? Random.secure();
+        _random = random ?? Random.secure(),
+        _beforeSaveIndex = beforeSaveIndex;
 
   final IApplicationDirectoryService _applicationDirectoryService;
   final IMcpAccessService _accessService;
   final DateTime Function() _now;
   final Random _random;
+  final Future<void> Function()? _beforeSaveIndex;
   Map<String, _StoredArtifact> _artifacts = const {};
   Map<String, McpStagedImport> _stagedImports = const {};
   bool _isLoaded = false;
+  Future<void> _mutationTail = Future.value();
+
+  Future<T> _runLocked<T>(Future<T> Function() operation) {
+    final result = _mutationTail.then((_) => operation());
+    _mutationTail = result.then<void>((_) {}, onError: (error, stackTrace) {});
+    return result;
+  }
 
   Future<McpTransferArtifact> storeExport({
     required String clientGrantId,
     required String fileName,
     required String fileExtension,
     required Object content,
+  }) =>
+      _runLocked(() => _storeExportLocked(
+            clientGrantId: clientGrantId,
+            fileName: fileName,
+            fileExtension: fileExtension,
+            content: content,
+          ));
+
+  Future<McpTransferArtifact> _storeExportLocked({
+    required String clientGrantId,
+    required String fileName,
+    required String fileExtension,
+    required Object content,
   }) async {
-    await _ensureLoaded();
-    await cleanupExpired();
+    await _ensureLoadedLocked();
+    await _cleanupExpiredLocked();
+    _ensureMetadataEntryCapacity(admitting: true);
     final directory = await _privateDirectory('artifacts');
     final id = _newId();
     final file = File(p.join(directory.path, id));
@@ -108,16 +135,34 @@ final class McpTransferFileStore {
       ..._artifacts,
       id: _StoredArtifact(metadata: metadata, path: file.path),
     });
-    await _saveIndex();
+    try {
+      await _saveIndexLocked();
+    } catch (_) {
+      _artifacts = Map.unmodifiable({
+        for (final entry in _artifacts.entries)
+          if (entry.key != id) entry.key: entry.value,
+      });
+      await _delete(file.path);
+      rethrow;
+    }
     return metadata;
   }
 
   Future<McpStagedImport> stageImport({
     required String clientGrantId,
     required String sourceName,
+  }) =>
+      _runLocked(() => _stageImportLocked(
+            clientGrantId: clientGrantId,
+            sourceName: sourceName,
+          ));
+
+  Future<McpStagedImport> _stageImportLocked({
+    required String clientGrantId,
+    required String sourceName,
   }) async {
-    await _ensureLoaded();
-    await cleanupExpired();
+    await _ensureLoadedLocked();
+    await _cleanupExpiredLocked();
     _validateBasename(sourceName);
     final activeCount = _stagedImports.values
         .where((item) => item.ownerGrantId == clientGrantId)
@@ -125,6 +170,7 @@ final class McpTransferFileStore {
     if (activeCount >= _maximumStagedImportsPerClient) {
       throw const FileSystemException('Too many staged imports');
     }
+    _ensureMetadataEntryCapacity(admitting: true);
     final preferences = (await _accessService.readState()).preferences;
     await _validateLocalTransferDirectory(preferences.transferDirectory);
     final transferDirectoryType = await FileSystemEntity.type(
@@ -166,7 +212,16 @@ final class McpTransferFileStore {
       expiresAt: _now().toUtc().add(_stagingLifetime),
     );
     _stagedImports = Map.unmodifiable({..._stagedImports, id: result});
-    await _saveIndex();
+    try {
+      await _saveIndexLocked();
+    } catch (_) {
+      _stagedImports = Map.unmodifiable({
+        for (final entry in _stagedImports.entries)
+          if (entry.key != id) entry.key: entry.value,
+      });
+      await _delete(staged.path);
+      rethrow;
+    }
     return result;
   }
 
@@ -175,13 +230,26 @@ final class McpTransferFileStore {
     required String artifactId,
     required int offset,
     int length = mcpMaximumArtifactChunkBytes,
+  }) =>
+      _runLocked(() => _readArtifactChunkLocked(
+            clientGrantId: clientGrantId,
+            artifactId: artifactId,
+            offset: offset,
+            length: length,
+          ));
+
+  Future<McpArtifactChunk?> _readArtifactChunkLocked({
+    required String clientGrantId,
+    required String artifactId,
+    required int offset,
+    required int length,
   }) async {
-    await _ensureLoaded();
+    await _ensureLoadedLocked();
     if (offset < 0) throw ArgumentError.value(offset, 'offset');
     if (length < 1 || length > mcpMaximumArtifactChunkBytes) {
       throw ArgumentError.value(length, 'length');
     }
-    await cleanupExpired();
+    await _cleanupExpiredLocked();
     final stored = _artifacts[artifactId];
     if (stored == null || stored.metadata.ownerGrantId != clientGrantId) {
       return null;
@@ -231,14 +299,17 @@ final class McpTransferFileStore {
     return File(staged.path).readAsBytes();
   }
 
-  Future<void> removeStaged(McpStagedImport staged) async {
-    await _ensureLoaded();
+  Future<void> removeStaged(McpStagedImport staged) =>
+      _runLocked(() => _removeStagedLocked(staged));
+
+  Future<void> _removeStagedLocked(McpStagedImport staged) async {
+    await _ensureLoadedLocked();
     await _delete(staged.path);
     _stagedImports = Map.unmodifiable({
       for (final entry in _stagedImports.entries)
         if (entry.key != staged.id) entry.key: entry.value,
     });
-    await _saveIndex();
+    await _saveIndexLocked();
   }
 
   Future<void> validateWhphEnvelopeAndSize(McpStagedImport staged) async {
@@ -270,8 +341,10 @@ final class McpTransferFileStore {
     }
   }
 
-  Future<void> cleanupExpired() async {
-    await _ensureLoaded();
+  Future<void> cleanupExpired() => _runLocked(_cleanupExpiredLocked);
+
+  Future<void> _cleanupExpiredLocked() async {
+    await _ensureLoadedLocked();
     final now = _now().toUtc();
     final expiredArtifactIds = _artifacts.entries
         .where((entry) => !entry.value.metadata.expiresAt.isAfter(now))
@@ -281,24 +354,61 @@ final class McpTransferFileStore {
         .where((entry) => !entry.value.expiresAt.isAfter(now))
         .map((entry) => entry.key)
         .toSet();
-    await Future.wait([
-      ...expiredArtifactIds.map((id) => _delete(_artifacts[id]!.path)),
-      ...expiredStagingIds.map((id) => _delete(_stagedImports[id]!.path)),
-    ]);
-    _artifacts = Map.unmodifiable({
-      for (final entry in _artifacts.entries)
-        if (!expiredArtifactIds.contains(entry.key)) entry.key: entry.value,
-    });
-    _stagedImports = Map.unmodifiable({
-      for (final entry in _stagedImports.entries)
-        if (!expiredStagingIds.contains(entry.key)) entry.key: entry.value,
-    });
-    if (expiredArtifactIds.isNotEmpty || expiredStagingIds.isNotEmpty) {
-      await _saveIndex();
+    if (expiredArtifactIds.isEmpty && expiredStagingIds.isEmpty) return;
+
+    final previousArtifacts = _artifacts;
+    final previousStagedImports = _stagedImports;
+    final stagedFiles = <(String, String)>[];
+    try {
+      for (final id in expiredArtifactIds) {
+        final path = _artifacts[id]!.path;
+        final pendingPath = '$path.${_newId()}.pending-delete';
+        if (await File(path).exists()) {
+          await File(path).rename(pendingPath);
+          stagedFiles.add((path, pendingPath));
+        }
+      }
+      for (final id in expiredStagingIds) {
+        final path = _stagedImports[id]!.path;
+        final pendingPath = '$path.${_newId()}.pending-delete';
+        if (await File(path).exists()) {
+          await File(path).rename(pendingPath);
+          stagedFiles.add((path, pendingPath));
+        }
+      }
+      _artifacts = Map.unmodifiable({
+        for (final entry in _artifacts.entries)
+          if (!expiredArtifactIds.contains(entry.key)) entry.key: entry.value,
+      });
+      _stagedImports = Map.unmodifiable({
+        for (final entry in _stagedImports.entries)
+          if (!expiredStagingIds.contains(entry.key)) entry.key: entry.value,
+      });
+      await _saveIndexLocked();
+    } catch (_) {
+      _artifacts = previousArtifacts;
+      _stagedImports = previousStagedImports;
+      Object? restorationError;
+      StackTrace? restorationStackTrace;
+      for (final (path, pendingPath) in stagedFiles.reversed) {
+        try {
+          if (await File(pendingPath).exists()) {
+            await File(pendingPath).rename(path);
+          }
+        } catch (error, stackTrace) {
+          restorationError ??= error;
+          restorationStackTrace ??= stackTrace;
+        }
+      }
+      if (restorationError != null) {
+        Error.throwWithStackTrace(restorationError, restorationStackTrace!);
+      }
+      rethrow;
     }
+    await Future.wait(stagedFiles.map((file) => _delete(file.$2)));
   }
 
-  Future<void> _ensureLoaded() async {
+  Future<void> _ensureLoadedLocked() async {
     if (_isLoaded) return;
     _isLoaded = true;
     try {
@@ -314,6 +424,9 @@ final class McpTransferFileStore {
               'Transfer metadata permissions are not private');
         }
       }
+      if (await index.length() > mcpMaximumTransferMetadataBytes) {
+        throw const FormatException('Transfer metadata exceeds the limit');
+      }
       final decoded = jsonDecode(await index.readAsString());
       if (decoded is! Map<String, dynamic> || decoded['version'] != 1) {
         throw const FormatException('Invalid transfer metadata');
@@ -324,7 +437,10 @@ final class McpTransferFileStore {
           p.join(applicationDirectory.path, 'mcp', 'staging');
       final artifacts = decoded['artifacts'];
       final staging = decoded['staging'];
-      if (artifacts is! List || staging is! List) {
+      if (artifacts is! List ||
+          staging is! List ||
+          artifacts.length + staging.length >
+              mcpMaximumRetainedTransferMetadataEntries) {
         throw const FormatException('Invalid transfer metadata');
       }
       final decodedArtifacts = artifacts
@@ -345,44 +461,55 @@ final class McpTransferFileStore {
     }
   }
 
-  Future<void> _saveIndex() async {
+  Future<void> _saveIndexLocked() async {
+    await _beforeSaveIndex?.call();
+    _ensureMetadataEntryCapacity();
+    final encoded = utf8.encode(jsonEncode({
+      'version': 1,
+      'artifacts': _artifacts.values
+          .map((item) => {
+                'id': item.metadata.id,
+                'ownerGrantId': item.metadata.ownerGrantId,
+                'fileName': item.metadata.fileName,
+                'fileExtension': item.metadata.fileExtension,
+                'sizeBytes': item.metadata.sizeBytes,
+                'sha256': item.metadata.sha256,
+                'expiresAt': item.metadata.expiresAt.toIso8601String(),
+              })
+          .toList(growable: false),
+      'staging': _stagedImports.values
+          .map((item) => {
+                'id': item.id,
+                'ownerGrantId': item.ownerGrantId,
+                'sizeBytes': item.sizeBytes,
+                'sha256': item.sha256,
+                'expiresAt': item.expiresAt.toIso8601String(),
+              })
+          .toList(growable: false),
+    }));
+    if (encoded.length > mcpMaximumTransferMetadataBytes) {
+      throw const FileSystemException('Transfer metadata exceeds the limit');
+    }
     final applicationDirectory =
         await _applicationDirectoryService.getApplicationDirectory();
     final directory = Directory(p.join(applicationDirectory.path, 'mcp'));
     await directory.create(recursive: true);
     if (!Platform.isWindows) await _chmod(directory.path, '700');
     final index = File(p.join(directory.path, 'transfers.json'));
-    final temporary = File('${index.path}.$pid.tmp');
+    final temporary = File('${index.path}.$pid.${_newId()}.tmp');
     try {
-      await temporary.writeAsString(
-          jsonEncode({
-            'version': 1,
-            'artifacts': _artifacts.values
-                .map((item) => {
-                      'id': item.metadata.id,
-                      'ownerGrantId': item.metadata.ownerGrantId,
-                      'fileName': item.metadata.fileName,
-                      'fileExtension': item.metadata.fileExtension,
-                      'sizeBytes': item.metadata.sizeBytes,
-                      'sha256': item.metadata.sha256,
-                      'expiresAt': item.metadata.expiresAt.toIso8601String(),
-                    })
-                .toList(growable: false),
-            'staging': _stagedImports.values
-                .map((item) => {
-                      'id': item.id,
-                      'ownerGrantId': item.ownerGrantId,
-                      'sizeBytes': item.sizeBytes,
-                      'sha256': item.sha256,
-                      'expiresAt': item.expiresAt.toIso8601String(),
-                    })
-                .toList(growable: false),
-          }),
-          flush: true);
+      await temporary.writeAsBytes(encoded, flush: true);
       if (!Platform.isWindows) await _chmod(temporary.path, '600');
       await temporary.rename(index.path);
     } finally {
       if (await temporary.exists()) await temporary.delete();
+    }
+  }
+
+  void _ensureMetadataEntryCapacity({bool admitting = false}) {
+    if (_artifacts.length + _stagedImports.length + (admitting ? 1 : 0) >
+        mcpMaximumRetainedTransferMetadataEntries) {
+      throw const FileSystemException('Transfer metadata entry limit reached');
     }
   }
 

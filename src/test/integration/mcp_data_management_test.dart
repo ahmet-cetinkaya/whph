@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:acore/acore.dart';
@@ -30,6 +31,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/core/application/shared/services/compression_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_timer_session_service.dart';
@@ -321,6 +323,64 @@ void main() {
     expect(properties.keys, {'sourceName', 'strategy'});
     expect(properties, isNot(contains('approved')));
     expect(tool.inputSchema.toJson()['additionalProperties'], isFalse);
+  });
+
+  test('merge import tombstones require delete scope before approval',
+      () async {
+    final compressionService = CompressionService();
+    final document = {
+      'appInfo': {'format': 'whph_backup'},
+      'tasks': [
+        {
+          'id': 'tombstoned-task',
+          'deletedDate': DateTime.utc(2026, 9, 8).toIso8601String(),
+        },
+      ],
+    };
+    final source = File(p.join(transferDirectory.path, 'tombstone.whph'));
+    await source.writeAsBytes(
+      await compressionService.createWhphFile(jsonEncode(document)),
+    );
+    final database = AppDatabase.forTesting();
+    addTearDown(database.close);
+    final dataTransfers = McpDataTransferService(
+      mediator: Mediator(Pipeline()),
+      compressionService: compressionService,
+      timerSessionService: _TrackingTimerSessions(),
+      operationService: operationService,
+      fileStore: transferStore,
+      database: database,
+      reloadApplicationState: () async {},
+    );
+
+    await expectLater(
+      dataTransfers.prepareImport(
+        clientGrantId: grant.grant.id,
+        currentScopes: grant.grant.scopes,
+        sourceName: 'tombstone.whph',
+        strategy: McpDataImportStrategy.merge,
+      ),
+      throwsA(predicate<McpDataTransferException>(
+          (error) => error.failure == McpDataTransferFailure.permissionDenied)),
+    );
+    expect(await operationService.listPending(), isEmpty);
+
+    final deleteGrant = await accessService.createGrant(
+      clientName: 'Data manager with task delete',
+      scopes: const {
+        McpScopes.dataImport,
+        McpScopes.tasksWrite,
+        McpScopes.tasksDelete,
+      },
+    );
+    final prepared = await dataTransfers.prepareImport(
+      clientGrantId: deleteGrant.grant.id,
+      currentScopes: deleteGrant.grant.scopes,
+      sourceName: 'tombstone.whph',
+      strategy: McpDataImportStrategy.merge,
+    );
+
+    expect(prepared.status, McpOperationStatus.pendingApproval);
   });
 
   test('staged import detects byte changes before commit', () async {

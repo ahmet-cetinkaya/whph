@@ -175,32 +175,51 @@ final class McpDataTransferService implements IMcpDataTransferService {
       };
     }
     final scopes = <String>{McpScopes.dataImport};
-    void include(String scope, Iterable<String> keys) {
-      if (keys.any(
-          (key) => document[key] is List && (document[key] as List).isNotEmpty))
-        scopes.add(scope);
+    void include(
+      String writeScope,
+      Iterable<String> keys, {
+      String? deleteScope,
+    }) {
+      for (final key in keys) {
+        final items = document[key];
+        if (items is! List) continue;
+        if (items.isNotEmpty) scopes.add(writeScope);
+        if (deleteScope != null &&
+            items.any((item) => item is Map && item['deletedDate'] != null)) {
+          scopes.add(deleteScope);
+        }
+      }
     }
 
     include(McpScopes.tasksWrite,
-        const ['tasks', 'taskStatuses', 'taskTags', 'taskTimeRecords']);
+        const ['tasks', 'taskStatuses', 'taskTags', 'taskTimeRecords'],
+        deleteScope: McpScopes.tasksDelete);
     include(McpScopes.habitsWrite,
-        const ['habits', 'habitRecords', 'habitTags', 'habitTimeRecords']);
-    include(McpScopes.notesWrite, const ['notes', 'noteTags']);
-    include(McpScopes.tagsWrite, const [
-      'tags',
-      'tagTags',
-      'taskTags',
-      'habitTags',
-      'noteTags',
-      'appUsageTags',
-    ]);
-    include(McpScopes.usageWrite, const [
-      'appUsages',
-      'appUsageTags',
-      'appUsageTimeRecords',
-      'appUsageTagRules',
-      'appUsageIgnoreRules',
-    ]);
+        const ['habits', 'habitRecords', 'habitTags', 'habitTimeRecords'],
+        deleteScope: McpScopes.habitsDelete);
+    include(McpScopes.notesWrite, const ['notes', 'noteTags'],
+        deleteScope: McpScopes.notesDelete);
+    include(
+        McpScopes.tagsWrite,
+        const [
+          'tags',
+          'tagTags',
+          'taskTags',
+          'habitTags',
+          'noteTags',
+          'appUsageTags',
+        ],
+        deleteScope: McpScopes.tagsDelete);
+    include(
+        McpScopes.usageWrite,
+        const [
+          'appUsages',
+          'appUsageTags',
+          'appUsageTimeRecords',
+          'appUsageTagRules',
+          'appUsageIgnoreRules',
+        ],
+        deleteScope: McpScopes.usageDelete);
     include(McpScopes.settingsWrite, const ['settings']);
     include(McpScopes.syncManage, const ['syncDevices']);
     return Set.unmodifiable(scopes);
