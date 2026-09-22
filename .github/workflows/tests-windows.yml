@@ -48,24 +48,24 @@ jobs:
         uses: ./.github/actions/install-flutter-deps
 
       - name: Run build_runner
-        shell: bash
+        shell: pwsh
         run: |
           cd src
           fvm dart run build_runner build --delete-conflicting-outputs
 
       - name: Run Windows-specific tests
-        shell: bash
+        shell: pwsh
         run: |
           cd src
           fvm flutter test test/infrastructure/windows/
 
       - name: Run MCP platform contracts
-        shell: bash
+        shell: pwsh
         run: |
           cd src
-          fvm flutter test \
-            test/presentation/mcp/ \
-            test/infrastructure/shared/features/mcp/ \
+          fvm flutter test `
+            test/presentation/mcp/ `
+            test/infrastructure/shared/features/mcp/ `
             test/infrastructure/persistence/shared/contexts/drift/mcp_restore_barrier_test.dart
 
       - name: Upload test results
