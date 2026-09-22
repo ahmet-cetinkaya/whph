@@ -103,6 +103,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y lcov
 
+      - name: Setup Node.js for the official MCP client
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: scripts/mcp-smoke/package-lock.json
+
+      - name: Install official MCP client dependencies
+        run: npm ci --prefix scripts/mcp-smoke
+
       - name: Run All Tests
         id: run-tests
         uses: ./.github/actions/run-tests
