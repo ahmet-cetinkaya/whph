@@ -14,7 +14,7 @@ void main() {
   late McpAccessService service;
 
   setUp(() async {
-    applicationDirectory = await Directory.systemTemp.createTemp('whph_mcp_access_');
+    applicationDirectory = await _createApplicationDirectory('whph_mcp_access_');
     store = McpAccessStore(
       applicationDirectoryService: _TestApplicationDirectoryService(applicationDirectory),
     );
@@ -381,6 +381,13 @@ Future<File> _createAccessFile(Directory applicationDirectory) async {
   final directory = Directory(p.join(applicationDirectory.path, 'mcp'));
   await directory.create(recursive: true);
   return File(p.join(directory.path, 'access.json'));
+}
+
+Future<Directory> _createApplicationDirectory(String prefix) {
+  final basePath = Platform.isWindows
+      ? Platform.environment['LOCALAPPDATA']!
+      : Directory.systemTemp.path;
+  return Directory(basePath).createTemp(prefix);
 }
 
 class _TestApplicationDirectoryService implements IApplicationDirectoryService {

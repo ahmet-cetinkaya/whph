@@ -153,7 +153,7 @@ write-out = "\\n%{http_code}"
 
     test('uses the durable access service for authentication and revocation',
         () async {
-      final directory = await Directory.systemTemp.createTemp('whph_mcp_http_');
+      final directory = await _createApplicationDirectory('whph_mcp_http_');
       final realAccess = McpAccessService(
         store: McpAccessStore(
           applicationDirectoryService:
@@ -1357,6 +1357,13 @@ final class _FakeAccessService implements IMcpAccessService {
   @override
   Future<void> setPreferences(McpServerPreferences preferences) =>
       throw UnimplementedError();
+}
+
+Future<Directory> _createApplicationDirectory(String prefix) {
+  final basePath = Platform.isWindows
+      ? Platform.environment['LOCALAPPDATA']!
+      : Directory.systemTemp.path;
+  return Directory(basePath).createTemp(prefix);
 }
 
 final class _TestApplicationDirectoryService

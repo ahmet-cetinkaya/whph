@@ -18,7 +18,7 @@ void main() {
 
   setUp(() async {
     applicationDirectory =
-        await Directory.systemTemp.createTemp('whph_mcp_transfer_');
+        await _createApplicationDirectory('whph_mcp_transfer_');
     transferDirectory =
         Directory(p.join(applicationDirectory.path, 'transfers'));
     await transferDirectory.create();
@@ -215,6 +215,13 @@ void main() {
       expect(await restartedStore.verifyStaged(item), isTrue);
     }
   });
+}
+
+Future<Directory> _createApplicationDirectory(String prefix) {
+  final basePath = Platform.isWindows
+      ? Platform.environment['LOCALAPPDATA']!
+      : Directory.systemTemp.path;
+  return Directory(basePath).createTemp(prefix);
 }
 
 final class _TestApplicationDirectoryService
