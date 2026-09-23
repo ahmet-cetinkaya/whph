@@ -18,7 +18,6 @@ Index of all documentation for the WHPH (Work Hard Play Hard) project.
 | Document                                            | Description                                           |
 | --------------------------------------------------- | ----------------------------------------------------- |
 | [GITHUB_WORKFLOWS.md](ci/GITHUB_WORKFLOWS.md)       | GitHub Actions pipeline overview and job descriptions |
-| [WINDOWS_CI_DISABLED.md](ci/WINDOWS_CI_DISABLED.md) | History of the VS 2026 runner issue and its fix       |
 
 ## Build
 
