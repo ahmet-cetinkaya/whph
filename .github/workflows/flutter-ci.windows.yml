@@ -415,7 +415,7 @@ jobs:
 
       - name: Upload Windows build artifact (Portable)
         uses: ./.github/actions/upload-build-artifact
-        if: env.ACTIONS_RUNTIME_TOKEN != ''
+        if: ${{ !env.ACT }} # skip only under local `act` runs; ACTIONS_RUNTIME_TOKEN is never set in the env context on real runs, so that check always skipped this step
         with:
           artifact-name: windows-portable
           artifact-path: src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}\
@@ -423,7 +423,7 @@ jobs:
 
       - name: Upload Windows Installer
         uses: ./.github/actions/upload-build-artifact
-        if: env.ACTIONS_RUNTIME_TOKEN != ''
+        if: ${{ !env.ACT }} # skip only under local `act` runs; ACTIONS_RUNTIME_TOKEN is never set in the env context on real runs, so that check always skipped this step
         with:
           artifact-name: windows-installer
           artifact-path: src\build\windows\installer\whph-setup.exe
