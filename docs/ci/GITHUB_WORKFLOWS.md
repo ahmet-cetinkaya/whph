@@ -60,11 +60,17 @@ The WHPH project uses GitHub Actions for CI/CD automation:
 - `workflow_dispatch` - Manual workflow run
 - `push` on tags matching `v*.*.*`
 
+**Runner:** Pinned to `windows-2022` (not `windows-latest`). GitHub's
+`windows-latest` label now points at a Visual Studio 2026-only image, which
+older Flutter SDKs (including the one pinned in `src/.fvmrc`) cannot detect
+via `vswhere`, breaking the CMake generator selection. `windows-2022` keeps a
+real VS2022 install and sidesteps the issue without an SDK upgrade.
+
 **Features:**
 
 - Release and Profile build modes with fallback
-- Inno Setup installer creation
-- Workarounds for Windows AOT compilation issues
+- Inno Setup installer creation (installed via Chocolatey, not the
+  jrsoftware.org direct-download link, which now redirects to an HTML page)
 
 **Outputs:**
 
@@ -264,6 +270,25 @@ rollout percentage control
 - Service account key must have proper permissions
 - AAB file integrity is validated before deployment
 - Metadata updates require proper formatting
+
+**Windows Build Failures (history, resolved 2026-09-23):**
+
+- Windows CI was disabled from 2026-05-24 to 2026-09-23 because
+  `windows-latest` moved to a Visual Studio 2026-only image that older
+  Flutter SDKs can't detect (`vswhere` finds nothing, CMake generator
+  selection fails). Fixed by pinning `runs-on: windows-2022` in
+  `flutter-ci.windows.yml` instead of upgrading the Flutter SDK.
+- While re-validating, two more pre-existing bugs surfaced and were fixed in
+  the same workflow: the Inno Setup download URL
+  (`jrsoftware.org/download.php/is.exe`) now redirects to an HTML page
+  instead of the installer binary (switched to `choco install innosetup`),
+  and the installer step's `if: env.ACTIONS_RUNTIME_TOKEN != ''` guard
+  referenced an env var that is never set in the `env` context, so the
+  artifact upload steps were unconditionally skipped on every run, real
+  releases included (switched to the standard `!env.ACT` idiom).
+- If `windows-latest` breaks again after a future Flutter SDK upgrade,
+  `windows-2022` can be reconsidered, but it is a maintained, non-deprecated
+  image and there's little reason to move off it.
 
 ## Usage Examples
 

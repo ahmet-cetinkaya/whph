@@ -1,27 +1,19 @@
-# DISABLED: Flutter 3.38.0 cannot detect Visual Studio 2026 on windows-latest
-# See docs/ci/WINDOWS_CI_DISABLED.md for details
-# To re-enable: Update to Flutter version with VS 2026 support and remove this comment
-# TODO: Monitor flutter/flutter#176399 for resolution
-#
-# name: Flutter CI - Windows
-#
-# on:
-#   workflow_dispatch: # This is a trigger for manual workflow run
-#   push:
-#     tags:
-#       - "v*.*.*"
+# Re-enabled 2026-09-23: pinned to the windows-2022 runner image (actual VS2022)
+# instead of windows-latest, which now redirects to windows-2025-vs2026 and has
+# no VS2022 install, breaking Flutter's CMake generator detection.
+# See docs/ci/GITHUB_WORKFLOWS.md ("Windows Build Failures") for the history.
 
-name: Flutter CI - Windows (DISABLED - see comments above)
+name: Flutter CI - Windows
 
 on:
-  workflow_dispatch:  # Manual trigger only for testing
-  # push:  # Disabled - see comments above
-  #   tags:
-  #     - "v*.*.*"
+  workflow_dispatch: # This is a trigger for manual workflow run
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
       - name: Checkout code
@@ -39,18 +31,17 @@ jobs:
 
       - name: Install Inno Setup
         run: |
-          Write-Host "Installing Inno Setup..."
-          $url = "https://jrsoftware.org/download.php/is.exe"
-          $output = "$env:TEMP\innosetup.exe"
-          try {
-            Invoke-WebRequest -Uri $url -OutFile $output -UseBasicParsing
-            Start-Process -FilePath $output -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
-            echo "C:\Program Files (x86)\Inno Setup 6" >> $env:GITHUB_PATH
-            Write-Host "Inno Setup installed successfully"
-          } catch {
-            Write-Host "Failed to install Inno Setup: $($_.Exception.Message)"
+          Write-Host "Installing Inno Setup via Chocolatey..."
+          # jrsoftware.org/download.php/is.exe now redirects to an HTML landing
+          # page instead of serving the binary directly, so use the Chocolatey
+          # package (preinstalled on GitHub-hosted Windows runners) instead.
+          choco install innosetup --yes --no-progress
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "Failed to install Inno Setup via Chocolatey (exit code: $LASTEXITCODE)"
             exit 1
           }
+          echo "C:\Program Files (x86)\Inno Setup 6" >> $env:GITHUB_PATH
+          Write-Host "Inno Setup installed successfully"
 
       - name: Install NuGet CLI
         run: |
@@ -360,7 +351,10 @@ jobs:
           $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
 
           # Set source path dynamically based on build type
-          $sourcePath = Join-Path $PSScriptRoot "..\..\src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}"
+          # Note: use $currentDir (the workspace root), not $PSScriptRoot --
+          # in GitHub Actions inline `run:` steps, $PSScriptRoot points at the
+          # runner's temp script directory (e.g. D:\a\_temp), not the repo.
+          $sourcePath = Join-Path $currentDir "src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}"
           $issTemplate = $issTemplate -replace 'Source: "\.\.\\\.\.\\src\\build\\windows\\x64\\runner\\Release\\\*"', "Source:`"$sourcePath\*`""
 
           # Set output directory using absolute path
@@ -421,7 +415,7 @@ jobs:
 
       - name: Upload Windows build artifact (Portable)
         uses: ./.github/actions/upload-build-artifact
-        if: env.ACTIONS_RUNTIME_TOKEN != ''
+        if: ${{ !env.ACT }} # skip only under local `act` runs; ACTIONS_RUNTIME_TOKEN is never set in the env context on real runs, so that check always skipped this step
         with:
           artifact-name: windows-portable
           artifact-path: src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}\
@@ -429,7 +423,7 @@ jobs:
 
       - name: Upload Windows Installer
         uses: ./.github/actions/upload-build-artifact
-        if: env.ACTIONS_RUNTIME_TOKEN != ''
+        if: ${{ !env.ACT }} # skip only under local `act` runs; ACTIONS_RUNTIME_TOKEN is never set in the env context on real runs, so that check always skipped this step
         with:
           artifact-name: windows-installer
           artifact-path: src\build\windows\installer\whph-setup.exe
