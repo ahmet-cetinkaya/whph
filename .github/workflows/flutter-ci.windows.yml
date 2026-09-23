@@ -351,7 +351,10 @@ jobs:
           $issTemplate = $issTemplate -replace 'AppVersion=.*', "AppVersion=$version"
 
           # Set source path dynamically based on build type
-          $sourcePath = Join-Path $PSScriptRoot "..\..\src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}"
+          # Note: use $currentDir (the workspace root), not $PSScriptRoot --
+          # in GitHub Actions inline `run:` steps, $PSScriptRoot points at the
+          # runner's temp script directory (e.g. D:\a\_temp), not the repo.
+          $sourcePath = Join-Path $currentDir "src\build\windows\x64\runner\${{ steps.build.outputs.build_type }}"
           $issTemplate = $issTemplate -replace 'Source: "\.\.\\\.\.\\src\\build\\windows\\x64\\runner\\Release\\\*"', "Source:`"$sourcePath\*`""
 
           # Set output directory using absolute path
