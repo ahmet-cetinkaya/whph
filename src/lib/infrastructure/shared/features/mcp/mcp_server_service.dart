@@ -349,17 +349,20 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
 
   Future<Object?> _readBody(HttpRequest request) async {
     final declaredLength = request.contentLength;
-    if (declaredLength > _maximumBodyBytes)
-      throw const _BodyTooLargeException();
+    var tooLarge = declaredLength > _maximumBodyBytes;
     var chunks = const <List<int>>[];
     var byteCount = 0;
+    // Keep reading (and discarding once over the limit) until the client
+    // finishes writing or the read timeout elapses. Throwing mid-stream
+    // cancels the subscription while bytes are still in flight, which some
+    // platforms (observed on Windows) surface to the client as a reset
+    // connection rather than the intended error response.
     await for (final chunk in request.timeout(_requestReadTimeout)) {
       byteCount += chunk.length;
-      if (byteCount > _maximumBodyBytes) {
-        throw const _BodyTooLargeException();
-      }
-      chunks = [...chunks, List<int>.unmodifiable(chunk)];
+      if (byteCount > _maximumBodyBytes) tooLarge = true;
+      if (!tooLarge) chunks = [...chunks, List<int>.unmodifiable(chunk)];
     }
+    if (tooLarge) throw const _BodyTooLargeException();
     try {
       return jsonDecode(utf8.decode(chunks.expand((chunk) => chunk).toList()));
     } catch (_) {
