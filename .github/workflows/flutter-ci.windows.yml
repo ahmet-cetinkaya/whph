@@ -31,18 +31,17 @@ jobs:
 
       - name: Install Inno Setup
         run: |
-          Write-Host "Installing Inno Setup..."
-          $url = "https://jrsoftware.org/download.php/is.exe"
-          $output = "$env:TEMP\innosetup.exe"
-          try {
-            Invoke-WebRequest -Uri $url -OutFile $output -UseBasicParsing
-            Start-Process -FilePath $output -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
-            echo "C:\Program Files (x86)\Inno Setup 6" >> $env:GITHUB_PATH
-            Write-Host "Inno Setup installed successfully"
-          } catch {
-            Write-Host "Failed to install Inno Setup: $($_.Exception.Message)"
+          Write-Host "Installing Inno Setup via Chocolatey..."
+          # jrsoftware.org/download.php/is.exe now redirects to an HTML landing
+          # page instead of serving the binary directly, so use the Chocolatey
+          # package (preinstalled on GitHub-hosted Windows runners) instead.
+          choco install innosetup --yes --no-progress
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "Failed to install Inno Setup via Chocolatey (exit code: $LASTEXITCODE)"
             exit 1
           }
+          echo "C:\Program Files (x86)\Inno Setup 6" >> $env:GITHUB_PATH
+          Write-Host "Inno Setup installed successfully"
 
       - name: Install NuGet CLI
         run: |
