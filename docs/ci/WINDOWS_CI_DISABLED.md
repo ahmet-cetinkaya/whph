@@ -1,8 +1,8 @@
 # Windows CI Disabled - Visual Studio 2026 Compatibility Issue
 
-**Status**: ⚠️ Windows CI temporarily disabled **Date**: 2026-05-24 **Reason**:
-Flutter 3.38.0 cannot detect Visual Studio 2026 on GitHub Actions
-`windows-latest` runner
+**Status**: ✅ Re-enabled 2026-09-23 — pinned to the `windows-2022` runner
+image **Originally disabled**: 2026-05-24 **Reason**: Flutter 3.32.0 cannot
+detect Visual Studio 2026 on GitHub Actions `windows-latest` runner
 
 ---
 
@@ -52,7 +52,27 @@ CMake Error at CMakeLists.txt:3 (project):
 
 ---
 
-## Current Solution
+## Resolution (2026-09-23)
+
+Instead of waiting for Flutter's VS 2026 fix to reach our pinned SDK version,
+`.github/workflows/flutter-ci.windows.yml` was pinned to `runs-on:
+windows-2022` (a dedicated Windows Server 2022 + VS2022 image, distinct from
+`windows-latest`). This sidesteps the VS 2026 detection bug entirely — no
+Flutter SDK upgrade required. `windows-2022` is a maintained GitHub-hosted
+image and is not scheduled for deprecation.
+
+- Workflow trigger restored (`push: tags: v*.*.*`).
+- `release.yml` re-includes `Flutter CI - Windows` in the required-workflows
+  check, artifact download, zip/installer packaging, checksum comparison, and
+  the published release asset list / notes.
+
+Upstream, Flutter's own VS2026 detection was fixed in
+[flutter/flutter#177458](https://github.com/flutter/flutter/pull/177458)
+(merged 2025-11-01, targeted for 3.38.2+); if this project's Flutter pin is
+ever upgraded past that version, `windows-latest` could be reconsidered, but
+`windows-2022` remains the safer, lower-churn choice either way.
+
+## Previous Workaround (superseded)
 
 **Manual builds** until Flutter adds proper VS 2026 support.
 
@@ -83,12 +103,14 @@ gh release create <version> \
 
 ---
 
-## Re-enable Checklist
+## Re-enable Checklist (completed 2026-09-23)
 
-- [ ] Flutter releases version with VS 2026 support
-- [ ] Test on `windows-latest` runner
-- [ ] Remove workflow disable (rename file)
-- [ ] Verify build and installer creation
+- [x] Pin `flutter-ci.windows.yml` to `runs-on: windows-2022`
+- [x] Restore the `push: tags: v*.*.*` trigger
+- [x] Re-include `Flutter CI - Windows` in `release.yml`'s required-workflow
+      checks, artifact packaging, checksum comparison, and published assets
+- [ ] Verify a real tag-triggered run on `windows-2022` produces a working
+      installer + portable zip (pending first release after this change)
 
 ---
 

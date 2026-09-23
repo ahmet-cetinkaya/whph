@@ -73,7 +73,7 @@ jobs:
             echo "app-version=$APP_VERSION" >> $GITHUB_OUTPUT
             
             # Check if all three workflows have completed successfully for this tag
-            WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux")  # Windows disabled - see docs/ci/WINDOWS_CI_DISABLED.md
+            WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
             ALL_SUCCESS=true
             
             for workflow in "${WORKFLOWS[@]}"; do
@@ -149,7 +149,7 @@ jobs:
           echo "Downloading artifacts for tag: $TAG_NAME, app version: $APP_VERSION"
 
           # Download artifacts from each workflow
-          WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux")  # Windows disabled - see docs/ci/WINDOWS_CI_DISABLED.md
+          WORKFLOWS=("Flutter CI - Android" "Flutter CI - Linux" "Flutter CI - Windows")
 
           for workflow in "${WORKFLOWS[@]}"; do
             echo "Downloading artifacts from: $workflow"
@@ -212,26 +212,24 @@ jobs:
           fi
 
           # Create Windows portable zip archive
-          # DISABLED: Windows CI disabled - see docs/ci/WINDOWS_CI_DISABLED.md
-          # if [[ -d "artifacts/whph-v$APP_VERSION-windows-portable" ]]; then
-          #   cd "artifacts/whph-v$APP_VERSION-windows-portable"
-          #   zip -r "../../whph-v$TAG_VERSION-windows-portable.zip" .
-          #   cd ../..
-          #   echo "✅ Windows portable zip created"
-          # else
-          #   echo "❌ Windows portable build directory not found"
-          #   exit 1
-          # fi
+          if [[ -d "artifacts/whph-v$APP_VERSION-windows-portable" ]]; then
+            cd "artifacts/whph-v$APP_VERSION-windows-portable"
+            zip -r "../../whph-v$TAG_VERSION-windows-portable.zip" .
+            cd ../..
+            echo "✅ Windows portable zip created"
+          else
+            echo "❌ Windows portable build directory not found"
+            exit 1
+          fi
 
           # Prepare Windows installer
-          # DISABLED: Windows CI disabled - see docs/ci/WINDOWS_CI_DISABLED.md
-          # if [[ -f "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" ]]; then
-          #   cp "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" "whph-v$TAG_VERSION-windows-setup.exe"
-          #   echo "✅ Windows installer prepared"
-          # else
-          #   echo "❌ Windows installer not found"
-          #   exit 1
-          # fi
+          if [[ -f "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" ]]; then
+            cp "artifacts/whph-v$APP_VERSION-windows-installer/whph-setup.exe" "whph-v$TAG_VERSION-windows-setup.exe"
+            echo "✅ Windows installer prepared"
+          else
+            echo "❌ Windows installer not found"
+            exit 1
+          fi
 
           # Prepare Linux Flatpak
           if [[ -f "artifacts/whph-v$APP_VERSION-flatpak/whph-v$TAG_VERSION-linux.flatpak" ]]; then
@@ -243,8 +241,6 @@ jobs:
 
           echo "📦 All release files prepared:"
           ls -la whph-v$TAG_VERSION-*
-
-          echo "⚠️  Windows builds disabled - see docs/ci/WINDOWS_CI_DISABLED.md"
 
       - name: Check if release already exists with same artifacts
         id: check_existing_release
@@ -268,7 +264,7 @@ jobs:
           
           # Calculate checksums for local files
           echo "Calculating checksums for local files..."
-          LOCAL_CHECKSUMS=$(sha256sum whph-v${{ needs.check-workflows.outputs.tag-version }}-*.apk whph-v${{ needs.check-workflows.outputs.tag-version }}-*.tar.gz whph-v${{ needs.check-workflows.outputs.tag-version }}-*.flatpak 2>/dev/null | sort)
+          LOCAL_CHECKSUMS=$(sha256sum whph-v${{ needs.check-workflows.outputs.tag-version }}-*.apk whph-v${{ needs.check-workflows.outputs.tag-version }}-*.tar.gz whph-v${{ needs.check-workflows.outputs.tag-version }}-*.flatpak whph-v${{ needs.check-workflows.outputs.tag-version }}-*.zip whph-v${{ needs.check-workflows.outputs.tag-version }}-*.exe 2>/dev/null | sort)
           
           # Download existing assets and compare checksums
           echo "Downloading existing release assets..."
@@ -282,13 +278,7 @@ jobs:
           for ASSET_URL in $ASSET_URLS; do
             ASSET_NAME=$(echo "$RELEASE_INFO" | jq -r --arg url "$ASSET_URL" '.assets[] | select(.url == $url) | .name')
             echo "Checking $ASSET_NAME..."
-            
-            # Skip Windows files (disabled)
-            if [[ "$ASSET_NAME" == *"windows"* ]]; then
-              echo "  ⏭️  Skipping (Windows builds disabled)"
-              continue
-            fi
-            
+
             # Download asset using gh release download
             if gh release download "$TAG_NAME" --repo "$REPO" --pattern "$ASSET_NAME" --dir "$TEMP_DIR" --clobber 2>/dev/null; then
               # Compare checksums
@@ -318,13 +308,9 @@ jobs:
           
           # Check if we have any new local files that aren't in the release
           cd "$GITHUB_WORKSPACE"
-          for LOCAL_FILE in whph-v${{ needs.check-workflows.outputs.tag-version }}-*.{apk,tar.gz,flatpak}; do
+          for LOCAL_FILE in whph-v${{ needs.check-workflows.outputs.tag-version }}-*.{apk,tar.gz,flatpak,zip,exe}; do
             if [[ -f "$LOCAL_FILE" ]]; then
               FILENAME=$(basename "$LOCAL_FILE")
-              # Skip Windows files (disabled)
-              if [[ "$FILENAME" == *"windows"* ]]; then
-                continue
-              fi
               if ! echo "$RELEASE_INFO" | jq -r '.assets[].name' | grep -q "^$FILENAME$"; then
                 echo "  ⚠️  $FILENAME is new (not in existing release)"
                 ALL_MATCH="false"
@@ -355,8 +341,8 @@ jobs:
             whph-v${{ needs.check-workflows.outputs.tag-version }}-android.apk
             whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz
             whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.flatpak
-            # whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip  # DISABLED
-            # whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe  # DISABLED
+            whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip
+            whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe
           name: ${{ needs.check-workflows.outputs.tag-name }}
           tag_name: ${{ needs.check-workflows.outputs.tag-name }}
           draft: false
@@ -368,7 +354,8 @@ jobs:
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.tar.gz` - Linux portable
               > 🐧 Linux portable users: See [LINUX-DEPENDENCIES.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/build/LINUX-DEPENDENCIES.md) for system requirements and installation instructions.
             - `whph-v${{ needs.check-workflows.outputs.tag-version }}-linux.flatpak` - Linux Flatpak bundle
-            - ~~Windows builds~~ - **Temporarily disabled** due to Flutter 3.32.0 / Visual Studio 2026 compatibility issues. See [docs/ci/WINDOWS_CI_DISABLED.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/ci/WINDOWS_CI_DISABLED.md) for details.
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-setup.exe` - Windows installer
+            - `whph-v${{ needs.check-workflows.outputs.tag-version }}-windows-portable.zip` - Windows portable
 
             > [!NOTE]
             > 📋 See [CHANGELOG.md](https://github.com/ahmet-cetinkaya/whph/blob/${{ needs.check-workflows.outputs.tag-name }}/docs/CHANGELOG.md) for detailed changes.
