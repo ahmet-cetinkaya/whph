@@ -297,7 +297,6 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
         operation: _executeSaveCommand,
         onSuccess: () {
           widget.onTagUpdated?.call();
-          _tagsService.notifyTagUpdated(widget.tagId);
         },
       );
     });

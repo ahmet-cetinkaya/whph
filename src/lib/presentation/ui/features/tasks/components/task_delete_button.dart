@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/delete_task_command.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:acore/utils/dialog_size.dart';
@@ -31,7 +30,6 @@ class TaskDeleteButton extends StatefulWidget {
 
 class _TaskDeleteButtonState extends State<TaskDeleteButton> {
   final Mediator _mediator = container.resolve<Mediator>();
-  final TasksService _tasksService = container.resolve<TasksService>();
   final ITranslationService _translationService = container.resolve<ITranslationService>();
 
   Future<void> _deleteTask(BuildContext context) async {
@@ -44,7 +42,6 @@ class _TaskDeleteButtonState extends State<TaskDeleteButton> {
       },
       onSuccess: () {
         // Notify task deleted with task ID as non-nullable parameter
-        _tasksService.notifyTaskDeleted(widget.taskId);
 
         if (widget.onDeleteSuccess != null) {
           widget.onDeleteSuccess!();

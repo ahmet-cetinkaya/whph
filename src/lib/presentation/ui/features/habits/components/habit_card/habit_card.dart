@@ -165,7 +165,6 @@ class _HabitCardState extends State<HabitCard> {
         await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
 
         await _refreshHabitRecords();
-        _habitsService.notifyHabitRecordAdded(_habitId);
         _timeDataService.notifyTimeDataChanged();
         _playCompletionSoundIfSucceeded(date);
       },
@@ -187,7 +186,6 @@ class _HabitCardState extends State<HabitCard> {
         await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
 
         await _refreshHabitRecords();
-        _habitsService.notifyHabitRecordAdded(_habitId);
         _timeDataService.notifyTimeDataChanged();
         _playCompletionSoundIfSucceeded(today);
       },

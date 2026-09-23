@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
 import 'package:acore/acore.dart' show DateTimeHelper, ILogger;
 import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -40,7 +40,6 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
   final _mediator = container.resolve<Mediator>();
   final _soundManagerService = container.resolve<ISoundManagerService>();
   final _translationService = container.resolve<ITranslationService>();
-  final _tasksService = container.resolve<TasksService>();
   final _recurrenceService = container.resolve<ITaskRecurrenceService>();
   final _logger = container.resolve<ILogger>();
   bool _isCompleted = false;
@@ -82,6 +81,13 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.taskCompleteError),
       operation: () async {
+        if (!originalCompletedState) {
+          await _mediator.send<CompleteTaskCommand, CompleteTaskCommandResponse>(
+            CompleteTaskCommand(id: widget.taskId),
+          );
+          _soundManagerService.playTaskCompletion();
+          return;
+        }
         final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(
           GetTaskQuery(id: widget.taskId),
         );
@@ -94,7 +100,7 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
           plannedDate: task.plannedDate != null ? DateTimeHelper.toUtcDateTime(task.plannedDate!) : null,
           deadlineDate: task.deadlineDate != null ? DateTimeHelper.toUtcDateTime(task.deadlineDate!) : null,
           estimatedTime: task.estimatedTime,
-          completedAt: !originalCompletedState ? DateTime.now().toUtc() : null,
+          completedAt: null,
           parentTaskId: task.parentTaskId,
           order: task.order,
           plannedDateReminderTime: task.plannedDateReminderTime,
@@ -113,22 +119,9 @@ class _TaskCompleteButtonState extends State<TaskCompleteButton> {
 
         // Perform the actual API call
         await _mediator.send<SaveTaskCommand, SaveTaskCommandResponse>(command);
-
-        if (command.completedAt != null) {
-          _soundManagerService.playTaskCompletion();
-        }
       },
       onSuccess: () {
-        // Notify the service about the completed task
-        if (_isCompleted) {
-          // Immediately notify task completion - the service handles async recurrence creation safely
-          _tasksService.notifyTaskCompleted(widget.taskId);
-          _tasksService.notifyTaskUpdated(widget.taskId);
-          widget.onToggleCompleted?.call();
-        } else {
-          _tasksService.notifyTaskUpdated(widget.taskId);
-          widget.onToggleCompleted?.call();
-        }
+        widget.onToggleCompleted?.call();
       },
       onError: (error) {
         _logger.error('TaskCompleteButton: Failed to toggle task completion for ${widget.taskId}: $error');

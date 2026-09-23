@@ -4,7 +4,6 @@ import 'package:whph/core/application/features/habits/commands/add_habit_time_re
 import 'package:whph/core/application/features/habits/commands/save_habit_time_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/toggle_habit_completion_command.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
-import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 
@@ -12,15 +11,12 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 class HabitRecordOperations {
   final Mediator _mediator;
   final ITranslationService _translationService;
-  final HabitsService _habitsService;
 
   HabitRecordOperations({
     required Mediator mediator,
     required ITranslationService translationService,
-    required HabitsService habitsService,
   })  : _mediator = mediator,
-        _translationService = translationService,
-        _habitsService = habitsService;
+        _translationService = translationService;
 
   /// Toggles habit record status for a specific date.
   Future<void> toggleHabitRecord({
@@ -31,14 +27,15 @@ class HabitRecordOperations {
   }) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.updateHabitError),
+      errorMessage:
+          _translationService.translate(HabitTranslationKeys.updateHabitError),
       operation: () async {
-        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
-        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
+        final command =
+            ToggleHabitCompletionCommand(habitId: habitId, date: date);
+        await _mediator.send<ToggleHabitCompletionCommand,
+            ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
-        // Notify both added/removed as status might change
-        _habitsService.notifyHabitRecordAdded(habitId);
         onSuccess?.call();
       },
     );
@@ -53,13 +50,15 @@ class HabitRecordOperations {
   }) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
+      errorMessage: _translationService
+          .translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
-        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
+        final command =
+            ToggleHabitCompletionCommand(habitId: habitId, date: date);
+        await _mediator.send<ToggleHabitCompletionCommand,
+            ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
-        _habitsService.notifyHabitRecordAdded(habitId);
         onSuccess?.call();
       },
     );
@@ -74,28 +73,18 @@ class HabitRecordOperations {
   }) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage: _translationService.translate(HabitTranslationKeys.deletingRecordError),
+      errorMessage: _translationService
+          .translate(HabitTranslationKeys.deletingRecordError),
       operation: () async {
-        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date, useIncrementalBehavior: false);
-        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
+        final command = ToggleHabitCompletionCommand(
+            habitId: habitId, date: date, useIncrementalBehavior: false);
+        await _mediator.send<ToggleHabitCompletionCommand,
+            ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
-        _habitsService.notifyHabitRecordRemoved(habitId);
         onSuccess?.call();
       },
     );
-  }
-
-  /// Handles timer stop event.
-  void onTimerStop(Duration totalElapsed, String habitId) {
-    if (totalElapsed.inSeconds > 0) {
-      final command = AddHabitTimeRecordCommand(
-        habitId: habitId,
-        duration: totalElapsed.inSeconds,
-        customDateTime: DateTime.now(),
-      );
-      _mediator.send(command);
-    }
   }
 
   /// Logs time for a habit.
@@ -122,9 +111,6 @@ class HabitRecordOperations {
             customDateTime: date,
           ));
         }
-      },
-      onSuccess: () {
-        _habitsService.notifyHabitUpdated(habitId);
       },
     );
   }

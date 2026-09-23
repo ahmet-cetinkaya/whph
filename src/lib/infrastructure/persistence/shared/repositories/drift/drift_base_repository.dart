@@ -16,6 +16,20 @@ abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, 
 
   DriftBaseRepository(this.database, this.table);
 
+  @protected
+  DateTime nextDatabaseRevision(DateTime expectedRevision) {
+    final minimumNextRevision = DateTime.fromMillisecondsSinceEpoch(
+      ((expectedRevision.toUtc().millisecondsSinceEpoch ~/ 1000) + 1) * 1000,
+      isUtc: true,
+    );
+    final now = DateTime.now().toUtc();
+    final currentDatabaseSecond = DateTime.fromMillisecondsSinceEpoch(
+      (now.millisecondsSinceEpoch ~/ 1000) * 1000,
+      isUtc: true,
+    );
+    return currentDatabaseSecond.isAfter(minimumNextRevision) ? currentDatabaseSecond : minimumNextRevision;
+  }
+
   Insertable<TEntity> toCompanion(TEntity entity);
   Expression<TEntityId> getPrimaryKey(TTable t);
 

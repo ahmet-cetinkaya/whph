@@ -38,10 +38,17 @@ import 'package:whph/infrastructure/persistence/features/tasks/repositories/drif
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/drift_task_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_transaction_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
+import 'package:whph/infrastructure/persistence/shared/services/drift_application_transaction_service.dart';
 
 void registerPersistence(IContainer container) {
   // Initialize the database with the container for dependency injection
-  AppDatabase.instance(container);
+  final database = AppDatabase.instance(container);
+  container.registerSingleton<IRestoreBarrier>((_) => database.restoreBarrier);
+  container.registerSingleton<IApplicationTransactionService>(
+    (_) => DriftApplicationTransactionService(database),
+  );
 
   container.registerSingleton<IAppUsageIgnoreRuleRepository>((_) => DriftAppUsageIgnoreRuleRepository());
   container.registerSingleton<IAppUsageRepository>((_) => DriftAppUsageRepository());

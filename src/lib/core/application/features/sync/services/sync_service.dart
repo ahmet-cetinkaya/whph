@@ -7,12 +7,14 @@ import 'package:whph/core/application/features/sync/models/paginated_sync_data.d
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
 import 'abstraction/i_sync_service.dart';
 
 class SyncService implements ISyncService {
   final Mediator _mediator;
+  final IRestoreBarrier _restoreBarrier;
 
   /// Protected getter for mediator access in subclasses
   @protected
@@ -55,7 +57,10 @@ class SyncService implements ISyncService {
     Logger.debug('Sync status updated: $status');
   }
 
-  SyncService(this._mediator);
+  SyncService(
+    this._mediator, {
+    required IRestoreBarrier restoreBarrier,
+  }) : _restoreBarrier = restoreBarrier;
 
   void _handleDisconnection() {
     _isConnected = false;
@@ -63,14 +68,17 @@ class SyncService implements ISyncService {
     _channel = null;
 
     // In case of force close, do not attempt to reconnect
-    if (_lastSyncTime != null && DateTime.now().difference(_lastSyncTime!) < const Duration(seconds: 5)) {
+    if (_lastSyncTime != null &&
+        DateTime.now().difference(_lastSyncTime!) <
+            const Duration(seconds: 5)) {
       Logger.debug('Recent sync completed, skipping reconnection');
       return;
     }
 
     // If maximum attempts reached or initialization is in progress
     if (_reconnectAttempts >= _maxReconnectAttempts) {
-      Logger.debug('Max reconnection attempts reached or initialization in progress, resetting counter');
+      Logger.debug(
+          'Max reconnection attempts reached or initialization in progress, resetting counter');
 
       _reconnectAttempts = 0;
       return;
@@ -96,9 +104,16 @@ class SyncService implements ISyncService {
 
   /// Runs paginated sync operation - this is now the primary sync method
   @override
-  Future<void> runPaginatedSync({bool isManual = false}) async {
+  Future<void> runPaginatedSync({bool isManual = false}) {
+    return _restoreBarrier.runShared(
+      () => _runPaginatedSync(isManual: isManual),
+    );
+  }
+
+  Future<void> _runPaginatedSync({required bool isManual}) async {
     if (_syncInProgress) {
-      Logger.debug('Sync already in progress, ignoring duplicate runPaginatedSync call (manual: $isManual)');
+      Logger.debug(
+          'Sync already in progress, ignoring duplicate runPaginatedSync call (manual: $isManual)');
       return;
     }
     _syncInProgress = true;
@@ -111,7 +126,8 @@ class SyncService implements ISyncService {
         lastSyncTime: DateTime.now(),
       ));
 
-      Logger.debug('Starting paginated sync process at ${DateTime.now()}... (manual: $isManual)');
+      Logger.debug(
+          'Starting paginated sync process at ${DateTime.now()}... (manual: $isManual)');
 
       // Validate database integrity before sync
       final integrityService = DatabaseIntegrityService(AppDatabase.instance());
@@ -125,16 +141,19 @@ class SyncService implements ISyncService {
         // Also auto-fix if we detect corrupted timestamps, as this causes FormatExceptions that block sync completely
         if (isManual || preIntegrityReport.timestampInconsistencies > 0) {
           Logger.info('Auto-fixing database integrity issues...');
-          final repairReport = await integrityService.fixCriticalIntegrityIssues();
+          final repairReport =
+              await integrityService.fixCriticalIntegrityIssues();
           if (repairReport.repairFailures.isNotEmpty) {
-            Logger.warning('Some repair operations failed: ${repairReport.repairFailures.length} failures');
+            Logger.warning(
+                'Some repair operations failed: ${repairReport.repairFailures.length} failures');
           }
         }
       }
 
       // Create paginated sync command handler and listen to progress
       final command = PaginatedSyncCommand();
-      final response = await _mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+      final response = await _mediator
+          .send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
 
       // Check if sync was actually successful and had no errors
       if (response.isComplete && !response.hasErrors) {
@@ -152,7 +171,8 @@ class SyncService implements ISyncService {
           // Auto-fix issues after sync
           final repairReport = await integrityService.fixIntegrityIssues();
           if (repairReport.repairFailures.isNotEmpty) {
-            Logger.warning('Some post-sync repair operations failed: ${repairReport.repairFailures.length} failures');
+            Logger.warning(
+                'Some post-sync repair operations failed: ${repairReport.repairFailures.length} failures');
           }
           Logger.info('Post-sync integrity issues fixed');
         } else {
@@ -179,9 +199,11 @@ class SyncService implements ISyncService {
             ? response.errorMessages.first
             : 'sync.errors.sync_failed';
 
-        Logger.error('Paginated sync failed: $errorKey (${response.errorMessages.length} total errors)');
+        Logger.error(
+            'Paginated sync failed: $errorKey (${response.errorMessages.length} total errors)');
         if (response.errorMessages.length > 1) {
-          Logger.error('Additional errors: ${response.errorMessages.skip(1).join(", ")}');
+          Logger.error(
+              'Additional errors: ${response.errorMessages.skip(1).join(", ")}');
         }
 
         // Update sync status to error with translation key and params
@@ -246,10 +268,12 @@ class SyncService implements ISyncService {
 
   /// Determines if sync completion should trigger a notification
   /// Only notify for meaningful syncs to avoid premature notifications
-  void _notifySyncCompleteIfMeaningful(bool isManual, PaginatedSyncCommandResponse response) {
+  void _notifySyncCompleteIfMeaningful(
+      bool isManual, PaginatedSyncCommandResponse response) {
     // Always notify for manual syncs - user initiated these
     if (isManual) {
-      Logger.debug('Notifying sync completion for manual sync at ${DateTime.now()}');
+      Logger.debug(
+          'Notifying sync completion for manual sync at ${DateTime.now()}');
       notifySyncComplete();
       return;
     }

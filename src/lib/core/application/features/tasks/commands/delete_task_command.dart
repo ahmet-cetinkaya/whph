@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_events.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
@@ -18,14 +19,17 @@ class DeleteTaskCommandHandler implements IRequestHandler<DeleteTaskCommand, Del
   final ITaskRepository _taskRepository;
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
+  final ITaskEvents? _taskEvents;
 
   DeleteTaskCommandHandler({
     required ITaskRepository taskRepository,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
+    ITaskEvents? taskEvents,
   })  : _taskRepository = taskRepository,
         _taskTagRepository = taskTagRepository,
-        _taskTimeRecordRepository = taskTimeRecordRepository;
+        _taskTimeRecordRepository = taskTimeRecordRepository,
+        _taskEvents = taskEvents;
 
   @override
   Future<DeleteTaskCommandResponse> call(DeleteTaskCommand request) async {
@@ -39,6 +43,7 @@ class DeleteTaskCommandHandler implements IRequestHandler<DeleteTaskCommand, Del
 
     // Delete the task itself
     await _taskRepository.delete(task);
+    _taskEvents?.notifyTaskDeleted(task.id);
 
     return DeleteTaskCommandResponse();
   }

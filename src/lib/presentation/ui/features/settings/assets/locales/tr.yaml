@@ -57,6 +57,41 @@ settings:
     choose_title: Dilini seç
     dialog_info: "{count} dil mevcut."
     title: Dil
+  ai:
+    title: AI
+  mcp:
+    title: Yapay Zeka Agent Bağlantıları
+    description: Onaylanan yerel yapay zeka agentlarının seçili WHPH özelliklerini kullanmasına izin verin.
+    status: Yerel MCP sunucusu durumu
+    running: Çalışıyor
+    stopped: Durduruldu
+    port: Port
+    save_port: Portu kaydet
+    transfer_directory: Aktarım dizini
+    choose_directory: Aktarım dizini seç
+    connections: Etkin bağlantılar
+    no_connections: Etkin agent bağlantısı yok.
+    create_connection: Bağlantı ekle
+    connection_name: Bağlantı adı
+    permissions: İzinler
+    create: Oluştur ve tokenı kopyala
+    rotate: Tokenı yenile
+    revoke: Bağlantıyı iptal et
+    rotate_confirm: Bu bağlantının tokenı yenilensin mi? Eski token hemen çalışmayı durdurur.
+    revoke_confirm: Bu bağlantı hemen iptal edilsin mi?
+    confirm: Onayla
+    cancel: İptal
+    token_copied: Yeni token kopyalandı. Bir daha gösterilmeyecek.
+    storage_unavailable: Güvenli MCP ayar depolaması kullanılamıyor.
+    approvals: Bekleyen onaylar
+    no_approvals: Onay bekleyen işlem yok.
+    approve: Onayla
+    reject: Reddet
+    refresh: Bekleyen onayları yenile
+    approvals_load_error: Bekleyen onaylar yüklenemedi.
+    approval_update_error: Onay kararı kaydedilemedi.
+    select_all: Tümünü seç
+    clear_selection: Temizle
   notifications:
     disable_error: Bildirimler devre dışı bırakılamadı
     enable_error: Bildirimler etkinleştirilemedi

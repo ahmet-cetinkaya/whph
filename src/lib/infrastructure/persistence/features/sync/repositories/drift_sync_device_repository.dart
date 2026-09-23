@@ -21,9 +21,14 @@ class SyncDeviceTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftSyncDeviceRepository extends DriftBaseRepository<SyncDevice, String, SyncDeviceTable>
+class DriftSyncDeviceRepository
+    extends DriftBaseRepository<SyncDevice, String, SyncDeviceTable>
     implements ISyncDeviceRepository {
-  DriftSyncDeviceRepository() : super(AppDatabase.instance(), AppDatabase.instance().syncDeviceTable);
+  DriftSyncDeviceRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().syncDeviceTable);
+
+  DriftSyncDeviceRepository.withDatabase(AppDatabase database)
+      : super(database, database.syncDeviceTable);
 
   @override
   Expression<String> getPrimaryKey(SyncDeviceTable t) {
@@ -50,8 +55,60 @@ class DriftSyncDeviceRepository extends DriftBaseRepository<SyncDevice, String, 
   Future<SyncDevice?> getByFromToIp(String fromIp, String toIp) async {
     return await (database.select(table)
           ..where((t) =>
-              (t.fromIp.equals(fromIp) & t.toIp.equals(toIp) | t.fromIp.equals(toIp) & t.toIp.equals(fromIp)) &
+              (t.fromIp.equals(fromIp) & t.toIp.equals(toIp) |
+                  t.fromIp.equals(toIp) & t.toIp.equals(fromIp)) &
               t.deletedDate.isNull()))
         .getSingleOrNull();
+  }
+
+  @override
+  Future<DateTime?> updateIfRevision(
+      SyncDevice device, DateTime expectedRevision) async {
+    final nextRevision = nextDatabaseRevision(expectedRevision);
+    final affectedRows = await database.customUpdate(
+      '''
+        UPDATE sync_device_table
+        SET from_ip = ?, to_ip = ?, from_device_id = ?, to_device_id = ?,
+            name = ?, last_sync_date = ?, modified_date = ?, deleted_date = NULL
+        WHERE id = ? AND deleted_date IS NULL
+          AND (modified_date = ? OR (modified_date IS NULL AND created_date = ?))
+      ''',
+      variables: [
+        Variable<String>(device.fromIp),
+        Variable<String>(device.toIp),
+        Variable<String>(device.fromDeviceId),
+        Variable<String>(device.toDeviceId),
+        Variable<String>(device.name),
+        Variable<DateTime>(device.lastSyncDate),
+        Variable.withDateTime(nextRevision),
+        Variable<String>(device.id),
+        Variable.withDateTime(expectedRevision),
+        Variable.withDateTime(expectedRevision),
+      ],
+      updates: {table},
+    );
+    return affectedRows == 1 ? nextRevision : null;
+  }
+
+  @override
+  Future<DateTime?> deleteIfRevision(
+      String id, DateTime expectedRevision) async {
+    final deletedAt = nextDatabaseRevision(expectedRevision);
+    final affectedRows = await database.customUpdate(
+      '''
+        UPDATE sync_device_table
+        SET deleted_date = ?
+        WHERE id = ? AND deleted_date IS NULL
+          AND (modified_date = ? OR (modified_date IS NULL AND created_date = ?))
+      ''',
+      variables: [
+        Variable.withDateTime(deletedAt),
+        Variable<String>(id),
+        Variable.withDateTime(expectedRevision),
+        Variable.withDateTime(expectedRevision),
+      ],
+      updates: {table},
+    );
+    return affectedRows == 1 ? deletedAt : null;
   }
 }

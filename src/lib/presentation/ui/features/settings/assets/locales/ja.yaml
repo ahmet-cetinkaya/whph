@@ -51,6 +51,41 @@ settings:
     choose_title: 言語を選択
     dialog_info: "{count}言語利用可能。"
     title: 言語
+  ai:
+    title: AI
+  mcp:
+    title: AIエージェント接続
+    description: 承認済みのローカルAIエージェントに、選択したWHPH機能の使用を許可します。
+    status: ローカルMCPサーバーの状態
+    running: 実行中
+    stopped: 停止中
+    port: ポート
+    save_port: ポートを保存
+    transfer_directory: 転送ディレクトリ
+    choose_directory: 転送ディレクトリを選択
+    connections: アクティブな接続
+    no_connections: アクティブなエージェント接続はありません。
+    create_connection: 接続を追加
+    connection_name: 接続名
+    permissions: 権限
+    create: トークンを作成してコピー
+    rotate: トークンを更新
+    revoke: 接続を取り消す
+    rotate_confirm: この接続のトークンを更新しますか？古いトークンは直ちに機能しなくなります。
+    revoke_confirm: この接続を直ちに取り消しますか？
+    confirm: 確認
+    cancel: キャンセル
+    token_copied: 新しいトークンがコピーされました。再び表示されることはありません。
+    storage_unavailable: MCP設定用の安全なストレージを利用できません。
+    approvals: 保留中の承認
+    no_approvals: 承認を待っている操作はありません。
+    approve: 承認
+    reject: 拒否
+    refresh: 保留中の承認を更新
+    approvals_load_error: 保留中の承認を読み込めませんでした。
+    approval_update_error: 承認の決定を保存できませんでした。
+    select_all: すべて選択
+    clear_selection: クリア
   notifications:
     disable_error: 通知の無効化に失敗しました
     enable_error: 通知の有効化に失敗しました

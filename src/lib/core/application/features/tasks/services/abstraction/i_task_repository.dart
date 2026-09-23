@@ -6,6 +6,8 @@ import 'package:whph/core/application/features/tasks/models/task_query_filter.da
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 
 abstract class ITaskRepository extends app.IRepository<Task, String> {
+  Future<DateTime?> updateIfRevision(Task task, DateTime expectedRevision);
+
   Future<PaginatedList<TaskWithTotalDuration>> getListWithTotalDuration(
     int pageIndex,
     int pageSize, {

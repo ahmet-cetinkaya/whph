@@ -5,7 +5,6 @@ import 'package:whph/core/application/features/tasks/queries/get_task_query.dart
 import 'package:whph/core/domain/features/tasks/task.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/components/status_aware_complete_button.dart';
-import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/shared/components/label.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
@@ -69,7 +68,6 @@ class TaskCard extends StatelessWidget {
       final plannedDateUtc = DateTimeHelper.toUtcDateTime(date);
 
       final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(GetTaskQuery(id: taskItem.id));
-      final taskService = container.resolve<TasksService>();
 
       // The date parameter comes from ScheduleButton in local time
       // toUtcDateTime will properly convert it to UTC for storage
@@ -100,7 +98,6 @@ class TaskCard extends StatelessWidget {
 
       await _mediator.send(command);
 
-      taskService.notifyTaskUpdated(task.id);
       onScheduled?.call();
     } catch (e, stackTrace) {
       Logger.error(

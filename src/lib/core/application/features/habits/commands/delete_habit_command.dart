@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_events.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
@@ -18,14 +19,17 @@ class DeleteHabitCommandHandler implements IRequestHandler<DeleteHabitCommand, D
   final IHabitRepository _habitRepository;
   final IHabitTagsRepository _habitTagsRepository;
   final IHabitRecordRepository _habitRecordRepository;
+  final IHabitEvents? _habitEvents;
 
   DeleteHabitCommandHandler({
     required IHabitRepository habitRepository,
     required IHabitTagsRepository habitTagsRepository,
     required IHabitRecordRepository habitRecordRepository,
+    IHabitEvents? habitEvents,
   })  : _habitRepository = habitRepository,
         _habitTagsRepository = habitTagsRepository,
-        _habitRecordRepository = habitRecordRepository;
+        _habitRecordRepository = habitRecordRepository,
+        _habitEvents = habitEvents;
 
   @override
   Future<DeleteHabitCommandResponse> call(DeleteHabitCommand request) async {
@@ -39,6 +43,7 @@ class DeleteHabitCommandHandler implements IRequestHandler<DeleteHabitCommand, D
 
     // Delete the habit itself
     await _habitRepository.delete(habit);
+    _habitEvents?.notifyHabitDeleted(habit.id);
 
     return DeleteHabitCommandResponse();
   }

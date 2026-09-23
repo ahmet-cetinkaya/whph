@@ -59,6 +59,41 @@ settings:
     choose_title: Alegeți limba
     dialog_info: "{count} limbi disponibile."
     title: Limbă
+  ai:
+    title: AI
+  mcp:
+    title: Conexiuni ale agenților IA
+    description: Permiteți agenților IA locali aprobați să utilizeze funcționalitățile WHPH selectate.
+    status: Starea serverului MCP local
+    running: Rulează
+    stopped: Oprit
+    port: Port
+    save_port: Salvează portul
+    transfer_directory: Director de transfer
+    choose_directory: Alege directorul de transfer
+    connections: Conexiuni active
+    no_connections: Nu există conexiuni active ale agenților.
+    create_connection: Adaugă conexiune
+    connection_name: Numele conexiunii
+    permissions: Permisiuni
+    create: Creează și copiază tokenul
+    rotate: Reînnoiește tokenul
+    revoke: Revocă conexiunea
+    rotate_confirm: Reînnoiți tokenul acestei conexiuni? Tokenul vechi nu va mai funcționa imediat.
+    revoke_confirm: Revocați imediat această conexiune?
+    confirm: Confirmă
+    cancel: Anulează
+    token_copied: Noul token a fost copiat. Nu va mai fi afișat.
+    storage_unavailable: Stocarea sigură a setărilor MCP nu este disponibilă.
+    approvals: Aprobări în așteptare
+    no_approvals: Nicio operațiune nu așteaptă aprobare.
+    approve: Aprobă
+    reject: Respinge
+    refresh: Reîmprospătează aprobările în așteptare
+    approvals_load_error: Nu s-au putut încărca aprobările în așteptare.
+    approval_update_error: Decizia de aprobare nu a putut fi salvată.
+    select_all: Selectează tot
+    clear_selection: Șterge
   notifications:
     disable_error: Eșec la dezactivarea notificărilor
     enable_error: Eșec la activarea notificărilor

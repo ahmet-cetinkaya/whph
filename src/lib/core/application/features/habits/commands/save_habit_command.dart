@@ -1,5 +1,6 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_events.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
@@ -53,11 +54,15 @@ class SaveHabitCommandResponse {
 
 class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveHabitCommandResponse> {
   final IHabitRepository _habitRepository;
+  final IHabitEvents? _habitEvents;
 
-  SaveHabitCommandHandler({required IHabitRepository habitRepository}) : _habitRepository = habitRepository;
+  SaveHabitCommandHandler({required IHabitRepository habitRepository, IHabitEvents? habitEvents})
+      : _habitRepository = habitRepository,
+        _habitEvents = habitEvents;
 
   @override
   Future<SaveHabitCommandResponse> call(SaveHabitCommand request) async {
+    final isCreating = request.id == null;
     Habit? habit;
 
     if (request.id != null) {
@@ -141,6 +146,11 @@ class SaveHabitCommandHandler implements IRequestHandler<SaveHabitCommand, SaveH
       await _habitRepository.add(habit);
     }
 
+    if (isCreating) {
+      _habitEvents?.notifyHabitCreated(habit.id);
+    } else {
+      _habitEvents?.notifyHabitUpdated(habit.id);
+    }
     return SaveHabitCommandResponse(
       id: habit.id,
       createdDate: habit.createdDate,

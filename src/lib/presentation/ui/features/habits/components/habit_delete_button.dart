@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/commands/delete_habit_command.dart';
 import 'package:whph/main.dart';
-import 'package:whph/presentation/ui/features/habits/services/habits_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
@@ -32,7 +31,6 @@ class HabitDeleteButton extends StatefulWidget {
 class _HabitDeleteButtonState extends State<HabitDeleteButton> {
   final Mediator _mediator = container.resolve<Mediator>();
   final ITranslationService _translationService = container.resolve<ITranslationService>();
-  final HabitsService _habitsService = container.resolve<HabitsService>();
 
   Future<void> _deleteHabit(BuildContext context) async {
     await AsyncErrorHandler.executeVoid(
@@ -44,7 +42,6 @@ class _HabitDeleteButtonState extends State<HabitDeleteButton> {
       },
       onSuccess: () {
         // Notify service about habit deletion
-        _habitsService.notifyHabitDeleted(widget.habitId);
 
         // Call callback if provided (for backward compatibility)
         widget.onDeleteSuccess?.call();

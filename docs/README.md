@@ -11,6 +11,7 @@ Index of all documentation for the WHPH (Work Hard Play Hard) project.
 | [MODULES.md](MODULES.md)                     | Per-feature module breakdown and responsibilities             |
 | [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)         | UI design tokens, components, and style guidelines            |
 | [CONTRIBUTING.md](CONTRIBUTING.md)           | Development workflow, conventions, and contribution guide     |
+| [MCP.md](MCP.md)                             | Local MCP connection, permissions, tools, and resources        |
 
 ## CI
 

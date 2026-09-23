@@ -26,6 +26,11 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
   DriftTaskTimeRecordRepository.withDatabase(AppDatabase db) : super(db, db.taskTimeRecordTable);
 
   @override
+  Future<void> add(TaskTimeRecord item) async {
+    await database.into(table).insert(toCompanion(item));
+  }
+
+  @override
   Expression<String> getPrimaryKey(TaskTimeRecordTable t) {
     return t.id;
   }

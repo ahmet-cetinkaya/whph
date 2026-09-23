@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_timer_session_service.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
@@ -8,28 +9,26 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 
 /// Builds the timer section for task details.
 class TaskTimerSection {
+  final String taskId;
   final ITranslationService translationService;
-  final void Function(Duration) onTick;
-  final void Function(Duration) onTimerStop;
-  final void Function(Duration) onWorkSessionComplete;
 
   const TaskTimerSection({
+    required this.taskId,
     required this.translationService,
-    required this.onTick,
-    required this.onTimerStop,
-    required this.onWorkSessionComplete,
   });
 
   DetailTableRowData build() => DetailTableRowData(
         label: translationService.translate(SharedTranslationKeys.timerLabel),
         icon: TaskUiConstants.timerIcon,
         widget: Padding(
-          padding: const EdgeInsets.only(top: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall, left: AppTheme.sizeSmall),
+          padding: const EdgeInsets.only(
+              top: AppTheme.sizeSmall,
+              bottom: AppTheme.sizeSmall,
+              left: AppTheme.sizeSmall),
           child: AppTimer(
+            sessionId: 'task:$taskId',
+            sessionOwner: TimerSessionOwner.task(taskId),
             isMiniLayout: true,
-            onTick: onTick,
-            onTimerStop: onTimerStop,
-            onWorkSessionComplete: onWorkSessionComplete,
           ),
         ),
       );

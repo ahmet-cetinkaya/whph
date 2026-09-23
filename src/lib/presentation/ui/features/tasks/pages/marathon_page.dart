@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_timer_session_service.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_task_tags_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_task_query.dart';
@@ -19,7 +20,6 @@ import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer.dart';
 import 'package:whph/presentation/ui/features/tasks/components/tasks_list.dart';
 import 'package:whph/presentation/ui/features/tasks/components/task_card.dart';
-import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -29,7 +29,6 @@ import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/components/tour_overlay/tour_overlay.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_defaults.dart';
 import 'package:whph/presentation/ui/shared/models/sort_config.dart';
-import 'package:whph/presentation/ui/features/tasks/constants/task_ui_constants.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
@@ -43,9 +42,11 @@ class MarathonPage extends StatefulWidget {
   State<MarathonPage> createState() => _MarathonPageState();
 }
 
-class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClientMixin {
+class _MarathonPageState extends State<MarathonPage>
+    with AutomaticKeepAliveClientMixin {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
+  final _timerSessionService = container.resolve<ITimerSessionService>();
   TaskListItem? _selectedTask;
   List<TaskListItem> _availableTasks = [];
   SortConfig<TaskSortFields> _sortConfig = TaskDefaults.sorting;
@@ -59,7 +60,6 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
   bool _isTimerRunning = false;
   bool _isDimmed = false;
   Timer? _dimmingTimer;
-  Duration _timeSinceLastSave = Duration.zero;
   static const Duration _dimmingDelay = Duration(seconds: 5);
   static const double _dimmingOpacity = 0;
 
@@ -121,10 +121,9 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       );
 
       // After completion, select next task and refresh
-      await Future.delayed(const Duration(milliseconds: 500), () {
-        _selectNextTask();
-        _onTasksChanged();
-      });
+      await Future.delayed(const Duration(milliseconds: 500));
+      await _selectNextTask();
+      _onTasksChanged();
     } catch (e, stackTrace) {
       Logger.error(
         '[$TaskErrorIds.swipeGestureFailed] Failed to complete task in marathon mode',
@@ -156,63 +155,17 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
 
     setState(() {
       _isTimerRunning = true;
-      _timeSinceLastSave = Duration.zero;
     });
     _startDimmingTimer();
   }
 
-  void _handleTimerTick(Duration elapsedIncrement) {
-    // Use the elapsed increment provided by the timer
-    _timeSinceLastSave += elapsedIncrement;
-    if (_timeSinceLastSave.inSeconds >= TaskUiConstants.kPeriodicSaveIntervalSeconds) {
-      _saveElapsedTime(_timeSinceLastSave);
-      _timeSinceLastSave = Duration.zero;
-    }
-  }
-
-  Future<void> _saveElapsedTime(Duration elapsed) async {
-    if (_selectedTask == null) return;
-    if (elapsed.inSeconds <= 0) return;
-
-    final command = AddTaskTimeRecordCommand(
-      taskId: _selectedTask!.id,
-      duration: elapsed.inSeconds,
-    );
-
-    await AsyncErrorHandler.executeVoid(
-      context: context,
-      errorMessage: _translationService.translate(TaskTranslationKeys.saveTaskError),
-      operation: () => _mediator.send<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse>(command),
-    );
-  }
-
-  /// Called when a work session completes (e.g., Pomodoro work → break transition).
-  /// Flushes any accumulated elapsed time but intentionally does NOT stop dimming,
-  /// so the dimming persists into the break segment.
-  Future<void> _handleWorkSessionComplete(Duration totalElapsed) async {
-    if (_timeSinceLastSave > Duration.zero) {
-      await _saveElapsedTime(_timeSinceLastSave);
-      _timeSinceLastSave = Duration.zero;
-    }
-  }
-
-  /// Called when the timer actually stops (user stops / session ends).
-  /// Flushes accumulated elapsed time and stops the dimming timer.
-  Future<void> _handleTimerStop(Duration totalElapsed) async {
+  void _handleTimerStop(Duration totalElapsed) {
     _stopDimmingTimer();
-
-    if (_timeSinceLastSave > Duration.zero) {
-      await _saveElapsedTime(_timeSinceLastSave);
-      _timeSinceLastSave = Duration.zero;
-    }
   }
 
-  void _onSelectTask(TaskListItem task) async {
-    // Flush any pending elapsed time before switching tasks to ensure
-    // accumulated time is attributed to the correct task
-    if (_timeSinceLastSave > Duration.zero) {
-      await _saveElapsedTime(_timeSinceLastSave);
-      _timeSinceLastSave = Duration.zero;
+  Future<void> _onSelectTask(TaskListItem task) async {
+    if (_timerSessionService.state('marathon') != null) {
+      await _timerSessionService.selectTask('marathon', task.id);
     }
 
     setState(() {
@@ -221,16 +174,19 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     await _refreshSelectedTask();
   }
 
-  void _clearSelectedTask() {
+  Future<void> _clearSelectedTask() async {
+    if (_timerSessionService.state('marathon') != null) {
+      await _timerSessionService.selectTask('marathon', null);
+    }
     setState(() {
       _selectedTask = null;
     });
   }
 
-  void _selectNextTask() {
+  Future<void> _selectNextTask() async {
     // Refresh available tasks to ensure we have the latest data
     if (_availableTasks.isEmpty) {
-      _clearSelectedTask();
+      await _clearSelectedTask();
       return;
     }
 
@@ -243,7 +199,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
 
     if (availableUncompletedTasks.isNotEmpty) {
       // Select the first uncompleted task
-      _onSelectTask(availableUncompletedTasks.first);
+      await _onSelectTask(availableUncompletedTasks.first);
     } else {
       // If no uncompleted tasks available, try to find any other task (completed ones)
       final otherTasks = _availableTasks
@@ -253,9 +209,9 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
           .toList();
 
       if (otherTasks.isNotEmpty) {
-        _onSelectTask(otherTasks.first);
+        await _onSelectTask(otherTasks.first);
       } else {
-        _clearSelectedTask();
+        await _clearSelectedTask();
       }
     }
   }
@@ -270,8 +226,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         onTaskDeleted: () {
           Navigator.of(context).pop(true);
         },
-        onTaskCompleted: () {
-          _selectNextTask();
+        onTaskCompleted: () async {
+          await _selectNextTask();
           _onTasksChanged();
         },
       ),
@@ -283,7 +239,7 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
         _selectedTask = null;
       });
       _onTasksChanged();
-      _selectNextTask();
+      await _selectNextTask();
       return;
     }
 
@@ -292,12 +248,16 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
       if (mounted) {
         await AsyncErrorHandler.execute<void>(
           context: context,
-          errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
+          errorMessage:
+              _translationService.translate(TaskTranslationKeys.getTaskError),
           operation: () async {
             final query = GetTaskQuery(id: taskId);
-            final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-            final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-                GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: 5));
+            final task =
+                await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+            final taskTags = await _mediator
+                .send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+                    GetListTaskTagsQuery(
+                        taskId: taskId, pageIndex: 0, pageSize: 5));
 
             if (mounted) {
               setState(() {
@@ -309,13 +269,15 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                     estimatedTime: task.estimatedTime,
                     plannedDate: task.plannedDate,
                     priority: task.priority,
-                    subTasksCompletionPercentage: task.subTasksCompletionPercentage,
+                    subTasksCompletionPercentage:
+                        task.subTasksCompletionPercentage,
                     tags: taskTags.items
                         .map((e) => TagListItem(
                             id: e.id,
                             name: e.tagName.isNotEmpty
                                 ? e.tagName
-                                : _translationService.translate(SharedTranslationKeys.untitled),
+                                : _translationService
+                                    .translate(SharedTranslationKeys.untitled),
                             type: e.tagType))
                         .toList());
               });
@@ -348,14 +310,22 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
 
     await AsyncErrorHandler.execute<void>(
       context: context,
-      errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
+      errorMessage:
+          _translationService.translate(TaskTranslationKeys.getTaskError),
       operation: () async {
         final query = GetTaskQuery(id: _selectedTask!.id);
-        final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-        final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-            GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
-        final subTasks = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
-            GetListTasksQuery(pageIndex: 0, pageSize: 10, filterByParentTaskId: _selectedTask!.id));
+        final task =
+            await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+        final taskTags = await _mediator
+            .send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+                GetListTaskTagsQuery(
+                    taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
+        final subTasks =
+            await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+                GetListTasksQuery(
+                    pageIndex: 0,
+                    pageSize: 10,
+                    filterByParentTaskId: _selectedTask!.id));
 
         if (mounted) {
           setState(() {
@@ -372,7 +342,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                       id: e.id,
                       name: e.tagName.isNotEmpty
                           ? e.tagName
-                          : _translationService.translate(SharedTranslationKeys.untitled),
+                          : _translationService
+                              .translate(SharedTranslationKeys.untitled),
                       type: e.tagType))
                   .toList(),
               subTasks: subTasks.items,
@@ -490,7 +461,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                     IconButton(
                                       icon: const Icon(Icons.arrow_back),
                                       onPressed: _closeDialog,
-                                      tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
+                                      tooltip: _translationService.translate(
+                                          SharedTranslationKeys.closeButton),
                                     ),
                                   ],
                                 ),
@@ -498,20 +470,25 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                               Center(
                                 child: AppTimer(
                                   key: _timerKey,
-                                  onTick: _handleTimerTick,
+                                  sessionId: 'marathon',
+                                  sessionOwner:
+                                      const TimerSessionOwner.marathon(),
+                                  selectedTaskId: _selectedTask?.id,
                                   onTimerStart: _onTimerStart,
                                   onTimerStop: _handleTimerStop,
-                                  onWorkSessionComplete: _handleWorkSessionComplete,
                                 ),
                               ),
                               AnimatedOpacity(
                                 opacity: _isDimmed ? _dimmingOpacity : 1.0,
                                 duration: const Duration(milliseconds: 500),
                                 child: KebabMenu(
-                                  helpTitleKey: TaskTranslationKeys.marathonHelpTitle,
-                                  helpMarkdownContentKey: TaskTranslationKeys.marathonHelpContent,
+                                  helpTitleKey:
+                                      TaskTranslationKeys.marathonHelpTitle,
+                                  helpMarkdownContentKey:
+                                      TaskTranslationKeys.marathonHelpContent,
                                   onStartTour: _startTour,
-                                  iconColor: Theme.of(context).colorScheme.onSurface,
+                                  iconColor:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             ],
@@ -523,7 +500,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                               child: TaskCard(
                                 key: ValueKey(_selectedTask!.id),
                                 taskItem: _selectedTask!,
-                                onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
+                                onOpenDetails: () =>
+                                    _showTaskDetails(_selectedTask!.id),
                                 onCompleted: _onTaskCompleted,
                                 showScheduleButton: false,
                               ),
@@ -568,7 +546,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                       onSortChange: _onSortConfigChange,
                                       viewMode: _viewMode,
                                       onViewModeChange: _onViewModeChange,
-                                      settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
+                                      settingKeyVariantSuffix:
+                                          _taskFilterOptionsSettingKeySuffix,
                                     ),
                                   ),
                                   if (!_showCompletedTasks)
@@ -577,7 +556,8 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                       initialPlannedDate: DateTime.now(),
                                       initialTitle: _taskSearchQuery,
                                       initialCompleted: _showCompletedTasks,
-                                      onTaskCreated: (_, __) => _onTasksChanged(),
+                                      onTaskCreated: (_, __) =>
+                                          _onTasksChanged(),
                                     ),
                                 ],
                               ),
@@ -588,36 +568,55 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             duration: const Duration(milliseconds: 500),
                             child: _viewMode == TaskViewMode.board
                                 ? SizedBox(
-                                    height: MediaQuery.of(context).size.height * 0.6,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.6,
                                     child: TaskList(
                                       key: _taskListKey,
                                       filterByCompleted: _showCompletedTasks,
                                       filterByTags: _selectedTaskTagIds,
-                                      filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
-                                      filterByPlannedEndDate: _showCompletedTasks
-                                          ? null
-                                          : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
-                                      filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
-                                      filterByDeadlineEndDate: _showCompletedTasks
-                                          ? null
-                                          : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                                      filterByPlannedStartDate:
+                                          _showCompletedTasks
+                                              ? null
+                                              : DateTime(0),
+                                      filterByPlannedEndDate:
+                                          _showCompletedTasks
+                                              ? null
+                                              : DateTime(now.year, now.month,
+                                                  now.day, 23, 59, 59, 999),
+                                      filterByDeadlineStartDate:
+                                          _showCompletedTasks
+                                              ? null
+                                              : DateTime(0),
+                                      filterByDeadlineEndDate:
+                                          _showCompletedTasks
+                                              ? null
+                                              : DateTime(now.year, now.month,
+                                                  now.day, 23, 59, 59, 999),
                                       filterDateOr: true,
                                       filterByCompletedStartDate:
-                                          _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
-                                      filterByCompletedEndDate: _showCompletedTasks
-                                          ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
-                                          : null,
+                                          _showCompletedTasks
+                                              ? DateTime(
+                                                  now.year, now.month, now.day)
+                                              : null,
+                                      filterByCompletedEndDate:
+                                          _showCompletedTasks
+                                              ? DateTime(now.year, now.month,
+                                                  now.day, 23, 59, 59, 999)
+                                              : null,
                                       search: _taskSearchQuery,
                                       includeSubTasks: _showSubTasks,
                                       onTaskCompleted: _onTaskCompleted,
-                                      onClickTask: (task) => _showTaskDetails(task.id),
+                                      onClickTask: (task) =>
+                                          _showTaskDetails(task.id),
                                       onSelectTask: _onSelectTask,
-                                      onScheduleTask: (_, __) => _onTasksChanged(),
+                                      onScheduleTask: (_, __) =>
+                                          _onTasksChanged(),
                                       onTasksLoaded: _onTasksLoaded,
                                       selectedTask: _selectedTask,
                                       showSelectButton: true,
                                       transparentCards: true,
-                                      enableReordering: _sortConfig.useCustomOrder,
+                                      enableReordering:
+                                          _sortConfig.useCustomOrder,
                                       sortConfig: _sortConfig,
                                       viewMode: _viewMode,
                                     ),
@@ -626,31 +625,47 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                     key: _taskListKey,
                                     filterByCompleted: _showCompletedTasks,
                                     filterByTags: _selectedTaskTagIds,
-                                    filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                                    filterByPlannedStartDate:
+                                        _showCompletedTasks
+                                            ? null
+                                            : DateTime(0),
                                     filterByPlannedEndDate: _showCompletedTasks
                                         ? null
-                                        : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
-                                    filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                                        : DateTime(now.year, now.month, now.day,
+                                            23, 59, 59, 999),
+                                    filterByDeadlineStartDate:
+                                        _showCompletedTasks
+                                            ? null
+                                            : DateTime(0),
                                     filterByDeadlineEndDate: _showCompletedTasks
                                         ? null
-                                        : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                                        : DateTime(now.year, now.month, now.day,
+                                            23, 59, 59, 999),
                                     filterDateOr: true,
                                     filterByCompletedStartDate:
-                                        _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
-                                    filterByCompletedEndDate: _showCompletedTasks
-                                        ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
-                                        : null,
+                                        _showCompletedTasks
+                                            ? DateTime(
+                                                now.year, now.month, now.day)
+                                            : null,
+                                    filterByCompletedEndDate:
+                                        _showCompletedTasks
+                                            ? DateTime(now.year, now.month,
+                                                now.day, 23, 59, 59, 999)
+                                            : null,
                                     search: _taskSearchQuery,
                                     includeSubTasks: _showSubTasks,
                                     onTaskCompleted: _onTaskCompleted,
-                                    onClickTask: (task) => _showTaskDetails(task.id),
+                                    onClickTask: (task) =>
+                                        _showTaskDetails(task.id),
                                     onSelectTask: _onSelectTask,
-                                    onScheduleTask: (_, __) => _onTasksChanged(),
+                                    onScheduleTask: (_, __) =>
+                                        _onTasksChanged(),
                                     onTasksLoaded: _onTasksLoaded,
                                     selectedTask: _selectedTask,
                                     showSelectButton: true,
                                     transparentCards: true,
-                                    enableReordering: _sortConfig.useCustomOrder,
+                                    enableReordering:
+                                        _sortConfig.useCustomOrder,
                                     sortConfig: _sortConfig,
                                     viewMode: _viewMode,
                                   ),
@@ -679,7 +694,10 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                             child: Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surface
+                                    .withValues(alpha: 0.8),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Column(
@@ -688,13 +706,25 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                                   Icon(
                                     Icons.touch_app,
                                     size: 48,
-                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.5),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    _translationService.translate(SharedTranslationKeys.tapToResume).toUpperCase(),
-                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                    _translationService
+                                        .translate(
+                                            SharedTranslationKeys.tapToResume)
+                                        .toUpperCase(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.5),
                                         ),
                                   ),
                                 ],
@@ -717,30 +747,38 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
     final tourSteps = [
       // 1. Page introduce
       TourStep(
-        title: _translationService.translate(TaskTranslationKeys.tourMarathonAppUsageTitle),
-        description: _translationService.translate(TaskTranslationKeys.tourMarathonAppUsageDescription),
+        title: _translationService
+            .translate(TaskTranslationKeys.tourMarathonAppUsageTitle),
+        description: _translationService
+            .translate(TaskTranslationKeys.tourMarathonAppUsageDescription),
         icon: Icons.bar_chart,
         targetKey: _mainContentKey,
         position: TourPosition.bottom,
       ),
       // 2. App usage graph list introduce
       TourStep(
-        title: _translationService.translate(TaskTranslationKeys.tourMarathonUsageStatisticsTitle),
-        description: _translationService.translate(TaskTranslationKeys.tourMarathonUsageStatisticsDescription),
+        title: _translationService
+            .translate(TaskTranslationKeys.tourMarathonUsageStatisticsTitle),
+        description: _translationService.translate(
+            TaskTranslationKeys.tourMarathonUsageStatisticsDescription),
         targetKey: _timerKey,
         position: TourPosition.bottom,
       ),
       // 3. List options introduce
       TourStep(
-        title: _translationService.translate(TaskTranslationKeys.tourMarathonFilterSortTitle),
-        description: _translationService.translate(TaskTranslationKeys.tourMarathonFilterSortDescription),
+        title: _translationService
+            .translate(TaskTranslationKeys.tourMarathonFilterSortTitle),
+        description: _translationService
+            .translate(TaskTranslationKeys.tourMarathonFilterSortDescription),
         targetKey: _filtersKey,
         position: TourPosition.bottom,
       ),
       // 4. App tracking settings button introduce
       TourStep(
-        title: _translationService.translate(TaskTranslationKeys.tourMarathonTrackingSettingsTitle),
-        description: _translationService.translate(TaskTranslationKeys.tourMarathonTrackingSettingsDescription),
+        title: _translationService
+            .translate(TaskTranslationKeys.tourMarathonTrackingSettingsTitle),
+        description: _translationService.translate(
+            TaskTranslationKeys.tourMarathonTrackingSettingsDescription),
         targetKey: _taskListKey,
         position: TourPosition.top,
       ),

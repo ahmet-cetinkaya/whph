@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_rule_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
@@ -12,6 +13,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_status_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_ignore_rule_repository.dart';
@@ -47,10 +49,12 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
   final IAppUsageTagRuleRepository appUsageTagRuleRepository;
   final IHabitRepository habitRepository;
   final IHabitRecordRepository habitRecordRepository;
+  final IHabitTimeRecordRepository? habitTimeRecordRepository;
   final IHabitTagsRepository habitTagRepository;
   final ITagRepository tagRepository;
   final ITagTagRepository tagTagRepository;
   final ITaskRepository taskRepository;
+  final ITaskStatusRepository? taskStatusRepository;
   final ITaskTagRepository taskTagRepository;
   final ITaskTimeRecordRepository taskTimeRecordRepository;
   final ISettingRepository settingRepository;
@@ -67,10 +71,12 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
     required this.appUsageTagRuleRepository,
     required this.habitRepository,
     required this.habitRecordRepository,
+    this.habitTimeRecordRepository,
     required this.habitTagRepository,
     required this.tagRepository,
     required this.tagTagRepository,
     required this.taskRepository,
+    this.taskStatusRepository,
     required this.taskTagRepository,
     required this.taskTimeRecordRepository,
     required this.settingRepository,
@@ -90,10 +96,12 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
       final appUsageTagRules = await appUsageTagRuleRepository.getAll();
       final habits = await habitRepository.getAll();
       final habitRecords = await habitRecordRepository.getAll();
+      final habitTimeRecords = await habitTimeRecordRepository?.getAll();
       final habitTags = await habitTagRepository.getAll();
       final tags = await tagRepository.getAll();
       final tagTags = await tagTagRepository.getAll();
       final tasks = await taskRepository.getAll();
+      final taskStatuses = await taskStatusRepository?.getAll();
       final taskTags = await taskTagRepository.getAll();
       final taskTimeRecords = await taskTimeRecordRepository.getAll();
       final settings = await settingRepository.getAll();
@@ -114,10 +122,12 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
         'appUsageTagRules': appUsageTagRules,
         'habits': habits,
         'habitRecords': habitRecords,
+        if (habitTimeRecords != null) 'habitTimeRecords': habitTimeRecords,
         'habitTags': habitTags,
         'tags': tags,
         'tagTags': tagTags,
         'tasks': tasks,
+        if (taskStatuses != null) 'taskStatuses': taskStatuses,
         'taskTags': taskTags,
         'taskTimeRecords': taskTimeRecords,
         'settings': settings,

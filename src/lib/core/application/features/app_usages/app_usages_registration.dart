@@ -20,6 +20,7 @@ import 'package:whph/core/application/features/app_usages/commands/update_app_us
 import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tags_query.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_events.dart';
 import 'package:whph/core/application/features/app_usages/commands/add_app_usage_ignore_rule_command.dart';
 import 'package:whph/core/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_ignore_rules_query.dart';
@@ -66,16 +67,23 @@ void registerAppUsagesFeature(
       ),
     )
     ..registerHandler<GetAppUsageQuery, GetAppUsageQueryResponse, GetAppUsageQueryHandler>(
-      () => GetAppUsageQueryHandler(appUsageRepository: appUsageRepository),
+      () => GetAppUsageQueryHandler(
+        appUsageRepository: appUsageRepository,
+        timeRecordRepository: appUsageTimeRecordRepository,
+      ),
     )
     ..registerHandler<SaveAppUsageCommand, SaveAppUsageCommandResponse, SaveAppUsageCommandHandler>(
-      () => SaveAppUsageCommandHandler(appUsageRepository: appUsageRepository),
+      () => SaveAppUsageCommandHandler(
+        appUsageRepository: appUsageRepository,
+        appUsageEvents: container.resolve<IAppUsageEvents>(),
+      ),
     )
     ..registerHandler<DeleteAppUsageCommand, DeleteAppUsageCommandResponse, DeleteAppUsageCommandHandler>(
       () => DeleteAppUsageCommandHandler(
         appUsageRepository: appUsageRepository,
         appUsageTagRepository: appUsageTagRepository,
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
+        appUsageEvents: container.resolve<IAppUsageEvents>(),
       ),
     )
     ..registerHandler<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse, AddAppUsageTagRuleCommandHandler>(

@@ -59,6 +59,41 @@ settings:
     choose_title: Kies uw taal
     dialog_info: "{count} talen beschikbaar."
     title: Taal
+  ai:
+    title: AI
+  mcp:
+    title: AI-agentverbindingen
+    description: Geef goedgekeurde lokale AI-agenten toegang tot geselecteerde WHPH-functies.
+    status: Status van lokale MCP-server
+    running: Actief
+    stopped: Gestopt
+    port: Poort
+    save_port: Poort opslaan
+    transfer_directory: Overdrachtsmap
+    choose_directory: Overdrachtsmap kiezen
+    connections: Actieve verbindingen
+    no_connections: Geen actieve agentverbindingen.
+    create_connection: Verbinding toevoegen
+    connection_name: Verbindingsnaam
+    permissions: Machtigingen
+    create: Token aanmaken en kopiëren
+    rotate: Token vernieuwen
+    revoke: Verbinding intrekken
+    rotate_confirm: Het token van deze verbinding vernieuwen? Het oude token werkt onmiddellijk niet meer.
+    revoke_confirm: Deze verbinding onmiddellijk intrekken?
+    confirm: Bevestigen
+    cancel: Annuleren
+    token_copied: Het nieuwe token is gekopieerd. Het wordt niet opnieuw getoond.
+    storage_unavailable: Veilige opslag voor MCP-instellingen is niet beschikbaar.
+    approvals: Openstaande goedkeuringen
+    no_approvals: Geen bewerkingen wachten op goedkeuring.
+    approve: Goedkeuren
+    reject: Afwijzen
+    refresh: Openstaande goedkeuringen vernieuwen
+    approvals_load_error: Openstaande goedkeuringen konden niet worden geladen.
+    approval_update_error: De goedkeuringsbeslissing kon niet worden opgeslagen.
+    select_all: Alles selecteren
+    clear_selection: Wissen
   notifications:
     disable_error: Notificaties uitschakelen mislukt
     enable_error: Notificaties inschakelen mislukt

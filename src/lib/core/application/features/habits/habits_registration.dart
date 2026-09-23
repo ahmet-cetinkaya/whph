@@ -23,6 +23,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_repositor
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_events.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 
@@ -43,13 +44,17 @@ void registerHabitsFeature(
 
   mediator
     ..registerHandler<SaveHabitCommand, SaveHabitCommandResponse, SaveHabitCommandHandler>(
-      () => SaveHabitCommandHandler(habitRepository: habitRepository),
+      () => SaveHabitCommandHandler(
+        habitRepository: habitRepository,
+        habitEvents: container.resolve<IHabitEvents>(),
+      ),
     )
     ..registerHandler<DeleteHabitCommand, DeleteHabitCommandResponse, DeleteHabitCommandHandler>(
       () => DeleteHabitCommandHandler(
         habitRepository: habitRepository,
         habitTagsRepository: habitTagRepository,
         habitRecordRepository: habitRecordRepository,
+        habitEvents: container.resolve<IHabitEvents>(),
       ),
     )
     ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse, GetListHabitsQueryHandler>(
@@ -71,6 +76,7 @@ void registerHabitsFeature(
         habitRecordRepository: habitRecordRepository,
         habitRepository: habitRepository,
         operationsService: habitRecordOperationsService,
+        habitEvents: container.resolve<IHabitEvents>(),
       ),
     )
     ..registerHandler<CompleteHabitCommand, CompleteHabitCommandResponse, CompleteHabitCommandHandler>(
@@ -78,20 +84,28 @@ void registerHabitsFeature(
         habitRepository: habitRepository,
         habitRecordRepository: habitRecordRepository,
         operationsService: habitRecordOperationsService,
+        habitEvents: container.resolve<IHabitEvents>(),
       ),
     )
     ..registerHandler<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse, AddHabitTimeRecordCommandHandler>(
-      () => AddHabitTimeRecordCommandHandler(habitTimeRecordRepository: habitTimeRecordRepository),
+      () => AddHabitTimeRecordCommandHandler(
+        habitTimeRecordRepository: habitTimeRecordRepository,
+        habitEvents: container.resolve<IHabitEvents>(),
+      ),
     )
     ..registerHandler<SaveHabitTimeRecordCommand, SaveHabitTimeRecordCommandResponse,
         SaveHabitTimeRecordCommandHandler>(
-      () => SaveHabitTimeRecordCommandHandler(habitTimeRecordRepository: habitTimeRecordRepository),
+      () => SaveHabitTimeRecordCommandHandler(
+        habitTimeRecordRepository: habitTimeRecordRepository,
+        habitEvents: container.resolve<IHabitEvents>(),
+      ),
     )
     ..registerHandler<DeleteHabitRecordCommand, DeleteHabitRecordCommandResponse, DeleteHabitRecordCommandHandler>(
       () => DeleteHabitRecordCommandHandler(
         habitRecordRepository: habitRecordRepository,
         habitTimeRecordRepository: habitTimeRecordRepository,
         habitRepository: habitRepository,
+        habitEvents: container.resolve<IHabitEvents>(),
       ),
     )
     ..registerHandler<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
@@ -129,6 +143,7 @@ void registerHabitsFeature(
         habitRecordRepository: habitRecordRepository,
         settingsRepository: settingsRepository,
         operationsService: habitRecordOperationsService,
+        habitEvents: container.resolve<IHabitEvents>(),
       ),
     );
 }

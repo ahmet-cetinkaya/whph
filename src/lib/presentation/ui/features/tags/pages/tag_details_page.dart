@@ -7,7 +7,6 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_translation_key
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
-import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
 import 'package:whph/presentation/ui/features/tags/components/tag_statistics_view.dart';
 
 class TagDetailsPage extends StatefulWidget {
@@ -70,10 +69,6 @@ class _TagDetailsPageState extends State<TagDetailsPage> {
             children: [
               TagDetailsContent(
                 tagId: widget.tagId,
-                onTagUpdated: () {
-                  final tagsService = container.resolve<TagsService>();
-                  tagsService.notifyTagUpdated(widget.tagId);
-                },
               ),
               const SizedBox(height: AppTheme.sizeSmall),
               TagStatisticsView(

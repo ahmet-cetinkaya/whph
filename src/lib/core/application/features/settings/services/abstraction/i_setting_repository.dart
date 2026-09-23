@@ -3,4 +3,5 @@ import 'package:whph/core/domain/features/settings/setting.dart';
 
 abstract class ISettingRepository extends app.IRepository<Setting, String> {
   Future<Setting?> getByKey(String key);
+  Future<DateTime?> updateIfRevision(Setting setting, DateTime expectedRevision);
 }

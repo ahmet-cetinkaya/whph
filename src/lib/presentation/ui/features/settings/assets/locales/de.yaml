@@ -59,6 +59,41 @@ settings:
     choose_title: Wählen Sie Ihre Sprache
     dialog_info: "{count} Sprachen verfügbar."
     title: Sprache
+  ai:
+    title: AI
+  mcp:
+    title: Verbindungen mit KI-Agenten
+    description: Erlauben Sie genehmigten lokalen KI-Agenten, ausgewählte WHPH-Funktionen zu nutzen.
+    status: Status des lokalen MCP-Servers
+    running: Wird ausgeführt
+    stopped: Angehalten
+    port: Port
+    save_port: Port speichern
+    transfer_directory: Übertragungsordner
+    choose_directory: Übertragungsordner auswählen
+    connections: Aktive Verbindungen
+    no_connections: Keine aktiven Agentverbindungen.
+    create_connection: Verbindung hinzufügen
+    connection_name: Verbindungsname
+    permissions: Berechtigungen
+    create: Token erstellen und kopieren
+    rotate: Token erneuern
+    revoke: Verbindung widerrufen
+    rotate_confirm: Token für diese Verbindung erneuern? Der alte Token funktioniert sofort nicht mehr.
+    revoke_confirm: Diese Verbindung sofort widerrufen?
+    confirm: Bestätigen
+    cancel: Abbrechen
+    token_copied: Der neue Token wurde kopiert. Er wird nicht erneut angezeigt.
+    storage_unavailable: Der sichere Speicher für MCP-Einstellungen ist nicht verfügbar.
+    approvals: Ausstehende Genehmigungen
+    no_approvals: Keine Vorgänge warten auf Genehmigung.
+    approve: Genehmigen
+    reject: Ablehnen
+    refresh: Ausstehende Genehmigungen aktualisieren
+    approvals_load_error: Ausstehende Genehmigungen konnten nicht geladen werden.
+    approval_update_error: Die Genehmigungsentscheidung konnte nicht gespeichert werden.
+    select_all: Alle auswählen
+    clear_selection: Leeren
   notifications:
     disable_error: Benachrichtigungen konnten nicht deaktiviert werden
     enable_error: Benachrichtigungen konnten nicht aktiviert werden

@@ -4,7 +4,6 @@ import 'package:whph/core/application/features/notes/commands/delete_note_comman
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_ui_constants.dart';
-import 'package:whph/presentation/ui/features/notes/services/notes_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -29,7 +28,6 @@ class NoteDeleteButton extends StatefulWidget {
 
 class _NoteDeleteButtonState extends State<NoteDeleteButton> {
   final _mediator = container.resolve<Mediator>();
-  final _notesService = container.resolve<NotesService>();
   final _translationService = container.resolve<ITranslationService>();
   bool _isDeleting = false;
 
@@ -73,8 +71,6 @@ class _NoteDeleteButtonState extends State<NoteDeleteButton> {
         return true;
       },
       onSuccess: (_) {
-        _notesService.notifyNoteDeleted(widget.noteId);
-
         if (widget.onDeleted != null) {
           widget.onDeleted!();
         }

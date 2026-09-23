@@ -1,8 +1,15 @@
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
+import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
+    as app;
 import 'package:acore/acore.dart' hide IRepository;
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
 
 abstract class IAppUsageRepository extends app.IRepository<AppUsage, String> {
+  Future<DateTime?> updateIfRevision(
+      AppUsage appUsage, DateTime expectedRevision);
+
+  Future<DateTime?> deleteIfRevision(
+      AppUsage appUsage, DateTime expectedRevision);
+
   Future<AppUsage?> getByDateAndHour({
     required String name,
     required int year,

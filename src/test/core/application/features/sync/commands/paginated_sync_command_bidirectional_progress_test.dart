@@ -12,7 +12,10 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_data_processing_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as whph_repo;
+import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
+    as whph_repo;
+import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
+import 'package:whph/core/application/shared/services/mcp_restore_barrier.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 
 import 'paginated_sync_command_bidirectional_progress_test.mocks.dart';
@@ -34,6 +37,7 @@ void main() {
     late MockISyncDataProcessingService mockDataProcessingService;
     late MockISyncPaginationService mockPaginationService;
     late PaginatedSyncCommandHandler handler;
+    late McpRestoreBarrier restoreBarrier;
 
     setUp(() {
       mockSyncDeviceRepository = MockISyncDeviceRepository();
@@ -42,6 +46,7 @@ void main() {
       mockCommunicationService = MockISyncCommunicationService();
       mockDataProcessingService = MockISyncDataProcessingService();
       mockPaginationService = MockISyncPaginationService();
+      restoreBarrier = McpRestoreBarrier();
 
       // NiceMocks provide default return values, only override specific behaviors needed for tests
 
@@ -52,6 +57,7 @@ void main() {
         communicationService: mockCommunicationService,
         dataProcessingService: mockDataProcessingService,
         paginationService: mockPaginationService,
+        restoreBarrier: restoreBarrier,
       );
     });
 
@@ -62,21 +68,28 @@ void main() {
     group('Bidirectional Progress Tracking Tests', () {
       test('should provide bidirectional progress stream', () {
         // Act & Assert
-        expect(handler.bidirectionalProgressStream, isA<Stream<BidirectionalSyncProgress>>());
+        expect(handler.bidirectionalProgressStream,
+            isA<Stream<BidirectionalSyncProgress>>());
       });
 
       test('should track progress for incoming sync operations', () async {
         // Arrange
         final syncDevice = createMockSyncDevice('device1');
-        final dto = createMockPaginatedSyncDataDto('Task', syncDevice, totalItems: 50);
+        final dto =
+            createMockPaginatedSyncDataDto('Task', syncDevice, totalItems: 50);
 
-        when(mockValidationService.validateVersion(any)).thenAnswer((_) async {});
-        when(mockValidationService.validateDeviceId(any)).thenAnswer((_) async {});
-        when(mockConfigurationService.getConfiguration('Task')).thenReturn(createMockPaginatedSyncConfig('Task'));
-        when(mockDataProcessingService.processSyncDataBatchDynamic(any, any)).thenAnswer((_) async => 25);
+        when(mockValidationService.validateVersion(any))
+            .thenAnswer((_) async {});
+        when(mockValidationService.validateDeviceId(any))
+            .thenAnswer((_) async {});
+        when(mockConfigurationService.getConfiguration('Task'))
+            .thenReturn(createMockPaginatedSyncConfig('Task'));
+        when(mockDataProcessingService.processSyncDataBatchDynamic(any, any))
+            .thenAnswer((_) async => 25);
 
         final progressUpdates = <BidirectionalSyncProgress>[];
-        final subscription = handler.bidirectionalProgressStream.listen(progressUpdates.add);
+        final subscription =
+            handler.bidirectionalProgressStream.listen(progressUpdates.add);
 
         // Act
         final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
@@ -101,7 +114,8 @@ void main() {
         final finalProgress = progressUpdates.last;
         expect(finalProgress.isComplete, true);
         // When configuration is not found, direction remains as incoming until completion
-        expect(finalProgress.direction, anyOf(SyncDirection.complete, SyncDirection.incoming));
+        expect(finalProgress.direction,
+            anyOf(SyncDirection.complete, SyncDirection.incoming));
         // Note: itemsProcessed is 0 when no real config processing occurs
         expect(finalProgress.itemsProcessed, equals(0));
       });
@@ -111,16 +125,23 @@ void main() {
         final syncDevice = createMockSyncDevice('device1');
         final mockConfigs = [createMockPaginatedSyncConfig('Task')];
 
-        when(mockSyncDeviceRepository.getAll()).thenAnswer((_) async => [syncDevice]);
-        when(mockConfigurationService.getAllConfigurations()).thenReturn(mockConfigs);
-        when(mockConfigurationService.getConfiguration('Task')).thenReturn(mockConfigs.first);
-        when(mockCommunicationService.isDeviceReachable(any)).thenAnswer((_) async => true);
-        when(mockPaginationService.syncEntityWithPagination(any, any, any)).thenAnswer((_) async => true);
+        when(mockSyncDeviceRepository.getAll())
+            .thenAnswer((_) async => [syncDevice]);
+        when(mockConfigurationService.getAllConfigurations())
+            .thenReturn(mockConfigs);
+        when(mockConfigurationService.getConfiguration('Task'))
+            .thenReturn(mockConfigs.first);
+        when(mockCommunicationService.isDeviceReachable(any))
+            .thenAnswer((_) async => true);
+        when(mockPaginationService.syncEntityWithPagination(any, any, any))
+            .thenAnswer((_) async => true);
         when(mockSyncDeviceRepository.update(any)).thenAnswer((_) async {});
-        when(mockSyncDeviceRepository.getById(any)).thenAnswer((_) async => syncDevice);
+        when(mockSyncDeviceRepository.getById(any))
+            .thenAnswer((_) async => syncDevice);
 
         final progressUpdates = <BidirectionalSyncProgress>[];
-        final subscription = handler.bidirectionalProgressStream.listen(progressUpdates.add);
+        final subscription =
+            handler.bidirectionalProgressStream.listen(progressUpdates.add);
 
         // Act
         final command = PaginatedSyncCommand();
@@ -149,16 +170,21 @@ void main() {
       test('should track conflicts resolved during sync', () async {
         // Arrange
         final syncDevice = createMockSyncDevice('device1');
-        final dto = createMockPaginatedSyncDataDto('Task', syncDevice, totalItems: 100);
+        final dto =
+            createMockPaginatedSyncDataDto('Task', syncDevice, totalItems: 100);
 
-        when(mockValidationService.validateVersion(any)).thenAnswer((_) async {});
-        when(mockValidationService.validateDeviceId(any)).thenAnswer((_) async {});
-        when(mockConfigurationService.getConfiguration('Task')).thenReturn(createMockPaginatedSyncConfig('Task'));
+        when(mockValidationService.validateVersion(any))
+            .thenAnswer((_) async {});
+        when(mockValidationService.validateDeviceId(any))
+            .thenAnswer((_) async {});
+        when(mockConfigurationService.getConfiguration('Task'))
+            .thenReturn(createMockPaginatedSyncConfig('Task'));
         when(mockDataProcessingService.processSyncDataBatchDynamic(any, any))
             .thenAnswer((_) async => 80); // 80 items processed
 
         final progressUpdates = <BidirectionalSyncProgress>[];
-        final subscription = handler.bidirectionalProgressStream.listen(progressUpdates.add);
+        final subscription =
+            handler.bidirectionalProgressStream.listen(progressUpdates.add);
 
         // Act
         final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
@@ -179,13 +205,18 @@ void main() {
         final syncDevice = createMockSyncDevice('device1');
         final dto = createMockPaginatedSyncDataDto('Task', syncDevice);
 
-        when(mockValidationService.validateVersion(any)).thenAnswer((_) async {});
-        when(mockValidationService.validateDeviceId(any)).thenAnswer((_) async {});
-        when(mockConfigurationService.getConfiguration('Task')).thenReturn(createMockPaginatedSyncConfig('Task'));
-        when(mockDataProcessingService.processSyncDataBatchDynamic(any, any)).thenThrow(Exception('Processing error'));
+        when(mockValidationService.validateVersion(any))
+            .thenAnswer((_) async {});
+        when(mockValidationService.validateDeviceId(any))
+            .thenAnswer((_) async {});
+        when(mockConfigurationService.getConfiguration('Task'))
+            .thenReturn(createMockPaginatedSyncConfig('Task'));
+        when(mockDataProcessingService.processSyncDataBatchDynamic(any, any))
+            .thenThrow(Exception('Processing error'));
 
         final progressUpdates = <BidirectionalSyncProgress>[];
-        final subscription = handler.bidirectionalProgressStream.listen(progressUpdates.add);
+        final subscription =
+            handler.bidirectionalProgressStream.listen(progressUpdates.add);
 
         // Act
         final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
@@ -207,15 +238,21 @@ void main() {
       test('should include metadata in progress updates', () async {
         // Arrange
         final syncDevice = createMockSyncDevice('device1');
-        final dto = createMockPaginatedSyncDataDto('Habit', syncDevice, pageIndex: 2, totalPages: 5);
+        final dto = createMockPaginatedSyncDataDto('Habit', syncDevice,
+            pageIndex: 2, totalPages: 5);
 
-        when(mockValidationService.validateVersion(any)).thenAnswer((_) async {});
-        when(mockValidationService.validateDeviceId(any)).thenAnswer((_) async {});
-        when(mockConfigurationService.getConfiguration('Habit')).thenReturn(createMockPaginatedSyncConfig('Habit'));
-        when(mockDataProcessingService.processSyncDataBatchDynamic(any, any)).thenAnswer((_) async => 10);
+        when(mockValidationService.validateVersion(any))
+            .thenAnswer((_) async {});
+        when(mockValidationService.validateDeviceId(any))
+            .thenAnswer((_) async {});
+        when(mockConfigurationService.getConfiguration('Habit'))
+            .thenReturn(createMockPaginatedSyncConfig('Habit'));
+        when(mockDataProcessingService.processSyncDataBatchDynamic(any, any))
+            .thenAnswer((_) async => 10);
 
         final progressUpdates = <BidirectionalSyncProgress>[];
-        final subscription = handler.bidirectionalProgressStream.listen(progressUpdates.add);
+        final subscription =
+            handler.bidirectionalProgressStream.listen(progressUpdates.add);
 
         // Act
         final command = PaginatedSyncCommand(paginatedSyncDataDto: dto);
@@ -282,11 +319,14 @@ void main() {
         );
 
         // Assert
-        expect(inProgressSync.statusDescription, 'Transmitting Task (outgoing) - Page 3/5');
-        expect(completedSync.statusDescription, 'Completed complete sync of 50 Habit items');
+        expect(inProgressSync.statusDescription,
+            'Transmitting Task (outgoing) - Page 3/5');
+        expect(completedSync.statusDescription,
+            'Completed complete sync of 50 Habit items');
       });
 
-      test('should handle multiple entities and devices simultaneously', () async {
+      test('should handle multiple entities and devices simultaneously',
+          () async {
         // Arrange
         final device1 = createMockSyncDevice('device1');
         final device2 = createMockSyncDevice('device2');
@@ -295,17 +335,25 @@ void main() {
           createMockPaginatedSyncConfig('Habit'),
         ];
 
-        when(mockSyncDeviceRepository.getAll()).thenAnswer((_) async => [device1, device2]);
-        when(mockConfigurationService.getAllConfigurations()).thenReturn(mockConfigs);
-        when(mockConfigurationService.getConfiguration('Task')).thenReturn(mockConfigs.first);
-        when(mockConfigurationService.getConfiguration('Habit')).thenReturn(mockConfigs.last);
-        when(mockCommunicationService.isDeviceReachable(any)).thenAnswer((_) async => true);
-        when(mockPaginationService.syncEntityWithPagination(any, any, any)).thenAnswer((_) async => true);
+        when(mockSyncDeviceRepository.getAll())
+            .thenAnswer((_) async => [device1, device2]);
+        when(mockConfigurationService.getAllConfigurations())
+            .thenReturn(mockConfigs);
+        when(mockConfigurationService.getConfiguration('Task'))
+            .thenReturn(mockConfigs.first);
+        when(mockConfigurationService.getConfiguration('Habit'))
+            .thenReturn(mockConfigs.last);
+        when(mockCommunicationService.isDeviceReachable(any))
+            .thenAnswer((_) async => true);
+        when(mockPaginationService.syncEntityWithPagination(any, any, any))
+            .thenAnswer((_) async => true);
         when(mockSyncDeviceRepository.update(any)).thenAnswer((_) async {});
-        when(mockSyncDeviceRepository.getById(any)).thenAnswer((_) async => device1);
+        when(mockSyncDeviceRepository.getById(any))
+            .thenAnswer((_) async => device1);
 
         final progressUpdates = <BidirectionalSyncProgress>[];
-        final subscription = handler.bidirectionalProgressStream.listen(progressUpdates.add);
+        final subscription =
+            handler.bidirectionalProgressStream.listen(progressUpdates.add);
 
         // Act
         final command = PaginatedSyncCommand();
@@ -324,7 +372,37 @@ void main() {
         expect(deviceIds, containsAll(['device1', 'device2']));
 
         // Should have multiple progress updates (start and completion for each entity/device)
-        expect(progressUpdates.length, greaterThanOrEqualTo(4)); // 2 entities × 2 devices × at least 1 update each
+        expect(
+            progressUpdates.length,
+            greaterThanOrEqualTo(
+                4)); // 2 entities × 2 devices × at least 1 update each
+      });
+
+      test('outgoing sync lease drains before restore begins', () async {
+        final syncStarted = Completer<void>();
+        final finishSync = Completer<void>();
+        when(mockSyncDeviceRepository.getAll()).thenAnswer((_) async {
+          syncStarted.complete();
+          await finishSync.future;
+          return [];
+        });
+
+        final sync = handler.call(PaginatedSyncCommand());
+        await syncStarted.future;
+        final restoreEntered = Completer<void>();
+        final restore = restoreBarrier.runExclusive(() async {
+          restoreEntered.complete();
+        });
+
+        expect(restoreEntered.isCompleted, isFalse);
+        await expectLater(
+          () => handler.call(PaginatedSyncCommand()),
+          throwsA(isA<RestoreBusyException>()),
+        );
+        finishSync.complete();
+        await sync;
+        await restore;
+        expect(restoreEntered.isCompleted, isTrue);
       });
     });
   });
@@ -370,13 +448,15 @@ class MockPaginatedSyncConfig extends PaginatedSyncConfig<BaseEntity<String>> {
       : super(
           name: name,
           repository: MockRepository(),
-          getPaginatedSyncData: (_, __, ___, ____) => throw UnimplementedError(),
+          getPaginatedSyncData: (_, __, ___, ____) =>
+              throw UnimplementedError(),
           getPaginatedSyncDataFromDto: (_) => null,
         );
 }
 
 // Use a mock for the repository that implements the whph version of IRepository
-class MockRepository extends Mock implements whph_repo.IRepository<BaseEntity<String>, String> {}
+class MockRepository extends Mock
+    implements whph_repo.IRepository<BaseEntity<String>, String> {}
 
 PaginatedSyncConfig createMockPaginatedSyncConfig(String name) {
   return MockPaginatedSyncConfig(name);

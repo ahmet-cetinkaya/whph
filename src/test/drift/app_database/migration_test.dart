@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart' hide test, expect, setUpAll, group, tearDownAll;
 import 'package:test/test.dart';
+import 'package:whph/core/application/shared/services/mcp_restore_barrier.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.steps.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/migrations/migration_v35_to_v36.dart';
@@ -569,7 +570,7 @@ const _preservedTables = [
 class TestAppDatabase extends AppDatabase {
   int targetVersion;
 
-  TestAppDatabase(super.e, this.targetVersion);
+  TestAppDatabase(QueryExecutor executor, this.targetVersion) : super.withRestoreBarrier(executor, McpRestoreBarrier());
 
   @override
   int get schemaVersion => targetVersion;

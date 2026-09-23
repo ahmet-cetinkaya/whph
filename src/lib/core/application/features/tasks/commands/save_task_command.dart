@@ -4,6 +4,7 @@ import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_events.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
@@ -99,16 +100,19 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ISettingRepository _settingRepository;
+  final ITaskEvents? _taskEvents;
 
   SaveTaskCommandHandler({
     required ITaskRepository taskService,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
     required ISettingRepository settingRepository,
+    ITaskEvents? taskEvents,
   })  : _taskRepository = taskService,
         _taskTagRepository = taskTagRepository,
         _taskTimeRecordRepository = taskTimeRecordRepository,
-        _settingRepository = settingRepository;
+        _settingRepository = settingRepository,
+        _taskEvents = taskEvents;
 
   /// Gets the default estimated time from user settings.
   /// Returns null if user has disabled default estimated time.
@@ -227,6 +231,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
   @override
   Future<SaveTaskCommandResponse> call(SaveTaskCommand request) async {
+    final isCreating = request.id == null;
     final plannedDate = request.plannedDate;
     final deadlineDate = request.deadlineDate;
     if (plannedDate != null && deadlineDate != null && deadlineDate.isBefore(plannedDate)) {
@@ -417,6 +422,12 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
         );
         await _taskTagRepository.add(taskTag);
       }
+    }
+
+    if (isCreating) {
+      _taskEvents?.notifyTaskCreated(task.id);
+    } else {
+      _taskEvents?.notifyTaskUpdated(task.id);
     }
 
     return SaveTaskCommandResponse(

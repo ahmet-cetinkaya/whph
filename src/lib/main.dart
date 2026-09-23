@@ -17,6 +17,7 @@ import 'package:whph/presentation/ui/shared/state/app_startup_error_state.dart';
 import 'package:whph/core/application/features/widget/services/widget_service/widget_service.dart';
 import 'package:whph/core/application/features/widget/services/widget_update_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_shutdown_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
@@ -247,8 +248,8 @@ Future<void> main(List<String> args) async {
     if (PlatformUtils.isDesktop) {
       for (final signal in [ProcessSignal.sigint, ProcessSignal.sigterm]) {
         signal.watch().listen((_) async {
-          await _cleanupOnExit();
-          exit(0);
+          final didCleanUp = await _cleanupOnExit();
+          exit(didCleanUp ? 0 : 1);
         });
       }
     }
@@ -279,14 +280,13 @@ Future<String?> _readDefaultPageRoute(IContainer appContainer) async {
 }
 
 /// Cleanup resources before app exit
-Future<void> _cleanupOnExit() async {
+Future<bool> _cleanupOnExit() async {
   try {
-    if (PlatformUtils.isDesktop) {
-      final singleInstanceService = container.resolve<ISingleInstanceService>();
-      await singleInstanceService.releaseInstance();
-    }
-  } catch (e) {
-    debugPrint('Error during cleanup: $e');
+    await container.resolve<IApplicationShutdownService>().shutdown();
+    return true;
+  } catch (error, stackTrace) {
+    debugPrint('Error during cleanup: $error\n$stackTrace');
+    return false;
   }
 }
 

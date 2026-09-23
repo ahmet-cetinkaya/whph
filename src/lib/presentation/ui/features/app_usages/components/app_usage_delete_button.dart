@@ -3,7 +3,6 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/commands/delete_app_usage_command.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
-import 'package:whph/presentation/ui/features/app_usages/services/app_usages_service.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:acore/utils/dialog_size.dart';
@@ -32,7 +31,6 @@ class AppUsageDeleteButton extends StatefulWidget {
 
 class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
   final Mediator _mediator = container.resolve<Mediator>();
-  final AppUsagesService _appUsagesService = container.resolve<AppUsagesService>();
   final ITranslationService _translationService = container.resolve<ITranslationService>();
   bool _isDeleting = false;
 
@@ -94,9 +92,7 @@ class _AppUsageDeleteButtonState extends State<AppUsageDeleteButton> {
     );
   }
 
-  void notifyDeletion(String id) {
-    _appUsagesService.notifyAppUsageDeleted(id);
-  }
+  void notifyDeletion(String id) {}
 
   @override
   Widget build(BuildContext context) {

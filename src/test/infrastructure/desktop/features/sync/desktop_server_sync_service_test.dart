@@ -3,6 +3,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_server_sync_service.dart';
+import 'package:whph/core/application/shared/services/mcp_restore_barrier.dart';
 import 'package:whph/infrastructure/desktop/features/sync/websocket_connection_manager.dart';
 import 'package:whph/infrastructure/desktop/features/sync/websocket_message_validator.dart';
 import 'package:mediatr/mediatr.dart';
@@ -22,10 +23,15 @@ void main() {
     setUp(() {
       mockMediator = MockMediator();
       mockDeviceIdService = MockIDeviceIdService();
-      service = DesktopServerSyncService(mockMediator, mockDeviceIdService);
+      service = DesktopServerSyncService(
+        mockMediator,
+        mockDeviceIdService,
+        restoreBarrier: McpRestoreBarrier(),
+      );
 
       // Setup default device ID
-      when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+      when(mockDeviceIdService.getDeviceId())
+          .thenAnswer((_) async => 'test-device-id');
     });
 
     tearDown(() {
@@ -437,7 +443,8 @@ void main() {
       });
 
       test('should interact with device ID service', () async {
-        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'device-123');
+        when(mockDeviceIdService.getDeviceId())
+            .thenAnswer((_) async => 'device-123');
 
         await service.startAsServer();
 
@@ -646,7 +653,8 @@ void main() {
     group('Regression Tests', () {
       test('should fix connection pool exhaustion (Issue #99)', () {
         // Verify the fix: increased per-IP limit
-        expect(maxConnectionsPerIP, equals(5), reason: 'Per-IP limit should be increased from 3 to 5');
+        expect(maxConnectionsPerIP, equals(5),
+            reason: 'Per-IP limit should be increased from 3 to 5');
 
         // Verify the fix: connection recycling enabled
         expect(connectionRecycleIdleSeconds, equals(5),

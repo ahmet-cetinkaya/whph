@@ -5,7 +5,6 @@ import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
-import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
 
 class TagAddButton extends StatefulWidget {
   /// The color of the button icon
@@ -43,7 +42,6 @@ class TagAddButton extends StatefulWidget {
 class _TagAddButtonState extends State<TagAddButton> {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
-  final _tagsService = container.resolve<TagsService>();
 
   Future<void> _addTag() async {
     await AsyncErrorHandler.execute<SaveTagCommandResponse>(
@@ -57,7 +55,6 @@ class _TagAddButtonState extends State<TagAddButton> {
         return await _mediator.send<SaveTagCommand, SaveTagCommandResponse>(command);
       },
       onSuccess: (savedTag) {
-        _tagsService.notifyTagCreated(savedTag.id);
         if (widget.onTagCreated != null) widget.onTagCreated!(savedTag.id);
       },
     );

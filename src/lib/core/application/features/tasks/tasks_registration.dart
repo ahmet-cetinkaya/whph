@@ -26,11 +26,11 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_recurrence_service.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_events.dart';
 import 'package:whph/core/application/features/tasks/services/task_recurrence_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_reminder_calculation_service.dart';
 import 'package:whph/core/application/features/tasks/services/reminder_calculation_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/presentation/ui/features/tasks/services/tasks_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/default_task_settings_service.dart';
 import 'package:whph/presentation/ui/features/tasks/services/abstraction/i_default_task_settings_service.dart';
 
@@ -71,7 +71,8 @@ void registerTasksFeature(
       taskRepository,
       taskTimeRecordRepository,
       container.resolve<ITaskRecurrenceService>(),
-      container.resolve<TasksService>(),
+      mediator,
+      container.resolve<ITaskEvents>(),
     ),
   );
 
@@ -85,6 +86,7 @@ void registerTasksFeature(
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
         settingRepository: settingRepository,
+        taskEvents: container.resolve<ITaskEvents>(),
       ),
     )
     ..registerHandler<DeleteTaskCommand, DeleteTaskCommandResponse, DeleteTaskCommandHandler>(
@@ -92,6 +94,7 @@ void registerTasksFeature(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
+        taskEvents: container.resolve<ITaskEvents>(),
       ),
     )
     ..registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(
@@ -119,7 +122,10 @@ void registerTasksFeature(
       ),
     )
     ..registerHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse, SaveTaskTimeRecordCommandHandler>(
-      () => SaveTaskTimeRecordCommandHandler(taskTimeRecordRepository: taskTimeRecordRepository),
+      () => SaveTaskTimeRecordCommandHandler(
+        taskTimeRecordRepository: taskTimeRecordRepository,
+        taskEvents: container.resolve<ITaskEvents>(),
+      ),
     )
     ..registerHandler<UpdateTaskOrderCommand, UpdateTaskOrderResponse, UpdateTaskOrderCommandHandler>(
       () => UpdateTaskOrderCommandHandler(taskRepository),
@@ -131,7 +137,10 @@ void registerTasksFeature(
       () => UpdateTaskTagsOrderCommandHandler(taskTagRepository: taskTagRepository),
     )
     ..registerHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
-      () => AddTaskTimeRecordCommandHandler(taskTimeRecordRepository: taskTimeRecordRepository),
+      () => AddTaskTimeRecordCommandHandler(
+        taskTimeRecordRepository: taskTimeRecordRepository,
+        taskEvents: container.resolve<ITaskEvents>(),
+      ),
     )
     ..registerHandler<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse,
         GetTotalDurationByTaskIdQueryHandler>(

@@ -17,9 +17,16 @@ class AppUsageIgnoreRuleTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftAppUsageIgnoreRuleRepository extends DriftBaseRepository<AppUsageIgnoreRule, String, AppUsageIgnoreRuleTable>
-    implements IAppUsageIgnoreRuleRepository {
-  DriftAppUsageIgnoreRuleRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageIgnoreRuleTable);
+class DriftAppUsageIgnoreRuleRepository extends DriftBaseRepository<
+    AppUsageIgnoreRule,
+    String,
+    AppUsageIgnoreRuleTable> implements IAppUsageIgnoreRuleRepository {
+  DriftAppUsageIgnoreRuleRepository()
+      : super(AppDatabase.instance(),
+            AppDatabase.instance().appUsageIgnoreRuleTable);
+
+  DriftAppUsageIgnoreRuleRepository.withDatabase(AppDatabase database)
+      : super(database, database.appUsageIgnoreRuleTable);
 
   @override
   Expression<String> getPrimaryKey(AppUsageIgnoreRuleTable t) {
@@ -36,5 +43,28 @@ class DriftAppUsageIgnoreRuleRepository extends DriftBaseRepository<AppUsageIgno
       pattern: entity.pattern,
       description: Value(entity.description),
     );
+  }
+
+  @override
+  Future<DateTime?> deleteIfRevision(
+      AppUsageIgnoreRule rule, DateTime expectedRevision) async {
+    final deletedAt = nextDatabaseRevision(expectedRevision);
+    final affectedRows = await database.customUpdate(
+      '''
+        UPDATE app_usage_ignore_rule_table
+        SET deleted_date = ?, modified_date = ?
+        WHERE id = ? AND deleted_date IS NULL
+          AND (modified_date = ? OR (modified_date IS NULL AND created_date = ?))
+      ''',
+      variables: [
+        Variable.withDateTime(deletedAt),
+        Variable.withDateTime(deletedAt),
+        Variable<String>(rule.id),
+        Variable.withDateTime(expectedRevision),
+        Variable.withDateTime(expectedRevision),
+      ],
+      updates: {table},
+    );
+    return affectedRows == 1 ? deletedAt : null;
   }
 }

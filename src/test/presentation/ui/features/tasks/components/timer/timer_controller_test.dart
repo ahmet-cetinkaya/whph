@@ -1,10 +1,27 @@
 import 'package:fake_async/fake_async.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mediatr/mediatr.dart';
+import 'package:acore/acore.dart' hide Container;
+import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_timer_session_service.dart';
+import 'package:whph/core/application/shared/services/timer_session_service.dart';
+import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/core/domain/shared/constants/app_assets.dart';
+import 'package:whph/infrastructure/android/constants/android_app_constants.dart';
+import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
+import 'package:whph/main.dart' as app_main;
+import 'package:whph/presentation/ui/features/tasks/components/timer/timer.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer_controller.dart';
 import 'package:whph/presentation/ui/features/tasks/models/timer_settings.dart';
+import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_reminder_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/services/notification_payload_service.dart';
 
 /// No-op mediator implementation.
 /// Used as a placeholder since TimerController requires a Mediator but
@@ -45,6 +62,101 @@ class FakeReminderService implements IReminderService {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
+
+class FakeDurationWriter implements ITimerSessionDurationWriter {
+  @override
+  Future<void> write(TimerSessionDuration duration) async {}
+}
+
+class _RecordingWidgetDurationWriter implements ITimerSessionDurationWriter {
+  final List<TimerSessionDuration> writes = [];
+
+  @override
+  Future<void> write(TimerSessionDuration duration) async =>
+      writes.add(duration);
+}
+
+class FakeAlarmScheduler implements ITimerSessionAlarmScheduler {
+  @override
+  Future<void> cancel(String alarmId) async {}
+
+  @override
+  Future<void> schedule({
+    required String alarmId,
+    required DateTime scheduledAt,
+  }) async {}
+}
+
+class _TimerWidgetMediator extends Fake implements Mediator {
+  @override
+  Future<R> send<T extends IRequest<R>, R extends Object?>(T request) async {
+    final Object settingRequest = request;
+    if (settingRequest is GetSettingQuery &&
+        settingRequest.key == SettingKeys.defaultTimerMode) {
+      return GetSettingQueryResponse(
+        id: 'timer-mode',
+        createdDate: DateTime(2026, 9, 8),
+        key: SettingKeys.defaultTimerMode,
+        value: TimerMode.normal.value,
+        valueType: SettingValueType.string,
+      ) as R;
+    }
+    return null as R;
+  }
+}
+
+class _FakeContainer extends Fake implements IContainer {
+  Map<Type, Object> _registrations = const {};
+
+  void register<T extends Object>(T instance) =>
+      _registrations = {..._registrations, T: instance};
+
+  @override
+  T resolve<T>([String? name]) => _registrations[T] as T;
+}
+
+class _FakeSoundManager extends Fake implements ISoundManagerService {
+  @override
+  Future<void> stopAll() async {}
+
+  @override
+  Future<void> stopTimerAlarmLoop() async {}
+}
+
+class _FakeSystemTray extends Fake implements ISystemTrayService {
+  @override
+  Future<void> setTitle(String title) async {}
+
+  @override
+  Future<void> setBody(String body) async {}
+
+  @override
+  Future<void> setIcon(TrayIconType type) async {}
+
+  @override
+  Future<void> insertMenuItem(TrayMenuItem item, {int? index}) async {}
+
+  @override
+  Future<void> removeMenuItem(String key) async {}
+
+  @override
+  Future<void> reset() async {}
+
+  @override
+  List<TrayMenuItem> getMenuItems() => const [];
+}
+
+class _FakeWakelock extends Fake implements IWakelockService {
+  @override
+  Future<void> disable() async {}
+}
+
+class _FakeTranslation extends Fake implements ITranslationService {
+  @override
+  String translate(String key, {Map<String, String>? namedArgs}) => key;
+}
+
+class _FakeNotification extends Fake implements INotificationService {}
 
 TimerSettings _defaultSettings({
   TimerMode timerMode = TimerMode.normal,
@@ -89,8 +201,94 @@ void main() {
   });
 
   group('TimerController', () {
+    testWidgets(
+        'AppTimer normal notification action uses the shared restart operation',
+        (tester) async {
+      var now = DateTime(2026, 9, 8);
+      final writer = _RecordingWidgetDurationWriter();
+      final sessionService = TimerSessionService(
+        durationWriter: writer,
+        alarmScheduler: FakeAlarmScheduler(),
+        now: () => now,
+      );
+      final widgetContainer = _FakeContainer()
+        ..register<Mediator>(_TimerWidgetMediator())
+        ..register<ISoundManagerService>(_FakeSoundManager())
+        ..register<ISystemTrayService>(_FakeSystemTray())
+        ..register<ITranslationService>(_FakeTranslation())
+        ..register<INotificationService>(_FakeNotification())
+        ..register<IWakelockService>(_FakeWakelock())
+        ..register<IReminderService>(FakeReminderService())
+        ..register<ITimerSessionService>(sessionService);
+      app_main.container = widgetContainer;
+      addTearDown(() async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        NotificationPayloadService.disposeActionStream();
+        await sessionService.shutdown();
+      });
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AppTimer(
+              sessionId: 'task:notification-widget',
+              sessionOwner: TimerSessionOwner.task('notification-widget'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await sessionService.start('task:notification-widget');
+      now = now.add(const Duration(seconds: 5));
+      await tester.pump(const Duration(seconds: 1));
+
+      NotificationPayloadService.handleForegroundAction(
+        '${AndroidAppConstants.intentActions.timerStartBreak}:task:notification-widget',
+      );
+      await tester.pump();
+
+      final state = sessionService.state('task:notification-widget')!;
+      expect(state.settings.mode, TimerSessionMode.normal);
+      expect(state.isRunning, isTrue);
+      expect(state.sessionTotalElapsed, Duration.zero);
+      expect(writer.writes.map((write) => write.duration.inSeconds), [5]);
+      await sessionService.stop('task:notification-widget');
+    });
+
+    test('reflects the same shared session controlled outside the UI', () {
+      fakeAsync((async) {
+        final sessionService = TimerSessionService(
+          durationWriter: FakeDurationWriter(),
+          alarmScheduler: FakeAlarmScheduler(),
+          now: () => DateTime(2026, 9, 8).add(async.elapsed),
+        );
+        final sharedController = TimerController(
+          mediator: FakeMediator(),
+          reminderService: FakeReminderService(),
+          sessionService: sessionService,
+          sessionId: 'task:shared',
+          sessionOwner: const TimerSessionOwner.task('shared'),
+        );
+        sharedController.updateSettings(
+          _defaultSettings(timerMode: TimerMode.stopwatch),
+        );
+        async.flushMicrotasks();
+
+        sessionService.start('task:shared');
+        async.flushMicrotasks();
+        async.elapse(const Duration(seconds: 2));
+        async.flushMicrotasks();
+
+        expect(sharedController.isRunning, isTrue);
+        expect(sharedController.elapsedTime, const Duration(seconds: 2));
+        sharedController.dispose();
+        expect(sessionService.state('task:shared')!.isRunning, isTrue);
+      });
+    });
+
     group('time calculation', () {
-      test('wall clock time calculation works regardless of tick frequency', () {
+      test('wall clock time calculation works regardless of tick frequency',
+          () {
         fakeAsync((async) {
           controller.updateSettings(_defaultSettings());
 
@@ -99,7 +297,8 @@ void main() {
 
           async.elapse(const Duration(milliseconds: 1100));
 
-          expect(controller.sessionTotalElapsed.inMilliseconds, greaterThanOrEqualTo(1000));
+          expect(controller.sessionTotalElapsed.inMilliseconds,
+              greaterThanOrEqualTo(1000));
         });
       });
     });
@@ -117,7 +316,8 @@ void main() {
       });
 
       test('system alarm is NOT scheduled for stopwatch mode', () async {
-        controller.updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
+        controller
+            .updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
 
         controller.startTimer();
 
@@ -207,6 +407,76 @@ void main() {
     });
 
     group('toggleWorkBreak', () {
+      test(
+          'shared normal notification transition resets and restarts the timer',
+          () {
+        fakeAsync((async) {
+          final sessionService = TimerSessionService(
+            durationWriter: FakeDurationWriter(),
+            alarmScheduler: FakeAlarmScheduler(),
+            now: () => DateTime(2026, 9, 8).add(async.elapsed),
+          );
+          final sharedController = TimerController(
+            mediator: FakeMediator(),
+            reminderService: FakeReminderService(),
+            sessionService: sessionService,
+            sessionId: 'task:normal-notification',
+            sessionOwner: const TimerSessionOwner.task('normal-notification'),
+          );
+          sharedController.updateSettings(
+            _defaultSettings(timerMode: TimerMode.normal),
+          );
+          async.flushMicrotasks();
+          sharedController.startTimer();
+          async.flushMicrotasks();
+          async.elapse(const Duration(minutes: 1, seconds: 1));
+          async.flushMicrotasks();
+
+          expect(sharedController.isAlarmPlaying, isTrue);
+          sharedController.startNextPhase();
+          async.flushMicrotasks();
+
+          expect(sharedController.isRunning, isTrue);
+          expect(sharedController.isAlarmPlaying, isFalse);
+          expect(sharedController.remainingTime, const Duration(minutes: 1));
+          sharedController.dispose();
+        });
+      });
+
+      test('shared stopwatch notification transition resets elapsed time', () {
+        fakeAsync((async) {
+          final sessionService = TimerSessionService(
+            durationWriter: FakeDurationWriter(),
+            alarmScheduler: FakeAlarmScheduler(),
+            now: () => DateTime(2026, 9, 8).add(async.elapsed),
+          );
+          final sharedController = TimerController(
+            mediator: FakeMediator(),
+            reminderService: FakeReminderService(),
+            sessionService: sessionService,
+            sessionId: 'task:stopwatch-notification',
+            sessionOwner:
+                const TimerSessionOwner.task('stopwatch-notification'),
+          );
+          sharedController.updateSettings(
+            _defaultSettings(timerMode: TimerMode.stopwatch),
+          );
+          async.flushMicrotasks();
+          sharedController.startTimer();
+          async.flushMicrotasks();
+          async.elapse(const Duration(seconds: 5));
+          async.flushMicrotasks();
+
+          expect(sharedController.elapsedTime, const Duration(seconds: 5));
+          sharedController.startNextPhase();
+          async.flushMicrotasks();
+
+          expect(sharedController.elapsedTime, Duration.zero);
+          expect(sharedController.isRunning, isTrue);
+          sharedController.dispose();
+        });
+      });
+
       test('toggles from work to break and increments session count', () {
         fakeAsync((async) {
           controller.updateSettings(_defaultSettings(
@@ -263,7 +533,8 @@ void main() {
 
       test('resets stopwatch elapsed time on toggle', () {
         fakeAsync((async) {
-          controller.updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
+          controller
+              .updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
 
           controller.startTimer();
           async.elapse(const Duration(seconds: 5));
@@ -321,7 +592,8 @@ void main() {
 
       test('resets stopwatch elapsed time', () {
         fakeAsync((async) {
-          controller.updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
+          controller
+              .updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
 
           controller.startTimer();
           async.elapse(const Duration(seconds: 10));

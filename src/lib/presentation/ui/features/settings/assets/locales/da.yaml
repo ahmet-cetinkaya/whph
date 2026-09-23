@@ -55,6 +55,41 @@ settings:
     choose_title: Vælg dit sprog
     dialog_info: "{count} sprog tilgængelige."
     title: Sprog
+  ai:
+    title: AI
+  mcp:
+    title: AI-agentforbindelser
+    description: Tillad godkendte lokale AI-agenter at bruge udvalgte WHPH-funktioner.
+    status: Status for lokal MCP-server
+    running: Kører
+    stopped: Stoppet
+    port: Port
+    save_port: Gem port
+    transfer_directory: Overførselsmappe
+    choose_directory: Vælg overførselsmappe
+    connections: Aktive forbindelser
+    no_connections: Ingen aktive agentforbindelser.
+    create_connection: Tilføj forbindelse
+    connection_name: Forbindelsesnavn
+    permissions: Tilladelser
+    create: Opret og kopiér token
+    rotate: Forny token
+    revoke: Tilbagekald forbindelse
+    rotate_confirm: Forny tokenet for denne forbindelse? Det gamle token holder straks op med at virke.
+    revoke_confirm: Tilbagekald denne forbindelse med det samme?
+    confirm: Bekræft
+    cancel: Annuller
+    token_copied: Det nye token blev kopieret. Det vises ikke igen.
+    storage_unavailable: Sikker lagring af MCP-indstillinger er ikke tilgængelig.
+    approvals: Afventende godkendelser
+    no_approvals: Ingen handlinger afventer godkendelse.
+    approve: Godkend
+    reject: Afvis
+    refresh: Opdatér afventende godkendelser
+    approvals_load_error: Afventende godkendelser kunne ikke indlæses.
+    approval_update_error: Godkendelsesbeslutningen kunne ikke gemmes.
+    select_all: Vælg alle
+    clear_selection: Ryd
   notifications:
     disable_error: Kunne ikke deaktivere notifikationer
     enable_error: Kunne ikke aktivere notifikationer

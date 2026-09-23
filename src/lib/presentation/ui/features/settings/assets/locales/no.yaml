@@ -53,6 +53,41 @@ settings:
     choose_title: Velg språket ditt
     dialog_info: "{count} språk tilgjengelig."
     title: Språk
+  ai:
+    title: AI
+  mcp:
+    title: AI-agenttilkoblinger
+    description: Gi godkjente lokale AI-agenter tilgang til utvalgte WHPH-funksjoner.
+    status: Status for lokal MCP-server
+    running: Kjører
+    stopped: Stoppet
+    port: Port
+    save_port: Lagre port
+    transfer_directory: Overføringsmappe
+    choose_directory: Velg overføringsmappe
+    connections: Aktive tilkoblinger
+    no_connections: Ingen aktive agenttilkoblinger.
+    create_connection: Legg til tilkobling
+    connection_name: Tilkoblingsnavn
+    permissions: Tillatelser
+    create: Opprett og kopier token
+    rotate: Forny token
+    revoke: Tilbakekall tilkobling
+    rotate_confirm: Fornye tokenet for denne tilkoblingen? Det gamle tokenet slutter å virke umiddelbart.
+    revoke_confirm: Tilbakekalle denne tilkoblingen umiddelbart?
+    confirm: Bekreft
+    cancel: Avbryt
+    token_copied: Det nye tokenet ble kopiert. Det vises ikke igjen.
+    storage_unavailable: Sikker lagring for MCP-innstillinger er ikke tilgjengelig.
+    approvals: Ventende godkjenninger
+    no_approvals: Ingen handlinger venter på godkjenning.
+    approve: Godkjenn
+    reject: Avvis
+    refresh: Oppdater ventende godkjenninger
+    approvals_load_error: Ventende godkjenninger kunne ikke lastes inn.
+    approval_update_error: Godkjenningsvalget kunne ikke lagres.
+    select_all: Velg alle
+    clear_selection: Tøm
   notifications:
     disable_error: Kunne ikke deaktivere varsler
     enable_error: Kunne ikke aktivere varsler

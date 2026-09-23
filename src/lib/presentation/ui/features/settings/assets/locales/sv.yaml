@@ -53,6 +53,41 @@ settings:
     choose_title: Välj ditt språk
     dialog_info: "{count} språk tillgängliga."
     title: Språk
+  ai:
+    title: AI
+  mcp:
+    title: AI-agentanslutningar
+    description: Tillåt godkända lokala AI-agenter att använda valda WHPH-funktioner.
+    status: Status för lokal MCP-server
+    running: Körs
+    stopped: Stoppad
+    port: Port
+    save_port: Spara port
+    transfer_directory: Överföringskatalog
+    choose_directory: Välj överföringskatalog
+    connections: Aktiva anslutningar
+    no_connections: Inga aktiva agentanslutningar.
+    create_connection: Lägg till anslutning
+    connection_name: Anslutningsnamn
+    permissions: Behörigheter
+    create: Skapa och kopiera token
+    rotate: Rotera token
+    revoke: Återkalla anslutning
+    rotate_confirm: Rotera tokenet för den här anslutningen? Det gamla tokenet slutar fungera omedelbart.
+    revoke_confirm: Återkalla den här anslutningen omedelbart?
+    confirm: Bekräfta
+    cancel: Avbryt
+    token_copied: Det nya tokenet har kopierats. Det visas inte igen.
+    storage_unavailable: Säker lagring för MCP-inställningar är inte tillgänglig.
+    approvals: Väntande godkännanden
+    no_approvals: Inga åtgärder väntar på godkännande.
+    approve: Godkänn
+    reject: Avvisa
+    refresh: Uppdatera väntande godkännanden
+    approvals_load_error: Det gick inte att läsa in väntande godkännanden.
+    approval_update_error: Det gick inte att spara godkännandebeslutet.
+    select_all: Välj alla
+    clear_selection: Rensa
   notifications:
     disable_error: Misslyckades med att inaktivera notiser
     enable_error: Misslyckades med att aktivera notiser

@@ -6,8 +6,13 @@ import 'package:window_manager/window_manager.dart';
 import 'package:whph/core/domain/shared/constants/app_assets.dart';
 
 class DesktopSystemTrayService extends TrayListener with WindowListener implements ISystemTrayService {
+  final Future<void> Function() _shutdownApplication;
   final List<TrayMenuItem> _menuItems = [];
   final WindowManager _windowManager = WindowManager.instance;
+
+  DesktopSystemTrayService({
+    required Future<void> Function() shutdownApplication,
+  }) : _shutdownApplication = shutdownApplication;
 
   // Core methods
   @override
@@ -148,9 +153,17 @@ class DesktopSystemTrayService extends TrayListener with WindowListener implemen
   }
 
   Future<void> _exitApp() async {
-    await destroy();
-    // Direct exit - cleanup is handled by signal handlers in main.dart
-    exit(0);
+    try {
+      await _shutdownApplication();
+      await destroy();
+      exit(0);
+    } catch (error, stackTrace) {
+      Logger.error(
+        'Application cleanup failed during tray exit: $error',
+        stackTrace: stackTrace,
+      );
+      exit(1);
+    }
   }
 
   // Event handlers

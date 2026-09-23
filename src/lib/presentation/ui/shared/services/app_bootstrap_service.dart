@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/application_container.dart';
 import 'package:whph/core/application/features/app_usages/commands/start_track_app_usages_command.dart';
@@ -8,6 +10,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/domain/shared/constants/demo_config.dart';
 import 'package:whph/infrastructure/infrastructure_container.dart';
 import 'package:whph/infrastructure/persistence/persistence_container.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/presentation/ui/features/notifications/services/reminder_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_notification_service.dart';
@@ -19,14 +22,43 @@ import 'package:whph/core/application/shared/services/abstraction/i_logger_servi
 import 'package:whph/presentation/ui/ui_presentation_container.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;
+import 'package:whph/presentation/ui/shared/services/mcp_runtime_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 
 class AppBootstrapService {
   static Future<IContainer> initializeApp() async {
+    return _initializeApp();
+  }
+
+  @visibleForTesting
+  static Future<IContainer> initializeIsolatedForTesting(
+    Directory applicationDirectory,
+  ) async {
+    if (!applicationDirectory.isAbsolute) {
+      throw ArgumentError.value(
+        applicationDirectory.path,
+        'applicationDirectory',
+        'Must be an absolute path',
+      );
+    }
+    await applicationDirectory.create(recursive: true);
+    AppDatabase.testDirectory = applicationDirectory;
+    return _initializeApp(
+      applicationDirectoryService: _FixedApplicationDirectoryService(applicationDirectory),
+    );
+  }
+
+  static Future<IContainer> _initializeApp({
+    IApplicationDirectoryService? applicationDirectoryService,
+  }) async {
     final container = Container();
     initializeJsonMapper();
 
     registerPersistence(container);
-    registerInfrastructure(container);
+    registerInfrastructure(
+      container,
+      applicationDirectoryService: applicationDirectoryService,
+    );
     registerApplication(container);
     registerUIPresentation(container);
 
@@ -37,6 +69,7 @@ class AppBootstrapService {
   static Future<void> initializeCoreServices(IContainer container) async {
     await _initializeCoreServices(container);
     await _startBackgroundWorkers(container);
+    await container.resolve<McpRuntimeService>().initialize();
   }
 
   static Future<void> _initializeCoreServices(IContainer container) async {
@@ -139,4 +172,13 @@ class AppBootstrapService {
       Logger.warning('Error clearing stale sync state: $e');
     }
   }
+}
+
+final class _FixedApplicationDirectoryService implements IApplicationDirectoryService {
+  const _FixedApplicationDirectoryService(this.directory);
+
+  final Directory directory;
+
+  @override
+  Future<Directory> getApplicationDirectory() async => directory;
 }

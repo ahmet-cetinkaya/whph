@@ -6,6 +6,9 @@
 
 WHPH is a comprehensive productivity app offering a unified experience to help you manage tasks, develop new habits, optimize your time, take quick notes, and track application usage to enhance focus and stay motivated.
 
+WHPH can also expose user-authorized actions to local AI agents through its
+disabled-by-default [MCP server](docs/MCP.md).
+
 Available for
 ![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white&style=flat),
 ![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white&style=flat),

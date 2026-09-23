@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
+import 'package:whph/core/application/features/tasks/services/abstraction/i_task_events.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:acore/acore.dart';
 
@@ -27,10 +28,13 @@ class SaveTaskTimeRecordCommandResponse {
 class SaveTaskTimeRecordCommandHandler
     implements IRequestHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse> {
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
+  final ITaskEvents? _taskEvents;
 
   SaveTaskTimeRecordCommandHandler({
     required ITaskTimeRecordRepository taskTimeRecordRepository,
-  }) : _taskTimeRecordRepository = taskTimeRecordRepository;
+    ITaskEvents? taskEvents,
+  })  : _taskTimeRecordRepository = taskTimeRecordRepository,
+        _taskEvents = taskEvents;
 
   @override
   Future<SaveTaskTimeRecordCommandResponse> call(SaveTaskTimeRecordCommand request) async {
@@ -59,9 +63,11 @@ class SaveTaskTimeRecordCommandHandler
         totalDuration: request.duration,
       );
 
+      _taskEvents?.notifyTaskTimeRecordUpdated(request.taskId);
       return SaveTaskTimeRecordCommandResponse(id: record.id);
     }
 
+    _taskEvents?.notifyTaskTimeRecordUpdated(request.taskId);
     return SaveTaskTimeRecordCommandResponse(id: KeyHelper.generateStringId());
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_timer_session_service.dart';
 import 'package:whph/presentation/ui/features/tasks/components/timer/timer.dart';
 import 'package:whph/presentation/ui/shared/components/detail_table.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
@@ -11,17 +12,21 @@ class HabitTimerSection {
   static DetailTableRowData build({
     required BuildContext context,
     required ITranslationService translationService,
-    required Function(Duration) onTimerStop,
+    required String habitId,
   }) {
     return DetailTableRowData(
       label: translationService.translate(SharedTranslationKeys.timerLabel),
       icon: Icons.timer,
       widget: Container(
         constraints: BoxConstraints(
-          maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
+          maxHeight:
+              AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
+                  ? 200
+                  : 300,
         ),
         child: AppTimer(
-          onTimerStop: onTimerStop,
+          sessionId: 'habit:$habitId',
+          sessionOwner: TimerSessionOwner.habit(habitId),
           isMiniLayout: true,
         ),
       ),

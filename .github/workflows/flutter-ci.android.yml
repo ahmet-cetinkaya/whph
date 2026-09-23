@@ -24,6 +24,9 @@ jobs:
         with:
           cache-key-suffix: "android"
 
+      - name: Exclude test-only plugins from release builds
+        run: fvm flutter config --explicit-package-dependencies
+
       - name: Install Flutter Dependencies
         uses: ./.github/actions/install-flutter-deps
 

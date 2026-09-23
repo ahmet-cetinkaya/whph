@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/habits/services/habit_record_oper
 import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_events.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/core/domain/features/habits/habit_type.dart';
@@ -35,6 +36,7 @@ class ToggleHabitCompletionCommandHandler
   final ISettingRepository _settingsRepository;
   final HabitRecordOperationsService _operationsService;
   final HabitDayRangeResolver _dayRangeResolver;
+  final IHabitEvents? _habitEvents;
 
   ToggleHabitCompletionCommandHandler({
     required IHabitRepository habitRepository,
@@ -42,11 +44,13 @@ class ToggleHabitCompletionCommandHandler
     required ISettingRepository settingsRepository,
     required HabitRecordOperationsService operationsService,
     HabitDayRangeResolver dayRangeResolver = HabitDayStateResolver.utcRangeFor,
+    IHabitEvents? habitEvents,
   })  : _habitRepository = habitRepository,
         _habitRecordRepository = habitRecordRepository,
         _settingsRepository = settingsRepository,
         _operationsService = operationsService,
-        _dayRangeResolver = dayRangeResolver;
+        _dayRangeResolver = dayRangeResolver,
+        _habitEvents = habitEvents;
 
   @override
   Future<ToggleHabitCompletionCommandResponse> call(ToggleHabitCompletionCommand request) async {
@@ -77,6 +81,7 @@ class ToggleHabitCompletionCommandHandler
         request.date,
         habitRecords.items,
       );
+      _habitEvents?.notifyHabitRecordAdded(request.habitId);
       return ToggleHabitCompletionCommandResponse();
     }
 
@@ -186,6 +191,7 @@ class ToggleHabitCompletionCommandHandler
         }
       }
     });
+    _habitEvents?.notifyHabitRecordAdded(request.habitId);
 
     return ToggleHabitCompletionCommandResponse();
   }

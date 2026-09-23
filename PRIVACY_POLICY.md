@@ -18,6 +18,13 @@ User data is stored only on the user's device and is permanently deleted when th
 
 The application does not use any third-party services or analytics tools.
 
+If you enable WHPH's local MCP server and authorize an external AI agent, the
+data and actions covered by the scopes you grant can be sent to that agent.
+WHPH does not choose or operate the agent provider. Data received by the agent
+is subject to that provider's privacy, retention, and processing terms. MCP is
+disabled by default, binds to the local device, and each connection can be
+revoked in WHPH Settings.
+
 ## 5. Changes
 
 If there are any changes to the privacy policy, the updated policy will be published in this file.

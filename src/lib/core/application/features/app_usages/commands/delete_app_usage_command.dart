@@ -2,6 +2,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
+import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_events.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage.dart';
 import 'package:whph/core/application/features/app_usages/constants/app_usage_translation_keys.dart';
@@ -23,14 +24,17 @@ class DeleteAppUsageCommandHandler implements IRequestHandler<DeleteAppUsageComm
   final IAppUsageRepository _appUsageRepository;
   final IAppUsageTagRepository _appUsageTagRepository;
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
+  final IAppUsageEvents? _appUsageEvents;
 
   DeleteAppUsageCommandHandler({
     required IAppUsageRepository appUsageRepository,
     required IAppUsageTagRepository appUsageTagRepository,
     required IAppUsageTimeRecordRepository appUsageTimeRecordRepository,
+    IAppUsageEvents? appUsageEvents,
   })  : _appUsageRepository = appUsageRepository,
         _appUsageTagRepository = appUsageTagRepository,
-        _appUsageTimeRecordRepository = appUsageTimeRecordRepository;
+        _appUsageTimeRecordRepository = appUsageTimeRecordRepository,
+        _appUsageEvents = appUsageEvents;
 
   @override
   Future<DeleteAppUsageCommandResponse> call(DeleteAppUsageCommand request) async {
@@ -44,6 +48,7 @@ class DeleteAppUsageCommandHandler implements IRequestHandler<DeleteAppUsageComm
 
     // Delete the app usage itself
     await _appUsageRepository.delete(appUsage);
+    _appUsageEvents?.notifyAppUsageDeleted(appUsage.id);
 
     return DeleteAppUsageCommandResponse(
       id: appUsage.id,

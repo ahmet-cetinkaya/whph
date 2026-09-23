@@ -13,6 +13,9 @@ import 'package:whph/core/application/features/app_usages/services/app_usage_fil
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_application_shutdown_service.dart';
+import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_access_service.dart';
+import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_operation_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
 import 'package:acore/acore.dart';
@@ -46,6 +49,11 @@ import 'package:whph/infrastructure/shared/features/notification/habit_notificat
 import 'package:whph/infrastructure/shared/features/notification/task_notification_handler.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/abstractions/i_wakelock_service.dart';
 import 'package:whph/infrastructure/shared/features/wakelock/wakelock_service.dart';
+import 'package:whph/infrastructure/shared/features/mcp/mcp_access_service.dart';
+import 'package:whph/infrastructure/shared/features/mcp/mcp_access_store.dart';
+import 'package:whph/infrastructure/shared/features/mcp/mcp_operation_service.dart';
+import 'package:whph/infrastructure/shared/features/mcp/mcp_operation_store.dart';
+import 'package:whph/infrastructure/shared/features/mcp/mcp_transfer_file_store.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
 import 'package:whph/infrastructure/shared/features/window/window_manager.dart';
 import 'package:whph/infrastructure/windows/features/app_usages/windows_app_usage_service.dart';
@@ -73,8 +81,12 @@ import 'package:whph/infrastructure/linux/features/file_system/linux_application
 import 'package:whph/infrastructure/windows/features/file_system/windows_application_directory_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/device_id_service.dart';
+import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
 
-void registerInfrastructure(IContainer container) {
+void registerInfrastructure(
+  IContainer container, {
+  IApplicationDirectoryService? applicationDirectoryService,
+}) {
   container.registerSingleton<ILogger>((_) => const ConsoleLogger());
 
   final settingRepository = container.resolve<ISettingRepository>();
@@ -84,6 +96,9 @@ void registerInfrastructure(IContainer container) {
   container.registerSingleton<IAppUsageFilterService>((_) => appUsageFilterService);
 
   container.registerSingleton<IApplicationDirectoryService>((_) {
+    if (applicationDirectoryService != null) {
+      return applicationDirectoryService;
+    }
     if (Platform.isAndroid) {
       return AndroidApplicationDirectoryService();
     }
@@ -95,6 +110,32 @@ void registerInfrastructure(IContainer container) {
     }
     throw Exception('Unsupported platform for application directory service.');
   });
+
+  container.registerSingleton<McpAccessStore>(
+    (_) => McpAccessStore(
+      applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
+    ),
+  );
+  container.registerSingleton<IMcpAccessService>(
+    (_) => McpAccessService(store: container.resolve<McpAccessStore>()),
+  );
+  container.registerSingleton<McpOperationStore>(
+    (_) => McpOperationStore(
+      applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
+    ),
+  );
+  container.registerSingleton<IMcpOperationService>(
+    (_) => McpOperationService(
+      store: container.resolve<McpOperationStore>(),
+      accessService: container.resolve<IMcpAccessService>(),
+    ),
+  );
+  container.registerSingleton<McpTransferFileStore>(
+    (_) => McpTransferFileStore(
+      applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
+      accessService: container.resolve<IMcpAccessService>(),
+    ),
+  );
 
   container.registerSingleton<IDeviceIdService>((_) => DeviceIdService(
         applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
@@ -146,10 +187,14 @@ void registerInfrastructure(IContainer container) {
     }
 
     if (Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID')) {
-      return FlatpakSystemTrayService();
+      return FlatpakSystemTrayService(
+        shutdownApplication: () => container.resolve<IApplicationShutdownService>().shutdown(),
+      );
     }
 
-    return DesktopSystemTrayService();
+    return DesktopSystemTrayService(
+      shutdownApplication: () => container.resolve<IApplicationShutdownService>().shutdown(),
+    );
   });
 
   if (PlatformUtils.isDesktop) {
@@ -280,7 +325,11 @@ void registerInfrastructure(IContainer container) {
     container.registerSingleton<DesktopSyncService>((_) {
       final mediator = container.resolve<Mediator>();
       final deviceIdService = container.resolve<IDeviceIdService>();
-      return DesktopSyncService(mediator, deviceIdService);
+      return DesktopSyncService(
+        mediator,
+        deviceIdService,
+        restoreBarrier: container.resolve<IRestoreBarrier>(),
+      );
     });
   }
 
@@ -292,7 +341,10 @@ void registerInfrastructure(IContainer container) {
     }
 
     if (Platform.isAndroid) {
-      return AndroidSyncService(mediator);
+      return AndroidSyncService(
+        mediator,
+        restoreBarrier: container.resolve<IRestoreBarrier>(),
+      );
     }
 
     throw Exception('Unsupported platform for sync service.');
@@ -302,6 +354,11 @@ void registerInfrastructure(IContainer container) {
     final mediator = container.resolve<Mediator>();
     final deviceIdService = container.resolve<IDeviceIdService>();
     final deviceInfoPlugin = container.resolve<DeviceInfoPlugin>();
-    return AndroidServerSyncService(mediator, deviceIdService, deviceInfoPlugin);
+    return AndroidServerSyncService(
+      mediator,
+      deviceIdService,
+      deviceInfoPlugin,
+      restoreBarrier: container.resolve<IRestoreBarrier>(),
+    );
   });
 }

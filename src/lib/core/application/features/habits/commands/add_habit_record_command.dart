@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/habits/services/habit_record_oper
 import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
+import 'package:whph/core/application/features/habits/services/i_habit_events.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:acore/acore.dart';
@@ -23,14 +24,17 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
   final IHabitRecordRepository _habitRecordRepository;
   final IHabitRepository _habitRepository;
   final HabitRecordOperationsService _operationsService;
+  final IHabitEvents? _habitEvents;
 
   AddHabitRecordCommandHandler({
     required IHabitRecordRepository habitRecordRepository,
     required IHabitRepository habitRepository,
     required HabitRecordOperationsService operationsService,
+    IHabitEvents? habitEvents,
   })  : _habitRecordRepository = habitRecordRepository,
         _habitRepository = habitRepository,
-        _operationsService = operationsService;
+        _operationsService = operationsService,
+        _habitEvents = habitEvents;
 
   @override
   Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
@@ -45,6 +49,7 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
         1000,
       );
       await _operationsService.ensureBadHabitMarker(request.habitId, request.occurredAt, records.items);
+      _habitEvents?.notifyHabitRecordAdded(request.habitId);
       return AddHabitRecordCommandResponse();
     }
 
@@ -62,6 +67,7 @@ class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordComm
         HabitRecordStatus.complete,
       );
     }
+    _habitEvents?.notifyHabitRecordAdded(request.habitId);
 
     return AddHabitRecordCommandResponse();
   }

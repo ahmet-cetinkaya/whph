@@ -22,6 +22,7 @@ import 'package:whph/presentation/ui/features/settings/components/import_export_
 import 'package:whph/presentation/ui/features/settings/components/advanced_settings_tile.dart';
 import 'package:whph/presentation/ui/shared/components/section_header.dart';
 import 'package:whph/presentation/ui/features/settings/components/default_page_settings.dart';
+import 'package:whph/presentation/ui/features/settings/components/ai_settings_tile.dart';
 
 class SettingsPage extends StatefulWidget {
   static const String route = '/settings';
@@ -158,7 +159,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 // Advanced Section
                 SectionHeader(title: translationService.translate(SettingsTranslationKeys.sectionAdvanced)),
                 const SizedBox(height: AppTheme.sizeSmall),
-                const AdvancedSettingsTile(),
+                Column(
+                  spacing: AppTheme.sizeSmall,
+                  children: const [
+                    AdvancedSettingsTile(),
+                    AiSettingsTile(),
+                  ],
+                ),
                 const SizedBox(height: AppTheme.sizeLarge),
 
                 // About Section

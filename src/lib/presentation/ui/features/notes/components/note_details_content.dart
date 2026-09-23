@@ -214,16 +214,18 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
   }
 
-  SaveNoteCommand _buildSaveCommand() {
-    return SaveNoteCommand(
+  UpdateNoteCommand _buildSaveCommand() {
+    return UpdateNoteCommand(
       id: widget.noteId,
+      expectedRevision: _note!.modifiedDate ?? _note!.createdDate,
       title: _titleController.text,
-      content: _contentController.text,
+      content: NoteContentUpdate.set(_contentController.text),
     );
   }
 
   Future<void> _executeSaveCommand() async {
     await _mediator.send(_buildSaveCommand());
+    await _getNote();
   }
 
   void _handleFieldChange<T>(T value, VoidCallback? onUpdate) {
@@ -253,8 +255,6 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
         errorMessage: _translationService.translate(NoteTranslationKeys.savingError),
         operation: _executeSaveCommand,
         onSuccess: () {
-          _notesService.notifyNoteUpdated(widget.noteId);
-
           if (widget.onNoteUpdated != null) {
             widget.onNoteUpdated!();
           }

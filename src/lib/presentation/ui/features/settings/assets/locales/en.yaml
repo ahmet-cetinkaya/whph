@@ -58,6 +58,41 @@ settings:
     choose_title: Choose your language
     dialog_info: "{count} languages available."
     title: Language
+  ai:
+    title: AI
+  mcp:
+    title: AI Agent Connections
+    description: Allow approved local AI agents to use selected WHPH features.
+    status: Local MCP server status
+    running: Running
+    stopped: Stopped
+    port: Port
+    save_port: Save port
+    transfer_directory: Transfer directory
+    choose_directory: Choose transfer directory
+    connections: Active connections
+    no_connections: No active agent connections.
+    create_connection: Add connection
+    connection_name: Connection name
+    permissions: Permissions
+    create: Create and copy token
+    rotate: Rotate token
+    revoke: Revoke connection
+    rotate_confirm: Rotate this connection token? The old token will stop working immediately.
+    revoke_confirm: Revoke this connection immediately?
+    confirm: Confirm
+    cancel: Cancel
+    token_copied: The new token was copied. It will not be shown again.
+    storage_unavailable: Secure MCP settings storage is unavailable.
+    approvals: Pending approvals
+    no_approvals: No operations are waiting for approval.
+    approve: Approve
+    reject: Reject
+    refresh: Refresh pending approvals
+    approvals_load_error: Pending approvals could not be loaded.
+    approval_update_error: The approval decision could not be saved.
+    select_all: Select all
+    clear_selection: Clear
   notifications:
     disable_error: Failed to disable notifications
     enable_error: Failed to enable notifications

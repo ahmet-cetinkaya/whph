@@ -18,8 +18,14 @@ class NoteTagTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftNoteTagRepository extends DriftBaseRepository<NoteTag, String, NoteTagTable> implements INoteTagRepository {
-  DriftNoteTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().noteTagTable);
+class DriftNoteTagRepository
+    extends DriftBaseRepository<NoteTag, String, NoteTagTable>
+    implements INoteTagRepository {
+  DriftNoteTagRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().noteTagTable);
+
+  DriftNoteTagRepository.withDatabase(AppDatabase database)
+      : super(database, database.noteTagTable);
 
   @override
   Expression<String> getPrimaryKey(NoteTagTable t) {
@@ -50,7 +56,10 @@ class DriftNoteTagRepository extends DriftBaseRepository<NoteTag, String, NoteTa
   @override
   Future<NoteTag?> getByNoteIdAndTagId(String noteId, String tagId) async {
     final query = database.select(table)
-      ..where((t) => t.noteId.equals(noteId) & t.tagId.equals(tagId) & t.deletedDate.isNull());
+      ..where((t) =>
+          t.noteId.equals(noteId) &
+          t.tagId.equals(tagId) &
+          t.deletedDate.isNull());
 
     final results = await query.get();
     return results.isEmpty ? null : results.first;
@@ -58,11 +67,14 @@ class DriftNoteTagRepository extends DriftBaseRepository<NoteTag, String, NoteTa
 
   @override
   Future<List<NoteTag>> getByTagId(String tagId) async {
-    return (database.select(table)..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull())).get();
+    return (database.select(table)
+          ..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull()))
+        .get();
   }
 
   @override
-  Future<void> updateTagOrders(String noteId, Map<String, int> tagOrders) async {
+  Future<void> updateTagOrders(
+      String noteId, Map<String, int> tagOrders) async {
     await database.batch((batch) {
       for (final entry in tagOrders.entries) {
         batch.customStatement(
