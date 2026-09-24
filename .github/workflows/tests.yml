@@ -154,6 +154,16 @@ jobs:
       - name: Install Flutter Dependencies
         uses: ./.github/actions/install-flutter-deps
 
+      - name: Setup Node.js for the official MCP client
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: scripts/mcp-smoke/package-lock.json
+
+      - name: Install official MCP client dependencies
+        run: npm ci --prefix scripts/mcp-smoke
+
       - name: Generate Code
         shell: bash
         run: |

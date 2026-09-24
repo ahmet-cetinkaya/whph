@@ -41,7 +41,10 @@ jobs:
           sudo apt-get install -y openjdk-17-jdk-headless
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        # v4: Google removed the legacy 'tools' SDK package from the repository;
+        # v3's default 'tools platform-tools' packages input now fails with
+        # "Failed to find package 'tools'". v4 defaults to 'platform-tools' only.
+        uses: android-actions/setup-android@v4
 
       - name: Remove non-Android platforms
         run: |
