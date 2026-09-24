@@ -1,0 +1,6 @@
+• Dodano obsługę agenta AI (MCP) dla zadań i nawyków
+• Złe nawyki są teraz obsługiwane w widżetach i statystykach
+• Domyślną stronę po uruchomieniu można teraz ustawić dowolnie
+• Okno szybkiego dodawania zadania można teraz zminimalizować
+• Naprawiono liczne błędy zmiany kolejności przez przeciąganie
+• Poprawiono niezawodność synchronizacji i kodowanie eksportu

@@ -1,0 +1,6 @@
+• Tilføjet AI-agent (MCP) support til opgaver og vaner
+• Dårlige vaner understøttes nu i widgets og statistik
+• Standardsiden ved opstart kan nu vælges frit
+• Dialogen til hurtig tilføjelse af opgaver kan nu minimeres
+• Rettet adskillige fejl ved træk-og-slip-omorganisering
+• Forbedret synkroniseringspålidelighed, rettet eksportkodning

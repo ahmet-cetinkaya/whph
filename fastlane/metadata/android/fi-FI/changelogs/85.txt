@@ -1,0 +1,6 @@
+• Lisätty tekoälyagentin (MCP) tuki tehtäville ja tavoille
+• Huonoja tapoja tuetaan nyt widgeteissä ja tilastoissa
+• Oletusaloitussivun voi nyt asettaa vapaasti
+• Pikalisäystehtävän ikkunan voi nyt pienentää
+• Korjattu useita raahaus- ja pudotusjärjestelyn virheitä
+• Parannettu synkroinnin luotettavuutta, korjattu vientikoodaus

@@ -1,0 +1,6 @@
+• KI-Agent-Unterstützung (MCP) für Aufgaben und Gewohnheiten hinzugefügt
+• Schlechte Gewohnheiten jetzt in Widgets und Statistiken unterstützt
+• Standard-Startseite lässt sich jetzt frei wählen
+• Dialog „Aufgabe schnell hinzufügen" lässt sich jetzt minimieren
+• Zahlreiche Fehler beim Drag-&-Drop-Neuordnen behoben
+• Synchronisierungszuverlässigkeit verbessert, Exportkodierung behoben

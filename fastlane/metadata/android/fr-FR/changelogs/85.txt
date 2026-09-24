@@ -1,0 +1,6 @@
+• Ajout du support des agents IA (MCP) pour tâches et habitudes
+• Mauvaises habitudes désormais prises en charge dans widgets et statistiques
+• Page par défaut au lancement réglable librement
+• Boîte d'ajout rapide de tâche désormais réductible
+• Correction de nombreux bugs de réorganisation par glisser-déposer
+• Fiabilité de synchronisation améliorée, encodage d'export corrigé

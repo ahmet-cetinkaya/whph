@@ -1,0 +1,6 @@
+• Adicionado suporte a agentes de IA (MCP) para tarefas e hábitos
+• Maus hábitos agora suportados em widgets e estatísticas
+• Página predefinida no arranque configurável livremente
+• Janela de adição rápida de tarefas agora minimizável
+• Corrigidos vários erros de reordenação por arrastar e largar
+• Fiabilidade de sincronização melhorada, codificação de exportação corrigida

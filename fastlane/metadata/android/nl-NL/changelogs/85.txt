@@ -1,0 +1,6 @@
+• Ondersteuning voor AI-agent (MCP) toegevoegd voor taken en gewoontes
+• Slechte gewoontes nu ondersteund in widgets en statistieken
+• Standaardpagina bij opstarten vrij instelbaar
+• Dialoogvenster snel taak toevoegen nu minimaliseerbaar
+• Diverse bugs bij verslepen en herordenen opgelost
+• Synchronisatiebetrouwbaarheid verbeterd, exportcodering opgelost

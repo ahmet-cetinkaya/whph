@@ -1,0 +1,6 @@
+- Adăugat suport pentru agent AI (MCP) pentru sarcini și obiceiuri
+- Obiceiurile proaste acum acceptate în widget-uri și statistici
+- Pagina implicită la pornire poate fi setată liber
+- Fereastra de adăugare rapidă a sarcinii poate fi acum minimizată
+- Corectate numeroase erori de reordonare prin tragere și plasare
+- Fiabilitate de sincronizare îmbunătățită, codare de export corectată

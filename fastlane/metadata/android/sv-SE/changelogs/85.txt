@@ -1,0 +1,6 @@
+• Lade till stöd för AI-agent (MCP) för uppgifter och vanor
+• Dåliga vanor stöds nu i widgetar och statistik
+• Standardsidan vid start kan nu ställas in fritt
+• Dialogrutan för snabbt tillägg av uppgifter kan nu minimeras
+• Åtgärdade många buggar vid drag-och-släpp-omordning
+• Förbättrad synkroniseringstillförlitlighet, åtgärdad exportkodning

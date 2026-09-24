@@ -1,0 +1,6 @@
+• Added AI agent (MCP) support for tasks and habits
+• Bad habits now supported in widgets and stats
+• Default launch page can be set freely
+• Quick add dialog can now be minimized
+• Fixed many drag-and-drop reorder bugs
+• Improved sync reliability and fixed export encoding

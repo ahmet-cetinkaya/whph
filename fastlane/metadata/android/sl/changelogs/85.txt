@@ -1,0 +1,6 @@
+- Dodana podpora za agenta UI (MCP) za opravila in navade
+- Slabe navade zdaj podprte v pripomočkih in statistiki
+- Privzeto stran ob zagonu je zdaj mogoče poljubno nastaviti
+- Pogovorno okno za hitro dodajanje opravila je zdaj mogoče minimizirati
+- Odpravljenih več napak pri preurejanju z vlečenjem in spuščanjem
+- Izboljšana zanesljivost sinhronizacije, odpravljena napaka kodiranja

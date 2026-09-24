@@ -1,0 +1,6 @@
+• Přidána podpora AI agenta (MCP) pro úkoly a návyky
+• Špatné návyky nyní podporovány ve widgetech a statistikách
+• Výchozí stránku po spuštění lze nyní libovolně nastavit
+• Dialog rychlého přidání úkolu lze nyní minimalizovat
+• Opraveno mnoho chyb při přeuspořádání přetažením
+• Vylepšena spolehlivost synchronizace, opraveno kódování exportu

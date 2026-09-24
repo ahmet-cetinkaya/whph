@@ -8,6 +8,26 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-09-24
+
+### Added
+- Added AI agent (MCP) support for managing tasks, habits, and notes through connected AI assistants, with settings to control what they can access
+- Habits can now be marked as "bad habits" you're trying to break, with matching support in widgets, notifications, and stats
+- The default page shown when you launch the app can now be set to any section (#307)
+- The quick add task dialog can now be minimized instead of being closed (#305)
+
+### Changed
+- Improved performance for large task lists, imports, and the calendar view
+
+### Fixed
+- Fixed numerous drag-and-drop reordering issues, including custom sort order, grouped views, and items landing in the wrong place after import
+- Improved sync reliability with clearer per-device status, persistent error notifications, and fixes for stalled or dropped connections (#308)
+- Fixed exported files losing Chinese, Japanese, and Korean text (now saved as UTF-8)
+- Fixed the Score Trends chart for bad habits and duplicate axis labels
+- Fixed selected tags sometimes disappearing when scrolling or switching pages
+- Made database migrations safer by aborting automatically if a pre-migration backup fails
+- Windows installer and portable builds are available again after being temporarily unavailable
+
 ## [0.23.3] - 2026-07-05
 
 ### Fixed
@@ -1737,7 +1757,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.23.3...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.0...HEAD
+[0.24.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.0
 [0.23.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.3
 [0.23.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.2
 [0.23.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.1

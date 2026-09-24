@@ -1,0 +1,6 @@
+• Aggiunto supporto per agenti IA (MCP) per attività e abitudini
+• Cattive abitudini ora supportate in widget e statistiche
+• Pagina predefinita all'avvio impostabile liberamente
+• Finestra di aggiunta rapida attività ora riducibile a icona
+• Risolti numerosi bug di riordinamento tramite trascinamento
+• Affidabilità di sincronizzazione migliorata, codifica di esportazione corretta

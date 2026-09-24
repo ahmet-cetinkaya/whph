@@ -1,0 +1,6 @@
+• Görevler ve alışkanlıklar için AI ajan (MCP) desteği eklendi
+• Kötü alışkanlıklar artık widget'larda ve istatistiklerde destekleniyor
+• Başlangıç sayfası artık dilediğiniz bölüme ayarlanabiliyor
+• Hızlı görev ekleme penceresi artık küçültülebiliyor
+• Sürükle-bırak ile yeniden sıralamada birçok hata düzeltildi
+• Senkronizasyon güvenilirliği iyileştirildi, dışa aktarma kodlaması düzeltildi
