@@ -424,35 +424,30 @@ default_platform(:android)
     end
   end
 
-  # Fetch the current production rollout fraction from Google Play using the
-  # same Android Publisher API client that upload_to_play_store (supply) uses.
+  # Fetch the current production rollout fraction from Google Play, reusing
+  # fastlane's own Supply::Client (the same authenticated client that
+  # upload_to_play_store uses internally) rather than hand-rolling auth.
   # Returns nil when there is no in-progress staged rollout (either no
   # production release at all, or the release is fully rolled out / halted).
   private_lane :get_current_rollout_percentage do
-    require 'google/apis/androidpublisher_v3'
+    require 'supply'
 
-    package_name = CredentialsManager::AppIdentifierConfigParser.fetch_app_identifier
+    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
+    UI.user_error!("package_name not found in Appfile") unless package_name
+
     json_key_path = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"]
     UI.user_error!("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY not set") unless json_key_path
     UI.user_error!("Service account key file not found at #{json_key_path}") unless File.exist?(json_key_path)
 
-    credentials = Google::Auth::UserRefreshCredentials.new(
-      json_key_io: File.open(json_key_path),
-      scope: 'https://www.googleapis.com/auth/androidpublisher'
-    )
-    credentials.fetch_access_token!
+    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)))
 
-    client = Google::Apis::AndroidpublisherV3::AndroidPublisherService.new
-    client.authorization = credentials
-
-    track = client.get_track(package_name: package_name, track: 'production')
-    releases = track.releases || []
+    # Reads the currently live track releases directly, without opening an edit.
+    releases = client.list_track_release_summaries(package_name, 'production')
     in_progress = releases.find { |r| r.status == 'inProgress' }
 
     return nil unless in_progress
-    return nil if in_progress.version_codes.nil? || in_progress.version_codes.empty?
 
-    in_progress.rollout_fraction ? in_progress.rollout_fraction.to_f : 0.0
+    in_progress.user_fraction ? in_progress.user_fraction.to_f : 0.0
   end
 
   private_lane :calculate_next_rollout do |current_rollout|
