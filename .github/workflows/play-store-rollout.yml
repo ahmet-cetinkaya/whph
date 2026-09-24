@@ -20,11 +20,17 @@ on:
         type: choice
         options:
           - production
+  schedule:
+    # Daily staged rollout stepper (option B): 10% -> 20% -> 50% -> 100%.
+    # Runs only on the default branch. increase_rollout is a no-op when there
+    # is no in-progress staged rollout, so this is harmless on idle days.
+    # 06:00 UTC daily.
+    - cron: '0 6 * * *'
 
 jobs:
   manage-rollout:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,8 +61,16 @@ jobs:
         run: |
           # Set environment variables for Fastlane
           export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="./google-play-service-account.json"
-          
-          case "${{ github.event.inputs.action }}" in
+
+          # Scheduled runs always perform the 'increase' action; manual runs
+          # use the selected input.
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            ACTION="increase"
+          else
+            ACTION="${{ github.event.inputs.action }}"
+          fi
+
+          case "$ACTION" in
             "increase")
               echo "📈 Increasing rollout percentage..."
               bundle exec fastlane increase_rollout
@@ -80,10 +94,17 @@ jobs:
         run: |
           echo "## 📊 Rollout Management Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Action:** ${{ github.event.inputs.action }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Track:** ${{ github.event.inputs.track }}" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            echo "**Action:** increase (scheduled daily stepper)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Action:** ${{ github.event.inputs.action }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "**Track:** production" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🔄 Actions Performed" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            echo "- 📈 Scheduled rollout step attempted (no-op if no rollout in progress)" >> $GITHUB_STEP_SUMMARY
+          else
           case "${{ github.event.inputs.action }}" in
             "increase")
               echo "- ✅ Rollout percentage increased" >> $GITHUB_STEP_SUMMARY
@@ -98,3 +119,4 @@ jobs:
               echo "- 🚀 Full rollout deployed" >> $GITHUB_STEP_SUMMARY
               ;;
           esac
+          fi

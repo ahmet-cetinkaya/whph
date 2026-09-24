@@ -217,14 +217,24 @@ default_platform(:android)
     )
   end
 
-  desc "Increase production rollout percentage"
+  desc "Increase production rollout percentage (no-op if no rollout in progress)"
   lane :increase_rollout do
     # Get current rollout status
     current_rollout = get_current_rollout_percentage
-    
+
+    if current_rollout.nil?
+      UI.important("ℹ️ No in-progress production rollout found - nothing to increase. Exiting without changes.")
+      next
+    end
+
     # Calculate next rollout step
     next_rollout = calculate_next_rollout(current_rollout)
-    
+
+    if next_rollout >= 1.0 && current_rollout >= 1.0
+      UI.important("ℹ️ Rollout already at 100% - nothing to increase. Exiting without changes.")
+      next
+    end
+
     upload_to_play_store(
       track: 'production',
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
@@ -237,7 +247,7 @@ default_platform(:android)
       release_status: 'completed',
       changes_not_sent_for_review: true
     )
-    
+
     UI.message("Rollout increased from #{current_rollout * 100}% to #{next_rollout * 100}%")
   end
 
@@ -414,10 +424,35 @@ default_platform(:android)
     end
   end
 
+  # Fetch the current production rollout fraction from Google Play using the
+  # same Android Publisher API client that upload_to_play_store (supply) uses.
+  # Returns nil when there is no in-progress staged rollout (either no
+  # production release at all, or the release is fully rolled out / halted).
   private_lane :get_current_rollout_percentage do
-    # This would require additional API calls to get current rollout status
-    # For now, return a default value
-    0.1
+    require 'google/apis/androidpublisher_v3'
+
+    package_name = CredentialsManager::AppIdentifierConfigParser.fetch_app_identifier
+    json_key_path = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"]
+    UI.user_error!("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY not set") unless json_key_path
+    UI.user_error!("Service account key file not found at #{json_key_path}") unless File.exist?(json_key_path)
+
+    credentials = Google::Auth::UserRefreshCredentials.new(
+      json_key_io: File.open(json_key_path),
+      scope: 'https://www.googleapis.com/auth/androidpublisher'
+    )
+    credentials.fetch_access_token!
+
+    client = Google::Apis::AndroidpublisherV3::AndroidPublisherService.new
+    client.authorization = credentials
+
+    track = client.get_track(package_name: package_name, track: 'production')
+    releases = track.releases || []
+    in_progress = releases.find { |r| r.status == 'inProgress' }
+
+    return nil unless in_progress
+    return nil if in_progress.version_codes.nil? || in_progress.version_codes.empty?
+
+    in_progress.rollout_fraction ? in_progress.rollout_fraction.to_f : 0.0
   end
 
   private_lane :calculate_next_rollout do |current_rollout|

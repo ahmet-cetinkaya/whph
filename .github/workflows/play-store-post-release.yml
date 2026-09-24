@@ -409,6 +409,26 @@ jobs:
           echo "✅ Deployment completed successfully!"
         working-directory: fastlane
 
+      - name: Deploy to Production (staged 10% rollout)
+        # Automatic staged rollout (option B): after internal testing deploys,
+        # start the production rollout at 10%. The daily scheduled
+        # 'Google Play Store Rollout Management' workflow then steps it up
+        # (10% -> 20% -> 50% -> 100%) as long as it observes an in-progress
+        # rollout. Halt anytime with the manual 'halt' action of that workflow.
+        run: |
+          echo "🚀 Deploying version ${{ steps.app_version.outputs.version }} to production at 10% staged rollout..."
+
+          export GOOGLE_PLAY_SERVICE_ACCOUNT_KEY="${{ github.workspace }}/google-play-service-account.json"
+          export KEYSTORE_FILE_PATH="${{ github.workspace }}/src/android/whph-release-key.jks"
+          export KEYSTORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
+          export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
+          export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
+
+          bundle exec fastlane deploy_production --verbose
+
+          echo "✅ Production rollout started at 10%!"
+        working-directory: fastlane
+
       - name: Debug Information (if failed)
         if: failure()
         run: |

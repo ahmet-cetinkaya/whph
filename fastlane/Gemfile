@@ -1,4 +1,7 @@
 source "https://rubygems.org"
 
-gem "fastlane"
+# Pin fastlane: without a constraint Bundler intermittently resolves the
+# ancient 0.0.1 placeholder gem, pulling prehistoric nokogiri/capybara
+# versions that fail to install on CI (Bundler::GemNotFound).
+gem "fastlane", "~> 2.240"
 gem "json"
