@@ -59,6 +59,18 @@ default_platform(:android)
   lane :deploy_internal do
     build_internal
 
+    # Idempotency guard: a retried/duplicate CI run (e.g. multiple
+    # workflow_run triggers firing for the same tag) must not hard-fail the
+    # job when this versionCode is already live on 'internal' - Google Play
+    # rejects re-uploading it ("Version code N has already been used"), and a
+    # hard failure here would also skip the downstream production-promotion
+    # step. Treat "already there" as success and move on.
+    version_code = current_version_code
+    if version_already_on_track?(track: 'internal', version_code: version_code)
+      UI.important("ℹ️ Version code #{version_code} is already present on the 'internal' track - skipping upload (idempotent no-op).")
+      next
+    end
+
     metadata_opts = metadata_options
 
     upload_to_play_store(
@@ -112,20 +124,27 @@ default_platform(:android)
     )
   end
 
-  desc "Deploy a new version to the Google Play production track"
+  desc "Promote the current internal testing release to the Google Play production track (staged 10% rollout)"
   lane :deploy_production do
-    build_internal
-
+    # NOTE: This must promote the release that deploy_internal already
+    # uploaded and committed to the 'internal' track, not re-upload the AAB.
+    # Google Play rejects re-uploading a bundle whose versionCode has already
+    # been used by a committed release on any other track, with:
+    #   "Google Api Error: Invalid request - Version code N has already been used."
+    # track_promote_to copies the existing internal release to production
+    # instead, without touching the binary. (track = source, track_promote_to
+    # = destination.)
     metadata_opts = metadata_options
 
     upload_to_play_store(
-      track: 'production',
-      aab: File.expand_path('../src/build/app/outputs/bundle/release/app-release.aab', __dir__),
+      track: 'internal',
+      track_promote_to: 'production',
+      version_code: current_version_code,
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
+      skip_upload_aab: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: 'completed',
       rollout: '0.1', # Start with 10% rollout for production
       changes_not_sent_for_review: true,
       **metadata_opts
@@ -134,18 +153,19 @@ default_platform(:android)
 
   desc "Deploy a new version to the Google Play production track with full rollout"
   lane :deploy_production_full do
-    build_internal
-
+    # See deploy_production above: promote from internal rather than
+    # re-uploading the same versionCode's AAB, which Google Play rejects.
     metadata_opts = metadata_options
 
     upload_to_play_store(
-      track: 'production',
-      aab: File.expand_path('../src/build/app/outputs/bundle/release/app-release.aab', __dir__),
+      track: 'internal',
+      track_promote_to: 'production',
+      version_code: current_version_code,
       json_key: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"],
       skip_upload_apk: true,
+      skip_upload_aab: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
-      release_status: 'completed',
       rollout: '1.0', # Full rollout
       changes_not_sent_for_review: true,
       **metadata_opts
@@ -405,6 +425,18 @@ default_platform(:android)
     end
   end
 
+  # Reads the current build's versionCode from pubspec.yaml (e.g. "0.24.2+87"
+  # -> 87). Used to disambiguate which internal-track release to promote when
+  # more than one release could otherwise be active on that track.
+  def self.current_version_code
+    pubspec_path = File.expand_path('../src/pubspec.yaml', __dir__)
+    version_line = File.readlines(pubspec_path).find { |line| line.match(/^version:/) }
+    UI.user_error!("Could not find version line in #{pubspec_path}") unless version_line
+    build_number = version_line.split('+')[1]&.strip
+    UI.user_error!("Could not determine build number from version line: #{version_line}") unless build_number
+    build_number.to_i
+  end
+
   def self.metadata_options(require_metadata: false)
     metadata_dir = File.expand_path('../metadata/android', __dir__)
 
@@ -448,6 +480,24 @@ default_platform(:android)
     return nil unless in_progress
 
     in_progress.user_fraction ? in_progress.user_fraction.to_f : 0.0
+  end
+
+  # Returns true if the given versionCode is already present in any release
+  # on the given track, queried via fastlane's own Supply::Client (same
+  # pattern as get_current_rollout_percentage above), without opening an edit.
+  private_lane :version_already_on_track? do |options|
+    require 'supply'
+
+    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
+    UI.user_error!("package_name not found in Appfile") unless package_name
+
+    json_key_path = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"]
+    UI.user_error!("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY not set") unless json_key_path
+    UI.user_error!("Service account key file not found at #{json_key_path}") unless File.exist?(json_key_path)
+
+    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)))
+    releases = client.list_track_release_summaries(package_name, options[:track])
+    releases.any? { |r| (r.version_codes || []).include?(options[:version_code]) }
   end
 
   private_lane :calculate_next_rollout do |current_rollout|
