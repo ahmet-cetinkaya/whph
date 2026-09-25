@@ -13,7 +13,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "me.ahmetcetinkaya.whph"
 
-    compileSdk 35
+    compileSdk 36
 
     ndkVersion = "27.0.12077973"
 
@@ -33,7 +33,10 @@ android {
         // Uploads with a lower minSdk are rejected outright by the Play
         // Developer API. This drops support for Android 5.0/5.1 (Lollipop).
         minSdk = 24
-        targetSdk = 35
+        // Google Play requires targetSdk >= 36 for new uploads since
+        // 2026-08-31. Uploads below this are rejected outright by the Play
+        // Developer API ("Target SDK of artifact is too low").
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders += [
