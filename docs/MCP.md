@@ -126,18 +126,42 @@ Handlers live in `presentation/mcp/tools/timer_tools.dart` and use the shared
 timer-session service. Timer settings are exposed here rather than as raw
 setting keys.
 
-| Tool                          | Input fields                                                                                                                                                                      | Output fields                                  | Scopes                                                    | Ann. | Platform, effects, application source                                                          |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------- | ---- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `whph_timers_list`            | `ownerType?`                                                                                                                                                                      | `{sessions:[timer state]}`                     | `timers:read`                                             | R    | all; none; timer-session service `list`                                                        |
-| `whph_timers_read`            | `sessionId`                                                                                                                                                                       | timer state including owner/mode/phase/elapsed | `timers:read`                                             | R    | all; none; timer-session service `state`                                                       |
-| `whph_timers_start`           | `ownerType,ownerId?,mode?`                                                                                                                                                        | timer state                                    | `timers:write` plus owner `tasks:write` or `habits:write` | A    | all; timer/system-tray event; timer-session service `start`                                    |
-| `whph_timers_pause`           | `sessionId`                                                                                                                                                                       | timer state                                    | `timers:write`                                            | M    | all; timer event; timer-session service `pause`                                                |
-| `whph_timers_resume`          | `sessionId`                                                                                                                                                                       | timer state                                    | `timers:write`                                            | M    | all; timer event; timer-session service `resume`                                               |
-| `whph_timers_stop`            | `sessionId`                                                                                                                                                                       | `{session,state,savedDurationSeconds}`         | `timers:write` plus owner write scope                     | D    | all; flushes time record before return, timer/time/widget events; timer-session service `stop` |
-| `whph_timers_update_settings` | `workMinutes?,breakMinutes?,longBreakMinutes?,sessionsBeforeLongBreak?,autoStartBreak?,autoStartWork?,tickingEnabled?,tickingVolume?,tickingSpeed?,keepScreenAwake?,defaultMode?` | normalized timer settings                      | `timers:write`, `settings:write`                          | M    | all; active timer/settings event; timer settings action using allowlisted setting commands     |
-| `whph_timers_set_phase`       | `sessionId,phase`                                                                                                                                                                 | timer state                                    | `timers:write`                                            | M    | all; `phase` is explicit `work                                                                 | break`, never toggle; timer-session service phase transition |
-| `whph_marathon_select_task`   | `sessionId,taskId,expectedTaskRevision`                                                                                                                                           | timer state                                    | `timers:write`, `tasks:write`                             | M    | all; flushes prior selection exactly once; timer-session service task selection                |
-| `whph_marathon_advance`       | `sessionId`                                                                                                                                                                       | timer state                                    | `timers:write`, `tasks:write`                             | D    | all; flush/selection/timer events; timer-session service advance                               |
+| Tool | Input fields | Output fields | Scopes | Ann. | Platform, effects,
+application source | | ----------------------------- |
+
+---
+
+| ---------------------------------------------- |
+| ---------------------------------------------- |
+
+---
+
+| ------------------------------------------------------------ | |
+`whph_timers_list` | `ownerType?` | `{sessions:[timer state]}` | `timers:read` |
+R | all; none; timer-session service `list` | | `whph_timers_read` | `sessionId`
+| timer state including owner/mode/phase/elapsed | `timers:read` | R | all;
+none; timer-session service `state` | | `whph_timers_start` |
+`ownerType,ownerId?,mode?` | timer state | `timers:write` plus owner
+`tasks:write` or `habits:write` | A | all; timer/system-tray event;
+timer-session service `start` | | `whph_timers_pause` | `sessionId` | timer
+state | `timers:write` | M | all; timer event; timer-session service `pause` | |
+`whph_timers_resume` | `sessionId` | timer state | `timers:write` | M | all;
+timer event; timer-session service `resume` | | `whph_timers_stop` | `sessionId`
+| `{session,state,savedDurationSeconds}` | `timers:write` plus owner write scope
+| D | all; flushes time record before return, timer/time/widget events;
+timer-session service `stop` | | `whph_timers_update_settings` |
+`workMinutes?,breakMinutes?,longBreakMinutes?,sessionsBeforeLongBreak?,autoStartBreak?,autoStartWork?,tickingEnabled?,tickingVolume?,tickingSpeed?,keepScreenAwake?,defaultMode?`
+| normalized timer settings | `timers:write`, `settings:write` | M | all; active
+timer/settings event; timer settings action using allowlisted setting commands |
+| `whph_timers_set_phase` | `sessionId,phase` | timer state | `timers:write` | M
+| all; `phase` is explicit
+`work                                                                 | break`,
+never toggle; timer-session service phase transition | |
+`whph_marathon_select_task` | `sessionId,taskId,expectedTaskRevision` | timer
+state | `timers:write`, `tasks:write` | M | all; flushes prior selection exactly
+once; timer-session service task selection | | `whph_marathon_advance` |
+`sessionId` | timer state | `timers:write`, `tasks:write` | D | all;
+flush/selection/timer events; timer-session service advance |
 
 ## Application usage, today, calendar, and analysis
 
@@ -169,22 +193,62 @@ Handlers live in `presentation/mcp/tools/app_usage_tools.dart` and
 Handlers live in `presentation/mcp/tools/settings_tools.dart`,
 `data_transfer_tools.dart`, `sync_tools.dart`, and `app_context_tools.dart`.
 
-| Tool                       | Input fields                              | Output fields                                                                      | Scopes                           | Ann. | Platform, effects, application source                                                                                                                                                                         |
-| -------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `whph_settings_list`       | none                                      | allowlisted public `{key,value,valueType}` entries                                 | `settings:read`                  | R    | all; excludes internal/MCP keys; settings query action                                                                                                                                                        |
-| `whph_settings_read`       | `key`                                     | `{key,value,valueType}`                                                            | `settings:read`                  | R    | all; public-key allowlist; `GetSettingQuery`                                                                                                                                                                  |
-| `whph_settings_update`     | `key,value`                               | `{key,value,valueType,revision,committed,effectStatus,effectError?}`               | `settings:write`                 | M    | all; saves first, then applies theme/locale/notification/sound/default/view behavior; `effectStatus=failed` honestly reports a committed setting whose post-commit UI effect failed                           |
-| `whph_data_export`         | `format`                                  | `{artifactId,fileName,fileExtension,sizeBytes,sha256,expiresAt}`                   | `data:export`                    | A    | all; creates client-owned expiring artifact; `ExportDataCommand`; never includes MCP access state                                                                                                             |
-| `whph_data_import_prepare` | `sourceName,strategy`                     | `{operationId,status,requiresApproval,expiresAt,summary}`                          | `data:import`                    | A    | all; stages/validates `merge                                                                                                                                                                                  | replace`, no data mutation; `sourceName`is a WHPH-file basename in the configured transfer directory, not the opaque`artifactId`returned by`whph_data_export`; data-transfer action before `ImportDataCommand` |
-| `whph_operations_get`      | `operationId`                             | `{operationId,type,status,createdAt,expiresAt,summary,result?,error?}`             | `anyOf(data:import,sync:manage)` | R    | all; registry requires either current scope; handler also requires caller ownership and all stored original-operation scopes; local approval automatically runs exactly once, no agent-supplied approval flag |
-| `whph_sync_devices_list`   | `cursor?,pageSize?`                       | paged paired devices/status                                                        | `sync:read`                      | R    | all; none; `GetListSyncDevicesQuery` plus sync-service state                                                                                                                                                  |
-| `whph_sync_devices_read`   | `id`                                      | device/status/`revision`                                                           | `sync:read`                      | R    | all; none; `GetSyncDeviceQuery` plus sync-service state                                                                                                                                                       |
-| `whph_sync_devices_update` | `id,expectedRevision,name?,fromIp?,toIp?` | device plus `{revision,committed,syncStatus}`                                      | `sync:manage`                    | M    | all; commits the device, then triggers the existing sync path; `syncStatus=failed` means the device update remains committed                                                                                  |
-| `whph_sync_devices_delete` | `id,expectedRevision`                     | `{id,deletedAt,committed,syncStatus}`                                              | `sync:manage`                    | D    | all; commits the tombstone, then triggers the existing sync path; `syncStatus=failed` means deletion remains committed                                                                                        |
-| `whph_sync_pair_prepare`   | `peer`                                    | `{operationId,status,requiresApproval,expiresAt,peerSummary}`                      | `sync:manage`                    | A    | platform network/QR camera stays user-owned; local approval pairs once; operation result `status=paired_sync_failed` reports a committed pair whose initial sync failed                                       |
-| `whph_sync_start`          | none                                      | sync state                                                                         | `sync:manage`                    | M    | all supported WHPH platforms; listener event; `StartSyncCommand`                                                                                                                                              |
-| `whph_sync_stop`           | none                                      | sync state                                                                         | `sync:manage`                    | M    | all supported WHPH platforms; listener event; `StopSyncCommand`                                                                                                                                               |
-| `whph_app_context`         | none                                      | `{version,platform,localDateTime,timeZone,supportedFeatures,limits,grantedScopes}` | `app:read`                       | R    | all; none; app info/platform/date providers plus current authenticated grant                                                                                                                                  |
+| Tool | Input fields | Output fields | Scopes | Ann. | Platform, effects,
+application source | | -------------------------- |
+----------------------------------------- |
+
+---
+
+## | -------------------------------- | ---- |
+
+## |
+
+| | `whph_settings_list` | none | allowlisted public `{key,value,valueType}`
+entries | `settings:read` | R | all; excludes internal/MCP keys; settings query
+action | | `whph_settings_read` | `key` | `{key,value,valueType}` |
+`settings:read` | R | all; public-key allowlist; `GetSettingQuery` | |
+`whph_settings_update` | `key,value` |
+`{key,value,valueType,revision,committed,effectStatus,effectError?}` |
+`settings:write` | M | all; saves first, then applies
+theme/locale/notification/sound/default/view behavior; `effectStatus=failed`
+honestly reports a committed setting whose post-commit UI effect failed | |
+`whph_data_export` | `format` |
+`{artifactId,fileName,fileExtension,sizeBytes,sha256,expiresAt}` | `data:export`
+| A | all; creates client-owned expiring artifact; `ExportDataCommand`; never
+includes MCP access state | | `whph_data_import_prepare` | `sourceName,strategy`
+| `{operationId,status,requiresApproval,expiresAt,summary}` | `data:import` | A
+| all; stages/validates
+`merge                                                                                                                                                                                  | replace`,
+no data mutation; `sourceName`is a WHPH-file basename in the configured transfer
+directory, not the opaque`artifactId`returned by`whph_data_export`;
+data-transfer action before `ImportDataCommand` | | `whph_operations_get` |
+`operationId` |
+`{operationId,type,status,createdAt,expiresAt,summary,result?,error?}` |
+`anyOf(data:import,sync:manage)` | R | all; registry requires either current
+scope; handler also requires caller ownership and all stored original-operation
+scopes; local approval automatically runs exactly once, no agent-supplied
+approval flag | | `whph_sync_devices_list` | `cursor?,pageSize?` | paged paired
+devices/status | `sync:read` | R | all; none; `GetListSyncDevicesQuery` plus
+sync-service state | | `whph_sync_devices_read` | `id` |
+device/status/`revision` | `sync:read` | R | all; none; `GetSyncDeviceQuery`
+plus sync-service state | | `whph_sync_devices_update` |
+`id,expectedRevision,name?,fromIp?,toIp?` | device plus
+`{revision,committed,syncStatus}` | `sync:manage` | M | all; commits the device,
+then triggers the existing sync path; `syncStatus=failed` means the device
+update remains committed | | `whph_sync_devices_delete` | `id,expectedRevision`
+| `{id,deletedAt,committed,syncStatus}` | `sync:manage` | D | all; commits the
+tombstone, then triggers the existing sync path; `syncStatus=failed` means
+deletion remains committed | | `whph_sync_pair_prepare` | `peer` |
+`{operationId,status,requiresApproval,expiresAt,peerSummary}` | `sync:manage` |
+A | platform network/QR camera stays user-owned; local approval pairs once;
+operation result `status=paired_sync_failed` reports a committed pair whose
+initial sync failed | | `whph_sync_start` | none | sync state | `sync:manage` |
+M | all supported WHPH platforms; listener event; `StartSyncCommand` | |
+`whph_sync_stop` | none | sync state | `sync:manage` | M | all supported WHPH
+platforms; listener event; `StopSyncCommand` | | `whph_app_context` | none |
+`{version,platform,localDateTime,timeZone,supportedFeatures,limits,grantedScopes}`
+| `app:read` | R | all; none; app info/platform/date providers plus current
+authenticated grant |
 
 Artifacts are not arbitrary files. A later resource adapter exposes only
 metadata and bounded chunks belonging to the authenticated connection, using
