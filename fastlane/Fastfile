@@ -471,7 +471,7 @@ default_platform(:android)
     UI.user_error!("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY not set") unless json_key_path
     UI.user_error!("Service account key file not found at #{json_key_path}") unless File.exist?(json_key_path)
 
-    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)))
+    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)), params: {})
 
     # Reads the currently live track releases directly, without opening an edit.
     releases = client.list_track_release_summaries(package_name, 'production')
@@ -495,7 +495,7 @@ default_platform(:android)
     UI.user_error!("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY not set") unless json_key_path
     UI.user_error!("Service account key file not found at #{json_key_path}") unless File.exist?(json_key_path)
 
-    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)))
+    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)), params: {})
     releases = client.list_track_release_summaries(package_name, options[:track])
     releases.any? { |r| (r.version_codes || []).include?(options[:version_code]) }
   end
