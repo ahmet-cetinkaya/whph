@@ -260,17 +260,21 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
                     id: task.id,
                     title: task.title,
                     isCompleted: task.isCompleted,
+                    statusId: task.statusId,
                     deadlineDate: task.deadlineDate,
                     estimatedTime: task.estimatedTime,
                     plannedDate: task.plannedDate,
                     priority: task.priority,
                     subTasksCompletionPercentage: task.subTasksCompletionPercentage,
+                    plannedDateReminderTime: task.plannedDateReminderTime,
+                    deadlineDateReminderTime: task.deadlineDateReminderTime,
                     tags: taskTags.items
                         .map((e) => TagListItem(
                             id: e.id,
                             name: e.tagName.isNotEmpty
                                 ? e.tagName
                                 : _translationService.translate(SharedTranslationKeys.untitled),
+                            color: e.tagColor,
                             type: e.tagType))
                         .toList());
               });
@@ -318,16 +322,20 @@ class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClie
               id: task.id,
               title: task.title,
               isCompleted: task.isCompleted,
+              statusId: task.statusId,
               deadlineDate: task.deadlineDate,
               estimatedTime: task.estimatedTime,
               plannedDate: task.plannedDate,
               priority: task.priority,
+              plannedDateReminderTime: task.plannedDateReminderTime,
+              deadlineDateReminderTime: task.deadlineDateReminderTime,
               tags: taskTags.items
                   .map((e) => TagListItem(
                       id: e.id,
                       name: e.tagName.isNotEmpty
                           ? e.tagName
                           : _translationService.translate(SharedTranslationKeys.untitled),
+                      color: e.tagColor,
                       type: e.tagType))
                   .toList(),
               subTasks: subTasks.items,
