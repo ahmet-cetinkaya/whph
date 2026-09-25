@@ -456,48 +456,59 @@ default_platform(:android)
     end
   end
 
-  # Fetch the current production rollout fraction from Google Play, reusing
-  # fastlane's own Supply::Client (the same authenticated client that
-  # upload_to_play_store uses internally) rather than hand-rolling auth.
+  # Opens a short-lived read-only edit via fastlane's own Supply::Client (the
+  # same authenticated client upload_to_play_store uses internally), yields
+  # the requested track's TrackRelease list to the block, then always aborts
+  # the edit again (never commits) so it can't linger and block the real
+  # upload_to_play_store edit that runs later in the same lane.
+  #
+  # NOTE: list_track_release_summaries/list_application_track_releases looks
+  # tempting for a "read without an edit" query, but it returns a *different*
+  # Google API object (ReleaseSummary: active_artifacts/release_lifecycle_
+  # state only) that has no status, user_fraction, or version_codes at all -
+  # discovered the hard way via a live CI crash. client.tracks (used
+  # internally by fastlane's own promote_track/update_rollout) is the
+  # correct, edit-scoped API that actually returns TrackRelease objects with
+  # those fields.
+  def self.with_track_releases(track)
+    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
+    UI.user_error!("package_name not found in Appfile") unless package_name
+
+    json_key_path = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"]
+    UI.user_error!("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY not set") unless json_key_path
+    UI.user_error!("Service account key file not found at #{json_key_path}") unless File.exist?(json_key_path)
+
+    require 'supply'
+    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)), params: {})
+    client.begin_edit(package_name: package_name)
+
+    begin
+      track_object = client.tracks(track).first
+      yield(track_object ? track_object.releases : [])
+    ensure
+      client.abort_current_edit
+    end
+  end
+
+  # Fetch the current production rollout fraction from Google Play.
   # Returns nil when there is no in-progress staged rollout (either no
   # production release at all, or the release is fully rolled out / halted).
   private_lane :get_current_rollout_percentage do
-    require 'supply'
+    with_track_releases('production') do |releases|
+      in_progress = releases.find { |r| r.status == 'inProgress' }
+      next nil unless in_progress
 
-    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
-    UI.user_error!("package_name not found in Appfile") unless package_name
-
-    json_key_path = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"]
-    UI.user_error!("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY not set") unless json_key_path
-    UI.user_error!("Service account key file not found at #{json_key_path}") unless File.exist?(json_key_path)
-
-    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)), params: {})
-
-    # Reads the currently live track releases directly, without opening an edit.
-    releases = client.list_track_release_summaries(package_name, 'production')
-    in_progress = releases.find { |r| r.status == 'inProgress' }
-
-    return nil unless in_progress
-
-    in_progress.user_fraction ? in_progress.user_fraction.to_f : 0.0
+      in_progress.user_fraction ? in_progress.user_fraction.to_f : 0.0
+    end
   end
 
   # Returns true if the given versionCode is already present in any release
-  # on the given track, queried via fastlane's own Supply::Client (same
-  # pattern as get_current_rollout_percentage above), without opening an edit.
+  # on the given track.
   private_lane :version_already_on_track? do |options|
-    require 'supply'
-
-    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
-    UI.user_error!("package_name not found in Appfile") unless package_name
-
-    json_key_path = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_KEY"]
-    UI.user_error!("GOOGLE_PLAY_SERVICE_ACCOUNT_KEY not set") unless json_key_path
-    UI.user_error!("Service account key file not found at #{json_key_path}") unless File.exist?(json_key_path)
-
-    client = Supply::Client.new(service_account_json: File.open(File.expand_path(json_key_path)), params: {})
-    releases = client.list_track_release_summaries(package_name, options[:track])
-    releases.any? { |r| (r.version_codes || []).include?(options[:version_code]) }
+    with_track_releases(options[:track]) do |releases|
+      target = options[:version_code].to_s
+      releases.any? { |r| (r.version_codes || []).map(&:to_s).include?(target) }
+    end
   end
 
   private_lane :calculate_next_rollout do |current_rollout|
