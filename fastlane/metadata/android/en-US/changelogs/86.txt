@@ -1,0 +1,2 @@
+• Fixed a startup crash on first launch before usage-access permission is granted
+• Now requires Android 7.0 or newer

@@ -1,0 +1,2 @@
+• Corrigida uma falha ao iniciar pela primeira vez antes de a permissão de acesso à utilização ser concedida
+• Agora requer Android 7.0 ou superior

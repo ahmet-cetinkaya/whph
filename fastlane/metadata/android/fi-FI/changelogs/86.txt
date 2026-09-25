@@ -1,0 +1,2 @@
+• Korjattu kaatuminen ensimmäisellä käynnistyksellä ennen käyttöoikeuden myöntämistä
+• Vaatii nyt Android 7.0:n tai uudemman

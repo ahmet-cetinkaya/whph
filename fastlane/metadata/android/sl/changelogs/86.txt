@@ -1,0 +1,2 @@
+- Odpravljena napaka ob prvem zagonu pred podelitvijo dovoljenja za dostop do uporabe
+- Zdaj zahteva Android 7.0 ali novejšo različico

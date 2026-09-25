@@ -1,0 +1,2 @@
+• Crash bij eerste opstart vóór het verlenen van gebruikstoegang opgelost
+• Vereist nu Android 7.0 of nieuwer

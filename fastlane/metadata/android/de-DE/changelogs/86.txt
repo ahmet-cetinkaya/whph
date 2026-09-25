@@ -1,0 +1,2 @@
+• Absturz beim ersten Start vor Erteilung der Nutzungszugriffsberechtigung behoben
+• Erfordert jetzt Android 7.0 oder neuer

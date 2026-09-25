@@ -1,0 +1,2 @@
+• Rettet et nedbrud ved første opstart, inden brugstilladelse er givet
+• Kræver nu Android 7.0 eller nyere

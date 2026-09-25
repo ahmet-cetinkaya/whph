@@ -1,0 +1,2 @@
+• Correction d'un plantage au premier lancement avant l'octroi de l'autorisation d'accès à l'utilisation
+• Nécessite désormais Android 7.0 ou version ultérieure

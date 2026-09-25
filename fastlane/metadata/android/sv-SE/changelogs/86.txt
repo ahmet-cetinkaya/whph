@@ -1,0 +1,2 @@
+• Åtgärdade en krasch vid första start innan användningsåtkomst har beviljats
+• Kräver nu Android 7.0 eller senare

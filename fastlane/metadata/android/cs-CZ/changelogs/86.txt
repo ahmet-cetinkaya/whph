@@ -1,0 +1,2 @@
+• Opravena chyba při prvním spuštění před udělením oprávnění k přístupu k využití
+• Nyní vyžaduje Android 7.0 nebo novější

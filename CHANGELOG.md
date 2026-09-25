@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.24.1] - 2026-09-25
+
+### Fixed
+- Fixed a startup crash that could occur on first launch before app-usage tracking permission is granted
+
+### Changed
+- Raised the minimum supported Android version to 7.0 (Nougat), as now required by Google Play
+
 ## [0.24.0] - 2026-09-24
 
 ### Added
@@ -1757,7 +1765,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.0...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.1...HEAD
+[0.24.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.1
 [0.24.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.0
 [0.23.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.3
 [0.23.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.2

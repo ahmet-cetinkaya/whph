@@ -1,0 +1,2 @@
+• Rettet en krasj ved første oppstart før brukstilgangstillatelse er gitt
+• Krever nå Android 7.0 eller nyere

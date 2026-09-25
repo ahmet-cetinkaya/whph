@@ -1,0 +1,2 @@
+• Naprawiono awarię przy pierwszym uruchomieniu przed przyznaniem uprawnienia dostępu do użycia
+• Wymaga teraz Androida 7.0 lub nowszego

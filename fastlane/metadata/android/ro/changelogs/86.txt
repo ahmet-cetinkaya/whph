@@ -1,0 +1,2 @@
+- Corectată o blocare la prima pornire înainte de acordarea permisiunii de acces la utilizare
+- Necesită acum Android 7.0 sau o versiune mai nouă

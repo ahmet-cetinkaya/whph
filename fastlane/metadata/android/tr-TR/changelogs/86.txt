@@ -1,0 +1,2 @@
+• Kullanım erişimi izni verilmeden önce ilk açılışta oluşan çökme düzeltildi
+• Artık Android 7.0 veya üzeri gerektiriyor

@@ -1,0 +1,2 @@
+• Corregido un bloqueo al iniciar por primera vez antes de conceder el permiso de acceso al uso
+• Ahora requiere Android 7.0 o superior

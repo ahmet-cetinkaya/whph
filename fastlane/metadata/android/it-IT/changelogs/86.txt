@@ -1,0 +1,2 @@
+• Risolto un arresto anomalo al primo avvio prima della concessione del permesso di accesso all'utilizzo
+• Ora richiede Android 7.0 o versioni successive
