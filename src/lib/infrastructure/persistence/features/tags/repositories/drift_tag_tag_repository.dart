@@ -18,14 +18,10 @@ class TagTagTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftTagTagRepository
-    extends DriftBaseRepository<TagTag, String, TagTagTable>
-    implements ITagTagRepository {
-  DriftTagTagRepository()
-      : super(AppDatabase.instance(), AppDatabase.instance().tagTagTable);
+class DriftTagTagRepository extends DriftBaseRepository<TagTag, String, TagTagTable> implements ITagTagRepository {
+  DriftTagTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().tagTagTable);
 
-  DriftTagTagRepository.withDatabase(AppDatabase database)
-      : super(database, database.tagTagTable);
+  DriftTagTagRepository.withDatabase(AppDatabase database) : super(database, database.tagTagTable);
 
   @override
   Expression<String> getPrimaryKey(TagTagTable t) {
@@ -45,8 +41,7 @@ class DriftTagTagRepository
   }
 
   @override
-  Future<PaginatedList<TagTag>> getListByPrimaryTagId(
-      String id, int pageIndex, int pageSize) async {
+  Future<PaginatedList<TagTag>> getListByPrimaryTagId(String id, int pageIndex, int pageSize) async {
     final query = database.select(table)
       ..where((t) => t.primaryTagId.equals(id) & t.deletedDate.isNull())
       ..orderBy([(t) => OrderingTerm.asc(t.secondaryTagId)])
@@ -71,28 +66,22 @@ class DriftTagTagRepository
   @override
   Future<List<TagTag>> getByPrimaryTagId(String primaryTagId) async {
     return (database.select(table)
-          ..where((t) =>
-              t.primaryTagId.equals(primaryTagId) & t.deletedDate.isNull())
+          ..where((t) => t.primaryTagId.equals(primaryTagId) & t.deletedDate.isNull())
           ..orderBy([(t) => OrderingTerm.asc(t.secondaryTagId)]))
         .get();
   }
 
   @override
   Future<List<TagTag>> getBySecondaryTagId(String secondaryTagId) async {
-    return (database.select(table)
-          ..where((t) =>
-              t.secondaryTagId.equals(secondaryTagId) & t.deletedDate.isNull()))
+    return (database.select(table)..where((t) => t.secondaryTagId.equals(secondaryTagId) & t.deletedDate.isNull()))
         .get();
   }
 
   @override
-  Future<bool> anyByPrimaryAndSecondaryId(
-      String primaryTagId, String secondaryTagId) async {
+  Future<bool> anyByPrimaryAndSecondaryId(String primaryTagId, String secondaryTagId) async {
     final query = database.select(table)
       ..where((t) =>
-          t.primaryTagId.equals(primaryTagId) &
-          t.secondaryTagId.equals(secondaryTagId) &
-          t.deletedDate.isNull());
+          t.primaryTagId.equals(primaryTagId) & t.secondaryTagId.equals(secondaryTagId) & t.deletedDate.isNull());
     final result = await query.get();
 
     return result.isNotEmpty;

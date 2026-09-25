@@ -33,8 +33,7 @@ Future<void> verifySyncDelete(
   TestSyncService service,
   String expectedRevision,
 ) async {
-  final delete =
-      tools.singleWhere((tool) => tool.name == 'whph_sync_devices_delete');
+  final delete = tools.singleWhere((tool) => tool.name == 'whph_sync_devices_delete');
   final result = await delete.handler(
     McpToolArguments({'id': 'device-1', 'expectedRevision': expectedRevision}),
     requestExtra(),
@@ -55,16 +54,11 @@ Future<void> verifySyncMutations(
   expect(stale.structuredContent!['error'], containsPair('code', 'conflict'));
   expect((await repository.getById('device-1'))?.name, 'First update');
   expect(service.runCount, 1);
-  await verifySyncDelete(tools, repository, service,
-      first.structuredContent!['revision'] as String);
+  await verifySyncDelete(tools, repository, service, first.structuredContent!['revision'] as String);
 }
 
-List<McpToolDefinition> syncTools(
-        AppDatabase database,
-        DriftSyncDeviceRepository repository,
-        TestSyncService syncService,
-        TestRequestContext context,
-        McpOperationService operations) =>
+List<McpToolDefinition> syncTools(AppDatabase database, DriftSyncDeviceRepository repository,
+        TestSyncService syncService, TestRequestContext context, McpOperationService operations) =>
     createSyncTools(
       actions: SyncActions(
         repository: repository,
@@ -78,11 +72,8 @@ List<McpToolDefinition> syncTools(
       requestContext: context,
     );
 
-McpOperationService operationService(Directory directory,
-        [TestAccessService? access]) =>
-    McpOperationService(
-      store: McpOperationStore(
-          applicationDirectoryService: TestDirectoryService(directory)),
+McpOperationService operationService(Directory directory, [TestAccessService? access]) => McpOperationService(
+      store: McpOperationStore(applicationDirectoryService: TestDirectoryService(directory)),
       accessService: access ?? TestAccessService(),
     );
 
@@ -95,8 +86,7 @@ Future<void> verifyRevokedPairing(
 ) async {
   final request = await prepare.handler(McpToolArguments(peer), requestExtra());
   access.isAllowed = false;
-  final cancelled = await operations
-      .approve(request.structuredContent!['operationId'] as String);
+  final cancelled = await operations.approve(request.structuredContent!['operationId'] as String);
   access.isAllowed = true;
   expect(cancelled.status, McpOperationStatus.cancelled);
   expect((await repository.getList(0, 20)).items, isEmpty);
@@ -124,9 +114,7 @@ RequestHandlerExtra requestExtra() => RequestHandlerExtra(
       signal: BasicAbortController().signal,
       requestId: 'settings-sync-test',
       sendNotification: (notification, {relatedTask}) async {},
-      sendRequest:
-          <T extends BaseResultData>(request, resultFactory, options) async =>
-              resultFactory(const {}),
+      sendRequest: <T extends BaseResultData>(request, resultFactory, options) async => resultFactory(const {}),
     );
 
 final class TestEffects implements ISettingsEffects {
@@ -146,14 +134,8 @@ final class TestRequestContext implements IMcpRequestContext {
   @override
   Future<T> runOperation<T>(Future<T> Function() operation) => operation();
   @override
-  Future<McpAuthenticatedGrant?> currentGrant(
-          {Set<String> requiredScopes = const {}}) async =>
-      isAllowed
-          ? McpAuthenticatedGrant(
-              id: 'grant',
-              clientName: 'test',
-              scopes: const {McpScopes.syncManage})
-          : null;
+  Future<McpAuthenticatedGrant?> currentGrant({Set<String> requiredScopes = const {}}) async =>
+      isAllowed ? McpAuthenticatedGrant(id: 'grant', clientName: 'test', scopes: const {McpScopes.syncManage}) : null;
 }
 
 final class TestSyncService extends Fake implements ISyncService {
@@ -179,14 +161,12 @@ final class TestDeviceIds extends Fake implements IDeviceIdService {
   Future<String> getDeviceId() async => 'local-device';
 }
 
-final class TestNetworkInterfaces extends Fake
-    implements INetworkInterfaceService {
+final class TestNetworkInterfaces extends Fake implements INetworkInterfaceService {
   @override
   Future<List<String>> getPreferredIPAddresses() async => const ['127.0.0.1'];
 }
 
-final class TestDirectoryService extends Fake
-    implements IApplicationDirectoryService {
+final class TestDirectoryService extends Fake implements IApplicationDirectoryService {
   TestDirectoryService(this.directory);
   final Directory directory;
   @override
@@ -198,8 +178,7 @@ final class TestAccessService extends Fake implements IMcpAccessService {
 
   @override
   Future<McpAccessState> readState() async => McpAccessState(
-        preferences: const McpServerPreferences(
-            isEnabled: false, port: 44041, transferDirectory: ''),
+        preferences: const McpServerPreferences(isEnabled: false, port: 44041, transferDirectory: ''),
         grants: isAllowed
             ? [
                 McpAccessGrant(

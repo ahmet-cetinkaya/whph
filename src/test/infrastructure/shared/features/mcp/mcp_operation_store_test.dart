@@ -11,11 +11,9 @@ void main() {
   late McpOperationStore store;
 
   setUp(() async {
-    applicationDirectory =
-        await Directory.systemTemp.createTemp('whph_mcp_operation_');
+    applicationDirectory = await Directory.systemTemp.createTemp('whph_mcp_operation_');
     store = McpOperationStore(
-      applicationDirectoryService:
-          _TestApplicationDirectoryService(applicationDirectory),
+      applicationDirectoryService: _TestApplicationDirectoryService(applicationDirectory),
     );
   });
 
@@ -25,13 +23,10 @@ void main() {
     }
   });
 
-  test(
-      'rejects oversized saves without replacing the persisted operation state',
-      () async {
+  test('rejects oversized saves without replacing the persisted operation state', () async {
     final operation = _operation();
     await store.update((_) async => ([operation], null));
-    final operationsFile =
-        File(p.join(applicationDirectory.path, 'mcp', 'operations.json'));
+    final operationsFile = File(p.join(applicationDirectory.path, 'mcp', 'operations.json'));
     final originalBytes = await operationsFile.readAsBytes();
 
     final oversized = _operation(
@@ -43,8 +38,7 @@ void main() {
     );
 
     final restarted = McpOperationStore(
-      applicationDirectoryService:
-          _TestApplicationDirectoryService(applicationDirectory),
+      applicationDirectoryService: _TestApplicationDirectoryService(applicationDirectory),
     );
     final persisted = await restarted.load();
 

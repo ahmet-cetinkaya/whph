@@ -29,8 +29,7 @@ final class McpToolDefinition {
       throw ArgumentError.value(name, 'name', 'Must be a lowercase tool name');
     }
     if (description.trim().isEmpty) {
-      throw ArgumentError.value(
-          description, 'description', 'Must not be empty');
+      throw ArgumentError.value(description, 'description', 'Must not be empty');
     }
     if (requiredScopes.isEmpty && anyOfScopes.isEmpty) {
       throw ArgumentError.value(
@@ -94,31 +93,26 @@ final class McpToolDefinition {
     if (schema is! Map<String, dynamic>) return false;
 
     final type = schema['type'];
-    final hasObjectShape = type == 'object' ||
-        type is List && type.contains('object') ||
-        _objectKeywords.any(schema.containsKey);
+    final hasObjectShape =
+        type == 'object' || type is List && type.contains('object') || _objectKeywords.any(schema.containsKey);
     if (hasObjectShape && schema['additionalProperties'] != false) {
       return false;
     }
 
     for (final keyword in _schemaMapKeywords) {
       final schemas = schema[keyword];
-      if (schemas is Map &&
-          schemas.values.any((value) => !_hasClosedObjectSchemas(value))) {
+      if (schemas is Map && schemas.values.any((value) => !_hasClosedObjectSchemas(value))) {
         return false;
       }
     }
     for (final keyword in _schemaListKeywords) {
       final schemas = schema[keyword];
-      if (schemas is List &&
-          schemas.any((value) => !_hasClosedObjectSchemas(value))) {
+      if (schemas is List && schemas.any((value) => !_hasClosedObjectSchemas(value))) {
         return false;
       }
     }
     return _schemaKeywords.every(
-      (keyword) =>
-          !schema.containsKey(keyword) ||
-          _hasClosedObjectSchemas(schema[keyword]),
+      (keyword) => !schema.containsKey(keyword) || _hasClosedObjectSchemas(schema[keyword]),
     );
   }
 

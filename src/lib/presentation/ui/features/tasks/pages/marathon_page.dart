@@ -42,8 +42,7 @@ class MarathonPage extends StatefulWidget {
   State<MarathonPage> createState() => _MarathonPageState();
 }
 
-class _MarathonPageState extends State<MarathonPage>
-    with AutomaticKeepAliveClientMixin {
+class _MarathonPageState extends State<MarathonPage> with AutomaticKeepAliveClientMixin {
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _timerSessionService = container.resolve<ITimerSessionService>();
@@ -248,16 +247,12 @@ class _MarathonPageState extends State<MarathonPage>
       if (mounted) {
         await AsyncErrorHandler.execute<void>(
           context: context,
-          errorMessage:
-              _translationService.translate(TaskTranslationKeys.getTaskError),
+          errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
           operation: () async {
             final query = GetTaskQuery(id: taskId);
-            final task =
-                await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-            final taskTags = await _mediator
-                .send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-                    GetListTaskTagsQuery(
-                        taskId: taskId, pageIndex: 0, pageSize: 5));
+            final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+            final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+                GetListTaskTagsQuery(taskId: taskId, pageIndex: 0, pageSize: 5));
 
             if (mounted) {
               setState(() {
@@ -269,15 +264,13 @@ class _MarathonPageState extends State<MarathonPage>
                     estimatedTime: task.estimatedTime,
                     plannedDate: task.plannedDate,
                     priority: task.priority,
-                    subTasksCompletionPercentage:
-                        task.subTasksCompletionPercentage,
+                    subTasksCompletionPercentage: task.subTasksCompletionPercentage,
                     tags: taskTags.items
                         .map((e) => TagListItem(
                             id: e.id,
                             name: e.tagName.isNotEmpty
                                 ? e.tagName
-                                : _translationService
-                                    .translate(SharedTranslationKeys.untitled),
+                                : _translationService.translate(SharedTranslationKeys.untitled),
                             type: e.tagType))
                         .toList());
               });
@@ -310,22 +303,14 @@ class _MarathonPageState extends State<MarathonPage>
 
     await AsyncErrorHandler.execute<void>(
       context: context,
-      errorMessage:
-          _translationService.translate(TaskTranslationKeys.getTaskError),
+      errorMessage: _translationService.translate(TaskTranslationKeys.getTaskError),
       operation: () async {
         final query = GetTaskQuery(id: _selectedTask!.id);
-        final task =
-            await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
-        final taskTags = await _mediator
-            .send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
-                GetListTaskTagsQuery(
-                    taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
-        final subTasks =
-            await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
-                GetListTasksQuery(
-                    pageIndex: 0,
-                    pageSize: 10,
-                    filterByParentTaskId: _selectedTask!.id));
+        final task = await _mediator.send<GetTaskQuery, GetTaskQueryResponse>(query);
+        final taskTags = await _mediator.send<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+            GetListTaskTagsQuery(taskId: _selectedTask!.id, pageIndex: 0, pageSize: 5));
+        final subTasks = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+            GetListTasksQuery(pageIndex: 0, pageSize: 10, filterByParentTaskId: _selectedTask!.id));
 
         if (mounted) {
           setState(() {
@@ -342,8 +327,7 @@ class _MarathonPageState extends State<MarathonPage>
                       id: e.id,
                       name: e.tagName.isNotEmpty
                           ? e.tagName
-                          : _translationService
-                              .translate(SharedTranslationKeys.untitled),
+                          : _translationService.translate(SharedTranslationKeys.untitled),
                       type: e.tagType))
                   .toList(),
               subTasks: subTasks.items,
@@ -461,8 +445,7 @@ class _MarathonPageState extends State<MarathonPage>
                                     IconButton(
                                       icon: const Icon(Icons.arrow_back),
                                       onPressed: _closeDialog,
-                                      tooltip: _translationService.translate(
-                                          SharedTranslationKeys.closeButton),
+                                      tooltip: _translationService.translate(SharedTranslationKeys.closeButton),
                                     ),
                                   ],
                                 ),
@@ -471,8 +454,7 @@ class _MarathonPageState extends State<MarathonPage>
                                 child: AppTimer(
                                   key: _timerKey,
                                   sessionId: 'marathon',
-                                  sessionOwner:
-                                      const TimerSessionOwner.marathon(),
+                                  sessionOwner: const TimerSessionOwner.marathon(),
                                   selectedTaskId: _selectedTask?.id,
                                   onTimerStart: _onTimerStart,
                                   onTimerStop: _handleTimerStop,
@@ -482,13 +464,10 @@ class _MarathonPageState extends State<MarathonPage>
                                 opacity: _isDimmed ? _dimmingOpacity : 1.0,
                                 duration: const Duration(milliseconds: 500),
                                 child: KebabMenu(
-                                  helpTitleKey:
-                                      TaskTranslationKeys.marathonHelpTitle,
-                                  helpMarkdownContentKey:
-                                      TaskTranslationKeys.marathonHelpContent,
+                                  helpTitleKey: TaskTranslationKeys.marathonHelpTitle,
+                                  helpMarkdownContentKey: TaskTranslationKeys.marathonHelpContent,
                                   onStartTour: _startTour,
-                                  iconColor:
-                                      Theme.of(context).colorScheme.onSurface,
+                                  iconColor: Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             ],
@@ -500,8 +479,7 @@ class _MarathonPageState extends State<MarathonPage>
                               child: TaskCard(
                                 key: ValueKey(_selectedTask!.id),
                                 taskItem: _selectedTask!,
-                                onOpenDetails: () =>
-                                    _showTaskDetails(_selectedTask!.id),
+                                onOpenDetails: () => _showTaskDetails(_selectedTask!.id),
                                 onCompleted: _onTaskCompleted,
                                 showScheduleButton: false,
                               ),
@@ -546,8 +524,7 @@ class _MarathonPageState extends State<MarathonPage>
                                       onSortChange: _onSortConfigChange,
                                       viewMode: _viewMode,
                                       onViewModeChange: _onViewModeChange,
-                                      settingKeyVariantSuffix:
-                                          _taskFilterOptionsSettingKeySuffix,
+                                      settingKeyVariantSuffix: _taskFilterOptionsSettingKeySuffix,
                                     ),
                                   ),
                                   if (!_showCompletedTasks)
@@ -556,8 +533,7 @@ class _MarathonPageState extends State<MarathonPage>
                                       initialPlannedDate: DateTime.now(),
                                       initialTitle: _taskSearchQuery,
                                       initialCompleted: _showCompletedTasks,
-                                      onTaskCreated: (_, __) =>
-                                          _onTasksChanged(),
+                                      onTaskCreated: (_, __) => _onTasksChanged(),
                                     ),
                                 ],
                               ),
@@ -568,55 +544,36 @@ class _MarathonPageState extends State<MarathonPage>
                             duration: const Duration(milliseconds: 500),
                             child: _viewMode == TaskViewMode.board
                                 ? SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.6,
+                                    height: MediaQuery.of(context).size.height * 0.6,
                                     child: TaskList(
                                       key: _taskListKey,
                                       filterByCompleted: _showCompletedTasks,
                                       filterByTags: _selectedTaskTagIds,
-                                      filterByPlannedStartDate:
-                                          _showCompletedTasks
-                                              ? null
-                                              : DateTime(0),
-                                      filterByPlannedEndDate:
-                                          _showCompletedTasks
-                                              ? null
-                                              : DateTime(now.year, now.month,
-                                                  now.day, 23, 59, 59, 999),
-                                      filterByDeadlineStartDate:
-                                          _showCompletedTasks
-                                              ? null
-                                              : DateTime(0),
-                                      filterByDeadlineEndDate:
-                                          _showCompletedTasks
-                                              ? null
-                                              : DateTime(now.year, now.month,
-                                                  now.day, 23, 59, 59, 999),
+                                      filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
+                                      filterByPlannedEndDate: _showCompletedTasks
+                                          ? null
+                                          : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                                      filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
+                                      filterByDeadlineEndDate: _showCompletedTasks
+                                          ? null
+                                          : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
                                       filterDateOr: true,
                                       filterByCompletedStartDate:
-                                          _showCompletedTasks
-                                              ? DateTime(
-                                                  now.year, now.month, now.day)
-                                              : null,
-                                      filterByCompletedEndDate:
-                                          _showCompletedTasks
-                                              ? DateTime(now.year, now.month,
-                                                  now.day, 23, 59, 59, 999)
-                                              : null,
+                                          _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
+                                      filterByCompletedEndDate: _showCompletedTasks
+                                          ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
+                                          : null,
                                       search: _taskSearchQuery,
                                       includeSubTasks: _showSubTasks,
                                       onTaskCompleted: _onTaskCompleted,
-                                      onClickTask: (task) =>
-                                          _showTaskDetails(task.id),
+                                      onClickTask: (task) => _showTaskDetails(task.id),
                                       onSelectTask: _onSelectTask,
-                                      onScheduleTask: (_, __) =>
-                                          _onTasksChanged(),
+                                      onScheduleTask: (_, __) => _onTasksChanged(),
                                       onTasksLoaded: _onTasksLoaded,
                                       selectedTask: _selectedTask,
                                       showSelectButton: true,
                                       transparentCards: true,
-                                      enableReordering:
-                                          _sortConfig.useCustomOrder,
+                                      enableReordering: _sortConfig.useCustomOrder,
                                       sortConfig: _sortConfig,
                                       viewMode: _viewMode,
                                     ),
@@ -625,47 +582,31 @@ class _MarathonPageState extends State<MarathonPage>
                                     key: _taskListKey,
                                     filterByCompleted: _showCompletedTasks,
                                     filterByTags: _selectedTaskTagIds,
-                                    filterByPlannedStartDate:
-                                        _showCompletedTasks
-                                            ? null
-                                            : DateTime(0),
+                                    filterByPlannedStartDate: _showCompletedTasks ? null : DateTime(0),
                                     filterByPlannedEndDate: _showCompletedTasks
                                         ? null
-                                        : DateTime(now.year, now.month, now.day,
-                                            23, 59, 59, 999),
-                                    filterByDeadlineStartDate:
-                                        _showCompletedTasks
-                                            ? null
-                                            : DateTime(0),
+                                        : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
+                                    filterByDeadlineStartDate: _showCompletedTasks ? null : DateTime(0),
                                     filterByDeadlineEndDate: _showCompletedTasks
                                         ? null
-                                        : DateTime(now.year, now.month, now.day,
-                                            23, 59, 59, 999),
+                                        : DateTime(now.year, now.month, now.day, 23, 59, 59, 999),
                                     filterDateOr: true,
                                     filterByCompletedStartDate:
-                                        _showCompletedTasks
-                                            ? DateTime(
-                                                now.year, now.month, now.day)
-                                            : null,
-                                    filterByCompletedEndDate:
-                                        _showCompletedTasks
-                                            ? DateTime(now.year, now.month,
-                                                now.day, 23, 59, 59, 999)
-                                            : null,
+                                        _showCompletedTasks ? DateTime(now.year, now.month, now.day) : null,
+                                    filterByCompletedEndDate: _showCompletedTasks
+                                        ? DateTime(now.year, now.month, now.day, 23, 59, 59, 999)
+                                        : null,
                                     search: _taskSearchQuery,
                                     includeSubTasks: _showSubTasks,
                                     onTaskCompleted: _onTaskCompleted,
-                                    onClickTask: (task) =>
-                                        _showTaskDetails(task.id),
+                                    onClickTask: (task) => _showTaskDetails(task.id),
                                     onSelectTask: _onSelectTask,
-                                    onScheduleTask: (_, __) =>
-                                        _onTasksChanged(),
+                                    onScheduleTask: (_, __) => _onTasksChanged(),
                                     onTasksLoaded: _onTasksLoaded,
                                     selectedTask: _selectedTask,
                                     showSelectButton: true,
                                     transparentCards: true,
-                                    enableReordering:
-                                        _sortConfig.useCustomOrder,
+                                    enableReordering: _sortConfig.useCustomOrder,
                                     sortConfig: _sortConfig,
                                     viewMode: _viewMode,
                                   ),
@@ -694,10 +635,7 @@ class _MarathonPageState extends State<MarathonPage>
                             child: Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surface
-                                    .withValues(alpha: 0.8),
+                                color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Column(
@@ -706,25 +644,13 @@ class _MarathonPageState extends State<MarathonPage>
                                   Icon(
                                     Icons.touch_app,
                                     size: 48,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withValues(alpha: 0.5),
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    _translationService
-                                        .translate(
-                                            SharedTranslationKeys.tapToResume)
-                                        .toUpperCase(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface
-                                              .withValues(alpha: 0.5),
+                                    _translationService.translate(SharedTranslationKeys.tapToResume).toUpperCase(),
+                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                                         ),
                                   ),
                                 ],
@@ -747,38 +673,30 @@ class _MarathonPageState extends State<MarathonPage>
     final tourSteps = [
       // 1. Page introduce
       TourStep(
-        title: _translationService
-            .translate(TaskTranslationKeys.tourMarathonAppUsageTitle),
-        description: _translationService
-            .translate(TaskTranslationKeys.tourMarathonAppUsageDescription),
+        title: _translationService.translate(TaskTranslationKeys.tourMarathonAppUsageTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourMarathonAppUsageDescription),
         icon: Icons.bar_chart,
         targetKey: _mainContentKey,
         position: TourPosition.bottom,
       ),
       // 2. App usage graph list introduce
       TourStep(
-        title: _translationService
-            .translate(TaskTranslationKeys.tourMarathonUsageStatisticsTitle),
-        description: _translationService.translate(
-            TaskTranslationKeys.tourMarathonUsageStatisticsDescription),
+        title: _translationService.translate(TaskTranslationKeys.tourMarathonUsageStatisticsTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourMarathonUsageStatisticsDescription),
         targetKey: _timerKey,
         position: TourPosition.bottom,
       ),
       // 3. List options introduce
       TourStep(
-        title: _translationService
-            .translate(TaskTranslationKeys.tourMarathonFilterSortTitle),
-        description: _translationService
-            .translate(TaskTranslationKeys.tourMarathonFilterSortDescription),
+        title: _translationService.translate(TaskTranslationKeys.tourMarathonFilterSortTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourMarathonFilterSortDescription),
         targetKey: _filtersKey,
         position: TourPosition.bottom,
       ),
       // 4. App tracking settings button introduce
       TourStep(
-        title: _translationService
-            .translate(TaskTranslationKeys.tourMarathonTrackingSettingsTitle),
-        description: _translationService.translate(
-            TaskTranslationKeys.tourMarathonTrackingSettingsDescription),
+        title: _translationService.translate(TaskTranslationKeys.tourMarathonTrackingSettingsTitle),
+        description: _translationService.translate(TaskTranslationKeys.tourMarathonTrackingSettingsDescription),
         targetKey: _taskListKey,
         position: TourPosition.top,
       ),

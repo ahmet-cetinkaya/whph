@@ -12,8 +12,7 @@ final class SettingRevisionConflictException implements Exception {
 }
 
 final class SettingUpdateResult {
-  const SettingUpdateResult(
-      {required this.setting, required this.effectApplied});
+  const SettingUpdateResult({required this.setting, required this.effectApplied});
 
   final PublicSettingRecord setting;
   final bool effectApplied;
@@ -67,29 +66,23 @@ final class SettingsActions {
         await _repository.add(replacement);
         return _record(key, await _repository.getByKey(key.storageKey));
       } else {
-        final revision =
-            await _repository.updateIfRevision(replacement, expectedRevision!);
+        final revision = await _repository.updateIfRevision(replacement, expectedRevision!);
         if (revision == null) throw SettingRevisionConflictException(key);
-        return PublicSettingRecord(
-            key: key, value: normalizedValue, revision: revision);
+        return PublicSettingRecord(key: key, value: normalizedValue, revision: revision);
       }
     });
     try {
-      await _effects
-          .apply(PublicSettingChange(key: key, value: normalizedValue));
+      await _effects.apply(PublicSettingChange(key: key, value: normalizedValue));
       return SettingUpdateResult(setting: result, effectApplied: true);
     } catch (_) {
       return SettingUpdateResult(setting: result, effectApplied: false);
     }
   }
 
-  PublicSettingRecord _record(PublicSettingKey key, Setting? setting) =>
-      PublicSettingRecord(
+  PublicSettingRecord _record(PublicSettingKey key, Setting? setting) => PublicSettingRecord(
         key: key,
         value: setting == null ? key.defaultValue : key.decode(setting.value),
-        revision: setting == null
-            ? null
-            : setting.modifiedDate ?? setting.createdDate,
+        revision: setting == null ? null : setting.modifiedDate ?? setting.createdDate,
       );
 
   bool _matchesRevision(Setting? setting, DateTime? expected) {

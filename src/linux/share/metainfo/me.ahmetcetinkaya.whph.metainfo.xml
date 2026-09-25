@@ -1460,7 +1460,9 @@
   </requires>
   <releases>
     <release version="0.24.1" date="2026-09-25">
-      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.24.1/CHANGELOG.md</url>
+      <url
+        type="details"
+      >https://github.com/ahmet-cetinkaya/whph/blob/v0.24.1/CHANGELOG.md</url>
       <description>
         <ul>
           <li>Don't fail startup when usage-stats permission isn't granted</li>
@@ -1469,19 +1471,30 @@
       </description>
     </release>
     <release version="0.24.0" date="2026-09-24">
-      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.24.1/CHANGELOG.md</url>
+      <url
+        type="details"
+      >https://github.com/ahmet-cetinkaya/whph/blob/v0.24.1/CHANGELOG.md</url>
       <description>
         <ul>
-          <li>Added AI agent (MCP) support for managing tasks, habits, and notes through connected AI assistants</li>
-          <li>Habits can now be marked as "bad habits" you're trying to break, with matching support in widgets, notifications, and stats</li>
-          <li>The default page shown when you launch the app can now be set to any section</li>
-          <li>The quick add task dialog can now be minimized instead of being closed</li>
-          <li>Improved performance for large task lists, imports, and the calendar view</li>
+          <li
+          >Added AI agent (MCP) support for managing tasks, habits, and notes through connected AI assistants</li>
+          <li
+          >Habits can now be marked as "bad habits" you're trying to break, with matching support in widgets, notifications, and stats</li>
+          <li
+          >The default page shown when you launch the app can now be set to any section</li>
+          <li
+          >The quick add task dialog can now be minimized instead of being closed</li>
+          <li
+          >Improved performance for large task lists, imports, and the calendar view</li>
           <li>Fixed numerous drag-and-drop reordering issues</li>
-          <li>Improved sync reliability with clearer per-device status and persistent error notifications</li>
-          <li>Fixed exported files losing Chinese, Japanese, and Korean text</li>
-          <li>Fixed the Score Trends chart for bad habits and duplicate axis labels</li>
-          <li>Made database migrations safer by aborting automatically if a pre-migration backup fails</li>
+          <li
+          >Improved sync reliability with clearer per-device status and persistent error notifications</li>
+          <li
+          >Fixed exported files losing Chinese, Japanese, and Korean text</li>
+          <li
+          >Fixed the Score Trends chart for bad habits and duplicate axis labels</li>
+          <li
+          >Made database migrations safer by aborting automatically if a pre-migration backup fails</li>
         </ul>
       </description>
     </release>

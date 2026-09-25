@@ -17,13 +17,10 @@ void main() {
   late McpIssuedGrant grant;
 
   setUp(() async {
-    applicationDirectory =
-        await _createApplicationDirectory('whph_mcp_transfer_');
-    transferDirectory =
-        Directory(p.join(applicationDirectory.path, 'transfers'));
+    applicationDirectory = await _createApplicationDirectory('whph_mcp_transfer_');
+    transferDirectory = Directory(p.join(applicationDirectory.path, 'transfers'));
     await transferDirectory.create();
-    final directoryService =
-        _TestApplicationDirectoryService(applicationDirectory);
+    final directoryService = _TestApplicationDirectoryService(applicationDirectory);
     accessService = McpAccessService(
       store: McpAccessStore(applicationDirectoryService: directoryService),
     );
@@ -50,15 +47,13 @@ void main() {
     Future<void> Function()? beforeSaveIndex,
   }) =>
       McpTransferFileStore(
-        applicationDirectoryService:
-            _TestApplicationDirectoryService(applicationDirectory),
+        applicationDirectoryService: _TestApplicationDirectoryService(applicationDirectory),
         accessService: accessService,
         now: now,
         beforeSaveIndex: beforeSaveIndex,
       );
 
-  test('serializes concurrent exports and preserves reloaded metadata',
-      () async {
+  test('serializes concurrent exports and preserves reloaded metadata', () async {
     final store = createStore();
     final artifacts = await Future.wait(List.generate(
       12,
@@ -84,8 +79,7 @@ void main() {
       await mcpDirectory
           .list()
           .where((entity) =>
-              p.basename(entity.path).startsWith('transfers.json.') &&
-              p.basename(entity.path).endsWith('.tmp'))
+              p.basename(entity.path).startsWith('transfers.json.') && p.basename(entity.path).endsWith('.tmp'))
           .isEmpty,
       isTrue,
     );
@@ -103,8 +97,7 @@ void main() {
     await expectLater(
       createStore(
         now: () => createdAt.add(const Duration(hours: 2)),
-        beforeSaveIndex: () =>
-            Future<void>.error(const FileSystemException('index unavailable')),
+        beforeSaveIndex: () => Future<void>.error(const FileSystemException('index unavailable')),
       ).cleanupExpired(),
       throwsA(isA<FileSystemException>()),
     );
@@ -117,8 +110,7 @@ void main() {
     );
     expect(chunk?.bytes, utf8.encode('preserved content'));
 
-    await createStore(now: () => createdAt.add(const Duration(hours: 2)))
-        .cleanupExpired();
+    await createStore(now: () => createdAt.add(const Duration(hours: 2))).cleanupExpired();
     expect(
       await createStore(now: () => createdAt).readArtifactChunk(
         clientGrantId: grant.grant.id,
@@ -142,13 +134,10 @@ void main() {
     await expectLater(createStore().cleanupExpired(), throwsFormatException);
   });
 
-  test('enforces metadata entry capacity without orphaning an export',
-      () async {
+  test('enforces metadata entry capacity without orphaning an export', () async {
     final store = createStore();
     McpTransferArtifact? lastArtifact;
-    for (var index = 0;
-        index < mcpMaximumRetainedTransferMetadataEntries;
-        index++) {
+    for (var index = 0; index < mcpMaximumRetainedTransferMetadataEntries; index++) {
       lastArtifact = await store.storeExport(
         clientGrantId: grant.grant.id,
         fileName: 'export-$index.json',
@@ -156,8 +145,7 @@ void main() {
         content: 'content',
       );
     }
-    final index =
-        File(p.join(applicationDirectory.path, 'mcp', 'transfers.json'));
+    final index = File(p.join(applicationDirectory.path, 'mcp', 'transfers.json'));
     final persistedIndex = await index.readAsBytes();
 
     await expectLater(
@@ -170,10 +158,8 @@ void main() {
       throwsA(isA<FileSystemException>()),
     );
 
-    final artifactDirectory =
-        Directory(p.join(applicationDirectory.path, 'mcp', 'artifacts'));
-    expect(await artifactDirectory.list().length,
-        equals(mcpMaximumRetainedTransferMetadataEntries));
+    final artifactDirectory = Directory(p.join(applicationDirectory.path, 'mcp', 'artifacts'));
+    expect(await artifactDirectory.list().length, equals(mcpMaximumRetainedTransferMetadataEntries));
     expect(await index.readAsBytes(), equals(persistedIndex));
 
     final reloaded = createStore();
@@ -187,11 +173,9 @@ void main() {
     );
   });
 
-  test('serializes concurrent staging and enforces the per-grant cap',
-      () async {
+  test('serializes concurrent staging and enforces the per-grant cap', () async {
     for (var index = 0; index < 6; index++) {
-      await File(p.join(transferDirectory.path, 'import-$index.whph'))
-          .writeAsString('content-$index');
+      await File(p.join(transferDirectory.path, 'import-$index.whph')).writeAsString('content-$index');
     }
     final store = createStore();
     final results = await Future.wait(List.generate(
@@ -218,14 +202,11 @@ void main() {
 }
 
 Future<Directory> _createApplicationDirectory(String prefix) {
-  final basePath = Platform.isWindows
-      ? Platform.environment['LOCALAPPDATA']!
-      : Directory.systemTemp.path;
+  final basePath = Platform.isWindows ? Platform.environment['LOCALAPPDATA']! : Directory.systemTemp.path;
   return Directory(basePath).createTemp(prefix);
 }
 
-final class _TestApplicationDirectoryService
-    implements IApplicationDirectoryService {
+final class _TestApplicationDirectoryService implements IApplicationDirectoryService {
   const _TestApplicationDirectoryService(this.directory);
 
   final Directory directory;

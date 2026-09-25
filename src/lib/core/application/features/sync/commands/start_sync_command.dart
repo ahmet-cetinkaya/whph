@@ -5,8 +5,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_restore_barr
 
 class StartSyncCommand implements IRequest<void> {}
 
-class StartSyncCommandHandler
-    implements IRequestHandler<StartSyncCommand, void> {
+class StartSyncCommandHandler implements IRequestHandler<StartSyncCommand, void> {
   final ISyncService _syncService;
   final IRestoreBarrier _restoreBarrier;
 

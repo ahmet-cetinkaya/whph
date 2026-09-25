@@ -100,8 +100,7 @@ final class McpTransferFileStore {
       final chunks = switch (content) {
         String value => Stream<List<int>>.value(utf8.encode(value)),
         List<int> value => Stream<List<int>>.value(value),
-        _ => throw ArgumentError.value(
-            content, 'content', 'Unsupported export content'),
+        _ => throw ArgumentError.value(content, 'content', 'Unsupported export content'),
       };
       await for (final chunk in chunks) {
         size += chunk.length;
@@ -164,9 +163,7 @@ final class McpTransferFileStore {
     await _ensureLoadedLocked();
     await _cleanupExpiredLocked();
     _validateBasename(sourceName);
-    final activeCount = _stagedImports.values
-        .where((item) => item.ownerGrantId == clientGrantId)
-        .length;
+    final activeCount = _stagedImports.values.where((item) => item.ownerGrantId == clientGrantId).length;
     if (activeCount >= _maximumStagedImportsPerClient) {
       throw const FileSystemException('Too many staged imports');
     }
@@ -181,12 +178,10 @@ final class McpTransferFileStore {
       throw const McpTransferSourceMissingException();
     }
     if (transferDirectoryType != FileSystemEntityType.directory) {
-      throw const FileSystemException(
-          'Transfer directory must be a real directory');
+      throw const FileSystemException('Transfer directory must be a real directory');
     }
     final source = File(p.join(preferences.transferDirectory, sourceName));
-    final sourceType =
-        await FileSystemEntity.type(source.path, followLinks: false);
+    final sourceType = await FileSystemEntity.type(source.path, followLinks: false);
     if (sourceType == FileSystemEntityType.notFound) {
       throw const McpTransferSourceMissingException();
     }
@@ -264,8 +259,7 @@ final class McpTransferFileStore {
       return null;
     }
     final actual = await _hashBounded(artifactFile);
-    if (actual.$1 != stored.metadata.sizeBytes ||
-        actual.$2 != stored.metadata.sha256) return null;
+    if (actual.$1 != stored.metadata.sizeBytes || actual.$2 != stored.metadata.sha256) return null;
     if (offset > stored.metadata.sizeBytes) {
       throw ArgumentError.value(offset, 'offset', 'Beyond artifact length');
     }
@@ -273,8 +267,7 @@ final class McpTransferFileStore {
       stored.metadata.sizeBytes,
       offset + length,
     );
-    final bytes =
-        await artifactFile.openRead(offset, end).expand((e) => e).toList();
+    final bytes = await artifactFile.openRead(offset, end).expand((e) => e).toList();
     return McpArtifactChunk(
       artifact: stored.metadata,
       offset: offset,
@@ -286,8 +279,7 @@ final class McpTransferFileStore {
   Future<bool> verifyStaged(McpStagedImport staged) async {
     if (!staged.expiresAt.isAfter(_now().toUtc())) return false;
     final file = File(staged.path);
-    if (await FileSystemEntity.type(file.path, followLinks: false) !=
-        FileSystemEntityType.file) return false;
+    if (await FileSystemEntity.type(file.path, followLinks: false) != FileSystemEntityType.file) return false;
     final digest = await _hashBounded(file);
     return digest.$1 == staged.sizeBytes && digest.$2 == staged.sha256;
   }
@@ -299,8 +291,7 @@ final class McpTransferFileStore {
     return File(staged.path).readAsBytes();
   }
 
-  Future<void> removeStaged(McpStagedImport staged) =>
-      _runLocked(() => _removeStagedLocked(staged));
+  Future<void> removeStaged(McpStagedImport staged) => _runLocked(() => _removeStagedLocked(staged));
 
   Future<void> _removeStagedLocked(McpStagedImport staged) async {
     await _ensureLoadedLocked();
@@ -350,10 +341,8 @@ final class McpTransferFileStore {
         .where((entry) => !entry.value.metadata.expiresAt.isAfter(now))
         .map((entry) => entry.key)
         .toSet();
-    final expiredStagingIds = _stagedImports.entries
-        .where((entry) => !entry.value.expiresAt.isAfter(now))
-        .map((entry) => entry.key)
-        .toSet();
+    final expiredStagingIds =
+        _stagedImports.entries.where((entry) => !entry.value.expiresAt.isAfter(now)).map((entry) => entry.key).toSet();
     if (expiredArtifactIds.isEmpty && expiredStagingIds.isEmpty) return;
 
     final previousArtifacts = _artifacts;
@@ -412,16 +401,12 @@ final class McpTransferFileStore {
     if (_isLoaded) return;
     _isLoaded = true;
     try {
-      final applicationDirectory =
-          await _applicationDirectoryService.getApplicationDirectory();
-      final index =
-          File(p.join(applicationDirectory.path, 'mcp', 'transfers.json'));
+      final applicationDirectory = await _applicationDirectoryService.getApplicationDirectory();
+      final index = File(p.join(applicationDirectory.path, 'mcp', 'transfers.json'));
       if (!await index.exists()) return;
       if (!Platform.isWindows) {
-        if (!await _hasMode(index.parent.path, 0x1c0) ||
-            !await _hasMode(index.path, 0x180)) {
-          throw const FileSystemException(
-              'Transfer metadata permissions are not private');
+        if (!await _hasMode(index.parent.path, 0x1c0) || !await _hasMode(index.path, 0x180)) {
+          throw const FileSystemException('Transfer metadata permissions are not private');
         }
       }
       if (await index.length() > mcpMaximumTransferMetadataBytes) {
@@ -431,24 +416,18 @@ final class McpTransferFileStore {
       if (decoded is! Map<String, dynamic> || decoded['version'] != 1) {
         throw const FormatException('Invalid transfer metadata');
       }
-      final artifactDirectory =
-          p.join(applicationDirectory.path, 'mcp', 'artifacts');
-      final stagingDirectory =
-          p.join(applicationDirectory.path, 'mcp', 'staging');
+      final artifactDirectory = p.join(applicationDirectory.path, 'mcp', 'artifacts');
+      final stagingDirectory = p.join(applicationDirectory.path, 'mcp', 'staging');
       final artifacts = decoded['artifacts'];
       final staging = decoded['staging'];
       if (artifacts is! List ||
           staging is! List ||
-          artifacts.length + staging.length >
-              mcpMaximumRetainedTransferMetadataEntries) {
+          artifacts.length + staging.length > mcpMaximumRetainedTransferMetadataEntries) {
         throw const FormatException('Invalid transfer metadata');
       }
-      final decodedArtifacts = artifacts
-          .map((value) => _decodeArtifact(value, artifactDirectory))
-          .toList(growable: false);
-      final decodedStaging = staging
-          .map((value) => _decodeStaged(value, stagingDirectory))
-          .toList(growable: false);
+      final decodedArtifacts =
+          artifacts.map((value) => _decodeArtifact(value, artifactDirectory)).toList(growable: false);
+      final decodedStaging = staging.map((value) => _decodeStaged(value, stagingDirectory)).toList(growable: false);
       _artifacts = Map.unmodifiable({
         for (final artifact in decodedArtifacts) artifact.metadata.id: artifact,
       });
@@ -490,8 +469,7 @@ final class McpTransferFileStore {
     if (encoded.length > mcpMaximumTransferMetadataBytes) {
       throw const FileSystemException('Transfer metadata exceeds the limit');
     }
-    final applicationDirectory =
-        await _applicationDirectoryService.getApplicationDirectory();
+    final applicationDirectory = await _applicationDirectoryService.getApplicationDirectory();
     final directory = Directory(p.join(applicationDirectory.path, 'mcp'));
     await directory.create(recursive: true);
     if (!Platform.isWindows) await _chmod(directory.path, '700');
@@ -507,8 +485,7 @@ final class McpTransferFileStore {
   }
 
   void _ensureMetadataEntryCapacity({bool admitting = false}) {
-    if (_artifacts.length + _stagedImports.length + (admitting ? 1 : 0) >
-        mcpMaximumRetainedTransferMetadataEntries) {
+    if (_artifacts.length + _stagedImports.length + (admitting ? 1 : 0) > mcpMaximumRetainedTransferMetadataEntries) {
       throw const FileSystemException('Transfer metadata entry limit reached');
     }
   }
@@ -526,8 +503,7 @@ final class McpTransferFileStore {
       sha256: json['sha256'] as String,
       expiresAt: DateTime.parse(json['expiresAt'] as String).toUtc(),
     );
-    _validateMetadata(
-        metadata.ownerGrantId, metadata.sizeBytes, metadata.sha256);
+    _validateMetadata(metadata.ownerGrantId, metadata.sizeBytes, metadata.sha256);
     return _StoredArtifact(
       metadata: metadata,
       path: p.join(directory, id),
@@ -605,14 +581,11 @@ final class McpTransferFileStore {
   }
 
   Future<Directory> _privateDirectory(String name) async {
-    final applicationDirectory =
-        await _applicationDirectoryService.getApplicationDirectory();
+    final applicationDirectory = await _applicationDirectoryService.getApplicationDirectory();
     final directory = Directory(p.join(applicationDirectory.path, 'mcp', name));
-    final type =
-        await FileSystemEntity.type(directory.path, followLinks: false);
+    final type = await FileSystemEntity.type(directory.path, followLinks: false);
     if (type == FileSystemEntityType.link) {
-      throw const FileSystemException(
-          'Private transfer directory must not be a link');
+      throw const FileSystemException('Private transfer directory must not be a link');
     }
     await directory.create(recursive: true);
     if (!Platform.isWindows) await _chmod(directory.path, '700');
@@ -632,9 +605,7 @@ final class McpTransferFileStore {
   }
 
   Future<void> _validateLocalTransferDirectory(String path) async {
-    if (!p.isAbsolute(path) ||
-        path.startsWith(r'\\') ||
-        path.startsWith('//')) {
+    if (!p.isAbsolute(path) || path.startsWith(r'\\') || path.startsWith('//')) {
       throw const FileSystemException('Transfer directory must be local');
     }
     if (!Platform.isLinux && !Platform.isAndroid) return;
@@ -643,15 +614,11 @@ final class McpTransferFileStore {
     final normalized = p.normalize(path);
     String? matchingType;
     var matchingLength = -1;
-    await for (final line in mounts
-        .openRead()
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())) {
+    await for (final line in mounts.openRead().transform(utf8.decoder).transform(const LineSplitter())) {
       final fields = line.split(' ');
       if (fields.length < 3) continue;
       final mountPoint = fields[1].replaceAll(r'\040', ' ');
-      if ((normalized == mountPoint || p.isWithin(mountPoint, normalized)) &&
-          mountPoint.length > matchingLength) {
+      if ((normalized == mountPoint || p.isWithin(mountPoint, normalized)) && mountPoint.length > matchingLength) {
         matchingLength = mountPoint.length;
         matchingType = fields[2];
       }

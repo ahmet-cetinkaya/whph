@@ -45,10 +45,8 @@ void main() {
 
   setUp(() async {
     AppDatabase.isTestMode = true;
-    temporaryDirectory =
-        await Directory.systemTemp.createTemp('whph-mcp-settings-sync-');
-    database = AppDatabase(
-        NativeDatabase(File('${temporaryDirectory.path}/test.sqlite')));
+    temporaryDirectory = await Directory.systemTemp.createTemp('whph-mcp-settings-sync-');
+    database = AppDatabase(NativeDatabase(File('${temporaryDirectory.path}/test.sqlite')));
     settingsRepository = DriftSettingRepository.withDatabase(database);
     syncRepository = DriftSyncDeviceRepository.withDatabase(database);
     effects = TestEffects();
@@ -62,16 +60,13 @@ void main() {
     AppDatabase.isTestMode = false;
   });
 
-  test(
-      'setting update persists in SQLite, applies once, and rejects stale revisions',
-      () async {
+  test('setting update persists in SQLite, applies once, and rejects stale revisions', () async {
     final actions = SettingsActions(
       repository: settingsRepository,
       transactions: DriftApplicationTransactionService(database),
       effects: effects,
     );
-    final tool = createSettingsTools(
-            actions: actions, requestContext: requestContext)
+    final tool = createSettingsTools(actions: actions, requestContext: requestContext)
         .singleWhere((definition) => definition.name == 'whph_settings_update');
 
     final created = await tool.handler(
@@ -80,61 +75,41 @@ void main() {
     );
     final firstRevision = created.structuredContent!['revision'] as String;
     final updated = await tool.handler(
-      McpToolArguments({
-        'key': 'themeMode',
-        'value': 'light',
-        'expectedRevision': firstRevision
-      }),
+      McpToolArguments({'key': 'themeMode', 'value': 'light', 'expectedRevision': firstRevision}),
       requestExtra(),
     );
     final secondRevision = updated.structuredContent!['revision'] as String;
     final stale = await tool.handler(
-      McpToolArguments({
-        'key': 'themeMode',
-        'value': 'auto',
-        'expectedRevision': firstRevision
-      }),
+      McpToolArguments({'key': 'themeMode', 'value': 'auto', 'expectedRevision': firstRevision}),
       requestExtra(),
     );
-    await verifyFailedSettingEffect(
-        tool, settingsRepository, effects, secondRevision);
+    await verifyFailedSettingEffect(tool, settingsRepository, effects, secondRevision);
 
     expect(updated.isError, isFalse);
     expect(stale.structuredContent!['error'], containsPair('code', 'conflict'));
   });
 
-  test(
-      'hidden setting keys are absent from schema and direct reads fail closed',
-      () async {
+  test('hidden setting keys are absent from schema and direct reads fail closed', () async {
     final actions = SettingsActions(
       repository: settingsRepository,
       transactions: DriftApplicationTransactionService(database),
       effects: effects,
     );
-    final tools =
-        createSettingsTools(actions: actions, requestContext: requestContext);
-    final updateSchema = tools
-        .singleWhere((tool) => tool.name == 'whph_settings_update')
-        .inputSchema
-        .toJson();
+    final tools = createSettingsTools(actions: actions, requestContext: requestContext);
+    final updateSchema = tools.singleWhere((tool) => tool.name == 'whph_settings_update').inputSchema.toJson();
     final encodedSchema = jsonEncode(updateSchema);
 
     expectHiddenSettingsToBeClosed(encodedSchema);
   });
 
-  test('settings update input schema is portable across MCP clients',
-      () async {
+  test('settings update input schema is portable across MCP clients', () async {
     final actions = SettingsActions(
       repository: settingsRepository,
       transactions: DriftApplicationTransactionService(database),
       effects: effects,
     );
-    final tools =
-        createSettingsTools(actions: actions, requestContext: requestContext);
-    final schema = tools
-        .singleWhere((tool) => tool.name == 'whph_settings_update')
-        .inputSchema
-        .toJson();
+    final tools = createSettingsTools(actions: actions, requestContext: requestContext);
+    final schema = tools.singleWhere((tool) => tool.name == 'whph_settings_update').inputSchema.toJson();
     final encodedSchema = jsonEncode(schema);
 
     // Some clients (Claude Code) ignore const in preflight validation, so a
@@ -144,23 +119,18 @@ void main() {
 
     final valueSchema = schema['properties']!['value'] as Map<String, dynamic>;
     final branches = valueSchema['anyOf'] as List;
-    final encodedBranches =
-        branches.map((branch) => jsonEncode(branch)).toList();
+    final encodedBranches = branches.map((branch) => jsonEncode(branch)).toList();
     expect(encodedBranches, contains(contains('"type":"boolean"')));
     expect(encodedBranches.any((b) => b.contains('"type":"integer"')), isTrue);
     expect(encodedBranches.any((b) => b.contains('"enum"')), isTrue);
 
-    final keyEnum =
-        (schema['properties']!['key'] as Map<String, dynamic>)['enum']
-            as List;
-    expect(keyEnum,
-        equals(PublicSettingKey.values.map((k) => k.publicName).toList()));
+    final keyEnum = (schema['properties']!['key'] as Map<String, dynamic>)['enum'] as List;
+    expect(keyEnum, equals(PublicSettingKey.values.map((k) => k.publicName).toList()));
 
     expectHiddenSettingsToBeClosed(encodedSchema);
   });
 
-  test('reminder setting uses its typed enum and rejects invalid values',
-      () async {
+  test('reminder setting uses its typed enum and rejects invalid values', () async {
     final update = createSettingsTools(
       actions: SettingsActions(
         repository: settingsRepository,
@@ -171,50 +141,36 @@ void main() {
     ).singleWhere((tool) => tool.name == 'whph_settings_update');
 
     final accepted = await update.handler(
-        McpToolArguments(const {
-          'key': 'taskDefaultPlannedReminder',
-          'value': 'fifteenMinutesBefore'
-        }),
-        requestExtra());
+        McpToolArguments(const {'key': 'taskDefaultPlannedReminder', 'value': 'fifteenMinutesBefore'}), requestExtra());
     final rejected = await update.handler(
-        McpToolArguments(
-            const {'key': 'taskDefaultPlannedReminder', 'value': 'whenever'}),
-        requestExtra());
+        McpToolArguments(const {'key': 'taskDefaultPlannedReminder', 'value': 'whenever'}), requestExtra());
 
     expect(accepted.isError, isFalse);
-    expect(rejected.structuredContent!['error'],
-        containsPair('code', 'validation_error'));
+    expect(rejected.structuredContent!['error'], containsPair('code', 'validation_error'));
     expect(effects.changes.single.value, 'fifteenMinutesBefore');
   });
 
-  test(
-      'authorization revoked inside the transaction prevents a setting write and effect',
-      () async {
+  test('authorization revoked inside the transaction prevents a setting write and effect', () async {
     requestContext.isAllowed = false;
     final actions = SettingsActions(
       repository: settingsRepository,
       transactions: DriftApplicationTransactionService(database),
       effects: effects,
     );
-    final tool = createSettingsTools(
-            actions: actions, requestContext: requestContext)
+    final tool = createSettingsTools(actions: actions, requestContext: requestContext)
         .singleWhere((definition) => definition.name == 'whph_settings_update');
 
     await expectLater(
-      tool.handler(
-          McpToolArguments(
-              const {'key': 'notificationsEnabled', 'value': false}),
-          requestExtra()),
+      tool.handler(McpToolArguments(const {'key': 'notificationsEnabled', 'value': false}), requestExtra()),
       throwsA(isA<Exception>()),
     );
     expect(await settingsRepository.getByKey('NOTIFICATIONS_ENABLED'), isNull);
     expect(effects.changes, isEmpty);
   });
 
-  test('sync start and stop use the configured ISyncService instance',
-      () async {
-    final tools = syncTools(database, syncRepository, syncService,
-        requestContext, operationService(temporaryDirectory));
+  test('sync start and stop use the configured ISyncService instance', () async {
+    final tools =
+        syncTools(database, syncRepository, syncService, requestContext, operationService(temporaryDirectory));
 
     await tools
         .singleWhere((tool) => tool.name == 'whph_sync_start')
@@ -227,8 +183,7 @@ void main() {
     expect(syncService.stopCount, 1);
   });
 
-  test('sync update rejects a stale revision without overwriting SQLite',
-      () async {
+  test('sync update rejects a stale revision without overwriting SQLite', () async {
     final device = SyncDevice(
       id: 'device-1',
       createdDate: DateTime.utc(2026, 1, 1),
@@ -241,10 +196,9 @@ void main() {
     await syncRepository.add(device);
     final persisted = await syncRepository.getById(device.id);
     final firstRevision = persisted!.modifiedDate ?? persisted.createdDate;
-    final tools = syncTools(database, syncRepository, syncService,
-        requestContext, operationService(temporaryDirectory));
-    final update =
-        tools.singleWhere((tool) => tool.name == 'whph_sync_devices_update');
+    final tools =
+        syncTools(database, syncRepository, syncService, requestContext, operationService(temporaryDirectory));
+    final update = tools.singleWhere((tool) => tool.name == 'whph_sync_devices_update');
     final first = await update.handler(
       McpToolArguments({
         'id': 'device-1',
@@ -265,45 +219,29 @@ void main() {
     await verifySyncMutations(first, stale, tools, syncRepository, syncService);
   });
 
-  test(
-      'local approval rejects without pairing and approved pairing executes once',
-      () async {
+  test('local approval rejects without pairing and approved pairing executes once', () async {
     final server = await startHandshakeServer();
     addTearDown(server.close);
     final access = TestAccessService();
     final operations = operationService(temporaryDirectory, access);
-    final tools = syncTools(
-        database, syncRepository, syncService, requestContext, operations);
-    final prepare =
-        tools.singleWhere((tool) => tool.name == 'whph_sync_pair_prepare');
+    final tools = syncTools(database, syncRepository, syncService, requestContext, operations);
+    final prepare = tools.singleWhere((tool) => tool.name == 'whph_sync_pair_prepare');
     final peer = {
-      'peer': {
-        'deviceId': 'peer-device',
-        'name': 'Test peer',
-        'ipAddress': '127.0.0.1',
-        'port': server.port
-      }
+      'peer': {'deviceId': 'peer-device', 'name': 'Test peer', 'ipAddress': '127.0.0.1', 'port': server.port}
     };
-    final rejectedRequest =
-        await prepare.handler(McpToolArguments(peer), requestExtra());
-    await operations
-        .reject(rejectedRequest.structuredContent!['operationId'] as String);
+    final rejectedRequest = await prepare.handler(McpToolArguments(peer), requestExtra());
+    await operations.reject(rejectedRequest.structuredContent!['operationId'] as String);
     expect((await syncRepository.getList(0, 20)).items, isEmpty);
-    await verifyRevokedPairing(
-        prepare, operations, access, syncRepository, peer);
+    await verifyRevokedPairing(prepare, operations, access, syncRepository, peer);
 
-    final approvedRequest =
-        await prepare.handler(McpToolArguments(peer), requestExtra());
+    final approvedRequest = await prepare.handler(McpToolArguments(peer), requestExtra());
     syncService.shouldFailRun = true;
-    final approved = await operations
-        .approve(approvedRequest.structuredContent!['operationId'] as String);
+    final approved = await operations.approve(approvedRequest.structuredContent!['operationId'] as String);
     await expectLater(() => operations.approve(approved.id), throwsStateError);
 
     expect(approved.status, McpOperationStatus.succeeded);
-    expect(
-        approved.result?.value, containsPair('status', 'paired_sync_failed'));
-    expect((await syncRepository.getList(0, 20)).items.single.fromDeviceId,
-        'peer-device');
+    expect(approved.result?.value, containsPair('status', 'paired_sync_failed'));
+    expect((await syncRepository.getList(0, 20)).items.single.fromDeviceId, 'peer-device');
     expect(syncService.runCount, 1);
   });
 }

@@ -9,8 +9,7 @@ import 'package:whph/presentation/mcp/models/mcp_tool_definition.dart';
 
 void main() {
   group('McpToolRegistry', () {
-    test('discovery exposes exactly the tools covered by every granted scope',
-        () {
+    test('discovery exposes exactly the tools covered by every granted scope', () {
       final registry = _registry([
         _tool('whph_tasks_list', const {'tasks:read'}),
         _tool('whph_tasks_update', const {'tasks:write'}),
@@ -21,9 +20,7 @@ void main() {
       ]);
 
       expect(
-        registry
-            .discover(const {'tasks:read', 'habits:read', 'overview:read'}).map(
-                (tool) => tool.name),
+        registry.discover(const {'tasks:read', 'habits:read', 'overview:read'}).map((tool) => tool.name),
         ['whph_tasks_list', 'whph_overview_today'],
       );
     });
@@ -87,8 +84,7 @@ void main() {
       ]);
     });
 
-    test('invocation runner remains active until the handler settles',
-        () async {
+    test('invocation runner remains active until the handler settles', () async {
       final handlerStarted = Completer<void>();
       final releaseHandler = Completer<void>();
       var activeInvocations = 0;
@@ -128,8 +124,7 @@ void main() {
       expect(activeInvocations, 0);
     });
 
-    test('invocation runner releases admission after handler failure',
-        () async {
+    test('invocation runner releases admission after handler failure', () async {
       var activeInvocations = 0;
       final registry = McpToolRegistry(
         tools: [
@@ -218,8 +213,7 @@ void main() {
       );
     });
 
-    test('real loopback SDK discovery filters and stale calls fail closed',
-        () async {
+    test('real loopback SDK discovery filters and stale calls fail closed', () async {
       var isAuthorized = true;
       final registry = McpToolRegistry(
         tools: [
@@ -284,8 +278,7 @@ void main() {
       }
     });
 
-    test('direct invocation authorizes one alternative without broadening it',
-        () async {
+    test('direct invocation authorizes one alternative without broadening it', () async {
       var grantedScopes = const {'data:import'};
       var invocationCount = 0;
       final registry = McpToolRegistry(
@@ -300,8 +293,7 @@ void main() {
             },
           ),
         ],
-        authorize: (extra, requiredScopes) =>
-            grantedScopes.containsAll(requiredScopes),
+        authorize: (extra, requiredScopes) => grantedScopes.containsAll(requiredScopes),
         runInvocation: _runInvocation,
       );
 
@@ -363,8 +355,7 @@ void main() {
       );
 
       expect(result.isError, isTrue);
-      expect(result.structuredContent?['error'],
-          containsPair('code', 'permission_denied'));
+      expect(result.structuredContent?['error'], containsPair('code', 'permission_denied'));
       expect(invocationCount, 0);
     });
 
@@ -397,8 +388,7 @@ void main() {
       expect(invocationCount, 0);
     });
 
-    test('a definition discovered before revocation rechecks current grants',
-        () async {
+    test('a definition discovered before revocation rechecks current grants', () async {
       var isAuthorized = true;
       var invocationCount = 0;
       final registry = McpToolRegistry(
@@ -419,9 +409,7 @@ void main() {
       final server = McpServer(
         const Implementation(name: 'registry-test', version: '1.0.0'),
       );
-      final callback =
-          (discovered.registerWith(server).callback! as FunctionToolCallback)
-              .function;
+      final callback = (discovered.registerWith(server).callback! as FunctionToolCallback).function;
 
       isAuthorized = false;
       final result = await callback(
@@ -430,8 +418,7 @@ void main() {
       );
 
       expect(result.isError, isTrue);
-      expect(result.structuredContent?['error'],
-          containsPair('code', 'permission_denied'));
+      expect(result.structuredContent?['error'], containsPair('code', 'permission_denied'));
       expect(invocationCount, 0);
     });
 
@@ -451,8 +438,7 @@ void main() {
       expect(result.structuredContent, {'value': userText});
     });
 
-    test('does not reveal whether an unknown direct-call name exists',
-        () async {
+    test('does not reveal whether an unknown direct-call name exists', () async {
       final result = await _registry(const []).invoke(
         'whph_secrets_dump',
         McpToolArguments(const {}),
@@ -460,8 +446,7 @@ void main() {
       );
 
       expect(result.isError, isTrue);
-      expect(result.structuredContent?['error'],
-          containsPair('code', 'permission_denied'));
+      expect(result.structuredContent?['error'], containsPair('code', 'permission_denied'));
     });
   });
 }
@@ -505,14 +490,11 @@ McpToolDefinition _tool(
       handler: handler ?? (arguments, extra) => _success(arguments.toJson()),
     );
 
-CallToolResult _success(Map<String, dynamic> value) =>
-    CallToolResult.fromStructuredContent(value);
+CallToolResult _success(Map<String, dynamic> value) => CallToolResult.fromStructuredContent(value);
 
 RequestHandlerExtra _requestExtra() => RequestHandlerExtra(
       signal: BasicAbortController().signal,
       requestId: 'registry-test',
       sendNotification: (notification, {relatedTask}) async {},
-      sendRequest:
-          <T extends BaseResultData>(request, resultFactory, options) async =>
-              resultFactory(const {}),
+      sendRequest: <T extends BaseResultData>(request, resultFactory, options) async => resultFactory(const {}),
     );

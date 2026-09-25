@@ -26,8 +26,7 @@ List<McpToolDefinition> createSettingsTools({
     List.unmodifiable([
       McpToolDefinition(
         name: 'whph_settings_list',
-        description:
-            'Lists supported user-facing settings and their effective values.',
+        description: 'Lists supported user-facing settings and their effective values.',
         inputSchema: JsonSchema.object(additionalProperties: false),
         outputSchema: _settingsListOutputSchema,
         annotations: _readAnnotations,
@@ -43,9 +42,7 @@ List<McpToolDefinition> createSettingsTools({
         name: 'whph_settings_read',
         description: 'Reads one supported user-facing setting.',
         inputSchema: JsonSchema.object(
-          properties: {
-            'key': JsonSchema.string(enumValues: _publicSettingNames)
-          },
+          properties: {'key': JsonSchema.string(enumValues: _publicSettingNames)},
           required: const ['key'],
           additionalProperties: false,
         ),
@@ -59,8 +56,7 @@ List<McpToolDefinition> createSettingsTools({
       ),
       McpToolDefinition(
         name: 'whph_settings_update',
-        description:
-            'Updates one allowlisted setting with optimistic concurrency and applies its user-visible effect. '
+        description: 'Updates one allowlisted setting with optimistic concurrency and applies its user-visible effect. '
             'Per-key accepted values: $_perKeyValuesSummary.',
         inputSchema: _settingsUpdateInputSchema,
         outputSchema: _settingsUpdateOutputSchema,
@@ -84,15 +80,12 @@ List<McpToolDefinition> createSettingsTools({
               ..._settingJson(update.setting),
               'committed': true,
               'effectStatus': update.effectApplied ? 'applied' : 'failed',
-              if (!update.effectApplied)
-                'effectError':
-                    'The setting was saved, but its user-visible effect failed.',
+              if (!update.effectApplied) 'effectError': 'The setting was saved, but its user-visible effect failed.',
             });
           } on FormatException catch (error) {
             return _failure(McpToolErrorCode.validationError, error.message);
           } on SettingRevisionConflictException {
-            return _failure(McpToolErrorCode.conflict,
-                'The setting changed after it was read.');
+            return _failure(McpToolErrorCode.conflict, 'The setting changed after it was read.');
           }
         },
       ),

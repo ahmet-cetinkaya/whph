@@ -38,8 +38,7 @@ final class McpOperationStore {
       throw const FormatException('Invalid MCP operation store');
     }
     return List<McpOperation>.unmodifiable(
-      (document['operations'] as List)
-          .map((value) => _decode(Map<String, dynamic>.from(value as Map))),
+      (document['operations'] as List).map((value) => _decode(Map<String, dynamic>.from(value as Map))),
     );
   }
 
@@ -66,8 +65,7 @@ final class McpOperationStore {
 
     final file = await _resolveFile();
     final directory = file.parent;
-    final directoryType =
-        await FileSystemEntity.type(directory.path, followLinks: false);
+    final directoryType = await FileSystemEntity.type(directory.path, followLinks: false);
     if (directoryType == FileSystemEntityType.link) {
       throw const FileSystemException('MCP directory must not be a link');
     }
@@ -86,8 +84,7 @@ final class McpOperationStore {
   }
 
   Future<File> _resolveFile() async {
-    final applicationDirectory =
-        await _applicationDirectoryService.getApplicationDirectory();
+    final applicationDirectory = await _applicationDirectoryService.getApplicationDirectory();
     return File(p.join(applicationDirectory.path, 'mcp', 'operations.json'));
   }
 
@@ -100,8 +97,7 @@ final class McpOperationStore {
 
   Future<void> _validateOwnerOnly(String path, int expectedMode) async {
     if ((await FileStat.stat(path)).mode & 0x1ff != expectedMode) {
-      throw const FileSystemException(
-          'MCP operation permissions are not private');
+      throw const FileSystemException('MCP operation permissions are not private');
     }
   }
 
@@ -114,8 +110,7 @@ final class McpOperationStore {
         'requestHash': operation.requestHash,
         'summary': operation.summary,
         'createdAt': operation.createdAt.toUtc().toIso8601String(),
-        'approvalExpiresAt':
-            operation.approvalExpiresAt.toUtc().toIso8601String(),
+        'approvalExpiresAt': operation.approvalExpiresAt.toUtc().toIso8601String(),
         if (operation.result != null) 'result': operation.result!.value,
         if (operation.failure != null)
           'failure': {
@@ -140,11 +135,8 @@ final class McpOperationStore {
       requestHash: json['requestHash'] as String,
       summary: json['summary'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String).toUtc(),
-      approvalExpiresAt:
-          DateTime.parse(json['approvalExpiresAt'] as String).toUtc(),
-      result: result is Map
-          ? McpOperationResult(Map<String, dynamic>.from(result))
-          : null,
+      approvalExpiresAt: DateTime.parse(json['approvalExpiresAt'] as String).toUtc(),
+      result: result is Map ? McpOperationResult(Map<String, dynamic>.from(result)) : null,
       failure: failure is Map
           ? McpOperationFailure(
               code: failure['code'] as String,

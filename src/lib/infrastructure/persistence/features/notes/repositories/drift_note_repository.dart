@@ -22,13 +22,10 @@ class NoteTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable>
-    implements INoteRepository {
-  DriftNoteRepository()
-      : super(AppDatabase.instance(), AppDatabase.instance().noteTable);
+class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable> implements INoteRepository {
+  DriftNoteRepository() : super(AppDatabase.instance(), AppDatabase.instance().noteTable);
 
-  DriftNoteRepository.withDatabase(AppDatabase database)
-      : super(database, database.noteTable);
+  DriftNoteRepository.withDatabase(AppDatabase database) : super(database, database.noteTable);
 
   @override
   Expression<String> getPrimaryKey(NoteTable t) {
@@ -49,8 +46,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable>
   }
 
   @override
-  Future<DateTime?> updateIfRevision(
-      Note note, DateTime expectedRevision) async {
+  Future<DateTime?> updateIfRevision(Note note, DateTime expectedRevision) async {
     final nextRevision = nextDatabaseRevision(expectedRevision);
     final affectedRows = await database.customUpdate(
       '''
@@ -96,8 +92,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable>
   }
 
   @override
-  Future<void> updateNoteOrder(
-      List<String> noteIds, List<String> orders) async {
+  Future<void> updateNoteOrder(List<String> noteIds, List<String> orders) async {
     await database.transaction(() async {
       for (var i = 0; i < noteIds.length; i++) {
         await database.customUpdate(
@@ -125,9 +120,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable>
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty
-        ? " WHERE ${whereClauses.join(' AND ')} "
-        : null;
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause;
     String? outerOrderByClause;
@@ -161,8 +154,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable>
     final countResult = await database.customSelect(
       'SELECT COUNT(*) AS count FROM note_table${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null)
-          ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
 
@@ -204,8 +196,7 @@ class DriftNoteRepository extends DriftBaseRepository<Note, String, NoteTable>
     ''';
 
     final List<Variable<Object>> variables = [
-      if (customWhereFilter != null)
-        ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+      if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       Variable.withInt(pageSize),
       Variable.withInt(pageIndex * pageSize)
     ];

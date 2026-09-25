@@ -38,33 +38,20 @@ List<McpToolDefinition> buildOverviewTools({
   return [
     _tool(
       name: 'whph_overview_today',
-      description:
-          'Returns task and habit summaries for one local calendar day.',
+      description: 'Returns task and habit summaries for one local calendar day.',
       inputSchema: _todaySchema(),
-      requiredScopes: {
-        McpScopes.overviewRead,
-        McpScopes.tasksRead,
-        McpScopes.habitsRead
-      },
-      handler: (arguments, extra) async =>
-          overview.day(_date(arguments, 'date')),
+      requiredScopes: {McpScopes.overviewRead, McpScopes.tasksRead, McpScopes.habitsRead},
+      handler: (arguments, extra) async => overview.day(_date(arguments, 'date')),
     ),
     _tool(
       name: 'whph_overview_calendar',
-      description:
-          'Returns bounded task and habit completion summaries by local calendar day.',
+      description: 'Returns bounded task and habit completion summaries by local calendar day.',
       inputSchema: _rangeSchema(),
-      requiredScopes: {
-        McpScopes.overviewRead,
-        McpScopes.tasksRead,
-        McpScopes.habitsRead
-      },
+      requiredScopes: {McpScopes.overviewRead, McpScopes.tasksRead, McpScopes.habitsRead},
       handler: (arguments, extra) async {
         final range = _range(arguments, _maximumCalendarDays);
         final days = <Map<String, dynamic>>[];
-        for (var day = range.start;
-            day.isBefore(range.end);
-            day = day.add(const Duration(days: 1))) {
+        for (var day = range.start; day.isBefore(range.end); day = day.add(const Duration(days: 1))) {
           final summary = await overview.day(day, includeItems: false);
           days.add({'date': _dateOnly(day), ...summary});
         }
@@ -73,8 +60,7 @@ List<McpToolDefinition> buildOverviewTools({
     ),
     _tool(
       name: 'whph_overview_time_analysis',
-      description:
-          'Returns bounded element and tag time totals for explicitly authorized categories.',
+      description: 'Returns bounded element and tag time totals for explicitly authorized categories.',
       inputSchema: _analysisSchema(),
       requiredScopes: {McpScopes.overviewRead, McpScopes.tagsRead},
       handler: (arguments, extra) async {
@@ -92,8 +78,7 @@ List<McpToolDefinition> buildOverviewTools({
           throw const FormatException('limit must be between 1 and 200.');
         }
         final tagIds = _strings(arguments, 'tagIds');
-        final elements = await mediator
-            .send<GetElementsByTimeQuery, GetElementsByTimeQueryResponse>(
+        final elements = await mediator.send<GetElementsByTimeQuery, GetElementsByTimeQueryResponse>(
           GetElementsByTimeQuery(
             startDate: range.start,
             endDate: range.end,
@@ -102,8 +87,7 @@ List<McpToolDefinition> buildOverviewTools({
             categories: categories,
           ),
         );
-        final tags = await mediator
-            .send<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse>(
+        final tags = await mediator.send<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse>(
           GetTopTagsByTimeQuery(
             startDate: range.start,
             endDate: range.end,
@@ -120,13 +104,7 @@ List<McpToolDefinition> buildOverviewTools({
                     'durationSeconds': item.duration,
                     'category': _categoryName(item.category),
                     'color': item.color,
-                    'tag': item.tagId == null
-                        ? null
-                        : {
-                            'id': item.tagId,
-                            'name': item.tagName,
-                            'color': item.tagColor
-                          },
+                    'tag': item.tagId == null ? null : {'id': item.tagId, 'name': item.tagName, 'color': item.tagColor},
                   })
               .toList(growable: false),
           'tags': tags.items
@@ -151,8 +129,7 @@ final class _OverviewQueries {
 
   final Mediator _mediator;
 
-  Future<Map<String, dynamic>> day(DateTime date,
-      {bool includeItems = true}) async {
+  Future<Map<String, dynamic>> day(DateTime date, {bool includeItems = true}) async {
     final end = date.add(const Duration(days: 1));
     final tasks = await _tasks(date, end);
     final habits = await _habits();
@@ -161,14 +138,10 @@ final class _OverviewQueries {
     var habitDuration = 0;
     for (final habit in habits) {
       final records = await _habitRecords(habit.id, date, end);
-      final completedCount = records
-          .where((record) => record.status == HabitRecordStatus.complete)
-          .length;
+      final completedCount = records.where((record) => record.status == HabitRecordStatus.complete).length;
       if (completedCount > 0) completedHabits++;
-      final duration = await _mediator.send<GetTotalDurationByHabitIdQuery,
-          GetTotalDurationByHabitIdQueryResponse>(
-        GetTotalDurationByHabitIdQuery(
-            habitId: habit.id, startDate: date, endDate: end),
+      final duration = await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(
+        GetTotalDurationByHabitIdQuery(habitId: habit.id, startDate: date, endDate: end),
       );
       habitDuration += duration.totalDuration;
       if (includeItems && habitSummaries.length < _queryPageSize) {
@@ -186,10 +159,8 @@ final class _OverviewQueries {
     var taskDuration = 0;
     final taskDurations = <String, int>{};
     for (final task in tasks) {
-      final duration = await _mediator.send<GetTotalDurationByTaskIdQuery,
-          GetTotalDurationByTaskIdQueryResponse>(
-        GetTotalDurationByTaskIdQuery(
-            taskId: task.id, startDate: date, endDate: end),
+      final duration = await _mediator.send<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse>(
+        GetTotalDurationByTaskIdQuery(taskId: task.id, startDate: date, endDate: end),
       );
       taskDurations[task.id] = duration.totalDuration;
       taskDuration += duration.totalDuration;
@@ -211,16 +182,12 @@ final class _OverviewQueries {
             .map((task) => _taskJson(task, taskDurations[task.id] ?? 0))
             .toList(growable: false),
       if (includeItems) 'habits': habitSummaries,
-      if (includeItems)
-        'isTruncated':
-            tasks.length > _queryPageSize || habits.length > _queryPageSize,
+      if (includeItems) 'isTruncated': tasks.length > _queryPageSize || habits.length > _queryPageSize,
     };
   }
 
-  Future<List<TaskListItem>> _tasks(DateTime start, DateTime end) =>
-      _collectPages((pageIndex) async {
-        final response =
-            await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
+  Future<List<TaskListItem>> _tasks(DateTime start, DateTime end) => _collectPages((pageIndex) async {
+        final response = await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(
           GetListTasksQuery(
             pageIndex: pageIndex,
             pageSize: _queryPageSize,
@@ -237,8 +204,7 @@ final class _OverviewQueries {
       });
 
   Future<List<HabitListItem>> _habits() => _collectPages((pageIndex) async {
-        final response = await _mediator
-            .send<GetListHabitsQuery, GetListHabitsQueryResponse>(
+        final response = await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(
           GetListHabitsQuery(
             pageIndex: pageIndex,
             pageSize: _queryPageSize,
@@ -248,11 +214,9 @@ final class _OverviewQueries {
         return (items: response.items, hasNext: response.hasNext);
       });
 
-  Future<List<HabitRecordListItem>> _habitRecords(
-          String habitId, DateTime start, DateTime end) =>
+  Future<List<HabitRecordListItem>> _habitRecords(String habitId, DateTime start, DateTime end) =>
       _collectPages((pageIndex) async {
-        final response = await _mediator
-            .send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
+        final response = await _mediator.send<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse>(
           GetListHabitRecordsQuery(
             pageIndex: pageIndex,
             pageSize: _queryPageSize,
@@ -267,16 +231,14 @@ final class _OverviewQueries {
 
 typedef _Page<T> = ({List<T> items, bool hasNext});
 
-Future<List<T>> _collectPages<T>(
-    Future<_Page<T>> Function(int pageIndex) load) async {
+Future<List<T>> _collectPages<T>(Future<_Page<T>> Function(int pageIndex) load) async {
   final items = <T>[];
   for (var page = 0; items.length < _maximumAggregateItems; page++) {
     final response = await load(page);
     items.addAll(response.items);
     if (!response.hasNext) return List<T>.unmodifiable(items);
   }
-  throw const FormatException(
-      'The aggregate contains too many records. Narrow the date range.');
+  throw const FormatException('The aggregate contains too many records. Narrow the date range.');
 }
 
 typedef _OverviewHandler = Future<Map<String, dynamic>> Function(
@@ -317,25 +279,12 @@ McpToolDefinition _tool({
 
 JsonObject _overviewOutputSchema(String name) {
   final fields = switch (name) {
-    'whph_overview_today' => [
-        'taskSummary',
-        'habitSummary',
-        'tasks',
-        'habits',
-        'isTruncated'
-      ],
+    'whph_overview_today' => ['taskSummary', 'habitSummary', 'tasks', 'habits', 'isTruncated'],
     'whph_overview_calendar' => ['days'],
-    _ => [
-        'elements',
-        'tags',
-        'elementTotalDurationSeconds',
-        'tagTotalDurationSeconds'
-      ],
+    _ => ['elements', 'tags', 'elementTotalDurationSeconds', 'tagTotalDurationSeconds'],
   };
   return JsonSchema.object(
-    properties: {
-      for (final field in fields) field: JsonSchema.fromJson(const {})
-    },
+    properties: {for (final field in fields) field: JsonSchema.fromJson(const {})},
     additionalProperties: false,
   );
 }
@@ -371,32 +320,27 @@ JsonObject _analysisSchema() => JsonSchema.object(
       additionalProperties: false,
     );
 
-({DateTime start, DateTime end}) _range(
-    McpToolArguments arguments, int maximumDays) {
+({DateTime start, DateTime end}) _range(McpToolArguments arguments, int maximumDays) {
   final start = _date(arguments, 'from');
   final end = _date(arguments, 'to').add(const Duration(days: 1));
   if (!end.isAfter(start) || end.difference(start).inDays > maximumDays) {
-    throw FormatException(
-        'The date range must be ordered and no longer than $maximumDays days.');
+    throw FormatException('The date range must be ordered and no longer than $maximumDays days.');
   }
   return (start: start, end: end);
 }
 
 DateTime _date(McpToolArguments arguments, String field) {
   final value = arguments.requireString(field);
-  if (!RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value))
-    throw FormatException('$field must be YYYY-MM-DD.');
+  if (!RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value)) throw FormatException('$field must be YYYY-MM-DD.');
   final parsed = DateTime.tryParse(value);
-  if (parsed == null || _dateOnly(parsed) != value)
-    throw FormatException('$field is invalid.');
+  if (parsed == null || _dateOnly(parsed) != value) throw FormatException('$field is invalid.');
   return parsed;
 }
 
 List<TagTimeCategory> _categories(McpToolArguments arguments) {
   final values = arguments.optionalList('categories') ?? const [];
   return List<TagTimeCategory>.unmodifiable(values.map((value) {
-    if (value is! String)
-      throw const FormatException('categories must contain strings.');
+    if (value is! String) throw const FormatException('categories must contain strings.');
     return switch (value) {
       'tasks' => TagTimeCategory.tasks,
       'habits' => TagTimeCategory.habits,
@@ -409,8 +353,7 @@ List<TagTimeCategory> _categories(McpToolArguments arguments) {
 List<String>? _strings(McpToolArguments arguments, String field) {
   final values = arguments.optionalList(field);
   if (values == null) return null;
-  if (values.any((value) => value is! String || value.isEmpty))
-    throw FormatException('$field must contain strings.');
+  if (values.any((value) => value is! String || value.isEmpty)) throw FormatException('$field must contain strings.');
   return List<String>.unmodifiable(values.cast<String>());
 }
 
@@ -418,8 +361,7 @@ String _scopeForCategory(TagTimeCategory category) => switch (category) {
       TagTimeCategory.tasks => McpScopes.tasksRead,
       TagTimeCategory.habits => McpScopes.habitsRead,
       TagTimeCategory.appUsage => McpScopes.usageRead,
-      TagTimeCategory.all =>
-        throw StateError('The all category is not accepted.'),
+      TagTimeCategory.all => throw StateError('The all category is not accepted.'),
     };
 
 String _categoryName(TagTimeCategory category) => switch (category) {

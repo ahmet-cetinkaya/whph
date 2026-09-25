@@ -31,8 +31,7 @@ void main() {
     tearDown(() => access.dispose());
 
     for (final protocol in [McpProtocol.stable, McpProtocol.legacy]) {
-      test('${protocol.name} discovers and calls tools over a real socket',
-          () async {
+      test('${protocol.name} discovers and calls tools over a real socket', () async {
         final service = await _startService(access);
         final client = await _client(service, _tokenA, protocol: protocol);
         addTearDown(client.close);
@@ -53,8 +52,7 @@ void main() {
       });
     }
 
-    test('scopes discovery and keeps concurrent request grants isolated',
-        () async {
+    test('scopes discovery and keeps concurrent request grants isolated', () async {
       final entered = StreamController<String>();
       final release = Completer<void>();
       final service = await _startService(
@@ -80,16 +78,14 @@ void main() {
       final second = clientB.callTool(
         const CallToolRequest(name: 'whph_test_identity', arguments: {}),
       );
-      expect(
-          await entered.stream.take(2).toList(), unorderedEquals(['a', 'b']));
+      expect(await entered.stream.take(2).toList(), unorderedEquals(['a', 'b']));
       release.complete();
 
       expect((await first).structuredContent, {'client': 'client-a'});
       expect((await second).structuredContent, {'client': 'client-b'});
     });
 
-    test('rejects missing auth, query tokens, wrong Host, and wrong Origin',
-        () async {
+    test('rejects missing auth, query tokens, wrong Host, and wrong Origin', () async {
       final service = await _startService(access);
       addTearDown(service.stop);
       final body = _modernRequest('host-origin', Method.toolsList);
@@ -120,8 +116,7 @@ void main() {
       expect(wrongOrigin.headers['access-control-allow-origin'], isNull);
     });
 
-    test('real curl process reaches the authenticated modern endpoint',
-        () async {
+    test('real curl process reaches the authenticated modern endpoint', () async {
       final service = await _startService(access);
       addTearDown(service.stop);
       final requestBody = _modernRequest('curl', Method.toolsList);
@@ -151,13 +146,11 @@ write-out = "\\n%{http_code}"
       expect(output, isNot(contains(_tokenA)));
     });
 
-    test('uses the durable access service for authentication and revocation',
-        () async {
+    test('uses the durable access service for authentication and revocation', () async {
       final directory = await _createApplicationDirectory('whph_mcp_http_');
       final realAccess = McpAccessService(
         store: McpAccessStore(
-          applicationDirectoryService:
-              _TestApplicationDirectoryService(directory),
+          applicationDirectoryService: _TestApplicationDirectoryService(directory),
         ),
       );
       addTearDown(realAccess.dispose);
@@ -217,8 +210,7 @@ write-out = "\\n%{http_code}"
       expect(limited.statusCode, HttpStatus.tooManyRequests);
     });
 
-    test('expires stale legacy sessions before admitting a fresh session',
-        () async {
+    test('expires stale legacy sessions before admitting a fresh session', () async {
       var now = DateTime.utc(2026, 9, 8);
       final service = await _startService(
         access,
@@ -329,13 +321,9 @@ write-out = "\\n%{http_code}"
       await fifth.drain<void>();
 
       await access.revoke('a');
-      final closedResponses =
-          await Future.wait(responses).timeout(const Duration(seconds: 2));
-      expect(closedResponses.map((response) => response.statusCode),
-          everyElement(HttpStatus.ok));
-      await Future.wait(
-              closedResponses.map((response) => response.drain<void>()))
-          .timeout(const Duration(seconds: 2));
+      final closedResponses = await Future.wait(responses).timeout(const Duration(seconds: 2));
+      expect(closedResponses.map((response) => response.statusCode), everyElement(HttpStatus.ok));
+      await Future.wait(closedResponses.map((response) => response.drain<void>())).timeout(const Duration(seconds: 2));
       final rejected = await _post(
         service,
         token: _tokenA,
@@ -366,8 +354,7 @@ write-out = "\\n%{http_code}"
       expect(response.statusCode, HttpStatus.requestEntityTooLarge);
     });
 
-    test('rate-limits invalid bearer authentication before access lookup',
-        () async {
+    test('rate-limits invalid bearer authentication before access lookup', () async {
       final service = await _startService(
         access,
         maximumRequestsPerMinute: 2,
@@ -387,15 +374,12 @@ write-out = "\\n%{http_code}"
       expect(firstValid.statusCode, HttpStatus.ok);
       expect(secondValid.statusCode, HttpStatus.ok);
 
-      final firstInvalid = await _post(service,
-          token: 'invalid-token-1',
-          body: _modernRequest('invalid-1', Method.toolsList));
-      final secondInvalid = await _post(service,
-          token: 'invalid-token-2',
-          body: _modernRequest('invalid-2', Method.toolsList));
-      final limitedInvalid = await _post(service,
-          token: 'invalid-token-3',
-          body: _modernRequest('invalid-3', Method.toolsList));
+      final firstInvalid =
+          await _post(service, token: 'invalid-token-1', body: _modernRequest('invalid-1', Method.toolsList));
+      final secondInvalid =
+          await _post(service, token: 'invalid-token-2', body: _modernRequest('invalid-2', Method.toolsList));
+      final limitedInvalid =
+          await _post(service, token: 'invalid-token-3', body: _modernRequest('invalid-3', Method.toolsList));
 
       expect(firstInvalid.statusCode, HttpStatus.unauthorized);
       expect(secondInvalid.statusCode, HttpStatus.unauthorized);
@@ -403,8 +387,7 @@ write-out = "\\n%{http_code}"
       expect(access.authenticationCallCount, 4);
     });
 
-    test('limits anonymous rate and per-grant concurrency with Retry-After',
-        () async {
+    test('limits anonymous rate and per-grant concurrency with Retry-After', () async {
       final entered = Completer<void>();
       final release = Completer<void>();
       final service = await _startService(
@@ -488,8 +471,7 @@ write-out = "\\n%{http_code}"
       await pending;
     });
 
-    test('fresh authorization isolates cancellation and enforces deadline',
-        () async {
+    test('fresh authorization isolates cancellation and enforces deadline', () async {
       final entered = StreamController<String>();
       final observed = StreamController<(String, bool)>();
       final release = Completer<void>();
@@ -544,8 +526,7 @@ write-out = "\\n%{http_code}"
         const CallToolRequest(name: 'whph_test_authorization', arguments: {}),
       );
       final callAAborted = expectLater(callA, throwsA(anything));
-      expect(
-          await entered.stream.take(2).toList(), unorderedEquals(['a', 'b']));
+      expect(await entered.stream.take(2).toList(), unorderedEquals(['a', 'b']));
       abortA.abort('test cancellation');
       await Future<void>.delayed(const Duration(milliseconds: 50));
       release.complete();
@@ -590,8 +571,7 @@ write-out = "\\n%{http_code}"
       expect(deadlineResult.structuredContent, {'authorized': false});
     });
 
-    test('cancellation during fresh authentication never invokes the tool',
-        () async {
+    test('cancellation during fresh authentication never invokes the tool', () async {
       var handlerInvoked = false;
       final service = await _startService(
         access,
@@ -608,8 +588,7 @@ write-out = "\\n%{http_code}"
       final authenticationEntered = Completer<void>();
       final releaseAuthentication = Completer<void>();
       access.beforeScopedAuthentication = () async {
-        if (!authenticationEntered.isCompleted)
-          authenticationEntered.complete();
+        if (!authenticationEntered.isCompleted) authenticationEntered.complete();
         await releaseAuthentication.future;
       };
       final abort = BasicAbortController();
@@ -630,9 +609,7 @@ write-out = "\\n%{http_code}"
       expect(handlerInvoked, isFalse);
     });
 
-    test(
-        'normal calls expire at 30 seconds while data calls retain 120 seconds',
-        () async {
+    test('normal calls expire at 30 seconds while data calls retain 120 seconds', () async {
       var now = DateTime.utc(2026, 9, 8);
       late McpServerService service;
       service = McpServerService(
@@ -683,8 +660,7 @@ write-out = "\\n%{http_code}"
       expect(transfer.structuredContent, {'authorized': true});
     });
 
-    test('timeout closes the request socket and releases its grant slot',
-        () async {
+    test('timeout closes the request socket and releases its grant slot', () async {
       final entered = Completer<void>();
       final releaseHandler = Completer<void>();
       final lateAuthorization = Completer<bool>();
@@ -755,9 +731,7 @@ write-out = "\\n%{http_code}"
       expect(after.statusCode, HttpStatus.ok);
     });
 
-    test(
-        'permanently stuck handler releases the grant slot after the abandon grace',
-        () async {
+    test('permanently stuck handler releases the grant slot after the abandon grace', () async {
       final entered = Completer<void>();
       final service = McpServerService(
         accessService: access,
@@ -981,8 +955,7 @@ write-out = "\\n%{http_code}"
               _authorizationTool(() async {
                 unawaited(Future<void>.delayed(
                   const Duration(milliseconds: 50),
-                  () async => staleAuthorization
-                      .complete(await service.isAuthorized({_readScope})),
+                  () async => staleAuthorization.complete(await service.isAuthorized({_readScope})),
                 ));
                 return true;
               }),
@@ -1009,8 +982,7 @@ write-out = "\\n%{http_code}"
       expect(await staleAuthorization.future, isFalse);
     });
 
-    test('reports port collisions and supports awaited stop then restart',
-        () async {
+    test('reports port collisions and supports awaited stop then restart', () async {
       final occupied = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
       addTearDown(occupied.close);
       final service = _service(access);
@@ -1082,8 +1054,7 @@ McpServerService _service(
       legacySessionIdleTimeout: legacySessionIdleTimeout,
       maximumBodyBytes: maximumBodyBytes,
       now: now,
-      operationAbandonGrace:
-          operationAbandonGrace ?? const Duration(seconds: 10),
+      operationAbandonGrace: operationAbandonGrace ?? const Duration(seconds: 10),
       allowEphemeralPort: true,
       serverBuilder: (grant, authorize, runInvocation) {
         final registry = McpToolRegistry(
@@ -1125,8 +1096,7 @@ Future<McpClient> _client(
 
 final Map<McpClient, StreamableHttpClientTransport> _clientTransports = {};
 
-StreamableHttpClientTransport _transport(McpClient client) =>
-    _clientTransports[client]!;
+StreamableHttpClientTransport _transport(McpClient client) => _clientTransports[client]!;
 
 McpToolDefinition _identityTool(
   McpAuthenticatedGrant grant, {
@@ -1189,8 +1159,7 @@ McpToolDefinition _authorizationTool(
         openWorldHint: false,
       ),
       requiredScopes: const {_readScope},
-      handler: (arguments, extra) async =>
-          McpToolResult.success({'authorized': await authorize()}),
+      handler: (arguments, extra) async => McpToolResult.success({'authorized': await authorize()}),
     );
 
 String _legacyInitializeRequest(String id) => jsonEncode({
@@ -1300,8 +1269,7 @@ final class _FakeAccessService implements IMcpAccessService {
           _tokenB: ('b', 'client-b'),
         };
 
-  final StreamController<McpAccessRevocation> _revocations =
-      StreamController.broadcast();
+  final StreamController<McpAccessRevocation> _revocations = StreamController.broadcast();
   Map<String, (String, String)> _grants;
   int authenticationCallCount = 0;
   Future<void> Function()? beforeScopedAuthentication;
@@ -1340,8 +1308,7 @@ final class _FakeAccessService implements IMcpAccessService {
   Future<void> dispose() => _revocations.close();
 
   @override
-  Future<McpIssuedGrant> createGrant(
-          {required String clientName, required Set<String> scopes}) =>
+  Future<McpIssuedGrant> createGrant({required String clientName, required Set<String> scopes}) =>
       throw UnimplementedError();
 
   @override
@@ -1351,23 +1318,18 @@ final class _FakeAccessService implements IMcpAccessService {
   Future<void> revokeGrant(String grantId) => revoke(grantId);
 
   @override
-  Future<McpIssuedGrant> rotateGrant(String grantId) =>
-      throw UnimplementedError();
+  Future<McpIssuedGrant> rotateGrant(String grantId) => throw UnimplementedError();
 
   @override
-  Future<void> setPreferences(McpServerPreferences preferences) =>
-      throw UnimplementedError();
+  Future<void> setPreferences(McpServerPreferences preferences) => throw UnimplementedError();
 }
 
 Future<Directory> _createApplicationDirectory(String prefix) {
-  final basePath = Platform.isWindows
-      ? Platform.environment['LOCALAPPDATA']!
-      : Directory.systemTemp.path;
+  final basePath = Platform.isWindows ? Platform.environment['LOCALAPPDATA']! : Directory.systemTemp.path;
   return Directory(basePath).createTemp(prefix);
 }
 
-final class _TestApplicationDirectoryService
-    implements IApplicationDirectoryService {
+final class _TestApplicationDirectoryService implements IApplicationDirectoryService {
   const _TestApplicationDirectoryService(this.directory);
 
   final Directory directory;

@@ -79,8 +79,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     _controller.onCompletedChanged = widget.onCompletedChanged;
     _controller.onError = _handleError;
     _controller.addListener(_onControllerChanged);
-    _fieldHelpers =
-        TaskFieldHelpers(translationService: _controller.translationService);
+    _fieldHelpers = TaskFieldHelpers(translationService: _controller.translationService);
     _setupFocusListeners();
     _initializeController();
   }
@@ -139,8 +138,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     if (_titleController.text == task.title) {
       _lastSyncedTitle = task.title;
     } else {
-      final bool isTitleDirty =
-          _titleController.text != (_lastSyncedTitle ?? '');
+      final bool isTitleDirty = _titleController.text != (_lastSyncedTitle ?? '');
       if (!isTitleDirty && _titleController.text != task.title) {
         _titleController.text = task.title;
         _lastSyncedTitle = task.title;
@@ -148,16 +146,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     }
 
     if (!_isPlannedDatePickerActive && !_plannedDateFocusNode.hasFocus) {
-      final plannedDateText =
-          TaskDateDisplayHelper.formatForInput(task.plannedDate, context);
+      final plannedDateText = TaskDateDisplayHelper.formatForInput(task.plannedDate, context);
       if (_plannedDateController.text != plannedDateText) {
         _plannedDateController.text = plannedDateText;
       }
     }
 
     if (!_isDeadlineDatePickerActive && !_deadlineDateFocusNode.hasFocus) {
-      final deadlineDateText =
-          TaskDateDisplayHelper.formatForInput(task.deadlineDate, context);
+      final deadlineDateText = TaskDateDisplayHelper.formatForInput(task.deadlineDate, context);
       if (_deadlineDateController.text != deadlineDateText) {
         _deadlineDateController.text = deadlineDateText;
       }
@@ -167,10 +163,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     if (_descriptionController.text == descriptionText) {
       _lastSyncedDescription = descriptionText;
     } else {
-      final bool isDescriptionDirty =
-          _descriptionController.text != (_lastSyncedDescription ?? '');
-      if (!isDescriptionDirty &&
-          _descriptionController.text != descriptionText) {
+      final bool isDescriptionDirty = _descriptionController.text != (_lastSyncedDescription ?? '');
+      if (!isDescriptionDirty && _descriptionController.text != descriptionText) {
         _descriptionController.text = descriptionText;
         _lastSyncedDescription = descriptionText;
       }
@@ -210,23 +204,19 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   }
 
   void _onTitleChanged(String value) => _controller.updateTitle(value);
-  void _onPriorityChanged(EisenhowerPriority? value) =>
-      _controller.updatePriority(value);
+  void _onPriorityChanged(EisenhowerPriority? value) => _controller.updatePriority(value);
   void _onStatusChanged(String? value) => _controller.updateStatus(value);
-  void _onEstimatedTimeChanged(int value) =>
-      _controller.updateEstimatedTime(value);
+  void _onEstimatedTimeChanged(int value) => _controller.updateEstimatedTime(value);
 
   void _onPlannedDateChanged(DateTime? date) {
     _isPlannedDatePickerActive = true;
     if (date != null) {
-      _plannedDateController.text =
-          TaskDateDisplayHelper.formatForInput(date, context);
+      _plannedDateController.text = TaskDateDisplayHelper.formatForInput(date, context);
     } else {
       _plannedDateController.clear();
     }
     _controller.updatePlannedDate(date);
-    Timer(const Duration(milliseconds: 100),
-        () => _isPlannedDatePickerActive = false);
+    Timer(const Duration(milliseconds: 100), () => _isPlannedDatePickerActive = false);
   }
 
   void _onPlannedReminderChanged(ReminderTime value, int? customOffset) =>
@@ -235,14 +225,12 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
   void _onDeadlineDateChanged(DateTime? date) {
     _isDeadlineDatePickerActive = true;
     if (date != null) {
-      _deadlineDateController.text =
-          TaskDateDisplayHelper.formatForInput(date, context);
+      _deadlineDateController.text = TaskDateDisplayHelper.formatForInput(date, context);
     } else {
       _deadlineDateController.clear();
     }
     _controller.updateDeadlineDate(date);
-    Timer(const Duration(milliseconds: 100),
-        () => _isDeadlineDatePickerActive = false);
+    Timer(const Duration(milliseconds: 100), () => _isDeadlineDatePickerActive = false);
   }
 
   void _onDeadlineReminderChanged(ReminderTime value, int? customOffset) =>
@@ -253,15 +241,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     if (value.trim().isEmpty) {
       _descriptionController.clear();
       if (mounted) {
-        _descriptionController.selection =
-            const TextSelection.collapsed(offset: 0);
+        _descriptionController.selection = const TextSelection.collapsed(offset: 0);
       }
     }
     _controller.updateDescription(value);
   }
 
-  void _onTagsSelected(List<DropdownOption<String>> tagOptions) =>
-      _controller.processTagChanges(tagOptions, context);
+  void _onTagsSelected(List<DropdownOption<String>> tagOptions) => _controller.processTagChanges(tagOptions, context);
 
   void _handleAutoOpen(String? fieldKey) {
     if (fieldKey == null) return;
@@ -352,15 +338,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       config: TaskDatePickerConfig(
         initialDate: _controller.task?.plannedDate,
         initialReminderTime: _controller.task?.plannedDateReminderTime,
-        titleText: _controller.translationService
-            .translate(TaskTranslationKeys.plannedDateLabel),
+        titleText: _controller.translationService.translate(TaskTranslationKeys.plannedDateLabel),
         showTime: true,
         showQuickRanges: true,
         useResponsiveDesign: true,
         enableFooterActions: true,
         translationService: _controller.translationService,
-        minDate: DateTime(
-            DateTime.now().year, DateTime.now().month, DateTime.now().day),
+        minDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
       ),
     );
 
@@ -375,16 +359,14 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       config: TaskDatePickerConfig(
         initialDate: _controller.task?.deadlineDate,
         initialReminderTime: _controller.task?.deadlineDateReminderTime,
-        titleText: _controller.translationService
-            .translate(TaskTranslationKeys.deadlineDateLabel),
+        titleText: _controller.translationService.translate(TaskTranslationKeys.deadlineDateLabel),
         showTime: true,
         showQuickRanges: true,
         useResponsiveDesign: true,
         enableFooterActions: true,
         translationService: _controller.translationService,
-        minDate: _controller.task?.plannedDate ??
-            DateTime(
-                DateTime.now().year, DateTime.now().month, DateTime.now().day),
+        minDate:
+            _controller.task?.plannedDate ?? DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
       ),
     );
 
@@ -423,15 +405,13 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     final task = _controller.task;
     if (task == null) return;
 
-    final result =
-        await ResponsiveDialogHelper.showResponsiveDialog<Map<String, dynamic>>(
+    final result = await ResponsiveDialogHelper.showResponsiveDialog<Map<String, dynamic>>(
       context: context,
       size: DialogSize.xLarge,
       child: RecurrenceSettingsDialog(
         initialRecurrenceType: task.recurrenceType,
         initialRecurrenceInterval: task.recurrenceInterval,
-        initialRecurrenceDays:
-            _controller.taskRecurrenceService.getRecurrenceDays(task),
+        initialRecurrenceDays: _controller.taskRecurrenceService.getRecurrenceDays(task),
         initialRecurrenceStartDate: task.recurrenceStartDate,
         initialRecurrenceEndDate: task.recurrenceEndDate,
         initialRecurrenceCount: task.recurrenceCount,
@@ -441,8 +421,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
     );
 
     if (result != null && mounted) {
-      final config =
-          result['recurrenceConfiguration'] as RecurrenceConfiguration?;
+      final config = result['recurrenceConfiguration'] as RecurrenceConfiguration?;
       final startDate = result['recurrenceStartDate'] as DateTime?;
 
       _controller.updateRecurrence(
@@ -520,10 +499,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
       statusId: task.statusId,
       onStatusChanged: _onStatusChanged,
     );
-    final timeSection =
-        TaskTimeSection(translationService: _controller.translationService);
-    final datesSection =
-        TaskDatesSection(translationService: _controller.translationService);
+    final timeSection = TaskTimeSection(translationService: _controller.translationService);
+    final datesSection = TaskDatesSection(translationService: _controller.translationService);
     final recurrenceSection = TaskRecurrenceSection(
       translationService: _controller.translationService,
       recurrenceType: task.recurrenceType,
@@ -570,10 +547,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                   onChanged: _onTitleChanged,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    hintText: _controller.translationService
-                        .translate(TaskTranslationKeys.titleLabel),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    hintText: _controller.translationService.translate(TaskTranslationKeys.titleLabel),
                   ),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -587,28 +562,21 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             DetailTable(
               rowData: [
                 if (task.parentTask != null) parentSection.build(),
-                if (visibleFields.contains(TaskDetailsController.keyStatus))
-                  statusSection.build(),
-                if (visibleFields.contains(TaskDetailsController.keyTags))
-                  tagsSection.build(),
-                if (visibleFields.contains(TaskDetailsController.keyPriority))
-                  prioritySection.build(),
-                if (visibleFields.contains(TaskDetailsController.keyTimer))
-                  timerSection.build(),
-                if (visibleFields
-                    .contains(TaskDetailsController.keyElapsedTime))
+                if (visibleFields.contains(TaskDetailsController.keyStatus)) statusSection.build(),
+                if (visibleFields.contains(TaskDetailsController.keyTags)) tagsSection.build(),
+                if (visibleFields.contains(TaskDetailsController.keyPriority)) prioritySection.build(),
+                if (visibleFields.contains(TaskDetailsController.keyTimer)) timerSection.build(),
+                if (visibleFields.contains(TaskDetailsController.keyElapsedTime))
                   timeSection.buildElapsedTime(
                     totalDuration: task.totalDuration,
                     onTap: _showTimeLoggingDialog,
                   ),
-                if (visibleFields
-                    .contains(TaskDetailsController.keyEstimatedTime))
+                if (visibleFields.contains(TaskDetailsController.keyEstimatedTime))
                   timeSection.buildEstimatedTime(
                     estimatedTime: task.estimatedTime,
                     onEstimatedTimeChanged: _onEstimatedTimeChanged,
                   ),
-                if (visibleFields
-                    .contains(TaskDetailsController.keyPlannedDate))
+                if (visibleFields.contains(TaskDetailsController.keyPlannedDate))
                   datesSection.buildPlannedDate(
                     taskId: task.id,
                     controller: _plannedDateController,
@@ -619,8 +587,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                     onDateChanged: _onPlannedDateChanged,
                     onReminderChanged: _onPlannedReminderChanged,
                   ),
-                if (visibleFields
-                    .contains(TaskDetailsController.keyDeadlineDate))
+                if (visibleFields.contains(TaskDetailsController.keyDeadlineDate))
                   datesSection.buildDeadlineDate(
                     taskId: task.id,
                     controller: _deadlineDateController,
@@ -633,11 +600,9 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
                     onDateChanged: _onDeadlineDateChanged,
                     onReminderChanged: _onDeadlineReminderChanged,
                   ),
-                if (visibleFields.contains(TaskDetailsController.keyRecurrence))
-                  recurrenceSection.build(context),
+                if (visibleFields.contains(TaskDetailsController.keyRecurrence)) recurrenceSection.build(context),
               ],
-              isDense: AppThemeHelper.isScreenSmallerThan(
-                  context, AppTheme.screenMedium),
+              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
           ],
 
@@ -653,9 +618,7 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
             Wrap(
               spacing: 4,
               runSpacing: 2,
-              children: availableChipFields
-                  .map((fieldKey) => _buildOptionalFieldChip(fieldKey, task))
-                  .toList(),
+              children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, task)).toList(),
             ),
           ],
         ],
@@ -673,10 +636,8 @@ class TaskDetailsContentState extends State<TaskDetailsContent> {
           : task.deadlineDate != null;
 
       tooltip = hasDate
-          ? _controller.translationService
-              .translate(TaskTranslationKeys.reminderHelpText)
-          : _controller.translationService
-              .translate(TaskTranslationKeys.reminderDateRequiredTooltip);
+          ? _controller.translationService.translate(TaskTranslationKeys.reminderHelpText)
+          : _controller.translationService.translate(TaskTranslationKeys.reminderDateRequiredTooltip);
     }
 
     return OptionalFieldChip(

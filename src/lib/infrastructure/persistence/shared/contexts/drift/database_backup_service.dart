@@ -37,10 +37,7 @@ class DatabaseBackupService {
       return;
     }
 
-    final timestamp = DateTime.now()
-        .toIso8601String()
-        .replaceAll(':', '-')
-        .replaceAll('.', '-');
+    final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').replaceAll('.', '-');
     final backupFile = File(p.join(
       dbFolder.path,
       'backup_v${from}_to_v${to}_$timestamp.db',
@@ -49,14 +46,11 @@ class DatabaseBackupService {
     try {
       await dbFile.copy(backupFile.path);
     } catch (e, stackTrace) {
-      throw StateError(
-          'Failed to create pre-migration backup (v$from to v$to): $e\n$stackTrace');
+      throw StateError('Failed to create pre-migration backup (v$from to v$to): $e\n$stackTrace');
     }
 
-    if (!await backupFile.exists() ||
-        await backupFile.length() != await dbFile.length()) {
-      throw StateError(
-          'Pre-migration backup for v$from to v$to did not verify: ${backupFile.path}');
+    if (!await backupFile.exists() || await backupFile.length() != await dbFile.length()) {
+      throw StateError('Pre-migration backup for v$from to v$to did not verify: ${backupFile.path}');
     }
 
     Logger.info('Database backup created: ${backupFile.path}');
@@ -76,15 +70,12 @@ class DatabaseBackupService {
 
       final backupFiles = <File>[];
       await for (final entity in dbDirectory.list()) {
-        if (entity is File &&
-            entity.path.contains('backup_v') &&
-            entity.path.endsWith('.db')) {
+        if (entity is File && entity.path.contains('backup_v') && entity.path.endsWith('.db')) {
           backupFiles.add(entity);
         }
       }
 
-      backupFiles
-          .sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
+      backupFiles.sort((a, b) => b.lastModifiedSync().compareTo(a.lastModifiedSync()));
       return backupFiles;
     } catch (e) {
       Logger.error('Error listing backups: $e');
@@ -106,8 +97,7 @@ class DatabaseBackupService {
       final dbFolder = await _getApplicationDirectory();
       final currentDbFile = File(p.join(dbFolder.path, _dbFileName));
 
-      final backupFile =
-          specificBackup ?? (await listAvailableBackups()).firstOrNull;
+      final backupFile = specificBackup ?? (await listAvailableBackups()).firstOrNull;
 
       if (backupFile == null) {
         Logger.warning('No backup files found');
@@ -141,10 +131,7 @@ class DatabaseBackupService {
       final dbFile = File(p.join(dbFolder.path, _dbFileName));
 
       if (await dbFile.exists()) {
-        final timestamp = DateTime.now()
-            .toIso8601String()
-            .replaceAll(':', '-')
-            .replaceAll('.', '-');
+        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').replaceAll('.', '-');
         final backupFile = File(p.join(
           dbFolder.path,
           'import_backup_$timestamp.db',
@@ -232,8 +219,7 @@ class DatabaseBackupService {
           final dbFolder = await _getApplicationDirectory();
           final dbFile = File(p.join(dbFolder.path, _dbFileName));
           await backupFile.copy(dbFile.path);
-          Logger.info(
-              'Database restored from pre-reset backup due to deletion failure');
+          Logger.info('Database restored from pre-reset backup due to deletion failure');
         } catch (restoreError) {
           Logger.error('Failed to restore database from backup: $restoreError');
         }
@@ -250,13 +236,11 @@ class DatabaseBackupService {
       final dbFile = File(p.join(dbFolder.path, _dbFileName));
 
       if (!await dbFile.exists()) {
-        Logger.info(
-            'No database file exists - no backup needed for fresh reset');
+        Logger.info('No database file exists - no backup needed for fresh reset');
         return null;
       }
 
-      final backupFolder =
-          Directory(p.join(dbFolder.path, 'backups', 'pre_reset'));
+      final backupFolder = Directory(p.join(dbFolder.path, 'backups', 'pre_reset'));
       if (!await backupFolder.exists()) {
         await backupFolder.create(recursive: true);
       }
@@ -301,8 +285,7 @@ class DatabaseBackupService {
   Future<List<File>> listPreResetBackups() async {
     try {
       final dbFolder = await _getApplicationDirectory();
-      final backupFolder =
-          Directory(p.join(dbFolder.path, 'backups', 'pre_reset'));
+      final backupFolder = Directory(p.join(dbFolder.path, 'backups', 'pre_reset'));
 
       if (!await backupFolder.exists()) {
         return [];
@@ -317,8 +300,7 @@ class DatabaseBackupService {
         }
       }
 
-      backupFiles.sort(
-          (a, b) => b.statSync().modified.compareTo(a.statSync().modified));
+      backupFiles.sort((a, b) => b.statSync().modified.compareTo(a.statSync().modified));
 
       return backupFiles;
     } catch (e) {
@@ -342,8 +324,7 @@ class DatabaseBackupService {
 
       await backupFile.copy(dbFile.path);
 
-      Logger.info(
-          'Database restored from pre-reset backup: ${backupFile.path}');
+      Logger.info('Database restored from pre-reset backup: ${backupFile.path}');
       return true;
     } catch (e) {
       Logger.error('Failed to restore from pre-reset backup: $e');

@@ -6,10 +6,8 @@ import 'package:acore/acore.dart';
 /// Service for managing habit time records with hour-based bucketing
 class HabitTimeRecordService {
   /// Creates hour boundaries for the given date
-  static (DateTime startOfHour, DateTime endOfHour) createHourBoundaries(
-      DateTime targetDate) {
-    final startOfHour = DateTime.utc(
-        targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
+  static (DateTime startOfHour, DateTime endOfHour) createHourBoundaries(DateTime targetDate) {
+    final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
     final endOfHour = startOfHour.add(const Duration(hours: 1));
     return (startOfHour, endOfHour);
   }

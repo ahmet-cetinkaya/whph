@@ -17,13 +17,9 @@ class AppUsageIgnoreRuleTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftAppUsageIgnoreRuleRepository extends DriftBaseRepository<
-    AppUsageIgnoreRule,
-    String,
-    AppUsageIgnoreRuleTable> implements IAppUsageIgnoreRuleRepository {
-  DriftAppUsageIgnoreRuleRepository()
-      : super(AppDatabase.instance(),
-            AppDatabase.instance().appUsageIgnoreRuleTable);
+class DriftAppUsageIgnoreRuleRepository extends DriftBaseRepository<AppUsageIgnoreRule, String, AppUsageIgnoreRuleTable>
+    implements IAppUsageIgnoreRuleRepository {
+  DriftAppUsageIgnoreRuleRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageIgnoreRuleTable);
 
   DriftAppUsageIgnoreRuleRepository.withDatabase(AppDatabase database)
       : super(database, database.appUsageIgnoreRuleTable);
@@ -46,8 +42,7 @@ class DriftAppUsageIgnoreRuleRepository extends DriftBaseRepository<
   }
 
   @override
-  Future<DateTime?> deleteIfRevision(
-      AppUsageIgnoreRule rule, DateTime expectedRevision) async {
+  Future<DateTime?> deleteIfRevision(AppUsageIgnoreRule rule, DateTime expectedRevision) async {
     final deletedAt = nextDatabaseRevision(expectedRevision);
     final affectedRows = await database.customUpdate(
       '''

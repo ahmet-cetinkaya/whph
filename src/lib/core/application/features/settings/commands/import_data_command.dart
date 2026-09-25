@@ -560,8 +560,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       appUsageTagRuleRepository.truncate(),
       habitRepository.truncate(),
       habitRecordRepository.truncate(),
-      if (habitTimeRecordRepository != null)
-        habitTimeRecordRepository!.truncate(),
+      if (habitTimeRecordRepository != null) habitTimeRecordRepository!.truncate(),
       habitTagRepository.truncate(),
       tagRepository.truncate(),
       tagTagRepository.truncate(),

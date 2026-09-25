@@ -24,24 +24,21 @@ void registerNotesFeature(
   ITagRepository tagRepository,
 ) {
   // Register Command Handlers
-  mediator.registerHandler<SaveNoteCommand, SaveNoteCommandResponse,
-      SaveNoteCommandHandler>(
+  mediator.registerHandler<SaveNoteCommand, SaveNoteCommandResponse, SaveNoteCommandHandler>(
     () => SaveNoteCommandHandler(
       noteRepository: noteRepository,
       noteEvents: container.resolve<INoteEvents>(),
     ),
   );
 
-  mediator.registerHandler<UpdateNoteCommand, SaveNoteCommandResponse,
-      UpdateNoteCommandHandler>(
+  mediator.registerHandler<UpdateNoteCommand, SaveNoteCommandResponse, UpdateNoteCommandHandler>(
     () => UpdateNoteCommandHandler(
       noteRepository: noteRepository,
       noteEvents: container.resolve<INoteEvents>(),
     ),
   );
 
-  mediator.registerHandler<SaveNoteWithTagsCommand, SaveNoteCommandResponse,
-      SaveNoteWithTagsCommandHandler>(
+  mediator.registerHandler<SaveNoteWithTagsCommand, SaveNoteCommandResponse, SaveNoteWithTagsCommandHandler>(
     () => SaveNoteWithTagsCommandHandler(
       notes: noteRepository,
       noteTags: noteTagRepository,
@@ -51,8 +48,7 @@ void registerNotesFeature(
     ),
   );
 
-  mediator.registerHandler<UpdateNoteWithTagsCommand, SaveNoteCommandResponse,
-      UpdateNoteWithTagsCommandHandler>(
+  mediator.registerHandler<UpdateNoteWithTagsCommand, SaveNoteCommandResponse, UpdateNoteWithTagsCommandHandler>(
     () => UpdateNoteWithTagsCommandHandler(
       notes: noteRepository,
       noteTags: noteTagRepository,
@@ -62,8 +58,8 @@ void registerNotesFeature(
     ),
   );
 
-  mediator.registerHandler<ReorderNoteWithRevisionCommand,
-      SaveNoteCommandResponse, ReorderNoteWithRevisionCommandHandler>(
+  mediator
+      .registerHandler<ReorderNoteWithRevisionCommand, SaveNoteCommandResponse, ReorderNoteWithRevisionCommandHandler>(
     () => ReorderNoteWithRevisionCommandHandler(
       notes: noteRepository,
       events: container.resolve<INoteEvents>(),
@@ -71,8 +67,7 @@ void registerNotesFeature(
     ),
   );
 
-  mediator.registerHandler<DeleteNoteCommand, DeleteNoteCommandResponse,
-      DeleteNoteCommandHandler>(
+  mediator.registerHandler<DeleteNoteCommand, DeleteNoteCommandResponse, DeleteNoteCommandHandler>(
     () => DeleteNoteCommandHandler(
       noteRepository: noteRepository,
       noteTagRepository: noteTagRepository,
@@ -81,40 +76,32 @@ void registerNotesFeature(
     ),
   );
 
-  mediator.registerHandler<AddNoteTagCommand, AddNoteTagCommandResponse,
-      AddNoteTagCommandHandler>(
+  mediator.registerHandler<AddNoteTagCommand, AddNoteTagCommandResponse, AddNoteTagCommandHandler>(
     () => AddNoteTagCommandHandler(noteTagRepository: noteTagRepository),
   );
 
-  mediator.registerHandler<RemoveNoteTagCommand, RemoveNoteTagCommandResponse,
-      RemoveNoteTagCommandHandler>(
+  mediator.registerHandler<RemoveNoteTagCommand, RemoveNoteTagCommandResponse, RemoveNoteTagCommandHandler>(
     () => RemoveNoteTagCommandHandler(noteTagRepository: noteTagRepository),
   );
 
-  mediator.registerHandler<UpdateNoteOrderCommand,
-      UpdateNoteOrderCommandResponse, UpdateNoteOrderCommandHandler>(
+  mediator.registerHandler<UpdateNoteOrderCommand, UpdateNoteOrderCommandResponse, UpdateNoteOrderCommandHandler>(
     () => UpdateNoteOrderCommandHandler(noteRepository: noteRepository),
   );
 
-  mediator.registerHandler<UpdateNoteTagsOrderCommand, void,
-      UpdateNoteTagsOrderCommandHandler>(
-    () =>
-        UpdateNoteTagsOrderCommandHandler(noteTagRepository: noteTagRepository),
+  mediator.registerHandler<UpdateNoteTagsOrderCommand, void, UpdateNoteTagsOrderCommandHandler>(
+    () => UpdateNoteTagsOrderCommandHandler(noteTagRepository: noteTagRepository),
   );
 
-  mediator.registerHandler<NormalizeNoteOrdersCommand,
-      NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
+  mediator.registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
     () => NormalizeNoteOrdersCommandHandler(noteRepository),
   );
 
   // Register Query Handlers
-  mediator
-      .registerHandler<GetNoteQuery, GetNoteQueryResponse, GetNoteQueryHandler>(
+  mediator.registerHandler<GetNoteQuery, GetNoteQueryResponse, GetNoteQueryHandler>(
     () => GetNoteQueryHandler(noteRepository: noteRepository),
   );
 
-  mediator.registerHandler<GetListNotesQuery, GetListNotesQueryResponse,
-      GetListNotesQueryHandler>(
+  mediator.registerHandler<GetListNotesQuery, GetListNotesQueryResponse, GetListNotesQueryHandler>(
     () => GetListNotesQueryHandler(noteRepository: noteRepository),
   );
 }

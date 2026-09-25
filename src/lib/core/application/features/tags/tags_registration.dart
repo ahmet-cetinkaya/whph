@@ -44,21 +44,18 @@ void registerTagsFeature(
   INoteTagRepository noteTagRepository,
 ) {
   mediator
-    ..registerHandler<GetListTagsQuery, GetListTagsQueryResponse,
-        GetListTagsQueryHandler>(
+    ..registerHandler<GetListTagsQuery, GetListTagsQueryResponse, GetListTagsQueryHandler>(
       () => GetListTagsQueryHandler(
         tagRepository: tagRepository,
       ),
     )
-    ..registerHandler<GetListTagTagsQuery, GetListTagTagsQueryResponse,
-        GetListTagTagsQueryHandler>(
+    ..registerHandler<GetListTagTagsQuery, GetListTagTagsQueryResponse, GetListTagTagsQueryHandler>(
       () => GetListTagTagsQueryHandler(
         tagRepository: tagRepository,
         tagTagRepository: tagTagRepository,
       ),
     )
-    ..registerHandler<GetTagTimesDataQuery, GetTagTimesDataQueryResponse,
-        GetTagTimesDataQueryHandler>(
+    ..registerHandler<GetTagTimesDataQuery, GetTagTimesDataQueryResponse, GetTagTimesDataQueryHandler>(
       () => GetTagTimesDataQueryHandler(
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
         appUsageTagRepository: appUsageTagRepository,
@@ -71,8 +68,7 @@ void registerTagsFeature(
         habitTimeRecordRepository: habitTimeRecordRepository,
       ),
     )
-    ..registerHandler<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse,
-        GetTopTagsByTimeQueryHandler>(
+    ..registerHandler<GetTopTagsByTimeQuery, GetTopTagsByTimeQueryResponse, GetTopTagsByTimeQueryHandler>(
       () => GetTopTagsByTimeQueryHandler(
         appUsageTagRepository: appUsageTagRepository,
         taskTagRepository: taskTagRepository,
@@ -84,8 +80,7 @@ void registerTagsFeature(
         tagRepository: tagRepository,
       ),
     )
-    ..registerHandler<GetElementsByTimeQuery, GetElementsByTimeQueryResponse,
-        GetElementsByTimeQueryHandler>(
+    ..registerHandler<GetElementsByTimeQuery, GetElementsByTimeQueryResponse, GetElementsByTimeQueryHandler>(
       () => GetElementsByTimeQueryHandler(
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
         appUsageTagRepository: appUsageTagRepository,
@@ -99,24 +94,22 @@ void registerTagsFeature(
         tagRepository: tagRepository,
       ),
     )
-    ..registerHandler<SaveTagCommand, SaveTagCommandResponse,
-        SaveTagCommandHandler>(
+    ..registerHandler<SaveTagCommand, SaveTagCommandResponse, SaveTagCommandHandler>(
       () => SaveTagCommandHandler(
         tagRepository: tagRepository,
         tagEvents: container.resolve<ITagEvents>(),
         transactions: container.resolve<IApplicationTransactionService>(),
       ),
     )
-    ..registerHandler<UpdateTagCommand, UpdateTagCommandResponse,
-        UpdateTagCommandHandler>(
+    ..registerHandler<UpdateTagCommand, UpdateTagCommandResponse, UpdateTagCommandHandler>(
       () => UpdateTagCommandHandler(
         tags: tagRepository,
         events: container.resolve<ITagEvents>(),
         transactions: container.resolve<IApplicationTransactionService>(),
       ),
     )
-    ..registerHandler<SetTagRelationshipsCommand,
-        SetTagRelationshipsCommandResponse, SetTagRelationshipsCommandHandler>(
+    ..registerHandler<SetTagRelationshipsCommand, SetTagRelationshipsCommandResponse,
+        SetTagRelationshipsCommandHandler>(
       () => SetTagRelationshipsCommandHandler(
         tags: tagRepository,
         relationships: tagTagRepository,
@@ -124,8 +117,7 @@ void registerTagsFeature(
         transactions: container.resolve<IApplicationTransactionService>(),
       ),
     )
-    ..registerHandler<DeleteTagCommand, DeleteTagCommandResponse,
-        DeleteTagCommandHandler>(
+    ..registerHandler<DeleteTagCommand, DeleteTagCommandResponse, DeleteTagCommandHandler>(
       () => DeleteTagCommandHandler(
         tagRepository: tagRepository,
         tagTagRepository: tagTagRepository,
@@ -137,12 +129,10 @@ void registerTagsFeature(
         transactions: container.resolve<IApplicationTransactionService>(),
       ),
     )
-    ..registerHandler<AddTagTagCommand, AddTagTagCommandResponse,
-        AddTagTagCommandHandler>(
+    ..registerHandler<AddTagTagCommand, AddTagTagCommandResponse, AddTagTagCommandHandler>(
       () => AddTagTagCommandHandler(tagTagRepository: tagTagRepository),
     )
-    ..registerHandler<RemoveTagTagCommand, RemoveTagTagCommandResponse,
-        RemoveTagTagCommandHandler>(
+    ..registerHandler<RemoveTagTagCommand, RemoveTagTagCommandResponse, RemoveTagTagCommandHandler>(
       () => RemoveTagTagCommandHandler(tagTagRepository: tagTagRepository),
     );
 }

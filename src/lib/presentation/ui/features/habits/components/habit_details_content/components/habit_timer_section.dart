@@ -19,10 +19,7 @@ class HabitTimerSection {
       icon: Icons.timer,
       widget: Container(
         constraints: BoxConstraints(
-          maxHeight:
-              AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium)
-                  ? 200
-                  : 300,
+          maxHeight: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium) ? 200 : 300,
         ),
         child: AppTimer(
           sessionId: 'habit:$habitId',

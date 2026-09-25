@@ -26,21 +26,20 @@ List<McpToolDefinition> buildDataTransferTools({
     List.unmodifiable([
       McpToolDefinition(
         name: 'whph_data_export',
-        description:
-            'Exports all authorized WHPH data to a caller-owned expiring artifact.',
+        description: 'Exports all authorized WHPH data to a caller-owned expiring artifact.',
         inputSchema: _object(
-          {'format': _enum(['json', 'csv', 'whph'])},
+          {
+            'format': _enum(['json', 'csv', 'whph'])
+          },
           required: const ['format'],
         ),
         outputSchema: _artifactOutput,
         annotations: _additive,
         requiredScopes: _fullExportScopes,
         handler: (arguments, extra) => requestContext.runOperation(() async {
-          final grant =
-              await requestContext.currentGrant(requiredScopes: _fullExportScopes);
+          final grant = await requestContext.currentGrant(requiredScopes: _fullExportScopes);
           if (grant == null) return _permissionDenied();
-          final format = McpDataExportFormat.values
-              .byName(arguments.requireString('format'));
+          final format = McpDataExportFormat.values.byName(arguments.requireString('format'));
           final artifact = await transferService.exportData(
             clientGrantId: grant.id,
             format: format,
@@ -50,12 +49,14 @@ List<McpToolDefinition> buildDataTransferTools({
       ),
       McpToolDefinition(
         name: 'whph_data_import_prepare',
-        description:
-            'Stages a WHPH basename from the user-selected transfer directory for local approval.',
+        description: 'Stages a WHPH basename from the user-selected transfer directory for local approval.',
         inputSchema: _object({
           'sourceName': JsonSchema.string(minLength: 1, maxLength: 255),
           'strategy': _enum(['merge', 'replace']),
-        }, required: const ['sourceName', 'strategy']),
+        }, required: const [
+          'sourceName',
+          'strategy'
+        ]),
         outputSchema: _preparedOutput,
         annotations: _additive,
         requiredScopes: const {McpScopes.dataImport},
@@ -70,16 +71,13 @@ List<McpToolDefinition> buildDataTransferTools({
               clientGrantId: grant.id,
               currentScopes: grant.scopes,
               sourceName: arguments.requireString('sourceName'),
-              strategy: McpDataImportStrategy.values
-                  .byName(arguments.requireString('strategy')),
+              strategy: McpDataImportStrategy.values.byName(arguments.requireString('strategy')),
             );
           } on McpDataTransferException catch (error) {
             return McpToolResult.failure(McpToolError(
               code: switch (error.failure) {
-                McpDataTransferFailure.permissionRequired =>
-                  McpToolErrorCode.permissionRequired,
-                McpDataTransferFailure.permissionDenied =>
-                  McpToolErrorCode.permissionDenied,
+                McpDataTransferFailure.permissionRequired => McpToolErrorCode.permissionRequired,
+                McpDataTransferFailure.permissionDenied => McpToolErrorCode.permissionDenied,
                 McpDataTransferFailure.invalidInput ||
                 McpDataTransferFailure.limitExceeded =>
                   McpToolErrorCode.validationError,
@@ -96,8 +94,7 @@ List<McpToolDefinition> buildDataTransferTools({
       ),
       McpToolDefinition(
         name: 'whph_operations_get',
-        description:
-            'Returns a caller-owned operation status; it cannot approve an operation.',
+        description: 'Returns a caller-owned operation status; it cannot approve an operation.',
         inputSchema: _object(
           {'operationId': JsonSchema.string(minLength: 1, maxLength: 128)},
           required: const ['operationId'],
@@ -185,8 +182,7 @@ JsonObject _object(
       additionalProperties: false,
     );
 
-JsonSchema _enum(List<String> values) =>
-    JsonSchema.fromJson({'type': 'string', 'enum': values});
+JsonSchema _enum(List<String> values) => JsonSchema.fromJson({'type': 'string', 'enum': values});
 
 const _read = ToolAnnotations(
   readOnlyHint: true,
@@ -247,7 +243,10 @@ final _operationOutput = _object({
   'error': _object({
     'code': JsonSchema.string(),
     'message': JsonSchema.string(),
-  }, required: const ['code', 'message']),
+  }, required: const [
+    'code',
+    'message'
+  ]),
 }, required: const [
   'operationId',
   'type',

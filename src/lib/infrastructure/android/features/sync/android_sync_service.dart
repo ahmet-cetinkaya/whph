@@ -5,8 +5,7 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
 
 class AndroidSyncService extends SyncService {
-  static final MethodChannel _syncChannel =
-      MethodChannel(AndroidAppConstants.channels.sync);
+  static final MethodChannel _syncChannel = MethodChannel(AndroidAppConstants.channels.sync);
 
   AndroidSyncService(
     super.mediator, {
@@ -36,8 +35,7 @@ class AndroidSyncService extends SyncService {
 
     // For Android, delay initial sync and use UI-optimized version
     Timer(const Duration(seconds: 60), () async {
-      Logger.info(
-          'Running delayed initial sync with UI optimization after 60 seconds');
+      Logger.info('Running delayed initial sync with UI optimization after 60 seconds');
       await _runSync();
     });
   }

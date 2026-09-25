@@ -38,8 +38,7 @@ class TagRevisionConflictException implements Exception {
   const TagRevisionConflictException(this.tagId);
 }
 
-class UpdateTagCommandHandler
-    implements IRequestHandler<UpdateTagCommand, UpdateTagCommandResponse> {
+class UpdateTagCommandHandler implements IRequestHandler<UpdateTagCommand, UpdateTagCommandResponse> {
   final ITagRepository _tags;
   final ITagEvents _events;
   final IApplicationTransactionService _transactions;
@@ -66,8 +65,7 @@ class UpdateTagCommandHandler
         type: request.type ?? existing.type,
         isArchived: request.isArchived ?? existing.isArchived,
       );
-      final revision =
-          await _tags.updateIfRevision(updated, request.expectedRevision);
+      final revision = await _tags.updateIfRevision(updated, request.expectedRevision);
       if (revision == null) throw TagRevisionConflictException(request.id);
       await ensureMutationAuthorized(request.authorizeCommit);
       return revision;

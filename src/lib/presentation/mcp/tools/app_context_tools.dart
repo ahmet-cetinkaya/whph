@@ -70,20 +70,11 @@ String _iso8601WithOffset(DateTime value) {
 List<String> _supportedFeatures(Set<String> scopes) {
   const features = <String, Set<String>>{
     'tasks': {McpScopes.tasksRead, McpScopes.tasksWrite, McpScopes.tasksDelete},
-    'habits': {
-      McpScopes.habitsRead,
-      McpScopes.habitsWrite,
-      McpScopes.habitsDelete
-    },
+    'habits': {McpScopes.habitsRead, McpScopes.habitsWrite, McpScopes.habitsDelete},
     'notes': {McpScopes.notesRead, McpScopes.notesWrite, McpScopes.notesDelete},
     'tags': {McpScopes.tagsRead, McpScopes.tagsWrite, McpScopes.tagsDelete},
     'timers': {McpScopes.timersRead, McpScopes.timersWrite},
-    'usage': {
-      McpScopes.usageRead,
-      McpScopes.usageWrite,
-      McpScopes.usageDelete,
-      McpScopes.usageTrack
-    },
+    'usage': {McpScopes.usageRead, McpScopes.usageWrite, McpScopes.usageDelete, McpScopes.usageTrack},
     'settings': {McpScopes.settingsRead, McpScopes.settingsWrite},
     'sync': {McpScopes.syncRead, McpScopes.syncManage},
     'overview': {McpScopes.overviewRead},

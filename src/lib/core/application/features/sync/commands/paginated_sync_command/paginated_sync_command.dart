@@ -55,9 +55,7 @@ class PaginatedSyncCommandResponse {
   });
 }
 
-class PaginatedSyncCommandHandler
-    implements
-        IRequestHandler<PaginatedSyncCommand, PaginatedSyncCommandResponse> {
+class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncCommand, PaginatedSyncCommandResponse> {
   final ISyncConfigurationService _configurationService;
   final ISyncDataProcessingService _dataProcessingService;
   final ISyncPaginationService _paginationService;
@@ -128,8 +126,7 @@ class PaginatedSyncCommandHandler
   Stream<SyncProgress> get progressStream => _paginationService.progressStream;
 
   /// Enhanced progress tracking for bidirectional sync
-  Stream<BidirectionalSyncProgress> get bidirectionalProgressStream =>
-      _progressTracker.bidirectionalProgressStream;
+  Stream<BidirectionalSyncProgress> get bidirectionalProgressStream => _progressTracker.bidirectionalProgressStream;
 
   /// Update bidirectional sync progress for an entity/device combination
   void _updateBidirectionalProgress(BidirectionalSyncProgress progress) {
@@ -170,8 +167,7 @@ class PaginatedSyncCommandHandler
         return await _initiateOutgoingSync(request.targetDeviceId);
       }
     } catch (e, stackTrace) {
-      Logger.error('CRITICAL: Paginated sync operation failed',
-          error: e, stackTrace: stackTrace);
+      Logger.error('CRITICAL: Paginated sync operation failed', error: e, stackTrace: stackTrace);
 
       final String errorKey;
       final Map<String, String>? errorParams;
@@ -180,8 +176,7 @@ class PaginatedSyncCommandHandler
         errorKey = e.code ?? SyncTranslationKeys.syncFailedError;
         errorParams = e.params;
         if (kDebugMode) {
-          Logger.debug(
-              'SyncValidationException caught! Code: ${e.code}, params: $errorParams');
+          Logger.debug('SyncValidationException caught! Code: ${e.code}, params: $errorParams');
         }
       } else {
         errorKey = SyncTranslationKeys.criticalSyncOperationFailedError;
@@ -199,8 +194,7 @@ class PaginatedSyncCommandHandler
     }
   }
 
-  Future<PaginatedSyncCommandResponse> _handleIncomingSync(
-      PaginatedSyncDataDto dto) async {
+  Future<PaginatedSyncCommandResponse> _handleIncomingSync(PaginatedSyncDataDto dto) async {
     final result = await _incomingHandler.handleIncomingSync(
       dto,
       onProgress: _updateBidirectionalProgress,
@@ -221,8 +215,7 @@ class PaginatedSyncCommandHandler
     );
   }
 
-  Future<PaginatedSyncCommandResponse> _initiateOutgoingSync(
-      String? targetDeviceId) async {
+  Future<PaginatedSyncCommandResponse> _initiateOutgoingSync(String? targetDeviceId) async {
     final result = await _outgoingHandler.initiateOutgoingSync(
       targetDeviceId: targetDeviceId,
       syncWithDevice: _syncWithDevice,
@@ -253,21 +246,18 @@ class PaginatedSyncCommandHandler
   Future<int> _processPaginatedSyncDto(PaginatedSyncDataDto dto) async {
     int totalProcessed = 0;
 
-    Logger.info(
-        'Processing DTO for ${dto.entityType} (${dto.totalItems} items)');
+    Logger.info('Processing DTO for ${dto.entityType} (${dto.totalItems} items)');
 
     // Process only the configuration that matches this DTO's entityType
     final config = _configurationService.getConfiguration(dto.entityType);
     if (config != null) {
       final syncData = config.getPaginatedSyncDataFromDto(dto);
-      Logger.info(
-          'Processing ${config.name} (matches DTO entityType: ${dto.entityType})');
+      Logger.info('Processing ${config.name} (matches DTO entityType: ${dto.entityType})');
       if (syncData != null) {
         final itemCount = syncData.data.getTotalItemCount();
         Logger.info('${config.name} sync data: $itemCount total items');
         if (itemCount > 0) {
-          final processedCount =
-              await _dataProcessingService.processSyncDataBatchDynamic(
+          final processedCount = await _dataProcessingService.processSyncDataBatchDynamic(
             syncData.data,
             config.repository,
           );
@@ -280,8 +270,7 @@ class PaginatedSyncCommandHandler
         Logger.info('Skipping ${config.name} - no sync data found in DTO');
       }
     } else {
-      Logger.warning(
-          'No configuration found for entity type: ${dto.entityType}');
+      Logger.warning('No configuration found for entity type: ${dto.entityType}');
     }
 
     return totalProcessed;

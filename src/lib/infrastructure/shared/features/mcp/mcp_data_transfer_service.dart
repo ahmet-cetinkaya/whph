@@ -45,8 +45,7 @@ final class McpDataTransferService implements IMcpDataTransferService {
     required McpDataExportFormat format,
   }) async {
     final response =
-        await _mediator.send<ExportDataCommand, ExportDataCommandResponse>(
-            ExportDataCommand(switch (format) {
+        await _mediator.send<ExportDataCommand, ExportDataCommandResponse>(ExportDataCommand(switch (format) {
       McpDataExportFormat.json => ExportDataFileOptions.json,
       McpDataExportFormat.csv => ExportDataFileOptions.csv,
       McpDataExportFormat.whph => ExportDataFileOptions.backup,
@@ -100,10 +99,7 @@ final class McpDataTransferService implements IMcpDataTransferService {
           'The connection lacks a scope required by this backup.',
         );
       }
-      final requestHash = sha256
-          .convert(
-              utf8.encode('$clientGrantId:${staged.sha256}:${strategy.name}'))
-          .toString();
+      final requestHash = sha256.convert(utf8.encode('$clientGrantId:${staged.sha256}:${strategy.name}')).toString();
       return await _operationService.prepare(
         clientGrantId: clientGrantId,
         type: McpOperationType.dataImport,
@@ -141,11 +137,9 @@ final class McpDataTransferService implements IMcpDataTransferService {
         length: length,
       );
 
-  Future<Map<String, dynamic>> _readImportDocument(
-      McpStagedImport staged) async {
+  Future<Map<String, dynamic>> _readImportDocument(McpStagedImport staged) async {
     final bytes = await _fileStore.readStaged(staged);
-    final jsonText = await _compressionService
-        .extractFromWhphFile(Uint8List.fromList(bytes));
+    final jsonText = await _compressionService.extractFromWhphFile(Uint8List.fromList(bytes));
     final decoded = jsonDecode(jsonText);
     if (decoded is! Map<String, dynamic> || decoded['appInfo'] is! Map) {
       throw const FormatException('Invalid WHPH data document');
@@ -184,21 +178,17 @@ final class McpDataTransferService implements IMcpDataTransferService {
         final items = document[key];
         if (items is! List) continue;
         if (items.isNotEmpty) scopes.add(writeScope);
-        if (deleteScope != null &&
-            items.any((item) => item is Map && item['deletedDate'] != null)) {
+        if (deleteScope != null && items.any((item) => item is Map && item['deletedDate'] != null)) {
           scopes.add(deleteScope);
         }
       }
     }
 
-    include(McpScopes.tasksWrite,
-        const ['tasks', 'taskStatuses', 'taskTags', 'taskTimeRecords'],
+    include(McpScopes.tasksWrite, const ['tasks', 'taskStatuses', 'taskTags', 'taskTimeRecords'],
         deleteScope: McpScopes.tasksDelete);
-    include(McpScopes.habitsWrite,
-        const ['habits', 'habitRecords', 'habitTags', 'habitTimeRecords'],
+    include(McpScopes.habitsWrite, const ['habits', 'habitRecords', 'habitTags', 'habitTimeRecords'],
         deleteScope: McpScopes.habitsDelete);
-    include(McpScopes.notesWrite, const ['notes', 'noteTags'],
-        deleteScope: McpScopes.notesDelete);
+    include(McpScopes.notesWrite, const ['notes', 'noteTags'], deleteScope: McpScopes.notesDelete);
     include(
         McpScopes.tagsWrite,
         const [

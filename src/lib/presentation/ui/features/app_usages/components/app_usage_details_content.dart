@@ -90,15 +90,13 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   void _handleAppUsageUpdate() {
-    if (!mounted || _appUsagesService.onAppUsageUpdated.value != widget.id)
-      return;
+    if (!mounted || _appUsagesService.onAppUsageUpdated.value != widget.id) return;
 
     // Skip refresh if name field is actively being edited to prevent input conflicts
     if (_isNameFieldActive) return;
 
     _getAppUsage();
-    _getAppUsageTags(
-        clearExisting: true); // Also refresh tags when app usage is updated
+    _getAppUsageTags(clearExisting: true); // Also refresh tags when app usage is updated
   }
 
   void _handleNameFocusChange() {
@@ -113,11 +111,9 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
     await AsyncErrorHandler.execute<GetAppUsageQueryResponse>(
       context: context,
-      errorMessage:
-          _translationService.translate(AppUsageTranslationKeys.getUsageError),
+      errorMessage: _translationService.translate(AppUsageTranslationKeys.getUsageError),
       operation: () async {
-        return await _mediator
-            .send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
+        return await _mediator.send<GetAppUsageQuery, GetAppUsageQueryResponse>(query);
       },
       onSuccess: (response) {
         if (!mounted) return;
@@ -151,8 +147,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   }
 
   Future<void> _executeSaveCommand() async {
-    await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(
-        _buildSaveCommand());
+    await _mediator.send<SaveAppUsageCommand, SaveAppUsageCommandResponse>(_buildSaveCommand());
   }
 
   void _handleFieldChange<T>(T value, VoidCallback? onUpdate) {
@@ -176,8 +171,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
       await AsyncErrorHandler.executeVoid(
         context: context,
-        errorMessage: _translationService
-            .translate(AppUsageTranslationKeys.saveUsageError),
+        errorMessage: _translationService.translate(AppUsageTranslationKeys.saveUsageError),
         operation: _executeSaveCommand,
         onSuccess: () {
           widget.onAppUsageUpdated?.call();
@@ -197,17 +191,13 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     }
 
     while (true) {
-      final query = GetListAppUsageTagsQuery(
-          appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
+      final query = GetListAppUsageTagsQuery(appUsageId: widget.id, pageIndex: pageIndex, pageSize: pageSize);
 
-      final result =
-          await AsyncErrorHandler.execute<GetListAppUsageTagsQueryResponse>(
+      final result = await AsyncErrorHandler.execute<GetListAppUsageTagsQueryResponse>(
         context: context,
-        errorMessage:
-            _translationService.translate(AppUsageTranslationKeys.getTagsError),
+        errorMessage: _translationService.translate(AppUsageTranslationKeys.getTagsError),
         operation: () async {
-          return await _mediator.send<GetListAppUsageTagsQuery,
-              GetListAppUsageTagsQueryResponse>(query);
+          return await _mediator.send<GetListAppUsageTagsQuery, GetListAppUsageTagsQueryResponse>(query);
         },
         onSuccess: (result) {
           if (mounted) {
@@ -223,9 +213,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
         },
       );
 
-      if (result == null ||
-          result.items.isEmpty ||
-          result.items.length < pageSize) break;
+      if (result == null || result.items.isEmpty || result.items.length < pageSize) break;
       pageIndex++;
     }
   }
@@ -234,14 +222,10 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
     if (_appUsageTags == null) return;
 
     final tagOptionsToAdd = tagOptions
-        .where((tagOption) => !_appUsageTags!.items
-            .any((appUsageTag) => appUsageTag.tagId == tagOption.value))
+        .where((tagOption) => !_appUsageTags!.items.any((appUsageTag) => appUsageTag.tagId == tagOption.value))
         .toList();
     final appUsageTagsToRemove = _appUsageTags!.items
-        .where((appUsageTag) => !tagOptions
-            .map((tag) => tag.value)
-            .toList()
-            .contains(appUsageTag.tagId))
+        .where((appUsageTag) => !tagOptions.map((tag) => tag.value).toList().contains(appUsageTag.tagId))
         .toList();
 
     // Process tag operations sequentially
@@ -263,11 +247,8 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
 
         // Update Order
         if (tagOptions.isNotEmpty) {
-          final tagOrders = {
-            for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i
-          };
-          final orderCommand = UpdateAppUsageTagsOrderCommand(
-              appUsageId: widget.id, tagOrders: tagOrders);
+          final tagOrders = {for (int i = 0; i < tagOptions.length; i++) tagOptions[i].value: i};
+          final orderCommand = UpdateAppUsageTagsOrderCommand(appUsageId: widget.id, tagOrders: tagOrders);
           await _mediator.send(orderCommand);
           hasChanges = true;
         }
@@ -334,8 +315,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
   // Check if the field should be displayed in the chips section
   bool _shouldShowAsChip(String fieldKey) {
     // Don't show chip if field is already visible OR if it has content
-    return !_visibleOptionalFields.contains(fieldKey) &&
-        !_hasFieldContent(fieldKey);
+    return !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
   }
 
   // Method to determine if a field has content
@@ -358,8 +338,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       case keyTags:
         return _translationService.translate(AppUsageTranslationKeys.tagsLabel);
       case keyColor:
-        return _translationService
-            .translate(AppUsageTranslationKeys.colorLabel);
+        return _translationService.translate(AppUsageTranslationKeys.colorLabel);
       default:
         return '';
     }
@@ -393,11 +372,8 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       ),
       selected: _isFieldVisible(fieldKey),
       onSelected: (_) => _toggleOptionalField(fieldKey),
-      backgroundColor: hasContent
-          ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)
-          : null,
-      selectedColor:
-          Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+      backgroundColor: hasContent ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1) : null,
+      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
       showCheckmark: false,
       visualDensity: VisualDensity.compact,
     );
@@ -410,8 +386,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
       context: context,
       errorMessage: 'Failed to add tag to app usage',
       operation: () async {
-        final command =
-            AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
+        final command = AddAppUsageTagCommand(appUsageId: widget.id, tagId: tagId);
         final result = await _mediator.send(command);
         success = result != null;
         return success;
@@ -471,28 +446,24 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
             rowData: [
               // Device Label - Always visible as mandatory field
               DetailTableRowData(
-                label: _translationService
-                    .translate(AppUsageTranslationKeys.deviceLabel),
+                label: _translationService.translate(AppUsageTranslationKeys.deviceLabel),
                 icon: AppUsageUiConstants.deviceIcon,
                 widget: Padding(
                   padding: const EdgeInsets.only(left: AppTheme.sizeSmall),
                   child: Text(_appUsage!.deviceName ??
-                      _translationService.translate(
-                          AppUsageTranslationKeys.unknownDeviceLabel)),
+                      _translationService.translate(AppUsageTranslationKeys.unknownDeviceLabel)),
                 ),
               ),
 
               // Tags - Optional field
               if (_isFieldVisible(keyTags))
                 DetailTableRowData(
-                  label: _translationService
-                      .translate(AppUsageTranslationKeys.tagsLabel),
+                  label: _translationService.translate(AppUsageTranslationKeys.tagsLabel),
                   icon: AppUsageUiConstants.tagsIcon,
                   widget: TagSelectDropdown(
                     key: const ValueKey('app_usage_tags'),
                     isMultiSelect: true,
-                    onTagsSelected: (tagOptions, _) =>
-                        _onTagsSelected(tagOptions),
+                    onTagsSelected: (tagOptions, _) => _onTagsSelected(tagOptions),
                     autoOpen: _autoOpenField == keyTags,
                     showSelectedInDropdown: true,
                     initialSelectedTags: _appUsageTags!.items
@@ -500,8 +471,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
                             value: appUsage.tagId,
                             label: appUsage.tagName.isNotEmpty
                                 ? appUsage.tagName
-                                : _translationService
-                                    .translate(SharedTranslationKeys.untitled)))
+                                : _translationService.translate(SharedTranslationKeys.untitled)))
                         .toList(),
                     icon: SharedUiConstants.addIcon,
                     iconSize: AppTheme.iconSizeMedium,
@@ -511,19 +481,16 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
               // Color - Optional field
               if (_isFieldVisible(keyColor))
                 DetailTableRowData(
-                  label: _translationService
-                      .translate(AppUsageTranslationKeys.colorLabel),
+                  label: _translationService.translate(AppUsageTranslationKeys.colorLabel),
                   icon: AppUsageUiConstants.colorIcon,
                   widget: ColorField(
-                    initialColor:
-                        AppUsageUiConstants.getTagColor(_appUsage!.color),
+                    initialColor: AppUsageUiConstants.getTagColor(_appUsage!.color),
                     onColorChanged: _onChangeColor,
                     autoOpen: _autoOpenField == keyColor,
                   ),
                 ),
             ],
-            isDense: AppThemeHelper.isScreenSmallerThan(
-                context, AppTheme.screenMedium),
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           ),
 
           // Optional field chips at the bottom
@@ -532,9 +499,7 @@ class _AppUsageDetailsContentState extends State<AppUsageDetailsContent> {
             Wrap(
               spacing: 4,
               runSpacing: 2,
-              children: availableChipFields
-                  .map((fieldKey) => _buildOptionalFieldChip(fieldKey, false))
-                  .toList(),
+              children: availableChipFields.map((fieldKey) => _buildOptionalFieldChip(fieldKey, false)).toList(),
             ),
           ],
         ],

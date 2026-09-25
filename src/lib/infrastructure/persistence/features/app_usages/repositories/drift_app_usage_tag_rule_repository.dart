@@ -18,15 +18,11 @@ class AppUsageTagRuleTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftAppUsageTagRuleRepository
-    extends DriftBaseRepository<AppUsageTagRule, String, AppUsageTagRuleTable>
+class DriftAppUsageTagRuleRepository extends DriftBaseRepository<AppUsageTagRule, String, AppUsageTagRuleTable>
     implements IAppUsageTagRuleRepository {
-  DriftAppUsageTagRuleRepository()
-      : super(AppDatabase.instance(),
-            AppDatabase.instance().appUsageTagRuleTable);
+  DriftAppUsageTagRuleRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageTagRuleTable);
 
-  DriftAppUsageTagRuleRepository.withDatabase(AppDatabase database)
-      : super(database, database.appUsageTagRuleTable);
+  DriftAppUsageTagRuleRepository.withDatabase(AppDatabase database) : super(database, database.appUsageTagRuleTable);
 
   @override
   Expression<String> getPrimaryKey(AppUsageTagRuleTable t) {
@@ -47,8 +43,7 @@ class DriftAppUsageTagRuleRepository
   }
 
   @override
-  Future<DateTime?> deleteIfRevision(
-      AppUsageTagRule rule, DateTime expectedRevision) async {
+  Future<DateTime?> deleteIfRevision(AppUsageTagRule rule, DateTime expectedRevision) async {
     final deletedAt = nextDatabaseRevision(expectedRevision);
     final affectedRows = await database.customUpdate(
       '''

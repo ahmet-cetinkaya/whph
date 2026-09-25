@@ -1,8 +1,6 @@
 part of 'settings_tools.dart';
 
-final _publicSettingNames = PublicSettingKey.values
-    .map((key) => key.publicName)
-    .toList(growable: false);
+final _publicSettingNames = PublicSettingKey.values.map((key) => key.publicName).toList(growable: false);
 
 // Per-key oneOf variants discriminated by key.const are not portable: some
 // MCP clients (Claude Code) ignore const in preflight validation and reject
@@ -27,16 +25,13 @@ String _summarizeSchema(Map<String, dynamic> schema) {
   if (minimum is int && maximum is int) return 'integer $minimum-$maximum';
   final branches = schema['oneOf'];
   if (branches is List && branches.isNotEmpty) {
-    return branches
-        .map((b) => _summarizeSchema(b as Map<String, dynamic>))
-        .join(' or ');
+    return branches.map((b) => _summarizeSchema(b as Map<String, dynamic>)).join(' or ');
   }
   return 'see whph_settings_list';
 }
 
-final String _perKeyValuesSummary = PublicSettingKey.values
-    .map((key) => '${key.publicName}: ${_summarizeSchema(_valueSchema(key))}')
-    .join('; ');
+final String _perKeyValuesSummary =
+    PublicSettingKey.values.map((key) => '${key.publicName}: ${_summarizeSchema(_valueSchema(key))}').join('; ');
 
 final JsonObject _settingsUpdateInputSchema = JsonObject.fromJson({
   'type': 'object',
@@ -51,8 +46,7 @@ final JsonObject _settingsUpdateInputSchema = JsonObject.fromJson({
 
 Map<String, dynamic> _valueSchema(PublicSettingKey key) => switch (key) {
       PublicSettingKey.themeMode => _enum(const ['auto', 'light', 'dark']),
-      PublicSettingKey.uiDensity =>
-        _enum(const ['system', 'compact', 'normal', 'large', 'larger']),
+      PublicSettingKey.uiDensity => _enum(const ['system', 'compact', 'normal', 'large', 'larger']),
       PublicSettingKey.language => _enum(const [
           'cs',
           'da',
@@ -77,16 +71,8 @@ Map<String, dynamic> _valueSchema(PublicSettingKey key) => switch (key) {
           'uk',
           'zh'
         ]),
-      PublicSettingKey.defaultTimerMode =>
-        _enum(const ['pomodoro', 'normal', 'stopwatch']),
-      PublicSettingKey.defaultPage => _enum(const [
-          '/today',
-          '/tasks',
-          '/habits',
-          '/notes',
-          '/app-usages',
-          '/tags'
-        ]),
+      PublicSettingKey.defaultTimerMode => _enum(const ['pomodoro', 'normal', 'stopwatch']),
+      PublicSettingKey.defaultPage => _enum(const ['/today', '/tasks', '/habits', '/notes', '/app-usages', '/tags']),
       PublicSettingKey.taskDefaultPlannedReminder => _enum(const [
           'none',
           'atTime',
@@ -104,8 +90,7 @@ Map<String, dynamic> _valueSchema(PublicSettingKey key) => switch (key) {
       PublicSettingKey.tickingVolume => _integer(5, 100),
       PublicSettingKey.tickingSpeed => _integer(1, 5),
       PublicSettingKey.taskDefaultEstimatedMinutes => _integer(0, 1440),
-      PublicSettingKey.taskDefaultPlannedReminderCustomOffsetMinutes =>
-        _integer(0, 10080),
+      PublicSettingKey.taskDefaultPlannedReminderCustomOffsetMinutes => _integer(0, 10080),
       PublicSettingKey.customAccentArgb => {
           'oneOf': [
             {'type': 'integer', 'minimum': 0, 'maximum': 0xffffffff},
@@ -115,10 +100,8 @@ Map<String, dynamic> _valueSchema(PublicSettingKey key) => switch (key) {
       _ => {'type': 'boolean'},
     };
 
-Map<String, dynamic> _enum(List<String> values) =>
-    {'type': 'string', 'enum': values};
-Map<String, dynamic> _integer(int minimum, int maximum) =>
-    {'type': 'integer', 'minimum': minimum, 'maximum': maximum};
+Map<String, dynamic> _enum(List<String> values) => {'type': 'string', 'enum': values};
+Map<String, dynamic> _integer(int minimum, int maximum) => {'type': 'integer', 'minimum': minimum, 'maximum': maximum};
 
 final _settingOutputSchema = JsonSchema.object(
   properties: {
@@ -151,13 +134,7 @@ final _settingsUpdateOutputSchema = JsonSchema.object(
   additionalProperties: false,
 );
 
-const _readAnnotations = ToolAnnotations(
-    readOnlyHint: true,
-    destructiveHint: false,
-    idempotentHint: true,
-    openWorldHint: false);
-const _mutationAnnotations = ToolAnnotations(
-    readOnlyHint: false,
-    destructiveHint: true,
-    idempotentHint: true,
-    openWorldHint: false);
+const _readAnnotations =
+    ToolAnnotations(readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false);
+const _mutationAnnotations =
+    ToolAnnotations(readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: false);

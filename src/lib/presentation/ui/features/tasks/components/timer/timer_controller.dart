@@ -15,16 +15,13 @@ import 'package:whph/presentation/ui/features/tasks/components/timer/alarm_cance
 
 void _safeInvoke(FutureOr<void> Function() callback, String name) {
   Future.sync(callback).catchError((e, stackTrace) {
-    Logger.error('$name callback failed',
-        component: 'TimerController', error: e, stackTrace: stackTrace);
+    Logger.error('$name callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
   });
 }
 
-void _safeInvokeWithArg<T>(
-    FutureOr<void> Function(T) callback, T arg, String name) {
+void _safeInvokeWithArg<T>(FutureOr<void> Function(T) callback, T arg, String name) {
   Future.sync(() => callback(arg)).catchError((e, stackTrace) {
-    Logger.error('$name callback failed',
-        component: 'TimerController', error: e, stackTrace: stackTrace);
+    Logger.error('$name callback failed', component: 'TimerController', error: e, stackTrace: stackTrace);
   });
 }
 
@@ -159,8 +156,7 @@ class TimerController extends ChangeNotifier {
     _autoStartBreak = await _getBoolSetting(SettingKeys.autoStartBreak, false);
     _autoStartWork = await _getBoolSetting(SettingKeys.autoStartWork, false);
     _tickingEnabled = await _getBoolSetting(SettingKeys.tickingEnabled, false);
-    _keepScreenAwake =
-        await _getBoolSetting(SettingKeys.keepScreenAwake, false);
+    _keepScreenAwake = await _getBoolSetting(SettingKeys.keepScreenAwake, false);
     _tickingVolume = await _getSetting(SettingKeys.tickingVolume, 50);
     _tickingSpeed = await _getSetting(SettingKeys.tickingSpeed, 1);
 
@@ -184,8 +180,7 @@ class TimerController extends ChangeNotifier {
     final sessionService = _sessionService;
     final sessionId = _sessionId;
     final sessionOwner = _sessionOwner;
-    if (sessionService == null || sessionId == null || sessionOwner == null)
-      return;
+    if (sessionService == null || sessionId == null || sessionOwner == null) return;
 
     final state = sessionService.create(
       sessionId: sessionId,
@@ -194,9 +189,8 @@ class TimerController extends ChangeNotifier {
       selectedTaskId: _selectedTaskId,
     );
     _applySharedState(state);
-    _sessionSubscription ??= sessionService.changes
-        .where((state) => state.sessionId == sessionId)
-        .listen(_applySharedState);
+    _sessionSubscription ??=
+        sessionService.changes.where((state) => state.sessionId == sessionId).listen(_applySharedState);
   }
 
   TimerSessionSettings get _sharedSettings => TimerSessionSettings(
@@ -248,8 +242,7 @@ class TimerController extends ChangeNotifier {
 
   Future<bool> _getBoolSetting(String key, bool defaultValue) async {
     try {
-      final response =
-          await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: key),
       );
       if (response == null) return defaultValue;
@@ -267,8 +260,7 @@ class TimerController extends ChangeNotifier {
 
   Future<TimerMode> _getTimerModeSetting() async {
     try {
-      final response =
-          await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: SettingKeys.defaultTimerMode),
       );
       if (response == null) return TimerMode.pomodoro;
@@ -286,8 +278,7 @@ class TimerController extends ChangeNotifier {
 
   Future<int> _getSetting(String key, int defaultValue) async {
     try {
-      final response =
-          await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
+      final response = await _mediator.send<GetSettingQuery, GetSettingQueryResponse?>(
         GetSettingQuery(key: key),
       );
       if (response == null) return defaultValue;
@@ -438,8 +429,7 @@ class TimerController extends ChangeNotifier {
         _sessionTotalElapsed = initialElapsed + elapsedIncrement;
 
         if (isWorkingAtStart) {
-          _currentWorkSessionElapsed =
-              initialCurrentWorkElapsed + elapsedIncrement;
+          _currentWorkSessionElapsed = initialCurrentWorkElapsed + elapsedIncrement;
         }
 
         if (_timerMode == TimerMode.stopwatch) {
@@ -455,8 +445,7 @@ class TimerController extends ChangeNotifier {
         notifyListeners();
 
         // Check if countdown timer modes should finish
-        if (_timerMode != TimerMode.stopwatch &&
-            _remainingTime.inSeconds <= 0) {
+        if (_timerMode != TimerMode.stopwatch && _remainingTime.inSeconds <= 0) {
           _timer?.cancel();
           _isRunning = false;
           _cancelAlarm(AlarmCancelReason.naturalCompletion);
@@ -466,8 +455,7 @@ class TimerController extends ChangeNotifier {
 
           // Only auto-start next session in Pomodoro mode
           if (_timerMode == TimerMode.pomodoro) {
-            if ((_isWorking && _autoStartBreak) ||
-                (!_isWorking && _autoStartWork)) {
+            if ((_isWorking && _autoStartBreak) || (!_isWorking && _autoStartWork)) {
               Future.delayed(const Duration(seconds: 3), () {
                 try {
                   if (_isAlarmPlaying) {
@@ -543,8 +531,7 @@ class TimerController extends ChangeNotifier {
 
     _currentWorkSessionElapsed = Duration.zero;
 
-    _safeInvokeWithArg((elapsed) => onTimerStopped?.call(elapsed),
-        _sessionTotalElapsed, 'onTimerStopped');
+    _safeInvokeWithArg((elapsed) => onTimerStopped?.call(elapsed), _sessionTotalElapsed, 'onTimerStopped');
     notifyListeners();
   }
 
@@ -596,8 +583,7 @@ class TimerController extends ChangeNotifier {
       }
 
       _remainingTime = Duration(
-        seconds: _minutesToSeconds(
-            _isLongBreak ? _longBreakDuration : _breakDuration),
+        seconds: _minutesToSeconds(_isLongBreak ? _longBreakDuration : _breakDuration),
       );
 
       _currentWorkSessionElapsed = Duration.zero;
@@ -630,13 +616,11 @@ class TimerController extends ChangeNotifier {
   }
 
   Future<void> _toggleSharedWorkBreak() async {
-    final completedWorkDuration =
-        _isWorking ? _currentWorkSessionElapsed : Duration.zero;
+    final completedWorkDuration = _isWorking ? _currentWorkSessionElapsed : Duration.zero;
     await Future.sync(() => onAlarmStop?.call());
     await _sessionService!.toggleWorkBreak(_sessionId!);
     if (completedWorkDuration > Duration.zero) {
-      await Future.sync(
-          () => onWorkSessionComplete?.call(completedWorkDuration));
+      await Future.sync(() => onWorkSessionComplete?.call(completedWorkDuration));
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:acore/acore.dart'
-    show DateTimeHelper, MarkdownEditor, ResponsiveDialogHelper, DialogSize;
+import 'package:acore/acore.dart' show DateTimeHelper, MarkdownEditor, ResponsiveDialogHelper, DialogSize;
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_calendar_view/habit_calendar_view.dart';
 import 'package:whph/presentation/ui/features/habits/components/habit_details_content/components/habit_archived_section.dart';
@@ -100,8 +99,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     if (_descriptionController.text == description) {
       _lastSyncedDescription = description;
     } else {
-      final bool isDescriptionDirty =
-          _descriptionController.text != (_lastSyncedDescription ?? '');
+      final bool isDescriptionDirty = _descriptionController.text != (_lastSyncedDescription ?? '');
       if (!isDescriptionDirty && _descriptionController.text != description) {
         _descriptionController.text = description;
         _lastSyncedDescription = description;
@@ -154,8 +152,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
     if (value.trim().isEmpty) {
       _descriptionController.clear();
       if (mounted) {
-        _descriptionController.selection =
-            const TextSelection.collapsed(offset: 0);
+        _descriptionController.selection = const TextSelection.collapsed(offset: 0);
       }
     }
     _controller.updateDescription(value, widget.habitId, context);
@@ -235,8 +232,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
 
     final now = DateTime.now();
     final bool isArchived = habit.archivedDate != null &&
-        DateTimeHelper.toLocalDateTime(habit.archivedDate!)
-            .isBefore(DateTime(now.year, now.month, now.day));
+        DateTimeHelper.toLocalDateTime(habit.archivedDate!).isBefore(DateTime(now.year, now.month, now.day));
 
     return SingleChildScrollView(
       child: Column(
@@ -256,8 +252,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   isArchived: isArchived,
                   translationService: translationService,
                   themeService: _themeService,
-                  onToggle: () => _controller.toggleHabitRecordForDay(
-                      DateTime.now(), widget.habitId, context),
+                  onToggle: () => _controller.toggleHabitRecordForDay(DateTime.now(), widget.habitId, context),
                   isThreeStateEnabled: _controller.isThreeStateEnabled,
                 ),
               ),
@@ -269,10 +264,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   onChanged: _onNameChanged,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    hintText: translationService
-                        .translate(HabitTranslationKeys.namePlaceholder),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    hintText: translationService.translate(HabitTranslationKeys.namePlaceholder),
                   ),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -287,25 +280,21 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             rowData: [
               if (_controller.isFieldVisible(HabitDetailsController.keyType))
                 DetailTableRowData(
-                  label: translationService
-                      .translate(HabitTranslationKeys.typeLabel),
+                  label: translationService.translate(HabitTranslationKeys.typeLabel),
                   icon: HabitUiConstants.habitIcon,
                   widget: HabitTypeSelector(
                     type: habit.type,
                     isReadOnly: _controller.isTypeReadOnly,
                     translationService: translationService,
-                    onChanged: (type) =>
-                        _controller.updateType(type, widget.habitId, context),
+                    onChanged: (type) => _controller.updateType(type, widget.habitId, context),
                   ),
                 ),
               if (_controller.isFieldVisible(HabitDetailsController.keyTags))
                 HabitTagsSection(
                   habitTags: _controller.habitTags,
                   translationService: translationService,
-                  onTagsSelected: (tags) => _controller.processTagChanges(
-                      tags, widget.habitId, context),
-                  autoOpenDropdown:
-                      _autoOpenField == HabitDetailsController.keyTags,
+                  onTagsSelected: (tags) => _controller.processTagChanges(tags, widget.habitId, context),
+                  autoOpenDropdown: _autoOpenField == HabitDetailsController.keyTags,
                 ).build(),
               if (_controller.isFieldVisible(HabitDetailsController.keyTimer))
                 HabitTimerSection.build(
@@ -313,34 +302,28 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   translationService: translationService,
                   habitId: widget.habitId,
                 ),
-              if (_controller
-                  .isFieldVisible(HabitDetailsController.keyElapsedTime))
+              if (_controller.isFieldVisible(HabitDetailsController.keyElapsedTime))
                 HabitTimeSection.buildElapsedTime(
                   totalDuration: _controller.totalDuration,
                   translationService: translationService,
                   onTap: _showHabitTimeLoggingDialog,
                 ),
-              if (_controller
-                  .isFieldVisible(HabitDetailsController.keyEstimatedTime))
+              if (_controller.isFieldVisible(HabitDetailsController.keyEstimatedTime))
                 HabitTimeSection.buildEstimatedTime(
                   estimatedTime: habit.estimatedTime,
                   translationService: translationService,
                   onValueChanged: (value) {
-                    _controller.updateEstimatedTime(
-                        value, widget.habitId, context);
+                    _controller.updateEstimatedTime(value, widget.habitId, context);
                   },
-                  translations: HabitTimeSection.getNumericInputTranslations(
-                      translationService),
+                  translations: HabitTimeSection.getNumericInputTranslations(translationService),
                 ),
-              if (_controller
-                  .isFieldVisible(HabitDetailsController.keyReminder))
+              if (_controller.isFieldVisible(HabitDetailsController.keyReminder))
                 HabitReminderSection.build(
                   context: context,
                   hasReminder: habit.hasReminder,
                   reminderSummaryText: _controller.getReminderSummaryText(),
                   translationService: translationService,
-                  onTap: () =>
-                      _controller.openReminderDialog(context, widget.habitId),
+                  onTap: () => _controller.openReminderDialog(context, widget.habitId),
                 ),
               if (_controller.isFieldVisible(HabitDetailsController.keyGoal))
                 HabitGoalSection.build(
@@ -351,8 +334,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   dailyTarget: habit.dailyTarget ?? 1,
                   isArchived: isArchived,
                   translationService: translationService,
-                  onTap: () =>
-                      _controller.openGoalDialog(context, widget.habitId),
+                  onTap: () => _controller.openGoalDialog(context, widget.habitId),
                 ),
               if (habit.archivedDate != null)
                 HabitArchivedSection.build(
@@ -361,19 +343,16 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   translationService: translationService,
                 ),
             ],
-            isDense: AppThemeHelper.isScreenSmallerThan(
-                context, AppTheme.screenMedium),
+            isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
           ),
 
           // Description Table
-          if (_controller
-              .isFieldVisible(HabitDetailsController.keyDescription)) ...[
+          if (_controller.isFieldVisible(HabitDetailsController.keyDescription)) ...[
             DetailTable(
               forceVertical: true,
               rowData: [
                 DetailTableRowData(
-                  label: translationService
-                      .translate(HabitTranslationKeys.descriptionLabel),
+                  label: translationService.translate(HabitTranslationKeys.descriptionLabel),
                   icon: HabitUiConstants.descriptionIcon,
                   widget: MarkdownEditor.simple(
                     controller: _descriptionController,
@@ -381,16 +360,13 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                     onChanged: _onDescriptionChanged,
                     height: 250,
                     style: Theme.of(context).textTheme.bodyMedium,
-                    hintText: translationService
-                        .translate(SharedTranslationKeys.markdownEditorHint),
-                    translations: SharedTranslationKeys.mapMarkdownTranslations(
-                        translationService),
+                    hintText: translationService.translate(SharedTranslationKeys.markdownEditorHint),
+                    translations: SharedTranslationKeys.mapMarkdownTranslations(translationService),
                   ),
                   removePadding: true,
                 ),
               ],
-              isDense: AppThemeHelper.isScreenSmallerThan(
-                  context, AppTheme.screenMedium),
+              isDense: AppThemeHelper.isScreenSmallerThan(context, AppTheme.screenMedium),
             ),
             const SizedBox(height: AppTheme.size2XSmall),
           ],
@@ -428,10 +404,8 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
             HabitCalendarView(
               currentMonth: _controller.currentMonth,
               records: _controller.habitRecords!.items,
-              onToggle: (date) => _controller.toggleHabitRecordForDay(
-                  date, widget.habitId, context),
-              onPreviousMonth: () =>
-                  _controller.previousMonth(widget.habitId, context),
+              onToggle: (date) => _controller.toggleHabitRecordForDay(date, widget.habitId, context),
+              onPreviousMonth: () => _controller.previousMonth(widget.habitId, context),
               onNextMonth: () => _controller.nextMonth(widget.habitId, context),
               onRecordChanged: () => _controller.loadHabitRecordsForMonth(
                 _controller.currentMonth,
@@ -441,9 +415,7 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
               habitId: widget.habitId,
               habitType: habit.type,
               createdDate: DateTimeHelper.toLocalDateTime(habit.createdDate),
-              archivedDate: habit.archivedDate != null
-                  ? DateTimeHelper.toLocalDateTime(habit.archivedDate!)
-                  : null,
+              archivedDate: habit.archivedDate != null ? DateTimeHelper.toLocalDateTime(habit.archivedDate!) : null,
               hasGoal: habit.hasGoal,
               targetFrequency: habit.targetFrequency,
               periodDays: habit.periodDays,

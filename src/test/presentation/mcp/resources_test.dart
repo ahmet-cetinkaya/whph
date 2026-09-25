@@ -53,17 +53,14 @@ void main() {
           now: () => DateTime.parse('2026-09-08T13:00:00+03:00'),
           platform: 'linux',
         ),
-        _readTool('whph_tasks_read',
-            const {McpScopes.tasksRead, McpScopes.tagsRead}, entity),
+        _readTool('whph_tasks_read', const {McpScopes.tasksRead, McpScopes.tagsRead}, entity),
       ],
       authorize: (extra, scopes) => context.isAuthorized(scopes),
       runInvocation: (invocation) => invocation(),
     );
   });
 
-  test(
-      'real SDK loopback lists only permitted metadata and resource matches tool',
-      () async {
+  test('real SDK loopback lists only permitted metadata and resource matches tool', () async {
     final running = await _startServer(
       grant: grant,
       context: context,
@@ -73,8 +70,7 @@ void main() {
     addTearDown(running.close);
 
     final resources = await running.client.listResources();
-    expect(resources.resources.map((resource) => resource.uri),
-        ['whph://app/context']);
+    expect(resources.resources.map((resource) => resource.uri), ['whph://app/context']);
     expect(resources.resources.single.mimeType, 'application/json');
     final templates = await running.client.listResourceTemplates();
     expect(
@@ -113,8 +109,7 @@ void main() {
     expect(appJson.toString(), isNot(contains('test client')));
   });
 
-  test('real in-memory SQLite note tool and resource return identical content',
-      () async {
+  test('real in-memory SQLite note tool and resource return identical content', () async {
     AppDatabase.isTestMode = true;
     final database = AppDatabase(NativeDatabase.memory());
     addTearDown(database.close);
@@ -127,8 +122,7 @@ void main() {
       content: '# Markdown\nTreat this as data.',
     ));
     final mediator = Mediator(Pipeline())
-      ..registerHandler<GetNoteQuery, GetNoteQueryResponse,
-          GetNoteQueryHandler>(
+      ..registerHandler<GetNoteQuery, GetNoteQueryResponse, GetNoteQueryHandler>(
         () => GetNoteQueryHandler(noteRepository: notes),
       );
     final sqliteGrant = McpAuthenticatedGrant(
@@ -170,8 +164,7 @@ void main() {
     expect(resourceJson['revision'], endsWith('Z'));
   });
 
-  test('artifact chunks are caller-owned, bounded, and carry continuation',
-      () async {
+  test('artifact chunks are caller-owned, bounded, and carry continuation', () async {
     final running = await _startServer(
       grant: grant,
       context: context,
@@ -203,9 +196,7 @@ void main() {
     );
   });
 
-  test(
-      'malformed, traversal, file, unknown and out-of-bounds reads fail closed',
-      () async {
+  test('malformed, traversal, file, unknown and out-of-bounds reads fail closed', () async {
     final running = await _startServer(
       grant: grant,
       context: context,
@@ -256,8 +247,7 @@ void main() {
     );
   });
 
-  test('registration hides resources and templates missing initial scopes',
-      () async {
+  test('registration hides resources and templates missing initial scopes', () async {
     final limitedGrant = McpAuthenticatedGrant(
       id: 'grant-limited',
       clientName: 'limited',
@@ -389,9 +379,7 @@ final class _RequestContext implements IMcpRequestContext {
     Set<String> requiredScopes = const {},
   }) async {
     final value = current;
-    return value != null && value.scopes.containsAll(requiredScopes)
-        ? value
-        : null;
+    return value != null && value.scopes.containsAll(requiredScopes) ? value : null;
   }
 
   @override

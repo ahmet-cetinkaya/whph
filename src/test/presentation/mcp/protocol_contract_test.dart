@@ -121,8 +121,7 @@ void main() {
         const Implementation(name: 'whph-test', version: '1.0.0'),
       );
       final registration = tool.registerWith(server);
-      final callback =
-          (registration.callback! as FunctionToolCallback).function;
+      final callback = (registration.callback! as FunctionToolCallback).function;
 
       final result = await callback(
         {'value': 42},
@@ -160,15 +159,13 @@ void main() {
 
     test('unexpected failures do not expose internal details', () async {
       final tool = _echoTool(
-        handler: (arguments, extra) =>
-            throw StateError('database /private/user.db failed'),
+        handler: (arguments, extra) => throw StateError('database /private/user.db failed'),
       );
       final server = McpServer(
         const Implementation(name: 'whph-test', version: '1.0.0'),
       );
       final registration = tool.registerWith(server);
-      final callback =
-          (registration.callback! as FunctionToolCallback).function;
+      final callback = (registration.callback! as FunctionToolCallback).function;
 
       final result = await callback({'value': 'Ada'}, _requestExtra());
 
@@ -188,8 +185,7 @@ void main() {
       serverInfo: const Implementation(name: 'whph-test', version: '1.0.0'),
     );
 
-    expect(
-        McpProtocol.stable.supportedVersions, contains(stableProtocolVersion));
+    expect(McpProtocol.stable.supportedVersions, contains(stableProtocolVersion));
     expect(
       McpProtocol.stable.supportedVersions,
       contains(latestInitializationProtocolVersion),

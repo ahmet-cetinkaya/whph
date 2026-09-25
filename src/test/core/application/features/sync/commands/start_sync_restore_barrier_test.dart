@@ -9,8 +9,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_restore_barr
 import 'package:whph/core/application/shared/services/mcp_restore_barrier.dart';
 
 void main() {
-  test('start command holds admission for the complete asynchronous start',
-      () async {
+  test('start command holds admission for the complete asynchronous start', () async {
     final barrier = McpRestoreBarrier();
     final syncService = _BlockingSyncService();
     final handler = StartSyncCommandHandler(

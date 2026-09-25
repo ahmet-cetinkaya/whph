@@ -84,8 +84,7 @@ final class McpOperationService implements IMcpOperationService {
         final updated = _expire(current);
         return (
           updated,
-          List<McpOperation>.unmodifiable(updated.where(
-              (item) => item.status == McpOperationStatus.pendingApproval)),
+          List<McpOperation>.unmodifiable(updated.where((item) => item.status == McpOperationStatus.pendingApproval)),
         );
       });
 
@@ -149,8 +148,7 @@ final class McpOperationService implements IMcpOperationService {
   }
 
   @override
-  Future<McpOperation> reject(String operationId) =>
-      _store.update((current) async {
+  Future<McpOperation> reject(String operationId) => _store.update((current) async {
         final updated = _expire(current);
         final index = updated.indexWhere((item) => item.id == operationId);
         if (index < 0) throw StateError('Operation not found');
@@ -158,19 +156,15 @@ final class McpOperationService implements IMcpOperationService {
         if (operation.status != McpOperationStatus.pendingApproval) {
           throw StateError('Operation is not pending approval');
         }
-        final rejected =
-            _copy(operation, status: McpOperationStatus.rejected);
-        _executors =
-            Map.unmodifiable(Map.of(_executors)..remove(operationId));
+        final rejected = _copy(operation, status: McpOperationStatus.rejected);
+        _executors = Map.unmodifiable(Map.of(_executors)..remove(operationId));
         return (_replace(updated, index, rejected), rejected);
       });
 
   Future<bool> _isGrantStillAuthorized(McpOperation operation) async {
     final state = await _accessService.readState();
     return state.grants.any((grant) =>
-        grant.id == operation.clientGrantId &&
-        !grant.isRevoked &&
-        grant.scopes.containsAll(operation.requiredScopes));
+        grant.id == operation.clientGrantId && !grant.isRevoked && grant.scopes.containsAll(operation.requiredScopes));
   }
 
   List<McpOperation> _expire(List<McpOperation> operations) {
@@ -178,19 +172,15 @@ final class McpOperationService implements IMcpOperationService {
     final retained = operations.where((operation) =>
         operation.status == McpOperationStatus.pendingApproval ||
         operation.status == McpOperationStatus.running ||
-        operation.approvalExpiresAt
-            .add(_completedOperationLifetime)
-            .isAfter(now));
+        operation.approvalExpiresAt.add(_completedOperationLifetime).isAfter(now));
     final expiredExecutorIds = <String>{};
     final updated = retained.map((operation) {
       if (operation.status == McpOperationStatus.pendingApproval &&
-          (!operation.approvalExpiresAt.isAfter(now) ||
-              !_executors.containsKey(operation.id))) {
+          (!operation.approvalExpiresAt.isAfter(now) || !_executors.containsKey(operation.id))) {
         expiredExecutorIds.add(operation.id);
         return _copy(operation, status: McpOperationStatus.expired);
       }
-      if (operation.status == McpOperationStatus.running &&
-          !_executors.containsKey(operation.id)) {
+      if (operation.status == McpOperationStatus.running && !_executors.containsKey(operation.id)) {
         return _copy(
           operation,
           status: McpOperationStatus.failed,

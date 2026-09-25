@@ -27,13 +27,10 @@ class HabitRecordOperations {
   }) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage:
-          _translationService.translate(HabitTranslationKeys.updateHabitError),
+      errorMessage: _translationService.translate(HabitTranslationKeys.updateHabitError),
       operation: () async {
-        final command =
-            ToggleHabitCompletionCommand(habitId: habitId, date: date);
-        await _mediator.send<ToggleHabitCompletionCommand,
-            ToggleHabitCompletionCommandResponse>(command);
+        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
         onSuccess?.call();
@@ -50,13 +47,10 @@ class HabitRecordOperations {
   }) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage: _translationService
-          .translate(HabitTranslationKeys.creatingRecordError),
+      errorMessage: _translationService.translate(HabitTranslationKeys.creatingRecordError),
       operation: () async {
-        final command =
-            ToggleHabitCompletionCommand(habitId: habitId, date: date);
-        await _mediator.send<ToggleHabitCompletionCommand,
-            ToggleHabitCompletionCommandResponse>(command);
+        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
         onSuccess?.call();
@@ -73,13 +67,10 @@ class HabitRecordOperations {
   }) async {
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage: _translationService
-          .translate(HabitTranslationKeys.deletingRecordError),
+      errorMessage: _translationService.translate(HabitTranslationKeys.deletingRecordError),
       operation: () async {
-        final command = ToggleHabitCompletionCommand(
-            habitId: habitId, date: date, useIncrementalBehavior: false);
-        await _mediator.send<ToggleHabitCompletionCommand,
-            ToggleHabitCompletionCommandResponse>(command);
+        final command = ToggleHabitCompletionCommand(habitId: habitId, date: date, useIncrementalBehavior: false);
+        await _mediator.send<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse>(command);
       },
       onSuccess: () {
         onSuccess?.call();

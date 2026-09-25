@@ -21,8 +21,7 @@ class DeleteNoteCommand implements IRequest<DeleteNoteCommandResponse> {
 
 class DeleteNoteCommandResponse {}
 
-class DeleteNoteCommandHandler
-    implements IRequestHandler<DeleteNoteCommand, DeleteNoteCommandResponse> {
+class DeleteNoteCommandHandler implements IRequestHandler<DeleteNoteCommand, DeleteNoteCommandResponse> {
   final INoteRepository _noteRepository;
   final INoteTagRepository _noteTagRepository;
   final INoteEvents _noteEvents;
@@ -43,8 +42,7 @@ class DeleteNoteCommandHandler
     final note = await _noteRepository.getById(request.id);
 
     if (note == null) {
-      throw BusinessException(
-          'Note not found', NoteTranslationKeys.noteNotFound);
+      throw BusinessException('Note not found', NoteTranslationKeys.noteNotFound);
     }
 
     await _transactions.run(() async {
@@ -54,8 +52,7 @@ class DeleteNoteCommandHandler
       }
       if (request.expectedRevision == null) {
         await _noteRepository.delete(note);
-      } else if (!await _noteRepository.deleteIfRevision(
-          note.id, request.expectedRevision!)) {
+      } else if (!await _noteRepository.deleteIfRevision(note.id, request.expectedRevision!)) {
         throw NoteRevisionConflictException(note.id);
       }
       await ensureMutationAuthorized(request.authorizeCommit);

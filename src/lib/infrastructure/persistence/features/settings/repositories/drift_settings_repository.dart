@@ -18,14 +18,10 @@ class SettingTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftSettingRepository
-    extends DriftBaseRepository<Setting, String, SettingTable>
-    implements ISettingRepository {
-  DriftSettingRepository()
-      : super(AppDatabase.instance(), AppDatabase.instance().settingTable);
+class DriftSettingRepository extends DriftBaseRepository<Setting, String, SettingTable> implements ISettingRepository {
+  DriftSettingRepository() : super(AppDatabase.instance(), AppDatabase.instance().settingTable);
 
-  DriftSettingRepository.withDatabase(AppDatabase database)
-      : super(database, database.settingTable);
+  DriftSettingRepository.withDatabase(AppDatabase database) : super(database, database.settingTable);
 
   @override
   Expression<String> getPrimaryKey(SettingTable t) {
@@ -57,8 +53,7 @@ class DriftSettingRepository
   }
 
   @override
-  Future<DateTime?> updateIfRevision(
-      Setting setting, DateTime expectedRevision) async {
+  Future<DateTime?> updateIfRevision(Setting setting, DateTime expectedRevision) async {
     final nextRevision = nextDatabaseRevision(expectedRevision);
     final affectedRows = await database.customUpdate(
       '''

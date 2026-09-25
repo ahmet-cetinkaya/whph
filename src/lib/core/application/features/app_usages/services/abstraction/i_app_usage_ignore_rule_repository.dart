@@ -1,9 +1,6 @@
 import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_repository.dart'
-    as app;
+import 'package:whph/core/application/shared/services/abstraction/i_repository.dart' as app;
 
-abstract class IAppUsageIgnoreRuleRepository
-    extends app.IRepository<AppUsageIgnoreRule, String> {
-  Future<DateTime?> deleteIfRevision(
-      AppUsageIgnoreRule rule, DateTime expectedRevision);
+abstract class IAppUsageIgnoreRuleRepository extends app.IRepository<AppUsageIgnoreRule, String> {
+  Future<DateTime?> deleteIfRevision(AppUsageIgnoreRule rule, DateTime expectedRevision);
 }

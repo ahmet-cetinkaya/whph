@@ -55,10 +55,7 @@ final class SyncPeer {
 }
 
 final class SyncDevicePage {
-  SyncDevicePage(
-      {required List<SyncDevice> items,
-      required this.nextCursor,
-      required this.total})
+  SyncDevicePage({required List<SyncDevice> items, required this.nextCursor, required this.total})
       : items = List.unmodifiable(items);
 
   final List<SyncDevice> items;
@@ -107,8 +104,7 @@ final class SyncActions {
 
   SyncStatus get status => _syncService.currentSyncStatus;
 
-  Future<SyncDevicePage> list(
-      {required int pageIndex, required int pageSize}) async {
+  Future<SyncDevicePage> list({required int pageIndex, required int pageSize}) async {
     final page = await _repository.getList(pageIndex, pageSize);
     final hasNext = (pageIndex + 1) * pageSize < page.totalItemCount;
     return SyncDevicePage(
@@ -138,8 +134,7 @@ final class SyncActions {
         name: _replace(current.name, update.name),
         lastSyncDate: current.lastSyncDate,
       );
-      final revision = await _repository.updateIfRevision(
-          replacement, update.expectedRevision);
+      final revision = await _repository.updateIfRevision(replacement, update.expectedRevision);
       if (revision == null) throw SyncRevisionConflictException(update.id);
       return SyncDevice(
         id: replacement.id,
@@ -153,8 +148,7 @@ final class SyncActions {
         lastSyncDate: replacement.lastSyncDate,
       );
     });
-    return SyncCommitResult(
-        value: updated, syncSucceeded: await _syncAfterCommit());
+    return SyncCommitResult(value: updated, syncSucceeded: await _syncAfterCommit());
   }
 
   Future<SyncCommitResult<DateTime>> delete(
@@ -165,13 +159,11 @@ final class SyncActions {
     final deletedAt = await _transactions.run(() async {
       final current = await _requireCurrent(id, expectedRevision);
       await beforeCommit();
-      final deletedAt =
-          await _repository.deleteIfRevision(current.id, expectedRevision);
+      final deletedAt = await _repository.deleteIfRevision(current.id, expectedRevision);
       if (deletedAt == null) throw SyncRevisionConflictException(id);
       return deletedAt;
     });
-    return SyncCommitResult(
-        value: deletedAt, syncSucceeded: await _syncAfterCommit());
+    return SyncCommitResult(value: deletedAt, syncSucceeded: await _syncAfterCommit());
   }
 
   Future<SyncStatus> start() async {
@@ -187,20 +179,17 @@ final class SyncActions {
   Future<SyncCommitResult<SyncDevice>> pair(SyncPeer peer) async {
     final handshake = await _handshake.getDeviceInfo(peer.ipAddress, peer.port);
     if (handshake == null || handshake.deviceId != peer.deviceId) {
-      throw const SyncPairingException(
-          'The peer did not complete a matching WHPH handshake.');
+      throw const SyncPairingException('The peer did not complete a matching WHPH handshake.');
     }
     final localAddresses = await _networkInterfaces.getPreferredIPAddresses();
     if (localAddresses.isEmpty) {
-      throw const SyncPairingException(
-          'A local network address is required to pair this device.');
+      throw const SyncPairingException('A local network address is required to pair this device.');
     }
     final localDeviceId = await _deviceIds.getDeviceId();
     final paired = await _transactions.run(() async {
       final allDevices = await _repository.getAll(includeDeleted: true);
       final existing = allDevices.where((device) {
-        return device.fromDeviceId == peer.deviceId &&
-            device.toDeviceId == localDeviceId;
+        return device.fromDeviceId == peer.deviceId && device.toDeviceId == localDeviceId;
       }).firstOrNull;
       if (existing != null && existing.deletedDate == null) {
         throw const SyncPairingException('The peer is already paired.');
@@ -221,8 +210,7 @@ final class SyncActions {
       }
       return replacement;
     });
-    return SyncCommitResult(
-        value: paired, syncSucceeded: await _syncAfterCommit());
+    return SyncCommitResult(value: paired, syncSucceeded: await _syncAfterCommit());
   }
 
   Future<bool> _syncAfterCommit() async {
@@ -234,8 +222,7 @@ final class SyncActions {
     }
   }
 
-  Future<SyncDevice> _requireCurrent(
-      String id, DateTime expectedRevision) async {
+  Future<SyncDevice> _requireCurrent(String id, DateTime expectedRevision) async {
     final device = await _repository.getById(id);
     if (device == null) throw StateError('Sync device not found.');
     final revision = device.modifiedDate ?? device.createdDate;

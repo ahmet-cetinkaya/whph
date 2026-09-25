@@ -30,14 +30,12 @@ final class McpToolRegistry {
   ) _runInvocation;
   final Map<String, McpToolDefinition> _toolsByName;
 
-  List<McpToolDefinition> discover(Set<String> grantedScopes) =>
-      List<McpToolDefinition>.unmodifiable(
+  List<McpToolDefinition> discover(Set<String> grantedScopes) => List<McpToolDefinition>.unmodifiable(
         _toolsByName.values
             .where(
               (tool) =>
                   grantedScopes.containsAll(tool.requiredScopes) &&
-                  (tool.anyOfScopes.isEmpty ||
-                      grantedScopes.any(tool.anyOfScopes.contains)),
+                  (tool.anyOfScopes.isEmpty || grantedScopes.any(tool.anyOfScopes.contains)),
             )
             .map(_guard),
       );
@@ -65,8 +63,7 @@ final class McpToolRegistry {
         annotations: tool.annotations,
         requiredScopes: tool.requiredScopes,
         anyOfScopes: tool.anyOfScopes,
-        handler: (arguments, extra) =>
-            _invokeAuthorized(tool, arguments, extra),
+        handler: (arguments, extra) => _invokeAuthorized(tool, arguments, extra),
       );
 
   Future<CallToolResult> _invokeAuthorized(

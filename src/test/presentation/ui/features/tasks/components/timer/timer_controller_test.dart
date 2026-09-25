@@ -72,8 +72,7 @@ class _RecordingWidgetDurationWriter implements ITimerSessionDurationWriter {
   final List<TimerSessionDuration> writes = [];
 
   @override
-  Future<void> write(TimerSessionDuration duration) async =>
-      writes.add(duration);
+  Future<void> write(TimerSessionDuration duration) async => writes.add(duration);
 }
 
 class FakeAlarmScheduler implements ITimerSessionAlarmScheduler {
@@ -91,8 +90,7 @@ class _TimerWidgetMediator extends Fake implements Mediator {
   @override
   Future<R> send<T extends IRequest<R>, R extends Object?>(T request) async {
     final Object settingRequest = request;
-    if (settingRequest is GetSettingQuery &&
-        settingRequest.key == SettingKeys.defaultTimerMode) {
+    if (settingRequest is GetSettingQuery && settingRequest.key == SettingKeys.defaultTimerMode) {
       return GetSettingQueryResponse(
         id: 'timer-mode',
         createdDate: DateTime(2026, 9, 8),
@@ -108,8 +106,7 @@ class _TimerWidgetMediator extends Fake implements Mediator {
 class _FakeContainer extends Fake implements IContainer {
   Map<Type, Object> _registrations = const {};
 
-  void register<T extends Object>(T instance) =>
-      _registrations = {..._registrations, T: instance};
+  void register<T extends Object>(T instance) => _registrations = {..._registrations, T: instance};
 
   @override
   T resolve<T>([String? name]) => _registrations[T] as T;
@@ -201,9 +198,7 @@ void main() {
   });
 
   group('TimerController', () {
-    testWidgets(
-        'AppTimer normal notification action uses the shared restart operation',
-        (tester) async {
+    testWidgets('AppTimer normal notification action uses the shared restart operation', (tester) async {
       var now = DateTime(2026, 9, 8);
       final writer = _RecordingWidgetDurationWriter();
       final sessionService = TimerSessionService(
@@ -287,8 +282,7 @@ void main() {
     });
 
     group('time calculation', () {
-      test('wall clock time calculation works regardless of tick frequency',
-          () {
+      test('wall clock time calculation works regardless of tick frequency', () {
         fakeAsync((async) {
           controller.updateSettings(_defaultSettings());
 
@@ -297,8 +291,7 @@ void main() {
 
           async.elapse(const Duration(milliseconds: 1100));
 
-          expect(controller.sessionTotalElapsed.inMilliseconds,
-              greaterThanOrEqualTo(1000));
+          expect(controller.sessionTotalElapsed.inMilliseconds, greaterThanOrEqualTo(1000));
         });
       });
     });
@@ -316,8 +309,7 @@ void main() {
       });
 
       test('system alarm is NOT scheduled for stopwatch mode', () async {
-        controller
-            .updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
+        controller.updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
 
         controller.startTimer();
 
@@ -407,9 +399,7 @@ void main() {
     });
 
     group('toggleWorkBreak', () {
-      test(
-          'shared normal notification transition resets and restarts the timer',
-          () {
+      test('shared normal notification transition resets and restarts the timer', () {
         fakeAsync((async) {
           final sessionService = TimerSessionService(
             durationWriter: FakeDurationWriter(),
@@ -455,8 +445,7 @@ void main() {
             reminderService: FakeReminderService(),
             sessionService: sessionService,
             sessionId: 'task:stopwatch-notification',
-            sessionOwner:
-                const TimerSessionOwner.task('stopwatch-notification'),
+            sessionOwner: const TimerSessionOwner.task('stopwatch-notification'),
           );
           sharedController.updateSettings(
             _defaultSettings(timerMode: TimerMode.stopwatch),
@@ -533,8 +522,7 @@ void main() {
 
       test('resets stopwatch elapsed time on toggle', () {
         fakeAsync((async) {
-          controller
-              .updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
+          controller.updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
 
           controller.startTimer();
           async.elapse(const Duration(seconds: 5));
@@ -592,8 +580,7 @@ void main() {
 
       test('resets stopwatch elapsed time', () {
         fakeAsync((async) {
-          controller
-              .updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
+          controller.updateSettings(_defaultSettings(timerMode: TimerMode.stopwatch));
 
           controller.startTimer();
           async.elapse(const Duration(seconds: 10));

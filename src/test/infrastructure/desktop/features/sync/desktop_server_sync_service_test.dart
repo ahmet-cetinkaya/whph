@@ -30,8 +30,7 @@ void main() {
       );
 
       // Setup default device ID
-      when(mockDeviceIdService.getDeviceId())
-          .thenAnswer((_) async => 'test-device-id');
+      when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
     });
 
     tearDown(() {
@@ -443,8 +442,7 @@ void main() {
       });
 
       test('should interact with device ID service', () async {
-        when(mockDeviceIdService.getDeviceId())
-            .thenAnswer((_) async => 'device-123');
+        when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'device-123');
 
         await service.startAsServer();
 
@@ -653,8 +651,7 @@ void main() {
     group('Regression Tests', () {
       test('should fix connection pool exhaustion (Issue #99)', () {
         // Verify the fix: increased per-IP limit
-        expect(maxConnectionsPerIP, equals(5),
-            reason: 'Per-IP limit should be increased from 3 to 5');
+        expect(maxConnectionsPerIP, equals(5), reason: 'Per-IP limit should be increased from 3 to 5');
 
         // Verify the fix: connection recycling enabled
         expect(connectionRecycleIdleSeconds, equals(5),

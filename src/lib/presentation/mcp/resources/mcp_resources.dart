@@ -24,9 +24,8 @@ void registerMcpResources({
   required McpToolRegistry toolRegistry,
   required McpToolAuthorizer authorize,
 }) {
-  final transferService = grant.scopes.contains(McpScopes.dataExport)
-      ? container.resolve<IMcpDataTransferService>()
-      : null;
+  final transferService =
+      grant.scopes.contains(McpScopes.dataExport) ? container.resolve<IMcpDataTransferService>() : null;
   McpResourceProvider(
     grant: grant,
     requestContext: requestContext,
@@ -57,8 +56,7 @@ final class McpResourceProvider {
         'whph-app-context',
         _appContextUri,
         (
-          description:
-              'Current WHPH runtime and authorized capability summary.',
+          description: 'Current WHPH runtime and authorized capability summary.',
           mimeType: _jsonMimeType,
         ),
         (uri, extra) => _runResource(
@@ -90,12 +88,9 @@ final class McpResourceProvider {
       requiredScopes: const {McpScopes.notesRead, McpScopes.tagsRead},
       title: 'WHPH note',
     );
-    if (grant.scopes.contains(McpScopes.dataExport) &&
-        transferService != null) {
-      _registerArtifactTemplate(
-          server, 'whph-artifact-first', _firstArtifactTemplate);
-      _registerArtifactTemplate(
-          server, 'whph-artifact-chunk', _artifactTemplate);
+    if (grant.scopes.contains(McpScopes.dataExport) && transferService != null) {
+      _registerArtifactTemplate(server, 'whph-artifact-first', _firstArtifactTemplate);
+      _registerArtifactTemplate(server, 'whph-artifact-chunk', _artifactTemplate);
     }
   }
 
@@ -236,8 +231,7 @@ final class McpResourceProvider {
               'sha256': chunk.artifact.sha256,
               'expiresAt': chunk.artifact.expiresAt.toUtc().toIso8601String(),
               if (chunk.nextOffset != null)
-                'nextUri':
-                    'whph://artifacts/${chunk.artifact.id}?offset=${chunk.nextOffset}',
+                'nextUri': 'whph://artifacts/${chunk.artifact.id}?offset=${chunk.nextOffset}',
             },
           ),
         ],

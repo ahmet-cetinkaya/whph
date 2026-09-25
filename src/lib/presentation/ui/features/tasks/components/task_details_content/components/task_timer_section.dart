@@ -21,10 +21,7 @@ class TaskTimerSection {
         label: translationService.translate(SharedTranslationKeys.timerLabel),
         icon: TaskUiConstants.timerIcon,
         widget: Padding(
-          padding: const EdgeInsets.only(
-              top: AppTheme.sizeSmall,
-              bottom: AppTheme.sizeSmall,
-              left: AppTheme.sizeSmall),
+          padding: const EdgeInsets.only(top: AppTheme.sizeSmall, bottom: AppTheme.sizeSmall, left: AppTheme.sizeSmall),
           child: AppTimer(
             sessionId: 'task:$taskId',
             sessionOwner: TimerSessionOwner.task(taskId),

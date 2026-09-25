@@ -8,8 +8,6 @@ final class MutationAuthorizationException implements Exception {
   const MutationAuthorizationException();
 }
 
-Future<void> ensureMutationAuthorized(
-    ApplicationMutationGuard? authorize) async {
-  if (authorize != null && !await authorize())
-    throw const MutationAuthorizationException();
+Future<void> ensureMutationAuthorized(ApplicationMutationGuard? authorize) async {
+  if (authorize != null && !await authorize()) throw const MutationAuthorizationException();
 }

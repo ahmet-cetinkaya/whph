@@ -108,13 +108,11 @@ final class AppUsageActions {
         modifiedDate: existing.modifiedDate,
         deletedDate: existing.deletedDate,
         name: existing.name,
-        displayName:
-            displayName.isPresent ? displayName.value : existing.displayName,
+        displayName: displayName.isPresent ? displayName.value : existing.displayName,
         color: color.isPresent ? color.value : existing.color,
         deviceName: existing.deviceName,
       );
-      final revision =
-          await _appUsageRepository.updateIfRevision(updated, expectedRevision);
+      final revision = await _appUsageRepository.updateIfRevision(updated, expectedRevision);
       if (revision == null) {
         throw AppUsageRevisionConflict(id);
       }
@@ -134,8 +132,7 @@ final class AppUsageActions {
     final result = await _transactionService.run(() async {
       final existing = await _appUsageRepository.getById(id);
       if (existing == null) throw AppUsageNotFound(id);
-      final deletedAt = await _appUsageRepository.deleteIfRevision(
-          existing, expectedRevision);
+      final deletedAt = await _appUsageRepository.deleteIfRevision(existing, expectedRevision);
       if (deletedAt == null) {
         throw AppUsageRevisionConflict(id);
       }
@@ -161,8 +158,7 @@ final class AppUsageActions {
     ApplicationMutationGuard? authorizeCommit,
   }) async {
     RegExp(pattern);
-    if (await _tagRepository.getById(tagId) == null)
-      throw AppUsageNotFound(tagId);
+    if (await _tagRepository.getById(tagId) == null) throw AppUsageNotFound(tagId);
     final rule = AppUsageTagRule(
       id: KeyHelper.generateStringId(),
       createdDate: DateTime.now().toUtc(),
@@ -175,8 +171,7 @@ final class AppUsageActions {
       await ensureMutationAuthorized(authorizeCommit);
     });
     _appUsageEvents.notifyAppUsageRuleCreated(rule.id);
-    return AppUsageMutationResult(
-        id: rule.id, revision: _databaseRevision(rule.createdDate));
+    return AppUsageMutationResult(id: rule.id, revision: _databaseRevision(rule.createdDate));
   }
 
   Future<AppUsageDeleteResult> deleteTagRule(
@@ -187,8 +182,7 @@ final class AppUsageActions {
     final result = await _transactionService.run(() async {
       final rule = await _tagRuleRepository.getById(id);
       if (rule == null) throw AppUsageNotFound(id);
-      final deletedAt =
-          await _tagRuleRepository.deleteIfRevision(rule, expectedRevision);
+      final deletedAt = await _tagRuleRepository.deleteIfRevision(rule, expectedRevision);
       if (deletedAt == null) {
         throw AppUsageRevisionConflict(id);
       }
@@ -216,8 +210,7 @@ final class AppUsageActions {
       await ensureMutationAuthorized(authorizeCommit);
     });
     _appUsageEvents.notifyAppUsageIgnoreRuleUpdated(rule.id);
-    return AppUsageMutationResult(
-        id: rule.id, revision: _databaseRevision(rule.createdDate));
+    return AppUsageMutationResult(id: rule.id, revision: _databaseRevision(rule.createdDate));
   }
 
   Future<AppUsageDeleteResult> deleteIgnoreRule(
@@ -228,8 +221,7 @@ final class AppUsageActions {
     final result = await _transactionService.run(() async {
       final rule = await _ignoreRuleRepository.getById(id);
       if (rule == null) throw AppUsageNotFound(id);
-      final deletedAt =
-          await _ignoreRuleRepository.deleteIfRevision(rule, expectedRevision);
+      final deletedAt = await _ignoreRuleRepository.deleteIfRevision(rule, expectedRevision);
       if (deletedAt == null) {
         throw AppUsageRevisionConflict(id);
       }
@@ -244,17 +236,14 @@ final class AppUsageActions {
     ApplicationMutationGuard? authorizeCommit,
   }) async {
     if (!_isTrackingSupported) return 'unsupported_platform';
-    if (!await _appUsageService.checkUsageStatsPermission())
-      return 'permission_required';
+    if (!await _appUsageService.checkUsageStatsPermission()) return 'permission_required';
     await ensureMutationAuthorized(authorizeCommit);
     try {
       await _appUsageService.startTracking(authorizeCommit: authorizeCommit);
     } on AppUsagePermissionRequiredException {
       return 'permission_required';
     }
-    return _appUsageService.isTrackingActiveWindowWorking.value
-        ? 'tracking'
-        : 'stopped';
+    return _appUsageService.isTrackingActiveWindowWorking.value ? 'tracking' : 'stopped';
   }
 
   Future<String> stopTracking({
@@ -266,23 +255,17 @@ final class AppUsageActions {
     return 'stopped';
   }
 
-  Future<void> _replaceTags(
-      String appUsageId, List<String> tagIds, List<String>? tagOrder) async {
-    if (tagIds.toSet().length != tagIds.length)
-      throw ArgumentError('Duplicate tag id');
-    if (tagOrder != null &&
-        (tagOrder.length != tagIds.length ||
-            !tagOrder.toSet().containsAll(tagIds))) {
+  Future<void> _replaceTags(String appUsageId, List<String> tagIds, List<String>? tagOrder) async {
+    if (tagIds.toSet().length != tagIds.length) throw ArgumentError('Duplicate tag id');
+    if (tagOrder != null && (tagOrder.length != tagIds.length || !tagOrder.toSet().containsAll(tagIds))) {
       throw ArgumentError('tagOrder must contain each tag id exactly once');
     }
     for (final tagId in tagIds) {
-      if (await _tagRepository.getById(tagId) == null)
-        throw AppUsageNotFound(tagId);
+      if (await _tagRepository.getById(tagId) == null) throw AppUsageNotFound(tagId);
     }
     final existing = await _allTags(appUsageId);
     final requested = tagIds.toSet();
-    for (final relation
-        in existing.where((relation) => !requested.contains(relation.tagId))) {
+    for (final relation in existing.where((relation) => !requested.contains(relation.tagId))) {
       await _appUsageTagRepository.delete(relation);
     }
     final existingIds = existing.map((relation) => relation.tagId).toSet();
@@ -303,16 +286,14 @@ final class AppUsageActions {
   Future<List<AppUsageTag>> _allTags(String appUsageId) async {
     final result = <AppUsageTag>[];
     for (var page = 0; result.length < 10000; page++) {
-      final response = await _appUsageTagRepository.getListByAppUsageId(
-          appUsageId, page, 200);
+      final response = await _appUsageTagRepository.getListByAppUsageId(appUsageId, page, 200);
       result.addAll(response.items);
       if (!response.hasNext) return List<AppUsageTag>.unmodifiable(result);
     }
     throw StateError('Too many usage tag associations.');
   }
 
-  DateTime _databaseRevision(DateTime value) =>
-      DateTime.fromMillisecondsSinceEpoch(
+  DateTime _databaseRevision(DateTime value) => DateTime.fromMillisecondsSinceEpoch(
         (value.millisecondsSinceEpoch ~/ 1000) * 1000,
         isUtc: true,
       );

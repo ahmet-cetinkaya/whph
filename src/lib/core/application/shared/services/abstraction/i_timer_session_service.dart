@@ -127,7 +127,6 @@ abstract interface class ITimerSessionService {
     String? taskId, {
     Future<void> Function()? beforeCommit,
   });
-  Future<TimerSessionState> updateSettings(
-      String sessionId, TimerSessionSettings settings);
+  Future<TimerSessionState> updateSettings(String sessionId, TimerSessionSettings settings);
   Future<void> shutdown();
 }

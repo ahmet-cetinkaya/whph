@@ -8,8 +8,7 @@ import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
 import 'package:whph/core/domain/features/tags/tag_tag.dart';
 
-class SetTagRelationshipsCommand
-    implements IRequest<SetTagRelationshipsCommandResponse> {
+class SetTagRelationshipsCommand implements IRequest<SetTagRelationshipsCommandResponse> {
   final String tagId;
   final DateTime expectedRevision;
   final List<String> relatedTagIds;
@@ -40,9 +39,7 @@ class TagRelationshipCycleException implements Exception {
 }
 
 class SetTagRelationshipsCommandHandler
-    implements
-        IRequestHandler<SetTagRelationshipsCommand,
-            SetTagRelationshipsCommandResponse> {
+    implements IRequestHandler<SetTagRelationshipsCommand, SetTagRelationshipsCommandResponse> {
   final ITagRepository _tags;
   final ITagTagRepository _relationships;
   final ITagEvents _events;
@@ -59,15 +56,12 @@ class SetTagRelationshipsCommandHandler
         _transactions = transactions;
 
   @override
-  Future<SetTagRelationshipsCommandResponse> call(
-      SetTagRelationshipsCommand request) async {
+  Future<SetTagRelationshipsCommandResponse> call(SetTagRelationshipsCommand request) async {
     final response = await _transactions.run(() async {
-      if (request.relatedTagIds.contains(request.tagId))
-        throw const TagRelationshipCycleException();
+      if (request.relatedTagIds.contains(request.tagId)) throw const TagRelationshipCycleException();
       final tag = await _tags.getById(request.tagId);
       if (tag == null) throw StateError('Tag not found');
-      if ((await _tags.getByIds(request.relatedTagIds)).length !=
-          request.relatedTagIds.length) {
+      if ((await _tags.getByIds(request.relatedTagIds)).length != request.relatedTagIds.length) {
         throw StateError('Related tag not found');
       }
       for (final relatedId in request.relatedTagIds) {
@@ -84,21 +78,17 @@ class SetTagRelationshipsCommandHandler
         type: tag.type,
         isArchived: tag.isArchived,
       );
-      final revision =
-          await _tags.updateIfRevision(touched, request.expectedRevision);
+      final revision = await _tags.updateIfRevision(touched, request.expectedRevision);
       if (revision == null) {
         throw TagRevisionConflictException(request.tagId);
       }
       final current = await _relationships.getByPrimaryTagId(request.tagId);
       final requested = request.relatedTagIds.toSet();
-      for (final relation in current
-          .where((relation) => !requested.contains(relation.secondaryTagId))) {
+      for (final relation in current.where((relation) => !requested.contains(relation.secondaryTagId))) {
         await _relationships.delete(relation);
       }
-      final existing =
-          current.map((relation) => relation.secondaryTagId).toSet();
-      for (final relatedId
-          in request.relatedTagIds.where((id) => !existing.contains(id))) {
+      final existing = current.map((relation) => relation.secondaryTagId).toSet();
+      for (final relatedId in request.relatedTagIds.where((id) => !existing.contains(id))) {
         await _relationships.add(TagTag(
           id: KeyHelper.generateStringId(),
           createdDate: DateTime.now().toUtc(),
@@ -118,14 +108,12 @@ class SetTagRelationshipsCommandHandler
     return response;
   }
 
-  Future<bool> _reaches(
-      String currentId, String targetId, Set<String> visited) async {
+  Future<bool> _reaches(String currentId, String targetId, Set<String> visited) async {
     if (currentId == targetId) return true;
     if (!visited.add(currentId)) return false;
     final related = await _relationships.getByPrimaryTagId(currentId);
     for (final relation in related) {
-      if (await _reaches(relation.secondaryTagId, targetId, visited))
-        return true;
+      if (await _reaches(relation.secondaryTagId, targetId, visited)) return true;
     }
     return false;
   }

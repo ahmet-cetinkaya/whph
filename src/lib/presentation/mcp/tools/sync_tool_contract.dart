@@ -2,10 +2,7 @@ part of 'sync_tools.dart';
 
 final _emptyInput = JsonSchema.object(additionalProperties: false);
 final _idInput = _object({'id': JsonSchema.string(minLength: 1)}, const ['id']);
-final _listInput = _object({
-  'cursor': JsonSchema.string(),
-  'pageSize': JsonSchema.integer(minimum: 1, maximum: 200)
-});
+final _listInput = _object({'cursor': JsonSchema.string(), 'pageSize': JsonSchema.integer(minimum: 1, maximum: 200)});
 final _updateInput = _object({
   'id': JsonSchema.string(minLength: 1),
   'expectedRevision': JsonSchema.string(format: 'date-time'),
@@ -123,30 +120,13 @@ final _operationOutput = _object({
   'peerSummary'
 ]);
 
-JsonObject _object(Map<String, JsonSchema> properties,
-        [List<String>? required]) =>
-    JsonSchema.object(
-        properties: properties,
-        required: required,
-        additionalProperties: false);
+JsonObject _object(Map<String, JsonSchema> properties, [List<String>? required]) =>
+    JsonSchema.object(properties: properties, required: required, additionalProperties: false);
 
-const _read = ToolAnnotations(
-    readOnlyHint: true,
-    destructiveHint: false,
-    idempotentHint: true,
-    openWorldHint: false);
-const _mutation = ToolAnnotations(
-    readOnlyHint: false,
-    destructiveHint: true,
-    idempotentHint: true,
-    openWorldHint: false);
-const _delete = ToolAnnotations(
-    readOnlyHint: false,
-    destructiveHint: true,
-    idempotentHint: false,
-    openWorldHint: false);
-const _additive = ToolAnnotations(
-    readOnlyHint: false,
-    destructiveHint: false,
-    idempotentHint: false,
-    openWorldHint: false);
+const _read = ToolAnnotations(readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false);
+const _mutation =
+    ToolAnnotations(readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: false);
+const _delete =
+    ToolAnnotations(readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false);
+const _additive =
+    ToolAnnotations(readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false);

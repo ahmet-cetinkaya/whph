@@ -37,8 +37,7 @@ class SaveTagCommandResponse {
   });
 }
 
-class SaveTagCommandHandler
-    implements IRequestHandler<SaveTagCommand, SaveTagCommandResponse> {
+class SaveTagCommandHandler implements IRequestHandler<SaveTagCommand, SaveTagCommandResponse> {
   final ITagRepository _tagRepository;
   final ITagEvents? _tagEvents;
   final IApplicationTransactionService? _transactions;
@@ -55,11 +54,9 @@ class SaveTagCommandHandler
   Future<SaveTagCommandResponse> call(SaveTagCommand request) async {
     final isCreating = request.id == null;
     Future<Tag> operation() async {
-      final existing =
-          request.id == null ? null : await _tagRepository.getById(request.id!);
+      final existing = request.id == null ? null : await _tagRepository.getById(request.id!);
       if (request.id != null && existing == null) {
-        throw BusinessException(
-            'Tag not found', TagTranslationKeys.tagNotFoundError);
+        throw BusinessException('Tag not found', TagTranslationKeys.tagNotFoundError);
       }
       final tag = Tag(
         id: existing?.id ?? KeyHelper.generateStringId(),
@@ -83,9 +80,7 @@ class SaveTagCommandHandler
     if (request.authorizeCommit != null && _transactions == null) {
       throw StateError('A transaction service is required for guarded writes');
     }
-    final tag = _transactions == null
-        ? await operation()
-        : await _transactions.run(operation);
+    final tag = _transactions == null ? await operation() : await _transactions.run(operation);
 
     if (isCreating) {
       _tagEvents?.notifyTagCreated(tag.id);

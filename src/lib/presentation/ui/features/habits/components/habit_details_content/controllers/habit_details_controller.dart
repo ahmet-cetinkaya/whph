@@ -70,13 +70,10 @@ class HabitDetailsController extends ChangeNotifier {
     ISoundManagerService? soundManagerService,
   })  : _mediator = mediator ?? container.resolve<Mediator>(),
         _habitsService = habitsService ?? container.resolve<HabitsService>(),
-        _translationService =
-            translationService ?? container.resolve<ITranslationService>() {
-    final resolvedSoundManager =
-        soundManagerService ?? container.resolve<ISoundManagerService>();
+        _translationService = translationService ?? container.resolve<ITranslationService>() {
+    final resolvedSoundManager = soundManagerService ?? container.resolve<ISoundManagerService>();
 
-    _dataLoader = HabitDataLoader(
-        mediator: _mediator, translationService: _translationService);
+    _dataLoader = HabitDataLoader(mediator: _mediator, translationService: _translationService);
     _tagOperations = HabitTagOperations(
       mediator: _mediator,
       translationService: _translationService,
@@ -105,8 +102,7 @@ class HabitDetailsController extends ChangeNotifier {
   /// Initialize controller with habit ID
   Future<void> initialize(String habitId, BuildContext context) async {
     if (context.mounted) await loadHabit(habitId, context);
-    if (context.mounted)
-      await loadHabitRecordsForMonth(_currentMonth, habitId, context);
+    if (context.mounted) await loadHabitRecordsForMonth(_currentMonth, habitId, context);
     if (context.mounted) await loadHabitTags(habitId, context);
     if (context.mounted) await refreshTotalDuration(habitId);
     if (context.mounted) await _loadSettings();
@@ -129,12 +125,9 @@ class HabitDetailsController extends ChangeNotifier {
   }
 
   void _setupEventListeners(String habitId, BuildContext context) {
-    _habitsService.onHabitUpdated
-        .addListener(() => _handleHabitUpdated(habitId, context));
-    _habitsService.onHabitRecordAdded
-        .addListener(() => _handleHabitRecordChanged(habitId, context));
-    _habitsService.onHabitRecordRemoved
-        .addListener(() => _handleHabitRecordChanged(habitId, context));
+    _habitsService.onHabitUpdated.addListener(() => _handleHabitUpdated(habitId, context));
+    _habitsService.onHabitRecordAdded.addListener(() => _handleHabitRecordChanged(habitId, context));
+    _habitsService.onHabitRecordRemoved.addListener(() => _handleHabitRecordChanged(habitId, context));
   }
 
   void _handleHabitUpdated(String habitId, BuildContext context) {
@@ -206,8 +199,7 @@ class HabitDetailsController extends ChangeNotifier {
     _habit!.archivedDate = result.archivedDate;
   }
 
-  Future<void> loadHabitStatisticsOnly(
-      String habitId, BuildContext context) async {
+  Future<void> loadHabitStatisticsOnly(String habitId, BuildContext context) async {
     final result = await _dataLoader.loadHabit(habitId, context);
     if (_isDisposed) return;
     if (result != null && _habit != null) {
@@ -216,10 +208,8 @@ class HabitDetailsController extends ChangeNotifier {
     }
   }
 
-  Future<void> loadHabitRecordsForMonth(
-      DateTime month, String habitId, BuildContext context) async {
-    final result =
-        await _dataLoader.loadHabitRecordsForMonth(month, habitId, context);
+  Future<void> loadHabitRecordsForMonth(DateTime month, String habitId, BuildContext context) async {
+    final result = await _dataLoader.loadHabitRecordsForMonth(month, habitId, context);
     if (_isDisposed) return;
     if (result != null) {
       _habitRecords = result;
@@ -228,8 +218,7 @@ class HabitDetailsController extends ChangeNotifier {
   }
 
   Future<void> loadHabitTags(String habitId, BuildContext context) async {
-    final existingTagIds =
-        _habitTags?.items.map((tag) => tag.tagId).toSet() ?? <String>{};
+    final existingTagIds = _habitTags?.items.map((tag) => tag.tagId).toSet() ?? <String>{};
     final result = await _dataLoader.loadHabitTags(habitId, context);
     if (_isDisposed) return;
 
@@ -245,8 +234,7 @@ class HabitDetailsController extends ChangeNotifier {
         notifyListeners();
       }
     } else if (_habitTags == null) {
-      _habitTags = GetListHabitTagsQueryResponse(
-          items: [], pageIndex: 0, pageSize: 50, totalItemCount: 0);
+      _habitTags = GetListHabitTagsQueryResponse(items: [], pageIndex: 0, pageSize: 50, totalItemCount: 0);
       _processFieldVisibility();
       notifyListeners();
     }
@@ -279,13 +267,10 @@ class HabitDetailsController extends ChangeNotifier {
 
     if (_hasFieldContent(keyType)) _visibleOptionalFields.add(keyType);
     if (_hasFieldContent(keyTags)) _visibleOptionalFields.add(keyTags);
-    if (_hasFieldContent(keyEstimatedTime))
-      _visibleOptionalFields.add(keyEstimatedTime);
-    if (_hasFieldContent(keyElapsedTime))
-      _visibleOptionalFields.add(keyElapsedTime);
+    if (_hasFieldContent(keyEstimatedTime)) _visibleOptionalFields.add(keyEstimatedTime);
+    if (_hasFieldContent(keyElapsedTime)) _visibleOptionalFields.add(keyElapsedTime);
     if (_hasFieldContent(keyTimer)) _visibleOptionalFields.add(keyTimer);
-    if (_hasFieldContent(keyDescription))
-      _visibleOptionalFields.add(keyDescription);
+    if (_hasFieldContent(keyDescription)) _visibleOptionalFields.add(keyDescription);
     if (_hasFieldContent(keyReminder)) _visibleOptionalFields.add(keyReminder);
     if (_hasFieldContent(keyGoal)) _visibleOptionalFields.add(keyGoal);
   }
@@ -324,23 +309,18 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isFieldVisible(String fieldKey) =>
-      _isFieldSupported(fieldKey) && _visibleOptionalFields.contains(fieldKey);
+  bool isFieldVisible(String fieldKey) => _isFieldSupported(fieldKey) && _visibleOptionalFields.contains(fieldKey);
   bool shouldShowAsChip(String fieldKey) =>
-      _isFieldSupported(fieldKey) &&
-      !_visibleOptionalFields.contains(fieldKey) &&
-      !_hasFieldContent(fieldKey);
+      _isFieldSupported(fieldKey) && !_visibleOptionalFields.contains(fieldKey) && !_hasFieldContent(fieldKey);
 
   /// Goals only describe repetition targets, which are meaningless for habits
   /// the user wants to avoid entirely.
-  bool _isFieldSupported(String fieldKey) =>
-      !(fieldKey == keyGoal && _habit?.type == HabitType.bad);
+  bool _isFieldSupported(String fieldKey) => !(fieldKey == keyGoal && _habit?.type == HabitType.bad);
 
   /// Archived habits are read-only, so their type cannot be switched.
   bool get isTypeReadOnly => _habit?.isArchived ?? true;
 
-  Future<void> updateType(
-      HabitType type, String habitId, BuildContext context) async {
+  Future<void> updateType(HabitType type, String habitId, BuildContext context) async {
     if (_habit == null || isTypeReadOnly || _habit!.type == type) return;
 
     final previousType = _habit!.type;
@@ -377,8 +357,7 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
-  void saveHabitDebounced(String habitId, BuildContext context,
-      {String? name}) {
+  void saveHabitDebounced(String habitId, BuildContext context, {String? name}) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(SharedUiConstants.contentSaveDebounceTime, () {
       saveHabitImmediately(habitId, context, name: name);
@@ -395,8 +374,7 @@ class HabitDetailsController extends ChangeNotifier {
 
     await AsyncErrorHandler.executeVoid(
       context: context,
-      errorMessage: _translationService
-          .translate(HabitTranslationKeys.savingDetailsError),
+      errorMessage: _translationService.translate(HabitTranslationKeys.savingDetailsError),
       operation: () async {
         final command = _buildSaveCommand(habitId, name: name);
         await _mediator.send(command);
@@ -409,10 +387,8 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
-  SaveHabitCommand _buildSaveCommand(String habitId,
-      {String? name, String? description}) {
-    final reminderDaysList =
-        _habit!.hasReminder ? _habit!.getReminderDaysAsList() : <int>[];
+  SaveHabitCommand _buildSaveCommand(String habitId, {String? name, String? description}) {
+    final reminderDaysList = _habit!.hasReminder ? _habit!.getReminderDaysAsList() : <int>[];
 
     if (_habit!.hasReminder && reminderDaysList.isEmpty) {
       final allDays = List.generate(7, (index) => index + 1);
@@ -429,8 +405,7 @@ class HabitDetailsController extends ChangeNotifier {
       }
     }
 
-    final List<int> reminderDaysToSend =
-        _habit!.hasReminder ? _habit!.getReminderDaysAsList() : [];
+    final List<int> reminderDaysToSend = _habit!.hasReminder ? _habit!.getReminderDaysAsList() : [];
 
     return SaveHabitCommand(
       id: habitId,
@@ -466,8 +441,7 @@ class HabitDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> addTag(
-      String tagId, String habitId, BuildContext context) async {
+  Future<bool> addTag(String tagId, String habitId, BuildContext context) async {
     final success = await _tagOperations.addTag(tagId, habitId, context);
     if (success) {
       _forceTagsRefresh = true;
@@ -478,8 +452,7 @@ class HabitDetailsController extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> removeTag(
-      String id, String habitId, BuildContext context) async {
+  Future<bool> removeTag(String id, String habitId, BuildContext context) async {
     final success = await _tagOperations.removeTag(id, context);
     if (success) {
       _forceTagsRefresh = true;
@@ -490,8 +463,7 @@ class HabitDetailsController extends ChangeNotifier {
     return false;
   }
 
-  Future<void> processTagChanges(List<DropdownOption<String>> tagOptions,
-      String habitId, BuildContext context) async {
+  Future<void> processTagChanges(List<DropdownOption<String>> tagOptions, String habitId, BuildContext context) async {
     await _tagOperations.processTagChanges(
       tagOptions: tagOptions,
       habitId: habitId,
@@ -501,13 +473,11 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
-  Future<void> toggleHabitRecordForDay(
-      DateTime date, String habitId, BuildContext context) async {
+  Future<void> toggleHabitRecordForDay(DateTime date, String habitId, BuildContext context) async {
     // Capture the pre-toggle verdict: a day that was not already a good-habit
     // success becomes one. Bad habits are never celebrated, because avoiding
     // one is the absence of a failure rather than an achievement.
-    final becomesSuccess =
-        _habit?.type == HabitType.good && !_isGoodHabitSuccess(date);
+    final becomesSuccess = _habit?.type == HabitType.good && !_isGoodHabitSuccess(date);
 
     await _recordOperations.toggleHabitRecord(
       habitId: habitId,
@@ -535,8 +505,7 @@ class HabitDetailsController extends ChangeNotifier {
     ).isCelebratedSuccess(date);
   }
 
-  Future<void> createHabitRecord(
-      String habitId, DateTime date, BuildContext context) async {
+  Future<void> createHabitRecord(String habitId, DateTime date, BuildContext context) async {
     await _recordOperations.createHabitRecord(
       habitId: habitId,
       date: date,
@@ -549,15 +518,13 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
-  Future<void> deleteAllHabitRecordsForDay(
-      DateTime date, String habitId, BuildContext context) async {
+  Future<void> deleteAllHabitRecordsForDay(DateTime date, String habitId, BuildContext context) async {
     await _recordOperations.deleteAllHabitRecordsForDay(
       date: date,
       habitId: habitId,
       context: context,
       onSuccess: () async {
-        if (context.mounted)
-          await loadHabitRecordsForMonth(_currentMonth, habitId, context);
+        if (context.mounted) await loadHabitRecordsForMonth(_currentMonth, habitId, context);
         if (context.mounted) await loadHabitStatisticsOnly(habitId, context);
         if (context.mounted) await refreshTotalDuration(habitId);
         onHabitUpdated?.call();
@@ -601,8 +568,7 @@ class HabitDetailsController extends ChangeNotifier {
     if (_habitRecords == null) return 0;
     return _habitRecords!.items
         .where((record) =>
-            DateTimeHelper.isSameDay(record.date, DateTime.now()) &&
-            record.status == HabitRecordStatus.complete)
+            DateTimeHelper.isSameDay(record.date, DateTime.now()) && record.status == HabitRecordStatus.complete)
         .length;
   }
 
@@ -611,13 +577,11 @@ class HabitDetailsController extends ChangeNotifier {
     final today = DateTime.now();
     final todayRecord = _habitRecords!.items
         .cast<HabitRecordListItem?>()
-        .firstWhere((record) => DateTimeHelper.isSameDay(record!.date, today),
-            orElse: () => null);
+        .firstWhere((record) => DateTimeHelper.isSameDay(record!.date, today), orElse: () => null);
     return todayRecord?.status ?? HabitRecordStatus.skipped;
   }
 
-  String getReminderSummaryText() =>
-      _dialogHelper.getReminderSummaryText(_habit);
+  String getReminderSummaryText() => _dialogHelper.getReminderSummaryText(_habit);
 
   Future<void> openReminderDialog(BuildContext context, String habitId) async {
     if (_habit == null) return;
@@ -648,8 +612,7 @@ class HabitDetailsController extends ChangeNotifier {
       _habit!.hasGoal = result.hasGoal;
       _habit!.dailyTarget = result.dailyTarget;
       if (result.hasGoal) {
-        if (result.targetFrequency != null)
-          _habit!.targetFrequency = result.targetFrequency!;
+        if (result.targetFrequency != null) _habit!.targetFrequency = result.targetFrequency!;
         if (result.periodDays != null) _habit!.periodDays = result.periodDays!;
       }
       await saveHabitImmediately(habitId, context);

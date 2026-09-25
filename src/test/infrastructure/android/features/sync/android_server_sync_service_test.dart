@@ -20,18 +20,15 @@ class FakeMediator extends Fake implements Mediator {
   PaginatedSyncCommandResponse? responseToReturn;
 
   @override
-  Future<Response> send<Request extends IRequest<Response>, Response>(
-      Request? request) {
+  Future<Response> send<Request extends IRequest<Response>, Response>(Request? request) {
     if (request is PaginatedSyncCommand) {
       final response = responseToReturn;
       if (response == null) {
-        throw StateError(
-            'FakeMediator: responseToReturn not set for PaginatedSyncCommand');
+        throw StateError('FakeMediator: responseToReturn not set for PaginatedSyncCommand');
       }
       return Future.value(response as Response);
     }
-    throw UnimplementedError(
-        'FakeMediator: Unexpected request type: ${request.runtimeType}');
+    throw UnimplementedError('FakeMediator: Unexpected request type: ${request.runtimeType}');
   }
 }
 
@@ -82,18 +79,15 @@ void main() {
         restoreBarrier: McpRestoreBarrier(),
       );
 
-      when(mockDeviceIdService.getDeviceId())
-          .thenAnswer((_) async => 'test-device-id');
-      when(mockDeviceInfoPlugin.androidInfo)
-          .thenAnswer((_) async => MockAndroidDeviceInfo());
+      when(mockDeviceIdService.getDeviceId()).thenAnswer((_) async => 'test-device-id');
+      when(mockDeviceInfoPlugin.androidInfo).thenAnswer((_) async => MockAndroidDeviceInfo());
     });
 
     tearDown(() {
       service.dispose();
     });
 
-    test('should report failure when paginated sync command returns errors',
-        () async {
+    test('should report failure when paginated sync command returns errors', () async {
       // 1. Start Server on a dynamic port (0) to avoid collisions
       final started = await service.startAsServer(0);
       expect(started, isTrue, reason: 'Server should start on dynamic port');
@@ -141,10 +135,8 @@ void main() {
       // 5. Listen for response
       final completer = Completer<Map<String, dynamic>>();
       socket.listen((data) {
-        final respMsg =
-            JsonMapper.deserialize<WebSocketMessage>(data.toString());
-        if (respMsg?.type == 'paginated_sync_complete' ||
-            respMsg?.type == 'paginated_sync_error') {
+        final respMsg = JsonMapper.deserialize<WebSocketMessage>(data.toString());
+        if (respMsg?.type == 'paginated_sync_complete' || respMsg?.type == 'paginated_sync_error') {
           completer.complete(respMsg?.data as Map<String, dynamic>?);
         }
       });
@@ -152,19 +144,16 @@ void main() {
       final responseData = await completer.future.timeout(Duration(seconds: 5));
       await socket.close();
 
-      expect(responseData['success'], isFalse,
-          reason: 'Success flag should be false when errors exist');
+      expect(responseData['success'], isFalse, reason: 'Success flag should be false when errors exist');
 
       // Check for specific error message
       expect(responseData['error'], contains('Version mismatch'),
           reason: 'Error string should contain mismatch detail');
 
       // Verify errorMessages list presence and content
-      expect(responseData['errorMessages'], isA<List>(),
-          reason: 'Response should include errorMessages list');
+      expect(responseData['errorMessages'], isA<List>(), reason: 'Response should include errorMessages list');
       final errorMessages = responseData['errorMessages'] as List;
-      expect(errorMessages, contains(errorMsg),
-          reason: 'errorMessages list should contain the specific error');
+      expect(errorMessages, contains(errorMsg), reason: 'errorMessages list should contain the specific error');
 
       expect(responseData['server_type'], equals('mobile'));
       expect(responseData['isComplete'], isTrue);

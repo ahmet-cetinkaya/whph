@@ -6,10 +6,7 @@ import 'package:whph/core/application/features/app_usages/constants/app_usage_tr
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 
 class AppUsageTimeRecordListItem {
-  const AppUsageTimeRecordListItem(
-      {required this.id,
-      required this.occurredAt,
-      required this.durationSeconds});
+  const AppUsageTimeRecordListItem({required this.id, required this.occurredAt, required this.durationSeconds});
 
   final String id;
   final DateTime occurredAt;
@@ -43,8 +40,7 @@ class GetAppUsageQueryResponse {
     required this.hasMoreTimeRecords,
   }) : timeRecords = List.unmodifiable(timeRecords);
 
-  GetAppUsageQueryResponse withColor(String? nextColor) =>
-      GetAppUsageQueryResponse(
+  GetAppUsageQueryResponse withColor(String? nextColor) => GetAppUsageQueryResponse(
         name: name,
         displayName: displayName,
         color: nextColor,
@@ -56,8 +52,7 @@ class GetAppUsageQueryResponse {
       );
 }
 
-class GetAppUsageQueryHandler
-    implements IRequestHandler<GetAppUsageQuery, GetAppUsageQueryResponse> {
+class GetAppUsageQueryHandler implements IRequestHandler<GetAppUsageQuery, GetAppUsageQueryResponse> {
   late final IAppUsageRepository _appUsageRepository;
   late final IAppUsageTimeRecordRepository _timeRecordRepository;
 
@@ -71,16 +66,13 @@ class GetAppUsageQueryHandler
   Future<GetAppUsageQueryResponse> call(GetAppUsageQuery request) async {
     AppUsage? appUsages = await _appUsageRepository.getById(request.id);
     if (appUsages == null) {
-      throw BusinessException(
-          'App usage not found', AppUsageTranslationKeys.appUsageNotFoundError);
+      throw BusinessException('App usage not found', AppUsageTranslationKeys.appUsageNotFoundError);
     }
     final timeRecords = await _timeRecordRepository.getList(
       0,
       200,
       customWhereFilter: CustomWhereFilter('app_usage_id = ?', [request.id]),
-      customOrder: [
-        CustomOrder(field: 'usage_date', direction: SortDirection.desc)
-      ],
+      customOrder: [CustomOrder(field: 'usage_date', direction: SortDirection.desc)],
     );
 
     return GetAppUsageQueryResponse(

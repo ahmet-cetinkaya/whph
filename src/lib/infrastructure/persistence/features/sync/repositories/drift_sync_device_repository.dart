@@ -21,14 +21,11 @@ class SyncDeviceTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftSyncDeviceRepository
-    extends DriftBaseRepository<SyncDevice, String, SyncDeviceTable>
+class DriftSyncDeviceRepository extends DriftBaseRepository<SyncDevice, String, SyncDeviceTable>
     implements ISyncDeviceRepository {
-  DriftSyncDeviceRepository()
-      : super(AppDatabase.instance(), AppDatabase.instance().syncDeviceTable);
+  DriftSyncDeviceRepository() : super(AppDatabase.instance(), AppDatabase.instance().syncDeviceTable);
 
-  DriftSyncDeviceRepository.withDatabase(AppDatabase database)
-      : super(database, database.syncDeviceTable);
+  DriftSyncDeviceRepository.withDatabase(AppDatabase database) : super(database, database.syncDeviceTable);
 
   @override
   Expression<String> getPrimaryKey(SyncDeviceTable t) {
@@ -55,15 +52,13 @@ class DriftSyncDeviceRepository
   Future<SyncDevice?> getByFromToIp(String fromIp, String toIp) async {
     return await (database.select(table)
           ..where((t) =>
-              (t.fromIp.equals(fromIp) & t.toIp.equals(toIp) |
-                  t.fromIp.equals(toIp) & t.toIp.equals(fromIp)) &
+              (t.fromIp.equals(fromIp) & t.toIp.equals(toIp) | t.fromIp.equals(toIp) & t.toIp.equals(fromIp)) &
               t.deletedDate.isNull()))
         .getSingleOrNull();
   }
 
   @override
-  Future<DateTime?> updateIfRevision(
-      SyncDevice device, DateTime expectedRevision) async {
+  Future<DateTime?> updateIfRevision(SyncDevice device, DateTime expectedRevision) async {
     final nextRevision = nextDatabaseRevision(expectedRevision);
     final affectedRows = await database.customUpdate(
       '''
@@ -91,8 +86,7 @@ class DriftSyncDeviceRepository
   }
 
   @override
-  Future<DateTime?> deleteIfRevision(
-      String id, DateTime expectedRevision) async {
+  Future<DateTime?> deleteIfRevision(String id, DateTime expectedRevision) async {
     final deletedAt = nextDatabaseRevision(expectedRevision);
     final affectedRows = await database.customUpdate(
       '''

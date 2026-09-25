@@ -74,8 +74,7 @@ void main() {
       appUsageTagRepository: usageTagRepository,
       appUsageTimeRecordRepository: timeRepository,
       tagRuleRepository: DriftAppUsageTagRuleRepository.withDatabase(database),
-      ignoreRuleRepository:
-          DriftAppUsageIgnoreRuleRepository.withDatabase(database),
+      ignoreRuleRepository: DriftAppUsageIgnoreRuleRepository.withDatabase(database),
       appUsageService: trackingService,
       appUsageEvents: events,
       tagRepository: tagRepository,
@@ -84,18 +83,13 @@ void main() {
   });
 
   tearDown(() async {
-    final messenger =
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.appUsageStatsChannel, null);
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.workManagerChannel, null);
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.appUsageStatsChannel, null);
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.workManagerChannel, null);
     await database.close();
   });
 
-  test(
-      'real SQLite update preserves omitted fields, clears null, tags, and rejects stale revision',
-      () async {
+  test('real SQLite update preserves omitted fields, clears null, tags, and rejects stale revision', () async {
     final usage = AppUsage(
       id: 'usage-1',
       createdDate: DateTime.utc(2026, 9, 8),
@@ -104,8 +98,7 @@ void main() {
       color: '#123456',
       deviceName: 'desktop',
     );
-    final tag =
-        Tag(id: 'tag-1', createdDate: DateTime.utc(2026, 9, 8), name: 'Work');
+    final tag = Tag(id: 'tag-1', createdDate: DateTime.utc(2026, 9, 8), name: 'Work');
     await usageRepository.add(usage);
     await tagRepository.add(tag);
     final revision = _databaseRevision(usage.createdDate);
@@ -127,10 +120,7 @@ void main() {
     expect(usage.displayName, 'Editor');
     expect(usage.modifiedDate, isNull);
     await expectLater(
-      actions.update(
-          id: usage.id,
-          expectedRevision: revision,
-          color: const OptionalUpdate.value('#ffffff')),
+      actions.update(id: usage.id, expectedRevision: revision, color: const OptionalUpdate.value('#ffffff')),
       throwsA(isA<AppUsageRevisionConflict>()),
     );
     expect(events.updated, [usage.id]);
@@ -138,11 +128,8 @@ void main() {
     expect(usage.modifiedDate, isNull);
   });
 
-  test(
-      'real SQLite usage statistics equal seeded source rows across days and hours',
-      () async {
-    final usage = AppUsage(
-        id: 'usage-2', createdDate: DateTime.utc(2026, 9, 8), name: 'browser');
+  test('real SQLite usage statistics equal seeded source rows across days and hours', () async {
+    final usage = AppUsage(id: 'usage-2', createdDate: DateTime.utc(2026, 9, 8), name: 'browser');
     await usageRepository.add(usage);
     await timeRepository.add(AppUsageTimeRecord(
       id: 'record-1',
@@ -159,8 +146,7 @@ void main() {
       usageDate: DateTime.utc(2026, 9, 9, 10),
     ));
 
-    final result = await GetAppUsageStatisticsQueryHandler(
-        appUsageTimeRecordRepository: timeRepository)(
+    final result = await GetAppUsageStatisticsQueryHandler(appUsageTimeRecordRepository: timeRepository)(
       GetAppUsageStatisticsQuery(
         appUsageId: usage.id,
         startDate: DateTime.utc(2026, 9, 8),
@@ -170,15 +156,12 @@ void main() {
 
     expect(result.totalDuration, 60);
     expect(
-      result.hourlyUsage
-          .where((entry) => entry.totalDuration > 0)
-          .map((entry) => entry.totalDuration),
+      result.hourlyUsage.where((entry) => entry.totalDuration > 0).map((entry) => entry.totalDuration),
       containsAll([40, 20]),
     );
   });
 
-  test('invalid rules and tracking consent fail without simulated success',
-      () async {
+  test('invalid rules and tracking consent fail without simulated success', () async {
     expect(() => actions.createIgnoreRule('[', null), throwsFormatException);
     trackingService.hasPermission = false;
     expect(await actions.startTracking(), 'permission_required');
@@ -188,27 +171,21 @@ void main() {
     await expectLater(actions.startTracking(), throwsStateError);
   });
 
-  test(
-      'Android native tracking exposes collection, WorkManager, and stop failures',
-      () async {
-    final messenger =
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  test('Android native tracking exposes collection, WorkManager, and stop failures', () async {
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
     final androidService = AndroidAppUsageService(
       usageRepository,
       timeRepository,
       DriftAppUsageTagRuleRepository.withDatabase(database),
       usageTagRepository,
-      AppUsageFilterService(
-          DriftAppUsageIgnoreRuleRepository.withDatabase(database)),
+      AppUsageFilterService(DriftAppUsageIgnoreRuleRepository.withDatabase(database)),
     );
     var workManagerCalls = 0;
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.appUsageStatsChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.appUsageStatsChannel, (call) async {
       if (call.method == 'checkUsageStatsPermission') return false;
       return null;
     });
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.workManagerChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.workManagerChannel, (call) async {
       workManagerCalls++;
       return null;
     });
@@ -218,8 +195,7 @@ void main() {
       appUsageTagRepository: usageTagRepository,
       appUsageTimeRecordRepository: timeRepository,
       tagRuleRepository: DriftAppUsageTagRuleRepository.withDatabase(database),
-      ignoreRuleRepository:
-          DriftAppUsageIgnoreRuleRepository.withDatabase(database),
+      ignoreRuleRepository: DriftAppUsageIgnoreRuleRepository.withDatabase(database),
       appUsageService: androidService,
       appUsageEvents: events,
       tagRepository: tagRepository,
@@ -229,8 +205,7 @@ void main() {
     expect(workManagerCalls, 0);
 
     var permissionChecks = 0;
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.appUsageStatsChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.appUsageStatsChannel, (call) async {
       if (call.method == 'checkUsageStatsPermission') {
         permissionChecks++;
         return permissionChecks == 1;
@@ -241,16 +216,13 @@ void main() {
     expect(permissionChecks, 2);
     expect(workManagerCalls, 0);
 
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.appUsageStatsChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.appUsageStatsChannel, (call) async {
       if (call.method == 'checkUsageStatsPermission') return true;
-      if (call.method == 'getAccurateForegroundUsage')
-        return <String, dynamic>{};
+      if (call.method == 'getAccurateForegroundUsage') return <String, dynamic>{};
       if (call.method == 'getTodayForegroundUsage') return <String, dynamic>{};
       return null;
     });
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.workManagerChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.workManagerChannel, (call) async {
       workManagerCalls++;
       return null;
     });
@@ -258,46 +230,34 @@ void main() {
     expect(workManagerCalls, 1);
     await androidService.stopTracking();
 
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.appUsageStatsChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.appUsageStatsChannel, (call) async {
       if (call.method == 'checkUsageStatsPermission') return true;
-      if (call.method == 'getAccurateForegroundUsage')
-        return <String, dynamic>{};
-      if (call.method == 'getTodayForegroundUsage')
-        throw PlatformException(code: 'collection_failed');
+      if (call.method == 'getAccurateForegroundUsage') return <String, dynamic>{};
+      if (call.method == 'getTodayForegroundUsage') throw PlatformException(code: 'collection_failed');
       return null;
     });
-    await expectLater(
-        androidService.startTracking(), throwsA(isA<PlatformException>()));
+    await expectLater(androidService.startTracking(), throwsA(isA<PlatformException>()));
 
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.appUsageStatsChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.appUsageStatsChannel, (call) async {
       if (call.method == 'checkUsageStatsPermission') return true;
       return <String, dynamic>{};
     });
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.workManagerChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.workManagerChannel, (call) async {
       throw PlatformException(code: '${call.method}_failed');
     });
-    await expectLater(
-        androidService.startTracking(), throwsA(isA<PlatformException>()));
-    await expectLater(
-        androidService.stopTracking(), throwsA(isA<PlatformException>()));
+    await expectLater(androidService.startTracking(), throwsA(isA<PlatformException>()));
+    await expectLater(androidService.stopTracking(), throwsA(isA<PlatformException>()));
   });
 
-  test(
-      'local grant revocation during Android permission await prevents native effects',
-      () async {
-    final messenger =
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  test('local grant revocation during Android permission await prevents native effects', () async {
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
     final permissionCheckEntered = Completer<void>();
     final releasePermissionCheck = Completer<void>();
     var permissionChecks = 0;
     var isAuthorized = true;
     var guardChecks = 0;
     var scheduled = 0;
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.appUsageStatsChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.appUsageStatsChannel, (call) async {
       if (call.method == 'checkUsageStatsPermission') {
         permissionChecks++;
         if (permissionChecks == 2) {
@@ -308,8 +268,7 @@ void main() {
       }
       return <String, dynamic>{};
     });
-    messenger.setMockMethodCallHandler(
-        AndroidAppUsageService.workManagerChannel, (call) async {
+    messenger.setMockMethodCallHandler(AndroidAppUsageService.workManagerChannel, (call) async {
       if (call.method == 'startPeriodicAppUsageWork') scheduled++;
       return null;
     });
@@ -318,8 +277,7 @@ void main() {
       timeRepository,
       DriftAppUsageTagRuleRepository.withDatabase(database),
       usageTagRepository,
-      AppUsageFilterService(
-          DriftAppUsageIgnoreRuleRepository.withDatabase(database)),
+      AppUsageFilterService(DriftAppUsageIgnoreRuleRepository.withDatabase(database)),
     );
     final androidActions = AppUsageActions(
       transactionService: DriftApplicationTransactionService(database),
@@ -327,8 +285,7 @@ void main() {
       appUsageTagRepository: usageTagRepository,
       appUsageTimeRecordRepository: timeRepository,
       tagRuleRepository: DriftAppUsageTagRuleRepository.withDatabase(database),
-      ignoreRuleRepository:
-          DriftAppUsageIgnoreRuleRepository.withDatabase(database),
+      ignoreRuleRepository: DriftAppUsageIgnoreRuleRepository.withDatabase(database),
       appUsageService: androidService,
       appUsageEvents: events,
       tagRepository: tagRepository,
@@ -350,28 +307,21 @@ void main() {
     expect(
       result,
       isA<MutationAuthorizationException>(),
-      reason:
-          'nativeGrantRace state=$result guardChecks=$guardChecks scheduled=$scheduled',
+      reason: 'nativeGrantRace state=$result guardChecks=$guardChecks scheduled=$scheduled',
     );
     expect(scheduled, 0);
     expect(guardChecks, 2);
   });
 
-  test(
-      'today aggregate matches task, habit, record, and time rows in real SQLite',
-      () async {
+  test('today aggregate matches task, habit, record, and time rows in real SQLite', () async {
     final day = DateTime(2026, 9, 8);
     final taskRepository = DriftTaskRepository.withDatabase(database);
-    final taskStatusRepository =
-        DriftTaskStatusRepository.withDatabase(database);
-    final taskTimeRepository =
-        DriftTaskTimeRecordRepository.withDatabase(database);
+    final taskStatusRepository = DriftTaskStatusRepository.withDatabase(database);
+    final taskTimeRepository = DriftTaskTimeRecordRepository.withDatabase(database);
     final habitRepository = DriftHabitRepository.withDatabase(database);
     final habitTagRepository = DriftHabitTagRepository.withDatabase(database);
-    final habitRecordRepository =
-        DriftHabitRecordRepository.withDatabase(database);
-    final habitTimeRepository =
-        DriftHabitTimeRecordRepository.withDatabase(database);
+    final habitRecordRepository = DriftHabitRecordRepository.withDatabase(database);
+    final habitTimeRepository = DriftHabitTimeRecordRepository.withDatabase(database);
     await taskRepository.add(Task(
       id: 'task-today',
       createdDate: day,
@@ -406,39 +356,29 @@ void main() {
     ));
 
     final mediator = Mediator(Pipeline())
-      ..registerHandler<GetListTasksQuery, GetListTasksQueryResponse,
-          GetListTasksQueryHandler>(
+      ..registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(
         () => GetListTasksQueryHandler(
           taskRepository: taskRepository,
           taskStatusRepository: taskStatusRepository,
         ),
       )
-      ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse,
-          GetListHabitsQueryHandler>(
+      ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse, GetListHabitsQueryHandler>(
         () => GetListHabitsQueryHandler(
           habitRepository: habitRepository,
           habitTagRepository: habitTagRepository,
           habitRecordRepository: habitRecordRepository,
         ),
       )
-      ..registerHandler<GetListHabitRecordsQuery,
-          GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
-        () => GetListHabitRecordsQueryHandler(
-            habitRecordRepository: habitRecordRepository),
+      ..registerHandler<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
+        () => GetListHabitRecordsQueryHandler(habitRecordRepository: habitRecordRepository),
       )
-      ..registerHandler<
-          GetTotalDurationByTaskIdQuery,
-          GetTotalDurationByTaskIdQueryResponse,
+      ..registerHandler<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse,
           GetTotalDurationByTaskIdQueryHandler>(
-        () => GetTotalDurationByTaskIdQueryHandler(
-            taskTimeRecordRepository: taskTimeRepository),
+        () => GetTotalDurationByTaskIdQueryHandler(taskTimeRecordRepository: taskTimeRepository),
       )
-      ..registerHandler<
-          GetTotalDurationByHabitIdQuery,
-          GetTotalDurationByHabitIdQueryResponse,
+      ..registerHandler<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse,
           GetTotalDurationByHabitIdQueryHandler>(
-        () => GetTotalDurationByHabitIdQueryHandler(
-            habitTimeRecordRepository: habitTimeRepository),
+        () => GetTotalDurationByHabitIdQueryHandler(habitTimeRecordRepository: habitTimeRepository),
       );
     final today = buildOverviewTools(
       mediator: mediator,
@@ -450,15 +390,11 @@ void main() {
       _requestExtra(),
     );
     final body = Map<String, dynamic>.from(result.structuredContent!);
-    expect(body['taskSummary'],
-        {'total': 1, 'completed': 1, 'durationSeconds': 90});
-    expect(body['habitSummary'],
-        {'total': 1, 'completed': 1, 'durationSeconds': 30});
+    expect(body['taskSummary'], {'total': 1, 'completed': 1, 'durationSeconds': 90});
+    expect(body['habitSummary'], {'total': 1, 'completed': 1, 'durationSeconds': 30});
   });
 
-  test(
-      'revocation inside an open transaction rolls back usage update and event',
-      () async {
+  test('revocation inside an open transaction rolls back usage update and event', () async {
     final usage = AppUsage(
       id: 'usage-auth',
       createdDate: DateTime.utc(2026, 9, 8),
@@ -474,8 +410,7 @@ void main() {
       appUsageTagRepository: usageTagRepository,
       appUsageTimeRecordRepository: timeRepository,
       tagRuleRepository: DriftAppUsageTagRuleRepository.withDatabase(database),
-      ignoreRuleRepository:
-          DriftAppUsageIgnoreRuleRepository.withDatabase(database),
+      ignoreRuleRepository: DriftAppUsageIgnoreRuleRepository.withDatabase(database),
       appUsageService: trackingService,
       appUsageEvents: guardedEvents,
       tagRepository: tagRepository,
@@ -495,8 +430,7 @@ void main() {
     final invocation = update.handler(
       McpToolArguments({
         'id': usage.id,
-        'expectedRevision':
-            _databaseRevision(usage.createdDate).toIso8601String(),
+        'expectedRevision': _databaseRevision(usage.createdDate).toIso8601String(),
         'displayName': 'after',
       }),
       _requestExtra(),
@@ -512,14 +446,11 @@ void main() {
     expect(authorizationChecks, 2);
   });
 
-  test('device serialization sorts a copy without mutating mediator response',
-      () async {
+  test('device serialization sorts a copy without mutating mediator response', () async {
     final source = ['zeta', 'alpha'];
     final mediator = Mediator(Pipeline())
-      ..registerHandler<
-          GetDistinctDeviceNamesQuery,
-          GetDistinctDeviceNamesQueryResponse,
-          _DeviceNamesHandler>(() => _DeviceNamesHandler(source));
+      ..registerHandler<GetDistinctDeviceNamesQuery, GetDistinctDeviceNamesQueryResponse, _DeviceNamesHandler>(
+          () => _DeviceNamesHandler(source));
     final tool = buildAppUsageTools(
       mediator: mediator,
       actions: actions,
@@ -535,9 +466,7 @@ void main() {
     expect(source, ['zeta', 'alpha']);
   });
 
-  test(
-      'catalog is complete and malformed range/source grants fail before querying',
-      () async {
+  test('catalog is complete and malformed range/source grants fail before querying', () async {
     final mediator = Mediator(Pipeline());
     final usageTools = buildAppUsageTools(
       mediator: mediator,
@@ -569,16 +498,14 @@ void main() {
         return false;
       },
     );
-    final calendar = overviewTools
-        .singleWhere((tool) => tool.name == 'whph_overview_calendar');
+    final calendar = overviewTools.singleWhere((tool) => tool.name == 'whph_overview_calendar');
     final tooLarge = await calendar.handler(
       McpToolArguments(const {'from': '2026-01-01', 'to': '2026-12-31'}),
       _requestExtra(),
     );
     expect(tooLarge.isError, isTrue);
 
-    final analysis = overviewTools
-        .singleWhere((tool) => tool.name == 'whph_overview_time_analysis');
+    final analysis = overviewTools.singleWhere((tool) => tool.name == 'whph_overview_time_analysis');
     await expectLater(
       analysis.handler(
         McpToolArguments(const {
@@ -594,8 +521,7 @@ void main() {
   });
 }
 
-DateTime _databaseRevision(DateTime value) =>
-    DateTime.fromMillisecondsSinceEpoch(
+DateTime _databaseRevision(DateTime value) => DateTime.fromMillisecondsSinceEpoch(
       (value.millisecondsSinceEpoch ~/ 1000) * 1000,
       isUtc: true,
     );
@@ -604,9 +530,7 @@ RequestHandlerExtra _requestExtra() => RequestHandlerExtra(
       signal: BasicAbortController().signal,
       requestId: 'usage-overview-test',
       sendNotification: (notification, {relatedTask}) async {},
-      sendRequest:
-          <T extends BaseResultData>(request, resultFactory, options) async =>
-              resultFactory(const {}),
+      sendRequest: <T extends BaseResultData>(request, resultFactory, options) async => resultFactory(const {}),
     );
 
 final class _TrackingService implements IAppUsageService {
@@ -624,12 +548,10 @@ final class _TrackingService implements IAppUsageService {
   Future<void> requestUsageStatsPermission() async {}
 
   @override
-  Future<void> saveTimeRecord(String appName, int duration,
-      {bool overwrite = false, DateTime? customDateTime}) async {}
+  Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false, DateTime? customDateTime}) async {}
 
   @override
-  Future<void> startTracking(
-      {ApplicationMutationGuard? authorizeCommit}) async {
+  Future<void> startTracking({ApplicationMutationGuard? authorizeCommit}) async {
     startCalls++;
     if (startError case final error?) throw error;
   }
@@ -660,8 +582,7 @@ final class _UsageEvents implements IAppUsageEvents {
   void notifyAppUsageUpdated(String appUsageId) => updated.add(appUsageId);
 }
 
-final class _PausingTransactionService
-    implements IApplicationTransactionService {
+final class _PausingTransactionService implements IApplicationTransactionService {
   _PausingTransactionService(this._database);
 
   final AppDatabase _database;
@@ -669,8 +590,7 @@ final class _PausingTransactionService
   final Completer<void> release = Completer<void>();
 
   @override
-  Future<T> run<T>(Future<T> Function() operation) =>
-      _database.transaction(() async {
+  Future<T> run<T>(Future<T> Function() operation) => _database.transaction(() async {
         entered.complete();
         await release.future;
         return operation();
@@ -678,15 +598,12 @@ final class _PausingTransactionService
 }
 
 final class _DeviceNamesHandler
-    implements
-        IRequestHandler<GetDistinctDeviceNamesQuery,
-            GetDistinctDeviceNamesQueryResponse> {
+    implements IRequestHandler<GetDistinctDeviceNamesQuery, GetDistinctDeviceNamesQueryResponse> {
   const _DeviceNamesHandler(this._deviceNames);
 
   final List<String> _deviceNames;
 
   @override
-  Future<GetDistinctDeviceNamesQueryResponse> call(
-          GetDistinctDeviceNamesQuery request) async =>
+  Future<GetDistinctDeviceNamesQueryResponse> call(GetDistinctDeviceNamesQuery request) async =>
       GetDistinctDeviceNamesQueryResponse(deviceNames: _deviceNames);
 }

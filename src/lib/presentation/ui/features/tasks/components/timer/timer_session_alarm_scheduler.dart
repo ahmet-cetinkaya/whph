@@ -20,14 +20,11 @@ class TimerSessionAlarmScheduler implements ITimerSessionAlarmScheduler {
   }) =>
       _reminderService.scheduleReminder(
         id: alarmId,
-        title: _translationService
-            .translate(TaskTranslationKeys.pomodoroNotificationTitle),
-        body: _translationService
-            .translate(TaskTranslationKeys.pomodoroTimerCompleted),
+        title: _translationService.translate(TaskTranslationKeys.pomodoroNotificationTitle),
+        body: _translationService.translate(TaskTranslationKeys.pomodoroTimerCompleted),
         scheduledDate: scheduledAt,
       );
 
   @override
-  Future<void> cancel(String alarmId) =>
-      _reminderService.cancelReminder(alarmId);
+  Future<void> cancel(String alarmId) => _reminderService.cancelReminder(alarmId);
 }

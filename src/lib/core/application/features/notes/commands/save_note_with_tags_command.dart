@@ -43,8 +43,7 @@ class UpdateNoteWithTagsCommand implements IRequest<SaveNoteCommandResponse> {
   });
 }
 
-class ReorderNoteWithRevisionCommand
-    implements IRequest<SaveNoteCommandResponse> {
+class ReorderNoteWithRevisionCommand implements IRequest<SaveNoteCommandResponse> {
   final String id;
   final DateTime expectedRevision;
   final String order;
@@ -58,9 +57,7 @@ class ReorderNoteWithRevisionCommand
   });
 }
 
-class SaveNoteWithTagsCommandHandler
-    implements
-        IRequestHandler<SaveNoteWithTagsCommand, SaveNoteCommandResponse> {
+class SaveNoteWithTagsCommandHandler implements IRequestHandler<SaveNoteWithTagsCommand, SaveNoteCommandResponse> {
   final INoteRepository _notes;
   final INoteTagRepository _noteTags;
   final ITagRepository _tags;
@@ -103,11 +100,9 @@ class SaveNoteWithTagsCommandHandler
     if (tags.length != tagIds.length) throw StateError('Tag not found');
   }
 
-  Future<void> _replaceTags(
-      String noteId, List<NoteTag> current, List<String> tagIds) async {
+  Future<void> _replaceTags(String noteId, List<NoteTag> current, List<String> tagIds) async {
     final requested = tagIds.toSet();
-    for (final relation
-        in current.where((relation) => !requested.contains(relation.tagId))) {
+    for (final relation in current.where((relation) => !requested.contains(relation.tagId))) {
       await _noteTags.delete(relation);
     }
     final existing = current.map((relation) => relation.tagId).toSet();
@@ -124,16 +119,12 @@ class SaveNoteWithTagsCommandHandler
   }
 
   DateTime _revision(Note note) => DateTime.fromMillisecondsSinceEpoch(
-        ((note.modifiedDate ?? note.createdDate).millisecondsSinceEpoch ~/
-                1000) *
-            1000,
+        ((note.modifiedDate ?? note.createdDate).millisecondsSinceEpoch ~/ 1000) * 1000,
         isUtc: true,
       );
 }
 
-class UpdateNoteWithTagsCommandHandler
-    implements
-        IRequestHandler<UpdateNoteWithTagsCommand, SaveNoteCommandResponse> {
+class UpdateNoteWithTagsCommandHandler implements IRequestHandler<UpdateNoteWithTagsCommand, SaveNoteCommandResponse> {
   final INoteRepository _notes;
   final INoteTagRepository _noteTags;
   final ITagRepository _tags;
@@ -153,8 +144,7 @@ class UpdateNoteWithTagsCommandHandler
         _transactions = transactions;
 
   @override
-  Future<SaveNoteCommandResponse> call(
-      UpdateNoteWithTagsCommand request) async {
+  Future<SaveNoteCommandResponse> call(UpdateNoteWithTagsCommand request) async {
     final response = await _transactions.run(() async {
       final existing = await _notes.getById(request.id);
       if (existing == null) throw StateError('Note not found');
@@ -164,27 +154,21 @@ class UpdateNoteWithTagsCommandHandler
         createdDate: existing.createdDate,
         modifiedDate: existing.modifiedDate,
         title: request.title ?? existing.title,
-        content: request.content.isChanged
-            ? request.content.value
-            : existing.content,
+        content: request.content.isChanged ? request.content.value : existing.content,
         order: existing.order,
         tags: List.unmodifiable(existing.tags),
       );
-      final revision =
-          await _notes.updateIfRevision(updated, request.expectedRevision);
+      final revision = await _notes.updateIfRevision(updated, request.expectedRevision);
       if (revision == null) throw NoteRevisionConflictException(request.id);
       final current = await _noteTags.getByNoteId(request.id);
-      if (request.tagIds != null)
-        await _replaceTags(request.id, current, request.tagIds!);
-      final effectiveTagIds = request.tagIds?.toSet() ??
-          current.map((relation) => relation.tagId).toSet();
+      if (request.tagIds != null) await _replaceTags(request.id, current, request.tagIds!);
+      final effectiveTagIds = request.tagIds?.toSet() ?? current.map((relation) => relation.tagId).toSet();
       if (request.tagOrder != null &&
           (!effectiveTagIds.containsAll(request.tagOrder!.keys) ||
               request.tagOrder!.values.any((order) => order < 0))) {
         throw ArgumentError.value(request.tagOrder, 'tagOrder');
       }
-      if (request.tagOrder != null)
-        await _noteTags.updateTagOrders(request.id, request.tagOrder!);
+      if (request.tagOrder != null) await _noteTags.updateTagOrders(request.id, request.tagOrder!);
       await ensureMutationAuthorized(request.authorizeCommit);
       return SaveNoteCommandResponse(id: request.id, revision: revision);
     });
@@ -193,15 +177,12 @@ class UpdateNoteWithTagsCommandHandler
   }
 
   Future<void> _requireTags(List<String> tagIds) async {
-    if ((await _tags.getByIds(tagIds)).length != tagIds.length)
-      throw StateError('Tag not found');
+    if ((await _tags.getByIds(tagIds)).length != tagIds.length) throw StateError('Tag not found');
   }
 
-  Future<void> _replaceTags(
-      String noteId, List<NoteTag> current, List<String> tagIds) async {
+  Future<void> _replaceTags(String noteId, List<NoteTag> current, List<String> tagIds) async {
     final requested = tagIds.toSet();
-    for (final relation
-        in current.where((relation) => !requested.contains(relation.tagId))) {
+    for (final relation in current.where((relation) => !requested.contains(relation.tagId))) {
       await _noteTags.delete(relation);
     }
     final existing = current.map((relation) => relation.tagId).toSet();
@@ -219,9 +200,7 @@ class UpdateNoteWithTagsCommandHandler
 }
 
 class ReorderNoteWithRevisionCommandHandler
-    implements
-        IRequestHandler<ReorderNoteWithRevisionCommand,
-            SaveNoteCommandResponse> {
+    implements IRequestHandler<ReorderNoteWithRevisionCommand, SaveNoteCommandResponse> {
   final INoteRepository _notes;
   final INoteEvents _events;
   final IApplicationTransactionService _transactions;
@@ -235,8 +214,7 @@ class ReorderNoteWithRevisionCommandHandler
         _transactions = transactions;
 
   @override
-  Future<SaveNoteCommandResponse> call(
-      ReorderNoteWithRevisionCommand request) async {
+  Future<SaveNoteCommandResponse> call(ReorderNoteWithRevisionCommand request) async {
     final revision = await _transactions.run(() async {
       final existing = await _notes.getById(request.id);
       if (existing == null) throw StateError('Note not found');
@@ -249,8 +227,7 @@ class ReorderNoteWithRevisionCommandHandler
         order: request.order,
         tags: List.unmodifiable(existing.tags),
       );
-      final revision =
-          await _notes.updateIfRevision(updated, request.expectedRevision);
+      final revision = await _notes.updateIfRevision(updated, request.expectedRevision);
       if (revision == null) throw NoteRevisionConflictException(request.id);
       await ensureMutationAuthorized(request.authorizeCommit);
       return revision;

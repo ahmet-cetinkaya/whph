@@ -4,8 +4,7 @@ import 'package:whph/core/application/shared/services/abstraction/i_application_
 abstract class IAppUsageService {
   Future<void> startTracking({ApplicationMutationGuard? authorizeCommit});
   Future<void> stopTracking();
-  Future<void> saveTimeRecord(String appName, int duration,
-      {bool overwrite = false, DateTime? customDateTime});
+  Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false, DateTime? customDateTime});
   Future<bool> checkUsageStatsPermission();
   Future<void> requestUsageStatsPermission();
 

@@ -11,8 +11,7 @@ class HabitTimeRecordTable extends Table {
   DateTimeColumn get createdDate => dateTime()();
   DateTimeColumn get modifiedDate => dateTime().nullable()();
   DateTimeColumn get deletedDate => dateTime().nullable()();
-  TextColumn get habitId =>
-      text().references(HabitTable, #id, onDelete: KeyAction.cascade)();
+  TextColumn get habitId => text().references(HabitTable, #id, onDelete: KeyAction.cascade)();
   IntColumn get duration => integer()();
   DateTimeColumn get occurredAt => dateTime().nullable()();
   BoolColumn get isEstimated => boolean().withDefault(const Constant(false))();
@@ -21,15 +20,11 @@ class HabitTimeRecordTable extends Table {
   Set<Column>? get primaryKey => {id};
 }
 
-class DriftHabitTimeRecordRepository
-    extends DriftBaseRepository<HabitTimeRecord, String, HabitTimeRecordTable>
+class DriftHabitTimeRecordRepository extends DriftBaseRepository<HabitTimeRecord, String, HabitTimeRecordTable>
     implements IHabitTimeRecordRepository {
-  DriftHabitTimeRecordRepository()
-      : super(AppDatabase.instance(),
-            AppDatabase.instance().habitTimeRecordTable);
+  DriftHabitTimeRecordRepository() : super(AppDatabase.instance(), AppDatabase.instance().habitTimeRecordTable);
 
-  DriftHabitTimeRecordRepository.withDatabase(AppDatabase db)
-      : super(db, db.habitTimeRecordTable);
+  DriftHabitTimeRecordRepository.withDatabase(AppDatabase db) : super(db, db.habitTimeRecordTable);
 
   @override
   Expression<String> getPrimaryKey(HabitTimeRecordTable t) {
@@ -40,10 +35,8 @@ class DriftHabitTimeRecordRepository
   Future<void> add(HabitTimeRecord item) async {
     // Preserve the original createdDate instead of auto-setting it
     final originalCreatedDate = item.createdDate;
-    item.createdDate =
-        originalCreatedDate; // Don't let base class override this
-    HabitTimeRecord insertedItem =
-        await database.into(table).insertReturning(toCompanion(item));
+    item.createdDate = originalCreatedDate; // Don't let base class override this
+    HabitTimeRecord insertedItem = await database.into(table).insertReturning(toCompanion(item));
     item.id = insertedItem.id;
   }
 
@@ -62,25 +55,21 @@ class DriftHabitTimeRecordRepository
   }
 
   @override
-  Future<DateTime?> updateIfRevision(
-      HabitTimeRecord record, DateTime expectedRevision) async {
+  Future<DateTime?> updateIfRevision(HabitTimeRecord record, DateTime expectedRevision) async {
     final nextRevision = nextDatabaseRevision(expectedRevision);
-    final companion =
-        toCompanion(record).copyWith(modifiedDate: Value(nextRevision));
+    final companion = toCompanion(record).copyWith(modifiedDate: Value(nextRevision));
     final affected = await (database.update(table)
           ..where((row) =>
               row.id.equals(record.id) &
               row.deletedDate.isNull() &
               (row.modifiedDate.equals(expectedRevision) |
-                  (row.modifiedDate.isNull() &
-                      row.createdDate.equals(expectedRevision)))))
+                  (row.modifiedDate.isNull() & row.createdDate.equals(expectedRevision)))))
         .write(companion);
     return affected == 1 ? nextRevision : null;
   }
 
   @override
-  Future<int> getTotalDurationByHabitId(String habitId,
-      {DateTime? startDate, DateTime? endDate}) async {
+  Future<int> getTotalDurationByHabitId(String habitId, {DateTime? startDate, DateTime? endDate}) async {
     final query = database.customSelect(
       '''
       SELECT COALESCE(TOTAL(duration), 0) as total_duration
@@ -108,20 +97,16 @@ class DriftHabitTimeRecordRepository
 
   @override
   Future<List<HabitTimeRecord>> getByHabitId(String habitId) async {
-    return (database.select(table)
-          ..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull()))
-        .get();
+    return (database.select(table)..where((t) => t.habitId.equals(habitId) & t.deletedDate.isNull())).get();
   }
 
   @override
-  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(
-      String habitId, DateTime start, DateTime end) async {
+  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) async {
     return (database.select(table)
           ..where((t) =>
               t.habitId.equals(habitId) &
               (t.occurredAt.isBetweenValues(start, end) |
-                  (t.occurredAt.isNull() &
-                      t.createdDate.isBetweenValues(start, end))) &
+                  (t.occurredAt.isNull() & t.createdDate.isBetweenValues(start, end))) &
               t.deletedDate.isNull()))
         .get();
   }

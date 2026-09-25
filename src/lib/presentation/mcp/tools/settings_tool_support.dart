@@ -26,8 +26,7 @@ Map<String, dynamic> _settingJson(PublicSettingRecord setting) => {
       'key': setting.key.publicName,
       'value': setting.value,
       'valueType': setting.key.valueType,
-      if (setting.revision != null)
-        'revision': setting.revision!.toUtc().toIso8601String(),
+      if (setting.revision != null) 'revision': setting.revision!.toUtc().toIso8601String(),
     };
 
 Future<void> _requireCurrentAuthorization(

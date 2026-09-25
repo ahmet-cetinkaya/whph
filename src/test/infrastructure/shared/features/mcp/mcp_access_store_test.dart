@@ -384,9 +384,7 @@ Future<File> _createAccessFile(Directory applicationDirectory) async {
 }
 
 Future<Directory> _createApplicationDirectory(String prefix) {
-  final basePath = Platform.isWindows
-      ? Platform.environment['LOCALAPPDATA']!
-      : Directory.systemTemp.path;
+  final basePath = Platform.isWindows ? Platform.environment['LOCALAPPDATA']! : Directory.systemTemp.path;
   return Directory(basePath).createTemp(prefix);
 }
 

@@ -39,8 +39,7 @@ class PlatformInitializationService {
       final syncService = container.resolve<ISyncService>();
       syncService.startSync();
     } catch (e, stackTrace) {
-      Logger.error(
-          'PlatformInitializationService: Failed to start Desktop sync service: $e');
+      Logger.error('PlatformInitializationService: Failed to start Desktop sync service: $e');
       Logger.error('StackTrace: $stackTrace');
     }
   }
@@ -82,8 +81,7 @@ class PlatformInitializationService {
     await systemTrayService.init();
   }
 
-  static Future<void> _initializeSingleInstanceFocusHandling(
-      IContainer container) async {
+  static Future<void> _initializeSingleInstanceFocusHandling(IContainer container) async {
     try {
       final singleInstanceService = container.resolve<ISingleInstanceService>();
       final windowManager = container.resolve<IWindowManager>();
@@ -94,8 +92,7 @@ class PlatformInitializationService {
 
         if (command == 'SYNC') {
           Logger.info('Triggering manual sync from IPC command');
-          await singleInstanceService
-              .broadcastMessage('Initializing remote sync...');
+          await singleInstanceService.broadcastMessage('Initializing remote sync...');
 
           StreamSubscription<SyncStatus>? statusSub;
           StreamSubscription<SyncProgress>? progressSub;
@@ -103,23 +100,17 @@ class PlatformInitializationService {
             final syncService = container.resolve<ISyncService>();
 
             statusSub = syncService.syncStatusStream.listen((status) {
-              singleInstanceService
-                  .broadcastMessage('[Status] ${status.state.name}')
-                  .catchError((e) {
+              singleInstanceService.broadcastMessage('[Status] ${status.state.name}').catchError((e) {
                 Logger.error('Failed to broadcast status: $e');
                 return false;
               });
             });
 
             progressSub = syncService.progressStream.listen((progress) {
-              final percentage =
-                  '${progress.progressPercentage.toStringAsFixed(0)}%';
-              final msg =
-                  '${progress.operation} ${progress.currentEntity}'.trim();
+              final percentage = '${progress.progressPercentage.toStringAsFixed(0)}%';
+              final msg = '${progress.operation} ${progress.currentEntity}'.trim();
               if (msg.isNotEmpty || percentage != '0%') {
-                singleInstanceService
-                    .broadcastMessage('[Progress] $msg $percentage'.trim())
-                    .catchError((e) {
+                singleInstanceService.broadcastMessage('[Progress] $msg $percentage'.trim()).catchError((e) {
                   Logger.error('Failed to broadcast progress: $e');
                   return false;
                 });
@@ -128,16 +119,13 @@ class PlatformInitializationService {
 
             await syncService.runSync(isManual: true);
 
-            await singleInstanceService
-                .broadcastMessage('Sync operation completed.');
+            await singleInstanceService.broadcastMessage('Sync operation completed.');
           } catch (e) {
             Logger.error('Failed to run sync from IPC: $e');
             try {
-              await singleInstanceService
-                  .broadcastMessage('Error: Sync failed - $e');
+              await singleInstanceService.broadcastMessage('Error: Sync failed - $e');
             } catch (broadcastError) {
-              Logger.error(
-                  'Failed to broadcast error message: $broadcastError');
+              Logger.error('Failed to broadcast error message: $broadcastError');
             }
           } finally {
             final errors = <Exception>[];
@@ -146,8 +134,7 @@ class PlatformInitializationService {
               try {
                 await statusSub.cancel();
               } catch (e) {
-                errors
-                    .add(Exception('Failed to cancel status subscription: $e'));
+                errors.add(Exception('Failed to cancel status subscription: $e'));
               }
             }
 
@@ -155,14 +142,12 @@ class PlatformInitializationService {
               try {
                 await progressSub.cancel();
               } catch (e) {
-                errors.add(
-                    Exception('Failed to cancel progress subscription: $e'));
+                errors.add(Exception('Failed to cancel progress subscription: $e'));
               }
             }
 
             if (errors.isNotEmpty) {
-              Logger.error(
-                  'Errors during stream cleanup: ${errors.map((e) => e.toString()).join(', ')}');
+              Logger.error('Errors during stream cleanup: ${errors.map((e) => e.toString()).join(', ')}');
             }
 
             try {
@@ -181,8 +166,7 @@ class PlatformInitializationService {
         }
       });
     } catch (e) {
-      Logger.debug(
-          'Single instance service not available, skipping focus handling setup: $e');
+      Logger.debug('Single instance service not available, skipping focus handling setup: $e');
     }
   }
 
@@ -221,15 +205,12 @@ class PlatformInitializationService {
       final success = await serverSyncService.startAsServer();
 
       if (success) {
-        Logger.info(
-            'PlatformInitializationService: Android server mode started successfully for background sync');
+        Logger.info('PlatformInitializationService: Android server mode started successfully for background sync');
       } else {
-        Logger.warning(
-            'PlatformInitializationService: Failed to start Android server mode');
+        Logger.warning('PlatformInitializationService: Failed to start Android server mode');
       }
     } catch (e) {
-      Logger.error(
-          'PlatformInitializationService: Error initializing Android server mode: $e');
+      Logger.error('PlatformInitializationService: Error initializing Android server mode: $e');
     }
   }
 }

@@ -20,10 +20,8 @@ class TagTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable>
-    implements ITagRepository {
-  DriftTagRepository()
-      : super(AppDatabase.instance(), AppDatabase.instance().tagTable);
+class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable> implements ITagRepository {
+  DriftTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().tagTable);
 
   // Constructor for testing with custom database
   DriftTagRepository.withDatabase(AppDatabase db) : super(db, db.tagTable);
@@ -128,8 +126,7 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable>
         AND t.deleted_date IS NULL
     ''';
 
-    final variables =
-        tags.items.map((tag) => Variable<String>(tag.id)).toList();
+    final variables = tags.items.map((tag) => Variable<String>(tag.id)).toList();
     final relatedTagRows = await (database.customSelect(
       relatedTagsQuery,
       variables: variables,
@@ -181,8 +178,7 @@ class DriftTagRepository extends DriftBaseRepository<Tag, String, TagTable>
   Future<Map<String, Tag>> getByIds(List<String> tagIds) async {
     if (tagIds.isEmpty) return {};
 
-    final query = database.select(table)
-      ..where((t) => t.id.isIn(tagIds) & t.deletedDate.isNull());
+    final query = database.select(table)..where((t) => t.id.isIn(tagIds) & t.deletedDate.isNull());
 
     final tags = await query.get();
     return {for (final tag in tags) tag.id: tag};

@@ -60,10 +60,8 @@ void main() {
   var now = DateTime.utc(2026, 9, 8, 12);
 
   setUp(() async {
-    applicationDirectory =
-        await Directory.systemTemp.createTemp('whph_mcp_data_');
-    transferDirectory =
-        Directory(p.join(applicationDirectory.path, 'transfer'));
+    applicationDirectory = await Directory.systemTemp.createTemp('whph_mcp_data_');
+    transferDirectory = Directory(p.join(applicationDirectory.path, 'transfer'));
     await transferDirectory.create();
     final directoryService = _TestDirectoryService(applicationDirectory);
     accessService = McpAccessService(
@@ -169,8 +167,7 @@ void main() {
     expect(executed, isFalse);
   });
 
-  test('reject and expiry never execute and restart cannot resurrect work',
-      () async {
+  test('reject and expiry never execute and restart cannot resurrect work', () async {
     var executions = 0;
     Future<McpOperation> prepare(String hash) => operationService.prepare(
           clientGrantId: grant.grant.id,
@@ -218,8 +215,7 @@ void main() {
     expect(executions, 0);
   });
 
-  test('export artifacts are opaque, caller-bound, and chunk bounded',
-      () async {
+  test('export artifacts are opaque, caller-bound, and chunk bounded', () async {
     final content = List<int>.generate(
       mcpMaximumArtifactChunkBytes + 7,
       (index) => index % 251,
@@ -305,8 +301,7 @@ void main() {
       throwsA(isA<FileSystemException>()),
     );
     expect(
-      await Directory(p.join(applicationDirectory.path, 'mcp', 'staging'))
-          .exists(),
+      await Directory(p.join(applicationDirectory.path, 'mcp', 'staging')).exists(),
       isFalse,
     );
   });
@@ -317,16 +312,14 @@ void main() {
       operationService: operationService,
       requestContext: _UnusedRequestContext(),
     ).singleWhere((item) => item.name == 'whph_data_import_prepare');
-    final properties =
-        tool.inputSchema.toJson()['properties'] as Map<String, dynamic>;
+    final properties = tool.inputSchema.toJson()['properties'] as Map<String, dynamic>;
 
     expect(properties.keys, {'sourceName', 'strategy'});
     expect(properties, isNot(contains('approved')));
     expect(tool.inputSchema.toJson()['additionalProperties'], isFalse);
   });
 
-  test('merge import tombstones require delete scope before approval',
-      () async {
+  test('merge import tombstones require delete scope before approval', () async {
     final compressionService = CompressionService();
     final document = {
       'appInfo': {'format': 'whph_backup'},
@@ -360,8 +353,7 @@ void main() {
         sourceName: 'tombstone.whph',
         strategy: McpDataImportStrategy.merge,
       ),
-      throwsA(predicate<McpDataTransferException>(
-          (error) => error.failure == McpDataTransferFailure.permissionDenied)),
+      throwsA(predicate<McpDataTransferException>((error) => error.failure == McpDataTransferFailure.permissionDenied)),
     );
     expect(await operationService.listPending(), isEmpty);
 
@@ -398,8 +390,7 @@ void main() {
     expect(await transferStore.verifyStaged(staged), isFalse);
   });
 
-  test('real SQLite WHPH round-trip includes task statuses and habit time',
-      () async {
+  test('real SQLite WHPH round-trip includes task statuses and habit time', () async {
     initializeJsonMapper();
     AppDatabase.resetInstance();
     AppDatabase.isTestMode = true;
@@ -415,14 +406,12 @@ void main() {
       AppDatabase.resetInstance();
     });
     final mediator = Mediator(Pipeline())
-      ..registerHandler<NormalizeHabitOrdersCommand,
-          NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
+      ..registerHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
         () => NormalizeHabitOrdersCommandHandler(
           container.resolve<IHabitRepository>(),
         ),
       )
-      ..registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse,
-          NormalizeNoteOrdersCommandHandler>(
+      ..registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
         () => NormalizeNoteOrdersCommandHandler(
           container.resolve<INoteRepository>(),
         ),
@@ -496,8 +485,7 @@ void main() {
     );
     expect(await snapshot.length(), greaterThan(16));
     expect(
-      String.fromCharCodes(
-          await snapshot.openRead(0, 16).expand((e) => e).toList()),
+      String.fromCharCodes(await snapshot.openRead(0, 16).expand((e) => e).toList()),
       'SQLite format 3\u0000',
     );
     final snapshotRows = await Process.run('sqlite3', [
@@ -513,8 +501,7 @@ void main() {
       artifactId: exported.id,
       offset: 0,
     );
-    await File(p.join(transferDirectory.path, 'roundtrip.whph'))
-        .writeAsBytes(artifactChunk!.bytes);
+    await File(p.join(transferDirectory.path, 'roundtrip.whph')).writeAsBytes(artifactChunk!.bytes);
     await habitTimes.truncate();
     await taskStatuses.truncate();
     await habits.truncate();
@@ -525,8 +512,7 @@ void main() {
         sourceName: 'roundtrip.whph',
         strategy: McpDataImportStrategy.merge,
       ),
-      throwsA(predicate<McpDataTransferException>(
-          (error) => error.failure == McpDataTransferFailure.permissionDenied)),
+      throwsA(predicate<McpDataTransferException>((error) => error.failure == McpDataTransferFailure.permissionDenied)),
     );
     final changedAfterApproval = await dataTransfers.prepareImport(
       clientGrantId: fullGrant.grant.id,
@@ -537,8 +523,7 @@ void main() {
     final stagedFile = (await Directory(
       p.join(applicationDirectory.path, 'mcp', 'staging'),
     ).list().where((entry) => entry is File).single) as File;
-    if (!Platform.isWindows)
-      await Process.run('chmod', ['600', stagedFile.path]);
+    if (!Platform.isWindows) await Process.run('chmod', ['600', stagedFile.path]);
     await stagedFile.writeAsBytes([1, 2, 3]);
     expect(
       (await operationService.approve(changedAfterApproval.id)).status,
@@ -583,8 +568,7 @@ final class _UnusedRequestContext implements IMcpRequestContext {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-final class _TrackingTimerSessions extends Fake
-    implements ITimerSessionService {
+final class _TrackingTimerSessions extends Fake implements ITimerSessionService {
   static const _state = TimerSessionState(
     sessionId: 'active-timer',
     owner: TimerSessionOwner.task('task'),

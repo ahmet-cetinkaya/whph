@@ -17,14 +17,12 @@ class DeleteTagCommand implements IRequest<DeleteTagCommandResponse> {
   final DateTime? expectedRevision;
   final ApplicationMutationGuard? authorizeCommit;
 
-  DeleteTagCommand(
-      {required this.id, this.expectedRevision, this.authorizeCommit});
+  DeleteTagCommand({required this.id, this.expectedRevision, this.authorizeCommit});
 }
 
 class DeleteTagCommandResponse {}
 
-class DeleteTagCommandHandler
-    implements IRequestHandler<DeleteTagCommand, DeleteTagCommandResponse> {
+class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, DeleteTagCommandResponse> {
   final ITagRepository _tagRepository;
   final ITagTagRepository _tagTagRepository;
   final ITaskTagRepository _taskTagRepository;
@@ -56,16 +54,14 @@ class DeleteTagCommandHandler
   Future<DeleteTagCommandResponse> call(DeleteTagCommand request) async {
     Tag? tag = await _tagRepository.getById(request.id);
     if (tag == null) {
-      throw BusinessException(
-          'Tag not found', TagTranslationKeys.tagNotFoundError);
+      throw BusinessException('Tag not found', TagTranslationKeys.tagNotFoundError);
     }
 
     await _transactions.run(() async {
       await _deleteRelatedEntities(request.id);
       if (request.expectedRevision == null) {
         await _tagRepository.delete(tag);
-      } else if (!await _tagRepository.deleteIfRevision(
-          tag.id, request.expectedRevision!)) {
+      } else if (!await _tagRepository.deleteIfRevision(tag.id, request.expectedRevision!)) {
         throw TagRevisionConflictException(tag.id);
       }
       await ensureMutationAuthorized(request.authorizeCommit);

@@ -42,8 +42,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     required McpAuthenticatedServerBuilder serverBuilder,
     required IRestoreBarrier restoreBarrier,
     int maximumRequestsPerMinute = _defaultMaximumRequestsPerMinute,
-    int maximumConcurrentRequestsPerGrant =
-        _defaultMaximumConcurrentRequestsPerGrant,
+    int maximumConcurrentRequestsPerGrant = _defaultMaximumConcurrentRequestsPerGrant,
     int maximumLegacySessionsPerGrant = _defaultMaximumLegacySessionsPerGrant,
     Duration legacySessionIdleTimeout = _defaultLegacySessionIdleTimeout,
     int maximumBodyBytes = _defaultMaximumBodyBytes,
@@ -102,8 +101,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   Map<String, List<_RateLease>> _rateWindows = const {};
   Map<String, int> _activeRequests = const {};
   Map<_RequestAuthorization, AbortSignal> _requestSignals = const {};
-  Map<_RequestAuthorization, Set<_BoundTransport>> _requestTransports =
-      const {};
+  Map<_RequestAuthorization, Set<_BoundTransport>> _requestTransports = const {};
   Map<_RequestAuthorization, _OperationState> _operationStates = const {};
   bool _isStarting = false;
 
@@ -118,11 +116,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     final port = boundPort;
     return port == null
         ? null
-        : Uri(
-            scheme: 'http',
-            host: InternetAddress.loopbackIPv4.address,
-            port: port,
-            path: _mcpPath);
+        : Uri(scheme: 'http', host: InternetAddress.loopbackIPv4.address, port: port, path: _mcpPath);
   }
 
   @override
@@ -145,8 +139,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
       _revocationSubscription = _accessService.revocations.listen(
         (event) => unawaited(_closeGrantTransports(event.grantId)),
       );
-      _requestSubscription =
-          server.listen((request) => unawaited(_handleRequest(request)));
+      _requestSubscription = server.listen((request) => unawaited(_handleRequest(request)));
     } finally {
       _isStarting = false;
     }
@@ -222,10 +215,8 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
       _RequestAuthorization? authorization;
       Future<void>? operation;
       try {
-        final parsedBody =
-            request.method == 'POST' ? await _readBody(request) : null;
-        if (_restoreBarrier.isRestoreActive &&
-            !_isRestoreStatusRequest(parsedBody)) {
+        final parsedBody = request.method == 'POST' ? await _readBody(request) : null;
+        if (_restoreBarrier.isRestoreActive && !_isRestoreStatusRequest(parsedBody)) {
           await _respondRestoreBusy(request, parsedBody);
           return;
         }
@@ -281,9 +272,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     final host = request.headers.value(HttpHeaders.hostHeader)?.toLowerCase();
     if (host != '127.0.0.1:$port' && host != 'localhost:$port') return false;
     final origin = request.headers.value('origin');
-    return origin == null ||
-        origin == 'http://127.0.0.1:$port' ||
-        origin == 'http://localhost:$port';
+    return origin == null || origin == 'http://127.0.0.1:$port' || origin == 'http://localhost:$port';
   }
 
   void _setCorsHeaders(HttpRequest request) {
@@ -292,8 +281,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     request.response.headers
       ..set(HttpHeaders.accessControlAllowOriginHeader, origin)
       ..set(HttpHeaders.accessControlAllowCredentialsHeader, 'true')
-      ..set(HttpHeaders.accessControlAllowMethodsHeader,
-          'GET, POST, DELETE, OPTIONS')
+      ..set(HttpHeaders.accessControlAllowMethodsHeader, 'GET, POST, DELETE, OPTIONS')
       ..set(
         HttpHeaders.accessControlAllowHeadersHeader,
         'Authorization, Content-Type, Accept, MCP-Protocol-Version, Mcp-Method, Mcp-Name, MCP-Session-Id, Last-Event-ID',
@@ -302,11 +290,9 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   }
 
   Future<_PresentedAuthorization?> _authenticate(HttpRequest request) async {
-    final authorization =
-        request.headers.value(HttpHeaders.authorizationHeader);
+    final authorization = request.headers.value(HttpHeaders.authorizationHeader);
     if (authorization == null || authorization.contains(',')) return null;
-    final match = RegExp(r'^Bearer ([^\s]+)$', caseSensitive: false)
-        .firstMatch(authorization);
+    final match = RegExp(r'^Bearer ([^\s]+)$', caseSensitive: false).firstMatch(authorization);
     if (match == null) return null;
     final token = match.group(1)!;
     final grant = await _accessService.authenticate(token);
@@ -326,8 +312,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     if (sessionId != null) {
       final existing = _sessions[sessionId];
       if (existing == null) {
-        await _respondJsonRpcError(
-            request, HttpStatus.notFound, 'Session not found');
+        await _respondJsonRpcError(request, HttpStatus.notFound, 'Session not found');
         return;
       }
       _touchSession(existing);
@@ -497,9 +482,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     Set<String> requiredScopes = const {},
   }) async {
     final authorization = Zone.current[_authorizationZoneKey];
-    final signal = authorization is _RequestAuthorization
-        ? _requestSignals[authorization]
-        : null;
+    final signal = authorization is _RequestAuthorization ? _requestSignals[authorization] : null;
     if (authorization is! _RequestAuthorization ||
         signal == null ||
         !authorization.deadline.isAfter(_now()) ||
@@ -518,9 +501,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
         signal.aborted) {
       return null;
     }
-    return current != null && current.id == authorization.grant.id
-        ? current
-        : null;
+    return current != null && current.id == authorization.grant.id ? current : null;
   }
 
   bool _sessionBelongsToGrant(HttpRequest request, String grantId) {
@@ -532,8 +513,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   bool _isStatelessRequest(HttpRequest request, Object? body) {
     final header = request.headers.value('mcp-protocol-version')?.trim();
     if (header != null && header.isNotEmpty) {
-      return isStatelessProtocolVersion(header) ||
-          !McpProtocol.stable.supportedVersions.contains(header);
+      return isStatelessProtocolVersion(header) || !McpProtocol.stable.supportedVersions.contains(header);
     }
     if (body is! Map) return false;
     final params = body['params'];
@@ -542,13 +522,11 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     return version is String && isStatelessProtocolVersion(version);
   }
 
-  bool _isInitialize(Object? body) =>
-      body is Map && body['method'] == Method.initialize;
+  bool _isInitialize(Object? body) => body is Map && body['method'] == Method.initialize;
 
   bool _isRestoreStatusRequest(Object? body) {
     final message = _parseJsonRpcMessage(body);
-    return message is JsonRpcCallToolRequest &&
-        message.callParams.name == 'whph_operations_get';
+    return message is JsonRpcCallToolRequest && message.callParams.name == 'whph_operations_get';
   }
 
   JsonRpcMessage? _parseJsonRpcMessage(Object? body) {
@@ -562,8 +540,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     }
     final params = body['params'];
     final name = params is Map ? params['name'] : null;
-    return name is String &&
-            (name.startsWith('whph_data_') || name.startsWith('whph_sync_'))
+    return name is String && (name.startsWith('whph_data_') || name.startsWith('whph_sync_'))
         ? _extendedOperationTimeout
         : _operationTimeout;
   }
@@ -584,8 +561,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
     final now = _now().toUtc();
     final cutoff = now.subtract(_rateWindow);
     final current = _rateWindows[key] ?? const [];
-    final retained =
-        current.where((lease) => lease.time.isAfter(cutoff)).toList();
+    final retained = current.where((lease) => lease.time.isAfter(cutoff)).toList();
     if (retained.length >= _maximumRequestsPerMinute) {
       _rateWindows = {..._rateWindows, key: List.unmodifiable(retained)};
       return null;
@@ -648,8 +624,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   }
 
   bool _reserveLegacySession(String grantId) {
-    final active =
-        _sessions.values.where((bound) => bound.grantId == grantId).length;
+    final active = _sessions.values.where((bound) => bound.grantId == grantId).length;
     final initializing = _initializingLegacySessions[grantId] ?? 0;
     if (active + initializing >= _maximumLegacySessionsPerGrant) return false;
     _initializingLegacySessions = Map.unmodifiable({
@@ -705,8 +680,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   }
 
   Future<void> _closeGrantTransports(String grantId) async {
-    final matching =
-        _transports.where((bound) => bound.grantId == grantId).toList();
+    final matching = _transports.where((bound) => bound.grantId == grantId).toList();
     for (final bound in matching) {
       _removeTransport(bound);
       await bound.transport.close();
@@ -719,8 +693,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
   ) async {
     final transports = authorization == null
         ? const <_BoundTransport>[]
-        : _requestTransports[authorization]?.toList(growable: false) ??
-            const <_BoundTransport>[];
+        : _requestTransports[authorization]?.toList(growable: false) ?? const <_BoundTransport>[];
     for (final bound in transports) {
       _removeTransport(bound);
       await bound.transport.close();
@@ -791,10 +764,7 @@ final class McpServerService implements IMcpServerService, IMcpRequestContext {
         jsonEncode({
           'jsonrpc': jsonRpcVersion,
           'id': null,
-          'error': {
-            'code': ErrorCode.connectionClosed.value,
-            'message': message
-          },
+          'error': {'code': ErrorCode.connectionClosed.value, 'message': message},
         }),
         contentType: ContentType.json,
       );

@@ -14,7 +14,8 @@ class _FakeTranslationService implements ITranslationService {
   @override
   String translate(String key, {Map<String, String>? namedArgs}) {
     if (key == SettingsTranslationKeys.aiTitle) return 'AI';
-    if (key == SettingsTranslationKeys.mcpDescription) return 'Allow approved local AI agents to use selected features.';
+    if (key == SettingsTranslationKeys.mcpDescription)
+      return 'Allow approved local AI agents to use selected features.';
     return key;
   }
 
