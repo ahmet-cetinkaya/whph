@@ -29,7 +29,10 @@ android {
 
     defaultConfig {
         applicationId = "me.ahmetcetinkaya.whph"
-        minSdk = 22
+        // Google Play requires minSdk >= 24 for "Play automatic protection".
+        // Uploads with a lower minSdk are rejected outright by the Play
+        // Developer API. This drops support for Android 5.0/5.1 (Lollipop).
+        minSdk = 24
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
