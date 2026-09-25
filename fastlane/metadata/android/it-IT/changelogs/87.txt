@@ -1,0 +1,2 @@
+• Risolti i colori delle etichette, lo stato e i promemoria mancanti nelle attività bloccate in modalità Maratona
+• Aggiornato per soddisfare i requisiti tecnici più recenti di Google Play

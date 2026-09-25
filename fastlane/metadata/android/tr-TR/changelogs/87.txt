@@ -1,0 +1,2 @@
+• Marathon modundaki sabitlenmiş görevlerde eksik olan etiket rengi, durum ve hatırlatıcı düzeltildi
+• Google Play'in en güncel teknik gereksinimlerini karşılayacak şekilde güncellendi

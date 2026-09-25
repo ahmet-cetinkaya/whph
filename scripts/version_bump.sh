@@ -142,8 +142,11 @@ fi
 # ============================================
 
 acore_log_info "Updating $METAINFO_FILE..."
-# Update screenshot URLs from old version to new version
-sed -i "s|/v$CURRENT_VERSION/|/v$NEW_VERSION/|g" "$METAINFO_FILE"
+# Update screenshot URLs from old version to new version.
+# Scoped to lines containing "/screenshots/" only, so historical <release>
+# entries' own CHANGELOG.md links (which must keep pointing at their own
+# tag forever) are never rewritten by this substitution.
+sed -i "/\/screenshots\//s|/v$CURRENT_VERSION/|/v$NEW_VERSION/|g" "$METAINFO_FILE"
 
 # Get current date in YYYY-MM-DD format
 RELEASE_DATE=$(date +%Y-%m-%d)

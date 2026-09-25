@@ -1,0 +1,2 @@
+- Odpravljena manjkajoča barva oznake, stanje in opomniki pri pripetih opravilih v načinu Maraton
+- Posodobljeno za izpolnjevanje najnovejših tehničnih zahtev Google Play

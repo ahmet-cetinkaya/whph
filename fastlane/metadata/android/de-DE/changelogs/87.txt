@@ -1,0 +1,2 @@
+• Fehlende Tag-Farbe, Status und Erinnerungen bei angehefteten Aufgaben im Marathon-Modus behoben
+• Aktualisiert, um die neuesten technischen Anforderungen von Google Play zu erfüllen

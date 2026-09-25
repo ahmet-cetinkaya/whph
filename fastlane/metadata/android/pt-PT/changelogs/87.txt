@@ -1,0 +1,2 @@
+• Corrigidas as cores de etiqueta, o estado e os lembretes em falta nas tarefas fixadas no modo Maratona
+• Atualizado para cumprir os requisitos técnicos mais recentes da Google Play

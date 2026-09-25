@@ -1,0 +1,2 @@
+- Corectată lipsa culorii etichetei, a stării și a memento-urilor pentru sarcinile fixate în modul Maraton
+- Actualizat pentru a îndeplini cele mai recente cerințe tehnice ale Google Play

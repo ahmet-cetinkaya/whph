@@ -1,0 +1,2 @@
+• Korjattu puuttuva tunnisteväri, tila ja muistutukset kiinnitetyissä tehtävissä Maraton-tilassa
+• Päivitetty vastaamaan Google Playn uusimpia teknisiä vaatimuksia

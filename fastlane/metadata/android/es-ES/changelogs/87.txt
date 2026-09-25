@@ -1,0 +1,2 @@
+• Corregidos los colores de etiqueta, el estado y los recordatorios que faltaban en las tareas fijadas del modo Maratón
+• Actualizado para cumplir los últimos requisitos técnicos de Google Play

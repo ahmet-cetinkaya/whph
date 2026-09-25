@@ -1,0 +1,2 @@
+• Rettet manglende taggfarge, status og påminnelser på festede oppgaver i Maraton-modus
+• Oppdatert for å oppfylle Google Plays nyeste tekniske krav

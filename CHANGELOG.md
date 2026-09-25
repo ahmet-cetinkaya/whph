@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.24.2] - 2026-09-25
+
+### Fixed
+- Fixed pinned tasks in Marathon mode not showing their tag color, status, or reminder icon
+
+### Changed
+- Updated the app to meet Google Play's latest technical requirements (Android 16 target)
+
 ## [0.24.1] - 2026-09-25
 
 ### Fixed
@@ -1765,7 +1773,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.1...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.2...HEAD
+[0.24.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.2
 [0.24.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.1
 [0.24.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.0
 [0.23.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.23.3

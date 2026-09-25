@@ -1,0 +1,2 @@
+• Opravena chybějící barva štítku, stav a připomínky u připnutých úkolů v režimu Maraton
+• Aktualizováno tak, aby splňovalo nejnovější technické požadavky Google Play

@@ -1,0 +1,2 @@
+• Fixed missing tag colors, status and reminders on pinned tasks in Marathon mode
+• Updated to meet Google Play's latest technical requirements

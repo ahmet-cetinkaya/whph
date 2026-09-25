@@ -1,0 +1,2 @@
+• Correction des couleurs de tag, du statut et des rappels manquants sur les tâches épinglées en mode Marathon
+• Mis à jour pour répondre aux dernières exigences techniques de Google Play

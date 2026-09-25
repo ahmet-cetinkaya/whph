@@ -1,0 +1,2 @@
+• Naprawiono brakujący kolor etykiety, status i przypomnienia na przypiętych zadaniach w trybie Maraton
+• Zaktualizowano, aby spełnić najnowsze wymagania techniczne Google Play
