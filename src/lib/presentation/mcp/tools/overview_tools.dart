@@ -5,6 +5,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habit_records_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_total_duration_by_habit_id_query.dart';
+import 'package:whph/core/application/features/habits/services/habit_day_state_resolver.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_access_service.dart';
 import 'package:whph/core/application/features/tags/models/tag_time_category.dart';
 import 'package:whph/core/application/features/tags/queries/get_elements_by_time_query.dart';
@@ -12,6 +13,8 @@ import 'package:whph/core/application/features/tags/queries/get_top_tags_by_time
 import 'package:whph/core/application/features/tasks/models/task_list_item.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/queries/get_total_duration_by_task_id_query.dart';
+import 'package:whph/core/domain/features/habits/habit.dart';
+import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_arguments.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_definition.dart';
@@ -138,8 +141,14 @@ final class _OverviewQueries {
     var habitDuration = 0;
     for (final habit in habits) {
       final records = await _habitRecords(habit.id, date, end);
+      // Bad habits never produce a `complete` record - a day succeeds by having
+      // *no* violation recorded, the reverse of a good habit's polarity - so
+      // "is this day done" must go through the shared day-state resolver
+      // instead of a raw `complete`-status count (which is always 0 for a bad
+      // habit and would misreport every successfully avoided day as failed).
       final completedCount = records.where((record) => record.status == HabitRecordStatus.complete).length;
-      if (completedCount > 0) completedHabits++;
+      final isCompleted = _resolveDayState(habit, records, date) == HabitDayState.successful;
+      if (isCompleted) completedHabits++;
       final duration = await _mediator.send<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse>(
         GetTotalDurationByHabitIdQuery(habitId: habit.id, startDate: date, endDate: end),
       );
@@ -150,7 +159,7 @@ final class _OverviewQueries {
           'name': habit.name,
           'type': habit.type.name,
           'completedCount': completedCount,
-          'isCompleted': completedCount >= (habit.dailyTarget ?? 1),
+          'isCompleted': isCompleted,
           'durationSeconds': duration.totalDuration,
         });
       }
@@ -227,6 +236,35 @@ final class _OverviewQueries {
         );
         return (items: response.items, hasNext: response.hasNext);
       });
+}
+
+/// Resolves whether [date] was a success for [habit], using the same
+/// good/bad-habit-aware policy as the rest of the app (see
+/// [HabitDayStateResolver]), instead of a raw "any `complete` record" check
+/// that only makes sense for good habits.
+HabitDayState _resolveDayState(HabitListItem habit, List<HabitRecordListItem> records, DateTime date) {
+  final domainHabit = Habit(
+    id: habit.id,
+    createdDate: habit.createdDate ?? date,
+    type: habit.type,
+    name: habit.name,
+    description: '',
+    archivedDate: habit.archivedDate,
+    hasGoal: habit.hasGoal,
+    targetFrequency: habit.targetFrequency,
+    periodDays: habit.periodDays,
+    dailyTarget: habit.dailyTarget,
+  );
+  final domainRecords = records.map((record) => HabitRecord(
+        id: record.id,
+        createdDate: record.occurredAt,
+        habitId: habit.id,
+        occurredAt: record.occurredAt,
+        status: record.status,
+      ));
+  return const HabitDayStateResolver()
+      .createSource(habit: domainHabit, records: domainRecords, now: date)
+      .resolve(date);
 }
 
 typedef _Page<T> = ({List<T> items, bool hasNext});

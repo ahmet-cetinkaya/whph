@@ -90,6 +90,14 @@ class HabitsRemoteViewsFactory(private val context: Context) :
           views.setViewVisibility(R.id.habit_progress, View.GONE)
         }
       } else {
+        // `isCompletedToday` is pre-resolved on the Dart side by
+        // WidgetDataAggregator._getHabitsData via HabitDayStateResolver, which
+        // already accounts for bad habits' inverted polarity (no record today
+        // = successfully avoided = "completed"). This native code has no
+        // `type` field to branch on itself, so it must keep trusting that
+        // upstream value rather than deriving completion from raw record
+        // counts here - see the habit-details title-row bug this pattern was
+        // fixed from (buildDailyRecordButton originally ignored habit type).
         if (isCompletedToday) {
           views.setImageViewResource(R.id.habit_checkbox, R.drawable.ic_widget_checkbox_done)
         } else {

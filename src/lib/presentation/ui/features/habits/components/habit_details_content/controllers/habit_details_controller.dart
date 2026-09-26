@@ -564,6 +564,14 @@ class HabitDetailsController extends ChangeNotifier {
     );
   }
 
+  /// Counts today's `complete` records. Only meaningful for GOOD habits: a
+  /// bad habit never produces a `complete` record (it only ever has
+  /// `notDone`/no record), so this always returns 0 for one regardless of
+  /// whether the day was successfully avoided or actually violated.
+  /// [HabitRecordsSection.buildDailyRecordButton] already branches on
+  /// `habitType == HabitType.bad` (via [HabitDayPresenter]) before this
+  /// value is ever read - do not call this for a bad habit without adding an
+  /// equivalent guard, or it will silently report the wrong thing.
   int getTodayCompletionCount() {
     if (_habitRecords == null) return 0;
     return _habitRecords!.items
@@ -572,6 +580,8 @@ class HabitDetailsController extends ChangeNotifier {
         .length;
   }
 
+  /// Returns today's raw record status. See [getTodayCompletionCount] - this
+  /// is good-habit-only for the same reason.
   HabitRecordStatus getTodayStatus() {
     if (_habitRecords == null) return HabitRecordStatus.skipped;
     final today = DateTime.now();

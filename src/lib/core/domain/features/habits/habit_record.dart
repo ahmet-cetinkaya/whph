@@ -18,9 +18,15 @@ class HabitRecord extends BaseEntity<String> {
     this.status = HabitRecordStatus.complete,
   });
 
-  /// Get the date part of the occurrence (without time)
+  /// Get the local calendar date of the occurrence (without time).
+  ///
+  /// Normalizes through [DateTimeHelper.toLocalDateTime] first so a UTC-flagged
+  /// [occurredAt] buckets into the correct local day (matching the convention
+  /// used everywhere else records are grouped by day, e.g. [HabitDayStateResolver]);
+  /// it's a no-op when [occurredAt] is already local.
   DateTime get recordDate {
-    return DateTime(occurredAt.year, occurredAt.month, occurredAt.day);
+    final local = DateTimeHelper.toLocalDateTime(occurredAt);
+    return DateTime(local.year, local.month, local.day);
   }
 
   @override

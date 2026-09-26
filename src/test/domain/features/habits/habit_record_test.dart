@@ -1,3 +1,4 @@
+import 'package:acore/acore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
@@ -258,6 +259,25 @@ void main() {
       );
 
       expect(record.recordDate, DateTime(2026, 1, 13));
+    });
+
+    test('normalizes a UTC-flagged occurredAt to the local calendar day, not the raw UTC day', () {
+      // A UTC instant late enough in the day to fall on a different local
+      // calendar day for any positive UTC offset (e.g. 23:30 UTC is already
+      // "tomorrow" local in UTC+1 or later).
+      final utcInstant = DateTime.utc(2026, 1, 13, 23, 30);
+      final record = HabitRecord(
+        id: 'test-utc',
+        createdDate: utcInstant,
+        habitId: 'habit-1',
+        occurredAt: utcInstant,
+        status: HabitRecordStatus.complete,
+      );
+
+      final expectedLocal = DateTimeHelper.toLocalDateTime(utcInstant);
+      expect(record.recordDate, DateTime(expectedLocal.year, expectedLocal.month, expectedLocal.day),
+          reason: 'recordDate must bucket by the local day (matching HabitDayStateResolver and every other '
+              'day-bucketing site), not the raw UTC year/month/day off occurredAt');
     });
   });
 }
