@@ -254,6 +254,11 @@ class _HabitDetailsContentState extends State<HabitDetailsContent> {
                   themeService: _themeService,
                   onToggle: () => _controller.toggleHabitRecordForDay(DateTime.now(), widget.habitId, context),
                   isThreeStateEnabled: _controller.isThreeStateEnabled,
+                  habitType: habit.type,
+                  habitId: widget.habitId,
+                  createdDate: habit.createdDate,
+                  archivedDate: habit.archivedDate,
+                  records: _controller.habitRecords?.items,
                 ),
               ),
               Expanded(
