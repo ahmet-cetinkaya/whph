@@ -335,12 +335,20 @@ void main() {
       duration: 90,
       createdDate: day.add(const Duration(hours: 10)),
     ));
-    await habitRepository.add(Habit(
+    final habitToday = Habit(
       id: 'habit-today',
       createdDate: day,
       name: 'Today habit',
       description: '',
-    ));
+    );
+    await habitRepository.add(habitToday);
+    // DriftBaseRepository.add() always stamps createdDate to the real insert
+    // time, overwriting the backdated value above. Restore it explicitly so
+    // HabitDayStateResolver (used by whph_overview_today) sees the habit as
+    // already existing on `day`, matching this test's intent - update() only
+    // touches modifiedDate, so this is safe.
+    habitToday.createdDate = day;
+    await habitRepository.update(habitToday);
     await habitRecordRepository.add(HabitRecord(
       id: 'habit-record',
       createdDate: day,
