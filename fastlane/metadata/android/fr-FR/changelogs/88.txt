@@ -1,0 +1,3 @@
+• Correction du bouton de bascule sur la page de détails d'une mauvaise habitude, qui affichait toujours un X et ne répondait pas
+• Correction des mauvaises habitudes toujours affichées comme « non terminées » dans l'aperçu de l'agent IA (MCP)
+• Correction d'un bug de fuseau horaire pouvant compter une habitude sur le mauvais jour dans les statistiques et le calendrier

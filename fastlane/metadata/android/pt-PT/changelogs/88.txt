@@ -1,0 +1,3 @@
+• Corrigido o botão de alternância na página de detalhes de um mau hábito, que mostrava sempre um X e não respondia
+• Corrigidos maus hábitos que apareciam sempre como "não concluídos" no resumo do agente de IA (MCP)
+• Corrigido um erro de fuso horário que podia contar uma conclusão no dia errado nas estatísticas e no calendário

@@ -1,0 +1,3 @@
+• Rettet at skifteknappen på en dårlig vanes detaljeside altid viste et kryds og ikke reagerede
+• Rettet at dårlige vaner altid blev vist som "ikke fuldført" i AI-agent (MCP)-oversigten
+• Rettet en tidszonefejl, der kunne tælle en vane på den forkerte dag i statistik og kalender

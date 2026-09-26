@@ -1,0 +1,3 @@
+• Opraveno přepínací tlačítko na stránce detailu špatného návyku, které vždy zobrazovalo křížek a nereagovalo
+• Opraveny špatné návyky, které se v přehledu AI agenta (MCP) vždy zobrazovaly jako "nedokončené"
+• Opravena chyba časového pásma, která mohla zařadit splnění návyku do špatného dne ve statistikách a kalendáři

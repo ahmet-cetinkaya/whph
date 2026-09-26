@@ -1,0 +1,3 @@
+• Corretto il pulsante di attivazione nella pagina dei dettagli di una cattiva abitudine, che mostrava sempre una X e non rispondeva
+• Corrette le cattive abitudini che apparivano sempre come "non completate" nella panoramica dell'agente IA (MCP)
+• Corretto un bug del fuso orario che poteva contare un completamento nel giorno sbagliato in statistiche e calendario

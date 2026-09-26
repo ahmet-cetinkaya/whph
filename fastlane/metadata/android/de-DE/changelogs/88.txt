@@ -1,0 +1,3 @@
+• Der Umschalt-Button auf der Detailseite einer schlechten Gewohnheit zeigte dauerhaft ein X und reagierte nicht – behoben
+• Schlechte Gewohnheiten wurden in der KI-Agent-Übersicht (MCP) fälschlich immer als „nicht erledigt" angezeigt – behoben
+• Ein Zeitzonenfehler, der eine Gewohnheit dem falschen Tag in Statistik und Kalender zuordnen konnte, wurde behoben

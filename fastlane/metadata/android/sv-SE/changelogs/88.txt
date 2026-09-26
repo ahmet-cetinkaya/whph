@@ -1,0 +1,3 @@
+• Åtgärdat att växlingsknappen på en dålig vanas detaljsida alltid visade ett kryss och inte reagerade
+• Åtgärdat att dåliga vanor alltid visades som "ej slutförda" i AI-agentens (MCP) översikt
+• Åtgärdat ett tidszonsfel som kunde räkna en vana på fel dag i statistik och kalender

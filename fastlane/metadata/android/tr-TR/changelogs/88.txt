@@ -1,0 +1,3 @@
+• Kötü alışkanlığın detay sayfasındaki işaretleme düğmesi artık sürekli çarpı göstermiyor ve doğru çalışıyor
+• Kötü alışkanlıklar artık AI ajan (MCP) genel bakışında yanlışlıkla "tamamlanmadı" olarak görünmüyor
+• İstatistik ve takvimde alışkanlık tamamlamasının yanlış güne sayılmasına neden olan saat dilimi hatası düzeltildi

@@ -1,0 +1,3 @@
+• Naprawiono przycisk przełączania na stronie szczegółów złego nawyku, który zawsze pokazywał X i nie reagował
+• Naprawiono złe nawyki zawsze wyświetlane jako "nieukończone" w przeglądzie agenta AI (MCP)
+• Naprawiono błąd strefy czasowej, który mógł zaliczyć ukończenie nawyku do złego dnia w statystykach i kalendarzu

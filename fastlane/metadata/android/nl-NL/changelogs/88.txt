@@ -1,0 +1,3 @@
+• Wisselknop op de detailpagina van een slechte gewoonte die altijd een X toonde en niet reageerde - opgelost
+• Slechte gewoontes die altijd als "niet voltooid" verschenen in het AI-agent (MCP)-overzicht - opgelost
+• Tijdzonefout waardoor een voltooiing op de verkeerde dag in statistieken en kalender kon worden geteld - opgelost

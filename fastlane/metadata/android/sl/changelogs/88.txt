@@ -1,0 +1,3 @@
+- Popravljen gumb za preklop na strani s podrobnostmi slabe navade, ki je vedno prikazoval križec in se ni odzival
+- Popravljene slabe navade, ki so se v pregledu agenta UI (MCP) vedno prikazovale kot "ni zaključeno"
+- Popravljena napaka časovnega pasu, zaradi katere se je navada lahko štela na napačen dan v statistiki in koledarju

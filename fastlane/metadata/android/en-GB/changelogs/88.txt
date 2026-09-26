@@ -1,0 +1,3 @@
+• Fixed the bad habit toggle button on the details page always showing an X and not responding
+• Fixed bad habits always appearing as not completed in the AI assistant (MCP) overview
+• Fixed a timezone bug that could count a habit completion on the wrong day in stats and the calendar

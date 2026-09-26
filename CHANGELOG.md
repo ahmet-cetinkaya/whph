@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.24.3] - 2026-09-26
+
+### Fixed
+- Fixed the toggle button on a bad habit's details page always showing an X and not responding to taps
+- Fixed bad habits always showing as "not completed" in the AI assistant (MCP) overview, even on days you successfully avoided them
+- Fixed a timezone edge case where a habit completion recorded close to midnight could be counted on the wrong day in statistics and the calendar view
+
 ## [0.24.2] - 2026-09-25
 
 ### Fixed
@@ -1773,7 +1780,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.2...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.3...HEAD
+[0.24.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.3
 [0.24.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.2
 [0.24.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.1
 [0.24.0]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.0

@@ -1,6 +1,6 @@
 [Setup]
 AppName=WHPH
-AppVersion=0.24.2
+AppVersion=0.24.3
 AppPublisher=Ahmet Çetinkaya
 AppPublisherURL=https://github.com/ahmet-cetinkaya/whph
 AppSupportURL=https://github.com/ahmet-cetinkaya/whph/issues

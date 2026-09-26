@@ -1,0 +1,3 @@
+• Korjattu huonon tavan tietosivun kytkinpainike, joka näytti aina rastin eikä reagoinut
+• Korjattu huonot tavat, jotka näkyivät aina "ei valmiina" tekoälyagentin (MCP) yleiskatsauksessa
+• Korjattu aikavyöhykevirhe, joka saattoi laskea tavan väärälle päivälle tilastoissa ja kalenterissa

@@ -1,0 +1,3 @@
+- Corectat butonul de comutare de pe pagina de detalii a unui obicei prost, care afișa mereu un X și nu răspundea
+- Corectate obiceiurile proaste care apăreau mereu ca "neterminate" în prezentarea agentului AI (MCP)
+- Corectată o eroare de fus orar care putea număra un obicei în ziua greșită în statistici și calendar
