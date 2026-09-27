@@ -9,6 +9,7 @@
 *CLAUDE.md
 *GEMINI.md
 *QWEN.md
+.agents/
 .claude/
 .gemini/
 .kilo/
