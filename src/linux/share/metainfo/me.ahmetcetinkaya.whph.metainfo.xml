@@ -1460,21 +1460,30 @@
   </requires>
   <releases>
     <release version="0.24.3" date="2026-09-26">
-      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.24.3/CHANGELOG.md</url>
+      <url
+        type="details"
+      >https://github.com/ahmet-cetinkaya/whph/blob/v0.24.3/CHANGELOG.md</url>
       <description>
         <ul>
-          <li>Fixed the toggle button on a bad habit's details page always showing an X and not responding to taps</li>
-          <li>Fixed bad habits always showing as "not completed" in the AI assistant (MCP) overview, even on days you successfully avoided them</li>
-          <li>Fixed a timezone edge case where a habit completion recorded close to midnight could be counted on the wrong day in statistics and the calendar view</li>
+          <li
+          >Fixed the toggle button on a bad habit's details page always showing an X and not responding to taps</li>
+          <li
+          >Fixed bad habits always showing as "not completed" in the AI assistant (MCP) overview, even on days you successfully avoided them</li>
+          <li
+          >Fixed a timezone edge case where a habit completion recorded close to midnight could be counted on the wrong day in statistics and the calendar view</li>
         </ul>
       </description>
     </release>
     <release version="0.24.2" date="2026-09-25">
-      <url type="details">https://github.com/ahmet-cetinkaya/whph/blob/v0.24.2/CHANGELOG.md</url>
+      <url
+        type="details"
+      >https://github.com/ahmet-cetinkaya/whph/blob/v0.24.2/CHANGELOG.md</url>
       <description>
         <ul>
-          <li>Fixed pinned tasks in Marathon mode not showing their tag color, status, or reminder icon</li>
-          <li>Updated the app to meet Google Play's latest technical requirements (Android 16 target)</li>
+          <li
+          >Fixed pinned tasks in Marathon mode not showing their tag color, status, or reminder icon</li>
+          <li
+          >Updated the app to meet Google Play's latest technical requirements (Android 16 target)</li>
         </ul>
       </description>
     </release>
