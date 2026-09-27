@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tags/queries/get_list_tags_query.dart';
@@ -15,6 +17,7 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/tags/constants/tag_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/pagination_utils.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 
@@ -60,13 +63,16 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList>, List
   final ScrollController _scrollController = ScrollController();
 
   GetListTagsQueryResponse? _tags;
-  double? _savedScrollPosition;
+  int _cursor = 0;
+  int _loadGeneration = 0;
+
+  bool get _hasMore => _tags != null && PaginationUtils.hasMore(cursor: _cursor, totalItemCount: _tags!.totalItemCount);
 
   @override
   ScrollController get scrollController => _scrollController;
 
   @override
-  bool get hasNextPage => _tags?.hasNext ?? false;
+  bool get hasNextPage => _hasMore;
 
   @override
   void initState() {
@@ -132,47 +138,25 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList>, List
     _getTags(isRefresh: true);
   }
 
-  void _saveScrollPosition() {
-    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
-      _savedScrollPosition = _scrollController.position.pixels;
-    }
-  }
-
-  void _backLastScrollPosition() {
-    if (_savedScrollPosition == null) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted &&
-          _scrollController.hasClients &&
-          _scrollController.position.hasViewportDimension &&
-          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
-        _scrollController.jumpTo(_savedScrollPosition!);
-      }
-    });
-  }
-
   Future<void> refresh() async {
     if (!mounted) return;
 
-    _saveScrollPosition();
-    await _getTags(isRefresh: true);
-    _backLastScrollPosition();
+    await _getTags(isRefresh: true, keepScroll: true);
   }
 
-  Future<void> _getTags({int pageIndex = 0, bool isRefresh = false}) async {
-    if (isRefresh) {
-      _tags = null;
-    }
+  Future<void> _getTags({int pageIndex = 0, bool isRefresh = false, bool keepScroll = false}) async {
+    final int requestPageIndex = isRefresh ? 0 : pageIndex;
+    final int requestPageSize = isRefresh ? max(_cursor, widget.pageSize) : widget.pageSize;
+    if (isRefresh || _tags == null) _loadGeneration++;
+    final gen = _loadGeneration;
 
     await AsyncErrorHandler.execute<GetListTagsQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(TagTranslationKeys.errorLoading),
       operation: () async {
         final query = GetListTagsQuery(
-          pageIndex: pageIndex,
-          pageSize: isRefresh && (_tags?.items.length ?? 0) > widget.pageSize
-              ? _tags?.items.length ?? widget.pageSize
-              : widget.pageSize,
+          pageIndex: requestPageIndex,
+          pageSize: requestPageSize,
           showArchived: widget.showArchived,
           search: widget.search,
           sortBy: widget.sortConfig?.orderOptions
@@ -185,23 +169,32 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList>, List
         return await _mediator.send<GetListTagsQuery, GetListTagsQueryResponse>(query);
       },
       onSuccess: (result) {
+        if (gen != _loadGeneration || !mounted) return;
+
+        final offset = keepScroll ? captureScrollOffset() : null;
         setState(() {
-          if (_tags == null || isRefresh) {
+          _cursor = PaginationUtils.cursorAfter(
+            pageIndex: requestPageIndex,
+            pageSize: requestPageSize,
+            totalItemCount: result.totalItemCount,
+          );
+          if (isRefresh || _tags == null) {
             _tags = result;
           } else {
             _tags = GetListTagsQueryResponse(
-              items: [..._tags!.items, ...result.items],
+              items: PaginationUtils.appendUnique(_tags!.items, result.items, (t) => t.id),
               totalItemCount: result.totalItemCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
           }
         });
+        if (keepScroll) restoreScrollOffset(offset);
 
         widget.onList?.call(_tags!.items.length);
 
         // For infinity scroll: check if viewport needs more content
-        if (widget.paginationMode == PaginationMode.infinityScroll && _tags!.hasNext) {
+        if (widget.paginationMode == PaginationMode.infinityScroll && _hasMore) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             checkAndFillViewport();
           });
@@ -297,9 +290,8 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList>, List
     }
 
     final listItems = _buildTagItems();
-    final showLoadMore = _tags!.hasNext && widget.paginationMode == PaginationMode.loadMore;
-    final showInfinityLoading =
-        _tags!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final showLoadMore = _hasMore && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading = _hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
     final headerCount = widget.header != null ? 1 : 0;
 
@@ -336,10 +328,7 @@ class TagsListState extends State<TagsList> with PaginationMixin<TagsList>, List
 
   @override
   Future<void> onLoadMore() async {
-    if (_tags == null || !_tags!.hasNext) return;
-
-    _saveScrollPosition();
-    await _getTags(pageIndex: _tags!.pageIndex + 1);
-    _backLastScrollPosition();
+    if (!_hasMore) return;
+    await _getTags(pageIndex: PaginationUtils.nextPageIndex(cursor: _cursor, pageSize: widget.pageSize));
   }
 }

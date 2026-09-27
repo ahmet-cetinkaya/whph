@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
@@ -31,6 +33,7 @@ import 'package:whph/presentation/ui/shared/utils/visual_item_utils.dart';
 import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/pagination_utils.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
@@ -145,9 +148,13 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   final _recurrenceService = container.resolve<ITaskRecurrenceService>();
   GetListTasksQueryResponse? _tasks;
   final ScrollController _scrollController = ScrollController();
-  double? _savedScrollPosition;
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
+  int _cursor = 0;
+  int _loadGeneration = 0;
+
+  bool get _hasMore =>
+      _tasks != null && PaginationUtils.hasMore(cursor: _cursor, totalItemCount: _tasks!.totalItemCount);
 
   // Cache for performance optimization
   Map<String, List<TaskListItem>>? _cachedGroupedTasks;
@@ -164,7 +171,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   ScrollController get scrollController => _scrollController;
 
   @override
-  bool get hasNextPage => _tasks?.hasNext ?? false;
+  bool get hasNextPage => _hasMore;
 
   /// Reordering is available only when custom sort is the active ordering.
   bool get _isCustomOrderActive =>
@@ -216,31 +223,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     });
   }
 
-  void _saveScrollPosition() {
-    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
-      _savedScrollPosition = _scrollController.position.pixels;
-    }
-  }
-
-  void _backLastScrollPosition() {
-    if (_savedScrollPosition == null) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && _scrollController.hasClients && _scrollController.position.hasViewportDimension) {
-        final maxScroll = _scrollController.position.maxScrollExtent;
-        if (_savedScrollPosition! <= maxScroll) {
-          _scrollController.jumpTo(_savedScrollPosition!);
-        } else {
-          _scrollController.jumpTo(maxScroll);
-        }
-      }
-    });
-  }
-
   Future<void> refresh() async {
     if (!mounted) return;
 
-    _saveScrollPosition();
     _refreshDebounce?.cancel();
 
     if (_pendingRefresh) {
@@ -248,8 +233,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     }
 
     _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
-      await _getTasksList(isRefresh: true);
-      _backLastScrollPosition();
+      await _getTasksList(isRefresh: true, keepScroll: true);
 
       if (_pendingRefresh) {
         _pendingRefresh = false;
@@ -453,16 +437,19 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     return CollectionUtils.hasAnyMapValueChanged(oldFilters, newFilters);
   }
 
-  Future<void> _getTasksList({int pageIndex = 0, bool isRefresh = false}) async {
+  Future<void> _getTasksList({int pageIndex = 0, bool isRefresh = false, bool keepScroll = false}) async {
+    final int requestPageIndex = isRefresh ? 0 : pageIndex;
+    final int requestPageSize = isRefresh ? max(_cursor, widget.pageSize) : widget.pageSize;
+    if (isRefresh || _tasks == null) _loadGeneration++;
+    final gen = _loadGeneration;
+
     await AsyncErrorHandler.execute<GetListTasksQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(TaskTranslationKeys.getTasksError),
       operation: () async {
         final query = GetListTasksQuery(
-          pageIndex: pageIndex,
-          pageSize: isRefresh && (_tasks?.items.length ?? 0) > widget.pageSize
-              ? _tasks?.items.length ?? widget.pageSize
-              : widget.pageSize,
+          pageIndex: requestPageIndex,
+          pageSize: requestPageSize,
           filterByPlannedStartDate: widget.filterByPlannedStartDate != null
               ? DateTimeHelper.toUtcDateTime(widget.filterByPlannedStartDate!)
               : null,
@@ -507,19 +494,23 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         return await _mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(query);
       },
       onSuccess: (result) {
+        if (gen != _loadGeneration || !mounted) return;
+
         try {
+          final offset = keepScroll ? captureScrollOffset() : null;
           setState(() {
-            if (_tasks == null || isRefresh) {
+            _cursor = PaginationUtils.cursorAfter(
+              pageIndex: requestPageIndex,
+              pageSize: requestPageSize,
+              totalItemCount: result.totalItemCount,
+            );
+            if (isRefresh || _tasks == null) {
               _tasks = result;
               _cachedGroupedTasks = null;
               _cachedVisualItems = null;
             } else {
-              // Deduplicate items to ensure uniqueness
-              final existingIds = _tasks!.items.map((e) => e.id).toSet();
-              final newItems = result.items.where((e) => !existingIds.contains(e.id)).toList();
-
               _tasks = GetListTasksQueryResponse(
-                items: [..._tasks!.items, ...newItems],
+                items: PaginationUtils.appendUnique(_tasks!.items, result.items, (t) => t.id),
                 totalItemCount: result.totalItemCount,
                 pageIndex: result.pageIndex,
                 pageSize: result.pageSize,
@@ -528,6 +519,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
               _cachedVisualItems = null;
             }
           });
+          if (keepScroll) restoreScrollOffset(offset);
 
           if (_tasks != null) {
             // Safely notify callbacks
@@ -557,7 +549,7 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
             }
 
             // For infinity scroll: check if viewport needs more content
-            if (widget.paginationMode == PaginationMode.infinityScroll && _tasks!.hasNext) {
+            if (widget.paginationMode == PaginationMode.infinityScroll && _hasMore) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) {
                   try {
@@ -588,11 +580,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
   @override
   Future<void> onLoadMore() async {
     // Prevent concurrent loads if triggered directly (e.g. via Load More button)
-    if (_tasks == null || !_tasks!.hasNext) return;
-
-    _saveScrollPosition();
-    await _getTasksList(pageIndex: _tasks!.pageIndex + 1);
-    _backLastScrollPosition();
+    if (!_hasMore) return;
+    await _getTasksList(pageIndex: PaginationUtils.nextPageIndex(cursor: _cursor, pageSize: widget.pageSize));
   }
 
   /// Detects duplicate or non-canonical ranks that require normalization before
@@ -1269,9 +1258,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
       );
     }
 
-    final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
-    final showInfinityLoading =
-        _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final showLoadMore = _hasMore && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading = _hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
 
     final groupEntries = groupedTasks.entries.toList();
 
@@ -1565,9 +1553,8 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
         visualItems.add(item);
       }
     }
-    final showLoadMore = _tasks!.hasNext && widget.paginationMode == PaginationMode.loadMore;
-    final showInfinityLoading =
-        _tasks!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final showLoadMore = _hasMore && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading = _hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final totalCount = visualItems.length + (showLoadMore || showInfinityLoading ? 1 : 0);
 
     if (_isCustomOrderActive) {

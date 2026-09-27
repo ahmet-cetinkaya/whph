@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
@@ -11,6 +12,7 @@ import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
 import 'package:whph/presentation/ui/shared/components/icon_overlay.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/pagination_utils.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/main.dart';
@@ -120,7 +122,8 @@ class AppUsageListState extends State<AppUsageList>
   GetListByTopAppUsagesQueryResponse? _appUsageList;
   late FilterContext _currentFilters;
   Timer? _refreshDebounce;
-  double? _savedScrollPosition;
+  int _cursor = 0;
+  int _loadGeneration = 0;
   bool _isInitialLoading = true;
   List<_ListItem> _flattenedItems = [];
   double _maxDuration = 0;
@@ -129,8 +132,11 @@ class AppUsageListState extends State<AppUsageList>
   @override
   ScrollController get scrollController => _scrollController;
 
+  bool get _hasMore =>
+      _appUsageList != null && PaginationUtils.hasMore(cursor: _cursor, totalItemCount: _appUsageList!.totalItemCount);
+
   @override
-  bool get hasNextPage => _appUsageList?.hasNext ?? false;
+  bool get hasNextPage => _hasMore;
 
   @override
   void initState() {
@@ -196,42 +202,24 @@ class AppUsageListState extends State<AppUsageList>
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
-  void _saveScrollPosition() {
-    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
-      _savedScrollPosition = _scrollController.position.pixels;
-    }
-  }
-
-  void _backLastScrollPosition() {
-    if (_savedScrollPosition == null) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted &&
-          _scrollController.hasClients &&
-          _scrollController.position.hasViewportDimension &&
-          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
-        _scrollController.jumpTo(_savedScrollPosition!);
-      }
-    });
-  }
-
   Future<void> refresh() async {
     if (!mounted) return;
 
-    _saveScrollPosition();
     _refreshDebounce?.cancel();
     _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
-      await _getList(isRefresh: true);
-      _backLastScrollPosition();
+      await _getList(isRefresh: true, keepScroll: true);
     });
   }
 
-  Future<void> _getList({int pageIndex = 0, bool isRefresh = false}) async {
+  Future<void> _getList({int pageIndex = 0, bool isRefresh = false, bool keepScroll = false}) async {
+    final int requestPageIndex = isRefresh ? 0 : pageIndex;
+    final int requestPageSize = isRefresh ? max(_cursor, widget.pageSize) : widget.pageSize;
+    if (isRefresh || _appUsageList == null) _loadGeneration++;
+    final gen = _loadGeneration;
+
     final query = GetListByTopAppUsagesQuery(
-      pageIndex: pageIndex,
-      pageSize: isRefresh && (_appUsageList?.items.length ?? 0) > widget.pageSize
-          ? _appUsageList?.items.length ?? widget.pageSize
-          : widget.pageSize,
+      pageIndex: requestPageIndex,
+      pageSize: requestPageSize,
       filterByTags: _currentFilters.filterByTags,
       showNoTagsFilter: _currentFilters.showNoTagsFilter,
       startDate: _currentFilters.filterStartDate != null
@@ -262,33 +250,40 @@ class AppUsageListState extends State<AppUsageList>
         return result;
       },
       onSuccess: (data) {
-        if (mounted) {
-          setState(() {
-            if (isRefresh) {
-              _appUsageList = data;
-            } else {
-              _appUsageList = GetListByTopAppUsagesQueryResponse(
-                items: [...?_appUsageList?.items, ...data.items],
-                pageIndex: data.pageIndex,
-                pageSize: data.pageSize,
-                totalItemCount: data.totalItemCount,
-              );
-            }
-            // Mark initial loading as complete
-            _isInitialLoading = false;
-            // Build flattened items for lazy loading
-            _buildFlattenedItems();
-          });
+        if (gen != _loadGeneration || !mounted) return;
 
-          // Notify about list count
-          widget.onList?.call(_appUsageList?.items.length ?? 0);
-
-          // For infinity scroll: check if viewport needs more content
-          if (widget.paginationMode == PaginationMode.infinityScroll && (_appUsageList?.hasNext ?? false)) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              checkAndFillViewport();
-            });
+        final offset = keepScroll ? captureScrollOffset() : null;
+        setState(() {
+          _cursor = PaginationUtils.cursorAfter(
+            pageIndex: requestPageIndex,
+            pageSize: requestPageSize,
+            totalItemCount: data.totalItemCount,
+          );
+          if (isRefresh || _appUsageList == null) {
+            _appUsageList = data;
+          } else {
+            _appUsageList = GetListByTopAppUsagesQueryResponse(
+              items: PaginationUtils.appendUnique(_appUsageList!.items, data.items, (a) => a.id),
+              pageIndex: data.pageIndex,
+              pageSize: data.pageSize,
+              totalItemCount: data.totalItemCount,
+            );
           }
+          // Mark initial loading as complete
+          _isInitialLoading = false;
+          // Build flattened items for lazy loading
+          _buildFlattenedItems();
+        });
+        if (keepScroll) restoreScrollOffset(offset);
+
+        // Notify about list count
+        widget.onList?.call(_appUsageList?.items.length ?? 0);
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _hasMore) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            checkAndFillViewport();
+          });
         }
       },
     );
@@ -318,11 +313,8 @@ class AppUsageListState extends State<AppUsageList>
 
   @override
   Future<void> onLoadMore() async {
-    if (_appUsageList?.hasNext == false) return;
-
-    _saveScrollPosition();
-    await _getList(pageIndex: _appUsageList!.pageIndex + 1);
-    _backLastScrollPosition();
+    if (!_hasMore) return;
+    await _getList(pageIndex: PaginationUtils.nextPageIndex(cursor: _cursor, pageSize: widget.pageSize));
   }
 
   void _buildFlattenedItems() {
@@ -410,9 +402,8 @@ class AppUsageListState extends State<AppUsageList>
       );
     }
 
-    final showLoadMore = _appUsageList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
-    final showInfinityLoading =
-        _appUsageList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final showLoadMore = _hasMore && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading = _hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
     return ListView.builder(

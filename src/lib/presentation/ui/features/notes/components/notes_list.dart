@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
@@ -15,6 +16,7 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/pagination_utils.dart';
 import 'package:whph/presentation/ui/shared/components/list_group_header.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
@@ -59,13 +61,17 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
   late FilterContext _currentFilters;
-  double? _savedScrollPosition;
+  int _cursor = 0;
+  int _loadGeneration = 0;
+
+  bool get _hasMore =>
+      _noteList != null && PaginationUtils.hasMore(cursor: _cursor, totalItemCount: _noteList!.totalItemCount);
 
   @override
   ScrollController get scrollController => _scrollController;
 
   @override
-  bool get hasNextPage => _noteList?.hasNext ?? false;
+  bool get hasNextPage => _hasMore;
 
   @override
   void initState() {
@@ -120,29 +126,9 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
-  void _saveScrollPosition() {
-    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
-      _savedScrollPosition = _scrollController.position.pixels;
-    }
-  }
-
-  void _backLastScrollPosition() {
-    if (_savedScrollPosition == null) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted &&
-          _scrollController.hasClients &&
-          _scrollController.position.hasViewportDimension &&
-          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
-        _scrollController.jumpTo(_savedScrollPosition!);
-      }
-    });
-  }
-
   Future<void> refresh() async {
     if (!mounted) return;
 
-    _saveScrollPosition();
     _refreshDebounce?.cancel();
 
     if (_pendingRefresh) {
@@ -150,8 +136,7 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
     }
 
     _refreshDebounce = Timer(const Duration(milliseconds: 100), () async {
-      await _getNotes(isRefresh: true);
-      _backLastScrollPosition();
+      await _getNotes(isRefresh: true, keepScroll: true);
 
       if (_pendingRefresh) {
         _pendingRefresh = false;
@@ -178,16 +163,20 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
   Future<void> _getNotes({
     int pageIndex = 0,
     bool isRefresh = false,
+    bool keepScroll = false,
   }) async {
+    final int requestPageIndex = isRefresh ? 0 : pageIndex;
+    final int requestPageSize = isRefresh ? max(_cursor, widget.pageSize) : widget.pageSize;
+    if (isRefresh || _noteList == null) _loadGeneration++;
+    final gen = _loadGeneration;
+
     await AsyncErrorHandler.execute<GetListNotesQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(NoteTranslationKeys.loadingError),
       operation: () async {
         final query = GetListNotesQuery(
-          pageIndex: pageIndex,
-          pageSize: isRefresh && (_noteList?.items.length ?? 0) > widget.pageSize
-              ? _noteList?.items.length ?? widget.pageSize
-              : widget.pageSize,
+          pageIndex: requestPageIndex,
+          pageSize: requestPageSize,
           search: _currentFilters.search,
           filterByTags: _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
@@ -201,22 +190,31 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
         return await _mediator.send<GetListNotesQuery, GetListNotesQueryResponse>(query);
       },
       onSuccess: (result) {
+        if (gen != _loadGeneration || !mounted) return;
+
+        final offset = keepScroll ? captureScrollOffset() : null;
         setState(() {
-          if (_noteList == null || isRefresh) {
+          _cursor = PaginationUtils.cursorAfter(
+            pageIndex: requestPageIndex,
+            pageSize: requestPageSize,
+            totalItemCount: result.totalItemCount,
+          );
+          if (isRefresh || _noteList == null) {
             _noteList = result;
           } else {
             _noteList = GetListNotesQueryResponse(
-              items: [..._noteList!.items, ...result.items],
+              items: PaginationUtils.appendUnique(_noteList!.items, result.items, (n) => n.id),
               totalItemCount: result.totalItemCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
             );
           }
         });
+        if (keepScroll) restoreScrollOffset(offset);
 
         widget.onList?.call(_noteList?.items.length ?? 0);
 
-        if (widget.paginationMode == PaginationMode.infinityScroll && _noteList!.hasNext) {
+        if (widget.paginationMode == PaginationMode.infinityScroll && _hasMore) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             checkAndFillViewport();
           });
@@ -243,9 +241,8 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
     }
 
     final noteItems = _buildNoteItems();
-    final showLoadMore = _noteList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
-    final showInfinityLoading =
-        _noteList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final showLoadMore = _hasMore && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading = _hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     final extraItemCount = (showLoadMore || showInfinityLoading) ? 1 : 0;
 
     return ListView.builder(
@@ -316,11 +313,8 @@ class NotesListState extends State<NotesList> with PaginationMixin<NotesList>, L
 
   @override
   Future<void> onLoadMore() async {
-    if (_noteList == null || !_noteList!.hasNext) return;
-
-    _saveScrollPosition();
-    await _getNotes(pageIndex: _noteList!.pageIndex + 1);
-    _backLastScrollPosition();
+    if (!_hasMore) return;
+    await _getNotes(pageIndex: PaginationUtils.nextPageIndex(cursor: _cursor, pageSize: widget.pageSize));
   }
 
   Future<void> _onNoteSelected(String id) async {

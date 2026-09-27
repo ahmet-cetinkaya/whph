@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
@@ -23,6 +24,7 @@ import 'package:whph/presentation/ui/shared/models/sort_config.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/app_theme_helper.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/pagination_utils.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
 import 'package:whph/presentation/ui/shared/models/visual_item.dart';
@@ -92,7 +94,11 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   Timer? _refreshDebounce;
   bool _pendingRefresh = false;
   late FilterContext _currentFilters;
-  double? _savedScrollPosition;
+  int _cursor = 0;
+  int _loadGeneration = 0;
+
+  bool get _hasMore =>
+      _habitList != null && PaginationUtils.hasMore(cursor: _cursor, totalItemCount: _habitList!.totalItemCount);
 
   Map<String, List<HabitListItem>>? _cachedGroupedHabits;
   List<VisualItem>? _cachedVisualItems;
@@ -103,7 +109,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   ScrollController get scrollController => _scrollController;
 
   @override
-  bool get hasNextPage => _habitList?.hasNext ?? false;
+  bool get hasNextPage => _hasMore;
 
   bool get _isCustomOrderActive => widget.enableReordering && widget.sortConfig?.useCustomOrder == true;
 
@@ -249,31 +255,9 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     return CollectionUtils.hasAnyMapValueChanged(oldMap, newMap);
   }
 
-  void _saveScrollPosition() {
-    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
-      _savedScrollPosition = _scrollController.position.pixels;
-    }
-  }
-
-  void _backLastScrollPosition() {
-    if (_savedScrollPosition == null) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && _scrollController.hasClients && _scrollController.position.hasViewportDimension) {
-        final maxScroll = _scrollController.position.maxScrollExtent;
-        if (_savedScrollPosition! <= maxScroll) {
-          _scrollController.jumpTo(_savedScrollPosition!);
-        } else {
-          _scrollController.jumpTo(maxScroll);
-        }
-      }
-    });
-  }
-
   Future<void> refresh({Duration? delay}) async {
     if (!mounted) return;
 
-    _saveScrollPosition();
     _refreshDebounce?.cancel();
 
     if (_pendingRefresh && delay == null) {
@@ -282,8 +266,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     }
 
     _refreshDebounce = Timer(delay ?? const Duration(milliseconds: 100), () async {
-      await _getHabits(isRefresh: true);
-      _backLastScrollPosition();
+      await _getHabits(isRefresh: true, keepScroll: true);
 
       if (_pendingRefresh) {
         _pendingRefresh = false;
@@ -295,16 +278,20 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   Future<void> _getHabits({
     int pageIndex = 0,
     bool isRefresh = false,
+    bool keepScroll = false,
   }) async {
+    final int requestPageIndex = isRefresh ? 0 : pageIndex;
+    final int requestPageSize = isRefresh ? max(_cursor, widget.pageSize) : widget.pageSize;
+    if (isRefresh || _habitList == null) _loadGeneration++;
+    final gen = _loadGeneration;
+
     await AsyncErrorHandler.execute<GetListHabitsQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(HabitTranslationKeys.loadingHabitsError),
       operation: () async {
         final query = GetListHabitsQuery(
-          pageIndex: pageIndex,
-          pageSize: isRefresh && (_habitList?.items.length ?? 0) > widget.pageSize
-              ? _habitList?.items.length ?? widget.pageSize
-              : widget.pageSize,
+          pageIndex: requestPageIndex,
+          pageSize: requestPageSize,
           excludeCompleted: _currentFilters.style != HabitListStyle.calendar,
           filterByTags: _currentFilters.filterNoTags ? [] : _currentFilters.filterByTags,
           filterNoTags: _currentFilters.filterNoTags,
@@ -324,14 +311,22 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
         return await _mediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(query);
       },
       onSuccess: (result) {
+        if (gen != _loadGeneration || !mounted) return;
+
+        final offset = keepScroll ? captureScrollOffset() : null;
         setState(() {
-          if (_habitList == null || isRefresh) {
+          _cursor = PaginationUtils.cursorAfter(
+            pageIndex: requestPageIndex,
+            pageSize: requestPageSize,
+            totalItemCount: result.totalItemCount,
+          );
+          if (isRefresh || _habitList == null) {
             _habitList = result;
             _cachedGroupedHabits = null;
             _cachedVisualItems = null;
           } else {
             _habitList = GetListHabitsQueryResponse(
-              items: [..._habitList!.items, ...result.items],
+              items: PaginationUtils.appendUnique(_habitList!.items, result.items, (h) => h.id),
               totalItemCount: result.totalItemCount,
               pageIndex: result.pageIndex,
               pageSize: result.pageSize,
@@ -342,6 +337,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
           widget.onListing?.call(_habitList?.items.length ?? 0);
         });
+        if (keepScroll) restoreScrollOffset(offset);
 
         // Repair collapsed/duplicate/near-zero order values so the next drag
         // lands reliably. Only relevant when custom ordering is active.
@@ -353,7 +349,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
           });
         }
 
-        if (widget.paginationMode == PaginationMode.infinityScroll && _habitList!.hasNext) {
+        if (widget.paginationMode == PaginationMode.infinityScroll && _hasMore) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             checkAndFillViewport();
           });
@@ -487,7 +483,7 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
   }
 
   Widget _buildGridList() {
-    final totalItemCount = _habitList!.items.length + (_habitList!.hasNext ? 1 : 0);
+    final totalItemCount = _habitList!.items.length + (_hasMore ? 1 : 0);
 
     return GridView.builder(
       key: ValueKey('grid_view_$_effectiveStyle'),
@@ -706,9 +702,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
     final groupedHabits = _groupHabits();
     if (groupedHabits.isEmpty) return const SizedBox.shrink();
 
-    final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
-    final showInfinityLoading =
-        _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final showLoadMore = _hasMore && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading = _hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
 
     final groupEntries = groupedHabits.entries.toList();
 
@@ -906,11 +901,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
 
   @override
   Future<void> onLoadMore() async {
-    if (_habitList == null || !_habitList!.hasNext) return;
-
-    _saveScrollPosition();
-    await _getHabits(pageIndex: _habitList!.pageIndex + 1);
-    _backLastScrollPosition();
+    if (!_hasMore) return;
+    await _getHabits(pageIndex: PaginationUtils.nextPageIndex(cursor: _cursor, pageSize: widget.pageSize));
   }
 
   Widget _buildListItem(
@@ -1033,9 +1025,8 @@ class HabitsListState extends State<HabitsList> with PaginationMixin<HabitsList>
       }
     }
 
-    final showLoadMore = _habitList!.hasNext && widget.paginationMode == PaginationMode.loadMore;
-    final showInfinityLoading =
-        _habitList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
+    final showLoadMore = _hasMore && widget.paginationMode == PaginationMode.loadMore;
+    final showInfinityLoading = _hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore;
     // Must be derived from the *filtered* list, since that is what both the
     // item builder and the reorder callback index into. Counting the
     // unfiltered list would over-report the item count whenever a group is

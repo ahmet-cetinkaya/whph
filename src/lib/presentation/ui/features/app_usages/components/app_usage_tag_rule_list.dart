@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/queries/get_list_app_usage_tag_rules_query.dart';
@@ -7,6 +9,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/pagination_utils.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/features/app_usages/constants/app_usage_ui_constants.dart';
 import 'package:whph/presentation/ui/shared/components/load_more_button.dart';
@@ -45,13 +48,17 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> with Paginatio
   bool _isLoading = false;
   final _translationService = container.resolve<ITranslationService>();
   final _appUsagesService = container.resolve<AppUsagesService>();
-  double? _savedScrollPosition;
+  int _cursor = 0;
+  int _loadGeneration = 0;
+
+  bool get _hasMore =>
+      _ruleList != null && PaginationUtils.hasMore(cursor: _cursor, totalItemCount: _ruleList!.totalItemCount);
 
   @override
   ScrollController get scrollController => _scrollController;
 
   @override
-  bool get hasNextPage => _ruleList?.hasNext ?? false;
+  bool get hasNextPage => _hasMore;
 
   @override
   void initState() {
@@ -93,33 +100,18 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> with Paginatio
     Navigator.pop(context, true);
   }
 
-  void _saveScrollPosition() {
-    if (_scrollController.hasClients && _scrollController.position.hasViewportDimension) {
-      _savedScrollPosition = _scrollController.position.pixels;
-    }
-  }
-
-  void _backLastScrollPosition() {
-    if (_savedScrollPosition == null) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted &&
-          _scrollController.hasClients &&
-          _scrollController.position.hasViewportDimension &&
-          _savedScrollPosition! <= _scrollController.position.maxScrollExtent) {
-        _scrollController.jumpTo(_savedScrollPosition!);
-      }
-    });
-  }
-
   Future<void> refresh() async {
-    _saveScrollPosition();
-    await _loadRules(isRefresh: true);
-    _backLastScrollPosition();
+    await _loadRules(isRefresh: true, keepScroll: true);
   }
 
-  Future<void> _loadRules({int pageIndex = 0, bool isRefresh = false}) async {
-    if (_isLoading) return;
+  Future<void> _loadRules({int pageIndex = 0, bool isRefresh = false, bool keepScroll = false}) async {
+    // Only load-more is blocked by an in-flight load; refreshes always run and win via the load generation.
+    if (_isLoading && !isRefresh) return;
+
+    final int requestPageIndex = isRefresh ? 0 : pageIndex;
+    final int requestPageSize = isRefresh ? max(_cursor, widget.pageSize) : widget.pageSize;
+    if (isRefresh || _ruleList == null) _loadGeneration++;
+    final gen = _loadGeneration;
 
     setState(() => _isLoading = true);
 
@@ -128,38 +120,45 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> with Paginatio
       errorMessage: _translationService.translate(AppUsageTranslationKeys.getRulesError),
       operation: () async {
         final query = GetListAppUsageTagRulesQuery(
-          pageIndex: pageIndex,
-          pageSize: isRefresh && (_ruleList?.items.length ?? 0) > widget.pageSize
-              ? _ruleList?.items.length ?? widget.pageSize
-              : widget.pageSize,
+          pageIndex: requestPageIndex,
+          pageSize: requestPageSize,
           filterByTags: widget.filterByTags,
         );
 
         return await widget.mediator.send<GetListAppUsageTagRulesQuery, GetListAppUsageTagRulesQueryResponse>(query);
       },
       onSuccess: (result) {
-        if (mounted) {
-          setState(() {
-            if (_ruleList == null || pageIndex == 0) {
-              _ruleList = result;
-            } else {
-              _ruleList!.items.addAll(result.items);
-              _ruleList!.pageIndex = result.pageIndex;
-            }
-          });
+        if (gen != _loadGeneration || !mounted) return;
 
-          // For infinity scroll: check if viewport needs more content
-          if (widget.paginationMode == PaginationMode.infinityScroll && (_ruleList?.hasNext ?? false)) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              checkAndFillViewport();
-            });
+        final offset = keepScroll ? captureScrollOffset() : null;
+        setState(() {
+          _cursor = PaginationUtils.cursorAfter(
+            pageIndex: requestPageIndex,
+            pageSize: requestPageSize,
+            totalItemCount: result.totalItemCount,
+          );
+          if (isRefresh || _ruleList == null) {
+            _ruleList = result;
+          } else {
+            _ruleList!.items = PaginationUtils.appendUnique(_ruleList!.items, result.items, (r) => r.id);
+            _ruleList!.pageIndex = result.pageIndex;
+            _ruleList!.totalItemCount = result.totalItemCount;
           }
+        });
+        if (keepScroll) restoreScrollOffset(offset);
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _hasMore) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            checkAndFillViewport();
+          });
         }
       },
     );
 
-    // Set loading state to false after completion
-    if (mounted) {
+    // Only the newest-generation load clears the loading state; a superseded load must not clear it while the
+    // newer load that owns it is still in flight.
+    if (mounted && gen == _loadGeneration) {
       setState(() => _isLoading = false);
     }
   }
@@ -266,12 +265,12 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> with Paginatio
               );
             },
           ),
-          if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
+          if (_hasMore && widget.paginationMode == PaginationMode.loadMore)
             Padding(
               padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
               child: Center(child: LoadMoreButton(onPressed: onLoadMore)),
             ),
-          if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
+          if (_hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
               child: Center(child: CircularProgressIndicator()),
@@ -283,11 +282,8 @@ class AppUsageTagRuleListState extends State<AppUsageTagRuleList> with Paginatio
 
   @override
   Future<void> onLoadMore() async {
-    if (_ruleList == null || !_ruleList!.hasNext) return;
-
-    _saveScrollPosition();
-    await _loadRules(pageIndex: _ruleList!.pageIndex + 1);
-    _backLastScrollPosition();
+    if (!_hasMore) return;
+    await _loadRules(pageIndex: PaginationUtils.nextPageIndex(cursor: _cursor, pageSize: widget.pageSize));
   }
 
   Future<void> _delete(BuildContext context, AppUsageTagRuleListItem rule) async {

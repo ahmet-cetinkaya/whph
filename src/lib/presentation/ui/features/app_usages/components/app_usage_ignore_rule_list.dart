@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/app_usages/commands/delete_app_usage_ignore_rule_command.dart';
@@ -14,6 +16,7 @@ import 'package:whph/presentation/ui/shared/constants/shared_ui_constants.dart';
 import 'package:acore/utils/dialog_size.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
+import 'package:whph/presentation/ui/shared/utils/pagination_utils.dart';
 import 'package:acore/utils/responsive_dialog_helper.dart';
 import 'package:whph/presentation/ui/shared/enums/pagination_mode.dart';
 import 'package:whph/presentation/ui/shared/mixins/pagination_mixin.dart';
@@ -43,13 +46,17 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> with Pag
 
   GetListAppUsageIgnoreRulesQueryResponse? _ruleList;
   bool _isLoading = false;
-  double _savedScrollPosition = 0.0;
+  int _cursor = 0;
+  int _loadGeneration = 0;
+
+  bool get _hasMore =>
+      _ruleList != null && PaginationUtils.hasMore(cursor: _cursor, totalItemCount: _ruleList!.totalItemCount);
 
   @override
   ScrollController get scrollController => _scrollController;
 
   @override
-  bool get hasNextPage => _ruleList?.hasNext ?? false;
+  bool get hasNextPage => _hasMore;
 
   @override
   void initState() {
@@ -77,28 +84,13 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> with Pag
     refresh();
   }
 
-  void _saveScrollPosition() {
-    if (_scrollController.hasClients) {
-      _savedScrollPosition = _scrollController.offset;
-    }
-  }
-
-  void _backLastScrollPosition() {
-    if (_scrollController.hasClients && _savedScrollPosition > 0.0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _savedScrollPosition,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
-      });
-    }
-  }
-
-  Future<void> _getList({int pageIndex = 0, bool isRefresh = false}) async {
+  Future<void> _getList({int pageIndex = 0, bool isRefresh = false, bool keepScroll = false}) async {
     if (!mounted) return;
+
+    final int requestPageIndex = isRefresh ? 0 : pageIndex;
+    final int requestPageSize = isRefresh ? max(_cursor, widget.pageSize) : widget.pageSize;
+    if (isRefresh || _ruleList == null) _loadGeneration++;
+    final gen = _loadGeneration;
 
     setState(() {
       _isLoading = true;
@@ -109,35 +101,42 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> with Pag
       errorMessage: _translationService.translate(AppUsageTranslationKeys.getRulesError),
       operation: () async {
         final query = GetListAppUsageIgnoreRulesQuery(
-          pageIndex: pageIndex,
-          pageSize: isRefresh && (_ruleList?.items.length ?? 0) > widget.pageSize
-              ? _ruleList?.items.length ?? widget.pageSize
-              : widget.pageSize,
+          pageIndex: requestPageIndex,
+          pageSize: requestPageSize,
         );
         return await _mediator.send<GetListAppUsageIgnoreRulesQuery, GetListAppUsageIgnoreRulesQueryResponse>(query);
       },
       onSuccess: (response) {
-        if (mounted) {
-          setState(() {
-            if (_ruleList == null || pageIndex == 0 || isRefresh) {
-              _ruleList = response;
-            } else {
-              // Append new items for load more
-              _ruleList!.items.addAll(response.items);
-              _ruleList!.pageIndex = response.pageIndex;
-            }
-          });
+        if (gen != _loadGeneration || !mounted) return;
 
-          // For infinity scroll: check if viewport needs more content
-          if (widget.paginationMode == PaginationMode.infinityScroll && (_ruleList?.hasNext ?? false)) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              checkAndFillViewport();
-            });
+        final offset = keepScroll ? captureScrollOffset() : null;
+        setState(() {
+          _cursor = PaginationUtils.cursorAfter(
+            pageIndex: requestPageIndex,
+            pageSize: requestPageSize,
+            totalItemCount: response.totalItemCount,
+          );
+          if (isRefresh || _ruleList == null) {
+            _ruleList = response;
+          } else {
+            // Append new items for load more
+            _ruleList!.items = PaginationUtils.appendUnique(_ruleList!.items, response.items, (r) => r.id);
+            _ruleList!.pageIndex = response.pageIndex;
+            _ruleList!.totalItemCount = response.totalItemCount;
           }
+        });
+        if (keepScroll) restoreScrollOffset(offset);
+
+        // For infinity scroll: check if viewport needs more content
+        if (widget.paginationMode == PaginationMode.infinityScroll && _hasMore) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            checkAndFillViewport();
+          });
         }
       },
       finallyAction: () {
-        if (mounted) {
+        // Only the newest-generation load clears the loading state.
+        if (mounted && gen == _loadGeneration) {
           setState(() {
             _isLoading = false;
           });
@@ -147,18 +146,13 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> with Pag
   }
 
   Future<void> refresh() async {
-    _saveScrollPosition();
-    await _getList(isRefresh: true);
-    _backLastScrollPosition();
+    await _getList(isRefresh: true, keepScroll: true);
   }
 
   @override
   Future<void> onLoadMore() async {
-    if (_ruleList?.hasNext == false) return;
-
-    _saveScrollPosition();
-    await _getList(pageIndex: _ruleList!.pageIndex + 1);
-    _backLastScrollPosition();
+    if (!_hasMore) return;
+    await _getList(pageIndex: PaginationUtils.nextPageIndex(cursor: _cursor, pageSize: widget.pageSize));
   }
 
   Future<void> deleteItem(String id) async {
@@ -292,7 +286,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> with Pag
         ),
 
         // Load more button
-        if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.loadMore)
+        if (_hasMore && widget.paginationMode == PaginationMode.loadMore)
           Padding(
             padding: const EdgeInsets.only(top: AppTheme.size2XSmall),
             child: Center(
@@ -301,7 +295,7 @@ class AppUsageIgnoreRuleListState extends State<AppUsageIgnoreRuleList> with Pag
               ),
             ),
           ),
-        if (_ruleList!.hasNext && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
+        if (_hasMore && widget.paginationMode == PaginationMode.infinityScroll && isLoadingMore)
           const Padding(
             padding: EdgeInsets.symmetric(vertical: AppTheme.sizeMedium),
             child: Center(child: CircularProgressIndicator()),
