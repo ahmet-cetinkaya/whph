@@ -146,4 +146,45 @@ mixin PaginationMixin<T extends StatefulWidget> on State<T> {
   }
 
   bool _isCheckingViewport = false;
+
+  /// Returns the current scroll offset, or `null` when the controller has no (single) attached position.
+  ///
+  /// When preserving scroll across a refresh, call this in the fetch success path immediately before the
+  /// `setState` that swaps in the refreshed data — never at `refresh()` call time or before the awaited fetch,
+  /// otherwise a scroll the user made while the fetch was pending would be reverted.
+  @protected
+  double? captureScrollOffset() {
+    try {
+      if (!scrollController.hasClients) return null;
+      return scrollController.position.pixels;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Restores an offset obtained from [captureScrollOffset] after the next frame.
+  ///
+  /// No-op when [offset] is `null`, when unmounted, when the controller has no clients, or while the user is
+  /// scrolling. The target is clamped to the current scroll extents and only applied when it differs by more
+  /// than 0.5 logical pixels.
+  @protected
+  void restoreScrollOffset(double? offset) {
+    if (offset == null || !mounted) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      try {
+        if (!scrollController.hasClients) return;
+        final position = scrollController.position;
+        if (position.isScrollingNotifier.value) return;
+
+        final target = offset.clamp(position.minScrollExtent, position.maxScrollExtent).toDouble();
+        if ((position.pixels - target).abs() > 0.5) {
+          scrollController.jumpTo(target);
+        }
+      } catch (e) {
+        debugPrint('Error restoring scroll offset: $e');
+      }
+    });
+  }
 }
