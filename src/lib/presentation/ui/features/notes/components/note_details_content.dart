@@ -44,6 +44,8 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
   final _notesService = container.resolve<NotesService>();
 
   GetNoteQueryResponse? _note;
+  DateTime? _revision;
+  Future<void> _pendingSave = Future.value();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final FocusNode _titleFocusNode = FocusNode();
@@ -128,6 +130,7 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
           final bool isContentDirty = _contentController.text != (_note?.content ?? '');
 
           _note = response;
+          _adoptRevision(response.modifiedDate ?? response.createdDate);
 
           if (!isTitleDirty && _titleController.text != response.title) {
             _titleController.text = response.title;
@@ -214,18 +217,29 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
   }
 
+  /// Keeps the newest known revision. The reload after a save is skipped while a
+  /// field has focus, so the save response is the only source of the new revision.
+  void _adoptRevision(DateTime revision) {
+    if (_revision == null || revision.isAfter(_revision!)) _revision = revision;
+  }
+
   UpdateNoteCommand _buildSaveCommand() {
     return UpdateNoteCommand(
       id: widget.noteId,
-      expectedRevision: _note!.modifiedDate ?? _note!.createdDate,
+      expectedRevision: _revision!,
       title: _titleController.text,
       content: NoteContentUpdate.set(_contentController.text),
     );
   }
 
-  Future<void> _executeSaveCommand() async {
-    await _mediator.send(_buildSaveCommand());
-    await _getNote();
+  Future<void> _executeSaveCommand() {
+    // Serialize saves so each one is built from the revision the previous save produced.
+    final save = _pendingSave.catchError((_) {}).then((_) async {
+      final response = await _mediator.send<UpdateNoteCommand, SaveNoteCommandResponse>(_buildSaveCommand());
+      _adoptRevision(response.revision);
+    });
+    _pendingSave = save;
+    return save.then((_) => _getNote());
   }
 
   void _handleFieldChange<T>(T value, VoidCallback? onUpdate) {
