@@ -6,12 +6,31 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 source "$SCRIPT_DIR/../packages/acore-scripts/src/logger.sh"
 
-if [ $# -eq 0 ]; then
-    acore_log_error "Usage: $0 [major|minor|patch]"
+USAGE="Usage: $0 [major|minor|patch] [--no-commit]"
+
+BUMP_TYPE=""
+NO_COMMIT=false
+
+for arg in "$@"; do
+    case "$arg" in
+    --no-commit)
+        NO_COMMIT=true
+        ;;
+    major | minor | patch)
+        BUMP_TYPE="$arg"
+        ;;
+    *)
+        acore_log_error "Unknown argument: $arg"
+        acore_log_error "$USAGE"
+        exit 1
+        ;;
+    esac
+done
+
+if [[ -z "$BUMP_TYPE" ]]; then
+    acore_log_error "$USAGE"
     exit 1
 fi
-
-BUMP_TYPE=$1
 
 if [[ "$BUMP_TYPE" != "major" && "$BUMP_TYPE" != "minor" && "$BUMP_TYPE" != "patch" ]]; then
     acore_log_error "Invalid bump type. Use 'major', 'minor', or 'patch'"
@@ -190,8 +209,24 @@ mv "$TEMP_FILE" "$METAINFO_FILE"
 acore_log_info "Added new release entry for version $NEW_VERSION with changelog content"
 
 # ============================================
+# Format generated files
+# ============================================
+
+# The inserted release entry and generated changelogs do not match the
+# project's formatter output, so format before committing to keep the
+# version bump commit free of later formatting-only diffs.
+acore_log_section "Formatting files"
+bash "$SCRIPT_DIR/format.sh"
+
+# ============================================
 # Git operations
 # ============================================
+
+if [[ "$NO_COMMIT" == true ]]; then
+    acore_log_warning "--no-commit given: skipping commit, tag, and Flathub manifest update."
+    acore_log_info "Version files and changelog have been updated and formatted; review and commit them manually."
+    exit 0
+fi
 
 acore_log_info "Files have been updated and changelog generated."
 acore_log_info "The following git operations will be performed:"
