@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.24.4] - 2026-10-04
+
+### Fixed
+- Fixed edits to timer settings, notes, habits and tags being lost when you left the screen right after changing them
+- Fixed the Marathon timer showing old durations after its settings were changed
+- Fixed lists jumping while scrolling and loading more items
+- Fixed the "no tasks" message not showing on an empty tasks page
+
 ## [0.24.3] - 2026-09-26
 
 ### Fixed
@@ -1780,7 +1788,8 @@ and this project adheres to
 - Add scroll controllers to today page
 - Fix hasNext logic in PaginatedList
 
-[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.3...HEAD
+[unreleased]: https://github.com/ahmet-cetinkaya/whph/compare/v0.24.4...HEAD
+[0.24.4]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.4
 [0.24.3]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.3
 [0.24.2]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.2
 [0.24.1]: https://github.com/ahmet-cetinkaya/whph/releases/tag/v0.24.1

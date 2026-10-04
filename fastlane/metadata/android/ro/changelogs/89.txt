@@ -1,0 +1,4 @@
+• Modificările la setările cronometrului, notițelor, obiceiurilor și etichetelor se pierdeau dacă închideai ecranul imediat după editare – corectat
+• Cronometrul Marathon afișa durate vechi după schimbarea setărilor – corectat
+• Listele săreau la derulare și la încărcarea mai multor elemente – corectat
+• Mesajul „fără sarcini" nu apărea pe pagina de sarcini goală – corectat

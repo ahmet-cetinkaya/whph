@@ -1,0 +1,4 @@
+• Änderungen an Timer-Einstellungen, Notizen, Gewohnheiten und Tags gingen verloren, wenn du den Bildschirm direkt nach der Bearbeitung geschlossen hast – behoben
+• Der Marathon-Timer zeigte nach geänderten Einstellungen noch alte Dauerwerte – behoben
+• Listen sprangen beim Scrollen und Nachladen von Einträgen – behoben
+• Die Meldung „Keine Aufgaben" erschien nicht auf der leeren Aufgabenseite – behoben

@@ -1,0 +1,4 @@
+• Zmiany w ustawieniach minutnika, notatkach, nawykach i tagach ginęły, gdy zamknięto ekran tuż po edycji – naprawiono
+• Minutnik Marathon pokazywał stare czasy po zmianie ustawień – naprawiono
+• Listy skakały podczas przewijania i ładowania kolejnych elementów – naprawiono
+• Komunikat „brak zadań" nie pojawiał się na pustej stronie zadań – naprawiono

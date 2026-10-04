@@ -1,0 +1,4 @@
+• Zamanlayıcı ayarları, notlar, alışkanlıklar ve etiketlerde yaptığın değişiklikler, düzenlemeden hemen sonra ekranı kapatınca kayboluyordu — düzeltildi
+• Marathon zamanlayıcısı ayar değişikliğinden sonra eski süreleri gösteriyordu — düzeltildi
+• Listeler kaydırılırken ve daha fazla öğe yüklenirken zıplıyordu — düzeltildi
+• Boş görevler sayfasında "görev yok" mesajı görünmüyordu — düzeltildi

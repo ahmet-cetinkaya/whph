@@ -1,0 +1,4 @@
+• Ajastimen asetusten, muistiinpanojen, tapojen ja tunnisteiden muutokset katosivat, jos suljit näytön heti muokkaamisen jälkeen – korjattu
+• Marathon-ajastin näytti vanhoja kestoja asetusten muuttamisen jälkeen – korjattu
+• Listat hyppivät vierityksen ja lisäkohteiden latauksen aikana – korjattu
+• "Ei tehtäviä" -viesti ei näkynyt tyhjällä tehtäväsivulla – korjattu

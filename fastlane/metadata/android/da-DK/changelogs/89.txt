@@ -1,0 +1,4 @@
+• Ændringer i timerindstillinger, noter, vaner og tags gik tabt, hvis du lukkede skærmen lige efter redigering – rettet
+• Marathon-timeren viste gamle varigheder efter ændrede indstillinger – rettet
+• Lister hoppede under rulning og indlæsning af flere punkter – rettet
+• Beskeden "ingen opgaver" blev ikke vist på en tom opgaveside – rettet

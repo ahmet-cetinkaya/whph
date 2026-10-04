@@ -1,0 +1,4 @@
+• Les modifications des réglages du minuteur, des notes, habitudes et étiquettes étaient perdues si vous fermiez l'écran juste après l'édition – corrigé
+• Le minuteur Marathon affichait les anciennes durées après modification de ses réglages – corrigé
+• Les listes sautaient lors du défilement et du chargement d'autres éléments – corrigé
+• Le message « aucune tâche » n'apparaissait pas sur la page des tâches vide – corrigé

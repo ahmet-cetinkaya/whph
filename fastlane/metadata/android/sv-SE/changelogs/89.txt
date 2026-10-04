@@ -1,0 +1,4 @@
+• Ändringar i timerinställningar, anteckningar, vanor och taggar gick förlorade om du stängde skärmen direkt efter redigering – åtgärdat
+• Marathon-timern visade gamla tider efter ändrade inställningar – åtgärdat
+• Listor hoppade vid rullning och inläsning av fler objekt – åtgärdat
+• Meddelandet "inga uppgifter" visades inte på en tom uppgiftssida – åtgärdat

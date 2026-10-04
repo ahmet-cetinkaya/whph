@@ -1,0 +1,4 @@
+• Fixed changes to timer settings, notes, habits and tags being lost when you closed the screen right after editing
+• Fixed the Marathon timer showing old durations after changing its settings
+• Fixed lists jumping while scrolling and loading more items
+• Fixed the "no tasks" message not appearing on an empty tasks page

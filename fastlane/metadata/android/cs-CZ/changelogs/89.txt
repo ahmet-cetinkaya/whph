@@ -1,0 +1,4 @@
+• Změny nastavení časovače, poznámek, návyků a štítků se ztrácely, pokud jste obrazovku zavřeli hned po úpravě – opraveno
+• Marathon časovač po změně nastavení zobrazoval staré doby – opraveno
+• Seznamy poskakovaly při posouvání a načítání dalších položek – opraveno
+• Zpráva „Žádné úkoly" se nezobrazovala na prázdné stránce úkolů – opraveno

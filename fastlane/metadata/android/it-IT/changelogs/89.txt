@@ -1,0 +1,4 @@
+• Le modifiche alle impostazioni del timer, note, abitudini ed etichette andavano perse se chiudevvi la schermata subito dopo la modifica – corretto
+• Il timer Marathon mostrava le durate vecchie dopo averne modificato le impostazioni – corretto
+• Gli elenchi saltavano durante lo scorrimento e il caricamento di altri elementi – corretto
+• Il messaggio "nessuna attività" non compariva nella pagina attività vuota – corretto

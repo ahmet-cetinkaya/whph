@@ -1,0 +1,4 @@
+• Spremembe nastavitev časovnika, zapiskov, navad in oznak so se izgubile, če ste zaslon zaprli takoj po urejanju – popravljeno
+• Časovnik Marathon je po spremembi nastavitev kazal stare trajanja – popravljeno
+• Seznami so se premikali med pomikanjem in nalaganjem več elementov – popravljeno
+• Sporočilo "ni opravil" se ni prikazalo na prazni strani z opravili – popravljeno

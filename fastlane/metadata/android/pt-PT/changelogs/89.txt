@@ -1,0 +1,4 @@
+• As alterações às definições do temporizador, notas, hábitos e etiquetas perdiam-se se fechasse o ecrã logo após editar – corrigido
+• O temporizador Marathon mostrava durações antigas depois de alterar as definições – corrigido
+• As listas saltavam ao percorrer e carregar mais itens – corrigido
+• A mensagem "sem tarefas" não aparecia na página de tarefas vazia – corrigido

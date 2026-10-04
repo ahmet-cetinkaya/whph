@@ -1,0 +1,4 @@
+• Se perdían los cambios en los ajustes del temporizador, notas, hábitos y etiquetas si cerrabas la pantalla justo después de editarlos – corregido
+• El temporizador Maratón mostraba duraciones antiguas tras cambiar sus ajustes – corregido
+• Las listas saltaban al desplazarse y cargar más elementos – corregido
+• El mensaje "sin tareas" no aparecía en la página de tareas vacía – corregido

@@ -1,0 +1,4 @@
+• Wijzigingen in timerinstellingen, notities, gewoontes en tags gingen verloren als je het scherm direct na het bewerken sloot – opgelost
+• De Marathon-timer toonde oude tijden na het wijzigen van de instellingen – opgelost
+• Lijsten sprongen tijdens het scrollen en laden van meer items – opgelost
+• Het bericht "geen taken" verscheen niet op een lege takenpagina – opgelost
