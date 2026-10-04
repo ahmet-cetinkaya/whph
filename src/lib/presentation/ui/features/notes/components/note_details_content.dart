@@ -8,6 +8,7 @@ import 'package:whph/core/application/features/notes/commands/remove_note_tag_co
 import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
 import 'package:whph/core/application/features/notes/commands/update_note_tags_order_command.dart';
 import 'package:whph/core/application/features/notes/queries/get_note_query.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/presentation/ui/features/notes/services/notes_service.dart';
@@ -84,12 +85,45 @@ class _NoteDetailsContentState extends State<NoteDetailsContent> {
       widget.onTitleUpdated!(_titleController.text);
     }
 
+    _flushPendingEdit();
+
     _titleController.dispose();
     _contentController.dispose();
     _titleFocusNode.dispose();
     _contentFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
+  }
+
+  /// Saves an edit still waiting on the debounce when the editor is left.
+  /// Runs after any in-flight save and never touches context or setState.
+  /// The widget is gone by now, so a failed or skipped save can only be logged, not shown to the user.
+  void _flushPendingEdit() {
+    if (_debounce?.isActive != true) return;
+    _debounce!.cancel();
+
+    final title = _titleController.text;
+    final content = _contentController.text;
+    _pendingSave = _pendingSave.catchError((_) {}).then((_) async {
+      final revision = _revision;
+      if (revision == null) {
+        Logger.warning('Note edit not saved on leave, revision unknown (note not loaded)');
+        return;
+      }
+      try {
+        final response = await _mediator.send<UpdateNoteCommand, SaveNoteCommandResponse>(UpdateNoteCommand(
+          id: widget.noteId,
+          expectedRevision: revision,
+          title: title,
+          content: NoteContentUpdate.set(content),
+        ));
+        _adoptRevision(response.revision);
+      } on NoteRevisionConflictException catch (e) {
+        Logger.error('Note edit not saved on leave, revision conflict: $e');
+      } catch (e, s) {
+        Logger.error('Failed to save note on leave: $e', stackTrace: s);
+      }
+    });
   }
 
   void _handleNoteUpdated() {

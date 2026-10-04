@@ -9,6 +9,7 @@ import 'package:whph/core/application/features/habits/queries/get_list_habit_rec
 import 'package:whph/core/application/features/habits/queries/get_list_habit_tags_query.dart';
 import 'package:whph/core/application/features/settings/queries/get_setting_query.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/features/habits/constants/habit_translation_keys.dart';
@@ -151,8 +152,25 @@ class HabitDetailsController extends ChangeNotifier {
   @override
   void dispose() {
     _isDisposed = true;
+    unawaited(_flushPendingSave());
     _debounce?.cancel();
     super.dispose();
+  }
+
+  /// Saves an edit still waiting on the debounce when the editor is left.
+  /// Uses no context or notifyListeners, and the edit already lives in [_habit].
+  /// The widget is gone by now, so a failed save can only be logged, not shown to the user.
+  Future<void> _flushPendingSave() async {
+    if (_debounce?.isActive != true) return;
+    _debounce!.cancel();
+    final habit = _habit;
+    if (habit == null) return;
+
+    try {
+      await _mediator.send(_buildSaveCommand(habit.id));
+    } catch (e, s) {
+      Logger.error('Failed to save habit on leave: $e', stackTrace: s);
+    }
   }
 
   void setNameFieldActive(bool active) {

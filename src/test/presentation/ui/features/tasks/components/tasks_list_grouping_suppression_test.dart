@@ -288,6 +288,20 @@ void main() {
       expect(query.enableGrouping, isFalse);
       expect(query.groupBy, isNull);
     });
+
+    testWidgets('empty ungrouped list shows the no-tasks overlay', (tester) async {
+      // Regression: _groupTasks used to return {'': []} when grouping was off,
+      // so _buildContent's isEmpty check never fired and the empty overlay was
+      // unreachable on the default tasks page.
+      await pumpTaskList(
+        tester,
+        sortConfig: _taskConfig(useCustomOrder: false, enableGrouping: false),
+        viewMode: TaskViewMode.list,
+      );
+
+      expect(find.byType(TaskList), findsOneWidget);
+      expect(find.text('tasks.no_tasks'), findsOneWidget);
+    });
   });
 
   group('HabitsList query grouping coexistence', () {

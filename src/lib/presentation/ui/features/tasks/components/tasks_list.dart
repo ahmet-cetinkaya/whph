@@ -709,6 +709,9 @@ class TaskListState extends State<TaskList> with PaginationMixin<TaskList>, List
     final filteredTasks = _visibleTasks();
 
     if (!_showGroupHeaders(filteredTasks)) {
+      // An empty map keeps the "no tasks" overlay reachable; the empty '' bucket
+      // used to hide it because _buildContent only checks isEmpty.
+      if (filteredTasks.isEmpty) return groupedTasks;
       groupedTasks[''] = filteredTasks;
       return groupedTasks;
     }

@@ -628,9 +628,11 @@ class TimerController extends ChangeNotifier {
   void updateSettings(TimerSettings settings) {
     if (_sessionService != null) {
       _applySettings(settings);
-      _initializeSharedSession();
+      // Snapshot before attaching: create() returns an existing session's stale state and would overwrite us.
+      final shared = _sharedSettings;
+      if (_sessionSubscription == null) _initializeSharedSession();
       _safeSharedOperation(
-        _sessionService.updateSettings(_sessionId!, _sharedSettings),
+        _sessionService.updateSettings(_sessionId!, shared),
         'updateSettings',
       );
       return;

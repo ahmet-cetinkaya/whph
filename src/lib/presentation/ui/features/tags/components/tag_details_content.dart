@@ -21,6 +21,7 @@ import 'package:whph/presentation/ui/features/tags/constants/tag_translation_key
 import 'package:whph/presentation/ui/shared/components/color_picker/color_field.dart';
 import 'package:whph/presentation/ui/features/tags/services/tags_service.dart';
 import 'package:whph/core/domain/features/tags/tag.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 
 class TagDetailsContent extends StatefulWidget {
   final String tagId;
@@ -72,10 +73,30 @@ class _TagDetailsContentState extends State<TagDetailsContent> {
       widget.onNameUpdated!(_nameController.text);
     }
 
+    _flushPendingSave();
+
     _nameController.dispose();
     _nameFocusNode.dispose();
     _debounce?.cancel();
     super.dispose();
+  }
+
+  /// Saves an edit still waiting on the debounce when the editor is left.
+  /// The command is built while the name controller is alive and no context, setState or parent callback is used.
+  /// The widget is gone by now, so a failed save can only be logged, not shown to the user.
+  void _flushPendingSave() {
+    if (_debounce?.isActive != true) return;
+    _debounce!.cancel();
+    if (_tag == null) return;
+
+    final command = _buildSaveCommand();
+    unawaited(() async {
+      try {
+        await _mediator.send(command);
+      } catch (e, s) {
+        Logger.error('Failed to save tag on leave: $e', stackTrace: s);
+      }
+    }());
   }
 
   // Process field content and update UI after tag data is loaded

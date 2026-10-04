@@ -281,6 +281,46 @@ void main() {
       });
     });
 
+    test('updateSettings overrides an existing session holding old settings and later controllers seed from it', () {
+      fakeAsync((async) {
+        final sessionService = TimerSessionService(
+          durationWriter: FakeDurationWriter(),
+          alarmScheduler: FakeAlarmScheduler(),
+          now: () => DateTime(2026, 9, 8).add(async.elapsed),
+        );
+        const owner = TimerSessionOwner.task('stale');
+        TimerController build() => TimerController(
+              mediator: FakeMediator(),
+              reminderService: FakeReminderService(),
+              sessionService: sessionService,
+              sessionId: 'task:stale',
+              sessionOwner: owner,
+            );
+        final first = build();
+        first.updateSettings(_defaultSettings());
+        async.flushMicrotasks();
+
+        final second = build();
+        second.updateSettings(_defaultSettings(workDuration: 30, breakDuration: 7));
+        async.flushMicrotasks();
+
+        expect(second.workDuration, 30);
+        expect(second.breakDuration, 7);
+        final settings = sessionService.state('task:stale')!.settings;
+        expect(settings.workDuration, const Duration(minutes: 30));
+        expect(settings.breakDuration, const Duration(minutes: 7));
+
+        final third = build();
+        third.initializeSettings();
+        async.flushMicrotasks();
+        expect(third.workDuration, 30);
+        expect(third.breakDuration, 7);
+        for (final c in [first, second, third]) {
+          c.dispose();
+        }
+      });
+    });
+
     group('time calculation', () {
       test('wall clock time calculation works regardless of tick frequency', () {
         fakeAsync((async) {

@@ -294,10 +294,8 @@ class _AppTimerState extends State<AppTimer> {
     int tickingVolume,
     int tickingSpeed,
   ) async {
-    await _controller.saveSetting('work_time', workDuration);
-    await _controller.saveSetting('break_time', breakDuration);
-    await _controller.saveSetting('long_break_time', longBreakDuration);
-    await _controller.saveSetting('sessions_before_long_break', sessionsCount);
+    // The dialog can notify after this widget is gone (dismiss flush), when the controller is disposed.
+    if (!mounted) return;
 
     _controller.updateSettings(TimerSettings(
       timerMode: timerMode,

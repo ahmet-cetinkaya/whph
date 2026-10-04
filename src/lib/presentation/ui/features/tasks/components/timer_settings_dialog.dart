@@ -4,17 +4,22 @@ import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart' hide Container;
 import 'package:whph/core/application/features/settings/commands/save_setting_command.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/presentation/ui/shared/enums/timer_mode.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
+import 'package:whph/presentation/ui/shared/services/abstraction/i_sound_manager_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 import 'package:whph/presentation/ui/shared/components/custom_tab_bar.dart';
 
 class TimerSettingsDialog extends StatefulWidget {
+  /// Quiet period after the last edit before pending settings are written.
+  static const Duration saveDebounce = Duration(milliseconds: 500);
+
   final TimerMode initialTimerMode;
   final int initialWorkDuration;
   final int initialBreakDuration;
@@ -72,6 +77,18 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
   // Track which settings need to be saved
   final Set<String> _pendingSaves = <String>{};
 
+  // Saves run strictly one after another (FIFO); a dispose flush queues behind an in-flight save.
+  Future<void> _saveChain = Future.value();
+
+  // Set in dispose: a dead State cannot retry a failed save.
+  bool _disposed = false;
+
+  // True once the user changed anything; the parent must be told even if the saves already finished.
+  bool _dirty = false;
+
+  // Set once _onClose took over notifying the parent, so dispose never notifies a second time.
+  bool _closed = false;
+
   late TimerMode _timerMode;
   late int _workDuration;
   late int _breakDuration;
@@ -103,23 +120,54 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
   @override
   void dispose() {
     _saveDebounceTimer?.cancel();
+    _disposed = true;
+    // Dismissal by barrier tap, Esc or drag never reaches _onClose: flush and notify here.
+    final hadChanges = _dirty || _pendingSaves.isNotEmpty;
+    if (_pendingSaves.isNotEmpty) {
+      // No setState/context here; _savePendingSettings has its own try/catch.
+      unawaited(_savePendingSettings());
+    }
+    if (!_closed && hadChanges) {
+      _closed = true;
+      final onChanged = widget.onSettingsChanged;
+      final args = (
+        _timerMode,
+        _workDuration,
+        _breakDuration,
+        _longBreakDuration,
+        _sessionsCount,
+        _autoStartBreak,
+        _autoStartWork,
+        _tickingEnabled,
+        _keepScreenAwake,
+        _tickingVolume,
+        _tickingSpeed,
+      );
+      // Post-frame: the parent may call setState/notifyListeners, which is unsafe mid-unmount.
+      // The parent callback guards against its own widget already being disposed.
+      // Known divergence: the parent applies these in-memory values even if the DB save above failed; the next
+      // app start then reads the old persisted values (the failure is only logged).
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        try {
+          await onChanged(
+              args.$1, args.$2, args.$3, args.$4, args.$5, args.$6, args.$7, args.$8, args.$9, args.$10, args.$11);
+        } catch (e, s) {
+          Logger.error('Failed to notify timer settings change after dismiss: $e', stackTrace: s);
+        }
+      });
+    }
     super.dispose();
   }
 
-  Future<void> _saveTimerModeSetting(TimerMode mode) async {
-    try {
-      final command = SaveSettingCommand(
-        key: SettingKeys.defaultTimerMode,
-        value: mode.value,
-        valueType: SettingValueType.string,
-      );
-      await _mediator.send(command);
+  Future<void> _saveTimerModeSetting() async {
+    // Saved immediately, but tracked like the other keys so a failed save is retried on close/dismiss.
+    _pendingSaves.add(SettingKeys.defaultTimerMode);
+    _dirty = true;
+    _saveDebounceTimer?.cancel();
+    await _savePendingSettings();
 
-      // Immediately update parent timer component
-      _notifyParentOfChanges();
-    } catch (e) {
-      rethrow;
-    }
+    // If the dialog was closed meanwhile, _onClose/dispose already notify the parent.
+    if (!_closed) await _notifyParentOfChanges();
   }
 
   Future<void> _notifyParentOfChanges() async {
@@ -137,122 +185,87 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
         _tickingVolume,
         _tickingSpeed,
       );
-    } catch (e) {
-      // Settings notification failed - not critical
+    } catch (e, s) {
+      Logger.error('Failed to apply timer settings: $e', stackTrace: s);
     }
   }
 
-  Future<void> _saveBoolSetting(String key, bool value) async {
-    try {
-      final command = SaveSettingCommand(
-        key: key,
-        value: value.toString(),
-        valueType: SettingValueType.bool,
-      );
-      await _mediator.send(command);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  void _debouncedSaveBoolSetting(String key, bool value) {
+  void _debouncedSave(String key) {
     _pendingSaves.add(key);
+    _dirty = true;
     _saveDebounceTimer?.cancel();
-    _saveDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      await _savePendingSettings();
-    });
+    _saveDebounceTimer = Timer(TimerSettingsDialog.saveDebounce, _savePendingSettings);
   }
 
-  void _debouncedSaveIntSetting(String key, int value) {
-    _pendingSaves.add(key);
+  Future<void> _flushPendingSaves() async {
     _saveDebounceTimer?.cancel();
-    _saveDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      await _savePendingSettings();
-    });
+    // Also waits for an in-flight save; if that one fails its keys are re-added and retried by this run.
+    await _savePendingSettings();
   }
 
-  Future<void> _savePendingSettings() async {
+  Future<void> _savePendingSettings() {
+    final run = _saveChain.then((_) => _runPendingSave());
+    _saveChain = run; // _runPendingSave never throws, so the chain never breaks
+    return run;
+  }
+
+  Future<void> _runPendingSave() async {
+    // Snapshot and clear when the save starts: keys changed while it is in flight stay pending for the next one.
+    final keys = _pendingSaves.toList();
+    _pendingSaves.clear();
+    if (keys.isEmpty) return;
     try {
-      final saves = <Future<void>>[];
-
-      for (final key in _pendingSaves) {
-        switch (key) {
-          case SettingKeys.autoStartBreak:
-            saves.add(_saveBoolSetting(key, _autoStartBreak));
-            break;
-          case SettingKeys.autoStartWork:
-            saves.add(_saveBoolSetting(key, _autoStartWork));
-            break;
-          case SettingKeys.tickingEnabled:
-            saves.add(_saveBoolSetting(key, _tickingEnabled));
-            break;
-          case SettingKeys.keepScreenAwake:
-            saves.add(_saveBoolSetting(key, _keepScreenAwake));
-            break;
-          case SettingKeys.tickingVolume:
-            saves.add(_saveIntSetting(key, _tickingVolume));
-            break;
-          case SettingKeys.tickingSpeed:
-            saves.add(_saveIntSetting(key, _tickingSpeed));
-            break;
-          case SettingKeys.workTime:
-            saves.add(_saveIntSetting(key, _workDuration));
-            break;
-          case SettingKeys.breakTime:
-            saves.add(_saveIntSetting(key, _breakDuration));
-            break;
-          case SettingKeys.longBreakTime:
-            saves.add(_saveIntSetting(key, _longBreakDuration));
-            break;
-          case SettingKeys.sessionsBeforeLongBreak:
-            saves.add(_saveIntSetting(key, _sessionsCount));
-            break;
-        }
+      await Future.wait(keys.map(_saveKey));
+    } catch (e, s) {
+      if (_disposed) {
+        // A dead State has no later close/dispose flush, so this edit is lost (only logged).
+        Logger.error('Timer settings not saved after the dialog was dismissed: $e', stackTrace: s);
+      } else {
+        // Keep the keys pending so the next save (or the close/dispose flush) retries them.
+        _pendingSaves.addAll(keys);
+        Logger.error('Failed to save timer settings: $e', stackTrace: s);
       }
+      return;
+    }
 
-      await Future.wait(saves);
-      _pendingSaves.clear();
-    } catch (e) {
-      // Setting save failed - will be retried on next debounced save
+    if (keys.contains(SettingKeys.tickingEnabled)) {
+      try {
+        container.resolve<ISoundManagerService>().clearSettingsCache();
+      } catch (e, s) {
+        Logger.error('Failed to clear sound settings cache: $e', stackTrace: s);
+      }
     }
   }
 
-  Future<void> _saveIntSetting(String key, int value) async {
-    try {
-      final command = SaveSettingCommand(
-        key: key,
-        value: value.toString(),
-        valueType: SettingValueType.int,
-      );
-      await _mediator.send(command);
-    } catch (e) {
-      rethrow;
-    }
+  Future<void> _saveKey(String key) {
+    final (String value, SettingValueType type) = switch (key) {
+      SettingKeys.defaultTimerMode => (_timerMode.value, SettingValueType.string),
+      SettingKeys.autoStartBreak => ('$_autoStartBreak', SettingValueType.bool),
+      SettingKeys.autoStartWork => ('$_autoStartWork', SettingValueType.bool),
+      SettingKeys.tickingEnabled => ('$_tickingEnabled', SettingValueType.bool),
+      SettingKeys.keepScreenAwake => ('$_keepScreenAwake', SettingValueType.bool),
+      SettingKeys.tickingVolume => ('$_tickingVolume', SettingValueType.int),
+      SettingKeys.tickingSpeed => ('$_tickingSpeed', SettingValueType.int),
+      SettingKeys.workTime => ('$_workDuration', SettingValueType.int),
+      SettingKeys.breakTime => ('$_breakDuration', SettingValueType.int),
+      SettingKeys.longBreakTime => ('$_longBreakDuration', SettingValueType.int),
+      SettingKeys.sessionsBeforeLongBreak => ('$_sessionsCount', SettingValueType.int),
+      _ => throw ArgumentError('Unknown timer setting key: $key'),
+    };
+    return _mediator.send(SaveSettingCommand(key: key, value: value, valueType: type));
   }
 
   Future<void> _onClose() async {
-    // Execute any pending debounced saves immediately before closing
-    if (_saveDebounceTimer?.isActive == true) {
-      _saveDebounceTimer?.cancel();
-      await _savePendingSettings();
-    }
+    if (_closed) return;
+    _closed = true;
 
-    if (mounted) {
-      widget.onSettingsChanged(
-        _timerMode,
-        _workDuration,
-        _breakDuration,
-        _longBreakDuration,
-        _sessionsCount,
-        _autoStartBreak,
-        _autoStartWork,
-        _tickingEnabled,
-        _keepScreenAwake,
-        _tickingVolume,
-        _tickingSpeed,
-      );
-      Navigator.of(context).pop();
-    }
+    // Only a real change may reach the parent: applying settings resets a running timer and alarm.
+    final hadChanges = _dirty || _pendingSaves.isNotEmpty;
+    await _flushPendingSaves();
+    if (hadChanges) await _notifyParentOfChanges();
+
+    // A failed save still closes; the keys stay pending and the dispose flush retries once.
+    if (mounted) Navigator.of(context).pop();
   }
 
   Map<NumericInputTranslationKey, String> _getNumericInputTranslations() {
@@ -331,7 +344,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                     setState(() {
                       _workDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
                     });
-                    _debouncedSaveIntSetting(SettingKeys.workTime, _workDuration);
+                    _debouncedSave(SettingKeys.workTime);
                   },
                   valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
                 ),
@@ -349,7 +362,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                     setState(() {
                       _breakDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
                     });
-                    _debouncedSaveIntSetting(SettingKeys.breakTime, _breakDuration);
+                    _debouncedSave(SettingKeys.breakTime);
                   },
                   valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
                 ),
@@ -363,7 +376,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                     setState(() {
                       _longBreakDuration = newValue.clamp(_minTimerValue, _maxTimerValue);
                     });
-                    _debouncedSaveIntSetting(SettingKeys.longBreakTime, _longBreakDuration);
+                    _debouncedSave(SettingKeys.longBreakTime);
                   },
                   valueSuffix: _translationService.translate(SharedTranslationKeys.minutesShort),
                 ),
@@ -377,7 +390,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                     setState(() {
                       _sessionsCount = newValue.clamp(1, 10);
                     });
-                    _debouncedSaveIntSetting(SettingKeys.sessionsBeforeLongBreak, _sessionsCount);
+                    _debouncedSave(SettingKeys.sessionsBeforeLongBreak);
                   },
                   step: 1,
                   minValue: 1,
@@ -403,7 +416,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                     setState(() {
                       _autoStartBreak = value;
                     });
-                    _debouncedSaveBoolSetting(SettingKeys.autoStartBreak, value);
+                    _debouncedSave(SettingKeys.autoStartBreak);
                   },
                 ),
                 const SizedBox(height: AppTheme.sizeMedium),
@@ -416,7 +429,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                     setState(() {
                       _autoStartWork = value;
                     });
-                    _debouncedSaveBoolSetting(SettingKeys.autoStartWork, value);
+                    _debouncedSave(SettingKeys.autoStartWork);
                   },
                 ),
               ],
@@ -445,7 +458,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
             setState(() {
               _tickingEnabled = value;
             });
-            _debouncedSaveBoolSetting(SettingKeys.tickingEnabled, value);
+            _debouncedSave(SettingKeys.tickingEnabled);
           },
         ),
 
@@ -464,7 +477,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                   setState(() {
                     _tickingVolume = newValue.clamp(5, 100);
                   });
-                  _debouncedSaveIntSetting(SettingKeys.tickingVolume, _tickingVolume);
+                  _debouncedSave(SettingKeys.tickingVolume);
                 },
                 step: 5,
                 minValue: 5,
@@ -480,7 +493,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
                   setState(() {
                     _tickingSpeed = newValue.clamp(1, 5);
                   });
-                  _debouncedSaveIntSetting(SettingKeys.tickingSpeed, _tickingSpeed);
+                  _debouncedSave(SettingKeys.tickingSpeed);
                 },
                 step: 1,
                 minValue: 1,
@@ -511,7 +524,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
             setState(() {
               _keepScreenAwake = value;
             });
-            _debouncedSaveBoolSetting(SettingKeys.keepScreenAwake, value);
+            _debouncedSave(SettingKeys.keepScreenAwake);
           },
         ),
 
@@ -552,7 +565,7 @@ class _TimerSettingsDialogState extends State<TimerSettingsDialog> {
           setState(() {
             _timerMode = mode;
           });
-          await _saveTimerModeSetting(mode);
+          await _saveTimerModeSetting();
         }
       },
       items: TimerMode.values.map((mode) {
