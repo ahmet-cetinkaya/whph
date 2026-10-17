@@ -582,6 +582,12 @@ final class SyncSession {
             plan.done = true;
             break;
           }
+          if (useCell && _isNeverSentSecurityCell(cell!, own)) {
+            // Stayed on the sealed origin at a switch (U11/rooted): it is
+            // never sent, its seq is just a gap in the declared range.
+            plan.scanned = seq;
+            continue;
+          }
           final size = useCell ? _estimate(cell!.record) : _heldSize(held!);
           final manifest = useCell ? cell!.manifest : held!.manifest;
           if (overflows(size, manifest)) {
@@ -630,6 +636,9 @@ final class SyncSession {
     }
     if (!_storageError) await _serveAboveCursor(channel);
   }
+
+  static bool _isNeverSentSecurityCell(StoredCell cell, String ownOrigin) =>
+      cell.manifest == null && cell.record.origin != ownOrigin && SecurityTables.contains(cell.record.key.table);
 
   /// Serves signed cells this store holds above its own cursor for their
   /// origin — after `local_reset` cleared the vector (D14), the retained

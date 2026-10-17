@@ -28,6 +28,12 @@
 /// integrity-protected, so it never adds a member, an anchor or a key that
 /// admits a session, receives keys or verifies manifests.
 ///
+/// Rooted membership (U11/rooted): a member, revocation or grant cell counts
+/// only when its carrier origin is owned, via a verified registration, by a
+/// member already rooted in the key-file trust anchors and the carrier seq
+/// passes that owner's revocation cutoff. A closed set of rows vouching for
+/// each other therefore trusts nothing. Other cells are ignored, not deleted.
+///
 /// Security cells authored by a revoked member above that member's cutoff
 /// are ignored (T11 note: revocation records of a revoked member count only
 /// when their carrying change passed the cutoff); the filter is iterated to a
@@ -443,16 +449,13 @@ final class Membership {
     late RevocationSet directoryRevocations;
     late MemberKeySet directory;
     for (var round = 0; round < _filterRounds; round++) {
-      members = {..._anchors};
-      for (final (carrier, entry) in memberCells) {
-        if (!excluded.contains(_carrierId(carrier))) members.putIfAbsent(entry.memberId, () => entry);
-      }
-      directory = MemberKeySet([for (final m in members.values) m.ed25519Pub]);
+      members = _rootedMembers(memberCells, excluded, registry);
+      directory = _directoryOf(members);
       _live.current = directory;
       directoryRevocations = RevocationSet(g);
       await directoryRevocations.merge([
         for (final (carrier, record) in revocationCells)
-          if (!excluded.contains(_carrierId(carrier))) record,
+          if (_isRootedCarrier(carrier, excluded, registry)) record,
       ], directory);
       final ledgerOnly =
           await _mergeRetainedRevocations(directoryRevocations, retainedRevocations, excluded, directory);
@@ -483,7 +486,7 @@ final class Membership {
     _directoryRevokedEd = {for (final k in directoryRevocations.revokedMembers) _hex(k)};
     _grants = [
       for (final (carrier, grant) in grantCells)
-        if (!excluded.contains(_carrierId(carrier))) grant,
+        if (_isRootedCarrier(carrier, excluded, registry)) grant,
     ];
     _live.current = directory;
     _verifier = ManifestVerifier(groupId: g, registry: registry, revocations: revocations, members: _live);
@@ -510,6 +513,43 @@ final class Membership {
     _fingerprint = fingerprint;
     return changed;
   }
+
+  /// The members rooted in the key-file trust anchors (U11/rooted): the least
+  /// fixpoint of "a member cell is rooted once its carrier origin is owned,
+  /// through a verified registration, by an already rooted member". Cells of
+  /// [excluded] carriers and cells carried by origins nobody rooted owns are
+  /// ignored, not deleted; they root on a later rebuild once the registration
+  /// arrives. The registry reads [_live], so every step resolves origin
+  /// owners against the rooted set built so far; the set only grows, hence
+  /// the result does not depend on cell order.
+  Map<String, MemberEntry> _rootedMembers(
+    List<(_Carrier, MemberEntry)> memberCells,
+    Set<String> excluded,
+    OriginRegistrySet registry,
+  ) {
+    final rooted = {..._anchors};
+    var grew = true;
+    while (grew) {
+      grew = false;
+      _live.current = _directoryOf(rooted);
+      for (final (carrier, entry) in memberCells) {
+        if (rooted.containsKey(entry.memberId) || !_isRootedCarrier(carrier, excluded, registry)) continue;
+        rooted[entry.memberId] = entry;
+        grew = true;
+      }
+    }
+    return rooted;
+  }
+
+  static MemberKeySet _directoryOf(Map<String, MemberEntry> members) =>
+      MemberKeySet([for (final m in members.values) m.ed25519Pub]);
+
+  /// Whether the change [carrier] passed its owner's revocation cutoff and
+  /// its origin is owned by a member of the directory the registry currently
+  /// reads (the rooted one while [_rootedMembers] runs).
+  static bool _isRootedCarrier(_Carrier carrier, Set<String> excluded, OriginRegistrySet registry) =>
+      !excluded.contains(_carrierId(carrier)) &&
+      registry.ownerOf(OriginId.fromHex(carrier.origin)) is OriginRegisteredTo;
 
   /// The ledger's revocation records with their revokers' keys (U11/Efe-1).
   /// Undecodable records are skipped like undecodable DB cells; an

@@ -186,7 +186,8 @@ final class SyncDevice {
   /// Whether the key file exists (a lost key file triggers D14 rule 2).
   bool keyFilePresent = true;
 
-  /// Set after a key loss until the device is paired again (D14).
+  /// Set after a key loss, or when an origin switch left never-sent security
+  /// rows behind (U11/rooted), until the device is paired again (D14).
   bool needsRepairing = false;
 
   /// Local time of the last session with any member that finished its
@@ -498,6 +499,9 @@ final class SyncDevice {
       sentMark: sentMark,
       hlcFloor: ledger.hlcFloor,
     );
+    // Security rows this device authored but never sent stay behind (U11/rooted):
+    // its peers cannot learn them, so it must be paired again.
+    if (outcome.securityLeftBehind > 0) needsRepairing = true;
     if (membership.hasGroup && reason != OriginSwitchReason.groupSwitch) {
       await membership.registerOrigin(newOrigin, store);
     }

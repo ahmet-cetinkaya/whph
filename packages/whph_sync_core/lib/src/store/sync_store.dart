@@ -149,6 +149,7 @@ final class SwitchOriginOutcome {
     required this.sealedCursor,
     required this.moved,
     required this.purged,
+    this.securityLeftBehind = 0,
   });
 
   final OriginId oldOrigin;
@@ -157,6 +158,11 @@ final class SwitchOriginOutcome {
   /// Cursor set for the sealed old origin (`null` when the vector was
   /// cleared).
   final int? sealedCursor;
+
+  /// Never-sent security cells that stayed on [oldOrigin] (`restore`,
+  /// `keyLost`, U11/rooted): their carrier cannot vouch for them under a new
+  /// origin, so the device needs re-pairing when this is above 0.
+  final int securityLeftBehind;
 
   /// Cells moved to the new origin (adopted or re-authored).
   final int moved;
@@ -525,12 +531,13 @@ final class SyncStore implements ReplicaStore {
   ///
   /// * `restore`, `keyLost`: the old origin is sealed with cursor
   ///   `min(sentMark, highest retained seq)` (the mark term dropped when
-  ///   [sentMark] is `null`; adopted cells do not count as held). Every cell
-  ///   without a manifest — a transport cut can leave a marked batch
-  ///   undelivered — and every cell above
+  ///   [sentMark] is `null`; adopted cells do not count as held). Every
+  ///   user-table cell without a manifest — a transport cut can leave a
+  ///   marked batch undelivered — and every one above
   ///   [sentMark] move to [newOrigin] with fresh seqs, keeping `hlc`, `node`,
   ///   value and cause. `restore` raises the HLC to the max held `hlc` and to
-  ///   [hlcFloor] (the ledger's `hlc_high`, F3).
+  ///   [hlcFloor] (the ledger's `hlc_high`, F3). Never-sent security cells
+  ///   stay on the sealed origin and are never sent (U11/rooted).
   /// * `localReset` (D14): user-table cells and held envelopes are deleted,
   ///   the whole vector is cleared; security cells stay, and those of the
   ///   old origin without a manifest (or above [sentMark]) are adopted.
@@ -552,12 +559,21 @@ final class SyncStore implements ReplicaStore {
     var sealedCursor = 0;
     var toMove = <StoredCell>[];
     var purged = 0;
+    var securityLeftBehind = 0;
     var clearVector = false;
     switch (reason) {
       case OriginSwitchReason.restore || OriginSwitchReason.keyLost:
-        toMove = [
+        // Never-sent security cells stay on the sealed origin and are never
+        // sent: re-keyed to a new origin a member row could be vouched for
+        // by an origin it itself owns (U11/rooted).
+        final neverSent = [
           for (final c in oldCells)
             if (_isNeverSent(c, sentMark)) c,
+        ];
+        securityLeftBehind = neverSent.where((c) => SecurityTables.contains(c.record.key.table)).length;
+        toMove = [
+          for (final c in neverSent)
+            if (!SecurityTables.contains(c.record.key.table)) c,
         ];
         // Adopted cells leave the origin, so only retained ones count as held
         // (min(highest held seq, mark) of U11): after a rollback an adopted
@@ -634,6 +650,7 @@ final class SyncStore implements ReplicaStore {
       sealedCursor: clearVector ? null : sealedCursor,
       moved: toMove.length,
       purged: purged,
+      securityLeftBehind: securityLeftBehind,
     );
   }
 
