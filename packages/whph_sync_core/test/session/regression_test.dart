@@ -234,7 +234,7 @@ void main() {
     for (final envelope in batch.envelopes.where((e) => e.pk != failing.pk)) {
       expect(b.store.commitLog['${envelope.origin.hex}#${envelope.originSeq}'], 1, reason: 'sibling ${envelope.pk}');
     }
-    expect(b.store.cursorOf(authorOrigin), greaterThanOrEqualTo(batch.ranges[batch.ranges.keys.first]!.to));
+    expect(b.store.cursorOf(authorOrigin), greaterThanOrEqualTo(batch.ranges[batch.ranges.keys.first]!.single.to));
     expect(b.store.cursorOf(authorOrigin), a.store.highestOwnSeq, reason: 'cursor at the declared bound');
 
     b.store.applyFault = null;
@@ -432,7 +432,7 @@ Set<bool> _expectBatchesAllOrNothing(SyncStore store, List<ChangeBatchMessage> s
       for (final e in batch.envelopes)
         store.commitLog.containsKey('${e.origin.hex}#${e.originSeq}') || store.heldAt(e.origin.hex, e.originSeq) != null
     ];
-    final covered = [for (final e in batch.ranges.entries) store.cursorOf(e.key.hex) >= e.value.to];
+    final covered = [for (final e in batch.ranges.entries) store.cursorOf(e.key.hex) >= e.value.single.to];
     final batchReason = '$reason, batch ${batch.batchId}';
     expect(committed.toSet().length, lessThanOrEqualTo(1), reason: '$batchReason: envelopes partially applied');
     if (committed.isNotEmpty) {

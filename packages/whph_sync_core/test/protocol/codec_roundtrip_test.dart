@@ -51,7 +51,10 @@ Map<SyncMessageType, SyncMessage> sampleMessages() {
     ),
     SyncMessageType.changeBatch: ChangeBatchMessage(
       batchId: 12,
-      ranges: {originA: SeqRange(41, 43), originB: SeqRange(0, 5)},
+      ranges: {
+        originA: [SeqRange(41, 43)],
+        originB: [SeqRange(0, 5)]
+      },
       manifests: [manifestFor(changes, fromSeq: 41, toSeq: 43)],
       envelopes: [
         for (final c in changes) sealForTest(c),
@@ -119,7 +122,10 @@ void main() {
 
     final batch = SyncCodec.decode(SyncCodec.encode(samples[SyncMessageType.changeBatch]!)) as ChangeBatchMessage;
     expect(batch.batchId, 12);
-    expect(batch.ranges, {originA: SeqRange(41, 43), originB: SeqRange(0, 5)});
+    expect(batch.ranges, {
+      originA: [SeqRange(41, 43)],
+      originB: [SeqRange(0, 5)]
+    });
     expect(
       [for (final e in batch.envelopes.take(2)) e.toChange(groupId, ChangeValue.decode(e.ciphertext))],
       [goldenChangeWithoutCause(), goldenChangeWithCause()],

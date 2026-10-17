@@ -23,7 +23,9 @@ void main() {
     receiveFrame(
       SyncCodec.encode(ChangeBatchMessage(
         batchId: 1,
-        ranges: {originA: SeqRange(41, 43)},
+        ranges: {
+          originA: [SeqRange(41, 43)]
+        },
         manifests: [manifestFor(changes, fromSeq: 41, toSeq: 43)],
         envelopes: [for (final c in changes) sealForTest(c)],
       )),
@@ -41,7 +43,9 @@ void main() {
 
   Uint8List validBatch({List<ChangeEnvelope>? envelopes}) => SyncCodec.encode(ChangeBatchMessage(
         batchId: 2,
-        ranges: {originA: SeqRange(0, 10)},
+        ranges: {
+          originA: [SeqRange(0, 10)]
+        },
         envelopes: envelopes ??
             [
               for (var seq = 1; seq <= 3; seq++)
@@ -77,7 +81,9 @@ void main() {
       final big = List<int>.filled(SyncLimits.maxEnvelopeCiphertextBytes, 1);
       final message = ChangeBatchMessage(
         batchId: 3,
-        ranges: {originA: SeqRange(0, 4)},
+        ranges: {
+          originA: [SeqRange(0, 4)]
+        },
         envelopes: [
           for (var seq = 1; seq <= 4; seq++)
             ChangeEnvelope(
@@ -132,7 +138,9 @@ void main() {
       expect(
         () => ChangeBatchMessage(
           batchId: 0,
-          ranges: {originA: SeqRange(0, 2000)},
+          ranges: {
+            originA: [SeqRange(0, 2000)]
+          },
           envelopes: [
             for (var seq = 1; seq <= 1001; seq++)
               sealForTest(Change(

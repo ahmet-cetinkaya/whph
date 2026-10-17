@@ -77,15 +77,17 @@ void receiveFrame(Uint8List frame, ReplicaStore store, {GroupId? group}) {
   if (message is! ChangeBatchMessage) throw StateError('expected a change batch, got ${message.type}');
   final changes = openForTest(message, group ?? groupId);
   for (final entry in message.ranges.entries) {
-    store.applyBatch(ChangeBatch(
-      origin: entry.key.hex,
-      fromSeq: entry.value.from,
-      toSeq: entry.value.to,
-      cells: [
-        for (final c in changes)
-          if (c.origin == entry.key) c.toCellRecord(),
-      ],
-    ));
+    for (final range in entry.value) {
+      store.applyBatch(ChangeBatch(
+        origin: entry.key.hex,
+        fromSeq: range.from,
+        toSeq: range.to,
+        cells: [
+          for (final c in changes)
+            if (c.origin == entry.key && range.contains(c.originSeq)) c.toCellRecord(),
+        ],
+      ));
+    }
   }
 }
 

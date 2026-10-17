@@ -514,7 +514,9 @@ final class SyncSession {
         channel,
         ChangeBatchMessage(
           batchId: _nextBatchId++,
-          ranges: {for (final o in lo.keys) OriginId.fromHex(o): SeqRange(lo[o]! - 1, hi[o]!)},
+          ranges: {
+            for (final o in lo.keys) OriginId.fromHex(o): [SeqRange(lo[o]! - 1, hi[o]!)]
+          },
           manifests: manifests.toList(),
           envelopes: envelopes,
         ),
@@ -542,7 +544,7 @@ final class SyncSession {
     final config = device.config;
     var p = 0;
     while (p < plans.length && !_storageError) {
-      final ranges = <OriginId, SeqRange>{};
+      final ranges = <OriginId, List<SeqRange>>{};
       final manifests = <OriginManifest>{};
       final envelopes = <ChangeEnvelope>[];
       final versions = <String>{};
@@ -603,7 +605,7 @@ final class SyncSession {
         }
         final to = plan.done ? plan.bound : plan.scanned;
         if (to > from) {
-          ranges[OriginId.fromHex(plan.origin)] = SeqRange(from, to);
+          ranges[OriginId.fromHex(plan.origin)] = [SeqRange(from, to)];
           if (plan.origin == own) ownTo = math.max(ownTo, to);
         }
         plan
@@ -648,7 +650,9 @@ final class SyncSession {
             channel,
             ChangeBatchMessage(
               batchId: _nextBatchId++,
-              ranges: {OriginId.fromHex(origin): SeqRange(record.originSeq - 1, record.originSeq)},
+              ranges: {
+                OriginId.fromHex(origin): [SeqRange(record.originSeq - 1, record.originSeq)]
+              },
               manifests: [manifest],
               envelopes: [_seal(record)],
             ),
@@ -825,9 +829,10 @@ final class SyncSession {
       }
     }
     for (final e in batch.ranges.entries) {
-      final origin = e.key.hex;
-      final range = e.value;
-      _store.advanceCursor(origin, fromSeq: range.from, toSeq: range.to);
+      // Ascending per origin ([ChangeBatchMessage.ranges]).
+      for (final range in e.value) {
+        _store.advanceCursor(e.key.hex, fromSeq: range.from, toSeq: range.to);
+      }
     }
     stats.batchesApplied++;
     if (securityTouched) await _onSecurityChange();

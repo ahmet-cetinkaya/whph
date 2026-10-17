@@ -248,7 +248,10 @@ void main() {
   test('UpdateRequired on incompatible protocol versions with 0 changes exchanged (FR-041)', () async {
     final clock = TestClock();
     final a = await newDevice('A', seed: 90, clock: clock);
-    final b = await newDevice('B', seed: 91, clock: clock, config: testConfig(protocolVersion: 3, minCompatible: 3));
+    final b = await newDevice('B',
+        seed: 91,
+        clock: clock,
+        config: testConfig(protocolVersion: syncProtocolVersion + 1, minCompatible: syncProtocolVersion + 1));
     await SyncDevice.pair(inviter: a, joiner: b);
     createRow(a, 'r', 'v');
     createRow(b, 's', 'w');

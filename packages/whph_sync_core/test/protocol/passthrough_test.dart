@@ -57,7 +57,9 @@ void main() {
     final manifest = manifestFor(sent, fromSeq: 0, toSeq: 5);
     final frame = SyncCodec.encode(ChangeBatchMessage(
       batchId: 5,
-      ranges: {originB: SeqRange(0, 5)},
+      ranges: {
+        originB: [SeqRange(0, 5)]
+      },
       manifests: [manifest],
       envelopes: [for (final c in sent) sealForTest(c)],
     ));
@@ -80,7 +82,7 @@ void main() {
     final relayed = SyncCodec.encode(ChangeBatchMessage(
       batchId: 5,
       ranges: {
-        OriginId.fromHex(held.single.origin): SeqRange(held.single.fromSeq, held.single.toSeq),
+        OriginId.fromHex(held.single.origin): [SeqRange(held.single.fromSeq, held.single.toSeq)],
       },
       manifests: received.manifests,
       envelopes: [for (final c in relayedChanges) sealForTest(c)],

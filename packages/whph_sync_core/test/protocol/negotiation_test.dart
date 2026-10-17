@@ -48,7 +48,9 @@ _Outcome _session(Hello initiator, Hello responder) {
 
   ChangeBatchMessage oneChange() => ChangeBatchMessage(
         batchId: 1,
-        ranges: {originA: SeqRange(41, 42)},
+        ranges: {
+          originA: [SeqRange(41, 42)]
+        },
         envelopes: [sealForTest(goldenChangeWithoutCause())],
       );
   if (initiatorResult is Compatible) send(oneChange());
@@ -57,11 +59,11 @@ _Outcome _session(Hello initiator, Hello responder) {
 }
 
 void main() {
-  test('this build speaks v2 with minimum v2', () {
-    expect(syncProtocolVersion, 2);
-    expect(minCompatibleProtocolVersion, 2);
+  test('this build speaks v3 with minimum v3', () {
+    expect(syncProtocolVersion, 3);
+    expect(minCompatibleProtocolVersion, 3);
     final hello = Hello.current(appVersion: '1', memberId: 'm', deviceName: 'd', wallMs: 0);
-    expect([hello.protocolVersion, hello.minCompatible], [2, 2]);
+    expect([hello.protocolVersion, hello.minCompatible], [3, 3]);
   });
 
   test('v2 <-> v2 is compatible at v2, whatever the app versions (FR-043)', () {

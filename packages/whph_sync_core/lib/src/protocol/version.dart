@@ -8,11 +8,11 @@ import 'messages.dart';
 
 /// The sync protocol version this build speaks (`SYNC_PROTOCOL_VERSION`, D8).
 /// The legacy engine is implicitly version 1.
-const syncProtocolVersion = 2;
+const syncProtocolVersion = 3;
 
 /// The oldest protocol version this build still syncs with
 /// (`MIN_COMPATIBLE_PROTOCOL_VERSION`, D8).
-const minCompatibleProtocolVersion = 2;
+const minCompatibleProtocolVersion = 3;
 
 /// D8 limits, enforced by every decoder (FR-015).
 abstract final class SyncLimits {
@@ -31,6 +31,10 @@ abstract final class SyncLimits {
 
   /// Maximum number of changes in one batch, and of seqs in one manifest.
   static const maxBatchChanges = 1000;
+
+  /// Maximum number of declared ranges in one batch: each envelope may add a
+  /// narrow range for the winner that supersedes an omitted seq (F5).
+  static const maxRangesPerBatch = 2 * maxBatchChanges;
 }
 
 // --- Negotiation (FR-040, FR-041, FR-043) -------------------------------------

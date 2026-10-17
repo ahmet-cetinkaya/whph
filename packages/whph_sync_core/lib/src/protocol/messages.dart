@@ -514,19 +514,28 @@ final class VectorExchange extends SyncMessage {
 /// Validation (constructor and decoder, all-or-nothing):
 /// - at most [SyncLimits.maxBatchChanges] envelopes
 ///   ([BatchTooLargeException]) and manifests;
-/// - every envelope's origin has a declared range containing its origin seq,
-///   else the whole batch is rejected ([BatchRangeViolationException]);
+/// - at most [SyncLimits.maxRangesPerBatch] ranges ([BatchTooLargeException]),
+///   checked before anything else;
+/// - the ranges of one origin are pairwise disjoint
+///   ([BatchRangeViolationException]); they are sorted here, the sender's
+///   order is never relied on;
+/// - every envelope lies in exactly one range of its origin, else the whole
+///   batch is rejected ([BatchRangeViolationException]);
 /// - no two envelopes share `(origin, origin_seq)` ([MalformedMessageException]).
 ///
 /// Body: `i64 batch_id ‖ u32 n ‖ n × (16B origin ‖ i64 from ‖ i64 to)`
-/// (strictly ascending origins) `‖ u32 m ‖ m × manifest ‖ u32 k ‖ k × envelope`.
+/// (the ranges of one origin are adjacent, origins strictly ascending between
+/// groups) `‖ u32 m ‖ m × manifest ‖ u32 k ‖ k × envelope`.
 final class ChangeBatchMessage extends SyncMessage {
   ChangeBatchMessage({
     required this.batchId,
-    required Map<OriginId, SeqRange> ranges,
+    required Map<OriginId, List<SeqRange>> ranges,
     List<OriginManifest> manifests = const [],
     List<ChangeEnvelope> envelopes = const [],
-  })  : ranges = Map.unmodifiable(Map.fromEntries(ranges.entries.toList()..sort((a, b) => a.key.compareTo(b.key)))),
+  })  : ranges = Map.unmodifiable({
+          for (final e in ranges.entries.toList()..sort((a, b) => a.key.compareTo(b.key)))
+            e.key: List<SeqRange>.unmodifiable(e.value.toList()..sort((a, b) => a.from.compareTo(b.from))),
+        }),
         manifests = List.unmodifiable(manifests),
         envelopes = List.unmodifiable(envelopes) {
     if (batchId < 0) throw ArgumentError.value(batchId, 'batchId', 'must be non-negative');
@@ -534,28 +543,45 @@ final class ChangeBatchMessage extends SyncMessage {
   }
 
   final int batchId;
-  final Map<OriginId, SeqRange> ranges;
+
+  /// Declared ranges per origin, ascending by `from` whatever order the sender
+  /// wrote them.
+  final Map<OriginId, List<SeqRange>> ranges;
   final List<OriginManifest> manifests;
   final List<ChangeEnvelope> envelopes;
 
+  int get rangeCount => ranges.values.fold(0, (n, list) => n + list.length);
+
   void _validate() {
+    if (rangeCount > SyncLimits.maxRangesPerBatch) {
+      throw BatchTooLargeException(rangeCount, SyncLimits.maxRangesPerBatch);
+    }
     if (envelopes.length > SyncLimits.maxBatchChanges) {
       throw BatchTooLargeException(envelopes.length, SyncLimits.maxBatchChanges);
     }
     if (manifests.length > SyncLimits.maxBatchChanges) {
       throw BatchTooLargeException(manifests.length, SyncLimits.maxBatchChanges);
     }
+    ranges.forEach(_checkDisjoint);
     final seen = <OriginId, Set<int>>{};
     for (final e in envelopes) {
-      final range = ranges[e.origin];
-      if (range == null) {
+      final declared = ranges[e.origin];
+      if (declared == null) {
         throw BatchRangeViolationException('change ${e.origin}#${e.originSeq} has no declared range');
       }
-      if (!range.contains(e.originSeq)) {
-        throw BatchRangeViolationException('change ${e.origin}#${e.originSeq} outside declared $range');
+      if (!declared.any((range) => range.contains(e.originSeq))) {
+        throw BatchRangeViolationException('change ${e.origin}#${e.originSeq} outside declared $declared');
       }
       if (!seen.putIfAbsent(e.origin, () => {}).add(e.originSeq)) {
         throw MalformedMessageException('duplicate change ${e.origin}#${e.originSeq}');
+      }
+    }
+  }
+
+  static void _checkDisjoint(OriginId origin, List<SeqRange> sorted) {
+    for (var i = 1; i < sorted.length; i++) {
+      if (sorted[i].from < sorted[i - 1].to) {
+        throw BatchRangeViolationException('origin $origin: ranges ${sorted[i - 1]} and ${sorted[i]} overlap');
       }
     }
   }
@@ -567,12 +593,14 @@ final class ChangeBatchMessage extends SyncMessage {
   void _writeBody(ByteWriter w) {
     w
       ..i64(batchId)
-      ..u32(ranges.length);
+      ..u32(rangeCount);
     for (final e in ranges.entries) {
-      w
-        ..fixed(e.key.bytes)
-        ..i64(e.value.from)
-        ..i64(e.value.to);
+      for (final range in e.value) {
+        w
+          ..fixed(e.key.bytes)
+          ..i64(range.from)
+          ..i64(range.to);
+      }
     }
     w.u32(manifests.length);
     for (final m in manifests) {
@@ -587,18 +615,22 @@ final class ChangeBatchMessage extends SyncMessage {
   static ChangeBatchMessage _read(ByteReader r) {
     final batchId = r.seq('batch_id');
     final nRanges = r.count('range count', minElementBytes: Id128.length + 16);
-    final ranges = <OriginId, SeqRange>{};
+    if (nRanges > SyncLimits.maxRangesPerBatch) throw BatchTooLargeException(nRanges, SyncLimits.maxRangesPerBatch);
+    final ranges = <OriginId, List<SeqRange>>{};
     OriginId? previous;
     for (var i = 0; i < nRanges; i++) {
       final origin = OriginId(r.fixed(Id128.length, 'range origin'));
-      if (previous != null && origin.compareTo(previous) <= 0) {
-        throw const MalformedMessageException('ranges: origins not strictly ascending');
+      if (previous != null && origin.compareTo(previous) < 0) {
+        throw const MalformedMessageException('ranges: origins not ascending');
+      }
+      if (origin != previous && ranges.containsKey(origin)) {
+        throw const MalformedMessageException('ranges: origin split into several groups');
       }
       previous = origin;
       final from = r.seq('range from');
       final to = r.seq('range to');
       if (to <= from) throw MalformedMessageException('range ($from, $to] is empty');
-      ranges[origin] = SeqRange(from, to);
+      ranges.putIfAbsent(origin, () => []).add(SeqRange(from, to));
     }
     final nManifests = r.u32('manifest count');
     if (nManifests > SyncLimits.maxBatchChanges) throw BatchTooLargeException(nManifests, SyncLimits.maxBatchChanges);
