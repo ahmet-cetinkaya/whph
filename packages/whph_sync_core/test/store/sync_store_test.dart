@@ -325,4 +325,59 @@ void main() {
       expect(f.entries, isEmpty);
     });
   });
+
+  group('superseded index (F5)', () {
+    const title = CellKey('task', 'x', 'title');
+
+    /// Origin 2 seq 1 replaced by origin 2 seq 2 (remote), then by an own write.
+    SyncStore indexed() {
+      final s = _store();
+      final m = _manifest(_origin(2), 0, 5);
+      s.applyRemote(_remote('x', 'title', 'one', hlc: 1 << 16, seq: 1), m, nowMs: _t0);
+      s.applyRemote(_remote('x', 'title', 'two', hlc: 2 << 16, seq: 2), m, nowMs: _t0);
+      return s;
+    }
+
+    test('a replaced version is indexed with the key of its winner', () {
+      final s = indexed();
+      expect(s.nextSupersededOfOrigin(_origin(2).hex, 0), (1, title));
+      expect(s.nextSupersededOfOrigin(_origin(2).hex, 1), isNull);
+      expect(s.supersededIndexed, 1);
+      s.assertSupersededIndexConsistent();
+    });
+
+    test('snapshot_restore_keeps_superseded_index', () {
+      final s = indexed();
+      final saved = s.snapshot();
+      s.applyRemote(_remote('x', 'title', 'three', hlc: 3 << 16, seq: 3), _manifest(_origin(2), 0, 5), nowMs: _t0);
+      expect(s.supersededIndexed, 2);
+
+      s.restore(saved);
+      expect(s.supersededIndexed, 1, reason: 'the restore replaces the index with the snapshot\'s');
+      expect(s.nextSupersededOfOrigin(_origin(2).hex, 0), (1, title));
+      s.assertSupersededIndexConsistent();
+
+      final copy = s.snapshot();
+      s.restore(copy);
+      expect(s.nextSupersededOfOrigin(_origin(2).hex, 0), (1, title), reason: 'a copy of a copy keeps it too');
+    });
+
+    test('adopting a never-sent cell onto a new origin records nothing', () {
+      final s = _store();
+      s.writeLocal(title, 'v', nowMs: _t0);
+      s.switchOrigin(reason: OriginSwitchReason.restore, newOrigin: _origin(9), sentMark: 0);
+      expect(s.supersededIndexed, 0);
+      s.assertSupersededIndexConsistent();
+    });
+
+    test('removing a row drops the index entries of its keys', () {
+      final s = indexed();
+      s.applyRemote(_remote('y', 'title', 'a', hlc: 1 << 16, seq: 3), _manifest(_origin(2), 0, 5), nowMs: _t0);
+      s.applyRemote(_remote('y', 'title', 'b', hlc: 2 << 16, seq: 4), _manifest(_origin(2), 0, 5), nowMs: _t0);
+      expect(s.supersededIndexed, 2);
+      s.switchOrigin(reason: OriginSwitchReason.localReset, newOrigin: _origin(9));
+      expect(s.supersededIndexed, 0);
+      s.assertSupersededIndexConsistent();
+    });
+  });
 }

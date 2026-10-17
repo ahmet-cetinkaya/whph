@@ -311,7 +311,8 @@ final class SyncSession {
     if (_failure != null) throw _failure!;
     stats
       ..framesSent = channel.sent.values.fold(0, (a, b) => a + b)
-      ..bytesSent = channel.bytesSent;
+      ..bytesSent = channel.bytesSent
+      ..supersededIndexed = _store.supersededIndexed;
     await channel.close();
     return _finish();
   }

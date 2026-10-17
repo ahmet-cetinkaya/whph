@@ -215,6 +215,9 @@ final class EngineSimulation {
       await _op();
       if (_rng.nextDouble() < config.sessionProbability) await _randomSession();
       if (_switched && _rng.nextDouble() < tuning.outsiderAttemptProbability) await _outsiderAttempt();
+      for (final d in _devs) {
+        d.store.assertSupersededIndexConsistent();
+      }
       if (engineSimLog != null) _logMembershipChanges();
     }
     if (!_switched) _violate(OracleViolationKind.membership, _switcher.name, 'switch', 'group switch never ran');

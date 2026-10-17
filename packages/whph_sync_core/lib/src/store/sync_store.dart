@@ -199,6 +199,11 @@ final class SyncStore implements ReplicaStore {
   /// origin hex -> seq -> cell, for every stored cell.
   final Map<String, SplayTreeMap<int, StoredCell>> _byOrigin = {};
 
+  /// origin hex -> seq -> key of the cell whose winner replaced that version
+  /// (F5). Lets the sender find the winner behind a seq it omits. Disjoint
+  /// from [_byOrigin]; every key has a current cell.
+  final Map<String, SplayTreeMap<int, CellKey>> _superseded = {};
+
   /// Received vector of foreign and sealed own origins.
   VersionVector _vector = VersionVector();
 
@@ -375,6 +380,14 @@ final class SyncStore implements ReplicaStore {
     final index = _byOrigin[origin];
     final seq = index?.firstKeyAfter(afterSeq);
     return seq == null ? null : index![seq];
+  }
+
+  /// The first superseded seq of [origin] above [afterSeq] with the key of the
+  /// cell that replaced it (F5), or `null`.
+  (int, CellKey)? nextSupersededOfOrigin(String origin, int afterSeq) {
+    final index = _superseded[origin];
+    final seq = index?.firstKeyAfter(afterSeq);
+    return seq == null ? null : (seq, index![seq]!);
   }
 
   /// Origins of which at least one cell is stored.
@@ -589,13 +602,15 @@ final class SyncStore implements ReplicaStore {
       case OriginSwitchReason.initial:
         throw ArgumentError.value(reason, 'reason', 'not a switch reason');
     }
+    _pruneSuperseded();
     _sealed.add(oldHex);
     _origin = newOrigin;
     _nextSeq = 1;
     _ownSignedTo = 0;
     for (final cell in toMove) {
       final r = cell.record;
-      _put(StoredCell(
+      // Same version moving to the new origin: not a supersession.
+      _place(StoredCell(
         CellRecord(
           key: r.key,
           value: r.value,
@@ -652,9 +667,12 @@ final class SyncStore implements ReplicaStore {
     for (final table in _tables.entries) {
       for (final row in table.value.values) {
         for (final cell in row.values) {
-          copy._put(cell._copy());
+          copy._place(cell._copy());
         }
       }
+    }
+    for (final e in _superseded.entries) {
+      copy._superseded[e.key] = SplayTreeMap.of(e.value);
     }
     for (final h in heldEnvelopes) {
       copy.putHeld(h._copy());
@@ -678,6 +696,9 @@ final class SyncStore implements ReplicaStore {
     _byOrigin
       ..clear()
       ..addAll(other._byOrigin);
+    _superseded
+      ..clear()
+      ..addAll(other._superseded);
     _vector = other._vector;
     _held
       ..clear()
@@ -723,13 +744,56 @@ final class SyncStore implements ReplicaStore {
     return cells == null ? null : CellListRow([for (final c in cells.values) c.record]);
   }
 
+  /// Stores [cell] as the winner of its key and remembers the version it
+  /// replaces (F5).
   void _put(StoredCell cell) {
+    final replaced = _cell(cell.record.key)?.record;
+    final sameVersion =
+        replaced != null && replaced.origin == cell.record.origin && replaced.originSeq == cell.record.originSeq;
+    if (replaced != null && !sameVersion) _recordSuperseded(replaced.origin, replaced.originSeq, replaced.key);
+    _place(cell);
+  }
+
+  /// Stores [cell] as the winner of its key without recording a supersession:
+  /// for rebuilding a copy and for re-keying a version onto a new origin.
+  void _place(StoredCell cell) {
     final key = cell.record.key;
     final row = _tables.putIfAbsent(key.table, () => {}).putIfAbsent(key.pk, () => {});
     final previous = row[key.col];
     if (previous != null) _unindex(previous);
     row[key.col] = cell;
     _byOrigin.putIfAbsent(cell.record.origin, SplayTreeMap.new)[cell.record.originSeq] = cell;
+  }
+
+  void _recordSuperseded(String origin, int seq, CellKey key) =>
+      _superseded.putIfAbsent(origin, SplayTreeMap.new)[seq] = key;
+
+  /// Drops the entries whose key lost its cell (rows removed by a switch).
+  void _pruneSuperseded() {
+    for (final index in _superseded.values) {
+      index.removeWhere((_, key) => _cell(key) == null);
+    }
+    _superseded.removeWhere((_, index) => index.isEmpty);
+  }
+
+  /// Number of superseded versions indexed (`supersededIndexed`, F5).
+  int get supersededIndexed => _superseded.values.fold(0, (n, index) => n + index.length);
+
+  /// Debug-only invariant of the superseded index: it never shares a version
+  /// with [_byOrigin] and every key has a current cell. Local state only; the
+  /// simulation calls it after store mutations, release builds skip it.
+  void assertSupersededIndexConsistent() {
+    assert(() {
+      for (final MapEntry(key: origin, value: index) in _superseded.entries) {
+        for (final MapEntry(key: seq, value: key) in index.entries) {
+          if (_byOrigin[origin]?.containsKey(seq) ?? false) {
+            throw StateError('superseded $origin#$seq is also a stored winner');
+          }
+          if (_cell(key) == null) throw StateError('superseded $origin#$seq points at missing cell $key');
+        }
+      }
+      return true;
+    }());
   }
 
   void _unindex(StoredCell cell) {

@@ -73,6 +73,9 @@ final class SessionStats {
   /// ranges (after `local_reset`).
   int aboveCursorSent = 0;
   int heldRelayed = 0;
+
+  /// Superseded versions in the store's index at the end of the session (F5).
+  int supersededIndexed = 0;
   int manifestsSigned = 0;
 
   /// `origin#seq` of every envelope sent in this session (FR-014 checks).
