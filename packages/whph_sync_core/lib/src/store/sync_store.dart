@@ -563,14 +563,16 @@ final class SyncStore implements ReplicaStore {
     var clearVector = false;
     switch (reason) {
       case OriginSwitchReason.restore || OriginSwitchReason.keyLost:
-        // Never-sent security cells stay on the sealed origin and are never
-        // sent: re-keyed to a new origin a member row could be vouched for
+        // Never-sent security cells stay on the sealed origin; those without
+        // a manifest can never be sent (those above the sent mark with one
+        // are still served): re-keyed to a new origin a member row could be vouched for
         // by an origin it itself owns (U11/rooted).
         final neverSent = [
           for (final c in oldCells)
             if (_isNeverSent(c, sentMark)) c,
         ];
-        securityLeftBehind = neverSent.where((c) => SecurityTables.contains(c.record.key.table)).length;
+        securityLeftBehind =
+            neverSent.where((c) => c.manifest == null && SecurityTables.contains(c.record.key.table)).length;
         toMove = [
           for (final c in neverSent)
             if (!SecurityTables.contains(c.record.key.table)) c,

@@ -73,6 +73,31 @@ void main() {
       expect(c.membership.memberById(x.memberId), isNotNull, reason: 'C learns the new X');
     });
 
+    test('keylost_before_reinvite_new_origin_carries_no_member_row', () async {
+      final [b, c, d1, x] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 730 + i)];
+      await pairAll([b, c, d1]);
+      await syncUntilQuiet([b, c, d1]);
+      await SyncDevice.pair(inviter: d1, joiner: x);
+      final oldDb = d1.snapshotDb();
+      final oldD1 = d1.memberId;
+      await d1.loseKeyFile(oldDb: oldDb, loseLedger: true);
+      expect(d1.needsRepairing, isTrue);
+      await b.removeMember(oldD1);
+      await SyncDevice.pair(inviter: x, joiner: d1);
+
+      await _syncAll([b, c, d1, x], rounds: 6);
+
+      final newOrigin = d1.store.localOrigin.hex;
+      expect(d1.store.read(memberCellKey(x.memberId))?.origin, isNot(newOrigin),
+          reason: 'D1 holds no X row on its new origin');
+      final onNewOrigin = [
+        for (final cell in c.store.cells)
+          if (cell.origin == newOrigin && cell.key.table == 'sync_member') cell,
+      ];
+      expect(onNewOrigin, isEmpty, reason: 'the old invite row is not re-keyed onto the new origin');
+      expect(c.store.heldEnvelopes.where((h) => h.origin == newOrigin && h.row.table == 'sync_member'), isEmpty);
+    });
+
     test('keylost_unsent_security_row_stays_on_old_origin_and_needs_repairing', () async {
       final [b, d1, x] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 710 + i)];
       await pairAll([b, d1]);
