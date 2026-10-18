@@ -38,15 +38,28 @@ void main() {
       }
       final snapshotSeq = a.store.highestOwnSeq;
       var concurrent = 0;
+      // Seqs of the overwrites of rows that were planned but not yet sent: the
+      // only versions allowed above the snapshot (as relayed winners).
+      final overwriteSeqs = <int>{};
+      final narrowRanges = <(int, int)>{};
       final r = await SyncDevice.syncPair(
         a,
         b,
-        hooksA: SessionHooks(afterBatchSent: (_) {
+        hooksA: SessionHooks(outgoingBatch: (batch) {
+          for (final entry in batch.ranges.entries) {
+            if (entry.key.hex != a.store.localOrigin.hex) continue;
+            for (final range in entry.value) {
+              narrowRanges.add((range.from, range.to));
+            }
+          }
+          return batch;
+        }, afterBatchSent: (_) {
           // The user keeps editing on A while the session streams: new rows
           // and overwrites of rows planned but not yet sent.
           clock.advance(1);
           createRow(a, 'late$concurrent', 'late');
           a.write(CellKey('task', 'r${199 - concurrent}', 'title'), 'edited during session');
+          overwriteSeqs.add(a.store.highestOwnSeq);
           concurrent++;
         }),
       );
@@ -62,11 +75,15 @@ void main() {
       // A write made during the session may overwrite a planned row: its
       // superseded seq is then omitted, so the new version travels as a
       // relayed winner (F5, FR-014). These are the only seqs above the snapshot.
-      final relayedWinners = {
+      final aboveSnapshot = {
         for (final s in ownSeqs)
           if (s > snapshotSeq) s
       };
-      expect(ownSeqs.where((s) => s > snapshotSeq).length, relayedWinners.length);
+      expect(overwriteSeqs.containsAll(aboveSnapshot), isTrue,
+          reason: 'only overwrites of planned rows may travel above the snapshot: $aboveSnapshot vs $overwriteSeqs');
+      for (final seq in aboveSnapshot) {
+        expect(narrowRanges, contains((seq - 1, seq)), reason: 'relayed winner $seq goes under (Q-1, Q]');
+      }
       expect(b.store.cursorOf(own), snapshotSeq, reason: 'the session ended at the snapshot');
 
       // The next session delivers what was written during the first one.
@@ -74,7 +91,7 @@ void main() {
       expect(next.bothComplete, isTrue);
       final nextSent = next.initiator.stats.sentVersions.toSet();
       final alreadySent = {for (final s in sent) s};
-      final relayedVersions = {for (final s in relayedWinners) '$own#$s'};
+      final relayedVersions = {for (final s in aboveSnapshot) '$own#$s'};
       // A relayed winner is not part of the snapshot, so the next session may
       // carry it again; nothing else may repeat.
       expect(nextSent.intersection(alreadySent).difference(relayedVersions), isEmpty);
