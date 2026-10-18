@@ -221,6 +221,9 @@ final class ReferenceOracle {
   final Map<String, OracleBucketInfo> _buckets = {};
   final Map<String, int> _byVersion = {};
 
+  /// Ids of writes a restore dropped from their device.
+  final Set<int> _vanished = {};
+
   /// Winner memo; cleared by every recorded write.
   final Map<String, OracleWrite?> _winnerCache = {};
 
@@ -311,7 +314,9 @@ final class ReferenceOracle {
     previous.add(w.id);
     final versionKey = oracleVersionKey(table, pk, col, w.node, w.hlc);
     final existing = _byVersion[versionKey];
-    if (existing != null) {
+    if (existing != null && _isReusable(existing)) {
+      _byVersion[versionKey] = w.id;
+    } else if (existing != null) {
       recordingViolations.add(
         OracleViolation(OracleViolationKind.ambiguousVersion, device, w.cellKey, '$w and ${_writes[existing]}'),
       );
@@ -367,8 +372,27 @@ final class ReferenceOracle {
   /// vector-clock entry, so sequence numbers are never reused.
   void startIncarnation(String device, OracleKnowledge knowledge) {
     final d = _deviceIndex(device);
+    _markVanishedWrites(d, knowledge._vector);
     _actorOf[d] = _actors++;
     _knowledge[d] = List<int>.of(knowledge._vector, growable: true);
+  }
+
+  /// Marks [d]'s writes that the restore to [restored] drops. A later write
+  /// may reuse their `(node, hlc)` when no other device stored them by then:
+  /// the engine's HLC floor only covers versions that left the device (F3).
+  void _markVanishedWrites(int d, List<int> restored) {
+    for (final w in _writes) {
+      if (w.deviceIndex == d && w.seqOnActor > _at(restored, w.actor)) _vanished.add(w.id);
+    }
+  }
+
+  bool _isReusable(int writeId) {
+    if (!_vanished.contains(writeId)) return false;
+    final w = _writes[writeId];
+    for (var j = 0; j < _knowledge.length; j++) {
+      if (j != w.deviceIndex && _at(_knowledge[j], w.actor) >= w.seqOnActor) return false;
+    }
+    return true;
   }
 
   /// Whether [a] is in the causal history of [b].

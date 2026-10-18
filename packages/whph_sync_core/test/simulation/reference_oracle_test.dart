@@ -101,6 +101,26 @@ void main() {
       expect(oracle.recordingViolations, isEmpty);
     });
 
+    test('a write lost by a restore frees its version for reuse', () {
+      final oracle = ReferenceOracle(['a', 'b']);
+      final before = oracle.knowledgeOf('a');
+      put(oracle, 'a', 1000, hlc(1000), 'na', 'x', 'lost');
+      oracle.startIncarnation('a', before);
+      final reused = put(oracle, 'a', 1000, hlc(1000), 'na', 'x', 'again');
+      expect(oracle.recordingViolations, isEmpty);
+      expect(oracle.writeIdOfVersion('t', '1', 'x', 'na', hlc(1000)), reused.id);
+    });
+
+    test('a restored write that another device stored still reports a version reuse', () {
+      final oracle = ReferenceOracle(['a', 'b']);
+      final before = oracle.knowledgeOf('a');
+      final sent = put(oracle, 'a', 1000, hlc(1000), 'na', 'x', 'sent');
+      oracle.observeStored('b', sent.id);
+      oracle.startIncarnation('a', before);
+      put(oracle, 'a', 1000, hlc(1000), 'na', 'x', 'again');
+      expect(oracle.recordingViolations.single.kind, OracleViolationKind.ambiguousVersion);
+    });
+
     test('causality: a causally later write with a smaller stamp is reported, not thrown', () {
       final oracle = ReferenceOracle(['a', 'b']);
       final first = put(oracle, 'a', 5000, hlc(5000), 'na', 'x', 'A');
