@@ -445,6 +445,7 @@ final class SyncStore implements ReplicaStore {
       _put(StoredCell(record, recordedAt: nowMs, manifest: manifest));
       return ApplyOutcome.applied;
     }
+    _recordSupersededByStored(record.origin, record.originSeq, record.key);
     return ApplyOutcome.unchanged;
   }
 

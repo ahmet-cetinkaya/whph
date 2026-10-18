@@ -293,6 +293,21 @@ void main() {
       expect(s.supersededIndexed, 0);
     });
 
+    test('applying a version older than the stored one indexes it; a re-send of the winner does not (F5 site 2)', () {
+      final s = _store();
+      final winner = _remote('t', 'title', 'winner', hlc: 9 << 16, origin: 3, seq: 2);
+      s.applyRemote(winner, _manifest(_origin(3), 0, 5), nowMs: _t0);
+      expect(s.supersededIndexed, 0);
+
+      s.applyRemote(winner, _manifest(_origin(3), 0, 5), nowMs: _t0);
+      expect(s.supersededIndexed, 0, reason: 'a re-send of the stored winner is not superseded');
+
+      final older = _remote('t', 'title', 'older', hlc: 5 << 16, origin: 4, seq: 7);
+      expect(s.applyRemote(older, _manifest(_origin(4), 0, 8), nowMs: _t0), ApplyOutcome.unchanged);
+      expect(s.supersededIndexed, 1);
+      expect(s.nextSupersededOfOrigin(_origin(4).hex, 0)?.$1, 7);
+    });
+
     test('isSuperseded breaks an exact (hlc, node) tie like the merge: origin, then seq', () {
       final s = _store();
       final m3 = _manifest(_origin(3), 0, 5);
