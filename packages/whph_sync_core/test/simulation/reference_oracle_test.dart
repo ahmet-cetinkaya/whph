@@ -111,6 +111,21 @@ void main() {
       expect(oracle.writeIdOfVersion('t', '1', 'x', 'na', hlc(1000)), reused.id);
     });
 
+    test('a reused version no longer resolves the old value, so a held old copy is flagged by value', () {
+      final oracle = ReferenceOracle(['a', 'b']);
+      final before = oracle.knowledgeOf('a');
+      put(oracle, 'a', 1000, hlc(1000), 'na', 'x', 'lost');
+      oracle.startIncarnation('a', before);
+      final reused = put(oracle, 'a', 1000, hlc(1000), 'na', 'x', 'again');
+
+      // The engine harness matches a stored or held copy to the oracle by
+      // (version, value): a peer's old envelope carries 'lost', the version
+      // now belongs to 'again', so the copy is unrecorded (unknownVersion).
+      final resolved = oracle.writeIdOfVersion('t', '1', 'x', 'na', hlc(1000));
+      expect(resolved, reused.id);
+      expect(oracle.write(resolved!).value, isNot('lost'));
+    });
+
     test('a restored write that another device stored still reports a version reuse', () {
       final oracle = ReferenceOracle(['a', 'b']);
       final before = oracle.knowledgeOf('a');
