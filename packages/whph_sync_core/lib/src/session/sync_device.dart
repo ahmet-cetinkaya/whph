@@ -533,11 +533,18 @@ final class SyncDevice {
       return startupCheck();
     }
     final committed = ledger.latestCommitted;
-    final mark = ledger.isReadable ? ledger.entryOf(store.localOrigin)?.maxSentSeq : null;
+    final entry = ledger.isReadable ? ledger.entryOf(store.localOrigin) : null;
+    final mark = entry?.maxSentSeq;
+    // Card A: the written watermark covers writes that never left the device,
+    // so a data-dir restore below them switches the origin instead of
+    // silently re-authoring those seqs under new content. Strict `<`: a DB
+    // matching the watermark is a clean full rollback, not a reuse.
+    final writtenHigh = entry?.nextSeqHigh ?? 0;
     if (!ledger.isReadable ||
         committed == null ||
         committed.origin != store.localOrigin ||
-        store.nextSeq - 1 < (mark ?? 0)) {
+        store.nextSeq - 1 < (mark ?? 0) ||
+        store.nextSeq < writtenHigh) {
       await switchOrigin(OriginSwitchReason.restore, sentMark: mark);
       return StartupAction.restore;
     }
@@ -557,8 +564,16 @@ final class SyncDevice {
     await membership.reload(store);
   }
 
-  /// A copy of the DB alone.
-  DeviceDbSnapshot snapshotDb() => DeviceDbSnapshot._(store.snapshot());
+  /// A copy of the DB alone. Persists the written watermark first (card A):
+  /// everything the device authored so far, sent or not, must never be
+  /// re-authored after a restore below it.
+  Future<DeviceDbSnapshot> snapshotDb() async {
+    final origin = store.localOrigin;
+    if (ledger.isReadable && ledger.entryOf(origin) != null) {
+      await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
+    }
+    return DeviceDbSnapshot._(store.snapshot());
+  }
 
   /// Restores the DB alone (key file and sync ledger stay current), then runs
   /// the startup check.
@@ -570,8 +585,13 @@ final class SyncDevice {
 
   /// A copy of the DB and key file (the app data directory; the ledger is
   /// outside it, U11).
-  DirectorySnapshot snapshotDirectory() =>
-      DirectorySnapshot._(store.snapshot(), membership.snapshotKeyFile(), keyFilePresent);
+  Future<DirectorySnapshot> snapshotDirectory() async {
+    final origin = store.localOrigin;
+    if (ledger.isReadable && ledger.entryOf(origin) != null) {
+      await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
+    }
+    return DirectorySnapshot._(store.snapshot(), membership.snapshotKeyFile(), keyFilePresent);
+  }
 
   /// Restores the app data directory (DB and key file); the sync ledger stays
   /// current, so the startup check finds the DB behind it and runs

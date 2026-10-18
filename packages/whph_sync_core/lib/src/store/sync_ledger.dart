@@ -32,9 +32,13 @@ final class OriginEntry {
     required this.reason,
     this.maxSentSeq = 0,
     this.hlcHigh = 0,
+    this.nextSeqHigh = 0,
+    this.hlcHighWritten = 0,
   }) {
     if (maxSentSeq < 0) throw ArgumentError.value(maxSentSeq, 'maxSentSeq', 'must be non-negative');
     if (hlcHigh < 0) throw ArgumentError.value(hlcHigh, 'hlcHigh', 'must be non-negative');
+    if (nextSeqHigh < 0) throw ArgumentError.value(nextSeqHigh, 'nextSeqHigh', 'must be non-negative');
+    if (hlcHighWritten < 0) throw ArgumentError.value(hlcHighWritten, 'hlcHighWritten', 'must be non-negative');
   }
 
   final OriginId origin;
@@ -48,16 +52,37 @@ final class OriginEntry {
   /// the HLC to at least this, so a lost write is never re-issued below it.
   final int hlcHigh;
 
-  OriginEntry copyWith({OriginEntryState? state, int? maxSentSeq, int? hlcHigh}) => OriginEntry(
+  /// Grow-only watermark of seqs this device ever AUTHORED under [origin],
+  /// sent or not (card A): a data-dir restore below unsent writes cannot
+  /// re-author those seqs, because the ledger remembers them. `nextSeq - 1`
+  /// is the high-water value; 0 = none recorded.
+  final int nextSeqHigh;
+
+  /// The device's HLC at the last [nextSeqHigh] update: a restore raises the
+  /// HLC floor to at least this, so an unsent write's `(node, hlc)` is never
+  /// re-issued for different content (card A).
+  final int hlcHighWritten;
+
+  OriginEntry copyWith({
+    OriginEntryState? state,
+    int? maxSentSeq,
+    int? hlcHigh,
+    int? nextSeqHigh,
+    int? hlcHighWritten,
+  }) =>
+      OriginEntry(
         origin: origin,
         state: state ?? this.state,
         reason: reason,
         maxSentSeq: maxSentSeq ?? this.maxSentSeq,
         hlcHigh: hlcHigh ?? this.hlcHigh,
+        nextSeqHigh: math.max(nextSeqHigh ?? 0, this.nextSeqHigh),
+        hlcHighWritten: math.max(hlcHighWritten ?? 0, this.hlcHighWritten),
       );
 
   @override
-  String toString() => 'OriginEntry($origin, ${state.name}, ${reason.name}, sent<=$maxSentSeq, hlc<=$hlcHigh)';
+  String toString() =>
+      'OriginEntry($origin, ${state.name}, ${reason.name}, sent<=$maxSentSeq, hlc<=$hlcHigh, writtenSeq<$nextSeqHigh, writtenHlc<$hlcHighWritten)';
 }
 
 /// A signed `sync_revocation` record as the ledger keeps it (U11/Efe-1): the
@@ -129,6 +154,12 @@ abstract interface class SyncLedger {
   /// [SyncLedgerWriteException] on failure.
   Future<void> persistSentMark(OriginId origin, int seq, int hlc);
 
+  /// Persists the grow-only written watermark (card A): everything up to
+  /// [nextSeq] was authored under [origin], sent or not, at device HLC
+  /// [hlc]. Called at snapshot time so a later restore below unsent writes
+  /// is detectable. Throws [SyncLedgerWriteException] on failure.
+  Future<void> persistWrittenWatermark(OriginId origin, int nextSeq, int hlc);
+
   /// The highest epoch counter this device ever created (device-global, U11
   /// G1); 0 when none. Rotation counts above it, so a rolled-back key file
   /// cannot re-create an epoch id.
@@ -183,7 +214,7 @@ extension SyncLedgerQueries on SyncLedger {
   }
 
   /// The highest `hlc_high` over all entries (F3), or 0.
-  int get hlcFloor => entries.fold(0, (floor, e) => math.max(floor, e.hlcHigh));
+  int get hlcFloor => entries.fold(0, (floor, e) => math.max(floor, math.max(e.hlcHigh, e.hlcHighWritten)));
 }
 
 /// In-memory [SyncLedger] with fault injection for tests and the simulator.
@@ -227,6 +258,20 @@ final class InMemorySyncLedger implements SyncLedger {
 
   @override
   Future<void> drop(OriginId origin) async => _entries.removeWhere((e) => e.origin == origin);
+
+  @override
+  Future<void> persistWrittenWatermark(OriginId origin, int nextSeq, int hlc) async {
+    if (failAllSentMarkWrites) throw const SyncLedgerWriteException('injected sent-mark write failure');
+    if (failNextSentMarkWrites > 0) {
+      failNextSentMarkWrites--;
+      throw const SyncLedgerWriteException('injected sent-mark write failure');
+    }
+    if (!_readable) throw const SyncLedgerWriteException('sync ledger missing');
+    _replace(
+      origin,
+      (e) => e.copyWith(nextSeqHigh: math.max(nextSeq, e.nextSeqHigh), hlcHighWritten: math.max(hlc, e.hlcHighWritten)),
+    );
+  }
 
   @override
   Future<void> persistSentMark(OriginId origin, int seq, int hlc) async {
