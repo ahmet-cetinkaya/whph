@@ -8,6 +8,7 @@ import 'dart:math';
 import 'package:test/test.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
+import '../simulation/stranded_members.dart';
 import 'session_test_support.dart';
 
 Future<void> _syncAll(List<SyncDevice> devices, {int rounds = 4}) async {
@@ -96,6 +97,32 @@ void main() {
       ];
       expect(onNewOrigin, isEmpty, reason: 'the old invite row is not re-keyed onto the new origin');
       expect(c.store.heldEnvelopes.where((h) => h.origin == newOrigin && h.row.table == 'sync_member'), isEmpty);
+    });
+
+    test('inviter_key_loss_before_first_send_strands_joiner_until_reinvited', () async {
+      final [a, b, joiner] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 740 + i)];
+      await pairAll([a, b]);
+      await syncUntilQuiet([a, b]);
+      await SyncDevice.pair(inviter: a, joiner: joiner);
+      createRow(joiner, 'joiner-task', 'kept');
+      final oldDb = a.snapshotDb();
+      final oldA = a.memberId;
+      await a.loseKeyFile(oldDb: oldDb, loseLedger: true);
+      final stranded = strandedMemberIds(a.store, a.memberId);
+      expect(stranded, {joiner.memberId});
+      await b.removeMember(oldA);
+      await SyncDevice.pair(inviter: b, joiner: a);
+
+      await _syncAll([a, b, joiner], rounds: 4);
+      expect(b.membership.memberById(joiner.memberId), isNull, reason: 'nobody but the old origin knew the joiner');
+
+      for (final memberId in stranded) {
+        expect(memberId, joiner.memberId);
+        await SyncDevice.pair(inviter: b, joiner: joiner);
+      }
+      await syncUntilQuiet([a, b, joiner], maxRounds: 10);
+      expect(b.membership.memberById(joiner.memberId), isNotNull);
+      expect(content(b.store), containsPair(cellKey('joiner-task', 'title').toString(), contains('kept')));
     });
 
     test('keylost_unsent_security_row_stays_on_old_origin_and_needs_repairing', () async {

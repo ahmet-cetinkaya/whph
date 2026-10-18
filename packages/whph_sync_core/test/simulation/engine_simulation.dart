@@ -36,6 +36,7 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 import 'oracle/oracle_checks.dart';
 import 'oracle/reference_oracle.dart';
 import 'simulator.dart';
+import 'stranded_members.dart';
 
 /// Per-step rates and engine settings of the real-engine driver.
 final class EngineSimTuning {
@@ -622,17 +623,33 @@ final class EngineSimulation {
     final loseLedger = _rng.nextBool();
     final oldId = d.device.memberId;
     final action = await d.device.loseKeyFile(oldDb: saved.value, loseLedger: loseLedger);
+    final stranded = strandedMemberIds(d.store, d.device.memberId);
     _oracle.startIncarnation(d.name, saved.knowledge);
     _simOfMember[d.device.memberId] = d.name;
     d.forgetSnapshots();
     final remover = _pick(removers);
     await remover.device.removeMember(oldId);
     remover.forgetSnapshots();
+    await _reinviteStranded(d, stranded, remover);
     final inviter = _pick(_g1Finals(except: d));
     await SyncDevice.pair(inviter: inviter.device, joiner: d.device);
     inviter.forgetSnapshots();
     _event('keyLost|${d.name}|${saved.step}|$loseLedger|${action.name}|${d.device.memberId}'
         '|removedBy=${remover.name}|invitedBy=${inviter.name}');
+  }
+
+  /// Models the user acting on the "re-invite X" prompt (not built yet; the
+  /// app will derive it from the stranded member ids of the origin switch):
+  /// the remover re-invites every device whose invite row was left behind.
+  Future<void> _reinviteStranded(_Dev lost, Set<String> stranded, _Dev remover) async {
+    for (final memberId in stranded) {
+      final name = _simOfMember[memberId];
+      final joiner = _devs.where((x) => x.name == name && x != lost && _inG1(x)).firstOrNull;
+      if (joiner == null) continue;
+      _stats.count('op.reinvite');
+      await SyncDevice.pair(inviter: remover.device, joiner: joiner.device);
+    }
+    remover.forgetSnapshots();
   }
 
   /// Replace-import (`local_reset`): a random subset of existing items'
