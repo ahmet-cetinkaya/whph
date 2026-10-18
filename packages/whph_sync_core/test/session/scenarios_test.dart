@@ -31,7 +31,7 @@ void main() {
       expect((await SyncDevice.syncPair(c, a)).bothComplete, isTrue);
       ca.advance(10);
       createRow(a, 'u', 'in the snapshot, not yet sent');
-      final oldDb = a.snapshotDb();
+      final oldDb = await a.snapshotDb();
       expect(aliveRows(b.store, 'task'), {'x', 'y'}, reason: 'B had not seen u or C\'s item at snapshot time');
       createRow(a, 'v', 'written and sent after the snapshot');
 
@@ -73,7 +73,7 @@ void main() {
       createRow(a, 'x', 'seen');
       expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
       createRow(a, 'u', 'never sent');
-      final oldDb = a.snapshotDb();
+      final oldDb = await a.snapshotDb();
       ca.advance(1000);
       createRow(a, 'v', 'sent after the snapshot');
       expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
@@ -258,7 +258,7 @@ void main() {
     final ca = clocks[0];
     createRow(a, 'k0', 'before the backup');
     expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
-    final backup = a.snapshotDirectory();
+    final backup = await a.snapshotDirectory();
     final ledgerBackup = ledger.snapshot();
     ca.advance(10);
     createRow(a, 'e1', 'after the backup');
@@ -292,7 +292,7 @@ void main() {
     expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
     ca.advance(10);
     createRow(a, 'u', 'never sent before the backup');
-    final oldDb = a.snapshotDb();
+    final oldDb = await a.snapshotDb();
     ca.advance(10);
     createRow(a, 'y', 'sent after the backup');
     expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);

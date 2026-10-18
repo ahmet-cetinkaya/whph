@@ -42,7 +42,7 @@ void main() {
     final b = await newDevice('B', seed: 4, clock: clock);
     final d = await newDevice('D', seed: 5, clock: clock);
     await SyncDevice.pair(inviter: a, joiner: b);
-    final old = b.snapshotDb();
+    final old = await b.snapshotDb();
     await SyncDevice.pair(inviter: a, joiner: d);
     expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
     expect(b.membership.activeMembers.map((m) => m.memberId), contains(d.memberId));
@@ -108,7 +108,7 @@ void main() {
       await SyncDevice.syncPair(a, b);
       ca.advance(10);
       createRow(a, 'u', 'in snapshot, unsent');
-      final snapshot = a.snapshotDb();
+      final snapshot = await a.snapshotDb();
       ca.advance(10);
       createRow(a, 'v', 'after snapshot');
       await SyncDevice.syncPair(a, b, faults: TransportFaults(cutAfter: cut));
@@ -118,6 +118,47 @@ void main() {
     }
   });
 
+  // Card A: the ledger's written watermark (persisted at snapshot time)
+  // remembers seqs and hlcs the device authored but never sent, so a data-dir
+  // restore below them switches the origin instead of silently re-authoring
+  // them under new content.
+  test('restore_below_own_written_seqs_switches_origin', () async {
+    final ca = TestClock();
+    final a = await newDevice('A', seed: 1, clock: ca);
+    final b = await newDevice('B', seed: 2);
+    await SyncDevice.pair(inviter: a, joiner: b);
+    createRow(a, 'x', 'sent');
+    await SyncDevice.syncPair(a, b);
+    final earlier = await a.snapshotDb();
+    final originAtSnapshot = a.store.localOrigin;
+    createRow(a, 'u', 'unsent, remembered by a later snapshot');
+    final later = await a.snapshotDb();
+    createRow(a, 'v', 'unsent, beyond any snapshot');
+    expect(await a.restoreDb(earlier), StartupAction.restore);
+    expect(a.store.localOrigin, isNot(originAtSnapshot),
+        reason: 'seqs above the earlier snapshot were never sent, so the ledger mark alone cannot catch the reuse');
+    expect(later, isNotNull);
+  });
+
+  test('restore_never_reuses_hlc_of_unsent_write', () async {
+    final ca = TestClock();
+    final a = await newDevice('A', seed: 1, clock: ca);
+    final b = await newDevice('B', seed: 2, clock: TestClock(baseWall + day));
+    await SyncDevice.pair(inviter: a, joiner: b);
+    createRow(b, 'x', 'from B');
+    await SyncDevice.syncPair(a, b);
+    final earlier = await a.snapshotDb();
+    ca.advance(1);
+    const title = CellKey('task', 'u', 'title');
+    final unsent = a.write(title, 'unsent, remembered by a later snapshot');
+    await a.snapshotDb();
+    await a.restoreDb(earlier);
+    ca.advance(1);
+    final afterRestore = a.write(title, 'written after the restore');
+    expect(afterRestore.clock, greaterThan(unsent.clock),
+        reason: 'the unsent write hlc must be floored by the ledger watermark');
+  });
+
   test('restore_floors_hlc_from_ledger', () async {
     final ca = TestClock();
     final a = await newDevice('A', seed: 1, clock: ca);
@@ -125,7 +166,7 @@ void main() {
     await SyncDevice.pair(inviter: a, joiner: b);
     createRow(b, 'x', 'from B');
     await SyncDevice.syncPair(a, b);
-    final snapshot = a.snapshotDb();
+    final snapshot = await a.snapshotDb();
     ca.advance(1);
     const title = CellKey('task', 'x', 'title');
     final lost = a.write(title, 'edit lost by restore');
@@ -187,7 +228,7 @@ void main() {
       createRow(author, 'g1', 'author filler');
       createRow(author, 'g2', 'author filler');
       await SyncDevice.syncPair(author, relay);
-      final beforeEdit = relay.snapshotDb();
+      final beforeEdit = await relay.snapshotDb();
       clocks[devices.indexOf(relay)].advance(10);
       relay.write(title, newerEdit);
 
@@ -226,7 +267,7 @@ void main() {
       for (var i = 0; i < 5; i++) {
         author.write(CellKey('task', 'filler$i', 'title'), 'filler');
       }
-      final beforeOverwrite = author.snapshotDb();
+      final beforeOverwrite = await author.snapshotDb();
       clocks[0].advance(10);
       author.write(title, 'overwrite');
 
@@ -362,7 +403,7 @@ void main() {
       await SyncDevice.pair(inviter: a, joiner: b);
       createRow(a, 'k0', 'before');
       await SyncDevice.syncPair(a, b);
-      final directory = a.snapshotDirectory();
+      final directory = await a.snapshotDirectory();
       ca.advance(10);
       createRow(a, 'e1', 'lost after backup');
       createRow(a, 'e2', 'lost after backup');
@@ -385,7 +426,7 @@ void main() {
       await pairAll([a, b, c]);
       createRow(a, 'k0', 'before');
       await syncUntilQuiet([a, b, c]);
-      final directory = a.snapshotDirectory();
+      final directory = await a.snapshotDirectory();
       ca.advance(10);
       createRow(a, 'lost', 'authored after the backup');
       expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
@@ -406,7 +447,7 @@ void main() {
       final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 40 + i)];
       await pairAll([a, b, c]);
       await syncUntilQuiet([a, b, c]);
-      final beforeRotation = b.snapshotDirectory();
+      final beforeRotation = await b.snapshotDirectory();
       await a.removeMember(c.memberId);
       final rotated = a.membership.keyring.highest!;
       createRow(a, 'sealed-under-new-epoch', 'needs the rotated key');
@@ -428,7 +469,7 @@ void main() {
       final [a, b, c, d] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 50 + i)];
       await pairAll([a, b, c, d]);
       await syncUntilQuiet([a, b, c, d]);
-      final beforeRotation = a.snapshotDirectory();
+      final beforeRotation = await a.snapshotDirectory();
       await a.removeMember(c.memberId);
       final first = a.membership.keyring.highest!;
       expect(first, EpochId(2, a.memberId));
@@ -487,7 +528,7 @@ void main() {
       final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 70 + i)];
       await pairAll([a, b, c]);
       await syncUntilQuiet([a, b, c]);
-      final beforeRemoval = a.snapshotDb();
+      final beforeRemoval = await a.snapshotDb();
       await a.removeMember(c.memberId);
       final rotated = a.membership.keyring.highest!;
       expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
@@ -587,7 +628,7 @@ Future<void> _randomRun(int seed) async {
     } else if (roll < 0.9) {
       d.write(CellKey('task', rows[rng.nextInt(rows.length)], CellKey.existenceCol), null);
     } else if (roll < 0.94) {
-      snapshots[i] = d.snapshotDb();
+      snapshots[i] = await d.snapshotDb();
     } else if (roll < 0.96 && snapshots[i] != null) {
       await d.restoreDb(snapshots.remove(i)!);
     } else if (roll < 0.97) {

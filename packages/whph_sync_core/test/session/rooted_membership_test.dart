@@ -49,7 +49,7 @@ void main() {
 
       // D1 invites X; X's member row exists only on D1's origin and is never sent.
       await SyncDevice.pair(inviter: d1, joiner: x);
-      final oldDb = d1.snapshotDb();
+      final oldDb = await d1.snapshotDb();
       final oldD1 = d1.memberId;
 
       await d1.loseKeyFile(oldDb: oldDb, loseLedger: true);
@@ -58,7 +58,7 @@ void main() {
       await _syncAll([d1, x], rounds: 2);
 
       // X loses its key too, keeps a DB with both rows, and B re-invites it.
-      final xDb = x.snapshotDb();
+      final xDb = await x.snapshotDb();
       final oldX = x.memberId;
       await x.loseKeyFile(oldDb: xDb, loseLedger: false);
       await d1.removeMember(oldX);
@@ -79,7 +79,7 @@ void main() {
       await pairAll([b, c, d1]);
       await syncUntilQuiet([b, c, d1]);
       await SyncDevice.pair(inviter: d1, joiner: x);
-      final oldDb = d1.snapshotDb();
+      final oldDb = await d1.snapshotDb();
       final oldD1 = d1.memberId;
       await d1.loseKeyFile(oldDb: oldDb, loseLedger: true);
       expect(d1.needsRepairing, isTrue);
@@ -105,7 +105,7 @@ void main() {
       await syncUntilQuiet([a, b]);
       await SyncDevice.pair(inviter: a, joiner: joiner);
       createRow(joiner, 'joiner-task', 'kept');
-      final oldDb = a.snapshotDb();
+      final oldDb = await a.snapshotDb();
       final oldA = a.memberId;
       await a.loseKeyFile(oldDb: oldDb, loseLedger: true);
       final stranded = strandedMemberIds(a.store, a.memberId);
@@ -132,7 +132,7 @@ void main() {
       await SyncDevice.pair(inviter: d1, joiner: x);
       createRow(d1, 'unsent-task', 'kept');
       final inviteOrigin = d1.store.localOrigin.hex;
-      final oldDb = d1.snapshotDb();
+      final oldDb = await d1.snapshotDb();
 
       await d1.loseKeyFile(oldDb: oldDb, loseLedger: true);
 
@@ -150,7 +150,7 @@ void main() {
       await syncUntilQuiet([b, c, d1]);
       await SyncDevice.pair(inviter: d1, joiner: x);
       createRow(d1, 'unsent-task', 'kept');
-      final oldDb = d1.snapshotDb();
+      final oldDb = await d1.snapshotDb();
       final oldD1 = d1.memberId;
 
       await d1.loseKeyFile(oldDb: oldDb, loseLedger: true);
@@ -213,7 +213,7 @@ void main() {
       final [a, b, c, d] = [for (var n = 0; n < 4; n++) await newDevice('D$n', seed: 750 + n)];
       await pairAll([a, b, c]);
       await syncUntilQuiet([a, b, c]);
-      final oldDb = c.snapshotDb();
+      final oldDb = await c.snapshotDb();
       await SyncDevice.pair(inviter: a, joiner: d);
       await syncUntilQuiet([a, b, c, d]);
 

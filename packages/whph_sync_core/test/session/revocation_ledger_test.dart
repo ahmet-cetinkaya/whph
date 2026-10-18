@@ -21,7 +21,7 @@ void main() {
     await syncUntilQuiet([a, b, r]);
     createRow(r, 'before', 'written before the revocation');
     expect((await SyncDevice.syncPair(r, a)).bothComplete, isTrue);
-    final beforeRemoval = a.snapshotDirectory();
+    final beforeRemoval = await a.snapshotDirectory();
     await a.removeMember(r.memberId);
     final rotated = a.membership.keyring.highest!;
     createRow(r, 'after', 'written after the revocation');
@@ -123,7 +123,7 @@ void main() {
     final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 160 + i)];
     await pairAll([a, b, c]);
     await syncUntilQuiet([a, b, c]);
-    final beforeRevocation = b.snapshotDb();
+    final beforeRevocation = await b.snapshotDb();
     await a.removeMember(c.memberId);
     // The revocation reaches B's DB alone, bypassing the session and so the
     // ledger: the same state as a lost ledger. B's top epoch is still the one
@@ -290,7 +290,7 @@ void main() {
     final [a, b, relay, r] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 190 + i)];
     await pairAll([a, b, relay, r]);
     await syncUntilQuiet([a, b, relay, r]);
-    final beforeRevocation = b.snapshotDb();
+    final beforeRevocation = await b.snapshotDb();
     createRow(r, 'before', 'written before the revocation');
     expect((await SyncDevice.syncPair(r, a)).bothComplete, isTrue);
     await a.removeMember(r.memberId);

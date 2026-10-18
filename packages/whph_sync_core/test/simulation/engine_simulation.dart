@@ -317,9 +317,9 @@ final class EngineSimulation {
     var edge = 0.0;
     bool hit(double p) => r < (edge += p);
     if (hit(tuning.clockJumpProbability)) return _clockJump(_pick(_devs));
-    if (hit(tuning.dbSnapshotProbability)) return _dbSnapshot(_pick(_finals));
+    if (hit(tuning.dbSnapshotProbability)) return await _dbSnapshot(_pick(_finals));
     if (hit(tuning.dbRestoreProbability)) return _dbRestore(_pick(_finals));
-    if (hit(tuning.dirSnapshotProbability)) return _dirSnapshot(_pick(_finals));
+    if (hit(tuning.dirSnapshotProbability)) return await _dirSnapshot(_pick(_finals));
     if (hit(tuning.dirRestoreProbability)) return _dirRestore(_pick(_finals));
     if (hit(tuning.fullRollbackProbability)) return _fullRollback(_pick(_finals));
     if (hit(tuning.keyLostProbability)) return _keyLost(_pick(_finals));
@@ -560,9 +560,9 @@ final class EngineSimulation {
     if (list.length > tuning.maxSnapshotsPerDevice) list.removeAt(0);
   }
 
-  void _dbSnapshot(_Dev d) {
+  Future<void> _dbSnapshot(_Dev d) async {
     _stats.count('op.dbSnapshot');
-    _keep(d.dbSnapshots, _Saved(d.device.snapshotDb(), _oracle.knowledgeOf(d.name), _step));
+    _keep(d.dbSnapshots, _Saved(await d.device.snapshotDb(), _oracle.knowledgeOf(d.name), _step));
     _trace.add('snapDb|${d.name}');
   }
 
@@ -576,9 +576,9 @@ final class EngineSimulation {
     _event('restoreDb|${d.name}|${saved.step}|${action.name}');
   }
 
-  void _dirSnapshot(_Dev d) {
+  Future<void> _dirSnapshot(_Dev d) async {
     _stats.count('op.dirSnapshot');
-    final state = _DirectoryState(d.device.snapshotDirectory(), d.ledger.snapshot());
+    final state = _DirectoryState(await d.device.snapshotDirectory(), d.ledger.snapshot());
     _keep(d.dirSnapshots, _Saved(state, _oracle.knowledgeOf(d.name), _step));
     _trace.add('snapDir|${d.name}');
   }
