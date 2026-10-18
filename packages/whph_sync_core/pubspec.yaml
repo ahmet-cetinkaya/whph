@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   cryptography: ^2.9.0
+  meta: ^1.15.0
 
 dev_dependencies:
   lints: ^5.0.0

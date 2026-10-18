@@ -22,6 +22,8 @@ library;
 import 'dart:collection';
 import 'dart:math' as math;
 
+import 'package:meta/meta.dart';
+
 import '../clock/hlc.dart';
 import '../clock/version_vector.dart';
 import '../merge/cell_merge.dart';
@@ -407,6 +409,7 @@ final class SyncStore implements ReplicaStore {
   /// Adds an index entry without a supersession. For tests that need a stale
   /// entry; the engine records entries only through [_put], [applyRemote] and
   /// [dropSupersededHeld].
+  @visibleForTesting
   void debugIndexSuperseded(String origin, int seq, CellKey key) => _recordSuperseded(origin, seq, key);
 
   /// Origins of which at least one cell is stored.
