@@ -8,6 +8,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import '../crypto/epoch.dart';
+import '../crypto/origin_registry.dart';
 import '../crypto/primitives.dart';
 import '../crypto/revocation.dart';
 import '../membership/identity.dart';
@@ -405,11 +406,7 @@ final class SyncDevice {
   /// re-issue of own revocations stranded on a sealed origin (card B.2:
   /// publish what you enforce, DB-verified records only, never ledger-only),
   /// and the re-rotation rule. Returns whether anything was written.
-  ///
-  /// Residual (documented, accepted): a re-issue is signed by the current key,
-  /// so a stranded record whose original revoker was a former identity of this
-  /// device is vouched for by the new identity (laundering of own authorship).
-  /// `syncUntilQuiet` in tests does not count security cells (C5).
+  /// The laundering residual of a re-issue is in the plan (D7, card B.2).
   Future<bool> maintainMembership() async {
     final m = membership;
     final g = m.groupId;
@@ -444,15 +441,19 @@ final class SyncDevice {
   /// Carrier `(origin, seq)` of every revocation cell in the DB, by record
   /// signature (hex): where a record lives, so [_isRevocationServed] can tell
   /// whether peers can fetch it.
-  Map<String, ({String origin, int seq})> _revocationCarriers() {
-    final carriers = <String, ({String origin, int seq})>{};
+  Map<String, ({String origin, int seq, bool hasManifest})> _revocationCarriers() {
+    final carriers = <String, ({String origin, int seq, bool hasManifest})>{};
     for (final pk in store.rowsOf(SecurityTables.revocation)) {
       final cell = store.storedCell(CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
       final value = cell?.record.value;
       if (cell == null || value is! Uint8List) continue;
       try {
         final record = decodeRevocationRecord(value);
-        carriers[_hex(record.sig)] = (origin: cell.record.origin, seq: cell.record.originSeq);
+        carriers[_hex(record.sig)] = (
+          origin: cell.record.origin,
+          seq: cell.record.originSeq,
+          hasManifest: cell.manifest != null,
+        );
       } on Object {
         continue;
       }
@@ -460,15 +461,19 @@ final class SyncDevice {
     return carriers;
   }
 
-  /// Whether peers can fetch [record]: its carrier is not a sealed origin of
-  /// this device, or its seq is at or below the origin's persisted sent mark
-  /// (peers were handed it). A record whose carrier is unknown here counts as
-  /// served (never re-issued: it is not this device's to publish, C1).
+  /// Whether peers can fetch AND accept [record] (C3): its carrier is not a
+  /// sealed origin of this device, or the carrying cell is manifested, at or
+  /// below the origin's persisted sent mark, and the origin is registered to a
+  /// member (rooted carrier). The record already passed its cutoff filter by
+  /// being in the directory set. A record whose carrier is unknown here counts
+  /// as served (never re-issued: it is not this device's to publish, C1).
   bool _isRevocationServed(RevocationRecord record) {
     final carrier = _revocationCarriers()[_hex(record.sig)];
     if (carrier == null || !store.sealedOrigins.contains(carrier.origin)) return true;
-    final sent = ledger.isReadable ? ledger.entryOf(OriginId.fromHex(carrier.origin))?.maxSentSeq ?? 0 : 0;
-    return carrier.seq <= sent;
+    final origin = OriginId.fromHex(carrier.origin);
+    final sent = ledger.isReadable ? ledger.entryOf(origin)?.maxSentSeq ?? 0 : 0;
+    final rooted = membership.registry?.ownerOf(origin) is OriginRegisteredTo;
+    return carrier.hasManifest && rooted && carrier.seq <= sent;
   }
 
   /// Whether this device authored [record]: its carrier is an own former

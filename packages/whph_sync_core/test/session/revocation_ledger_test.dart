@@ -358,6 +358,59 @@ void main() {
     expect((await SyncDevice.syncPair(b, d)).responder, isA<SessionFailed>(), reason: 'D rejects revoked B');
   });
 
+  // C3: a sent mark above the carrier seq does not make a record servable when
+  // the carrying cell has no manifest (peers were never handed it).
+  test('sent_mark_without_manifest_does_not_count_as_served', () async {
+    final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 250 + i)];
+    await pairAll([a, b, c]);
+    await syncUntilQuiet([a, b, c]);
+    await a.removeMember(b.memberId);
+    final origin = a.store.localOrigin;
+    await a.ledger.persistSentMark(origin, 1000, a.store.hlc);
+    await a.switchOrigin(OriginSwitchReason.restore, sentMark: 1000);
+    final bPub = b.membership.identity.ed25519Pub;
+    expect(c.membership.isExcluded(bPub), isFalse);
+
+    await a.maintainMembership();
+    expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
+    await c.maintainMembership();
+
+    expect(c.membership.isExcluded(bPub), isTrue, reason: 'unmanifested carrier is re-issued despite the sent mark');
+  });
+
+  // C2: a key-lost device re-issues its stranded own revocation only after it
+  // re-pairs, and then under its NEW key.
+  test('key_lost_device_reissues_stranded_revocation_only_after_repair', () async {
+    final [b, c, d1, x] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 260 + i)];
+    await pairAll([b, c, d1, x]);
+    await syncUntilQuiet([b, c, d1, x]);
+    await d1.removeMember(x.memberId);
+    final oldDb = await d1.snapshotDb();
+    final oldD1 = d1.memberId;
+    final xPub = x.membership.identity.ed25519Pub;
+
+    await d1.loseKeyFile(oldDb: oldDb, loseLedger: true);
+    final before = d1.store.rowsOf(SecurityTables.revocation).length;
+    await d1.maintainMembership();
+    expect(d1.store.rowsOf(SecurityTables.revocation), hasLength(before), reason: 'nothing before re-pair');
+
+    await b.removeMember(oldD1);
+    await SyncDevice.pair(inviter: b, joiner: d1);
+    await d1.maintainMembership();
+    await syncUntilQuiet([b, c, d1]);
+    await c.maintainMembership();
+
+    expect(d1.memberId, isNot(oldD1));
+    expect(c.membership.isExcluded(xPub), isTrue, reason: 'the stranded revocation reached the group');
+    final newKey = d1.membership.identity.ed25519Pub;
+    final revokers = [
+      for (final pk in d1.store.rowsOf(SecurityTables.revocation))
+        decodeRevocationRecord(
+            d1.store.read(CellKey(SecurityTables.revocation, pk, CellKey.rowCol))!.value as Uint8List),
+    ].where((r) => _sameBytes(r.revokedPub, xPub)).map((r) => r.revokerPub);
+    expect(revokers.any((key) => _sameBytes(key, newKey)), isTrue, reason: 're-issued under the NEW key');
+  });
+
   test('ledger_revocation_by_db_member_still_self_extends', () async {
     final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 190 + i)];
     await pairAll([a, b, c]);
@@ -488,3 +541,6 @@ Future<void> persistLedgerRevocation(SyncDevice device,
     ),
   ]);
 }
+
+bool _sameBytes(List<int> a, List<int> b) =>
+    a.length == b.length && Iterable.generate(a.length).every((i) => a[i] == b[i]);

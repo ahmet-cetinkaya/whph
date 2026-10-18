@@ -287,7 +287,8 @@ final class Membership {
 
   /// The [revocations] verified against the real member directory alone, with
   /// no ledger-only record. Only these may turn into an own signed revocation
-  /// or an epoch rotation (U11/Efe-R2).
+  /// (self-extension, or the re-issue of an own record stranded on a sealed
+  /// origin, card B.2) or an epoch rotation (U11/Efe-R2).
   RevocationSet? get directoryRevocations => _directoryRevocations;
 
   /// Verifier over the current registry, revocations and member directory

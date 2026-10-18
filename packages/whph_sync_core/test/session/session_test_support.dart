@@ -69,7 +69,7 @@ Future<void> pairAll(List<SyncDevice> devices) async {
 /// complete). Returns the number of rounds.
 Future<int> syncUntilQuiet(List<SyncDevice> devices, {int maxRounds = 8}) async {
   for (var round = 1; round <= maxRounds; round++) {
-    final before = [for (final d in devices) fingerprint(d.store)];
+    final before = [for (final d in devices) fingerprint(d.store, security: true)];
     for (var i = 0; i < devices.length; i++) {
       for (var j = i + 1; j < devices.length; j++) {
         final r = await SyncDevice.syncPair(devices[i], devices[j]);
@@ -77,7 +77,7 @@ Future<int> syncUntilQuiet(List<SyncDevice> devices, {int maxRounds = 8}) async 
         expect(r.responder.exchanged, isTrue, reason: 'round $round ${devices[i].name}->${devices[j].name}: $r');
       }
     }
-    final after = [for (final d in devices) fingerprint(d.store)];
+    final after = [for (final d in devices) fingerprint(d.store, security: true)];
     if (_listEq(before, after) && after.toSet().length == 1) return round;
   }
   return maxRounds + 1;
