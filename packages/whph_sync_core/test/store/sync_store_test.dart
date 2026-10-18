@@ -256,6 +256,43 @@ void main() {
       expect(s.isSuperseded(held), isTrue);
     });
 
+    test('dropping a superseded held envelope indexes it for the relay (F5 site 3)', () {
+      final s = _store();
+      s.applyRemote(_remote('t', 'title', 'winner', hlc: 9 << 16, origin: 3, seq: 2), _manifest(_origin(3), 0, 5),
+          nowMs: _t0);
+      final held = HeldEnvelope(
+        envelope: _envelope('t', origin: 4, seq: 7, hlc: 5 << 16),
+        manifest: _manifest(_origin(4), 0, 8),
+        reason: HeldReason.missingKey,
+        recordedAt: _t0,
+      );
+      s.putHeld(held);
+      expect(s.supersededIndexed, 0);
+
+      s.dropSupersededHeld(held);
+
+      expect(s.heldAt(_origin(4).hex, 7), isNull);
+      expect(s.supersededIndexed, 1);
+      expect(s.nextSupersededOfOrigin(_origin(4).hex, 0)?.$1, 7);
+    });
+
+    test('dropping a held copy of the stored winner does not index it (index and cells stay disjoint)', () {
+      final s = _store();
+      s.applyRemote(_remote('t', 'title', 'winner', hlc: 9 << 16, origin: 3, seq: 2), _manifest(_origin(3), 0, 5),
+          nowMs: _t0);
+      final held = HeldEnvelope(
+        envelope: _envelope('t', origin: 3, seq: 2, hlc: 9 << 16),
+        manifest: _manifest(_origin(3), 0, 5),
+        reason: HeldReason.missingKey,
+        recordedAt: _t0,
+      );
+      s.putHeld(held);
+
+      s.dropSupersededHeld(held);
+
+      expect(s.supersededIndexed, 0);
+    });
+
     test('isSuperseded breaks an exact (hlc, node) tie like the merge: origin, then seq', () {
       final s = _store();
       final m3 = _manifest(_origin(3), 0, 5);

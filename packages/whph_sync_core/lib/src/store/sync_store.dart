@@ -506,6 +506,7 @@ final class SyncStore implements ReplicaStore {
   /// Removes [held] because a newer version of its cell is stored (D15).
   void dropSupersededHeld(HeldEnvelope held) {
     removeHeld(held.origin, held.seq);
+    _recordSupersededByStored(held.origin, held.seq, held.key);
   }
 
   // --- Origin registry -----------------------------------------------------------
@@ -782,6 +783,15 @@ final class SyncStore implements ReplicaStore {
     if (previous != null) _unindex(previous);
     row[key.col] = cell;
     _byOrigin.putIfAbsent(cell.record.origin, SplayTreeMap.new)[cell.record.originSeq] = cell;
+  }
+
+  /// Indexes a version that lost to the stored winner of [key] without ever
+  /// being stored, so a relay can still send the winner in its place (F5).
+  /// The stored winner itself is never indexed (`index ∩ _byOrigin = ∅`).
+  void _recordSupersededByStored(String origin, int seq, CellKey key) {
+    final stored = _cell(key)?.record;
+    if (stored == null || (stored.origin == origin && stored.originSeq == seq)) return;
+    _recordSuperseded(origin, seq, key);
   }
 
   void _recordSuperseded(String origin, int seq, CellKey key) =>
