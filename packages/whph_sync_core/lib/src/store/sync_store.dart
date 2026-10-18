@@ -396,6 +396,19 @@ final class SyncStore implements ReplicaStore {
     return seq == null ? null : (seq, index![seq]!);
   }
 
+  /// Removes the index entry of the superseded [seq] of [origin].
+  void dropSupersededEntry(String origin, int seq) {
+    final index = _superseded[origin];
+    if (index == null) return;
+    index.remove(seq);
+    if (index.isEmpty) _superseded.remove(origin);
+  }
+
+  /// Adds an index entry without a supersession. For tests that need a stale
+  /// entry; the engine records entries only through [_put], [applyRemote] and
+  /// [dropSupersededHeld].
+  void debugIndexSuperseded(String origin, int seq, CellKey key) => _recordSuperseded(origin, seq, key);
+
   /// Origins of which at least one cell is stored.
   Iterable<String> get cellOrigins => _byOrigin.keys;
 

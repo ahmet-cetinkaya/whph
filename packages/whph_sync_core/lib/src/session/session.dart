@@ -724,14 +724,22 @@ final class SyncSession {
   /// may go on; otherwise the batch is full or the origin was given up.
   Future<bool> _passSuperseded(_OriginPlan plan, _BatchDraft draft, int seq, CellKey key) async {
     final committed = _store.storedCell(key);
-    assert(committed != null, 'superseded index points at missing cell $key');
-    final winner = selectRelayWinner(committed, _peerVector[committed?.record.origin] ?? 0);
-    if (committed != null && winner == null) {
+    if (committed == null) {
+      // A stale entry (its cell was removed) must not stall the origin for
+      // good: nothing can be relayed for it, so drop it and treat the seq as
+      // a gap.
+      stats.staleSupersededDropped++;
+      _store.dropSupersededEntry(plan.origin, seq);
+      plan.scanned = seq;
+      return true;
+    }
+    final winner = selectRelayWinner(committed, _peerVector[committed.record.origin] ?? 0);
+    if (winner == null) {
       plan.scanned = seq;
       draft.passed.add('${plan.origin}#$seq');
       return true;
     }
-    switch (winner == null ? _WinnerRelay.unusable : await _relayWinner(winner, draft)) {
+    switch (await _relayWinner(winner, draft)) {
       case _WinnerRelay.included:
         plan.scanned = seq;
         draft.passed.add('${plan.origin}#$seq');

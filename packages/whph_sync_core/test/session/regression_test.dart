@@ -139,6 +139,25 @@ void main() {
     expect(b.store.read(title)?.value, 'edit after restore');
   });
 
+  test('stale_superseded_index_entry_is_dropped_not_a_permanent_stall', () async {
+    final [a, b] = [for (var i = 0; i < 2; i++) await newDevice('D$i', seed: 80 + i)];
+    await pairAll([a, b]);
+    await syncUntilQuiet([a, b]);
+    createRow(a, 'live', 'first');
+    a.write(const CellKey('task', 'live', 'title'), 'second');
+    final own = a.store.localOrigin.hex;
+    final (supersededSeq, _) = a.store.nextSupersededOfOrigin(own, 0)!;
+    // Point the entry at a key without a cell, as left by a row removed behind the index.
+    a.store.debugIndexSuperseded(own, supersededSeq, const CellKey('task', 'gone', 'title'));
+
+    final result = await SyncDevice.syncPair(a, b);
+
+    expect(result.bothComplete, isTrue, reason: '$result');
+    expect(result.initiator.stats.staleSupersededDropped, 1);
+    expect(a.store.supersededIndexed, 0, reason: 'the stale entry is healed');
+    expect(content(b.store), content(a.store), reason: 'nothing is stalled behind it');
+  });
+
   test('relay_restore_after_cut_resends_superseded', () async {
     // F5 (U11): a relay holds the author's change and its own newer edit of
     // the same cell; a cut keeps the edit from the receiver, then the relay

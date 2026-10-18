@@ -78,6 +78,9 @@ final class SessionStats {
   int supersededIndexed = 0;
   int manifestsSigned = 0;
 
+  /// Index entries whose winner cell was gone; dropped when met (F5).
+  int staleSupersededDropped = 0;
+
   /// `origin#seq` of every envelope sent in this session (FR-014 checks).
   final List<String> sentVersions = [];
 
