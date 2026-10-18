@@ -51,6 +51,7 @@ import '../protocol/version.dart';
 import '../store/sync_ledger.dart';
 import '../store/replica_store.dart';
 import '../store/sync_store.dart';
+import 'relay_winner.dart';
 import 'secure_channel.dart';
 import 'session_result.dart';
 import 'sync_device.dart';
@@ -118,6 +119,65 @@ final class _OriginPlan {
   int scanned;
   int bound;
   bool done = false;
+
+  /// Given up for this session: a superseded seq whose winner cannot be sent.
+  bool stopped = false;
+}
+
+/// Why a winner could not or could be put into a batch (F5).
+enum _WinnerRelay { included, changed, noRoom, unusable }
+
+/// The batch [SyncSession._stream] is filling.
+final class _BatchDraft {
+  _BatchDraft(this._config, {required this.own});
+
+  final SyncEngineConfig _config;
+
+  /// Hex of the current own origin.
+  final String own;
+
+  final Map<OriginId, List<SeqRange>> ranges = {};
+  final Set<OriginManifest> manifests = {};
+  final List<ChangeEnvelope> envelopes = [];
+  final Set<String> versions = {};
+
+  /// Superseded seqs passed together with their winner (debug oracle only).
+  final Set<String> passed = {};
+  int _bytes = 64;
+
+  /// Highest own seq the batch declares or carries (the ledger's max_sent_seq).
+  int ownTo = 0;
+
+  /// No further item fits; the batch is sent as it is.
+  bool full = false;
+
+  bool get isEmpty => ranges.isEmpty && envelopes.isEmpty;
+
+  bool overflows(int size, OriginManifest? manifest) {
+    final manifestSize = manifest == null || manifests.contains(manifest) ? 0 : SyncSession._manifestSize(manifest);
+    return envelopes.isNotEmpty &&
+        (envelopes.length >= _config.maxBatchChanges || _bytes + size + manifestSize > _config.maxBatchBytes);
+  }
+
+  /// Adds the [envelope] of version `origin#seq`.
+  void add(OriginManifest manifest, ChangeEnvelope envelope, int size, {required String origin, required int seq}) {
+    _bytes += size + (manifests.contains(manifest) ? 0 : SyncSession._manifestSize(manifest));
+    manifests.add(manifest);
+    envelopes.add(envelope);
+    versions.add('$origin#$seq');
+    if (origin == own) ownTo = math.max(ownTo, seq);
+  }
+
+  bool covers(String origin, int seq) => ranges[OriginId.fromHex(origin)]?.any((range) => range.contains(seq)) ?? false;
+
+  /// Declares [range] of [origin]. A narrow range of a winner that the new
+  /// range contains is dropped: ranges of one origin must not overlap.
+  void declare(String origin, SeqRange range) {
+    final declared = ranges.putIfAbsent(OriginId.fromHex(origin), () => []);
+    declared.removeWhere((narrow) => range.contains(narrow.to));
+    declared.add(range);
+    if (origin == own) ownTo = math.max(ownTo, range.to);
+  }
 }
 
 /// One side of one sync session (see the library documentation).
@@ -537,104 +597,184 @@ final class SyncSession {
 
   Future<void> _stream(SecureChannel channel) async {
     final snapshot = _snapshot!;
-    final own = _store.localOrigin.hex;
     final plans = [
       for (final o in snapshot.keys.toList()..sort())
         if (snapshot[o]! > (_peerVector[o] ?? 0)) _OriginPlan(o, _peerVector[o] ?? 0, snapshot[o]!),
     ];
-    final config = device.config;
     var p = 0;
     while (p < plans.length && !_storageError) {
-      final ranges = <OriginId, List<SeqRange>>{};
-      final manifests = <OriginManifest>{};
-      final envelopes = <ChangeEnvelope>[];
-      final versions = <String>{};
-      var bytes = 64;
-      var ownTo = 0;
-      var full = false;
-      bool overflows(int size, OriginManifest? manifest) {
-        final manifestSize = manifest == null || manifests.contains(manifest) ? 0 : _manifestSize(manifest);
-        return envelopes.isNotEmpty &&
-            (envelopes.length >= config.maxBatchChanges || bytes + size + manifestSize > config.maxBatchBytes);
-      }
-
-      void addSigned(StoredCell cell) {
-        final record = cell.record;
-        final signedBy = cell.manifest ?? (throw StateError('own origin switched during the session'));
-        bytes += _estimate(record) + (manifests.contains(signedBy) ? 0 : _manifestSize(signedBy));
-        manifests.add(signedBy);
-        envelopes.add(_seal(record));
-        versions.add(_versionOf(record));
-        if (record.origin == own) ownTo = math.max(ownTo, record.originSeq);
-      }
-
-      while (p < plans.length && !full) {
+      final draft = _BatchDraft(device.config, own: _store.localOrigin.hex);
+      while (p < plans.length && !draft.full) {
         final plan = plans[p];
         final from = plan.declared;
-        while (true) {
-          final cell = _store.nextCellOfOrigin(plan.origin, plan.scanned);
-          final held = _store.nextHeldOfOrigin(plan.origin, plan.scanned);
-          final cellSeq = cell?.record.originSeq;
-          final heldSeq = held?.seq;
-          final useCell = cellSeq != null && (heldSeq == null || cellSeq <= heldSeq);
-          final seq = useCell ? cellSeq : heldSeq;
-          if (seq == null || seq > plan.bound) {
-            plan.done = true;
-            break;
-          }
-          if (useCell && _isNeverSentSecurityCell(cell!, own)) {
-            // Stayed on the sealed origin at a switch (U11/rooted): it is
-            // never sent, its seq is just a gap in the declared range.
-            plan.scanned = seq;
-            continue;
-          }
-          final size = useCell ? _estimate(cell!.record) : _heldSize(held!);
-          final manifest = useCell ? cell!.manifest : held!.manifest;
-          if (overflows(size, manifest)) {
-            full = true;
-            break;
-          }
-          if (useCell) {
-            if (cell!.manifest == null) await _signOwnThrough(seq, plan.bound);
-            final current = _store.storedCell(cell.record.key);
-            // Superseded while signing: the next pass handles its seq as
-            // superseded.
-            if (current == null || !identical(current.record, cell.record)) continue;
-            addSigned(current);
-          } else {
-            bytes += size + (manifests.contains(held!.manifest) ? 0 : _manifestSize(held.manifest));
-            manifests.add(held.manifest);
-            envelopes.add(held.envelope);
-            versions.add('${plan.origin}#$seq');
-            stats.heldRelayed++;
-          }
-          plan.scanned = seq;
-        }
+        await _scanPlan(plan, draft);
         final to = plan.done ? plan.bound : plan.scanned;
-        if (to > from) {
-          ranges[OriginId.fromHex(plan.origin)] = [SeqRange(from, to)];
-          if (plan.origin == own) ownTo = math.max(ownTo, to);
-        }
+        if (to > from) draft.declare(plan.origin, SeqRange(from, to));
         plan
           ..declared = to
           ..scanned = to;
-        if (plan.done) p++;
+        if (plan.done || plan.stopped) p++;
       }
-      if (ranges.isEmpty) continue;
+      if (draft.ranges.isEmpty) continue;
+      assert(_omissionsAreCovered(draft), 'a range omits a superseded seq without its winner (F5)');
       final sent = await _sendBatch(
         channel,
         ChangeBatchMessage(
           batchId: _nextBatchId++,
-          ranges: ranges,
-          manifests: manifests.toList(),
-          envelopes: envelopes,
+          ranges: draft.ranges,
+          manifests: draft.manifests.toList(),
+          envelopes: draft.envelopes,
         ),
-        ownTo: ownTo,
+        ownTo: draft.ownTo,
       );
       if (!sent) return;
-      stats.sentVersions.addAll(versions);
+      stats.sentVersions.addAll(draft.versions);
     }
     if (!_storageError) await _serveAboveCursor(channel);
+  }
+
+  /// Adds the items of [plan] above its scan position to [draft] in seq order,
+  /// until the plan reaches its bound ([_OriginPlan.done]), the batch is full
+  /// ([_BatchDraft.full]) or the origin is given up for this session
+  /// ([_OriginPlan.stopped]).
+  Future<void> _scanPlan(_OriginPlan plan, _BatchDraft draft) async {
+    while (true) {
+      final cell = _store.nextCellOfOrigin(plan.origin, plan.scanned);
+      final held = _store.nextHeldOfOrigin(plan.origin, plan.scanned);
+      final superseded = _store.nextSupersededOfOrigin(plan.origin, plan.scanned);
+      final cellSeq = cell?.record.originSeq;
+      final heldSeq = held?.seq;
+      final useCell = cellSeq != null && (heldSeq == null || cellSeq <= heldSeq);
+      final liveSeq = useCell ? cellSeq : heldSeq;
+      final supersededSeq = superseded?.$1;
+      final liveFirst = liveSeq != null && (supersededSeq == null || liveSeq <= supersededSeq);
+      final seq = liveFirst ? liveSeq : supersededSeq;
+      if (seq == null || seq > plan.bound) {
+        plan.done = true;
+        return;
+      }
+      if (!liveFirst) {
+        if (!await _passSuperseded(plan, draft, seq, superseded!.$2)) return;
+        continue;
+      }
+      if (useCell && _isNeverSentSecurityCell(cell!, draft.own)) {
+        // Stayed on the sealed origin at a switch (U11/rooted): it is never
+        // sent, its seq is just a gap in the declared range.
+        plan.scanned = seq;
+        continue;
+      }
+      // Already in the batch as the winner behind a superseded seq (F5).
+      if (draft.versions.contains('${plan.origin}#$seq')) {
+        plan.scanned = seq;
+        continue;
+      }
+      final size = useCell ? _estimate(cell!.record) : _heldSize(held!);
+      final manifest = useCell ? cell!.manifest : held!.manifest;
+      if (draft.overflows(size, manifest)) {
+        draft.full = true;
+        return;
+      }
+      if (useCell) {
+        if (cell!.manifest == null) await _signOwnThrough(seq, plan.bound);
+        final current = _store.storedCell(cell.record.key);
+        // Superseded while signing: the next pass handles its seq as
+        // superseded.
+        if (current == null || !identical(current.record, cell.record)) continue;
+        final signedBy = current.manifest ?? (throw StateError('own origin switched during the session'));
+        draft.add(signedBy, _seal(current.record), _estimate(current.record), origin: plan.origin, seq: seq);
+      } else {
+        draft.add(held!.manifest, held.envelope, size, origin: plan.origin, seq: seq);
+        stats.heldRelayed++;
+      }
+      plan.scanned = seq;
+    }
+  }
+
+  /// Debug oracle (F5): every superseded seq inside a declared range of [draft]
+  /// is covered by its winner, already at the receiver, in this batch, or sent
+  /// earlier in this session. Runs in `assert` only.
+  bool _omissionsAreCovered(_BatchDraft draft) {
+    for (final entry in draft.ranges.entries) {
+      for (final range in entry.value) {
+        var superseded = _store.nextSupersededOfOrigin(entry.key.hex, range.from);
+        while (superseded != null && superseded.$1 <= range.to) {
+          final winner = _store.storedCell(superseded.$2);
+          // Covered when passed with its winner at scan time, or sent before it
+          // was superseded; the winner may have been replaced since.
+          final version = '${entry.key.hex}#${superseded.$1}';
+          final covered = draft.passed.contains(version) ||
+              _wasSent(draft, version) ||
+              winner == null ||
+              selectRelayWinner(winner, _peerVector[winner.record.origin] ?? 0) == null ||
+              _wasSent(draft, _versionOf(winner.record));
+          if (!covered) return false;
+          superseded = _store.nextSupersededOfOrigin(entry.key.hex, superseded.$1);
+        }
+      }
+    }
+    return true;
+  }
+
+  bool _wasSent(_BatchDraft draft, String version) =>
+      draft.versions.contains(version) || stats.sentVersions.contains(version);
+
+  /// Passes the superseded [seq] of [plan] (its winner is the cell at [key]).
+  /// The receiver may move its cursor past [seq] only if it already has the
+  /// winner or gets it in the same atomic batch (F5). Returns whether the scan
+  /// may go on; otherwise the batch is full or the origin was given up.
+  Future<bool> _passSuperseded(_OriginPlan plan, _BatchDraft draft, int seq, CellKey key) async {
+    final committed = _store.storedCell(key);
+    assert(committed != null, 'superseded index points at missing cell $key');
+    final winner = selectRelayWinner(committed, _peerVector[committed?.record.origin] ?? 0);
+    if (committed != null && winner == null) {
+      plan.scanned = seq;
+      draft.passed.add('${plan.origin}#$seq');
+      return true;
+    }
+    switch (winner == null ? _WinnerRelay.unusable : await _relayWinner(winner, draft)) {
+      case _WinnerRelay.included:
+        plan.scanned = seq;
+        draft.passed.add('${plan.origin}#$seq');
+        return true;
+      case _WinnerRelay.changed:
+        return true;
+      case _WinnerRelay.noRoom:
+        draft.full = true;
+        return false;
+      case _WinnerRelay.unusable:
+        // As the first item of a batch nothing could progress: give the origin
+        // up for this session instead of looping (a later session retries).
+        if (draft.isEmpty && plan.scanned == plan.declared) {
+          plan.stopped = true;
+        } else {
+          draft.full = true;
+        }
+        return false;
+    }
+  }
+
+  /// Puts the committed [winner] into [draft] under a narrow range of its own
+  /// unless the batch already carries it.
+  Future<_WinnerRelay> _relayWinner(StoredCell winner, _BatchDraft draft) async {
+    final record = winner.record;
+    if (draft.versions.contains(_versionOf(record))) return _WinnerRelay.included;
+    var signed = winner;
+    if (record.origin == draft.own) {
+      // Sign through the winner only: it may lie above the snapshot, and the
+      // own bound stays as it is (FR-014). Its seq still counts in `ownTo`.
+      if (winner.manifest == null) await _signOwnThrough(record.originSeq, record.originSeq);
+      final current = _store.storedCell(record.key);
+      if (current == null || !identical(current.record, record)) return _WinnerRelay.changed;
+      signed = current;
+    }
+    final manifest = signed.manifest;
+    if (manifest == null) return _WinnerRelay.unusable;
+    if (draft.overflows(_estimate(record), manifest)) return _WinnerRelay.noRoom;
+    draft.add(manifest, _seal(record), _estimate(record), origin: record.origin, seq: record.originSeq);
+    if (!draft.covers(record.origin, record.originSeq)) {
+      draft.declare(record.origin, SeqRange(record.originSeq - 1, record.originSeq));
+    }
+    return _WinnerRelay.included;
   }
 
   static bool _isNeverSentSecurityCell(StoredCell cell, String ownOrigin) =>
@@ -676,7 +816,8 @@ final class SyncSession {
   }
 
   /// Signs own manifests (≤ 1,000 consecutive seqs each) until [seq] is
-  /// covered, never beyond the snapshot [bound] (D7: built at send time).
+  /// covered, never beyond [bound] (D7: built at send time; the snapshot bound,
+  /// or [seq] itself for a relayed winner above the snapshot).
   Future<void> _signOwnThrough(int seq, int bound) async {
     final m = device.membership;
     while (_store.ownSignedTo < seq) {

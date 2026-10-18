@@ -9,11 +9,6 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 
 import 'session_test_support.dart';
 
-/// F5 is open: the (a) fix was reverted to keep U11 green and gets its own
-/// task after the U11 security review, so this test is expected to fail.
-/// Skipped by default via dart_test.yaml; run with `-P f5-pending`.
-const _f5PendingTag = 'f5-pending';
-
 void main() {
   test('a later edit by a device that never saw the delete revives the item with its other fields (FR-006)', () async {
     final ca = TestClock();
@@ -190,7 +185,104 @@ void main() {
       expect(receiver.store.read(title)?.value, oldChange, reason: 'the old change was lost, cut $cut');
     }
     expect(newerEditCut, greaterThan(0), reason: 'some cuts keep the newer edit from the receiver');
-  }, tags: _f5PendingTag);
+  });
+
+  test('same_origin_supersede_beyond_batch_progresses', () async {
+    // The author overwrites its own first edit after more winners than one
+    // batch holds, so the superseded seq and its winner never share a plain
+    // range (F5, 8.1). Streaming must terminate and converge, with cuts and a
+    // restore of the author from before the overwrite.
+    const title = CellKey('task', 'same', 'title');
+    var overwriteCut = 0;
+    for (var cut = 1; cut <= 40; cut += 3) {
+      final config = testConfig(maxBatchChanges: 2);
+      final clocks = [TestClock(), TestClock()];
+      final devices = [
+        for (var i = 0; i < 2; i++) await newDevice('D$i', seed: 51 + i, clock: clocks[i], config: config),
+      ];
+      final [author, receiver] = devices;
+      await pairAll(devices);
+      await syncUntilQuiet(devices);
+      author.write(title, 'first edit');
+      for (var i = 0; i < 5; i++) {
+        author.write(CellKey('task', 'filler$i', 'title'), 'filler');
+      }
+      final beforeOverwrite = author.snapshotDb();
+      clocks[0].advance(10);
+      author.write(title, 'overwrite');
+
+      await SyncDevice.syncPair(author, receiver, faults: TransportFaults(cutAfter: cut));
+      final delivered = receiver.store.read(title)?.value;
+      await author.restoreDb(beforeOverwrite);
+      expect(await syncUntilQuiet(devices), lessThanOrEqualTo(4), reason: 'cut $cut: does not settle');
+
+      expect(fingerprint(receiver.store), fingerprint(author.store), reason: 'diverged, cut $cut');
+      // A delivered overwrite is relayed back to the restored author; an
+      // undelivered one is gone, and the first edit must still be there.
+      final overwriteDelivered = delivered == 'overwrite';
+      if (overwriteDelivered) overwriteCut++;
+      expect(receiver.store.read(title)?.value, overwriteDelivered ? 'overwrite' : 'first edit', reason: 'cut $cut');
+    }
+    expect(overwriteCut, greaterThan(0), reason: 'some cuts deliver the overwrite before the restore');
+  });
+
+  test('held_winner_is_never_relayed_as_w', () async {
+    // The relay holds a newer, failed-to-apply version of a cell. The winner
+    // that travels with an omitted superseded seq is the committed one.
+    final clock = TestClock();
+    final devices = [
+      for (var i = 0; i < 4; i++) await newDevice('H$i', seed: 61 + i, clock: clock),
+    ];
+    final [first, second, relay, receiver] = devices;
+    await pairAll(devices);
+    await syncUntilQuiet(devices);
+    const key = CellKey('task', 'held', 'title');
+    first.write(key, 'v0');
+    await SyncDevice.syncPair(first, relay);
+    clock.advance(10);
+    second.write(key, 'v1');
+    await SyncDevice.syncPair(second, relay);
+    clock.advance(10);
+    second.write(key, 'v2');
+    relay.store.applyFault = (change) => change.pk == key.pk;
+    await SyncDevice.syncPair(second, relay);
+    relay.store.applyFault = null;
+    final held = relay.store.heldEnvelopes.single;
+    expect(held.reason, HeldReason.applyFailed);
+    final committed = relay.store.storedCell(key)!.record;
+    expect(committed.value, 'v1');
+
+    final result = await SyncDevice.syncPair(relay, receiver);
+    expect(result.bothComplete, isTrue, reason: '$result');
+    final sent = result.initiator.stats.sentVersions;
+    expect(sent, contains('${committed.origin}#${committed.originSeq}'), reason: 'the committed winner travels');
+    expect(sent.toSet().length, sent.length, reason: 'no version twice');
+    expect(result.initiator.stats.heldRelayed, 1, reason: 'the held version goes as a held item only');
+    expect(receiver.store.read(key)?.value, 'v2');
+  });
+
+  test('manifestless_w_stops_origin_for_session', () async {
+    // A winner without a manifest cannot be relayed. With its superseded seq
+    // first in line, the origin is given up for the session instead of
+    // looping or moving the receiver's cursor past that seq.
+    final clock = TestClock();
+    final relay = await newDevice('R', seed: 71, clock: clock);
+    final receiver = await newDevice('C', seed: 72, clock: clock);
+    await SyncDevice.pair(inviter: relay, joiner: receiver);
+    final stranger = OriginId(Uint8List(16)..[15] = 7).hex;
+    const key = CellKey('task', 'mf', 'title');
+    CellRecord version(int seq) =>
+        CellRecord(key: key, value: 'v$seq', clock: seq << 16, node: 'm-x', origin: stranger, originSeq: seq);
+    relay.store
+      ..applyBatch(ChangeBatch(origin: stranger, fromSeq: 0, toSeq: 1, cells: [version(1)]))
+      ..applyBatch(ChangeBatch(origin: stranger, fromSeq: 1, toSeq: 2, cells: [version(2)]));
+    expect(relay.store.nextSupersededOfOrigin(stranger, 0)?.$1, 1);
+
+    final result = await SyncDevice.syncPair(relay, receiver);
+    expect(result.bothComplete, isTrue, reason: '$result');
+    expect(result.initiator.stats.sentVersions.where((v) => v.startsWith(stranger)), isEmpty);
+    expect(receiver.store.cursorOf(stranger), 0, reason: 'the cursor never passes the superseded seq');
+  });
 
   test('batch_apply_is_atomic_on_cut', () async {
     // Every batch a side hands to the transport, checked on the other side:
@@ -234,7 +326,7 @@ void main() {
     for (final envelope in batch.envelopes.where((e) => e.pk != failing.pk)) {
       expect(b.store.commitLog['${envelope.origin.hex}#${envelope.originSeq}'], 1, reason: 'sibling ${envelope.pk}');
     }
-    expect(b.store.cursorOf(authorOrigin), greaterThanOrEqualTo(batch.ranges[batch.ranges.keys.first]!.single.to));
+    expect(b.store.cursorOf(authorOrigin), greaterThanOrEqualTo(batch.ranges[batch.ranges.keys.first]!.first.to));
     expect(b.store.cursorOf(authorOrigin), a.store.highestOwnSeq, reason: 'cursor at the declared bound');
 
     b.store.applyFault = null;
@@ -432,7 +524,7 @@ Set<bool> _expectBatchesAllOrNothing(SyncStore store, List<ChangeBatchMessage> s
       for (final e in batch.envelopes)
         store.commitLog.containsKey('${e.origin.hex}#${e.originSeq}') || store.heldAt(e.origin.hex, e.originSeq) != null
     ];
-    final covered = [for (final e in batch.ranges.entries) store.cursorOf(e.key.hex) >= e.value.single.to];
+    final covered = [for (final e in batch.ranges.entries) store.cursorOf(e.key.hex) >= e.value.first.to];
     final batchReason = '$reason, batch ${batch.batchId}';
     expect(committed.toSet().length, lessThanOrEqualTo(1), reason: '$batchReason: envelopes partially applied');
     if (committed.isNotEmpty) {
