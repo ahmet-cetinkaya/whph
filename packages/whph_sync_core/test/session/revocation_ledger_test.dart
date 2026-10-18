@@ -222,6 +222,61 @@ void main() {
     expect(c.membership.isExcluded(bPub), isFalse, reason: 'peers are unaffected');
   });
 
+  // Card B.1: a device that only HOLDS an above-cutoff envelope of a revoked
+  // origin (never stored) still extends the cutoff, so the record it signs
+  // covers the held seq and the held envelope can apply once peers accept it.
+  test('self_extension_counts_held_envelopes', () async {
+    final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 200 + i)];
+    await pairAll([a, b, c]);
+    await syncUntilQuiet([a, b, c]);
+    createRow(b, 'held', 'cell A stores below the cutoff');
+    expect((await SyncDevice.syncPair(b, a)).bothComplete, isTrue);
+    final bOrigin = b.store.localOrigin.hex;
+    final storedMax = a.store.maxCellSeq(bOrigin);
+    // A real held envelope: B writes more and A fails to apply that one cell
+    // once (scenario 1.9 shape), so the envelope stays held, never stored.
+    createRow(b, 'later', 'the envelope A only holds');
+    a.store.applyFault = (change) => change.pk == 'later';
+    await SyncDevice.syncPair(b, a);
+    a.store.applyFault = null;
+    final heldSeqs = [
+      for (final h in a.store.heldEnvelopes.where((h) => h.origin == bOrigin)) h.seq,
+    ]..sort();
+    expect(heldSeqs, isNotEmpty, reason: 'A holds B envelopes');
+    expect(heldSeqs.last, greaterThan(storedMax));
+    expect(a.store.maxKnownSeq(bOrigin), greaterThan(storedMax), reason: 'the held seq counts');
+    final topEpoch = a.membership.keyring.highest;
+    await persistLedgerRevocation(a, revoker: c, revoked: b);
+    await a.membership.reload(a.store);
+    // selfExtension must report the HELD seq, not just the stored one.
+    final extension = a.membership.directoryRevocations!.selfExtension(
+      a.membership.registry!,
+      (o) => a.store.maxKnownSeq(o.hex),
+    );
+    final bOriginId = OriginId.fromHex(bOrigin);
+    final oldSelector = a.membership.directoryRevocations!.selfExtension(
+      a.membership.registry!,
+      (o) => a.store.maxCellSeq(o.hex),
+    );
+    final oldForB = [
+      for (final e in oldSelector.entries)
+        if (e.value.containsKey(bOriginId)) e.value[bOriginId],
+    ];
+    expect(oldForB.first ?? 0, lessThan(heldSeqs.last),
+        reason: 'fail-before: the old stored-only selector misses the held seq');
+    final extForB = [
+      for (final e in extension.entries)
+        if (e.value.containsKey(bOriginId)) e.value[bOriginId],
+    ];
+    expect(a.store.maxKnownSeq(bOrigin), greaterThanOrEqualTo(storedMax));
+    expect(extForB, isNotEmpty, reason: 'held envelopes extend the cutoff like stored cells');
+    expect(extForB.first, greaterThanOrEqualTo(heldSeqs.last),
+        reason: 'the signed cutoff covers the highest HELD seq, which maxCellSeq alone would miss');
+    await a.maintainMembership();
+    expect(a.store.rowsOf(SecurityTables.revocation), isNotEmpty, reason: 'A signs its own record');
+    expect(a.membership.keyring.highest, isNot(topEpoch), reason: 'the exclusion rotates the epoch');
+  });
+
   test('ledger_revocation_by_db_member_still_self_extends', () async {
     final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 190 + i)];
     await pairAll([a, b, c]);

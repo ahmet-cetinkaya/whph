@@ -686,6 +686,18 @@ final class SyncStore implements ReplicaStore {
   /// rejected above a cutoff must not extend it.
   int maxCellSeq(String origin) => _byOrigin[origin]?.lastKey() ?? 0;
 
+  /// Highest seq of [origin] among stored winners and held envelopes (D7
+  /// self-extension, card B.1): a device that holds an above-cutoff envelope
+  /// without storing it still extends the cutoff, so its peers accept the
+  /// envelope once the record reaches them.
+  int maxKnownSeq(String origin) {
+    var max = maxCellSeq(origin);
+    for (final h in _held[origin]?.values ?? const <HeldEnvelope>[]) {
+      if (h.seq > max) max = h.seq;
+    }
+    return max;
+  }
+
   // --- Snapshot / restore -----------------------------------------------------------
 
   /// A deep copy of the whole store (the DB file).

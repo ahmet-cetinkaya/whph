@@ -384,7 +384,7 @@ final class SyncDevice {
     final registry = m.registry;
     if (g == null || m.removed || revocations == null || registry == null) return false;
     var wrote = false;
-    final extension = revocations.selfExtension(registry, (o) => store.maxCellSeq(o.hex));
+    final extension = revocations.selfExtension(registry, (o) => store.maxKnownSeq(o.hex));
     for (final e in extension.entries) {
       final record = await RevocationRecord.sign(
         groupId: g,
