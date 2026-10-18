@@ -343,6 +343,13 @@ final class ReferenceOracle {
   int? writeIdOfVersion(String table, String pk, String col, String node, int hlc) =>
       _byVersion[oracleVersionKey(table, pk, col, node, hlc)];
 
+  /// The write a copy carries, matched by version and by [value]: a copy of
+  /// an old write under a version that was since reused is `null` (unrecorded).
+  int? writeIdOfCopy(String table, String pk, String col, String node, int hlc, Object? value) {
+    final id = writeIdOfVersion(table, pk, col, node, hlc);
+    return id == null || _writes[id].value != value ? null : id;
+  }
+
   /// Records that [device] newly stores write [writeId]: its causal history
   /// joins the device's knowledge.
   void observeStored(String device, int writeId) {

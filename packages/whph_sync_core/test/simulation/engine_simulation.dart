@@ -899,9 +899,21 @@ final class EngineSimulation {
   }
 
   int? _idOf(CellRecord r) {
-    final id = _oracle.writeIdOfVersion(r.key.table, r.key.pk, r.key.col, r.node, r.clock);
-    if (id == null || _oracle.write(id).value != r.value) return null;
-    return id;
+    return _oracle.writeIdOfCopy(r.key.table, r.key.pk, r.key.col, r.node, r.clock, r.value);
+  }
+
+  /// The oracle write a held envelope carries, matched by version and, when the
+  /// device holds the epoch key, by value, so an old copy under a reused
+  /// version is unrecorded like a stored one ([_idOf]). Without the key only
+  /// the version can be matched.
+  int? _heldWriteId(_Dev d, ChangeEnvelope e) {
+    final membership = d.membership;
+    final groupId = membership.groupId;
+    final versionOnly = _oracle.writeIdOfVersion(e.tbl, e.pk, e.col, e.node, e.hlc);
+    if (groupId == null) return versionOnly;
+    final opened = EnvelopeCipher(groupId: groupId, keyring: membership.keyring).open(e);
+    if (opened is! EnvelopeOpened) return versionOnly;
+    return _oracle.writeIdOfCopy(e.tbl, e.pk, e.col, e.node, e.hlc, opened.change.value.toDart());
   }
 
   /// FR-007 around a session: every touched cell keeps its version or moves
@@ -959,7 +971,7 @@ final class EngineSimulation {
       for (final h in d.store.heldEnvelopes) {
         final e = h.envelope;
         if (!_isUserTable(e.tbl)) continue;
-        final id = _oracle.writeIdOfVersion(e.tbl, e.pk, e.col, e.node, e.hlc);
+        final id = _heldWriteId(d, e);
         if (id == null) {
           _violate(OracleViolationKind.unknownVersion, d.name, '${h.key}', 'holds unrecorded envelope $h');
         } else if (h.category == _revokedCategory) {
