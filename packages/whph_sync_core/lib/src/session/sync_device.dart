@@ -401,8 +401,15 @@ final class SyncDevice {
     await m.rebuild(store);
   }
 
-  /// Membership upkeep after a session (D7): revocation self-extension and
-  /// the re-rotation rule. Returns whether anything was written.
+  /// Membership upkeep after a session (D7): revocation self-extension,
+  /// re-issue of own revocations stranded on a sealed origin (card B.2:
+  /// publish what you enforce, DB-verified records only, never ledger-only),
+  /// and the re-rotation rule. Returns whether anything was written.
+  ///
+  /// Residual (documented, accepted): a re-issue is signed by the current key,
+  /// so a stranded record whose original revoker was a former identity of this
+  /// device is vouched for by the new identity (laundering of own authorship).
+  /// `syncUntilQuiet` in tests does not count security cells (C5).
   Future<bool> maintainMembership() async {
     final m = membership;
     final g = m.groupId;
@@ -411,7 +418,11 @@ final class SyncDevice {
     if (g == null || m.removed || revocations == null || registry == null) return false;
     var wrote = false;
     final extension = revocations.selfExtension(registry, (o) => store.maxKnownSeq(o.hex));
-    for (final e in extension.entries) {
+    final stranded = revocations.unpublished(
+      isServed: _isRevocationServed,
+      isAuthoredHere: _isRevocationAuthoredHere,
+    );
+    for (final e in _mergeCutoffsByRevoked([extension, stranded]).entries) {
       final record = await RevocationRecord.sign(
         groupId: g,
         revokedPub: e.key,
@@ -428,6 +439,60 @@ final class SyncDevice {
       await m.rebuild(store);
     }
     return wrote;
+  }
+
+  /// Carrier `(origin, seq)` of every revocation cell in the DB, by record
+  /// signature (hex): where a record lives, so [_isRevocationServed] can tell
+  /// whether peers can fetch it.
+  Map<String, ({String origin, int seq})> _revocationCarriers() {
+    final carriers = <String, ({String origin, int seq})>{};
+    for (final pk in store.rowsOf(SecurityTables.revocation)) {
+      final cell = store.storedCell(CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
+      final value = cell?.record.value;
+      if (cell == null || value is! Uint8List) continue;
+      try {
+        final record = decodeRevocationRecord(value);
+        carriers[_hex(record.sig)] = (origin: cell.record.origin, seq: cell.record.originSeq);
+      } on Object {
+        continue;
+      }
+    }
+    return carriers;
+  }
+
+  /// Whether peers can fetch [record]: its carrier is not a sealed origin of
+  /// this device, or its seq is at or below the origin's persisted sent mark
+  /// (peers were handed it). A record whose carrier is unknown here counts as
+  /// served (never re-issued: it is not this device's to publish, C1).
+  bool _isRevocationServed(RevocationRecord record) {
+    final carrier = _revocationCarriers()[_hex(record.sig)];
+    if (carrier == null || !store.sealedOrigins.contains(carrier.origin)) return true;
+    final sent = ledger.isReadable ? ledger.entryOf(OriginId.fromHex(carrier.origin))?.maxSentSeq ?? 0 : 0;
+    return carrier.seq <= sent;
+  }
+
+  /// Whether this device authored [record]: its carrier is an own former
+  /// origin (sealed here). Covers the key-lost case, where the revoker key is
+  /// the lost previous identity (C2): only DB-verified records qualify,
+  /// because the caller reads `directoryRevocations`.
+  bool _isRevocationAuthoredHere(RevocationRecord record) {
+    final carrier = _revocationCarriers()[_hex(record.sig)];
+    return carrier != null && store.sealedOrigins.contains(carrier.origin);
+  }
+
+  static String _hex(List<int> bytes) => bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+
+  /// Merges cutoff maps keyed by revoked member key, taking the max per
+  /// origin, so one record covers both a self-extension and a re-issue.
+  static Map<Uint8List, Map<OriginId, int>> _mergeCutoffsByRevoked(List<Map<Uint8List, Map<OriginId, int>>> parts) {
+    final byHex = <String, (Uint8List, Map<OriginId, int>)>{};
+    for (final part in parts) {
+      for (final e in part.entries) {
+        final merged = byHex.putIfAbsent(_hex(e.key), () => (e.key, <OriginId, int>{})).$2;
+        e.value.forEach((o, c) => merged[o] = math.max(merged[o] ?? 0, c));
+      }
+    }
+    return {for (final (key, cutoffs) in byHex.values) key: cutoffs};
   }
 
   Future<void> _rotate() async {

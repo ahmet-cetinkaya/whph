@@ -277,6 +277,87 @@ void main() {
     expect(a.membership.keyring.highest, isNot(topEpoch), reason: 'the exclusion rotates the epoch');
   });
 
+  // Card B.2 (publish what you enforce): A's own revocation of B sits on an
+  // origin A sealed before any peer fetched it, so peers can never learn it.
+  // A re-signs it on its live origin and C ends up excluding B.
+  test('own_revocation_stranded_on_sealed_origin_is_published', () async {
+    final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 210 + i)];
+    await pairAll([a, b, c]);
+    await syncUntilQuiet([a, b, c]);
+    await a.removeMember(b.memberId);
+    final bPub = b.membership.identity.ed25519Pub;
+    final stranded = a.store.localOrigin.hex;
+    await a.switchOrigin(OriginSwitchReason.restore);
+    expect(a.store.sealedOrigins, contains(stranded));
+    expect(c.membership.isExcluded(bPub), isFalse, reason: 'no peer has the record');
+
+    await a.maintainMembership();
+    expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
+    await c.maintainMembership();
+
+    expect(c.membership.isExcluded(bPub), isTrue, reason: 'the re-issued record reached C');
+    expect(a.store.rowsOf(SecurityTables.revocation), hasLength(greaterThan(1)), reason: 'a live-origin copy exists');
+  });
+
+  test('stranded_revocation_republish_is_idempotent', () async {
+    final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 220 + i)];
+    await pairAll([a, b, c]);
+    await syncUntilQuiet([a, b, c]);
+    await a.removeMember(b.memberId);
+    await a.switchOrigin(OriginSwitchReason.restore);
+    await a.maintainMembership();
+    final rows = a.store.rowsOf(SecurityTables.revocation).length;
+    final epoch = a.membership.keyring.highest;
+    await a.maintainMembership();
+    expect(a.store.rowsOf(SecurityTables.revocation), hasLength(rows), reason: 'one record, not one per call');
+    expect(a.membership.keyring.highest, epoch);
+  });
+
+  // C1: a ledger-only record (not in the DB directory) carried on a sealed
+  // origin of this device is never re-issued, even though the carrier looks
+  // own-authored.
+  test('ledger_only_record_on_sealed_origin_is_not_republished', () async {
+    final [a, b, c, forger] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 230 + i)];
+    await pairAll([a, b, c]);
+    await syncUntilQuiet([a, b, c]);
+    await persistLedgerRevocation(a, revoker: forger, revoked: b);
+    await a.switchOrigin(OriginSwitchReason.restore);
+    await a.membership.reload(a.store);
+    final topEpoch = a.membership.keyring.highest;
+
+    await a.maintainMembership();
+
+    expect(a.store.rowsOf(SecurityTables.revocation), isEmpty, reason: 'nothing signed from ledger data');
+    expect(a.membership.keyring.highest, topEpoch);
+  });
+
+  // C4: two devices both stranded their revocation of B; both re-issue and the
+  // group converges on B excluded with a bounded number of rotations.
+  test('concurrent_stranded_revocations_converge', () async {
+    final [a, b, c, d] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 240 + i)];
+    await pairAll([a, b, c, d]);
+    await syncUntilQuiet([a, b, c, d]);
+    await a.removeMember(b.memberId);
+    await c.removeMember(b.memberId);
+    await a.switchOrigin(OriginSwitchReason.restore);
+    await c.switchOrigin(OriginSwitchReason.restore);
+    await a.maintainMembership();
+    await c.maintainMembership();
+    await syncUntilQuiet([a, c, d]);
+    await d.maintainMembership();
+    await syncUntilQuiet([a, c, d]);
+
+    final bPub = b.membership.identity.ed25519Pub;
+    for (final device in [a, c, d]) {
+      expect(device.membership.isExcluded(bPub), isTrue);
+    }
+    final epochs = {
+      for (final device in [a, c, d]) device.membership.keyring.highest
+    };
+    expect(epochs, hasLength(1), reason: 'one converged epoch');
+    expect((await SyncDevice.syncPair(b, d)).responder, isA<SessionFailed>(), reason: 'D rejects revoked B');
+  });
+
   test('ledger_revocation_by_db_member_still_self_extends', () async {
     final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 190 + i)];
     await pairAll([a, b, c]);
