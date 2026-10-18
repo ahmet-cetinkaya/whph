@@ -81,6 +81,10 @@ final class SessionStats {
   /// Index entries whose winner cell was gone; dropped when met (F5).
   int staleSupersededDropped = 0;
 
+  /// Written-watermark flushes that failed with a ledger write error and were
+  /// swallowed (card A-1): the mark stays dirty and the next flush retries.
+  int watermarkFlushFailed = 0;
+
   /// `origin#seq` of every envelope sent in this session (FR-014 checks).
   final List<String> sentVersions = [];
 

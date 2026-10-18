@@ -207,35 +207,34 @@ final class SyncDevice {
   // --- Local writes -------------------------------------------------------------
 
   /// A local edit (captured with a fresh HLC tick and own seq, D3).
-  ///
-  /// Card A-1: every write marks the written watermark dirty; it is persisted
-  /// at the next session start, at [flushWrittenWatermark] (app pause or
-  /// shutdown) and at snapshot time, so a data-dir restore below unsent
-  /// writes is detectable without waiting for a backup.
-  CellRecord write(CellKey key, Object? value, {RowRef? cause}) {
-    _watermarkDirty = true;
-    return store.writeLocal(key, value, nowMs: now(), cause: cause);
-  }
+  CellRecord write(CellKey key, Object? value, {RowRef? cause}) =>
+      store.writeLocal(key, value, nowMs: now(), cause: cause);
 
-  /// Persists the written watermark now (card A-1). Idempotent; returns
-  /// whether a write happened. A ledger write failure is swallowed here (the
-  /// mark stays dirty and the next call retries): unlike the sent mark this
-  /// is best-effort bookkeeping ahead of a *possible* restore, not a
-  /// durability gate for data already handed to the transport.
+  /// Swallowed written-watermark flush failures since this device started
+  /// (card A-1, surfaced like a stats counter).
+  int watermarkFlushFailures = 0;
+
+  /// Persists the written watermark now when any local write since the last
+  /// flush (user data, security rows, revocations alike) is not yet covered
+  /// (card A-1). Called at session start and end, before a restore replaces
+  /// the DB, at snapshot time, and by the app on pause or shutdown. Returns
+  /// whether a write happened. A ledger write failure is swallowed and counted
+  /// ([watermarkFlushFailures]): the store stays dirty and the next call
+  /// retries — unlike the sent mark this is bookkeeping ahead of a *possible*
+  /// restore, not a durability gate for data already handed to the transport.
   Future<bool> flushWrittenWatermark() async {
-    if (!_watermarkDirty) return false;
+    if (!store.authoredSinceWatermark) return false;
     final origin = store.localOrigin;
     if (!ledger.isReadable || ledger.entryOf(origin) == null) return false;
     try {
       await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
     } on SyncLedgerWriteException {
+      watermarkFlushFailures++;
       return false;
     }
-    _watermarkDirty = false;
+    store.markWatermarkPersisted();
     return true;
   }
-
-  bool _watermarkDirty = false;
 
   /// Soft-deletes [row]: its `~` cell gets `deleted_date = now` and, for a
   /// cascaded child, the [cause] (D3, D5b).
@@ -606,6 +605,7 @@ final class SyncDevice {
   /// Restores the DB alone (key file and sync ledger stay current), then runs
   /// the startup check.
   Future<StartupAction> restoreDb(DeviceDbSnapshot snapshot) async {
+    await flushWrittenWatermark(); // before the DB is replaced (card A-1)
     store.restore(snapshot.store);
     await membership.reload(store);
     return startupCheck();
@@ -624,14 +624,13 @@ final class SyncDevice {
   /// origin still switches on a restore below the copy), never lower it
   /// below a seq the copy actually contains.
   Future<void> _persistSnapshotWatermark() async {
-    _watermarkDirty = false;
     final origin = store.localOrigin;
-    if (ledger.isReadable && ledger.entryOf(origin) != null) {
-      try {
-        await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
-      } on SyncLedgerWriteException {
-        _watermarkDirty = true;
-      }
+    if (!ledger.isReadable || ledger.entryOf(origin) == null) return;
+    try {
+      await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
+      store.markWatermarkPersisted();
+    } on SyncLedgerWriteException {
+      watermarkFlushFailures++;
     }
   }
 
@@ -641,6 +640,7 @@ final class SyncDevice {
   /// ledger is undetectable here (U11 accepted residual risk); a test
   /// simulates it by restoring its own ledger copy first.
   Future<StartupAction> restoreDirectory(DirectorySnapshot snapshot) async {
+    await flushWrittenWatermark(); // before the DB is replaced (card A-1)
     store.restore(snapshot.store);
     await membership.restoreKeyFile(snapshot.keyFile);
     keyFilePresent = snapshot.keyFilePresent;

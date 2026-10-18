@@ -231,6 +231,9 @@ final class SyncSession {
       device.activeSessions[peer] = this;
     }
     try {
+      // Card A-1: remember every seq authored so far before this session
+      // moves data, and again when it ends.
+      await _flushWatermark();
       return await _run();
     } catch (e) {
       _failure ??= e;
@@ -244,7 +247,14 @@ final class SyncSession {
       return _failedResult(failure);
     } finally {
       _unregister();
+      await _flushWatermark();
     }
+  }
+
+  Future<void> _flushWatermark() async {
+    final failuresBefore = device.watermarkFlushFailures;
+    await device.flushWrittenWatermark();
+    stats.watermarkFlushFailed += device.watermarkFlushFailures - failuresBefore;
   }
 
   Future<SessionResult> _early(SessionFailure category, {String? peer}) async {

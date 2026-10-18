@@ -287,8 +287,20 @@ final class SyncStore implements ReplicaStore {
       cause: cause,
     );
     _put(StoredCell(record, recordedAt: nowMs));
+    _authoredSinceWatermark = true;
     return record;
   }
+
+  bool _authoredSinceWatermark = false;
+
+  /// Whether a local write (user data, security rows, revocations: every
+  /// path goes through [writeLocal]) happened since [markWatermarkPersisted]
+  /// (card A-1/P4). The device persists the written watermark when this is
+  /// set.
+  bool get authoredSinceWatermark => _authoredSinceWatermark;
+
+  /// The caller persisted the written watermark covering every write so far.
+  void markWatermarkPersisted() => _authoredSinceWatermark = false;
 
   @override
   CellRecord? read(CellKey key) => _cell(key)?.record;
@@ -705,7 +717,14 @@ final class SyncStore implements ReplicaStore {
 
   /// Replaces the whole state with [snapshot]'s (a DB restore). Fault hooks
   /// and diagnostics are kept.
-  void restore(SyncStoreSnapshot snapshot) => _assign(snapshot._store._clone());
+  void restore(SyncStoreSnapshot snapshot) {
+    final authoredSinceWatermark = _authoredSinceWatermark;
+    _assign(snapshot._store._clone());
+    // The restored DB is behind the ledger watermark by definition; whether a
+    // write is still unpersisted is a property of the live device, not of the
+    // restored copy (card A-1).
+    _authoredSinceWatermark = authoredSinceWatermark;
+  }
 
   SyncStore _clone() {
     final copy = SyncStore(memberId: _memberId, origin: _origin, initialHlc: _clock.current)

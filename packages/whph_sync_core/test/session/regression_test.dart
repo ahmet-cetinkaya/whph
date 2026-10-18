@@ -140,10 +140,10 @@ void main() {
     expect(later, isNotNull);
   });
 
-  // Efe P2: a write between taking snapshot S and restoring S — with no
-  // later snapshot to remember it — must still switch the origin, because
-  // the watermark is persisted at write time (debounced to session start /
-  // flush), not only at snapshot time.
+  // Efe P2 (no explicit flush): a write between taking snapshot S and
+  // restoring S, with no later snapshot, must still switch the origin. The
+  // watermark is flushed by the engine itself (session start/end, and before
+  // a restore replaces the DB), not only by the app on pause.
   test('restore_below_unflushed_written_seqs_switches_origin', () async {
     final ca = TestClock();
     final a = await newDevice('A', seed: 1, clock: ca);
@@ -153,11 +153,51 @@ void main() {
     await SyncDevice.syncPair(a, b);
     final snapshot = await a.snapshotDb();
     final originAtSnapshot = a.store.localOrigin;
-    createRow(a, 'u', 'unsent, never snapshotted');
-    await a.flushWrittenWatermark();
+    createRow(a, 'u', 'unsent, never snapshotted, never explicitly flushed');
     expect(await a.restoreDb(snapshot), StartupAction.restore);
     expect(a.store.localOrigin, isNot(originAtSnapshot),
-        reason: 'the unsent write was flushed, so the restore must not re-author its seqs');
+        reason: 'restoreDb flushes the live watermark before the DB is replaced');
+  });
+
+  // The app-pause path: an explicit flush persists the watermark between
+  // sessions, so even a restart-then-restore (restore below a flushed write)
+  // is caught.
+  test('explicit_flush_on_pause_persists_the_written_watermark', () async {
+    final ca = TestClock();
+    final a = await newDevice('A', seed: 1, clock: ca);
+    final b = await newDevice('B', seed: 2);
+    await SyncDevice.pair(inviter: a, joiner: b);
+    createRow(a, 'x', 'sent');
+    await SyncDevice.syncPair(a, b);
+    final snapshot = await a.snapshotDb();
+    final originAtSnapshot = a.store.localOrigin;
+    createRow(a, 'u', 'unsent');
+    expect(a.store.authoredSinceWatermark, isTrue);
+    expect(await a.flushWrittenWatermark(), isTrue);
+    expect(a.store.authoredSinceWatermark, isFalse);
+    expect(await a.flushWrittenWatermark(), isFalse, reason: 'idempotent when nothing is dirty');
+    expect(await a.restoreDb(snapshot), StartupAction.restore);
+    expect(a.store.localOrigin, isNot(originAtSnapshot));
+  });
+
+  // Efe P4: security rows and revocations are written through the store
+  // directly (pairing, removal), not through SyncDevice.write; they must mark
+  // the watermark dirty too, so a pair-after-snapshot is covered.
+  test('security_writes_after_a_snapshot_are_covered_by_the_watermark', () async {
+    final ca = TestClock();
+    final a = await newDevice('A', seed: 1, clock: ca);
+    final b = await newDevice('B', seed: 2);
+    final c = await newDevice('C', seed: 3);
+    await SyncDevice.pair(inviter: a, joiner: b);
+    createRow(a, 'x', 'sent');
+    await SyncDevice.syncPair(a, b);
+    final snapshot = await a.snapshotDb();
+    final originAtSnapshot = a.store.localOrigin;
+    await SyncDevice.pair(inviter: a, joiner: c); // member/origin/grant rows, written directly
+    expect(a.store.authoredSinceWatermark, isTrue, reason: 'pairing wrote security rows');
+    expect(await a.restoreDb(snapshot), StartupAction.restore);
+    expect(a.store.localOrigin, isNot(originAtSnapshot),
+        reason: 'the pairing rows were never sent, so the restore must not re-author their seqs');
   });
 
   test('restore_never_reuses_hlc_of_unsent_write', () async {
