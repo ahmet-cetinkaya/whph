@@ -169,6 +169,11 @@ final class _Dev {
 }
 
 /// One real-engine run (see the library documentation).
+///
+/// Fault injection note (card A-4): [InMemorySyncLedger]'s fault flags
+/// (`failAllSentMarkWrites`, `failNextSentMarkWrites`) gate BOTH the sent
+/// mark and the written watermark, because both go through the same
+/// `_replace` write path; a count set for one also consumes for the other.
 final class EngineSimulation {
   EngineSimulation(this.seed, this.config, this.engineName, {this.tuning = const EngineSimTuning()})
       : _rng = Random(seed);

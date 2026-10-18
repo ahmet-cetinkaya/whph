@@ -207,8 +207,35 @@ final class SyncDevice {
   // --- Local writes -------------------------------------------------------------
 
   /// A local edit (captured with a fresh HLC tick and own seq, D3).
-  CellRecord write(CellKey key, Object? value, {RowRef? cause}) =>
-      store.writeLocal(key, value, nowMs: now(), cause: cause);
+  ///
+  /// Card A-1: every write marks the written watermark dirty; it is persisted
+  /// at the next session start, at [flushWrittenWatermark] (app pause or
+  /// shutdown) and at snapshot time, so a data-dir restore below unsent
+  /// writes is detectable without waiting for a backup.
+  CellRecord write(CellKey key, Object? value, {RowRef? cause}) {
+    _watermarkDirty = true;
+    return store.writeLocal(key, value, nowMs: now(), cause: cause);
+  }
+
+  /// Persists the written watermark now (card A-1). Idempotent; returns
+  /// whether a write happened. A ledger write failure is swallowed here (the
+  /// mark stays dirty and the next call retries): unlike the sent mark this
+  /// is best-effort bookkeeping ahead of a *possible* restore, not a
+  /// durability gate for data already handed to the transport.
+  Future<bool> flushWrittenWatermark() async {
+    if (!_watermarkDirty) return false;
+    final origin = store.localOrigin;
+    if (!ledger.isReadable || ledger.entryOf(origin) == null) return false;
+    try {
+      await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
+    } on SyncLedgerWriteException {
+      return false;
+    }
+    _watermarkDirty = false;
+    return true;
+  }
+
+  bool _watermarkDirty = false;
 
   /// Soft-deletes [row]: its `~` cell gets `deleted_date = now` and, for a
   /// cascaded child, the [cause] (D3, D5b).
@@ -517,8 +544,11 @@ final class SyncDevice {
   }
 
   /// The D14 startup check (first match wins): key loss, pending-switch
-  /// recovery, DB behind the sync ledger, otherwise normal.
+  /// recovery, DB behind the sync ledger, otherwise normal. Persists a dirty
+  /// written watermark first (card A-1) so the seqs of the previous run's
+  /// last unsent writes are remembered before anything new is authored.
   Future<StartupAction> startupCheck() async {
+    await flushWrittenWatermark();
     if (!keyFilePresent || store.memberId != membership.memberId) {
       await _becomeKeyLost();
       return StartupAction.keyLost;
@@ -568,11 +598,9 @@ final class SyncDevice {
   /// everything the device authored so far, sent or not, must never be
   /// re-authored after a restore below it.
   Future<DeviceDbSnapshot> snapshotDb() async {
-    final origin = store.localOrigin;
-    if (ledger.isReadable && ledger.entryOf(origin) != null) {
-      await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
-    }
-    return DeviceDbSnapshot._(store.snapshot());
+    final snapshot = DeviceDbSnapshot._(store.snapshot());
+    await _persistSnapshotWatermark();
+    return snapshot;
   }
 
   /// Restores the DB alone (key file and sync ledger stay current), then runs
@@ -586,11 +614,25 @@ final class SyncDevice {
   /// A copy of the DB and key file (the app data directory; the ledger is
   /// outside it, U11).
   Future<DirectorySnapshot> snapshotDirectory() async {
+    final snapshot = DirectorySnapshot._(store.snapshot(), membership.snapshotKeyFile(), keyFilePresent);
+    await _persistSnapshotWatermark();
+    return snapshot;
+  }
+
+  /// Card A-3: the copy is taken first, so a write racing the snapshot can
+  /// only raise the watermark above the copy's `nextSeq` (harmless — the
+  /// origin still switches on a restore below the copy), never lower it
+  /// below a seq the copy actually contains.
+  Future<void> _persistSnapshotWatermark() async {
+    _watermarkDirty = false;
     final origin = store.localOrigin;
     if (ledger.isReadable && ledger.entryOf(origin) != null) {
-      await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
+      try {
+        await ledger.persistWrittenWatermark(origin, store.nextSeq, store.hlc);
+      } on SyncLedgerWriteException {
+        _watermarkDirty = true;
+      }
     }
-    return DirectorySnapshot._(store.snapshot(), membership.snapshotKeyFile(), keyFilePresent);
   }
 
   /// Restores the app data directory (DB and key file); the sync ledger stays

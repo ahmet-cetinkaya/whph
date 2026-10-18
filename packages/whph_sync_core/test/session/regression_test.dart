@@ -140,6 +140,26 @@ void main() {
     expect(later, isNotNull);
   });
 
+  // Efe P2: a write between taking snapshot S and restoring S — with no
+  // later snapshot to remember it — must still switch the origin, because
+  // the watermark is persisted at write time (debounced to session start /
+  // flush), not only at snapshot time.
+  test('restore_below_unflushed_written_seqs_switches_origin', () async {
+    final ca = TestClock();
+    final a = await newDevice('A', seed: 1, clock: ca);
+    final b = await newDevice('B', seed: 2);
+    await SyncDevice.pair(inviter: a, joiner: b);
+    createRow(a, 'x', 'sent');
+    await SyncDevice.syncPair(a, b);
+    final snapshot = await a.snapshotDb();
+    final originAtSnapshot = a.store.localOrigin;
+    createRow(a, 'u', 'unsent, never snapshotted');
+    await a.flushWrittenWatermark();
+    expect(await a.restoreDb(snapshot), StartupAction.restore);
+    expect(a.store.localOrigin, isNot(originAtSnapshot),
+        reason: 'the unsent write was flushed, so the restore must not re-author its seqs');
+  });
+
   test('restore_never_reuses_hlc_of_unsent_write', () async {
     final ca = TestClock();
     final a = await newDevice('A', seed: 1, clock: ca);
