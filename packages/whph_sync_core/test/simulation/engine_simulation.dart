@@ -910,9 +910,15 @@ final class EngineSimulation {
     final membership = d.membership;
     final groupId = membership.groupId;
     final versionOnly = _oracle.writeIdOfVersion(e.tbl, e.pk, e.col, e.node, e.hlc);
-    if (groupId == null) return versionOnly;
+    if (groupId == null) {
+      _stats.count('final.heldVersionOnly');
+      return versionOnly;
+    }
     final opened = EnvelopeCipher(groupId: groupId, keyring: membership.keyring).open(e);
-    if (opened is! EnvelopeOpened) return versionOnly;
+    if (opened is! EnvelopeOpened) {
+      _stats.count('final.heldVersionOnly');
+      return versionOnly;
+    }
     return _oracle.writeIdOfCopy(e.tbl, e.pk, e.col, e.node, e.hlc, opened.change.value.toDart());
   }
 
