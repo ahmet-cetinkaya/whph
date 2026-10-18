@@ -646,8 +646,12 @@ final class EngineSimulation {
       final name = _simOfMember[memberId];
       final joiner = _devs.where((x) => x.name == name && x != lost && _inG1(x)).firstOrNull;
       if (joiner == null) continue;
+      final inviters = _g1Finals(except: joiner).where((x) => x != lost).toList();
+      if (inviters.isEmpty) continue;
       _stats.count('op.reinvite');
-      await SyncDevice.pair(inviter: remover.device, joiner: joiner.device);
+      final inviter = inviters.contains(remover) ? remover : _pick(inviters);
+      await SyncDevice.pair(inviter: inviter.device, joiner: joiner.device);
+      inviter.forgetSnapshots();
     }
     remover.forgetSnapshots();
   }
