@@ -215,7 +215,8 @@ Set<String> decideStaleExclusion({
   final out = <String>{};
   for (final cluster in clusters) {
     if (!cluster.every((n) => stale[n] ?? false)) continue;
-    if (cluster.any((n) => otherFailRounds[n]! > 0 || authFailRounds[n]! < k)) continue;
+    if (cluster.any((n) => otherFailRounds[n]! > 0 || authFailRounds[n]! < k))
+      continue;
     final outside = names.where((n) => !cluster.contains(n)).toList();
     if (outside.isEmpty) {
       onWholeSetStale?.call(cluster.length);
@@ -270,7 +271,8 @@ final class _Dev {
 /// mark and the written watermark, because both go through the same
 /// `_replace` write path; a count set for one also consumes for the other.
 final class EngineSimulation {
-  EngineSimulation(this.seed, this.config, this.engineName, {this.tuning = const EngineSimTuning()})
+  EngineSimulation(this.seed, this.config, this.engineName,
+      {this.tuning = const EngineSimTuning()})
       : _rng = Random(seed);
 
   final int seed;
@@ -318,14 +320,19 @@ final class EngineSimulation {
         await _repairStranded(d);
       }
       if (_rng.nextDouble() < config.sessionProbability) await _randomSession();
-      if (_switched && _rng.nextDouble() < tuning.outsiderAttemptProbability) await _outsiderAttempt();
+      if (_switched && _rng.nextDouble() < tuning.outsiderAttemptProbability)
+        await _outsiderAttempt();
       for (final d in _devs) {
         d.store.assertSupersededIndexConsistent();
       }
       if (engineSimLog != null) _logMembershipChanges();
     }
-    if (!_switched) _violate(OracleViolationKind.membership, _switcher.name, 'switch', 'group switch never ran');
-    if (!_removed) _violate(OracleViolationKind.membership, _revokee.name, 'removal', 'removal never ran');
+    if (!_switched)
+      _violate(OracleViolationKind.membership, _switcher.name, 'switch',
+          'group switch never ran');
+    if (!_removed)
+      _violate(OracleViolationKind.membership, _revokee.name, 'removal',
+          'removal never ran');
     await _finalPhase();
     for (final v in _violations) {
       _trace.add('v|$v');
@@ -347,8 +354,11 @@ final class EngineSimulation {
   void _logMembershipChanges() {
     for (final d in _devs) {
       final m = d.membership;
-      final known = (m.members.keys.map((k) => k.substring(0, 6)).toList()..sort()).join(',');
-      final state = 'known=$known active=${_names(m.activeMembers.map((e) => e.memberId))} '
+      final known = (m.members.keys.map((k) => k.substring(0, 6)).toList()
+            ..sort())
+          .join(',');
+      final state =
+          'known=$known active=${_names(m.activeMembers.map((e) => e.memberId))} '
           'anchors=${(m.anchors.map((a) => a.memberId.substring(0, 6)).toList()..sort()).join(',')}';
       if (_lastMembership[d.name] != state) {
         _lastMembership[d.name] = state;
@@ -357,27 +367,35 @@ final class EngineSimulation {
     }
   }
 
-  void _violate(OracleViolationKind kind, String device, String subject, String detail) =>
+  void _violate(OracleViolationKind kind, String device, String subject,
+          String detail) =>
       _violations.add(OracleViolation(kind, device, subject, detail));
 
   T _pick<T>(List<T> list) => list[_rng.nextInt(list.length)];
 
-  int _randomOffset() => _rng.nextInt(2 * config.maxClockOffsetMs + 1) - config.maxClockOffsetMs;
+  int _randomOffset() =>
+      _rng.nextInt(2 * config.maxClockOffsetMs + 1) - config.maxClockOffsetMs;
 
   // ------------------------------------------------------------------ setup
 
   Future<void> _setup() async {
     final n = config.devices;
-    if (n < 3) throw ArgumentError.value(n, 'devices', 'the engine driver needs at least 3 final devices');
+    if (n < 3)
+      throw ArgumentError.value(
+          n, 'devices', 'the engine driver needs at least 3 final devices');
     for (var i = 0; i < n + 2; i++) {
-      final dev = _Dev(i < n ? 'd$i' : 'o$i', isFinal: i < n)..offset = _randomOffset();
+      final dev = _Dev(i < n ? 'd$i' : 'o$i', isFinal: i < n)
+        ..offset = _randomOffset();
       final idSeed = _rng.nextInt(1 << 32);
       dev.device = await SyncDevice.create(
         name: dev.name,
         ledger: dev.ledger,
         clock: () => _now + dev.offset,
         ids: SyncIdSource(Random(idSeed)),
-        config: SyncEngineConfig(window: 1 + _rng.nextInt(4), maxBatchChanges: tuning.maxBatchChanges, delay: _noDelay),
+        config: SyncEngineConfig(
+            window: 1 + _rng.nextInt(4),
+            maxBatchChanges: tuning.maxBatchChanges,
+            delay: _noDelay),
       );
       _simOfMember[dev.device.memberId] = dev.name;
       _devs.add(dev);
@@ -402,11 +420,15 @@ final class EngineSimulation {
         _bucketHours.add(day0 + day * _dayMs + hour * _hourMs);
       }
     }
-    _trace.add('seed|$seed|$engineName|$n|${config.ops}|${_devs.map((d) => '${d.name}:${d.offset}').join(',')}'
+    _trace.add(
+        'seed|$seed|$engineName|$n|${config.ops}|${_devs.map((d) => '${d.name}:${d.offset}').join(',')}'
         '|${_devs.map((d) => d.device.memberId).join(',')}|remove@$_removeAt|switch@$_switchAt');
   }
 
-  bool _inG1(_Dev d) => d.membership.hasGroup && d.membership.groupId == _g1 && !d.membership.removed;
+  bool _inG1(_Dev d) =>
+      d.membership.hasGroup &&
+      d.membership.groupId == _g1 &&
+      !d.membership.removed;
 
   List<_Dev> _g1Finals({_Dev? except}) => [
         for (final d in _finals)
@@ -420,13 +442,17 @@ final class EngineSimulation {
     var edge = 0.0;
     bool hit(double p) => r < (edge += p);
     if (hit(tuning.clockJumpProbability)) return _clockJump(_pick(_devs));
-    if (hit(tuning.dbSnapshotProbability)) return await _dbSnapshot(_pick(_finals));
+    if (hit(tuning.dbSnapshotProbability))
+      return await _dbSnapshot(_pick(_finals));
     if (hit(tuning.dbRestoreProbability)) return _dbRestore(_pick(_finals));
-    if (hit(tuning.dirSnapshotProbability)) return await _dirSnapshot(_pick(_finals));
+    if (hit(tuning.dirSnapshotProbability))
+      return await _dirSnapshot(_pick(_finals));
     if (hit(tuning.dirRestoreProbability)) return _dirRestore(_pick(_finals));
-    if (hit(tuning.fullRollbackProbability)) return _fullRollback(_pick(_finals));
+    if (hit(tuning.fullRollbackProbability))
+      return _fullRollback(_pick(_finals));
     if (hit(tuning.keyLostProbability)) return _keyLost(_pick(_finals));
-    if (hit(tuning.replaceImportProbability)) return _replaceImport(_pick(_finals));
+    if (hit(tuning.replaceImportProbability))
+      return _replaceImport(_pick(_finals));
     if (hit(tuning.applyFaultProbability)) return _applyFault(_pick(_finals));
     _localOp(_pick(_devs));
   }
@@ -459,7 +485,8 @@ final class EngineSimulation {
     }
   }
 
-  CellRecord _write(_Dev d, CellKey key, Object? value, {OracleBucketInfo? bucket}) {
+  CellRecord _write(_Dev d, CellKey key, Object? value,
+      {OracleBucketInfo? bucket}) {
     final wall = d.device.now();
     final record = d.device.write(key, value);
     _record(d, record, wall, expected: value, bucket: bucket);
@@ -467,9 +494,11 @@ final class EngineSimulation {
   }
 
   /// Reports a local write the engine stamped to the oracle.
-  void _record(_Dev d, CellRecord r, int wall, {required Object? expected, OracleBucketInfo? bucket}) {
+  void _record(_Dev d, CellRecord r, int wall,
+      {required Object? expected, OracleBucketInfo? bucket}) {
     if (r.node != d.device.memberId || r.value != expected) {
-      _violate(OracleViolationKind.unknownVersion, d.name, '${r.key}', 'local write stored as $r');
+      _violate(OracleViolationKind.unknownVersion, d.name, '${r.key}',
+          'local write stored as $r');
     }
     final cause = r.cause;
     _oracle.recordWrite(
@@ -495,7 +524,8 @@ final class EngineSimulation {
 
   String _value(_Dev d, String col) => '${d.name}:$_step:$col';
 
-  RowExistence _existence(_Dev d, String table, String pk) => d.store.existenceOf(RowRef(table, pk));
+  RowExistence _existence(_Dev d, String table, String pk) =>
+      d.store.existenceOf(RowRef(table, pk));
 
   void _create(_Dev d) {
     _stats.count('op.create');
@@ -561,7 +591,8 @@ final class EngineSimulation {
     if (children.isEmpty) return _delete(d);
     _stats.count('op.cascade');
     final wall = d.device.now();
-    d.device.cascadeDelete(RowRef(_item, parent), [for (final c in children) RowRef(_item, c)]);
+    d.device.cascadeDelete(
+        RowRef(_item, parent), [for (final c in children) RowRef(_item, c)]);
     for (final pk in [parent, ...children]) {
       final record = d.store.read(CellKey(_item, pk, CellKey.existenceCol))!;
       _record(d, record, wall, expected: wall);
@@ -587,23 +618,28 @@ final class EngineSimulation {
 
   // ---------------------------------------------------- time buckets (D12)
 
-  String _bucketPk(String owner, int hourMs, _Dev d) => '$owner@$hourMs@${d.name}';
+  String _bucketPk(String owner, int hourMs, _Dev d) =>
+      '$owner@$hourMs@${d.name}';
 
   int? _bucketValue(_Dev reader, String pk) {
     if (_existence(reader, _bucket, pk) != RowExistence.alive) return null;
-    final value = reader.store.read(CellKey(_bucket, pk, CellKey.rowCol))?.value;
+    final value =
+        reader.store.read(CellKey(_bucket, pk, CellKey.rowCol))?.value;
     return value is int ? value : null;
   }
 
   /// Writes this device's own bucket; never another device's row.
   void _setOwnBucket(_Dev d, String owner, int hourMs, int value) {
     final pk = _bucketPk(owner, hourMs, d);
-    if (_bucketPkSet.add(pk)) (_bucketsByOwner[owner] ??= []).add(_BucketRow(pk, hourMs, d.name));
+    if (_bucketPkSet.add(pk))
+      (_bucketsByOwner[owner] ??= []).add(_BucketRow(pk, hourMs, d.name));
     final exists = _existence(d, _bucket, pk) != RowExistence.absent;
-    if (exists && _bucketValue(d, pk) == value) return; // UPDATE with no change captures nothing.
+    if (exists && _bucketValue(d, pk) == value)
+      return; // UPDATE with no change captures nothing.
     final info = OracleBucketInfo(ownerDevice: d.name, group: '$owner@$hourMs');
     _write(d, CellKey(_bucket, pk, CellKey.rowCol), value, bucket: info);
-    if (!exists) _write(d, CellKey(_bucket, pk, CellKey.existenceCol), null, bucket: info);
+    if (!exists)
+      _write(d, CellKey(_bucket, pk, CellKey.existenceCol), null, bucket: info);
   }
 
   void _bucketAdd(_Dev d) {
@@ -633,7 +669,8 @@ final class EngineSimulation {
     }
     _setOwnBucket(d, owner, hour, target - others);
     for (final other in ownOtherHours) {
-      if (_existence(d, _bucket, _bucketPk(owner, other, d)) != RowExistence.absent) _setOwnBucket(d, owner, other, 0);
+      if (_existence(d, _bucket, _bucketPk(owner, other, d)) !=
+          RowExistence.absent) _setOwnBucket(d, owner, other, 0);
     }
   }
 
@@ -645,7 +682,8 @@ final class EngineSimulation {
     final target = _rng.nextInt(7201);
     var others = 0;
     for (final row in _bucketsByOwner[owner] ?? const <_BucketRow>[]) {
-      if (row.hourMs == hour && row.device != d.name) others += _bucketValue(d, row.pk) ?? 0;
+      if (row.hourMs == hour && row.device != d.name)
+        others += _bucketValue(d, row.pk) ?? 0;
     }
     _setOwnBucket(d, owner, hour, target - others);
   }
@@ -665,7 +703,10 @@ final class EngineSimulation {
 
   Future<void> _dbSnapshot(_Dev d) async {
     _stats.count('op.dbSnapshot');
-    _keep(d.dbSnapshots, _Saved(await d.device.snapshotDb(), _oracle.knowledgeOf(d.name), _step));
+    _keep(
+        d.dbSnapshots,
+        _Saved(
+            await d.device.snapshotDb(), _oracle.knowledgeOf(d.name), _step));
     _trace.add('snapDb|${d.name}');
   }
 
@@ -693,12 +734,14 @@ final class EngineSimulation {
     if (snapshotMembers.containsAll(currents)) return;
     d.staleRestored = true;
     _stats.count('op.staleRestore');
-    _event('staleRestore|${d.name}|from=$snapshotStep|missing=${currents.difference(snapshotMembers).length}');
+    _event(
+        'staleRestore|${d.name}|from=$snapshotStep|missing=${currents.difference(snapshotMembers).length}');
   }
 
   Future<void> _dirSnapshot(_Dev d) async {
     _stats.count('op.dirSnapshot');
-    final state = _DirectoryState(await d.device.snapshotDirectory(), d.ledger.snapshot());
+    final state = _DirectoryState(
+        await d.device.snapshotDirectory(), d.ledger.snapshot());
     _keep(d.dirSnapshots, _Saved(state, _oracle.knowledgeOf(d.name), _step));
     _trace.add('snapDir|${d.name}');
   }
@@ -744,7 +787,8 @@ final class EngineSimulation {
     final saved = _pick(d.dbSnapshots);
     final loseLedger = _rng.nextBool();
     final oldId = d.device.memberId;
-    final action = await d.device.loseKeyFile(oldDb: saved.value, loseLedger: loseLedger);
+    final action =
+        await d.device.loseKeyFile(oldDb: saved.value, loseLedger: loseLedger);
     _oracle.startIncarnation(d.name, saved.knowledge);
     _simOfMember[d.device.memberId] = d.name;
     d.forgetSnapshots();
@@ -754,28 +798,35 @@ final class EngineSimulation {
     final inviter = _pick(_g1Finals(except: d));
     await SyncDevice.pair(inviter: inviter.device, joiner: d.device);
     inviter.forgetSnapshots();
-    _event('keyLost|${d.name}|${saved.step}|$loseLedger|${action.name}|${d.device.memberId}'
+    _event(
+        'keyLost|${d.name}|${saved.step}|$loseLedger|${action.name}|${d.device.memberId}'
         '|removedBy=${remover.name}|invitedBy=${inviter.name}');
   }
 
   /// Models the user acting on the "re-invite X" prompt (not built yet; the
   /// app will derive it from the stranded member ids of the origin switch):
   /// the remover re-invites every device whose invite row was left behind.
-  Future<void> _reinviteStranded(_Dev lost, Set<String> stranded, _Dev remover) async {
+  Future<void> _reinviteStranded(
+      _Dev lost, Set<String> stranded, _Dev remover) async {
     for (final memberId in stranded) {
       final name = _simOfMember[memberId];
-      final joiner = _devs.where((x) => x.name == name && x != lost && _inG1(x)).firstOrNull;
+      final joiner = _devs
+          .where((x) => x.name == name && x != lost && _inG1(x))
+          .firstOrNull;
       if (joiner == null) continue;
-      final inviters = _g1Finals(except: joiner).where((x) => x != lost).toList();
+      final inviters =
+          _g1Finals(except: joiner).where((x) => x != lost).toList();
       if (inviters.isEmpty) continue;
       // Class-C discriminator (Efe ruling): a stranded member whose key is
       // revoked can only come back as a FRESH identity via an aware inviter;
       // pair() with the revoked key would throw, so skip instead.
       final joinerPub = joiner.membership.identity.ed25519Pub;
-      final revokedSomewhere = inviters.any((x) => x.membership.isExcluded(joinerPub));
+      final revokedSomewhere =
+          inviters.any((x) => x.membership.isExcluded(joinerPub));
       if (revokedSomewhere) {
         _stats.count('skip.reinviteRevoked');
-        _event('reinviteSkipped|revoked|${joiner.name}|${joiner.device.memberId.substring(0, 6)}');
+        _event(
+            'reinviteSkipped|revoked|${joiner.name}|${joiner.device.memberId.substring(0, 6)}');
         continue;
       }
       _stats.count('op.reinvite');
@@ -791,7 +842,9 @@ final class EngineSimulation {
   Future<void> _replaceImport(_Dev d) async {
     final keys = <CellKey>{};
     final want = 1 + _rng.nextInt(12);
-    for (var attempt = 0; attempt < 3 * want && keys.length < 2 * want && _itemPks.isNotEmpty; attempt++) {
+    for (var attempt = 0;
+        attempt < 3 * want && keys.length < 2 * want && _itemPks.isNotEmpty;
+        attempt++) {
       final pk = _pick(_itemPks);
       if (_existence(d, _item, pk) == RowExistence.absent) continue;
       for (final col in _fields) {
@@ -800,7 +853,10 @@ final class EngineSimulation {
     }
     if (keys.isEmpty) return _stats.count('skip.replaceImport');
     _stats.count('op.replaceImport');
-    final cells = [for (final key in keys) (key, '${d.name}:$_step:import:${key.pk}:${key.col}')];
+    final cells = [
+      for (final key in keys)
+        (key, '${d.name}:$_step:import:${key.pk}:${key.col}')
+    ];
     final wall = d.device.now();
     await d.device.replaceImport(cells);
     for (final (key, value) in cells) {
@@ -812,7 +868,8 @@ final class EngineSimulation {
   /// Injected apply failure (Scenario 1.9): changes of one item fail on [d]
   /// for its next 1–3 sessions.
   void _applyFault(_Dev d) {
-    if (d.faultSessions > 0 || _itemPks.isEmpty) return _stats.count('skip.applyFault');
+    if (d.faultSessions > 0 || _itemPks.isEmpty)
+      return _stats.count('skip.applyFault');
     _stats.count('op.applyFault');
     final pk = _pick(_itemPks);
     d.faultSessions = 1 + _rng.nextInt(3);
@@ -825,13 +882,20 @@ final class EngineSimulation {
     final inviters = _g1Finals(except: _switcher);
     if (inviters.isEmpty) return;
     final inviter = _pick(inviters);
-    final before = {for (final m in inviter.membership.activeMembers) m.memberId};
-    await SyncDevice.pair(inviter: inviter.device, joiner: _switcher.device, confirmGroupSwitch: true);
+    final before = {
+      for (final m in inviter.membership.activeMembers) m.memberId
+    };
+    await SyncDevice.pair(
+        inviter: inviter.device,
+        joiner: _switcher.device,
+        confirmGroupSwitch: true);
     _switched = true;
     _stats.count('op.groupSwitch');
     _switcher.forgetSnapshots();
     inviter.forgetSnapshots();
-    final after = {for (final m in _switcher.membership.activeMembers) m.memberId};
+    final after = {
+      for (final m in _switcher.membership.activeMembers) m.memberId
+    };
     final expected = {...before, _switcher.device.memberId};
     if (after.length != expected.length || !after.containsAll(expected)) {
       _violate(OracleViolationKind.membership, _switcher.name, 'groupSwitch',
@@ -856,7 +920,9 @@ final class EngineSimulation {
   }
 
   String _names(Iterable<String> memberIds) =>
-      (memberIds.map((id) => _simOfMember[id] ?? id.substring(0, 6)).toList()..sort()).join(',');
+      (memberIds.map((id) => _simOfMember[id] ?? id.substring(0, 6)).toList()
+            ..sort())
+          .join(',');
 
   // --------------------------------------------------------------- network
 
@@ -870,7 +936,8 @@ final class EngineSimulation {
   }
 
   TransportFaults _randomFaults() {
-    if (_rng.nextDouble() >= tuning.transportFaultProbability) return TransportFaults.none;
+    if (_rng.nextDouble() >= tuning.transportFaultProbability)
+      return TransportFaults.none;
     final frame = _rng.nextInt(tuning.maxFaultFrame);
     switch (_rng.nextInt(3)) {
       case 0:
@@ -891,7 +958,10 @@ final class EngineSimulation {
     if (group == null) return;
     final peers = [
       for (final b in _devs)
-        if (b != a && b.partition == a.partition && b.membership.groupId == group) b
+        if (b != a &&
+            b.partition == a.partition &&
+            b.membership.groupId == group)
+          b
     ];
     if (peers.isEmpty) return;
     final b = _pick(peers);
@@ -902,7 +972,10 @@ final class EngineSimulation {
   Future<void> _outsiderAttempt() async {
     final peers = [
       for (final b in _devs)
-        if (b != _outsider && b.partition == _outsider.partition && b.membership.groupId == _g1) b
+        if (b != _outsider &&
+            b.partition == _outsider.partition &&
+            b.membership.groupId == _g1)
+          b
     ];
     if (peers.isEmpty) return;
     final b = _pick(peers);
@@ -916,9 +989,12 @@ final class EngineSimulation {
 
   /// Why an exchange between [a] and [b] must not complete, or `null`.
   String? _forbidden(_Dev a, _Dev b) {
-    if (_switched && (a == _outsider || b == _outsider)) return 'G2 outsider after the group switch';
-    if (a == _revokee && b.membership.isRevokedEd(_revokeePub)) return '${b.name} knew the revocation';
-    if (b == _revokee && a.membership.isRevokedEd(_revokeePub)) return '${a.name} knew the revocation';
+    if (_switched && (a == _outsider || b == _outsider))
+      return 'G2 outsider after the group switch';
+    if (a == _revokee && b.membership.isRevokedEd(_revokeePub))
+      return '${b.name} knew the revocation';
+    if (b == _revokee && a.membership.isRevokedEd(_revokeePub))
+      return '${a.name} knew the revocation';
     return null;
   }
 
@@ -935,7 +1011,8 @@ final class EngineSimulation {
           if (_isUserTable(h.envelope.tbl)) h.key: d.store.read(h.key)
       };
 
-  void _touch(_Dev d, Map<CellKey, CellRecord?> touched, ChangeBatchMessage batch) {
+  void _touch(
+      _Dev d, Map<CellKey, CellRecord?> touched, ChangeBatchMessage batch) {
     for (final e in batch.envelopes) {
       if (!_isUserTable(e.tbl)) continue;
       final key = CellKey(e.tbl, e.pk, e.col);
@@ -956,13 +1033,16 @@ final class EngineSimulation {
     _event('repair|${d.name}|stranded=${stranded.length}');
     if (stranded.isNotEmpty) {
       final others = _g1Finals(except: d).where((x) => x != d).toList();
-      if (others.isNotEmpty) await _reinviteStranded(d, stranded, _pick(others));
+      if (others.isNotEmpty)
+        await _reinviteStranded(d, stranded, _pick(others));
     }
     // Re-pair the device itself: its own member/invite rows are unrooted for
     // peers (sessions fail notAuthorized until an inviter re-vouches them).
     final inviters = [
       for (final x in _g1Finals(except: d))
-        if (x.membership.memberById(d.device.memberId) != null || stranded.isNotEmpty) x,
+        if (x.membership.memberById(d.device.memberId) != null ||
+            stranded.isNotEmpty)
+          x,
     ];
     if (inviters.isNotEmpty) {
       _stats.count('op.repairRejoin');
@@ -978,7 +1058,8 @@ final class EngineSimulation {
   Future<bool> _session(_Dev a, _Dev b, TransportFaults faults) async {
     _stats.sessions++;
     final forbidden = _forbidden(a, b);
-    final expectExchange = identical(faults, TransportFaults.none) && _mutuallyAccepted(a, b);
+    final expectExchange =
+        identical(faults, TransportFaults.none) && _mutuallyAccepted(a, b);
     final faultA = a.faultSessions > 0;
     final faultB = b.faultSessions > 0;
     final touchedA = _heldCells(a);
@@ -999,18 +1080,22 @@ final class EngineSimulation {
     final changedA = _afterSession(a, touchedA, countA);
     final changedB = _afterSession(b, touchedB, countB);
     for (final d in [a, b]) {
-      if (d.faultSessions > 0 && --d.faultSessions == 0) d.store.applyFault = null;
+      if (d.faultSessions > 0 && --d.faultSessions == 0)
+        d.store.applyFault = null;
     }
     if (pair.retried) _stats.count('session.retriedAfterRestore');
     final applied = pair.initiator.stats.applied +
         pair.responder.stats.applied +
         pair.initiator.stats.heldRetriedApplied +
         pair.responder.stats.heldRetriedApplied;
-    _stats.messages += pair.initiator.stats.envelopesReceived + pair.responder.stats.envelopesReceived;
-    final event = 's|${a.name}|${b.name}|$faults|${_outcome(pair.initiator)}|${_outcome(pair.responder)}'
+    _stats.messages += pair.initiator.stats.envelopesReceived +
+        pair.responder.stats.envelopesReceived;
+    final event =
+        's|${a.name}|${b.name}|$faults|${_outcome(pair.initiator)}|${_outcome(pair.responder)}'
         '|${pair.retried}|$changedA|$changedB';
     _trace.add(event);
-    if (_step >= config.ops || !pair.bothComplete && faults == TransportFaults.none) _log(event);
+    if (_step >= config.ops ||
+        !pair.bothComplete && faults == TransportFaults.none) _log(event);
     return changedA || changedB || applied > 0 || !pair.bothComplete;
   }
 
@@ -1020,7 +1105,8 @@ final class EngineSimulation {
       case SessionComplete():
         name = 'complete';
       case SessionPartial(:final reasons):
-        name = 'partial(${(reasons.map((x) => x.name).toList()..sort()).join('+')})';
+        name =
+            'partial(${(reasons.map((x) => x.name).toList()..sort()).join('+')})';
       case SessionFailed(:final category):
         name = 'failed.${category.name}';
     }
@@ -1028,7 +1114,8 @@ final class EngineSimulation {
     return '$name/${r.stats.applied}/${r.stats.envelopesReceived}';
   }
 
-  void _checkOutcome(_Dev x, _Dev peer, SessionResult r, bool faultActive, String? forbidden, bool expectExchange) {
+  void _checkOutcome(_Dev x, _Dev peer, SessionResult r, bool faultActive,
+      String? forbidden, bool expectExchange) {
     String? problem;
     switch (r) {
       case SessionComplete():
@@ -1037,9 +1124,11 @@ final class EngineSimulation {
         for (final reason in reasons) {
           switch (reason) {
             case PartialReason.itemsFailed:
-              if (!faultActive) problem = 'itemsFailed without an injected apply fault';
+              if (!faultActive)
+                problem = 'itemsFailed without an injected apply fault';
             case PartialReason.itemsRejected:
-              if (stats.rejectedByReason.keys.any((k) => k != _revokedCategory)) {
+              if (stats.rejectedByReason.keys
+                  .any((k) => k != _revokedCategory)) {
                 problem = 'items rejected ${stats.rejectedByReason}';
               }
             case PartialReason.storageError:
@@ -1052,16 +1141,20 @@ final class EngineSimulation {
         } else if (expectExchange &&
             category != SessionFailure.restoreDetected &&
             category != SessionFailure.peerPreparing) {
-          problem = 'failed ${category.name} without faults between mutually accepted members';
+          problem =
+              'failed ${category.name} without faults between mutually accepted members';
         }
     }
     final subject = '${x.name}<->${peer.name}@$_step';
-    if (problem != null) _violate(OracleViolationKind.sessionOutcome, x.name, subject, problem);
-    if (forbidden != null && r.exchanged) _violate(OracleViolationKind.groupLeak, x.name, subject, forbidden);
+    if (problem != null)
+      _violate(OracleViolationKind.sessionOutcome, x.name, subject, problem);
+    if (forbidden != null && r.exchanged)
+      _violate(OracleViolationKind.groupLeak, x.name, subject, forbidden);
   }
 
   int? _idOf(CellRecord r) {
-    return _oracle.writeIdOfCopy(r.key.table, r.key.pk, r.key.col, r.node, r.clock, r.value);
+    return _oracle.writeIdOfCopy(
+        r.key.table, r.key.pk, r.key.col, r.node, r.clock, r.value);
   }
 
   /// The oracle write a held envelope carries, matched by version and, when the
@@ -1071,46 +1164,61 @@ final class EngineSimulation {
   int? _heldWriteId(_Dev d, ChangeEnvelope e) {
     final membership = d.membership;
     final groupId = membership.groupId;
-    final versionOnly = _oracle.writeIdOfVersion(e.tbl, e.pk, e.col, e.node, e.hlc);
+    final versionOnly =
+        _oracle.writeIdOfVersion(e.tbl, e.pk, e.col, e.node, e.hlc);
     if (groupId == null) {
       _stats.count('final.heldVersionOnly');
       return versionOnly;
     }
-    final opened = EnvelopeCipher(groupId: groupId, keyring: membership.keyring).open(e);
+    final opened =
+        EnvelopeCipher(groupId: groupId, keyring: membership.keyring).open(e);
     if (opened is! EnvelopeOpened) {
       _stats.count('final.heldVersionOnly');
       return versionOnly;
     }
-    return _oracle.writeIdOfCopy(e.tbl, e.pk, e.col, e.node, e.hlc, opened.change.value.toDart());
+    return _oracle.writeIdOfCopy(
+        e.tbl, e.pk, e.col, e.node, e.hlc, opened.change.value.toDart());
   }
 
   /// FR-007 around a session: every touched cell keeps its version or moves
   /// to one the oracle orders after it; newly stored versions join the
   /// device's causal knowledge. Returns whether any version changed.
-  bool _afterSession(_Dev d, Map<CellKey, CellRecord?> touched, int countBefore) {
+  bool _afterSession(
+      _Dev d, Map<CellKey, CellRecord?> touched, int countBefore) {
     var changed = false;
     for (final entry in touched.entries) {
       final before = entry.value;
       final after = d.store.read(entry.key);
-      final cellKey = oracleCellKey(entry.key.table, entry.key.pk, entry.key.col);
+      final cellKey =
+          oracleCellKey(entry.key.table, entry.key.pk, entry.key.col);
       if (after == null) {
-        if (before != null) _violate(OracleViolationKind.regression, d.name, cellKey, 'lost $before in a session');
+        if (before != null)
+          _violate(OracleViolationKind.regression, d.name, cellKey,
+              'lost $before in a session');
         continue;
       }
-      if (before != null && before.clock == after.clock && before.node == after.node) continue;
+      if (before != null &&
+          before.clock == after.clock &&
+          before.node == after.node) continue;
       changed = true;
       final afterId = _idOf(after);
       if (afterId == null) {
-        _violate(OracleViolationKind.unknownVersion, d.name, cellKey, 'stored unrecorded $after');
+        _violate(OracleViolationKind.unknownVersion, d.name, cellKey,
+            'stored unrecorded $after');
         continue;
       }
       _oracle.observeStored(d.name, afterId);
       if (before == null) continue;
-      final v = checkNoRegression(_oracle, device: d.name, cellKey: cellKey, before: _idOf(before), after: afterId);
+      final v = checkNoRegression(_oracle,
+          device: d.name,
+          cellKey: cellKey,
+          before: _idOf(before),
+          after: afterId);
       if (v != null) _violations.add(v);
     }
     if (d.store.cellCount < countBefore) {
-      _violate(OracleViolationKind.regression, d.name, '*', 'cell count ${d.store.cellCount} < $countBefore');
+      _violate(OracleViolationKind.regression, d.name, '*',
+          'cell count ${d.store.cellCount} < $countBefore');
     }
     return changed;
   }
@@ -1135,7 +1243,8 @@ final class EngineSimulation {
         if (!_isUserTable(record.key.table)) continue;
         final id = _idOf(record);
         if (id == null) {
-          _violate(OracleViolationKind.unknownVersion, d.name, '${record.key}', 'holds unrecorded $record');
+          _violate(OracleViolationKind.unknownVersion, d.name, '${record.key}',
+              'holds unrecorded $record');
         } else {
           required.add(id);
         }
@@ -1145,7 +1254,8 @@ final class EngineSimulation {
         if (!_isUserTable(e.tbl)) continue;
         final id = _heldWriteId(d, e);
         if (id == null) {
-          _violate(OracleViolationKind.unknownVersion, d.name, '${h.key}', 'holds unrecorded envelope $h');
+          _violate(OracleViolationKind.unknownVersion, d.name, '${h.key}',
+              'holds unrecorded envelope $h');
         } else if (h.category == _revokedCategory) {
           optional.add(id);
         } else {
@@ -1166,7 +1276,9 @@ final class EngineSimulation {
     var quietRounds = 0;
     final authFailRounds = {for (final d in quiesceSet) d.name: 0};
     final otherFailRounds = {for (final d in quiesceSet) d.name: 0};
-    for (var round = 0; round < tuning.maxFinalRounds && quietRounds < 2; round++) {
+    for (var round = 0;
+        round < tuning.maxFinalRounds && quietRounds < 2;
+        round++) {
       _stats.finalRounds++;
       var busy = false;
       final roundAuthFail = {for (final d in quiesceSet) d.name: 0};
@@ -1174,27 +1286,33 @@ final class EngineSimulation {
       _lastRoundAuthFail.clear();
       final provisionallyExcluded = <String>{
         for (final d in quiesceSet)
-          if (authFailRounds[d.name]! >= 2 && otherFailRounds[d.name]! == 0) d.name,
+          if (authFailRounds[d.name]! >= 2 && otherFailRounds[d.name]! == 0)
+            d.name,
       };
       for (var i = 0; i < quiesceSet.length; i++) {
         for (var j = i + 1; j < quiesceSet.length; j++) {
           final involvesExcluded =
-              provisionallyExcluded.contains(quiesceSet[i].name) || provisionallyExcluded.contains(quiesceSet[j].name);
-          if (await _session(quiesceSet[i], quiesceSet[j], TransportFaults.none)) {
+              provisionallyExcluded.contains(quiesceSet[i].name) ||
+                  provisionallyExcluded.contains(quiesceSet[j].name);
+          if (await _session(
+              quiesceSet[i], quiesceSet[j], TransportFaults.none)) {
             if (!involvesExcluded) busy = true;
           }
-          _recordAuthEvidence(quiesceSet[i], quiesceSet[j], roundAuthFail, roundOtherFail);
+          _recordAuthEvidence(
+              quiesceSet[i], quiesceSet[j], roundAuthFail, roundOtherFail);
           _recordPairOutcome(quiesceSet[i], quiesceSet[j]);
         }
       }
       for (final d in quiesceSet) {
-        authFailRounds[d.name] = roundAuthFail[d.name]! > 0 ? authFailRounds[d.name]! + 1 : 0;
+        authFailRounds[d.name] =
+            roundAuthFail[d.name]! > 0 ? authFailRounds[d.name]! + 1 : 0;
         otherFailRounds[d.name] = roundOtherFail[d.name]!;
       }
       quietRounds = busy ? 0 : quietRounds + 1;
     }
     if (quietRounds < 2) {
-      _violate(OracleViolationKind.notQuiescent, '*', '*', 'after ${tuning.maxFinalRounds} rounds');
+      _violate(OracleViolationKind.notQuiescent, '*', '*',
+          'after ${tuning.maxFinalRounds} rounds');
     }
 
     // Efe ruling (stale restore): exclude a staleRestored device only on
@@ -1202,12 +1320,36 @@ final class EngineSimulation {
     // final rounds; a device some converged device still accepts keeps its
     // violations (real bug). Excluded devices' cells leave required/optional
     // and observed.
-    final excluded = _staleExcluded(quiesceSet, authFailRounds, otherFailRounds);
+    final excluded =
+        _staleExcluded(quiesceSet, authFailRounds, otherFailRounds);
+    // Efe ruling (100336) (a): carrier-reachability. A required/optional id
+    // whose winning write is authored by an excluded device AND of which no
+    // converged device holds any copy is not expectable on the converged
+    // side; a copy that crossed keeps it required.
+    final relaxedWinnerIds = unreachableClusterWinners(
+      excluded: excluded,
+      authorOfWrite: {
+        for (final id in {...required, ...optional})
+          id: _oracle.write(id).device,
+      },
+      convergedHeldWriteIds: {
+        for (final d in quiesceSet)
+          if (!excluded.contains(d.name))
+            for (final id in _deviceWriteIds(d)) id,
+      },
+      onRelaxed: (writeId, author) {
+        _stats.count('endgame.staleClusterWinnerRelaxed');
+        final w = _oracle.write(writeId);
+        if (engineSimLog != null)
+          _log('relaxedWinner w=$writeId author=$author cell=${w.cellKey}');
+      },
+    );
     if (excluded.isNotEmpty) {
       final excludedCells = <int>{};
       final convergedCells = <int>{};
       for (final d in quiesceSet) {
-        final target = excluded.contains(d.name) ? excludedCells : convergedCells;
+        final target =
+            excluded.contains(d.name) ? excludedCells : convergedCells;
         for (final record in d.store.cells) {
           if (!_isUserTable(record.key.table)) continue;
           final id = _idOf(record);
@@ -1218,8 +1360,12 @@ final class EngineSimulation {
           if (id != null) target.add(id);
         }
       }
-      required.removeWhere((id) => excludedCells.contains(id) && !convergedCells.contains(id));
-      optional.removeWhere((id) => excludedCells.contains(id) && !convergedCells.contains(id));
+      required.removeWhere(
+          (id) => excludedCells.contains(id) && !convergedCells.contains(id));
+      optional.removeWhere(
+          (id) => excludedCells.contains(id) && !convergedCells.contains(id));
+      required.removeAll(relaxedWinnerIds);
+      optional.removeAll(relaxedWinnerIds);
     }
     if (engineSimLog != null) {
       _log('--- post-rounds ---');
@@ -1228,7 +1374,10 @@ final class EngineSimulation {
       _logRegistrations();
       await _logRegistrationRemerge();
     }
-    final observed = [for (final d in quiesceSet.where((d) => !excluded.contains(d.name))) _observe(d)];
+    final observed = [
+      for (final d in quiesceSet.where((d) => !excluded.contains(d.name)))
+        _observe(d)
+    ];
     final check = checkEngineFinalState(
       _oracle,
       observed,
@@ -1261,7 +1410,8 @@ final class EngineSimulation {
       final m = d.membership;
       final view = _names(m.activeMembers.map((e) => e.memberId));
       final known = m.members.keys.map((k) => k.substring(0, 6)).join(',');
-      _log('member ${d.name} id=${d.device.memberId.substring(0, 6)} group=${m.groupId == _g1 ? 'G1' : m.groupId} '
+      _log(
+          'member ${d.name} id=${d.device.memberId.substring(0, 6)} group=${m.groupId == _g1 ? 'G1' : m.groupId} '
           'removed=${m.removed} view=$view known=$known held=${d.store.heldEnvelopes.length} '
           'epochs=${m.keyring.epochs.length}');
     }
@@ -1276,7 +1426,8 @@ final class EngineSimulation {
       final revs = [
         for (final pk in d.store.rowsOf(SecurityTables.revocation))
           () {
-            final cell = d.store.storedCell(CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
+            final cell = d.store.storedCell(
+                CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
             final value = cell?.record.value;
             if (value is! Uint8List) return null;
             try {
@@ -1288,16 +1439,22 @@ final class EngineSimulation {
           }(),
       ].nonNulls.toList()
         ..sort();
-      final excluded = (d.membership.revocations?.revokedMembers ?? const []).map(_short).toList()..sort();
-      _log('revstate ${d.name} rows=${revs.join(',')} excluded=${excluded.join(',')} '
+      final excluded = (d.membership.revocations?.revokedMembers ?? const [])
+          .map(_short)
+          .toList()
+        ..sort();
+      _log(
+          'revstate ${d.name} rows=${revs.join(',')} excluded=${excluded.join(',')} '
           'active=${d.membership.activeMembers.map((e) => '${_short(e.ed25519Pub)}@${_simOfMember[e.memberId] ?? e.memberId.substring(0, 6)}').toList().join(',')} '
           'memberrows=${d.membership.members.keys.map((k) => '${_simOfMember[k] ?? k.substring(0, 6)}:${k.substring(0, 6)}').toList().join(',')}');
     }
   }
 
-  static String _hex6(List<int> bytes) => bytes.take(6).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+  static String _hex6(List<int> bytes) =>
+      bytes.take(6).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
 
-  static String _short(List<int> bytes) => bytes.take(6).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+  static String _short(List<int> bytes) =>
+      bytes.take(6).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
 
   /// ACF-45 probe: registrations the OTHER finals have but this device's
   /// store lacks - 'missing on receiver' made visible per origin.
@@ -1324,7 +1481,8 @@ final class EngineSimulation {
   void _logRegistrations() {
     for (final d in _finals) {
       final regs = [
-        for (final r in d.store.registrations) '${r.origin.hex.substring(0, 6)}<-${_short(r.memberPub)}',
+        for (final r in d.store.registrations)
+          '${r.origin.hex.substring(0, 6)}<-${_short(r.memberPub)}',
       ]..sort();
       _log('regs ${d.name} ${regs.join(',')}');
     }
@@ -1340,21 +1498,30 @@ final class EngineSimulation {
       for (final h in d.store.heldEnvelopes) {
         final e = h.envelope;
         final table = _isUserTable(e.tbl) ? 'user' : e.tbl;
-        final k = '$table/${h.reason.name}/${h.category}/signer=${_names([e.node])}';
+        final k =
+            '$table/${h.reason.name}/${h.category}/signer=${_names([e.node])}';
         byReason[k] = (byReason[k] ?? 0) + 1;
-        if (h.reason == HeldReason.missingKey) missing[_epochName(e.epoch)] = (missing[_epochName(e.epoch)] ?? 0) + 1;
+        if (h.reason == HeldReason.missingKey)
+          missing[_epochName(e.epoch)] =
+              (missing[_epochName(e.epoch)] ?? 0) + 1;
       }
-      final heldEpochs = (m.keyring.epochs.toList()..sort()).map(_epochName).join(' ');
+      final heldEpochs =
+          (m.keyring.epochs.toList()..sort()).map(_epochName).join(' ');
       final ownPub = m.identity.ed25519Pub;
       final granted = [
         for (final g in m.grants)
           if (_same(g.memberPub, ownPub)) _epochName(g.epoch)
       ].join(' ');
       _log('held ${d.name} $byReason');
-      _log('epochs ${d.name} missingKeyFor=$missing held=$heldEpochs grantedToMe=$granted');
+      _log(
+          'epochs ${d.name} missingKeyFor=$missing held=$heldEpochs grantedToMe=$granted');
       for (final pk in d.store.rowsOf(SecurityTables.member)) {
-        final c = d.store.read(CellKey(SecurityTables.member, pk, CellKey.rowCol));
-        _log('memberRow ${d.name} ${pk.substring(0, 6)} by=${c == null ? '-' : _names([c.node])} '
+        final c =
+            d.store.read(CellKey(SecurityTables.member, pk, CellKey.rowCol));
+        _log(
+            'memberRow ${d.name} ${pk.substring(0, 6)} by=${c == null ? '-' : _names([
+                    c.node
+                  ])} '
             'origin=${c?.origin.substring(0, 6)}#${c?.originSeq}');
       }
     }
@@ -1363,7 +1530,8 @@ final class EngineSimulation {
   /// Per-device evidence of one final-phase session: auth-only failure
   /// (notAuthorized/refusedByPeer) counts toward the stale exclusion; any
   /// other failure kind blocks it (Efe ruling).
-  void _recordAuthEvidence(_Dev a, _Dev b, Map<String, int> roundAuthFail, Map<String, int> roundOtherFail) {
+  void _recordAuthEvidence(_Dev a, _Dev b, Map<String, int> roundAuthFail,
+      Map<String, int> roundOtherFail) {
     // F1 (Efe joint review): a pair counts as an auth rejection ONLY when at
     // least one side reports an explicit auth category (notAuthorized /
     // refusedByPeer). The other side may then mirror it as notReachable. Any
@@ -1377,7 +1545,8 @@ final class EngineSimulation {
       return;
     }
     for (final entry in [a, b]) {
-      if (entry.roundOutcome is SessionFailed) roundOtherFail[entry.name] = roundOtherFail[entry.name]! + 1;
+      if (entry.roundOutcome is SessionFailed)
+        roundOtherFail[entry.name] = roundOtherFail[entry.name]! + 1;
     }
   }
 
@@ -1386,7 +1555,8 @@ final class EngineSimulation {
   /// device in it is stale-marked AND every device outside it auth-fails it
   /// (K consecutive rounds, no other failure kind). Clusters holding a
   /// never-stale device are never excludable: their divergence gates.
-  Set<String> _staleExcluded(List<_Dev> quiesceSet, Map<String, int> authFailRounds, Map<String, int> otherFailRounds) {
+  Set<String> _staleExcluded(List<_Dev> quiesceSet,
+      Map<String, int> authFailRounds, Map<String, int> otherFailRounds) {
     final names = [for (final d in quiesceSet) d.name];
     final stale = {for (final d in quiesceSet) d.name: d.staleRestored};
     final pairAuthFail = {
@@ -1398,8 +1568,10 @@ final class EngineSimulation {
       pairAuthFail: pairAuthFail,
       authFailRounds: authFailRounds,
       otherFailRounds: otherFailRounds,
-      onExcluded: (cluster) => _stats.count('endgame.staleExcluded', cluster.length),
-      onWholeSetStale: (size) => _stats.count('endgame.staleClusterDivergence', size),
+      onExcluded: (cluster) =>
+          _stats.count('endgame.staleExcluded', cluster.length),
+      onWholeSetStale: (size) =>
+          _stats.count('endgame.staleClusterDivergence', size),
     );
   }
 
@@ -1410,11 +1582,14 @@ final class EngineSimulation {
 
   void _recordPairOutcome(_Dev a, _Dev b) {
     final key = [a.name, b.name]..sort();
-    _lastRoundAuthFail['${key[0]}|${key[1]}'] = _authOnlyFailure(a.roundOutcome) || _authOnlyFailure(b.roundOutcome);
+    _lastRoundAuthFail['${key[0]}|${key[1]}'] =
+        _authOnlyFailure(a.roundOutcome) || _authOnlyFailure(b.roundOutcome);
   }
 
   bool _authOnlyFailure(SessionResult? r) =>
-      r is SessionFailed && (r.category == SessionFailure.notAuthorized || r.category == SessionFailure.refusedByPeer);
+      r is SessionFailed &&
+      (r.category == SessionFailure.notAuthorized ||
+          r.category == SessionFailure.refusedByPeer);
 
   /// T12 acc 8: every final device's view is exactly the final devices'
   /// current identities (the revokee and old key-lost identities revoked, no
@@ -1427,8 +1602,14 @@ final class EngineSimulation {
     // still expected revoked (holders kept their records).
     final strandedRevoked = _strandedRevokedPubs(excluded);
     final pubOfHex = <String, List<int>>{
-      for (final d2 in _devs) _hex6(d2.membership.identity.ed25519Pub): d2.membership.identity.ed25519Pub,
+      for (final d2 in _devs)
+        _hex6(d2.membership.identity.ed25519Pub):
+            d2.membership.identity.ed25519Pub,
     };
+    // Efe ruling (100336) (b): a final identity whose EVERY member row was
+    // authored inside the excluded cluster is not expected in converged
+    // views; any converged-authored or converged-held row keeps it expected.
+    final strandedMembers = _strandedMemberIdentities(excluded);
     for (final d in _finals) {
       if (excluded.contains(d.name)) continue;
       if (d.device.needsRepairing) {
@@ -1442,36 +1623,62 @@ final class EngineSimulation {
         for (final pub in strandedRevoked) {
           final bytes = pubOfHex[pub];
           if (bytes != null && d.membership.isRevokedEd(bytes)) {
-            _violate(OracleViolationKind.membership, d.name, 'strandedRevokedEnforced',
+            _violate(
+                OracleViolationKind.membership,
+                d.name,
+                'strandedRevokedEnforced',
                 'converged device revoked a stranded-revoked identity without the record crossing');
           }
         }
       }
       final m = d.membership;
       if (m.groupId != _g1 || m.removed) {
-        _violate(OracleViolationKind.membership, d.name, 'group', 'group ${m.groupId} removed=${m.removed}');
+        _violate(OracleViolationKind.membership, d.name, 'group',
+            'group ${m.groupId} removed=${m.removed}');
       }
       final view = {
         for (final e in m.activeMembers)
-          if (!staleDevice || !strandedRevoked.contains(_hex6(e.ed25519Pub))) e.memberId,
+          if (!staleDevice || !strandedRevoked.contains(_hex6(e.ed25519Pub)))
+            e.memberId,
       };
       final expectSet = staleDevice
           ? expected.difference({
               for (final d2 in _devs)
-                if (strandedRevoked.contains(_hex6(d2.membership.identity.ed25519Pub))) d2.device.memberId,
+                if (strandedRevoked
+                    .contains(_hex6(d2.membership.identity.ed25519Pub)))
+                  d2.device.memberId,
             })
-          : expected;
+          : expected.difference(strandedMembers);
       if (view.length != expectSet.length || !view.containsAll(expectSet)) {
-        _violate(OracleViolationKind.membership, d.name, 'view', '${_names(view)} != ${_names(expectSet)}');
+        // Efe ruling (100336) (b), device-id clause: id-level view diffs that
+        // are entirely about excluded-cluster identities (old crossed ids of
+        // an excluded device still active here, or its stranded current id)
+        // are stale-cluster divergence, counted, not membership violations.
+        bool clusterIdentity(String id) {
+          final name = _simOfMember[id];
+          return name != null && excluded.contains(name);
+        }
+
+        final extra = view.difference(expectSet);
+        final missing = expectSet.difference(view);
+        if (extra.every(clusterIdentity) && missing.every(clusterIdentity)) {
+          _stats.count('endgame.staleClusterDivergence');
+        } else {
+          _violate(OracleViolationKind.membership, d.name, 'view',
+              '${_names(view)} != ${_names(expectSet)}');
+        }
       }
       if (m.members.containsKey(_outsider.device.memberId)) {
-        _violate(OracleViolationKind.membership, d.name, 'members', 'knows the G2 outsider');
+        _violate(OracleViolationKind.membership, d.name, 'members',
+            'knows the G2 outsider');
       }
       if (_removed && !m.isRevokedEd(_revokeePub)) {
-        _violate(OracleViolationKind.membership, d.name, 'revocation', 'revokee not revoked');
+        _violate(OracleViolationKind.membership, d.name, 'revocation',
+            'revokee not revoked');
       }
       if (m.flaggedAnchorsWithoutRecord.isNotEmpty) {
-        _violate(OracleViolationKind.membership, d.name, 'anchorRecord', 'flagged anchor without a revocation record');
+        _violate(OracleViolationKind.membership, d.name, 'anchorRecord',
+            'flagged anchor without a revocation record');
       }
     }
   }
@@ -1483,7 +1690,8 @@ final class EngineSimulation {
     final records = <String, Set<String>>{};
     for (final d in _finals) {
       for (final pk in d.store.rowsOf(SecurityTables.revocation)) {
-        final cell = d.store.storedCell(CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
+        final cell = d.store
+            .storedCell(CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
         final value = cell?.record.value;
         if (value is! Uint8List) continue;
         try {
@@ -1499,7 +1707,8 @@ final class EngineSimulation {
       recordsByRevokedHex: records,
       onStranded: (pubHex, authors) {
         _stats.count('endgame.revocationStrandedInStaleCluster');
-        if (engineSimLog != null) _log('strandedRevoked pub=$pubHex authors=${authors.join(',')}');
+        if (engineSimLog != null)
+          _log('strandedRevoked pub=$pubHex authors=${authors.join(',')}');
       },
     );
   }
@@ -1525,17 +1734,112 @@ final class EngineSimulation {
         author: _simOfMember[record.node] ?? 'member:${record.node}',
         cause: cause == null ? null : oracleRowKey(cause.table, cause.pk),
       );
-      rows.putIfAbsent(oracleRowKey(key.table, key.pk), () => d.store.isRowAlive(key.table, key.pk));
+      rows.putIfAbsent(oracleRowKey(key.table, key.pk),
+          () => d.store.isRowAlive(key.table, key.pk));
     }
     return ObservedReplica(device: d.name, cells: cells, rowsAlive: rows);
+  }
+
+  /// Every oracle write id this device's store or held envelopes carry.
+  Set<int> _deviceWriteIds(_Dev d) => {
+        for (final record in d.store.cells)
+          if (_idOf(record) case final id?) id,
+        for (final h in d.store.heldEnvelopes)
+          if (_heldWriteId(d, h.envelope) case final id?) id,
+      };
+
+  /// Efe ruling (100336) (b): rowsByIdentity maps each member-row pk (the
+  /// named identity's member id) to its row pk -> the set of AUTHOR device
+  /// names (from the row cell's node). Authorship decides, not holding.
+  Set<String> _strandedMemberIdentities(Set<String> excluded) {
+    if (excluded.isEmpty) return const {};
+    final rowsByIdentity = <String, Map<String, Set<String>>>{};
+    for (final d in _finals) {
+      for (final pk in d.store.rowsOf(SecurityTables.member)) {
+        final c =
+            d.store.read(CellKey(SecurityTables.member, pk, CellKey.rowCol));
+        if (c == null) continue;
+        final author = _simOfMember[c.node] ?? c.node.substring(0, 6);
+        rowsByIdentity
+            .putIfAbsent(pk, () => {})
+            .putIfAbsent(pk, () => {})
+            .add(author);
+      }
+    }
+    return strandedMemberIdentities(
+      excluded: excluded,
+      rowsByIdentity: rowsByIdentity,
+      onStranded: (identity, rows) {
+        _stats.count('endgame.memberRowStrandedInStaleCluster');
+        if (engineSimLog != null) {
+          _log('strandedMember id=$identity '
+              'rows=${rows.entries.map((e) => '${e.key.substring(0, 6)} by=${e.value.join(',')}').join(' ')}');
+        }
+      },
+    );
   }
 
   void _traceFinalState() {
     for (final d in _finals) {
       for (final record in d.store.cells) {
         if (!_isUserTable(record.key.table)) continue;
-        _trace.add('f|${d.name}|${record.key}|${record.value}|${record.clock}|${_simOfMember[record.node]}');
+        _trace.add(
+            'f|${d.name}|${record.key}|${record.value}|${record.clock}|${_simOfMember[record.node]}');
       }
     }
   }
+}
+
+/// Efe ruling (100336), pure decision core (a): CARRIER-REACHABILITY. A
+/// required write id is dropped on the converged side iff ALL of: the
+/// writer device is inside the excluded cluster; no converged device holds
+/// a copy of that exact version in its store or held envelopes (if any
+/// holds one, the winner crossed and stays required). Resurrections follow
+/// their winner. Not author-based: a cluster-authored winner that crossed
+/// still gates.
+Set<int> unreachableClusterWinners({
+  required Set<String> excluded,
+  required Map<int, String> authorOfWrite,
+  required Set<int> convergedHeldWriteIds,
+  void Function(int writeId, String author)? onRelaxed,
+}) {
+  if (excluded.isEmpty) return const {};
+  final out = <int>{};
+  for (final e in authorOfWrite.entries) {
+    final id = e.key;
+    final author = e.value;
+    if (!excluded.contains(author)) continue;
+    if (convergedHeldWriteIds.contains(id)) continue;
+    out.add(id);
+    onRelaxed?.call(id, author);
+  }
+  return out;
+}
+
+/// Efe ruling (100336), pure decision core (b): a FINAL identity is not
+/// expected in converged views iff EVERY member row naming it was authored
+/// inside the excluded cluster. Any converged-authored row, or a row copy a
+/// converged device holds, keeps the identity expected (gates).
+Set<String> strandedMemberIdentities({
+  required Set<String> excluded,
+  required Map<String, Map<String, Set<String>>> rowsByIdentity,
+  void Function(String identity, Map<String, Set<String>> rows)? onStranded,
+}) {
+  if (excluded.isEmpty) return const {};
+  final out = <String>{};
+  for (final e in rowsByIdentity.entries) {
+    final rows = e.value;
+    if (rows.isEmpty) continue;
+    var allInside = true;
+    for (final authors in rows.values) {
+      if (!excluded.containsAll(authors)) {
+        allInside = false;
+        break;
+      }
+    }
+    if (!allInside) continue;
+    out.add(e.key);
+    onStranded?.call(e.key, rows);
+  }
+  return out;
 }
