@@ -23,6 +23,9 @@ void main() {
 
     final second = await runSimulation(seed: 100006, config: soakSuite.config, engine: engineUnderTest);
     expect(second.traceHash, first.traceHash, reason: 'exclusion sets must be deterministic');
+    // F2: the counters and per-run stats must match too, not just the hash.
+    expect(second.stats.counters['endgame.staleExcluded'], excluded);
+    expect(second.stats.counters['endgame.revocationStrandedInStaleCluster'], stranded);
   }, timeout: const Timeout(Duration(minutes: 10)));
 
   test('a clean seed without stale restores stays clean and uses no exclusion (seed 100003)', () async {
@@ -78,6 +81,18 @@ void _engineered() {
         otherFailRounds: {'a': 1, 'b': 0, 'c': 0},
       );
       expect(excluded, isEmpty, reason: 'a non-auth failure keeps the divergence gated');
+    });
+
+    test('stranded-revoked relaxation requires ALL holders inside the excluded cluster (7)', () {
+      final relaxed = strandedRevokedPubs(
+        excluded: {'d3', 'd4'},
+        recordsByRevokedHex: {
+          'aaaa': {'d4'}, // all holders excluded -> relaxed
+          'bbbb': {'d4', 'd1'}, // one holder converged -> NOT relaxed
+          'cccc': {'d1'}, // no holder excluded -> NOT relaxed
+        },
+      );
+      expect(relaxed, {'aaaa'});
     });
 
     test('whole set stale: reported, not excluded', () {

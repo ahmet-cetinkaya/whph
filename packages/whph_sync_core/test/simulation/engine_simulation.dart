@@ -144,6 +144,25 @@ final class _DirectoryState {
   final InMemorySyncLedger ledger;
 }
 
+/// Efe ruling (stranded-revoked), pure core: the revoked identities whose
+/// EVERY holder (author) is inside [excluded]. Records map revoked-pub-hex
+/// to the set of holding device names.
+Set<String> strandedRevokedPubs({
+  required Set<String> excluded,
+  required Map<String, Set<String>> recordsByRevokedHex,
+  void Function(String pubHex, Set<String> authors)? onStranded,
+}) {
+  if (excluded.isEmpty) return const {};
+  final out = <String>{};
+  for (final e in recordsByRevokedHex.entries) {
+    final holders = e.value;
+    if (holders.isEmpty || !excluded.containsAll(holders)) continue;
+    out.add(e.key);
+    onStranded?.call(e.key, holders);
+  }
+  return out;
+}
+
 /// Efe ruling (stale-restore), pure decision core: partition [names] into
 /// clusters of mutual non-auth-failure ([pairAuthFail], normalized keys
 /// "a|b"), and exclude exactly the clusters whose EVERY member is stale,
@@ -1276,6 +1295,8 @@ final class EngineSimulation {
     }
   }
 
+  static String _hex6(List<int> bytes) => bytes.take(6).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+
   static String _short(List<int> bytes) => bytes.take(6).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
 
   /// ACF-45 probe: registrations the OTHER finals have but this device's
@@ -1343,20 +1364,20 @@ final class EngineSimulation {
   /// (notAuthorized/refusedByPeer) counts toward the stale exclusion; any
   /// other failure kind blocks it (Efe ruling).
   void _recordAuthEvidence(_Dev a, _Dev b, Map<String, int> roundAuthFail, Map<String, int> roundOtherFail) {
-    // A pair is an auth failure when either side saw notAuthorized or
-    // refusedByPeer; the responder-side mirror of a refused handshake can
-    // surface as notReachable, which is still this pair's auth rejection.
-    final pairAuthFail = _authOnlyFailure(a.roundOutcome) ||
-        _authOnlyFailure(b.roundOutcome) ||
-        (a.roundOutcome is SessionFailed && b.roundOutcome is SessionFailed);
-    if (pairAuthFail && (a.roundOutcome is SessionFailed || b.roundOutcome is SessionFailed)) {
+    // F1 (Efe joint review): a pair counts as an auth rejection ONLY when at
+    // least one side reports an explicit auth category (notAuthorized /
+    // refusedByPeer). The other side may then mirror it as notReachable. Any
+    // other failure combination - including both-failed-unknown - counts as
+    // otherFail and blocks exclusion (fail closed).
+    final authA = _authOnlyFailure(a.roundOutcome);
+    final authB = _authOnlyFailure(b.roundOutcome);
+    if (authA || authB) {
       roundAuthFail[a.name] = roundAuthFail[a.name]! + 1;
       roundAuthFail[b.name] = roundAuthFail[b.name]! + 1;
       return;
     }
     for (final entry in [a, b]) {
-      final r = entry.roundOutcome;
-      if (r is SessionFailed) roundOtherFail[entry.name] = roundOtherFail[entry.name]! + 1;
+      if (entry.roundOutcome is SessionFailed) roundOtherFail[entry.name] = roundOtherFail[entry.name]! + 1;
     }
   }
 
@@ -1405,6 +1426,9 @@ final class EngineSimulation {
     // expected revoked on the converged set; inside the stale cluster it IS
     // still expected revoked (holders kept their records).
     final strandedRevoked = _strandedRevokedPubs(excluded);
+    final pubOfHex = <String, List<int>>{
+      for (final d2 in _devs) _hex6(d2.membership.identity.ed25519Pub): d2.membership.identity.ed25519Pub,
+    };
     for (final d in _finals) {
       if (excluded.contains(d.name)) continue;
       if (d.device.needsRepairing) {
@@ -1416,7 +1440,8 @@ final class EngineSimulation {
       final staleDevice = excluded.contains(d.name);
       if (!staleDevice) {
         for (final pub in strandedRevoked) {
-          if (d.membership.isRevokedEd(pub)) {
+          final bytes = pubOfHex[pub];
+          if (bytes != null && d.membership.isRevokedEd(bytes)) {
             _violate(OracleViolationKind.membership, d.name, 'strandedRevokedEnforced',
                 'converged device revoked a stranded-revoked identity without the record crossing');
           }
@@ -1428,10 +1453,14 @@ final class EngineSimulation {
       }
       final view = {
         for (final e in m.activeMembers)
-          if (!staleDevice || !strandedRevoked.any((pub) => _same(e.ed25519Pub, pub))) e.memberId,
+          if (!staleDevice || !strandedRevoked.contains(_hex6(e.ed25519Pub))) e.memberId,
       };
-      final expectSet =
-          staleDevice ? expected.difference({for (final p in strandedRevoked) _memberIdOfPub(p)}) : expected;
+      final expectSet = staleDevice
+          ? expected.difference({
+              for (final d2 in _devs)
+                if (strandedRevoked.contains(_hex6(d2.membership.identity.ed25519Pub))) d2.device.memberId,
+            })
+          : expected;
       if (view.length != expectSet.length || !view.containsAll(expectSet)) {
         _violate(OracleViolationKind.membership, d.name, 'view', '${_names(view)} != ${_names(expectSet)}');
       }
@@ -1449,10 +1478,9 @@ final class EngineSimulation {
 
   /// Efe ruling (stranded-revoked): pubs whose EVERY revocation record was
   /// authored by a device inside [excluded]. Stat per identity.
-  Set<List<int>> _strandedRevokedPubs(Set<String> excluded) {
+  Set<String> _strandedRevokedPubs(Set<String> excluded) {
     if (excluded.isEmpty) return const {};
-    final out = <List<int>>{};
-    final records = <List<int>, Map<String, List<String>>>{};
+    final records = <String, Set<String>>{};
     for (final d in _finals) {
       for (final pk in d.store.rowsOf(SecurityTables.revocation)) {
         final cell = d.store.storedCell(CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
@@ -1460,36 +1488,20 @@ final class EngineSimulation {
         if (value is! Uint8List) continue;
         try {
           final r = decodeRevocationRecord(value);
-          records.putIfAbsent(r.revokedPub, () => {})[d.name] = [
-            ...(records[r.revokedPub]?[d.name] ?? const []),
-            '${cell!.record.origin.substring(0, 6)}#${cell.record.originSeq}',
-          ];
+          records.putIfAbsent(_hex6(r.revokedPub), () => {}).add(d.name);
         } on Object {
           continue;
         }
       }
     }
-    for (final e in records.entries) {
-      final holders = e.value.keys.toSet();
-      if (holders.isNotEmpty && excluded.containsAll(holders)) {
-        out.add(e.key);
+    return strandedRevokedPubs(
+      excluded: excluded,
+      recordsByRevokedHex: records,
+      onStranded: (pubHex, authors) {
         _stats.count('endgame.revocationStrandedInStaleCluster');
-        if (engineSimLog != null) {
-          _log('strandedRevoked pub=${_short(e.key)} authors=${holders.join(',')} '
-              'carriers=${e.value.values.expand((v) => v).join(',')}');
-        }
-      }
-    }
-    return out;
-  }
-
-  /// The member id of a device holding [pub]'s identity, or '' (used to
-  /// relax the expected set inside the stale cluster).
-  String _memberIdOfPub(List<int> pub) {
-    for (final d in _devs) {
-      if (_same(d.membership.identity.ed25519Pub, pub)) return d.device.memberId;
-    }
-    return '';
+        if (engineSimLog != null) _log('strandedRevoked pub=$pubHex authors=${authors.join(',')}');
+      },
+    );
   }
 
   static bool _same(List<int> a, List<int> b) {
