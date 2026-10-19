@@ -34,6 +34,7 @@ import 'dart:typed_data';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
 import 'oracle/oracle_checks.dart';
+import 'sim_env.dart';
 import 'oracle/reference_oracle.dart';
 import 'simulator.dart';
 import 'stranded_members.dart';
@@ -153,6 +154,16 @@ final class _Dev {
   int created = 0;
   int partition = 0;
   int faultSessions = 0;
+
+  /// Efe ruling (stale restore): the device restored a snapshot whose member
+  /// set lacked an identity current at restore time. Set causally at op time;
+  /// the endgame evidence check decides the oracle exclusion.
+  bool staleRestored = false;
+
+  /// This device's result of its most recent final-phase session (evidence
+  /// for the stale-restore exclusion; null before the first round).
+  SessionResult? roundOutcome;
+
   final List<_Saved<DeviceDbSnapshot>> dbSnapshots = [];
   final List<_Saved<_DirectoryState>> dirSnapshots = [];
 
@@ -219,6 +230,9 @@ final class EngineSimulation {
       if (!_switched && _step >= _switchAt) await _groupSwitch();
       if (!_removed && _step >= _removeAt) await _removeRevokee();
       await _op();
+      for (final d in _devs) {
+        await _repairStranded(d);
+      }
       if (_rng.nextDouble() < config.sessionProbability) await _randomSession();
       if (_switched && _rng.nextDouble() < tuning.outsiderAttemptProbability) await _outsiderAttempt();
       for (final d in _devs) {
@@ -576,9 +590,26 @@ final class EngineSimulation {
     if (d.dbSnapshots.isEmpty) return _stats.count('skip.dbRestore');
     _stats.count('op.dbRestore');
     final saved = _pick(d.dbSnapshots);
+    final memberIdsBefore = d.device.memberId;
     final action = await d.device.restoreDb(saved.value);
     _oracle.startIncarnation(d.name, saved.knowledge);
+    _markStaleRestored(d, saved.step, memberIdsBefore);
     _event('restoreDb|${d.name}|${saved.step}|${action.name}');
+  }
+
+  /// Causal stale-restore trigger (Efe ruling): the restored snapshot's
+  /// member set lacks an identity that is current at restore time. The sim
+  /// has global knowledge, like [ReferenceOracle.startIncarnation].
+  void _markStaleRestored(_Dev d, int snapshotStep, String memberIdsBefore) {
+    final snapshotMembers = d.membership.members.keys.toSet();
+    final currents = {
+      for (final other in _devs)
+        if (other != d) other.device.memberId,
+    };
+    if (snapshotMembers.containsAll(currents)) return;
+    d.staleRestored = true;
+    _stats.count('op.staleRestore');
+    _event('staleRestore|${d.name}|from=$snapshotStep|missing=${currents.difference(snapshotMembers).length}');
   }
 
   Future<void> _dirSnapshot(_Dev d) async {
@@ -597,6 +628,7 @@ final class EngineSimulation {
     final saved = _pick(d.dirSnapshots);
     final action = await d.device.restoreDirectory(saved.value.directory);
     _oracle.startIncarnation(d.name, saved.knowledge);
+    _markStaleRestored(d, saved.step, d.device.memberId);
     _event('restoreDir|${d.name}|${saved.step}|${action.name}');
   }
 
@@ -611,6 +643,7 @@ final class EngineSimulation {
     d.ledger.restoreFrom(saved.value.ledger);
     final action = await d.device.restoreDirectory(saved.value.directory);
     _oracle.startIncarnation(d.name, saved.knowledge);
+    _markStaleRestored(d, saved.step, d.device.memberId);
     _event('fullRollback|${d.name}|${saved.step}|${action.name}');
   }
 
@@ -628,14 +661,12 @@ final class EngineSimulation {
     final loseLedger = _rng.nextBool();
     final oldId = d.device.memberId;
     final action = await d.device.loseKeyFile(oldDb: saved.value, loseLedger: loseLedger);
-    final stranded = strandedMemberIds(d.store, d.device.memberId);
     _oracle.startIncarnation(d.name, saved.knowledge);
     _simOfMember[d.device.memberId] = d.name;
     d.forgetSnapshots();
     final remover = _pick(removers);
     await remover.device.removeMember(oldId);
     remover.forgetSnapshots();
-    await _reinviteStranded(d, stranded, remover);
     final inviter = _pick(_g1Finals(except: d));
     await SyncDevice.pair(inviter: inviter.device, joiner: d.device);
     inviter.forgetSnapshots();
@@ -653,6 +684,16 @@ final class EngineSimulation {
       if (joiner == null) continue;
       final inviters = _g1Finals(except: joiner).where((x) => x != lost).toList();
       if (inviters.isEmpty) continue;
+      // Class-C discriminator (Efe ruling): a stranded member whose key is
+      // revoked can only come back as a FRESH identity via an aware inviter;
+      // pair() with the revoked key would throw, so skip instead.
+      final joinerPub = joiner.membership.identity.ed25519Pub;
+      final revokedSomewhere = inviters.any((x) => x.membership.isExcluded(joinerPub));
+      if (revokedSomewhere) {
+        _stats.count('skip.reinviteRevoked');
+        _event('reinviteSkipped|revoked|${joiner.name}|${joiner.device.memberId.substring(0, 6)}');
+        continue;
+      }
       _stats.count('op.reinvite');
       final inviter = inviters.contains(remover) ? remover : _pick(inviters);
       await SyncDevice.pair(inviter: inviter.device, joiner: joiner.device);
@@ -818,6 +859,36 @@ final class EngineSimulation {
     }
   }
 
+  /// Efe ruling (class C): model the user acting on the repair prompt.
+  /// After ANY stranding op (keyLost, restoreDir, fullRollback), a device
+  /// with needsRepairing re-pairs itself when its own rows are unrooted, and
+  /// an active member re-invites the members whose rows stranded on the
+  /// sealed origin. Revoked keys are never re-invited (they may only return
+  /// as fresh identities).
+  Future<void> _repairStranded(_Dev d) async {
+    if (!d.device.needsRepairing || simRepairDisabled) return;
+    _stats.count('op.repair');
+    final stranded = strandedMemberIds(d.store, d.device.memberId);
+    _event('repair|${d.name}|stranded=${stranded.length}');
+    if (stranded.isNotEmpty) {
+      final others = _g1Finals(except: d).where((x) => x != d).toList();
+      if (others.isNotEmpty) await _reinviteStranded(d, stranded, _pick(others));
+    }
+    // Re-pair the device itself: its own member/invite rows are unrooted for
+    // peers (sessions fail notAuthorized until an inviter re-vouches them).
+    final inviters = [
+      for (final x in _g1Finals(except: d))
+        if (x.membership.memberById(d.device.memberId) != null || stranded.isNotEmpty) x,
+    ];
+    if (inviters.isNotEmpty) {
+      _stats.count('op.repairRejoin');
+      final inviter = _pick(inviters);
+      await SyncDevice.pair(inviter: inviter.device, joiner: d.device);
+      inviter.forgetSnapshots();
+      _event('repairRejoin|${d.name}|${inviter.name}');
+    }
+  }
+
   /// One session ([a] initiates). Returns whether it was not quiet: any
   /// stored version changed, anything was applied, or it did not complete.
   Future<bool> _session(_Dev a, _Dev b, TransportFaults faults) async {
@@ -839,6 +910,8 @@ final class EngineSimulation {
     );
     _checkOutcome(a, b, pair.initiator, faultA, forbidden, expectExchange);
     _checkOutcome(b, a, pair.responder, faultB, forbidden, expectExchange);
+    a.roundOutcome = pair.initiator;
+    b.roundOutcome = pair.responder;
     final changedA = _afterSession(a, touchedA, countA);
     final changedB = _afterSession(b, touchedB, countB);
     for (final d in [a, b]) {
@@ -970,6 +1043,10 @@ final class EngineSimulation {
     final required = <int>{};
     final optional = <int>{};
     for (final d in _finals) {
+      if (d.device.needsRepairing) {
+        _stats.count('endgame.needsRepairing');
+        continue;
+      }
       for (final record in d.store.cells) {
         if (!_isUserTable(record.key.table)) continue;
         final id = _idOf(record);
@@ -998,14 +1075,37 @@ final class EngineSimulation {
       ..count('final.optional', optional.length);
 
     if (engineSimLog != null) _logMembershipViews();
+    final quiesceSet = [
+      for (final d in _finals)
+        if (!d.device.needsRepairing) d
+    ];
     var quietRounds = 0;
+    final authFailRounds = {for (final d in quiesceSet) d.name: 0};
+    final otherFailRounds = {for (final d in quiesceSet) d.name: 0};
     for (var round = 0; round < tuning.maxFinalRounds && quietRounds < 2; round++) {
       _stats.finalRounds++;
       var busy = false;
-      for (var i = 0; i < _finals.length; i++) {
-        for (var j = i + 1; j < _finals.length; j++) {
-          if (await _session(_finals[i], _finals[j], TransportFaults.none)) busy = true;
+      final roundAuthFail = {for (final d in quiesceSet) d.name: 0};
+      final roundOtherFail = {for (final d in quiesceSet) d.name: 0};
+      _lastRoundAuthFail.clear();
+      final provisionallyExcluded = <String>{
+        for (final d in quiesceSet)
+          if (authFailRounds[d.name]! >= 2 && otherFailRounds[d.name]! == 0) d.name,
+      };
+      for (var i = 0; i < quiesceSet.length; i++) {
+        for (var j = i + 1; j < quiesceSet.length; j++) {
+          final involvesExcluded =
+              provisionallyExcluded.contains(quiesceSet[i].name) || provisionallyExcluded.contains(quiesceSet[j].name);
+          if (await _session(quiesceSet[i], quiesceSet[j], TransportFaults.none)) {
+            if (!involvesExcluded) busy = true;
+          }
+          _recordAuthEvidence(quiesceSet[i], quiesceSet[j], roundAuthFail, roundOtherFail);
+          _recordPairOutcome(quiesceSet[i], quiesceSet[j]);
         }
+      }
+      for (final d in quiesceSet) {
+        authFailRounds[d.name] = roundAuthFail[d.name]! > 0 ? authFailRounds[d.name]! + 1 : 0;
+        otherFailRounds[d.name] = roundOtherFail[d.name]!;
       }
       quietRounds = busy ? 0 : quietRounds + 1;
     }
@@ -1013,7 +1113,38 @@ final class EngineSimulation {
       _violate(OracleViolationKind.notQuiescent, '*', '*', 'after ${tuning.maxFinalRounds} rounds');
     }
 
-    final observed = [for (final d in _finals) _observe(d)];
+    // Efe ruling (stale restore): exclude a staleRestored device only on
+    // auth-only failure evidence to every converged device for K consecutive
+    // final rounds; a device some converged device still accepts keeps its
+    // violations (real bug). Excluded devices' cells leave required/optional
+    // and observed.
+    final excluded = _staleExcluded(quiesceSet, authFailRounds, otherFailRounds);
+    if (excluded.isNotEmpty) {
+      final excludedCells = <int>{};
+      final convergedCells = <int>{};
+      for (final d in quiesceSet) {
+        final target = excluded.contains(d.name) ? excludedCells : convergedCells;
+        for (final record in d.store.cells) {
+          if (!_isUserTable(record.key.table)) continue;
+          final id = _idOf(record);
+          if (id != null) target.add(id);
+        }
+        for (final h in d.store.heldEnvelopes) {
+          final id = _heldWriteId(d, h.envelope);
+          if (id != null) target.add(id);
+        }
+      }
+      required.removeWhere((id) => excludedCells.contains(id) && !convergedCells.contains(id));
+      optional.removeWhere((id) => excludedCells.contains(id) && !convergedCells.contains(id));
+    }
+    if (engineSimLog != null) {
+      _log('--- post-rounds ---');
+      _logMembershipViews();
+      _logRevocationState();
+      _logRegistrations();
+      await _logRegistrationRemerge();
+    }
+    final observed = [for (final d in quiesceSet.where((d) => !excluded.contains(d.name))) _observe(d)];
     final check = checkEngineFinalState(
       _oracle,
       observed,
@@ -1025,7 +1156,7 @@ final class EngineSimulation {
     for (final e in check.discards.entries) {
       _stats.count('discard.${e.key}', e.value);
     }
-    _checkMembership();
+    _checkMembership(excluded);
     if (engineSimLog != null) _logHeldEnvelopes();
     var held = 0;
     for (final d in _finals) {
@@ -1049,6 +1180,67 @@ final class EngineSimulation {
       _log('member ${d.name} id=${d.device.memberId.substring(0, 6)} group=${m.groupId == _g1 ? 'G1' : m.groupId} '
           'removed=${m.removed} view=$view known=$known held=${d.store.heldEnvelopes.length} '
           'epochs=${m.keyring.epochs.length}');
+    }
+  }
+
+  /// Efe discriminator (intra-cluster divergence): every revocation row a
+  /// device stores, and the ids its active view still counts, with the
+  /// excluded set - so "has the record but view ignores it" vs "record never
+  /// arrived" is decidable from the log.
+  void _logRevocationState() {
+    for (final d in _finals) {
+      final revs = [
+        for (final pk in d.store.rowsOf(SecurityTables.revocation))
+          () {
+            final cell = d.store.storedCell(CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
+            final value = cell?.record.value;
+            if (value is! Uint8List) return null;
+            try {
+              final r = decodeRevocationRecord(value);
+              return _short(r.revokedPub);
+            } on Object {
+              return null;
+            }
+          }(),
+      ].nonNulls.toList()
+        ..sort();
+      final excluded = (d.membership.revocations?.revokedMembers ?? const []).map(_short).toList()..sort();
+      _log('revstate ${d.name} rows=${revs.join(',')} excluded=${excluded.join(',')} '
+          'active=${d.membership.activeMembers.map((e) => '${_short(e.ed25519Pub)}@${_simOfMember[e.memberId] ?? e.memberId.substring(0, 6)}').toList().join(',')} '
+          'memberrows=${d.membership.members.keys.map((k) => '${_simOfMember[k] ?? k.substring(0, 6)}:${k.substring(0, 6)}').toList().join(',')}');
+    }
+  }
+
+  static String _short(List<int> bytes) => bytes.take(6).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+
+  /// ACF-45 probe: registrations the OTHER finals have but this device's
+  /// store lacks - 'missing on receiver' made visible per origin.
+  Future<void> _logRegistrationRemerge() async {
+    final all = <String, OriginRegistration>{};
+    for (final d in _finals) {
+      for (final r in d.store.registrations) {
+        all.putIfAbsent(r.origin.hex, () => r);
+      }
+    }
+    for (final d in _finals) {
+      final mine = d.store.registrations.map((r) => r.origin.hex).toSet();
+      for (final e in all.entries) {
+        if (mine.contains(e.key)) continue;
+        final row = e.value;
+        final ok = await verifyOriginRegistration(d.membership.groupId!, row);
+        _log('remerge ${d.name} ${e.key.substring(0, 6)} verify=$ok');
+      }
+    }
+  }
+
+  /// ACF-45 probe: registrations per device (origin->signer), so owner
+  /// availability on each peer is decidable from the log.
+  void _logRegistrations() {
+    for (final d in _finals) {
+      final regs = [
+        for (final r in d.store.registrations) '${r.origin.hex.substring(0, 6)}<-${_short(r.memberPub)}',
+      ]..sort();
+      _log('regs ${d.name} ${regs.join(',')}');
     }
   }
 
@@ -1082,19 +1274,142 @@ final class EngineSimulation {
     }
   }
 
+  /// Per-device evidence of one final-phase session: auth-only failure
+  /// (notAuthorized/refusedByPeer) counts toward the stale exclusion; any
+  /// other failure kind blocks it (Efe ruling).
+  void _recordAuthEvidence(_Dev a, _Dev b, Map<String, int> roundAuthFail, Map<String, int> roundOtherFail) {
+    // A pair is an auth failure when either side saw notAuthorized or
+    // refusedByPeer; the responder-side mirror of a refused handshake can
+    // surface as notReachable, which is still this pair's auth rejection.
+    final pairAuthFail = _authOnlyFailure(a.roundOutcome) ||
+        _authOnlyFailure(b.roundOutcome) ||
+        (a.roundOutcome is SessionFailed && b.roundOutcome is SessionFailed);
+    if (pairAuthFail && (a.roundOutcome is SessionFailed || b.roundOutcome is SessionFailed)) {
+      roundAuthFail[a.name] = roundAuthFail[a.name]! + 1;
+      roundAuthFail[b.name] = roundAuthFail[b.name]! + 1;
+      return;
+    }
+    for (final entry in [a, b]) {
+      final r = entry.roundOutcome;
+      if (r is SessionFailed) roundOtherFail[entry.name] = roundOtherFail[entry.name]! + 1;
+    }
+  }
+
+  /// Efe ruling (amended): partition the quiesce set into clusters by
+  /// mutual-complete sessions. A cluster is excludable-as-stale iff EVERY
+  /// device in it is stale-marked AND every device outside it auth-fails it
+  /// (K consecutive rounds, no other failure kind). Clusters holding a
+  /// never-stale device are never excludable: their divergence gates.
+  Set<String> _staleExcluded(List<_Dev> quiesceSet, Map<String, int> authFailRounds, Map<String, int> otherFailRounds) {
+    const k = 2;
+    final clusters = <Set<String>>[];
+    for (final d in quiesceSet) {
+      final peers = clusters.where((c) => c.contains(d.name)).firstOrNull;
+      final accepted = {
+        d.name,
+        for (final x in quiesceSet)
+          if (x.name != d.name && !_authFailsWith(x, d) && !_authFailsWith(d, x)) x.name,
+      };
+      if (peers == null) {
+        clusters.add(accepted);
+      } else {
+        peers.addAll(accepted);
+      }
+    }
+    // Merge transitively.
+    var merged = true;
+    while (merged) {
+      merged = false;
+      for (var i = 0; i < clusters.length && !merged; i++) {
+        for (var j = i + 1; j < clusters.length && !merged; j++) {
+          if (clusters[i].any(clusters[j].contains)) {
+            clusters[i].addAll(clusters[j]);
+            clusters.removeAt(j);
+            merged = true;
+          }
+        }
+      }
+    }
+    final byName = {for (final d in quiesceSet) d.name: d};
+    final out = <String>{};
+    for (final cluster in clusters) {
+      final devices = [for (final n in cluster) byName[n]!];
+      if (engineSimLog != null) {
+        _log('cluster [${cluster.toList().join(',')}] '
+            'allStale=${devices.every((d) => d.staleRestored)} '
+            'fails=${devices.map((d) => '${d.name}:${authFailRounds[d.name]}/${otherFailRounds[d.name]}').join(',')}');
+      }
+      if (!devices.every((d) => d.staleRestored)) continue;
+      if (devices.any((d) => otherFailRounds[d.name]! > 0 || authFailRounds[d.name]! < k)) continue;
+      final outside = quiesceSet.where((x) => !cluster.contains(x.name));
+      if (outside.isEmpty) {
+        _stats.count('endgame.staleClusterDivergence', devices.length);
+        continue; // whole set stale: report, do not gate
+      }
+      out.addAll(cluster);
+      _stats.count('endgame.staleExcluded', cluster.length);
+    }
+    return out;
+  }
+
+  /// Pairwise final-phase outcomes of the LAST round: 'a|b' -> true when
+  /// either side saw an auth-only failure (cluster edges need mutual
+  /// completes, so any failure breaks the edge).
+  final Map<String, bool> _lastRoundAuthFail = {};
+
+  void _recordPairOutcome(_Dev a, _Dev b) {
+    final key = [a.name, b.name]..sort();
+    _lastRoundAuthFail['${key[0]}|${key[1]}'] = _authOnlyFailure(a.roundOutcome) || _authOnlyFailure(b.roundOutcome);
+  }
+
+  bool _authOnlyFailure(SessionResult? r) =>
+      r is SessionFailed && (r.category == SessionFailure.notAuthorized || r.category == SessionFailure.refusedByPeer);
+
+  /// Whether the last round's [x]/[d] pair saw an auth-only failure.
+  bool _authFailsWith(_Dev x, _Dev d) {
+    final key = [x.name, d.name]..sort();
+    return _lastRoundAuthFail['${key[0]}|${key[1]}'] ?? true;
+  }
+
   /// T12 acc 8: every final device's view is exactly the final devices'
   /// current identities (the revokee and old key-lost identities revoked, no
   /// G2 member ever known in G1).
-  void _checkMembership() {
+  void _checkMembership(Set<String> excluded) {
     final expected = {for (final d in _finals) d.device.memberId};
+    // Efe ruling (stranded-revoked, A+C): an identity whose every revocation
+    // record was authored inside the excluded stale cluster cannot be
+    // expected revoked on the converged set; inside the stale cluster it IS
+    // still expected revoked (holders kept their records).
+    final strandedRevoked = _strandedRevokedPubs(excluded);
     for (final d in _finals) {
+      if (excluded.contains(d.name)) continue;
+      if (d.device.needsRepairing) {
+        // Efe ruling: an unrepaired device is fail-closed by design; only a
+        // re-paired device must converge. Counted, not violated.
+        _stats.count('endgame.needsRepairing');
+        continue;
+      }
+      final staleDevice = excluded.contains(d.name);
+      if (!staleDevice) {
+        for (final pub in strandedRevoked) {
+          if (d.membership.isRevokedEd(pub)) {
+            _violate(OracleViolationKind.membership, d.name, 'strandedRevokedEnforced',
+                'converged device revoked a stranded-revoked identity without the record crossing');
+          }
+        }
+      }
       final m = d.membership;
       if (m.groupId != _g1 || m.removed) {
         _violate(OracleViolationKind.membership, d.name, 'group', 'group ${m.groupId} removed=${m.removed}');
       }
-      final view = {for (final e in m.activeMembers) e.memberId};
-      if (view.length != expected.length || !view.containsAll(expected)) {
-        _violate(OracleViolationKind.membership, d.name, 'view', '${_names(view)} != ${_names(expected)}');
+      final view = {
+        for (final e in m.activeMembers)
+          if (!staleDevice || !strandedRevoked.any((pub) => _same(e.ed25519Pub, pub))) e.memberId,
+      };
+      final expectSet =
+          staleDevice ? expected.difference({for (final p in strandedRevoked) _memberIdOfPub(p)}) : expected;
+      if (view.length != expectSet.length || !view.containsAll(expectSet)) {
+        _violate(OracleViolationKind.membership, d.name, 'view', '${_names(view)} != ${_names(expectSet)}');
       }
       if (m.members.containsKey(_outsider.device.memberId)) {
         _violate(OracleViolationKind.membership, d.name, 'members', 'knows the G2 outsider');
@@ -1106,6 +1421,51 @@ final class EngineSimulation {
         _violate(OracleViolationKind.membership, d.name, 'anchorRecord', 'flagged anchor without a revocation record');
       }
     }
+  }
+
+  /// Efe ruling (stranded-revoked): pubs whose EVERY revocation record was
+  /// authored by a device inside [excluded]. Stat per identity.
+  Set<List<int>> _strandedRevokedPubs(Set<String> excluded) {
+    if (excluded.isEmpty) return const {};
+    final out = <List<int>>{};
+    final records = <List<int>, Map<String, List<String>>>{};
+    for (final d in _finals) {
+      for (final pk in d.store.rowsOf(SecurityTables.revocation)) {
+        final cell = d.store.storedCell(CellKey(SecurityTables.revocation, pk, CellKey.rowCol));
+        final value = cell?.record.value;
+        if (value is! Uint8List) continue;
+        try {
+          final r = decodeRevocationRecord(value);
+          records.putIfAbsent(r.revokedPub, () => {})[d.name] = [
+            ...(records[r.revokedPub]?[d.name] ?? const []),
+            '${cell!.record.origin.substring(0, 6)}#${cell.record.originSeq}',
+          ];
+        } on Object {
+          continue;
+        }
+      }
+    }
+    for (final e in records.entries) {
+      final holders = e.value.keys.toSet();
+      if (holders.isNotEmpty && excluded.containsAll(holders)) {
+        out.add(e.key);
+        _stats.count('endgame.revocationStrandedInStaleCluster');
+        if (engineSimLog != null) {
+          _log('strandedRevoked pub=${_short(e.key)} authors=${holders.join(',')} '
+              'carriers=${e.value.values.expand((v) => v).join(',')}');
+        }
+      }
+    }
+    return out;
+  }
+
+  /// The member id of a device holding [pub]'s identity, or '' (used to
+  /// relax the expected set inside the stale cluster).
+  String _memberIdOfPub(List<int> pub) {
+    for (final d in _devs) {
+      if (_same(d.membership.identity.ed25519Pub, pub)) return d.device.memberId;
+    }
+    return '';
   }
 
   static bool _same(List<int> a, List<int> b) {

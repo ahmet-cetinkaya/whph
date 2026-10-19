@@ -144,6 +144,76 @@ void main() {
           reason: 'user rows still move');
     });
 
+    // Efe ruling (class C): a DIRECTORY restore strands member rows exactly
+    // like a key loss; the flag must be set, and only pair() may clear it.
+    test('dir_restore_strands_member_rows_and_needs_repairing', () async {
+      final [b, c, d1, x] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 730 + i)];
+      await pairAll([b, c, d1]);
+      await syncUntilQuiet([b, c, d1]);
+      await SyncDevice.pair(inviter: d1, joiner: x);
+      createRow(d1, 'unsent-task', 'kept');
+      final oldDir = await d1.snapshotDirectory();
+      // Author one more unsent security row AFTER the copy, so the restore
+      // lands the DB below the ledger and switches origin with the invite
+      // row still unsent on the sealed origin.
+      await SyncDevice.pair(inviter: d1, joiner: b);
+
+      final action = await d1.restoreDirectory(oldDir);
+
+      expect(d1.needsRepairing, isTrue, reason: 'the restore stranded unsent member rows');
+      expect(action, anyOf(StartupAction.normal, StartupAction.restore));
+      // The flag does not self-clear: sessions alone must not repair it.
+      await SyncDevice.syncPair(d1, b);
+      expect(d1.needsRepairing, isTrue, reason: 'only pair() clears the flag');
+
+      // Re-pair repairs it (the user acting on the prompt).
+      await SyncDevice.pair(inviter: b, joiner: d1);
+      expect(d1.needsRepairing, isFalse, reason: 'pair() clears the flag');
+    });
+
+    // ACF-45 fail-before: a re-invited member's row, authored by an inviter
+    // whose own re-registration chain is newer than the receiver's anchor
+    // set, must still root on EVERY peer after a full quiet sync. Found by
+    // SC-001 seed 100006 ({d0,d1,d2}: d1 stored the row, rooted view
+    // dropped it).
+    test('reinvited_member_roots_on_every_peer_after_quiet_sync', () async {
+      final [a, b, c, d2] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 750 + i)];
+      await pairAll([a, b, c]);
+      await syncUntilQuiet([a, b, c]);
+      await SyncDevice.pair(inviter: c, joiner: d2);
+      await syncUntilQuiet([a, b, c, d2]);
+      final oldD2 = d2.memberId;
+      final oldDb = await d2.snapshotDb();
+
+      // The seed-100006 shape: the INVITER itself went through a key-loss
+      // cycle, so its current identity, its origin registration and the
+      // invite row form a fresh chain a third peer must root.
+      final oldB = b.memberId;
+      final inviterDb = await b.snapshotDb();
+      await b.loseKeyFile(oldDb: inviterDb, loseLedger: true);
+      await a.removeMember(oldB);
+      await SyncDevice.pair(inviter: a, joiner: b);
+
+      await d2.loseKeyFile(oldDb: oldDb, loseLedger: true);
+      await b.removeMember(oldD2);
+      // A receiver snapshot from before the whole churn: after the invites,
+      // restoring it leaves the store WITHOUT the new rows, and the quiet
+      // sync must re-learn and ROOT them.
+      final receiverDb = await c.snapshotDb();
+      await SyncDevice.pair(inviter: b, joiner: d2);
+      await syncUntilQuiet([a, b, c, d2], maxRounds: 12);
+      await c.restoreDb(receiverDb);
+
+      for (final device in [a, b, c, d2]) {
+        expect(
+          device.membership.memberById(d2.memberId),
+          isNotNull,
+          reason: '${device.name} does not root the re-invited member',
+        );
+        expect(device.membership.activeMembers.map((e) => e.memberId), contains(d2.memberId));
+      }
+    });
+
     test('reinvited_device_converges', () async {
       final [b, c, d1, x] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 720 + i)];
       await pairAll([b, c, d1]);

@@ -10,6 +10,93 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 import 'session_test_support.dart';
 
 void main() {
+  // ACF-45 probe 3: the exact 100006 order - everything synced quiet FIRST
+  // (rows learned), THEN the receiver restores an older DB (rows lost),
+  // then sessions run: the rows must come back AND root.
+  test('receiver_restore_after_quiet_loses_and_relearns_rows', () async {
+    final [a, b, c, d2] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 780 + i)];
+    await pairAll([a, b, c]);
+    await syncUntilQuiet([a, b, c]);
+    await SyncDevice.pair(inviter: c, joiner: d2);
+    await syncUntilQuiet([a, b, c, d2]);
+    final oldD2 = d2.memberId;
+    final d2Db = await d2.snapshotDb();
+    final receiverDb = await c.snapshotDb();
+
+    await d2.loseKeyFile(oldDb: d2Db, loseLedger: true);
+    await b.removeMember(oldD2);
+    await SyncDevice.pair(inviter: b, joiner: d2);
+    await syncUntilQuiet([a, b, c, d2], maxRounds: 10);
+    expect(c.membership.memberById(d2.memberId), isNotNull, reason: 'learned before the restore');
+
+    await c.restoreDb(receiverDb);
+    expect((await SyncDevice.syncPair(b, c)).bothComplete, isTrue);
+    expect(c.membership.memberById(d2.memberId), isNotNull, reason: 'roots again after the restore');
+  });
+
+  // ACF-45 probe 2: the 100006 shape - the receiver's restore keeps the
+  // ledger current (startup switches the receiver to a NEW origin), the
+  // registration belongs to the inviter's post-keyLost origin, and the
+  // re-invited member's row is carried by it.
+  test('receiver_with_origin_switch_relearns_registration_and_roots_invited_member', () async {
+    final [a, b, c, d2] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 770 + i)];
+    await pairAll([a, b, c]);
+    await syncUntilQuiet([a, b, c]);
+    await SyncDevice.pair(inviter: c, joiner: d2);
+    await syncUntilQuiet([a, b, c, d2]);
+    final oldD2 = d2.memberId;
+    final d2Db = await d2.snapshotDb();
+    final receiverDb = await c.snapshotDb();
+
+    await d2.loseKeyFile(oldDb: d2Db, loseLedger: true);
+    await b.removeMember(oldD2);
+    await SyncDevice.pair(inviter: b, joiner: d2);
+    final inviterOrigin = b.store.localOrigin;
+    final inviterReg = b.store.registrations.where((r) => r.origin == inviterOrigin).toList();
+    expect(inviterReg, isNotEmpty);
+
+    await c.restoreDb(receiverDb);
+    expect((await SyncDevice.syncPair(b, c)).bothComplete, isTrue);
+
+    expect(
+      c.store.registrations.where((r) => r.origin == inviterOrigin),
+      isNotEmpty,
+      reason: 'the receiver re-learned the inviter origin registration',
+    );
+    expect(c.membership.memberById(d2.memberId), isNotNull, reason: 'the invited member roots');
+  });
+
+  // ACF-45 probe: a device whose restore rolled the origin-registration
+  // table back must re-learn registrations from any peer in the next
+  // session (the writer sends them unconditionally).
+  test('restored_device_relearns_origin_registration_next_session', () async {
+    final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 760 + i)];
+    await pairAll([a, b, c]);
+    await syncUntilQuiet([a, b, c]);
+    final bOrigin = b.store.localOrigin;
+    final oldDb = await c.snapshotDb();
+    // B switches origin after the snapshot, so a NEW registration exists.
+    await b.switchOrigin(OriginSwitchReason.restore);
+    expect((await SyncDevice.syncPair(b, a)).bothComplete, isTrue);
+    final newOrigin = b.store.localOrigin;
+    expect(newOrigin, isNot(bOrigin));
+    final newReg = a.store.registrations
+        .firstWhere((r) => r.origin == newOrigin, orElse: () => fail('no new registration learned'));
+
+    await c.restoreDb(oldDb);
+    expect(
+      c.store.registrations.where((r) => r.origin == newReg.origin),
+      isEmpty,
+      reason: 'the restored DB predates the registration',
+    );
+    expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
+    expect(
+      c.store.registrations.where((r) => r.origin == newReg.origin),
+      isNotEmpty,
+      reason: 'the next session must re-teach the registration',
+    );
+  });
+
   test('a later edit by a device that never saw the delete revives the item with its other fields (FR-006)', () async {
     final ca = TestClock();
     final cc = TestClock();

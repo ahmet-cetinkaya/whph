@@ -57,6 +57,11 @@ bool get expectEngineClean => engineUnderTest.expectedClean || Platform.environm
 /// Whether `SIM_LOG=1` is set.
 bool get simLogEnabled => Platform.environment['SIM_LOG'] == '1';
 
+/// Whether `SIM_NO_REPAIR=1` is set: the driver never acts on the
+/// needsRepairing prompt (no re-pair, no re-invite), so unrepaired devices
+/// must stay divergent. Negative control for the repair model (Efe ruling).
+bool get simRepairDisabled => Platform.environment['SIM_NO_REPAIR'] == '1';
+
 /// `SIM_SEED`, if set.
 int? get replaySeed {
   final raw = Platform.environment['SIM_SEED'];
