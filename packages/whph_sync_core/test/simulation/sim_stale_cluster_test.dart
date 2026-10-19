@@ -7,10 +7,12 @@ library;
 import 'dart:io';
 
 import 'package:test/test.dart';
+import 'engine_simulation.dart';
 import 'sim_env.dart';
 import 'simulator.dart';
 
 void main() {
+  _engineered();
   test('stale clusters are excluded with evidence and stranded revocations counted (seed 100006)', () async {
     final first = await runSimulation(seed: 100006, config: soakSuite.config, engine: engineUnderTest);
     expect(first.violations, isEmpty, reason: first.report(tag: soakSuite.tag));
@@ -35,4 +37,61 @@ void main() {
     final result = await runSimulation(seed: 100160, config: soakSuite.config, engine: engineUnderTest);
     expect(result.violations, isNotEmpty, reason: 'disabling repair must not mask divergence');
   }, timeout: const Timeout(Duration(minutes: 10)));
+}
+
+/// Engineered tests for the two sneak-through guards (Efe tests 2 and 7).
+/// They drive the pure decision core `decideStaleExclusion` directly: a
+/// never-stale acceptor must block its cluster's exclusion, and the
+/// stranded-revoked relaxation is keyed to excluded clusters only.
+void _engineered() {
+  group('decideStaleExclusion engineered cases', () {
+    test('a never-stale acceptor inside the cluster blocks exclusion', () {
+      // a,b,c stale and auth-fail with the outside d; b NEVER stale but
+      // completes with a and c -> the cluster {a,b,c} is not excludable.
+      final excluded = decideStaleExclusion(
+        names: ['a', 'b', 'c', 'd'],
+        stale: {'a': true, 'b': false, 'c': true, 'd': false},
+        pairAuthFail: {'a|b': false, 'a|c': false, 'b|c': false, 'a|d': true, 'b|d': true, 'c|d': true},
+        authFailRounds: {'a': 5, 'b': 5, 'c': 5, 'd': 5},
+        otherFailRounds: {'a': 0, 'b': 0, 'c': 0, 'd': 0},
+      );
+      expect(excluded, isEmpty, reason: 'the never-stale b keeps the cluster gated');
+    });
+
+    test('an all-stale cluster auth-failing everyone outside IS excluded', () {
+      final excluded = decideStaleExclusion(
+        names: ['a', 'b', 'c'],
+        stale: {'a': true, 'b': true, 'c': false},
+        pairAuthFail: {'a|b': false, 'a|c': true, 'b|c': true},
+        authFailRounds: {'a': 5, 'b': 5, 'c': 5},
+        otherFailRounds: {'a': 0, 'b': 0, 'c': 0},
+      );
+      expect(excluded, {'a', 'b'});
+    });
+
+    test('a genuinely-other failure inside the cluster blocks exclusion', () {
+      final excluded = decideStaleExclusion(
+        names: ['a', 'b', 'c'],
+        stale: {'a': true, 'b': true, 'c': false},
+        pairAuthFail: {'a|b': false, 'a|c': true, 'b|c': true},
+        authFailRounds: {'a': 5, 'b': 5, 'c': 5},
+        otherFailRounds: {'a': 1, 'b': 0, 'c': 0},
+      );
+      expect(excluded, isEmpty, reason: 'a non-auth failure keeps the divergence gated');
+    });
+
+    test('whole set stale: reported, not excluded', () {
+      var reported = 0;
+      final excluded = decideStaleExclusion(
+        names: ['a', 'b'],
+        stale: {'a': true, 'b': true},
+        pairAuthFail: {'a|b': false},
+        authFailRounds: {'a': 5, 'b': 5},
+        otherFailRounds: {'a': 0, 'b': 0},
+        onWholeSetStale: (size) => reported = size,
+      );
+      expect(excluded, isEmpty);
+      expect(reported, 2);
+    });
+  });
 }

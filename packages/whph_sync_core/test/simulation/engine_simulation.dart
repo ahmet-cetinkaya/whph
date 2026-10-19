@@ -144,6 +144,71 @@ final class _DirectoryState {
   final InMemorySyncLedger ledger;
 }
 
+/// Efe ruling (stale-restore), pure decision core: partition [names] into
+/// clusters of mutual non-auth-failure ([pairAuthFail], normalized keys
+/// "a|b"), and exclude exactly the clusters whose EVERY member is stale,
+/// whose members all failed auth (K consecutive [authFailRounds], no
+/// [otherFailRounds]) with every outside device. A cluster holding a
+/// never-stale device is never excludable. A stale set covering everything
+/// is reported, not excluded.
+Set<String> decideStaleExclusion({
+  required List<String> names,
+  required Map<String, bool> stale,
+  required Map<String, bool> pairAuthFail,
+  required Map<String, int> authFailRounds,
+  required Map<String, int> otherFailRounds,
+  void Function(Set<String> cluster)? onExcluded,
+  void Function(int size)? onWholeSetStale,
+  int k = 2,
+}) {
+  bool fails(String a, String b) {
+    final key = [a, b]..sort();
+    return pairAuthFail['${key[0]}|${key[1]}'] ?? true;
+  }
+
+  final clusters = <Set<String>>[];
+  for (final n in names) {
+    final accepted = {
+      n,
+      for (final x in names)
+        if (x != n && !fails(x, n)) x,
+    };
+    final peers = clusters.where((c) => c.contains(n)).firstOrNull;
+    if (peers == null) {
+      clusters.add(accepted);
+    } else {
+      peers.addAll(accepted);
+    }
+  }
+  var merged = true;
+  while (merged) {
+    merged = false;
+    for (var i = 0; i < clusters.length && !merged; i++) {
+      for (var j = i + 1; j < clusters.length && !merged; j++) {
+        if (clusters[i].any(clusters[j].contains)) {
+          clusters[i].addAll(clusters[j]);
+          clusters.removeAt(j);
+          merged = true;
+        }
+      }
+    }
+  }
+  final out = <String>{};
+  for (final cluster in clusters) {
+    if (!cluster.every((n) => stale[n] ?? false)) continue;
+    if (cluster.any((n) => otherFailRounds[n]! > 0 || authFailRounds[n]! < k)) continue;
+    final outside = names.where((n) => !cluster.contains(n)).toList();
+    if (outside.isEmpty) {
+      onWholeSetStale?.call(cluster.length);
+      continue;
+    }
+    if (!outside.every((x) => cluster.every((n) => fails(x, n)))) continue;
+    out.addAll(cluster);
+    onExcluded?.call(cluster);
+  }
+  return out;
+}
+
 final class _Dev {
   _Dev(this.name, {required this.isFinal});
 
@@ -1301,55 +1366,20 @@ final class EngineSimulation {
   /// (K consecutive rounds, no other failure kind). Clusters holding a
   /// never-stale device are never excludable: their divergence gates.
   Set<String> _staleExcluded(List<_Dev> quiesceSet, Map<String, int> authFailRounds, Map<String, int> otherFailRounds) {
-    const k = 2;
-    final clusters = <Set<String>>[];
-    for (final d in quiesceSet) {
-      final peers = clusters.where((c) => c.contains(d.name)).firstOrNull;
-      final accepted = {
-        d.name,
-        for (final x in quiesceSet)
-          if (x.name != d.name && !_authFailsWith(x, d) && !_authFailsWith(d, x)) x.name,
-      };
-      if (peers == null) {
-        clusters.add(accepted);
-      } else {
-        peers.addAll(accepted);
-      }
-    }
-    // Merge transitively.
-    var merged = true;
-    while (merged) {
-      merged = false;
-      for (var i = 0; i < clusters.length && !merged; i++) {
-        for (var j = i + 1; j < clusters.length && !merged; j++) {
-          if (clusters[i].any(clusters[j].contains)) {
-            clusters[i].addAll(clusters[j]);
-            clusters.removeAt(j);
-            merged = true;
-          }
-        }
-      }
-    }
-    final byName = {for (final d in quiesceSet) d.name: d};
-    final out = <String>{};
-    for (final cluster in clusters) {
-      final devices = [for (final n in cluster) byName[n]!];
-      if (engineSimLog != null) {
-        _log('cluster [${cluster.toList().join(',')}] '
-            'allStale=${devices.every((d) => d.staleRestored)} '
-            'fails=${devices.map((d) => '${d.name}:${authFailRounds[d.name]}/${otherFailRounds[d.name]}').join(',')}');
-      }
-      if (!devices.every((d) => d.staleRestored)) continue;
-      if (devices.any((d) => otherFailRounds[d.name]! > 0 || authFailRounds[d.name]! < k)) continue;
-      final outside = quiesceSet.where((x) => !cluster.contains(x.name));
-      if (outside.isEmpty) {
-        _stats.count('endgame.staleClusterDivergence', devices.length);
-        continue; // whole set stale: report, do not gate
-      }
-      out.addAll(cluster);
-      _stats.count('endgame.staleExcluded', cluster.length);
-    }
-    return out;
+    final names = [for (final d in quiesceSet) d.name];
+    final stale = {for (final d in quiesceSet) d.name: d.staleRestored};
+    final pairAuthFail = {
+      for (final e in _lastRoundAuthFail.entries) e.key: e.value,
+    };
+    return decideStaleExclusion(
+      names: names,
+      stale: stale,
+      pairAuthFail: pairAuthFail,
+      authFailRounds: authFailRounds,
+      otherFailRounds: otherFailRounds,
+      onExcluded: (cluster) => _stats.count('endgame.staleExcluded', cluster.length),
+      onWholeSetStale: (size) => _stats.count('endgame.staleClusterDivergence', size),
+    );
   }
 
   /// Pairwise final-phase outcomes of the LAST round: 'a|b' -> true when
@@ -1364,12 +1394,6 @@ final class EngineSimulation {
 
   bool _authOnlyFailure(SessionResult? r) =>
       r is SessionFailed && (r.category == SessionFailure.notAuthorized || r.category == SessionFailure.refusedByPeer);
-
-  /// Whether the last round's [x]/[d] pair saw an auth-only failure.
-  bool _authFailsWith(_Dev x, _Dev d) {
-    final key = [x.name, d.name]..sort();
-    return _lastRoundAuthFail['${key[0]}|${key[1]}'] ?? true;
-  }
 
   /// T12 acc 8: every final device's view is exactly the final devices'
   /// current identities (the revokee and old key-lost identities revoked, no
