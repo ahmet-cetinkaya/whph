@@ -54,6 +54,7 @@ import 'package:whph/infrastructure/persistence/features/tasks/repositories/drif
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/database_backup_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/migrations/migrations.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/restore_barrier_query_interceptor.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sqlite_connection_setup.dart';
 
 part 'drift_app_context.g.dart';
 
@@ -99,6 +100,11 @@ class AppDatabase extends _$AppDatabase {
       isTestMode: isTestMode,
     );
   }
+
+  /// Replaces the backup service, so tests can point backups at a temporary
+  /// directory. Cleared by [resetInstance].
+  @visibleForTesting
+  static set backupServiceForTesting(DatabaseBackupService? service) => _backupService = service;
 
   static AppDatabase instance([IContainer? container]) {
     if (container != null) {
@@ -201,8 +207,18 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Creates a backup of the database before migration
+  ///
+  /// Drift does not wrap `onUpgrade` in a transaction, so `VACUUM INTO` can run
+  /// here on the open connection, before the migration transaction starts.
   Future<void> _createBackupBeforeMigration(int from, int to) async {
-    await backupService.createBackupBeforeMigration(from, to);
+    await backupService.createBackupBeforeMigration(from, to, writeSnapshot: _vacuumInto);
+  }
+
+  /// Writes a consistent snapshot of this database, including content that
+  /// still lives in the WAL, to [destinationPath]. Must run outside a
+  /// transaction.
+  Future<void> _vacuumInto(String destinationPath) {
+    return customStatement("VACUUM INTO '${destinationPath.replaceAll("'", "''")}'");
   }
 
   /// Validates data integrity after migration
@@ -236,22 +252,19 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Creates a manual database backup
-  Future<File?> createDatabaseBackup() => backupService.createDatabaseBackup();
+  Future<File?> createDatabaseBackup() => backupService.createDatabaseBackup(writeSnapshot: _vacuumInto);
 
   Future<File> createRestoreSnapshot() {
     if (!restoreBarrier.isRestoreOwner) {
       throw StateError('Restore snapshots require exclusive database access');
     }
-    return backupService.createConsistentSnapshot(
-      writeSnapshot: (destinationPath) => customStatement(
-        "VACUUM INTO '${destinationPath.replaceAll("'", "''")}'",
-      ),
-    );
+    return backupService.createConsistentSnapshot(writeSnapshot: _vacuumInto);
   }
 
   /// Resets the database by closing the connection and deleting the database file
   Future<void> resetDatabase() {
     return backupService.resetDatabase(
+      writeSnapshot: _vacuumInto,
       closeDatabase: close,
       resetInstance: () => _instance = null,
     );
@@ -355,7 +368,7 @@ class AppDatabase extends _$AppDatabase {
         file = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
         await file.parent.create(recursive: true);
       }
-      return NativeDatabase.createInBackground(file);
+      return NativeDatabase.createInBackground(file, setup: configureSqliteConnection);
     });
   }
 
