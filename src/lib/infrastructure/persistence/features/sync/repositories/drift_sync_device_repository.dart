@@ -16,6 +16,7 @@ class SyncDeviceTable extends Table {
   TextColumn get toDeviceId => text()();
   TextColumn get name => text().nullable()();
   DateTimeColumn get lastSyncDate => dateTime().nullable()();
+  BoolColumn get needsRepair => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};

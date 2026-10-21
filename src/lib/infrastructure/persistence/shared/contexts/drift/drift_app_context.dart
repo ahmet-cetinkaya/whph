@@ -45,6 +45,7 @@ import 'package:whph/infrastructure/persistence/features/notes/repositories/drif
 import 'package:whph/infrastructure/persistence/features/notes/repositories/drift_note_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/settings/repositories/drift_settings_repository.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_device_repository.dart';
+import 'package:whph/infrastructure/persistence/features/sync/tables/sync_tables.dart';
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
@@ -55,6 +56,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/database_b
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/migrations/migrations.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/restore_barrier_query_interceptor.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sqlite_connection_setup.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_trigger_installer.dart';
 
 part 'drift_app_context.g.dart';
 
@@ -75,7 +77,20 @@ String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
     NoteTable,
     NoteTagTable,
     SettingTable,
+    SyncClockTable,
     SyncDeviceTable,
+    SyncEpochGrantTable,
+    SyncHeldCellTable,
+    SyncHeldEnvelopeTable,
+    SyncInternTable,
+    SyncMemberTableTable,
+    SyncOriginBatchTable,
+    SyncOriginTable,
+    SyncPeerStateTableTable,
+    SyncRevocationTable,
+    SyncRowTable,
+    SyncStateTable,
+    SyncVectorTable,
     TagTable,
     TagTagTable,
     TaskTable,
@@ -163,7 +178,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 37;
+  int get schemaVersion => 38;
 
   /// Validates migration version numbers
   void _validateMigrationVersions(int from, int to) {
@@ -290,6 +305,11 @@ class AppDatabase extends _$AppDatabase {
           Logger.info('Creating database schema version $schemaVersion');
           await m.createAll();
           await customStatement('PRAGMA foreign_keys = ON');
+          await installSyncTriggers(this);
+          await customStatement(
+              "INSERT INTO sync_state_table (id, apply_mode, next_seq, hlc, upgrade_cursor, upgrade_phase) "
+              "VALUES ('singleton', 0, 1, 0, 0, 'done') "
+              "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'done'");
           Logger.info('Database schema created successfully');
         } catch (e, stackTrace) {
           Logger.error('Error creating database schema: $e\n$stackTrace');
