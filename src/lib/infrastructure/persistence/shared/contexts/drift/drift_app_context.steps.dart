@@ -14784,20 +14784,20 @@ final class Schema38 extends i0.VersionedSchema {
     noteTable,
     noteTagTable,
     settingTable,
-    syncClockTable,
+    syncClock,
     syncDeviceTable,
-    syncEpochGrantTable,
-    syncHeldCellTable,
-    syncHeldEnvelopeTable,
-    syncInternTable,
-    syncMemberTableTable,
-    syncOriginBatchTable,
-    syncOriginTable,
-    syncPeerStateTableTable,
-    syncRevocationTable,
-    syncRowTable,
-    syncStateTable,
-    syncVectorTable,
+    syncEpochGrant,
+    syncHeldCell,
+    syncHeldEnvelope,
+    syncIntern,
+    syncMemberTable,
+    syncOriginBatch,
+    syncOrigin,
+    syncPeerStateTable,
+    syncRevocation,
+    syncRow,
+    syncState,
+    syncVector,
     tagTable,
     tagTagTable,
     taskTable,
@@ -15056,9 +15056,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape53 syncClockTable = Shape53(
+  late final Shape53 syncClock = Shape53(
       source: i0.VersionedTable(
-        entityName: 'sync_clock_table',
+        entityName: 'sync_clock',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15102,9 +15102,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape55 syncEpochGrantTable = Shape55(
+  late final Shape55 syncEpochGrant = Shape55(
       source: i0.VersionedTable(
-        entityName: 'sync_epoch_grant_table',
+        entityName: 'sync_epoch_grant',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15120,9 +15120,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape56 syncHeldCellTable = Shape56(
+  late final Shape56 syncHeldCell = Shape56(
       source: i0.VersionedTable(
-        entityName: 'sync_held_cell_table',
+        entityName: 'sync_held_cell',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15144,9 +15144,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape57 syncHeldEnvelopeTable = Shape57(
+  late final Shape57 syncHeldEnvelope = Shape57(
       source: i0.VersionedTable(
-        entityName: 'sync_held_envelope_table',
+        entityName: 'sync_held_envelope',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15166,9 +15166,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape58 syncInternTable = Shape58(
+  late final Shape58 syncIntern = Shape58(
       source: i0.VersionedTable(
-        entityName: 'sync_intern_table',
+        entityName: 'sync_intern',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15182,9 +15182,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape59 syncMemberTableTable = Shape59(
+  late final Shape59 syncMemberTable = Shape59(
       source: i0.VersionedTable(
-        entityName: 'sync_member_table_table',
+        entityName: 'sync_member_table',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15204,9 +15204,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape60 syncOriginBatchTable = Shape60(
+  late final Shape60 syncOriginBatch = Shape60(
       source: i0.VersionedTable(
-        entityName: 'sync_origin_batch_table',
+        entityName: 'sync_origin_batch',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15223,9 +15223,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape61 syncOriginTable = Shape61(
+  late final Shape61 syncOrigin = Shape61(
       source: i0.VersionedTable(
-        entityName: 'sync_origin_table',
+        entityName: 'sync_origin',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15241,9 +15241,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape62 syncPeerStateTableTable = Shape62(
+  late final Shape62 syncPeerStateTable = Shape62(
       source: i0.VersionedTable(
-        entityName: 'sync_peer_state_table_table',
+        entityName: 'sync_peer_state_table',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15260,9 +15260,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape63 syncRevocationTable = Shape63(
+  late final Shape63 syncRevocation = Shape63(
       source: i0.VersionedTable(
-        entityName: 'sync_revocation_table',
+        entityName: 'sync_revocation',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15280,9 +15280,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape64 syncRowTable = Shape64(
+  late final Shape64 syncRow = Shape64(
       source: i0.VersionedTable(
-        entityName: 'sync_row_table',
+        entityName: 'sync_row',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15296,9 +15296,9 @@ final class Schema38 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape65 syncStateTable = Shape65(
+  late final Shape65 syncState = Shape65(
       source: i0.VersionedTable(
-        entityName: 'sync_state_table',
+        entityName: 'sync_state',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15318,13 +15318,15 @@ final class Schema38 extends i0.VersionedSchema {
           _column_131,
           _column_132,
           _column_133,
+          _column_134,
+          _column_135,
         ],
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape66 syncVectorTable = Shape66(
+  late final Shape66 syncVector = Shape66(
       source: i0.VersionedTable(
-        entityName: 'sync_vector_table',
+        entityName: 'sync_vector',
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
@@ -15332,7 +15334,7 @@ final class Schema38 extends i0.VersionedSchema {
         ],
         columns: [
           _column_95,
-          _column_134,
+          _column_136,
         ],
         attachedDatabase: database,
       ),
@@ -15864,6 +15866,10 @@ class Shape65 extends i0.VersionedTable {
       columnsByName['member_id']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get groupId =>
       columnsByName['group_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get nodeId =>
+      columnsByName['node_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get originId =>
+      columnsByName['origin_id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<String> get localOriginId =>
       columnsByName['local_origin_id']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<int> get hlc =>
@@ -15892,34 +15898,40 @@ i1.GeneratedColumn<String> _column_122(String aliasedName) =>
 i1.GeneratedColumn<String> _column_123(String aliasedName) =>
     i1.GeneratedColumn<String>('group_id', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_124(String aliasedName) =>
+i1.GeneratedColumn<int> _column_124(String aliasedName) =>
+    i1.GeneratedColumn<int>('node_id', aliasedName, true,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<int> _column_125(String aliasedName) =>
+    i1.GeneratedColumn<int>('origin_id', aliasedName, true,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<String> _column_126(String aliasedName) =>
     i1.GeneratedColumn<String>('local_origin_id', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_125(String aliasedName) =>
+i1.GeneratedColumn<int> _column_127(String aliasedName) =>
     i1.GeneratedColumn<int>('hlc', aliasedName, false,
         type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
-i1.GeneratedColumn<int> _column_126(String aliasedName) =>
+i1.GeneratedColumn<int> _column_128(String aliasedName) =>
     i1.GeneratedColumn<int>('next_seq', aliasedName, false,
         type: i1.DriftSqlType.int, defaultValue: const CustomExpression('1'));
-i1.GeneratedColumn<int> _column_127(String aliasedName) =>
+i1.GeneratedColumn<int> _column_129(String aliasedName) =>
     i1.GeneratedColumn<int>('apply_mode', aliasedName, false,
         type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
-i1.GeneratedColumn<int> _column_128(String aliasedName) =>
+i1.GeneratedColumn<int> _column_130(String aliasedName) =>
     i1.GeneratedColumn<int>('cascade_cause_tbl_id', aliasedName, true,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<String> _column_129(String aliasedName) =>
+i1.GeneratedColumn<String> _column_131(String aliasedName) =>
     i1.GeneratedColumn<String>('cascade_cause_pk', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_130(String aliasedName) =>
+i1.GeneratedColumn<String> _column_132(String aliasedName) =>
     i1.GeneratedColumn<String>('reauthor_spec', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_131(String aliasedName) =>
+i1.GeneratedColumn<String> _column_133(String aliasedName) =>
     i1.GeneratedColumn<String>('upgrade_phase', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_132(String aliasedName) =>
+i1.GeneratedColumn<int> _column_134(String aliasedName) =>
     i1.GeneratedColumn<int>('upgrade_cursor', aliasedName, false,
         type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
-i1.GeneratedColumn<String> _column_133(String aliasedName) =>
+i1.GeneratedColumn<String> _column_135(String aliasedName) =>
     i1.GeneratedColumn<String>('capture_version', aliasedName, true,
         type: i1.DriftSqlType.string);
 
@@ -15931,7 +15943,7 @@ class Shape66 extends i0.VersionedTable {
       columnsByName['cursor']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_134(String aliasedName) =>
+i1.GeneratedColumn<int> _column_136(String aliasedName) =>
     i1.GeneratedColumn<int>('cursor', aliasedName, false,
         type: i1.DriftSqlType.int);
 i0.MigrationStepWithVersion migrationSteps({

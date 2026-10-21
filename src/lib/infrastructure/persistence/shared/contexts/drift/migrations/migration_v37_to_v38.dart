@@ -5,7 +5,8 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_
 
 /// v37 -> v38: sync persistence DDL (D1, D13), legacy pairing marking and the
 /// five FK indexes; sets upgrade_phase = 'dedupe' for the T17 job.
-Future<void> migrateV37ToV38(AppDatabase db, Migrator m, Schema38 schema) async {
+Future<void> migrateV37ToV38(
+    AppDatabase db, Migrator m, Schema38 schema) async {
   await m.createTable(db.syncStateTable);
   await m.createTable(db.syncInternTable);
   await m.createTable(db.syncRowTable);
@@ -20,15 +21,22 @@ Future<void> migrateV37ToV38(AppDatabase db, Migrator m, Schema38 schema) async 
   await m.createTable(db.syncHeldEnvelopeTable);
   await m.createTable(db.syncHeldCellTable);
 
-  await m.createIndex(Index('sync_clock_origin_seq_idx', 'CREATE INDEX IF NOT EXISTS sync_clock_origin_seq_idx ON sync_clock_table (origin_id, origin_seq)'));
-  await m.createIndex(Index('sync_clock_cause_idx', 'CREATE INDEX IF NOT EXISTS sync_clock_cause_idx ON sync_clock_table (cause_row_id) WHERE cause_row_id IS NOT NULL'));
+  await m.createIndex(Index('sync_clock_origin_seq_idx',
+      'CREATE INDEX IF NOT EXISTS sync_clock_origin_seq_idx ON sync_clock (origin_id, origin_seq)'));
+  await m.createIndex(Index('sync_clock_cause_idx',
+      'CREATE INDEX IF NOT EXISTS sync_clock_cause_idx ON sync_clock (cause_row_id) WHERE cause_row_id IS NOT NULL'));
 
   // PA-1/S5 FK indexes.
-  await m.createIndex(Index('task_tag_task_id_idx', 'CREATE INDEX IF NOT EXISTS task_tag_task_id_idx ON task_tag_table (task_id)'));
-  await m.createIndex(Index('task_time_record_task_id_idx', 'CREATE INDEX IF NOT EXISTS task_time_record_task_id_idx ON task_time_record_table (task_id)'));
-  await m.createIndex(Index('task_parent_task_id_idx', 'CREATE INDEX IF NOT EXISTS task_parent_task_id_idx ON task_table (parent_task_id)'));
-  await m.createIndex(Index('task_recurrence_parent_id_idx', 'CREATE INDEX IF NOT EXISTS task_recurrence_parent_id_idx ON task_table (recurrence_parent_id)'));
-  await m.createIndex(Index('task_status_id_idx', 'CREATE INDEX IF NOT EXISTS task_status_id_idx ON task_table (status_id)'));
+  await m.createIndex(Index('task_tag_task_id_idx',
+      'CREATE INDEX IF NOT EXISTS task_tag_task_id_idx ON task_tag_table (task_id)'));
+  await m.createIndex(Index('task_time_record_task_id_idx',
+      'CREATE INDEX IF NOT EXISTS task_time_record_task_id_idx ON task_time_record_table (task_id)'));
+  await m.createIndex(Index('task_parent_task_id_idx',
+      'CREATE INDEX IF NOT EXISTS task_parent_task_id_idx ON task_table (parent_task_id)'));
+  await m.createIndex(Index('task_recurrence_parent_id_idx',
+      'CREATE INDEX IF NOT EXISTS task_recurrence_parent_id_idx ON task_table (recurrence_parent_id)'));
+  await m.createIndex(Index('task_status_id_idx',
+      'CREATE INDEX IF NOT EXISTS task_status_id_idx ON task_table (status_id)'));
 
   // Legacy pairing marking (FR-061): every existing device row needs repair.
   await m.addColumn(db.syncDeviceTable, db.syncDeviceTable.needsRepair);
@@ -36,7 +44,7 @@ Future<void> migrateV37ToV38(AppDatabase db, Migrator m, Schema38 schema) async 
 
   // The upgrade job (T17) starts from 'dedupe'.
   await db.customStatement(
-      "INSERT INTO sync_state_table (id, apply_mode, next_seq, hlc, upgrade_cursor, upgrade_phase) "
+      "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_cursor, upgrade_phase) "
       "VALUES ('singleton', 0, 1, 0, 0, 'dedupe') "
       "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'dedupe'");
 

@@ -2,9 +2,13 @@ import 'package:drift/drift.dart';
 
 /// Local-only sync metadata (D13). One row; ids are fixed at 'singleton'.
 class SyncStateTable extends Table {
+  @override
+  String get tableName => 'sync_state';
   TextColumn get id => text()();
   TextColumn get memberId => text().nullable()();
   TextColumn get groupId => text().nullable()();
+  IntColumn get nodeId => integer().nullable()();
+  IntColumn get originId => integer().nullable()();
   TextColumn get localOriginId => text().nullable()();
   IntColumn get hlc => integer().withDefault(const Constant(0))();
   IntColumn get nextSeq => integer().withDefault(const Constant(1))();
@@ -23,6 +27,8 @@ class SyncStateTable extends Table {
 /// Local-only integer interning of node and origin ids (D1). Integers never
 /// leave the device.
 class SyncInternTable extends Table {
+  @override
+  String get tableName => 'sync_intern';
   IntColumn get id => integer().autoIncrement()();
   TextColumn get kind => text()();
   TextColumn get value => text()();
@@ -34,6 +40,8 @@ class SyncInternTable extends Table {
 /// Local-only row-key interning for the PA-1 V2 physical clock shape (D1).
 /// A row id is never reused while a cause references it (AUTOINCREMENT).
 class SyncRowTable extends Table {
+  @override
+  String get tableName => 'sync_row';
   IntColumn get id => integer().autoIncrement()();
   IntColumn get tblId => integer()();
   TextColumn get pk => text()();
@@ -46,6 +54,8 @@ class SyncRowTable extends Table {
 /// row_id * 256 + col_id. `tombValue` carries the row's deleted_date for the
 /// existence cell; `causeRowId` links cascade child tombstones (D5b).
 class SyncClockTable extends Table {
+  @override
+  String get tableName => 'sync_clock';
   IntColumn get key => integer()();
   IntColumn get hlc => integer()();
   IntColumn get nodeId => integer()();
@@ -62,6 +72,8 @@ class SyncClockTable extends Table {
 
 /// Synced (D13): one row per group member. `id = UUIDv5(member id)`.
 class SyncMemberTableTable extends Table {
+  @override
+  String get tableName => 'sync_member_table';
   TextColumn get id => text()();
   TextColumn get memberId => text()();
   TextColumn get name => text().nullable()();
@@ -79,6 +91,8 @@ class SyncMemberTableTable extends Table {
 /// Synced (D7): origin registrations, self-authenticating rows sent first in
 /// every session.
 class SyncOriginTable extends Table {
+  @override
+  String get tableName => 'sync_origin';
   TextColumn get originId => text()();
   TextColumn get memberEd25519Pub => text()();
   IntColumn get createdHlc => integer()();
@@ -91,6 +105,8 @@ class SyncOriginTable extends Table {
 
 /// Synced (D7): revocation records with per-origin cutoffs.
 class SyncRevocationTable extends Table {
+  @override
+  String get tableName => 'sync_revocation';
   TextColumn get revokedPub => text()();
   TextColumn get revokerPub => text()();
   TextColumn get originId => text()();
@@ -105,6 +121,8 @@ class SyncRevocationTable extends Table {
 
 /// Synced (D7): epoch key grants.
 class SyncEpochGrantTable extends Table {
+  @override
+  String get tableName => 'sync_epoch_grant';
   TextColumn get id => text()();
   IntColumn get counter => integer()();
   TextColumn get creator => text()();
@@ -117,6 +135,8 @@ class SyncEpochGrantTable extends Table {
 
 /// Synced (D7): manifests, forwarded verbatim by relays.
 class SyncOriginBatchTable extends Table {
+  @override
+  String get tableName => 'sync_origin_batch';
   IntColumn get manifestId => integer()();
   TextColumn get originId => text()();
   IntColumn get fromSeq => integer()();
@@ -130,6 +150,8 @@ class SyncOriginBatchTable extends Table {
 
 /// Local-only (D13): this device's received vector per origin.
 class SyncVectorTable extends Table {
+  @override
+  String get tableName => 'sync_vector';
   TextColumn get originId => text()();
   IntColumn get cursor => integer()();
 
@@ -139,6 +161,8 @@ class SyncVectorTable extends Table {
 
 /// Local-only (D13): last-known peer transport state.
 class SyncPeerStateTableTable extends Table {
+  @override
+  String get tableName => 'sync_peer_state_table';
   TextColumn get memberId => text()();
   TextColumn get addresses => text()();
   DateTimeColumn get lastSuccessLocal => dateTime().nullable()();
@@ -152,6 +176,8 @@ class SyncPeerStateTableTable extends Table {
 
 /// Local-only (D13): encrypted changes held unapplied.
 class SyncHeldEnvelopeTable extends Table {
+  @override
+  String get tableName => 'sync_held_envelope';
   IntColumn get id => integer().autoIncrement()();
   TextColumn get tbl => text()();
   TextColumn get pk => text()();
@@ -168,6 +194,8 @@ class SyncHeldEnvelopeTable extends Table {
 
 /// Local-only (D13): decrypted cells held outside base rows.
 class SyncHeldCellTable extends Table {
+  @override
+  String get tableName => 'sync_held_cell';
   IntColumn get id => integer().autoIncrement()();
   TextColumn get tbl => text()();
   TextColumn get pk => text()();

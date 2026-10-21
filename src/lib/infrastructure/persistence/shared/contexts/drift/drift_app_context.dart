@@ -119,7 +119,8 @@ class AppDatabase extends _$AppDatabase {
   /// Replaces the backup service, so tests can point backups at a temporary
   /// directory. Cleared by [resetInstance].
   @visibleForTesting
-  static set backupServiceForTesting(DatabaseBackupService? service) => _backupService = service;
+  static set backupServiceForTesting(DatabaseBackupService? service) =>
+      _backupService = service;
 
   static AppDatabase instance([IContainer? container]) {
     if (container != null) {
@@ -195,17 +196,20 @@ class AppDatabase extends _$AppDatabase {
       // 2. Test database from newer version is being reused
       if (isTestMode) {
         // In test mode, throw a clear error suggesting recreation
-        throw StateError('Test database version ($from) is newer than schema version ($to). '
+        throw StateError(
+            'Test database version ($from) is newer than schema version ($to). '
             'This indicates a stale test database. The test framework should recreate the database.');
       } else {
         // In production, this is a critical error
-        throw StateError('Database version ($from) cannot be greater than schema version ($to). '
+        throw StateError(
+            'Database version ($from) cannot be greater than schema version ($to). '
             'This may indicate a database from a newer app version. '
             'Please update the app or restore from backup.');
       }
     }
     if (to > schemaVersion) {
-      throw StateError('Migration to version ($to) cannot exceed schema version ($schemaVersion)');
+      throw StateError(
+          'Migration to version ($to) cannot exceed schema version ($schemaVersion)');
     }
   }
 
@@ -226,14 +230,16 @@ class AppDatabase extends _$AppDatabase {
   /// Drift does not wrap `onUpgrade` in a transaction, so `VACUUM INTO` can run
   /// here on the open connection, before the migration transaction starts.
   Future<void> _createBackupBeforeMigration(int from, int to) async {
-    await backupService.createBackupBeforeMigration(from, to, writeSnapshot: _vacuumInto);
+    await backupService.createBackupBeforeMigration(from, to,
+        writeSnapshot: _vacuumInto);
   }
 
   /// Writes a consistent snapshot of this database, including content that
   /// still lives in the WAL, to [destinationPath]. Must run outside a
   /// transaction.
   Future<void> _vacuumInto(String destinationPath) {
-    return customStatement("VACUUM INTO '${destinationPath.replaceAll("'", "''")}'");
+    return customStatement(
+        "VACUUM INTO '${destinationPath.replaceAll("'", "''")}'");
   }
 
   /// Validates data integrity after migration
@@ -241,7 +247,8 @@ class AppDatabase extends _$AppDatabase {
     try {
       final violations = await customSelect('PRAGMA foreign_key_check').get();
       if (violations.isNotEmpty) {
-        throw StateError('Foreign key integrity violations detected: ${violations.length} violations');
+        throw StateError(
+            'Foreign key integrity violations detected: ${violations.length} violations');
       }
 
       final tables = await customSelect('''
@@ -252,7 +259,8 @@ class AppDatabase extends _$AppDatabase {
         throw StateError('No tables found in database after migration');
       }
 
-      Logger.info('Data integrity validation passed: ${tables.length} tables verified');
+      Logger.info(
+          'Data integrity validation passed: ${tables.length} tables verified');
     } catch (e) {
       throw StateError('Data integrity validation failed: $e');
     }
@@ -267,7 +275,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Creates a manual database backup
-  Future<File?> createDatabaseBackup() => backupService.createDatabaseBackup(writeSnapshot: _vacuumInto);
+  Future<File?> createDatabaseBackup() =>
+      backupService.createDatabaseBackup(writeSnapshot: _vacuumInto);
 
   Future<File> createRestoreSnapshot() {
     if (!restoreBarrier.isRestoreOwner) {
@@ -286,7 +295,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Lists available pre-reset backups for recovery purposes
-  Future<List<File>> listPreResetBackups() => backupService.listPreResetBackups();
+  Future<List<File>> listPreResetBackups() =>
+      backupService.listPreResetBackups();
 
   /// Restores database from a pre-reset backup file
   Future<bool> restoreFromPreResetBackup(File backupFile) {
@@ -307,7 +317,7 @@ class AppDatabase extends _$AppDatabase {
           await customStatement('PRAGMA foreign_keys = ON');
           await installSyncTriggers(this);
           await customStatement(
-              "INSERT INTO sync_state_table (id, apply_mode, next_seq, hlc, upgrade_cursor, upgrade_phase) "
+              "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_cursor, upgrade_phase) "
               "VALUES ('singleton', 0, 1, 0, 0, 'done') "
               "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'done'");
           Logger.info('Database schema created successfully');
@@ -334,9 +344,13 @@ class AppDatabase extends _$AppDatabase {
           // Enable foreign keys
           await customStatement('PRAGMA foreign_keys = ON');
 
+          // D3: keep the capture triggers at the current generator version.
+          await installSyncTriggers(this);
+
           // Log migration info
           if (details.hadUpgrade) {
-            Logger.info('Migration completed from v${details.versionBefore} to v${details.versionNow}');
+            Logger.info(
+                'Migration completed from v${details.versionBefore} to v${details.versionNow}');
           } else if (details.versionNow == schemaVersion) {
             Logger.info('Database schema is current: v${details.versionNow}');
           }
@@ -363,14 +377,17 @@ class AppDatabase extends _$AppDatabase {
             await transaction(() async {
               await runMigrationSteps(m, from, to);
               await _validateDataIntegrity();
-              Logger.info('Migration from v$from to v$to completed successfully');
+              Logger.info(
+                  'Migration from v$from to v$to completed successfully');
             });
           } finally {
             await customStatement('PRAGMA foreign_keys = ON');
           }
         } catch (e, stackTrace) {
-          Logger.error('CRITICAL: Migration from v$from to v$to failed: $e\n$stackTrace');
-          Logger.info('No changes were committed: migration steps run in a transaction that rolls back on failure, '
+          Logger.error(
+              'CRITICAL: Migration from v$from to v$to failed: $e\n$stackTrace');
+          Logger.info(
+              'No changes were committed: migration steps run in a transaction that rolls back on failure, '
               'and this failure may have occurred before that transaction started.');
           rethrow;
         }
@@ -382,20 +399,24 @@ class AppDatabase extends _$AppDatabase {
     return LazyDatabase(() async {
       late final File file;
       if (isTestMode) {
-        file = File(p.join(testDirectory?.path ?? Directory.systemTemp.path, databaseName));
+        file = File(p.join(
+            testDirectory?.path ?? Directory.systemTemp.path, databaseName));
       } else {
         final dbFolder = await _getApplicationDirectory();
-        file = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+        file = File(p.join(
+            dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
         await file.parent.create(recursive: true);
       }
-      return NativeDatabase.createInBackground(file, setup: configureSqliteConnection);
+      return NativeDatabase.createInBackground(file,
+          setup: configureSqliteConnection);
     });
   }
 
   /// Gets the application directory using the injected application directory service
   static Future<Directory> _getApplicationDirectory() async {
     _container ??= Container().instance;
-    final applicationDirectoryService = _container!.resolve<IApplicationDirectoryService>();
+    final applicationDirectoryService =
+        _container!.resolve<IApplicationDirectoryService>();
     return await applicationDirectoryService.getApplicationDirectory();
   }
 }
