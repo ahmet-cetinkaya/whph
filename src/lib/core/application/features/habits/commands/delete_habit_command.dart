@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
@@ -20,16 +21,19 @@ class DeleteHabitCommandHandler implements IRequestHandler<DeleteHabitCommand, D
   final IHabitTagsRepository _habitTagsRepository;
   final IHabitRecordRepository _habitRecordRepository;
   final IHabitEvents? _habitEvents;
+  final ISyncCascadeService _syncCascadeService;
 
   DeleteHabitCommandHandler({
     required IHabitRepository habitRepository,
     required IHabitTagsRepository habitTagsRepository,
     required IHabitRecordRepository habitRecordRepository,
     IHabitEvents? habitEvents,
+    required ISyncCascadeService syncCascadeService,
   })  : _habitRepository = habitRepository,
         _habitTagsRepository = habitTagsRepository,
         _habitRecordRepository = habitRecordRepository,
-        _habitEvents = habitEvents;
+        _habitEvents = habitEvents,
+        _syncCascadeService = syncCascadeService;
 
   @override
   Future<DeleteHabitCommandResponse> call(DeleteHabitCommand request) async {
@@ -38,11 +42,12 @@ class DeleteHabitCommandHandler implements IRequestHandler<DeleteHabitCommand, D
       throw BusinessException('Habit not found', HabitTranslationKeys.habitNotFoundError);
     }
 
-    // Cascade delete: Delete all related entities first
-    await _deleteRelatedEntities(request.id);
-
-    // Delete the habit itself
-    await _habitRepository.delete(habit);
+    // Cascade delete: Delete all related entities first, stamped with the
+    // root habit as their tombstone cause (D5b).
+    await _syncCascadeService.withCause('habit_table', habit.id, () async {
+      await _deleteRelatedEntities(request.id);
+      await _habitRepository.delete(habit);
+    });
     _habitEvents?.notifyHabitDeleted(habit.id);
 
     return DeleteHabitCommandResponse();

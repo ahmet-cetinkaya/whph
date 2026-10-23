@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
@@ -127,6 +128,7 @@ void registerTagsFeature(
         appUsageTagRepository: appUsageTagRepository,
         tagEvents: container.resolve<ITagEvents>(),
         transactions: container.resolve<IApplicationTransactionService>(),
+        syncCascadeService: container.resolve<ISyncCascadeService>(),
       ),
     )
     ..registerHandler<AddTagTagCommand, AddTagTagCommandResponse, AddTagTagCommandHandler>(

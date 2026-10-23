@@ -16,7 +16,7 @@ const String _wallMs =
     "CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)";
 
 const String _captureEnabled =
-    '(SELECT apply_mode FROM sync_state WHERE id = 1) = 0';
+    "(SELECT apply_mode FROM sync_state WHERE id = 'singleton') = 0";
 
 String _q(String column) => '"$column"';
 
@@ -57,13 +57,13 @@ String _cells(int tblId, String pkExpr, List<_CellSpec> cells) {
            (SELECT cr.id FROM sync_row cr WHERE cr.tbl_id = s.cascade_cause_tbl_id AND cr.pk = s.cascade_cause_pk)
          END,
          $_wallMs
-  FROM $source AS c, sync_state AS s, sync_row AS r WHERE s.id = 1 AND r.tbl_id = $tblId AND r.pk = $pkExpr
+  FROM $source AS c, sync_state AS s, sync_row AS r WHERE s.id = 'singleton' AND r.tbl_id = $tblId AND r.pk = $pkExpr
   ON CONFLICT (key) DO UPDATE SET
     hlc = excluded.hlc, node_id = excluded.node_id, origin_id = excluded.origin_id,
     origin_seq = excluded.origin_seq, manifest_id = NULL, tomb_value = excluded.tomb_value,
     cause_row_id = excluded.cause_row_id, recorded_at = excluded.recorded_at;
   UPDATE sync_state SET hlc = MAX(hlc + 1, ($_wallMs) << 16) + $n - 1, next_seq = next_seq + $n
-  WHERE id = 1 AND $n > 0;''';
+  WHERE id = 'singleton' AND $n > 0;''';
 }
 
 /// The node/origin intern rows for the local identity, seeded by the
@@ -77,10 +77,10 @@ List<String> syncInternSeedStatements(
       "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($_internKindOrigin, '$originValue')",
       '''
 INSERT INTO sync_state (id, node_id, origin_id, apply_mode, next_seq, hlc, upgrade_cursor)
-VALUES (1,
+VALUES ('singleton',
   (SELECT id FROM sync_intern WHERE value = '$nodeValue'),
   (SELECT id FROM sync_intern WHERE value = '$originValue'), 0, 1, 0, 0)
-ON CONFLICT (id) DO NOTHING''',
+ON CONFLICT (id) DO UPDATE SET node_id = excluded.node_id, origin_id = excluded.origin_id''',
     ];
 
 String triggerName(SyncTablePolicy policy, String op) =>
@@ -115,7 +115,7 @@ List<String> syncTriggerStatements(SyncTablePolicy policy) {
 
   final deleteCells = [
     _CellSpec(tombstoneColId, '1',
-        '(SELECT ($_wallMs) / 1000 FROM sync_state WHERE id = 1)'),
+        "(SELECT ($_wallMs / 1000) FROM sync_state WHERE id = 'singleton')"),
   ];
 
   return [
@@ -132,4 +132,43 @@ List<String> syncTriggerStatements(SyncTablePolicy policy) {
 /// Triggers for every synced table, in registry order.
 List<String> allSyncTriggerStatements() => [
       for (final policy in syncTablePolicies) ...syncTriggerStatements(policy),
+    ];
+
+/// D5b parent-side cascade materialization: when a parent task's
+/// `deleted_date` flips, children tombstoned *by that parent* (their winning
+/// `~` cell's `cause_row_id` points at the parent's `sync_row`) are
+/// materialized to the effective state: revived children get
+/// `deleted_date = NULL`, re-deleted children go back to their `tomb_value`.
+/// `modified_date` = MAX(old + 1, now in whole seconds). The child UPDATE
+/// runs with `apply_mode = 1` so it writes 0 clock rows, and restores 0.
+const String _d5bCauseCheck = '''
+      EXISTS (
+        SELECT 1 FROM sync_row cr, sync_clock cc
+        WHERE cr.tbl_id = 1 AND cr.pk = task_table.id
+          AND cc.key = cr.id * 256 AND cc.cause_row_id IS NOT NULL
+          AND cc.cause_row_id = (SELECT pr.id FROM sync_row pr
+                                 WHERE pr.tbl_id = 1 AND pr.pk = NEW.id)
+      )''';
+
+/// The D5b trigger, one per parent table (v38: task_table only).
+List<String> syncCascadeStatements() => [
+      '''
+CREATE TRIGGER IF NOT EXISTS sync_d5b_task_parent_date
+AFTER UPDATE OF deleted_date ON task_table
+WHEN (SELECT apply_mode FROM sync_state WHERE id = 'singleton') = 0
+BEGIN
+  UPDATE sync_state SET apply_mode = 1 WHERE id = 'singleton';
+  UPDATE task_table SET
+    deleted_date = NULL,
+    modified_date = MAX(COALESCE(modified_date, 0) + 1, CAST(strftime('%s','now') AS INTEGER))
+  WHERE parent_task_id = NEW.id AND deleted_date IS NOT NULL AND NEW.deleted_date IS NULL
+    AND $_d5bCauseCheck;
+  UPDATE task_table SET
+    deleted_date = (SELECT cc.tomb_value FROM sync_row cr, sync_clock cc
+                    WHERE cr.tbl_id = 1 AND cr.pk = task_table.id AND cc.key = cr.id * 256),
+    modified_date = MAX(COALESCE(modified_date, 0) + 1, CAST(strftime('%s','now') AS INTEGER))
+  WHERE parent_task_id = NEW.id AND deleted_date IS NULL AND NEW.deleted_date IS NOT NULL
+    AND $_d5bCauseCheck;
+  UPDATE sync_state SET apply_mode = 0 WHERE id = 'singleton';
+END''',
     ];

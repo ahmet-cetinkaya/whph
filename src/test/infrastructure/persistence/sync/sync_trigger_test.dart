@@ -116,12 +116,12 @@ void main() {
   });
 
   test('apply_mode 1 (remote apply) captures nothing', () async {
-    await db
-        .customStatement("UPDATE sync_state SET apply_mode = 1 WHERE id = 1");
+    await db.customStatement(
+        "UPDATE sync_state SET apply_mode = 1 WHERE id = 'singleton'");
     await db.customStatement(
         "INSERT INTO task_table (id, created_date, title) VALUES ('t5', 0, 'A')");
-    await db
-        .customStatement("UPDATE sync_state SET apply_mode = 0 WHERE id = 1");
+    await db.customStatement(
+        "UPDATE sync_state SET apply_mode = 0 WHERE id = 'singleton'");
     final count = await db
         .customSelect('SELECT COUNT(*) AS n FROM sync_clock')
         .getSingle();
@@ -139,8 +139,38 @@ void main() {
     expect(triggers, syncTablePolicies.length * 3);
     final version = await db
         .customSelect(
-            'SELECT capture_version AS v FROM sync_state WHERE id = 1')
+            "SELECT capture_version AS v FROM sync_state WHERE id = 'singleton'")
         .getSingle();
     expect(version.data['v'], syncCaptureVersion);
+  });
+
+  test('apply_mode 3 and 4 capture nothing', () async {
+    await db.customStatement(
+        "INSERT INTO task_table (id, created_date, title) VALUES ('t6', 0, 'A')");
+    await db.customStatement("DELETE FROM sync_clock");
+    await db.customStatement("DELETE FROM sync_row");
+    for (final mode in const ['3', '4']) {
+      await db.customStatement(
+          "UPDATE sync_state SET apply_mode = $mode WHERE id = 'singleton'");
+      await db
+          .customStatement('INSERT INTO task_table (id, created_date, title) '
+              "VALUES ('tm$mode', 0, 'A')");
+      await db.customStatement(
+          "UPDATE sync_state SET apply_mode = 0 WHERE id = 'singleton'");
+    }
+    final count = await db
+        .customSelect('SELECT COUNT(*) AS n FROM sync_clock')
+        .getSingle();
+    expect(count.data['n'], 0);
+  });
+
+  test('local-only tables capture nothing', () async {
+    await db.customStatement(
+        "INSERT INTO sync_device_table (id, created_date, from_ip, to_ip, from_device_id, to_device_id) "
+        "VALUES ('d1', 0, 'a', 'b', 'x', 'y')");
+    final count = await db
+        .customSelect('SELECT COUNT(*) AS n FROM sync_clock')
+        .getSingle();
+    expect(count.data['n'], 0);
   });
 }

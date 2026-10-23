@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_record_command.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_tag_command.dart';
 import 'package:whph/core/application/features/habits/commands/add_habit_time_record_command.dart';
@@ -55,6 +56,7 @@ void registerHabitsFeature(
         habitTagsRepository: habitTagRepository,
         habitRecordRepository: habitRecordRepository,
         habitEvents: container.resolve<IHabitEvents>(),
+        syncCascadeService: container.resolve<ISyncCascadeService>(),
       ),
     )
     ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse, GetListHabitsQueryHandler>(

@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
@@ -95,6 +96,7 @@ void registerTasksFeature(
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
         taskEvents: container.resolve<ITaskEvents>(),
+        syncCascadeService: container.resolve<ISyncCascadeService>(),
       ),
     )
     ..registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(

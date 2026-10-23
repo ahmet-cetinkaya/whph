@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
@@ -20,16 +21,19 @@ class DeleteTaskCommandHandler implements IRequestHandler<DeleteTaskCommand, Del
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ITaskEvents? _taskEvents;
+  final ISyncCascadeService _syncCascadeService;
 
   DeleteTaskCommandHandler({
     required ITaskRepository taskRepository,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
     ITaskEvents? taskEvents,
+    required ISyncCascadeService syncCascadeService,
   })  : _taskRepository = taskRepository,
         _taskTagRepository = taskTagRepository,
         _taskTimeRecordRepository = taskTimeRecordRepository,
-        _taskEvents = taskEvents;
+        _taskEvents = taskEvents,
+        _syncCascadeService = syncCascadeService;
 
   @override
   Future<DeleteTaskCommandResponse> call(DeleteTaskCommand request) async {
@@ -38,11 +42,12 @@ class DeleteTaskCommandHandler implements IRequestHandler<DeleteTaskCommand, Del
       throw BusinessException('Task not found', TaskTranslationKeys.taskNotFoundError);
     }
 
-    // Cascade delete: Delete all related entities first
-    await _deleteRelatedEntities(request.id);
-
-    // Delete the task itself
-    await _taskRepository.delete(task);
+    // Cascade delete: Delete all related entities first, stamped with the
+    // root task as their tombstone cause (D5b).
+    await _syncCascadeService.withCause('task_table', task.id, () async {
+      await _deleteRelatedEntities(request.id);
+      await _taskRepository.delete(task);
+    });
     _taskEvents?.notifyTaskDeleted(task.id);
 
     return DeleteTaskCommandResponse();
