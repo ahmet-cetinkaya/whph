@@ -762,6 +762,38 @@ WHERE o.value = ? AND c.origin_seq = ?''', [cell.origin, cell.originSeq]);
   }
 
   @override
+  Future<String> localOrigin() => _ownOrigin();
+
+  @override
+  Future<List<CellRecord>> readSecurityCells() async {
+    final clockRows = await _select('''
+SELECT c.hlc AS hlc, n.value AS node, c.origin_seq AS seq, o.value AS origin, r.tbl_id AS tbl_id, r.pk AS pk
+FROM sync_clock c
+JOIN sync_intern n ON n.id = c.node_id
+JOIN sync_intern o ON o.id = c.origin_id
+JOIN sync_row r ON r.id = c.key / $packedKeyFactor
+WHERE r.tbl_id >= $securityTblIdFloor
+ORDER BY c.origin_seq, c.key''');
+    final cells = <CellRecord>[];
+    for (final row in clockRows) {
+      final spec = _securityById[row['tbl_id'] as int];
+      if (spec == null) continue;
+      final cell = await _readSecurityCell(spec, row, row['origin'] as String);
+      if (cell != null) cells.add(cell);
+    }
+    return cells;
+  }
+
+  @override
+  Future<void> bindIdentity({required String memberId, String? groupId}) =>
+      _db.transaction(() async {
+        final nodeId = await _intern(internKindNode, memberId);
+        await _exec(
+            'UPDATE sync_state SET member_id = ?, node_id = ?, group_id = ? WHERE id = ?',
+            [memberId, nodeId, groupId, _stateId]);
+      });
+
+  @override
   Future<List<OriginRegistration>> readRegistrations() async => [
         for (final row
             in await _select('SELECT * FROM sync_origin ORDER BY origin_id'))

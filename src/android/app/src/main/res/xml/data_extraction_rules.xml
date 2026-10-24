@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+: the sync key file holds the device's private keys and the
+     group's epoch keys. It never leaves the device by cloud backup or device
+     transfer (D7, FR-027). The sync ledger is not secret and may be backed up. -->
+<data-extraction-rules>
+  <cloud-backup>
+    <exclude domain="file" path="whph/sync_keys.json" />
+    <exclude domain="file" path="debug_whph/sync_keys.json" />
+  </cloud-backup>
+  <device-transfer>
+    <exclude domain="file" path="whph/sync_keys.json" />
+    <exclude domain="file" path="debug_whph/sync_keys.json" />
+  </device-transfer>
+</data-extraction-rules>

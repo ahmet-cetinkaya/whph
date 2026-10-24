@@ -121,6 +121,20 @@ abstract interface class ISyncChangeStore implements AsyncReplicaStore {
   /// re-delivered cell goes through `applyBatch` again (FR-010, FR-011).
   Future<List<CellKey>> refetchKeys();
 
+  /// The own origin id (hex) that stamps local writes.
+  Future<String> localOrigin();
+
+  /// Every stored security row (`sync_member`, `sync_revocation`,
+  /// `sync_epoch_grant`) as a row-level `*` cell with its carrier origin and
+  /// seq, in carrier order. The membership service rebuilds its view from it
+  /// (D13).
+  Future<List<CellRecord>> readSecurityCells();
+
+  /// Stamps the local identity on `sync_state`: [memberId] becomes the node of
+  /// local writes, [groupId] (hex, `null` when ungrouped) is what manifests
+  /// sign over (D7). Called on group creation, join, switch and key loss.
+  Future<void> bindIdentity({required String memberId, String? groupId});
+
   /// Stored `sync_origin` registrations, sent first in every session (D7).
   Future<List<OriginRegistration>> readRegistrations();
 

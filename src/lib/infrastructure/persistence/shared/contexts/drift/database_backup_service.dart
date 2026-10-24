@@ -3,10 +3,16 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
 
 /// Writes a consistent snapshot of the open database to a destination path,
 /// typically with `VACUUM INTO` on the live connection.
 typedef SnapshotWriter = Future<void> Function(String destinationPath);
+
+/// Sync device state kept outside every backup: the secret key file and the
+/// ledger (D7, FR-027). Backups hold the database only, and no backup may be
+/// written over these files.
+const List<String> syncFilesExcludedFromBackups = [keyFileName, ledgerFileName];
 
 /// Service for managing database backup and restore operations.
 ///
@@ -182,6 +188,9 @@ class DatabaseBackupService {
   }) async {
     final File snapshot;
     if (destination != null) {
+      if (syncFilesExcludedFromBackups.contains(p.basename(destination.path))) {
+        throw StateError('Snapshot destination is a protected sync file: ${p.basename(destination.path)}');
+      }
       if (await destination.exists()) {
         throw StateError('Snapshot destination already exists: ${destination.path}');
       }
