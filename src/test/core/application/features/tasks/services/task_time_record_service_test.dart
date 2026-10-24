@@ -9,6 +9,9 @@ import 'package:whph/core/application/features/sync/models/sync_data.dart';
 
 // Mock repository implementation for testing
 class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
+  @override
+  Future<void> upsertRevive(TaskTimeRecord item) async {}
+
   final List<TaskTimeRecord> _records = [];
 
   @override
@@ -142,6 +145,9 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
 
 // Error throwing repository for testing specific error scenarios
 class _ErrorThrowingTaskTimeRecordRepository implements ITaskTimeRecordRepository {
+  @override
+  Future<void> upsertRevive(TaskTimeRecord item) async {}
+
   final String methodToThrow;
   final String errorMessage;
 

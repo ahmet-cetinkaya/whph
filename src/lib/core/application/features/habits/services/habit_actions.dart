@@ -310,6 +310,8 @@ final class HabitActions {
           date,
           status,
           DateTime.now().toUtc(),
+          // D5c: deterministic only while a single record lands per day.
+          deterministic: effectiveCount == 1,
         );
         await _recordOperations.addTimeRecordIfComplete(habit, habitId, date, status);
       }

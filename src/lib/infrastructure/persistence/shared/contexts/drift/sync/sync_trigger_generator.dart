@@ -83,6 +83,17 @@ VALUES ('singleton',
 ON CONFLICT (id) DO UPDATE SET node_id = excluded.node_id, origin_id = excluded.origin_id''',
     ];
 
+/// Interns a placeholder local identity (T17 replaces it with the real
+/// device identity) and stamps it on the singleton. Called at onCreate and,
+/// when the row predates identities, at beforeOpen - a database whose
+/// `sync_state.node_id` is NULL would fail every captured write.
+List<String> syncPlaceholderIdentityStatements() {
+  final suffix = DateTime.now().microsecondsSinceEpoch.toRadixString(36);
+  final node = 'local-node-$suffix';
+  final origin = 'local-origin-$suffix';
+  return syncInternSeedStatements(nodeValue: node, originValue: origin);
+}
+
 String triggerName(SyncTablePolicy policy, String op) =>
     'sync_cap_${policy.tableName}_$op';
 

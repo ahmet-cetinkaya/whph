@@ -1,8 +1,8 @@
+import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/settings/models/public_setting.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_settings_effects.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_transaction_service.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 
 final class SettingRevisionConflictException implements Exception {
@@ -12,7 +12,8 @@ final class SettingRevisionConflictException implements Exception {
 }
 
 final class SettingUpdateResult {
-  const SettingUpdateResult({required this.setting, required this.effectApplied});
+  const SettingUpdateResult(
+      {required this.setting, required this.effectApplied});
 
   final PublicSettingRecord setting;
   final bool effectApplied;
@@ -55,34 +56,42 @@ final class SettingsActions {
       }
       await beforeCommit();
       final replacement = Setting(
-        id: current?.id ?? KeyHelper.generateStringId(),
+        // D5: deterministic setting identity (the key); revives a deleted row.
+        id: current?.id ??
+            syncIdentityId(identityKindSetting, [key.storageKey]),
         createdDate: current?.createdDate ?? DateTime.now().toUtc(),
         modifiedDate: current?.modifiedDate,
         key: key.storageKey,
         value: key.encode(normalizedValue),
         valueType: key.storageType,
       );
-      if (current == null) {
-        await _repository.add(replacement);
+      if (current == null || current.deletedDate != null) {
+        await _repository.upsertRevive(replacement);
         return _record(key, await _repository.getByKey(key.storageKey));
       } else {
-        final revision = await _repository.updateIfRevision(replacement, expectedRevision!);
+        final revision =
+            await _repository.updateIfRevision(replacement, expectedRevision!);
         if (revision == null) throw SettingRevisionConflictException(key);
-        return PublicSettingRecord(key: key, value: normalizedValue, revision: revision);
+        return PublicSettingRecord(
+            key: key, value: normalizedValue, revision: revision);
       }
     });
     try {
-      await _effects.apply(PublicSettingChange(key: key, value: normalizedValue));
+      await _effects
+          .apply(PublicSettingChange(key: key, value: normalizedValue));
       return SettingUpdateResult(setting: result, effectApplied: true);
     } catch (_) {
       return SettingUpdateResult(setting: result, effectApplied: false);
     }
   }
 
-  PublicSettingRecord _record(PublicSettingKey key, Setting? setting) => PublicSettingRecord(
+  PublicSettingRecord _record(PublicSettingKey key, Setting? setting) =>
+      PublicSettingRecord(
         key: key,
         value: setting == null ? key.defaultValue : key.decode(setting.value),
-        revision: setting == null ? null : setting.modifiedDate ?? setting.createdDate,
+        revision: setting == null
+            ? null
+            : setting.modifiedDate ?? setting.createdDate,
       );
 
   bool _matchesRevision(Setting? setting, DateTime? expected) {

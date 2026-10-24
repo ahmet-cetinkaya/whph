@@ -21,7 +21,8 @@ class FakeHabitRepository extends Fake implements IHabitRepository {
   void setHabit(Habit habit) => _habits[habit.id] = habit;
 
   @override
-  Future<Habit?> getById(String id, {bool includeDeleted = false}) async => _habits[id];
+  Future<Habit?> getById(String id, {bool includeDeleted = false}) async =>
+      _habits[id];
 }
 
 class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
@@ -39,7 +40,9 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
   ) async {
     final matchingRecords = records
         .where((record) =>
-            record.habitId == habitId && !record.occurredAt.isBefore(startDate) && !record.occurredAt.isAfter(endDate))
+            record.habitId == habitId &&
+            !record.occurredAt.isBefore(startDate) &&
+            !record.occurredAt.isAfter(endDate))
         .toList();
     return PaginatedList(
       items: matchingRecords,
@@ -56,20 +59,28 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
   }
 
   @override
+  Future<void> upsertRevive(HabitRecord record) async {
+    addCount++;
+    records.add(record);
+  }
+
+  @override
   Future<void> delete(HabitRecord record) async {
     deleteCount++;
     records.removeWhere((existingRecord) => existingRecord.id == record.id);
   }
 }
 
-class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepository {
+class FakeHabitTimeRecordRepository extends Fake
+    implements IHabitTimeRecordRepository {
   final List<HabitTimeRecord> records = [];
   int addCount = 0;
   int updateCount = 0;
   int deleteCount = 0;
 
   @override
-  Future<HabitTimeRecord?> getFirst(CustomWhereFilter filter, {bool includeDeleted = false}) async {
+  Future<HabitTimeRecord?> getFirst(CustomWhereFilter filter,
+      {bool includeDeleted = false}) async {
     // A simplified fake implementation.
     return records.firstOrNull;
   }
@@ -83,7 +94,8 @@ class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepo
   @override
   Future<void> update(HabitTimeRecord record) async {
     updateCount++;
-    final index = records.indexWhere((existingRecord) => existingRecord.id == record.id);
+    final index =
+        records.indexWhere((existingRecord) => existingRecord.id == record.id);
     if (index >= 0) {
       records[index] = record;
     }
@@ -96,7 +108,8 @@ class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepo
   }
 
   @override
-  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) async {
+  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(
+      String habitId, DateTime start, DateTime end) async {
     return records
         .where((record) =>
             record.habitId == habitId &&
@@ -143,7 +156,9 @@ void main() {
     AppDatabase.resetInstance();
   });
 
-  test('duplicate completion for a bad habit keeps one notDone marker and preserves complete history', () async {
+  test(
+      'duplicate completion for a bad habit keeps one notDone marker and preserves complete history',
+      () async {
     // Given
     const habitId = 'habit-bad-notification';
     final date = DateTime(2026, 1, 11, 9);
@@ -169,19 +184,24 @@ void main() {
     await handler.call(CompleteHabitCommand(habitId: habitId, date: date));
 
     // Then
-    expect(habitRecordRepository.records.where((record) => record.status == HabitRecordStatus.notDone), hasLength(1));
+    expect(
+        habitRecordRepository.records
+            .where((record) => record.status == HabitRecordStatus.notDone),
+        hasLength(1));
     expect(habitRecordRepository.records, contains(preservedComplete));
     expect(habitTimeRecordRepository.records, isEmpty);
   });
 
-  test('bad habit completion keeps one marker on a 25-hour local day', () async {
+  test('bad habit completion keeps one marker on a 25-hour local day',
+      () async {
     // Given
     const habitId = 'habit-bad-fall-dst';
     final location = tz.getLocation('America/New_York');
     final targetDate = tz.TZDateTime(location, 2026, 11, 1, 12);
     dayRangeResolver = (date) => HabitDayStateResolver.utcRangeFor(
           date,
-          localDateTime: (year, month, day) => tz.TZDateTime(location, year, month, day),
+          localDateTime: (year, month, day) =>
+              tz.TZDateTime(location, year, month, day),
         );
     final dayRange = dayRangeResolver(targetDate);
     final existingMarker = HabitRecord(
@@ -202,12 +222,17 @@ void main() {
     habitRecordRepository.records.add(existingMarker);
 
     // When
-    await handler.call(CompleteHabitCommand(habitId: habitId, date: targetDate));
+    await handler
+        .call(CompleteHabitCommand(habitId: habitId, date: targetDate));
 
     // Then
-    expect(dayRange.end.difference(dayRange.start) + const Duration(microseconds: 1), const Duration(hours: 25));
     expect(
-      habitRecordRepository.records.where((record) => record.status == HabitRecordStatus.notDone),
+        dayRange.end.difference(dayRange.start) +
+            const Duration(microseconds: 1),
+        const Duration(hours: 25));
+    expect(
+      habitRecordRepository.records
+          .where((record) => record.status == HabitRecordStatus.notDone),
       [existingMarker],
     );
   });
@@ -236,11 +261,13 @@ void main() {
       ));
     });
 
-    test('adds a complete record when there is no record for the day', () async {
+    test('adds a complete record when there is no record for the day',
+        () async {
       await handler.call(CompleteHabitCommand(habitId: habitId, date: date));
 
       expect(habitRecordRepository.records.length, 1);
-      expect(habitRecordRepository.records.first.status, HabitRecordStatus.complete);
+      expect(habitRecordRepository.records.first.status,
+          HabitRecordStatus.complete);
       expect(habitRecordRepository.addCount, 1);
     });
 
@@ -282,7 +309,8 @@ void main() {
       await handler.call(CompleteHabitCommand(habitId: habitId, date: date));
 
       expect(habitRecordRepository.records.length, 1);
-      expect(habitRecordRepository.records.first.status, HabitRecordStatus.complete);
+      expect(habitRecordRepository.records.first.status,
+          HabitRecordStatus.complete);
       expect(habitTimeRecordRepository.records.length, 1);
       expect(habitTimeRecordRepository.records.first.duration, 20 * 60);
     });
@@ -317,7 +345,10 @@ void main() {
       await handler.call(CompleteHabitCommand(habitId: habitId, date: date));
 
       expect(habitRecordRepository.records.length, 2);
-      expect(habitRecordRepository.records.every((record) => record.status == HabitRecordStatus.complete), true);
+      expect(
+          habitRecordRepository.records
+              .every((record) => record.status == HabitRecordStatus.complete),
+          true);
       expect(habitRecordRepository.addCount, 1);
     });
 
@@ -358,13 +389,15 @@ void main() {
       await handler.call(CompleteHabitCommand(habitId: habitId, date: date));
 
       expect(habitRecordRepository.records.length, 1);
-      expect(habitRecordRepository.records.first.status, HabitRecordStatus.complete);
+      expect(habitRecordRepository.records.first.status,
+          HabitRecordStatus.complete);
       expect(habitRecordRepository.addCount, 1);
       expect(habitRecordRepository.deleteCount, 1);
     });
   });
 
-  test('adds estimated time only when a new complete record is added', () async {
+  test('adds estimated time only when a new complete record is added',
+      () async {
     const habitId = 'habit-estimated';
     final date = DateTime(2026, 1, 11, 9);
     habitRepository.setHabit(Habit(

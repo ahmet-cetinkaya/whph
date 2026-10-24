@@ -19,7 +19,8 @@ class FakeHabitRepository extends Fake implements IHabitRepository {
   final Habit habit;
 
   @override
-  Future<Habit?> getById(String id, {bool includeDeleted = false}) async => habit;
+  Future<Habit?> getById(String id, {bool includeDeleted = false}) async =>
+      habit;
 }
 
 class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
@@ -29,10 +30,14 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
   Future<void> add(HabitRecord record) async => records.add(record);
 
   @override
+  Future<void> upsertRevive(HabitRecord record) async => records.add(record);
+
+  @override
   Future<void> delete(HabitRecord record) async => records.remove(record);
 
   @override
-  Future<HabitRecord?> getById(String id, {bool includeDeleted = false}) async =>
+  Future<HabitRecord?> getById(String id,
+          {bool includeDeleted = false}) async =>
       records.where((record) => record.id == id).firstOrNull;
 
   @override
@@ -43,14 +48,24 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
     int pageIndex,
     int pageSize,
   ) async {
-    final matching = records.where((record) => record.habitId == habitId).toList();
-    return PaginatedList(items: matching, totalItemCount: matching.length, pageIndex: pageIndex, pageSize: pageSize);
+    final matching =
+        records.where((record) => record.habitId == habitId).toList();
+    return PaginatedList(
+        items: matching,
+        totalItemCount: matching.length,
+        pageIndex: pageIndex,
+        pageSize: pageSize);
   }
 }
 
 class FailingHabitRecordRepository extends FakeHabitRecordRepository {
   @override
-  Future<void> add(HabitRecord record) => Future.error(StateError('write failed'));
+  Future<void> add(HabitRecord record) =>
+      Future.error(StateError('write failed'));
+
+  @override
+  Future<void> upsertRevive(HabitRecord record) =>
+      Future.error(StateError('write failed'));
 }
 
 class RecordingHabitEvents implements IHabitEvents {
@@ -62,7 +77,8 @@ class RecordingHabitEvents implements IHabitEvents {
 
   @override
   void notifyHabitRecordAdded(String habitId) {
-    didObservePersistedRecord = records.records.any((record) => record.habitId == habitId);
+    didObservePersistedRecord =
+        records.records.any((record) => record.habitId == habitId);
     addedHabitIds.add(habitId);
   }
 
@@ -79,7 +95,8 @@ class RecordingHabitEvents implements IHabitEvents {
   void notifyHabitUpdated(String habitId) {}
 }
 
-class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepository {
+class FakeHabitTimeRecordRepository extends Fake
+    implements IHabitTimeRecordRepository {
   final List<HabitTimeRecord> records = [];
 
   @override
@@ -89,13 +106,16 @@ class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepo
   Future<void> delete(HabitTimeRecord record) async => records.remove(record);
 
   @override
-  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) async => records;
+  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(
+          String habitId, DateTime start, DateTime end) async =>
+      records;
 }
 
 void main() {
   final date = DateTime(2026, 1, 11, 9);
 
-  test('add command creates one notDone marker without time for a bad habit', () async {
+  test('add command creates one notDone marker without time for a bad habit',
+      () async {
     // Given
     final habit = Habit(
       id: 'bad',
@@ -117,15 +137,22 @@ void main() {
     );
 
     // When
-    await handler.call(AddHabitRecordCommand(habitId: habit.id, occurredAt: date));
-    await handler.call(AddHabitRecordCommand(habitId: habit.id, occurredAt: date));
+    await handler
+        .call(AddHabitRecordCommand(habitId: habit.id, occurredAt: date));
+    await handler
+        .call(AddHabitRecordCommand(habitId: habit.id, occurredAt: date));
 
     // Then
-    expect(records.records.where((record) => record.status == HabitRecordStatus.notDone), hasLength(1));
+    expect(
+        records.records
+            .where((record) => record.status == HabitRecordStatus.notDone),
+        hasLength(1));
     expect(times.records, isEmpty);
   });
 
-  test('delete command removes only a bad notDone marker and preserves complete history', () async {
+  test(
+      'delete command removes only a bad notDone marker and preserves complete history',
+      () async {
     // Given
     final habit = Habit(
       id: 'bad',
@@ -148,7 +175,8 @@ void main() {
       occurredAt: date.toUtc(),
       status: HabitRecordStatus.notDone,
     );
-    final records = FakeHabitRecordRepository()..records.addAll([complete, marker]);
+    final records = FakeHabitRecordRepository()
+      ..records.addAll([complete, marker]);
     final handler = DeleteHabitRecordCommandHandler(
       habitRecordRepository: records,
       habitTimeRecordRepository: FakeHabitTimeRecordRepository(),
@@ -182,7 +210,8 @@ void main() {
       habitEvents: events,
     );
 
-    await handler.call(AddHabitRecordCommand(habitId: habit.id, occurredAt: date));
+    await handler
+        .call(AddHabitRecordCommand(habitId: habit.id, occurredAt: date));
 
     expect(events.addedHabitIds, [habit.id]);
     expect(events.didObservePersistedRecord, isTrue);

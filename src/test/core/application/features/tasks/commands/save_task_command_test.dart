@@ -430,18 +430,18 @@ void main() {
 
       when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
 
-      when(mockTaskTagRepository.add(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskTagRepository.upsertRevive(any)).thenAnswer((_) async => Future.value());
 
       // Act
       await handler(command);
 
       // Assert - Using properly typed predicate for task tag verification
-      verify(mockTaskTagRepository.add(argThat(predicate((obj) =>
+      verify(mockTaskTagRepository.upsertRevive(argThat(predicate((obj) =>
           obj is Object &&
           obj.runtimeType.toString().contains('TaskTag') &&
           (obj as dynamic).taskId == taskId &&
           (obj as dynamic).tagId == 'tag-1')))).called(1);
-      verify(mockTaskTagRepository.add(argThat(predicate((obj) =>
+      verify(mockTaskTagRepository.upsertRevive(argThat(predicate((obj) =>
           obj is Object &&
           obj.runtimeType.toString().contains('TaskTag') &&
           (obj as dynamic).taskId == taskId &&

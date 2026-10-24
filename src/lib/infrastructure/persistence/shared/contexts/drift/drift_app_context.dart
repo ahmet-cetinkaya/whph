@@ -56,6 +56,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/database_b
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/migrations/migrations.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/restore_barrier_query_interceptor.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sqlite_connection_setup.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_trigger_generator.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_trigger_installer.dart';
 
 part 'drift_app_context.g.dart';
@@ -315,6 +316,9 @@ class AppDatabase extends _$AppDatabase {
           Logger.info('Creating database schema version $schemaVersion');
           await m.createAll();
           await customStatement('PRAGMA foreign_keys = ON');
+          for (final statement in syncPlaceholderIdentityStatements()) {
+            await customStatement(statement);
+          }
           await installSyncTriggers(this);
           await customStatement(
               "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_cursor, upgrade_phase) "
@@ -346,6 +350,22 @@ class AppDatabase extends _$AppDatabase {
 
           // D3: keep the capture triggers at the current generator version.
           await installSyncTriggers(this);
+          // Databases from before identities (or tests that never seeded one)
+          // must not capture with a NULL node.
+          final schemaHasSyncState = (await customSelect(
+                      "SELECT 1 AS present FROM sqlite_master WHERE type = 'table' AND name = 'sync_state'")
+                  .get())
+              .isNotEmpty;
+          final identityless = schemaHasSyncState
+              ? await customSelect(
+                      "SELECT 1 AS present FROM sync_state WHERE id = 'singleton' AND node_id IS NULL")
+                  .get()
+              : const <QueryRow>[];
+          if (identityless.isNotEmpty) {
+            for (final statement in syncPlaceholderIdentityStatements()) {
+              await customStatement(statement);
+            }
+          }
 
           // Log migration info
           if (details.hadUpgrade) {

@@ -1,7 +1,8 @@
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:acore/acore.dart' as acore;
 
-abstract class IRepository<T extends acore.BaseEntity<TId>, TId> extends acore.IRepository<T, TId> {
+abstract class IRepository<T extends acore.BaseEntity<TId>, TId>
+    extends acore.IRepository<T, TId> {
   Future<PaginatedSyncData<T>> getPaginatedSyncData(
     DateTime lastSyncDate, {
     int pageIndex = 0,
@@ -14,4 +15,9 @@ abstract class IRepository<T extends acore.BaseEntity<TId>, TId> extends acore.I
   /// Updates multiple entities in a single batch operation.
   /// This is more efficient than calling update() multiple times.
   Future<void> updateMultiple(List<T> items);
+
+  /// D5: insert-or-revive for deterministic-id creations. A soft-deleted row
+  /// with the same id is revived (`deleted_date = NULL`) and its synced
+  /// columns refreshed, so the capture trigger writes a `~` revival cell.
+  Future<void> upsertRevive(T item);
 }
