@@ -3,6 +3,11 @@
 // sessions, then a quiescent sync. The oracle is the last-writer-wins rule
 // (T9) applied to the log of every cell any device authored.
 //
+// One op per run is a key_lost with an old DB (D6b): a device loses its key,
+// switches origin, its un-manifested cells are adopted onto the new origin,
+// the peers revoke the old member, and the quiescent sync still converges.
+// Sessions sign their own manifests first and attach them like real ones.
+//
 // Entities: notes (field-level) and tasks with subtasks, whose deletion is a
 // cascade (D5b) caught by the cause-scoped tombstones. Sessions run through
 // the `AsyncReplicaStore` port.
@@ -18,6 +23,7 @@ import 'dart:math';
 
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/infrastructure/persistence/features/sync/services/sync_upgrade_job.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_cascade_service.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
@@ -31,6 +37,19 @@ const double _noteShare = 0.6;
 const String _taskTable = 'task_table';
 const List<String> _comparedColumns = ['title', 'content'];
 const String _noteTable = 'note_table';
+const String _groupHex = '0102030405060708090a0b0c0d0e0f10';
+const String _lostMemberId = 'lost-member';
+const int _publicKeyLength = 32;
+const int _signatureLength = 64;
+const int _hexBytesPerOrigin = 16;
+
+/// A 32-character hex origin, unique per device and key generation.
+String _originHex(int device, int generation) =>
+    '${device.toRadixString(16)}${generation.toRadixString(16)}' *
+    _hexBytesPerOrigin;
+
+Uint8List _filled(int length, int fill) =>
+    Uint8List.fromList(List.filled(length, fill));
 
 int _envInt(String name, int fallback) =>
     int.tryParse(Platform.environment[name] ?? '') ?? fallback;
@@ -49,6 +68,8 @@ class _Run {
   final int ops;
   final Random random;
   final List<SyncTestDevice> devices = [];
+  final List<ManifestSigner> signers = [];
+  final List<_Violation> structural = [];
   final List<int> lastLoggedSeq = List.filled(_deviceCount, 0);
   final Map<CellKey, List<CellRecord>> writeLog = {};
   final List<List<String>> knownNotes = List.generate(_deviceCount, (_) => []);
@@ -59,13 +80,21 @@ class _Run {
 
   Future<void> open() async {
     for (var d = 0; d < _deviceCount; d++) {
-      final device = await SyncTestDevice.open('d$d');
+      final device = await SyncTestDevice.open('d$d', origin: _originHex(d, 0));
+      await device.sql('UPDATE sync_state SET group_id = ?', [_groupHex]);
+      signers.add(await _signerFor(device));
       final offset = random.nextInt(2 * _maxClockOffsetMs) - _maxClockOffsetMs;
       await device.sql('UPDATE sync_state SET hlc = ((CAST((julianday(\'now\') '
           '- 2440587.5) * 86400000 AS INTEGER) + $offset) << $hlcBits)');
       devices.add(device);
     }
   }
+
+  Future<ManifestSigner> _signerFor(SyncTestDevice device) async =>
+      ManifestSigner(
+          groupId: GroupId.fromHex(_groupHex),
+          origin: OriginId.fromHex(device.origin),
+          signer: await Ed25519KeyPair.generate());
 
   Future<void> close() async {
     for (final device in devices) {
@@ -76,12 +105,55 @@ class _Run {
   Future<void> run() async {
     for (var step = 0; step < ops; step++) {
       final d = random.nextInt(_deviceCount);
+      if (step == ops ~/ 2) await _keyLostOp(random.nextInt(_deviceCount));
       await _localOp(d, step);
       await _logAuthoredCells(d);
       if (random.nextDouble() < 0.3) await _randomSession();
     }
     for (var round = 0; round < _finalSyncRounds; round++) {
       await syncAllDevices(devices);
+    }
+  }
+
+  /// key_lost with an old DB: [lost] switches origin, adopting what no peer
+  /// can hold, and the other devices revoke its old member.
+  Future<void> _keyLostOp(int lost) async {
+    final old = devices[lost];
+    final member = MemberEntry(
+        memberId: _lostMemberId,
+        x25519Pub: _filled(_publicKeyLength, 1),
+        ed25519Pub: _filled(_publicKeyLength, 2),
+        name: 'lost phone',
+        addedBy: 'founder');
+    await old.store
+        .writeSecurityCell(memberCellKey(_lostMemberId), member.encode());
+    final sealedSeq = (await old.store.readVector())[old.origin]!;
+
+    final report = await old.store.switchOrigin(OriginSwitchReason.keyLost,
+        newOrigin: _originHex(lost, 1));
+    if (report.securityLeftBehind != 1) {
+      structural.add(_Violation('key_lost',
+          'securityLeftBehind ${report.securityLeftBehind}, expected 1'));
+    }
+    if (!await SyncUpgradeJob(old.db).runChunks()) {
+      structural.add(_Violation('key_lost', 'reauthor did not finish'));
+    }
+    final renewed =
+        SyncTestDevice(old.name, old.db, origin: _originHex(lost, 1));
+    devices[lost] = renewed;
+    signers[lost] = await _signerFor(renewed);
+    lastLoggedSeq[lost] = 0;
+    await _logAuthoredCells(lost);
+
+    final revocation = RevocationRecord(
+        revokedPub: member.ed25519Pub,
+        revokerPub: _filled(_publicKeyLength, 4),
+        cutoffs: {OriginId.fromHex(old.origin): sealedSeq},
+        sig: _filled(_signatureLength, 7));
+    for (var d = 0; d < _deviceCount; d++) {
+      if (d == lost) continue;
+      await devices[d].store.writeSecurityCell(
+          revocationCellKey(revocation), encodeRevocationRecord(revocation));
     }
   }
 
@@ -175,7 +247,7 @@ class _Run {
     final origin = device.origin;
     final batch = await device.store.readChanges(origin,
         afterSeq: lastLoggedSeq[d],
-        upToSeq: (await device.store.readVector())[origin]!,
+        upToSeq: (await device.store.readVector())[origin] ?? 0,
         limit: 1000);
     for (final cell in batch.cells) {
       writeLog.putIfAbsent(cell.key, () => []).add(cell);
@@ -190,6 +262,8 @@ class _Run {
     final into = (from + 1 + random.nextInt(_deviceCount - 1)) % _deviceCount;
     final source = devices[from];
     final target = devices[into];
+    await source.store.signOwnManifests(signers[from]);
+    await target.store.signOwnManifests(signers[into]);
     final batches = await source.store.changesSince(await target.store.vector(),
         maxCellsPerBatch: 1 + random.nextInt(_maxSessionBatch));
     final skipped = <String>{};
@@ -200,9 +274,23 @@ class _Run {
         skipped.add(batch.origin);
         continue;
       }
-      await target.store.mergeBatch(batch);
+      await _deliver(source, target, batch);
     }
     await _recordKnownEntities(into);
+  }
+
+  /// Applies [batch] with the source's manifests attached, like a session.
+  Future<void> _deliver(
+      SyncTestDevice source, SyncTestDevice target, ChangeBatch batch) async {
+    final manifests = await source.store.readManifests(batch.origin,
+        afterSeq: batch.fromSeq, upToSeq: batch.toSeq);
+    if (manifests.isEmpty) {
+      await target.store.mergeBatch(batch);
+      return;
+    }
+    for (final manifest in manifests) {
+      await target.store.applyBatch(batch, manifest: manifest);
+    }
   }
 
   Future<void> _recordKnownEntities(int d) async {
@@ -225,7 +313,15 @@ class _Run {
     for (var d = 0; d < _deviceCount; d++) {
       await _recordKnownEntities(d);
     }
-    final violations = <_Violation>[];
+    final violations = <_Violation>[...structural];
+    for (var d = 0; d < _deviceCount; d++) {
+      final revoked =
+          await devices[d].count('SELECT COUNT(*) FROM sync_revocation');
+      if (revoked != 1) {
+        violations
+            .add(_Violation('revocation', 'd$d holds $revoked, expected 1'));
+      }
+    }
     final contents = [for (final device in devices) await device.content()];
     for (var d = 1; d < _deviceCount; d++) {
       if (contents[d] != contents[0]) {
