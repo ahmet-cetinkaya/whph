@@ -16,6 +16,10 @@ const int tombstoneColId = 0;
 const int rowLevelColId = 1;
 const int packedKeyFactor = 256;
 
+/// `sync_row.tbl_id` values from here up are the security tables (D7, D13),
+/// which have no `SyncTablePolicy`; user tables stay below.
+const int securityTblIdFloor = 100;
+
 class SyncTablePolicy {
   final String tableName;
   final int tblId;

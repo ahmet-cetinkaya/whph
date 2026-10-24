@@ -1,9 +1,12 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:acore/acore.dart';
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_change_store.dart';
+import 'package:whph/infrastructure/persistence/features/sync/repositories/sync_security_cells.dart';
 import 'package:whph/infrastructure/persistence/features/sync/services/sync_reauthor_spec.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_table_policy.dart';
@@ -26,6 +29,8 @@ const String _heldKindUnknown = 'unknown';
 const String _heldKindStaged = 'staged';
 const String _heldReasonApplyFailed = 'apply_failed';
 const String _savepoint = 'sync_item';
+const String _peerResultDuplicateIdentity = 'duplicated_identity';
+const int _hashLength = 32;
 
 /// Wall part of a packed HLC (D2): a wall at or above 2^46 ms is malformed.
 const int _hlcCounterBits = 16;
@@ -57,6 +62,15 @@ class SyncItemRejected implements Exception {
 
   @override
   String toString() => 'SyncItemRejected($category)';
+}
+
+/// State shared by the items of one batch.
+class _ApplyContext {
+  /// Rows whose `modified_date` was already bumped in this batch.
+  final Set<String> bumped = {};
+
+  /// Origins with a conflicting canonical change under one `(origin, seq)`.
+  final Set<String> duplicateOrigins = {};
 }
 
 class _TableShape {
@@ -102,6 +116,12 @@ class DriftSyncChangeStore implements ISyncChangeStore {
   };
   final Map<int, SyncTablePolicy> _policyById = {
     for (final policy in syncTablePolicies) policy.tblId: policy,
+  };
+  final Map<String, SecurityCellSpec> _securityByWire = {
+    for (final spec in securityCellSpecs) spec.wireName: spec,
+  };
+  final Map<int, SecurityCellSpec> _securityById = {
+    for (final spec in securityCellSpecs) spec.tblId: spec,
   };
 
   DriftSyncChangeStore(this._db, {int Function()? nowMs})
@@ -197,20 +217,62 @@ class DriftSyncChangeStore implements ISyncChangeStore {
 
   @override
   Future<ChangeBatch> readChanges(String origin,
-      {required int afterSeq, int? upToSeq, int limit = 256}) async {
-    final bound = upToSeq ?? (await readVector())[origin] ?? afterSeq;
-    final clockCells = await _readClockCells(origin, afterSeq, bound, limit);
-    final heldCells = await _readUnknownCells(origin, afterSeq, bound);
-    final cells = [...clockCells, ...heldCells]
-      ..sort((a, b) => a.originSeq.compareTo(b.originSeq));
-    final truncated = cells.length > limit;
-    final page = truncated ? cells.sublist(0, limit) : cells;
-    final toSeq = truncated ? page.last.originSeq : bound;
-    return ChangeBatch(
-        origin: origin,
-        fromSeq: afterSeq,
-        toSeq: toSeq < afterSeq ? afterSeq : toSeq,
-        cells: page);
+          {required int afterSeq, int? upToSeq, int limit = 256}) =>
+      // One transaction, so a read issued while an apply is in flight (T12
+      // pipelining) sees the state before or after the whole batch.
+      _db.transaction(() async {
+        final bound = upToSeq ?? (await readVector())[origin] ?? afterSeq;
+        final clockCells =
+            await _readClockCells(origin, afterSeq, bound, limit);
+        final heldCells = await _readUnknownCells(origin, afterSeq, bound);
+        final cells = [...clockCells, ...heldCells]
+          ..sort((a, b) => a.originSeq.compareTo(b.originSeq));
+        final truncated = cells.length > limit;
+        final page = truncated ? cells.sublist(0, limit) : cells;
+        final toSeq = truncated ? page.last.originSeq : bound;
+        return ChangeBatch(
+            origin: origin,
+            fromSeq: afterSeq,
+            toSeq: toSeq < afterSeq ? afterSeq : toSeq,
+            cells: page);
+      });
+
+  // -- AsyncReplicaStore ------------------------------------------------------
+
+  @override
+  Future<String> nodeId() async {
+    final row = await _selectOne(
+        'SELECT i.value AS value FROM sync_state s JOIN sync_intern i ON i.id = s.node_id WHERE s.id = ?',
+        [_stateId]);
+    return row!['value'] as String;
+  }
+
+  @override
+  Future<Map<String, int>> vector() => readVector();
+
+  @override
+  Future<List<ChangeBatch>> changesSince(Map<String, int> peerVector,
+      {int maxCellsPerBatch = 256}) async {
+    final batches = <ChangeBatch>[];
+    final ours = await readVector();
+    for (final origin in ours.keys.toList()..sort()) {
+      var peerCursor = peerVector[origin] ?? 0;
+      final bound = ours[origin]!;
+      while (peerCursor < bound) {
+        final batch = await readChanges(origin,
+            afterSeq: peerCursor, upToSeq: bound, limit: maxCellsPerBatch);
+        if (batch.toSeq <= peerCursor) break;
+        batches.add(batch);
+        peerCursor = batch.toSeq;
+      }
+    }
+    return batches;
+  }
+
+  @override
+  Future<bool> mergeBatch(ChangeBatch batch) async {
+    final report = await applyBatch(batch);
+    return report.applied > 0 || report.cursorAdvanced;
   }
 
   Future<List<CellRecord>> _readClockCells(
@@ -229,6 +291,12 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
     final baseRows = <String, Map<String, Object?>?>{};
     final cells = <CellRecord>[];
     for (final row in rows) {
+      final security = _securityById[row['tbl_id'] as int];
+      if (security != null) {
+        final cell = await _readSecurityCell(security, row, origin);
+        if (cell != null) cells.add(cell);
+        continue;
+      }
       final policy = _policyById[row['tbl_id'] as int]!;
       final pk = row['pk'] as String;
       final colId = (row['key'] as int) % packedKeyFactor;
@@ -249,6 +317,22 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
       ));
     }
     return cells;
+  }
+
+  Future<CellRecord?> _readSecurityCell(SecurityCellSpec spec,
+      Map<String, Object?> clockRow, String origin) async {
+    final pk = clockRow['pk'] as String;
+    final stored = await _selectOne(
+        'SELECT * FROM "${spec.tableName}" WHERE ${spec.pkColumn} = ?', [pk]);
+    if (stored == null) return null;
+    return CellRecord(
+      key: CellKey(spec.wireName, pk, CellKey.rowCol),
+      value: spec.fromRow(stored),
+      clock: clockRow['hlc'] as int,
+      node: clockRow['node'] as String,
+      origin: origin,
+      originSeq: clockRow['seq'] as int,
+    );
   }
 
   Future<List<CellRecord>> _readUnknownCells(
@@ -311,14 +395,15 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
   // -- apply ----------------------------------------------------------------
 
   @override
-  Future<SyncApplyReport> applyBatch(ChangeBatch batch) =>
+  Future<SyncApplyReport> applyBatch(ChangeBatch batch,
+          {OriginManifest? manifest, String? peerMemberId}) =>
       _db.transaction(() async {
         await _requireIdleCaptureMode();
         await _setApplyMode(_applyModeRemote);
-        final bumped = <String>{};
+        final context = _ApplyContext();
         var applied = 0, unchanged = 0, held = 0, failed = 0;
         for (final cell in batch.cells) {
-          switch (await _applyInSavepoint(cell, bumped)) {
+          switch (await _applyInSavepoint(cell, context)) {
             case _ItemOutcome.applied:
               applied++;
             case _ItemOutcome.unchanged:
@@ -329,6 +414,9 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
               failed++;
           }
         }
+        if (manifest != null) await _attachReceivedManifest(batch, manifest);
+        if (context.duplicateOrigins.isNotEmpty && peerMemberId != null)
+          await _flagDuplicateIdentity(peerMemberId);
         final advanced = await _advanceCursor(batch);
         await _setApplyMode(_applyModeCapture);
         return SyncApplyReport(
@@ -336,7 +424,8 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
             unchanged: unchanged,
             held: held,
             failed: failed,
-            cursorAdvanced: advanced);
+            cursorAdvanced: advanced,
+            duplicateIdentityOrigins: context.duplicateOrigins);
       });
 
   Future<void> _requireIdleCaptureMode() async {
@@ -351,10 +440,11 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
   }
 
   Future<_ItemOutcome> _applyInSavepoint(
-      CellRecord cell, Set<String> bumped) async {
+      CellRecord cell, _ApplyContext context) async {
     await _exec('SAVEPOINT $_savepoint');
     try {
-      final outcome = await _applyCell(cell, bumped);
+      final outcome = await _applyCell(cell, context);
+      await _clearHeldEnvelope(cell.key);
       await _exec('RELEASE $_savepoint');
       return outcome;
     } catch (error) {
@@ -405,8 +495,11 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
     return true;
   }
 
-  Future<_ItemOutcome> _applyCell(CellRecord cell, Set<String> bumped) async {
+  Future<_ItemOutcome> _applyCell(
+      CellRecord cell, _ApplyContext context) async {
     _validateRepresentable(cell);
+    final security = _securityByWire[cell.key.table];
+    if (security != null) return _applySecurityCell(security, cell, context);
     final policy = _policyByName[cell.key.table];
     final colId = policy == null ? null : _colIdOf(policy, cell.key.col);
     if (policy == null || colId == null) return _holdUnknown(cell);
@@ -414,13 +507,26 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
     final rowId = await _ensureRow(policy.tblId, cell.key.pk);
     final clockKey = rowId * packedKeyFactor + colId;
     final current = await _clockRow(clockKey);
+    await _noteDuplicateIdentity(cell, clockKey, context);
     if (current != null && !_incomingWins(current, cell))
       return _ItemOutcome.unchanged;
 
     final causeRowId = await _causeRowId(cell);
+    final tombValue = colId == tombstoneColId ? _asTombValue(cell.value) : null;
+    await _writeClock(clockKey, cell, tombValue, causeRowId);
+
+    final visible = await _writeValue(policy, cell, colId, rowId);
+    await _settleRow(policy, cell.key.pk, rowId, <int>{});
+    if (visible) await _bumpRevision(policy, cell.key.pk, context.bumped);
+    return visible || colId == tombstoneColId
+        ? _ItemOutcome.applied
+        : _ItemOutcome.held;
+  }
+
+  Future<void> _writeClock(
+      int clockKey, CellRecord cell, int? tombValue, int? causeRowId) async {
     final nodeId = await _intern(internKindNode, cell.node);
     final originId = await _intern(internKindOrigin, cell.origin);
-    final tombValue = colId == tombstoneColId ? _asTombValue(cell.value) : null;
     await _exec('''
 INSERT INTO sync_clock (key, hlc, node_id, origin_id, origin_seq, manifest_id, tomb_value, cause_row_id, recorded_at)
 VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?)
@@ -438,13 +544,256 @@ ON CONFLICT (key) DO UPDATE SET hlc = excluded.hlc, node_id = excluded.node_id, 
     ]);
     await _exec('UPDATE sync_state SET hlc = MAX(hlc, ?) WHERE id = ?',
         [cell.clock, _stateId]);
+  }
 
-    final visible = await _writeValue(policy, cell, colId, rowId);
-    await _settleRow(policy, cell.key.pk, rowId, <int>{});
-    if (visible) await _bumpRevision(policy, cell.key.pk, bumped);
-    return visible || colId == tombstoneColId
-        ? _ItemOutcome.applied
-        : _ItemOutcome.held;
+  // -- security rows (D7, D13) ------------------------------------------------
+
+  Future<_ItemOutcome> _applySecurityCell(
+      SecurityCellSpec spec, CellRecord cell, _ApplyContext context) async {
+    final row = _securityRow(spec, cell);
+    final rowId = await _ensureRow(spec.tblId, cell.key.pk);
+    final clockKey = rowId * packedKeyFactor + rowLevelColId;
+    final current = await _clockRow(clockKey);
+    await _noteDuplicateIdentity(cell, clockKey, context);
+    if (current != null && !_incomingWins(current, cell))
+      return _ItemOutcome.unchanged;
+
+    await _writeClock(clockKey, cell, null, null);
+    final columns = row.keys.toList();
+    await _exec(
+        'INSERT OR REPLACE INTO "${spec.tableName}" (${columns.map((c) => '"$c"').join(', ')}) '
+        'VALUES (${List.filled(columns.length, '?').join(', ')})',
+        [for (final column in columns) row[column]]);
+    return _ItemOutcome.applied;
+  }
+
+  @override
+  Future<CellRecord> writeSecurityCell(CellKey key, Uint8List record) =>
+      _db.transaction(() async {
+        final spec = _securityByWire[key.table];
+        if (spec == null)
+          throw ArgumentError.value(key, 'key', 'not a security table');
+        final state = await _state();
+        final cell = CellRecord(
+          key: CellKey(key.table, key.pk, CellKey.rowCol),
+          value: record,
+          clock:
+              math.max((state['hlc'] as int) + 1, _nowMs() << _hlcCounterBits),
+          node: await nodeId(),
+          origin: await _ownOrigin(),
+          originSeq: state['next_seq'] as int,
+        );
+        await _applySecurityCell(spec, cell, _ApplyContext());
+        await _exec(
+            'UPDATE sync_state SET next_seq = next_seq + 1 WHERE id = ?',
+            [_stateId]);
+        return cell;
+      });
+
+  Map<String, Object?> _securityRow(SecurityCellSpec spec, CellRecord cell) {
+    if (cell.key.col != CellKey.rowCol)
+      throw const SyncItemRejected('unknown_security_column');
+    final value = cell.value;
+    if (value is! Uint8List)
+      throw const SyncItemRejected('malformed_security_cell');
+    try {
+      return spec.toRow(cell.key.pk, value, cell.clock);
+    } on SecurityCellRejected catch (rejected) {
+      throw SyncItemRejected(rejected.category);
+    } catch (_) {
+      throw const SyncItemRejected('malformed_security_cell');
+    }
+  }
+
+  // -- duplicate identity (D14) -----------------------------------------------
+
+  /// Two different canonical changes under one `(origin, seq)` mean two
+  /// devices write that origin (a copied data directory). Only noted; the
+  /// merge continues by the usual rules.
+  Future<void> _noteDuplicateIdentity(
+      CellRecord cell, int clockKey, _ApplyContext context) async {
+    final clash = await _selectOne('''
+SELECT c.key AS key, c.hlc AS hlc, n.value AS node
+FROM sync_clock c JOIN sync_intern o ON o.id = c.origin_id JOIN sync_intern n ON n.id = c.node_id
+WHERE o.value = ? AND c.origin_seq = ?''', [cell.origin, cell.originSeq]);
+    if (clash == null) return;
+    final sameVersion = clash['key'] == clockKey &&
+        clash['hlc'] == cell.clock &&
+        clash['node'] == cell.node;
+    if (!sameVersion) context.duplicateOrigins.add(cell.origin);
+  }
+
+  Future<void> _flagDuplicateIdentity(String peerMemberId) => _exec(
+      "INSERT INTO sync_peer_state_table (member_id, addresses, last_result_category) VALUES (?, '', ?) "
+      'ON CONFLICT (member_id) DO UPDATE SET last_result_category = excluded.last_result_category',
+      [peerMemberId, _peerResultDuplicateIdentity]);
+
+  // -- held envelopes (FR-010, FR-011) ------------------------------------------
+
+  Future<void> _clearHeldEnvelope(CellKey key) => _exec(
+      'DELETE FROM sync_held_envelope WHERE tbl = ? AND pk = ? AND col = ?',
+      [key.table, key.pk, key.col]);
+
+  @override
+  Future<List<CellKey>> refetchKeys() async => [
+        for (final row in await _select(
+            "SELECT tbl, pk, col FROM sync_held_envelope WHERE reason = '$_heldReasonApplyFailed' ORDER BY id"))
+          CellKey(
+              row['tbl'] as String, row['pk'] as String, row['col'] as String),
+      ];
+
+  // -- manifests and registrations (D7) -----------------------------------------
+
+  @override
+  Future<List<OriginManifest>> signOwnManifests(ManifestSigner signer) async {
+    final state = await _state();
+    final groupHex = state['group_id'] as String?;
+    if (groupHex == null) throw StateError('no group: manifests need group_id');
+    final own = await _ownOrigin();
+    final signedTo = await _highestSignedSeq(own);
+    final top = (state['next_seq'] as int) - 1;
+    if (top <= signedTo) return const [];
+
+    final unsigned = await readChanges(own,
+        afterSeq: signedTo, upToSeq: top, limit: top - signedTo);
+    final groupId = GroupId.fromHex(groupHex);
+    final manifests =
+        await signer.sign(fromSeq: signedTo, toSeq: top, changes: [
+      for (final cell in unsigned.cells)
+        Change.fromCellRecord(cell, groupId: groupId),
+    ]);
+    await _db.transaction(() async {
+      for (final manifest in manifests) {
+        await _storeManifest(manifest);
+      }
+    });
+    return manifests;
+  }
+
+  Future<int> _highestSignedSeq(String origin) async {
+    final row = await _selectOne(
+        'SELECT MAX(to_seq) AS top FROM sync_origin_batch WHERE origin_id = ?',
+        [origin]);
+    return (row?['top'] as int?) ?? 0;
+  }
+
+  /// Persists [manifest] (once per `(origin, range)`) and links the clock rows
+  /// of its origin inside the range.
+  Future<int> _storeManifest(OriginManifest manifest) async {
+    final origin = manifest.origin.hex;
+    final existing = await _selectOne(
+        'SELECT manifest_id FROM sync_origin_batch WHERE origin_id = ? AND from_seq = ? AND to_seq = ?',
+        [origin, manifest.fromSeq, manifest.toSeq]);
+    final manifestId = existing != null
+        ? existing['manifest_id'] as int
+        : await _insertManifest(manifest);
+    final originId = await _intern(internKindOrigin, origin);
+    await _exec(
+        'UPDATE sync_clock SET manifest_id = ? WHERE origin_id = ? AND origin_seq > ? AND origin_seq <= ? AND manifest_id IS NULL',
+        [manifestId, originId, manifest.fromSeq, manifest.toSeq]);
+    return manifestId;
+  }
+
+  Future<int> _insertManifest(OriginManifest manifest) async {
+    final top = await _selectOne(
+        'SELECT MAX(manifest_id) AS top FROM sync_origin_batch');
+    final manifestId = ((top?['top'] as int?) ?? 0) + 1;
+    final hashes = BytesBuilder(copy: false);
+    manifest.hashes.forEach(hashes.add);
+    await _exec(
+        'INSERT INTO sync_origin_batch (manifest_id, origin_id, from_seq, to_seq, hashes, sig) VALUES (?, ?, ?, ?, ?, ?)',
+        [
+          manifestId,
+          manifest.origin.hex,
+          manifest.fromSeq,
+          manifest.toSeq,
+          hashes.takeBytes(),
+          hexEncode(manifest.sig),
+        ]);
+    return manifestId;
+  }
+
+  /// Links only the cells of [batch] that the verified [manifest] covers, so
+  /// an older copy of a cell never inherits a signature it was not part of.
+  Future<void> _attachReceivedManifest(
+      ChangeBatch batch, OriginManifest manifest) async {
+    if (manifest.origin.hex != batch.origin) return;
+    final manifestId = await _storedManifestId(manifest);
+    final originId = await _intern(internKindOrigin, batch.origin);
+    for (final cell in batch.cells) {
+      if (cell.originSeq <= manifest.fromSeq || cell.originSeq > manifest.toSeq)
+        continue;
+      await _exec(
+          'UPDATE sync_clock SET manifest_id = ? WHERE origin_id = ? AND origin_seq = ? AND hlc = ? AND manifest_id IS NULL',
+          [manifestId, originId, cell.originSeq, cell.clock]);
+    }
+  }
+
+  Future<int> _storedManifestId(OriginManifest manifest) async {
+    final existing = await _selectOne(
+        'SELECT manifest_id FROM sync_origin_batch WHERE origin_id = ? AND from_seq = ? AND to_seq = ?',
+        [manifest.origin.hex, manifest.fromSeq, manifest.toSeq]);
+    return existing != null
+        ? existing['manifest_id'] as int
+        : _insertManifest(manifest);
+  }
+
+  @override
+  Future<List<OriginManifest>> readManifests(String origin,
+      {required int afterSeq, required int upToSeq}) async {
+    final rows = await _select(
+        'SELECT * FROM sync_origin_batch WHERE origin_id = ? AND to_seq > ? AND from_seq < ? ORDER BY from_seq',
+        [origin, afterSeq, upToSeq]);
+    return [for (final row in rows) _manifestFromRow(row)];
+  }
+
+  OriginManifest _manifestFromRow(Map<String, Object?> row) {
+    final blob = row['hashes'] as Uint8List;
+    return OriginManifest(
+      origin: OriginId.fromHex(row['origin_id'] as String),
+      fromSeq: row['from_seq'] as int,
+      toSeq: row['to_seq'] as int,
+      hashes: [
+        for (var at = 0; at < blob.length; at += _hashLength)
+          Uint8List.sublistView(blob, at, at + _hashLength),
+      ],
+      sig: hexDecode(row['sig'] as String),
+    );
+  }
+
+  @override
+  Future<List<OriginRegistration>> readRegistrations() async => [
+        for (final row
+            in await _select('SELECT * FROM sync_origin ORDER BY origin_id'))
+          OriginRegistration(
+            origin: OriginId.fromHex(row['origin_id'] as String),
+            memberPub: hexDecode(row['member_ed25519_pub'] as String),
+            createdHlc: row['created_hlc'] as int,
+            sig: hexDecode(row['sig'] as String),
+          ),
+      ];
+
+  @override
+  Future<int> mergeRegistrations(
+      Iterable<OriginRegistration> registrations) async {
+    var inserted = 0;
+    for (final registration in registrations) {
+      final known = await _selectOne(
+          'SELECT 1 AS present FROM sync_origin WHERE origin_id = ?',
+          [registration.origin.hex]);
+      if (known != null) continue;
+      await _exec(
+          'INSERT INTO sync_origin (origin_id, member_ed25519_pub, created_hlc, sig, created_date) VALUES (?, ?, ?, ?, ?)',
+          [
+            registration.origin.hex,
+            hexEncode(registration.memberPub),
+            registration.createdHlc,
+            hexEncode(registration.sig),
+            (registration.createdHlc >> _hlcCounterBits) ~/ _msPerSecond,
+          ]);
+      inserted++;
+    }
+    return inserted;
   }
 
   void _validateRepresentable(CellRecord cell) {
@@ -814,14 +1163,18 @@ WHERE c.key >= ? AND c.key < ?''',
       case OriginSwitchReason.restore:
       case OriginSwitchReason.keyLost:
         final cursor = await _sealWithCursor(switched, sentMark);
+        final leftBehind = await _countUnsentSecurityCells(switched.oldId);
         if (reason == OriginSwitchReason.restore) await _raiseHlc(hlcFloor);
         await _scheduleReauthor(ReauthorSpec.adopt(
             oldOriginId: switched.oldId,
             newOriginId: switched.newId,
             sentMark: sentMark));
-        return _report(switched, cursor, reauthor: true);
+        return _report(switched, cursor,
+            reauthor: true, securityLeftBehind: leftBehind);
       case OriginSwitchReason.localReset:
-        await _exec('DELETE FROM sync_clock');
+        await _exec(
+            'DELETE FROM sync_clock WHERE key / $packedKeyFactor IN (SELECT id FROM sync_row WHERE tbl_id < $securityTblIdFloor)');
+        await _adoptUnsentSecurityCells(switched);
         await _exec('DELETE FROM sync_held_cell');
         await _exec('DELETE FROM sync_held_envelope');
         await _exec('DELETE FROM sync_vector');
@@ -833,6 +1186,8 @@ WHERE c.key >= ? AND c.key < ?''',
         await _exec('DELETE FROM sync_held_envelope');
         await _exec('DELETE FROM sync_peer_state_table');
         await _exec('DELETE FROM sync_vector');
+        await _exec(
+            'DELETE FROM sync_clock WHERE key / $packedKeyFactor IN (SELECT id FROM sync_row WHERE tbl_id >= $securityTblIdFloor)');
         await _exec('UPDATE sync_clock SET manifest_id = NULL');
         await _scheduleReauthor(ReauthorSpec.all(newOriginId: switched.newId));
         return _report(switched, null, reauthor: true);
@@ -865,13 +1220,42 @@ WHERE c.key >= ? AND c.key < ?''',
       "UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL WHERE id = ?",
       [spec.encode(), _stateId]);
 
+  /// Security cells without a manifest: no peer can hold them, they stay on
+  /// the sealed origin and are never sent (D14, U11/rooted).
+  Future<int> _countUnsentSecurityCells(int originId) async {
+    final row = await _selectOne(
+        'SELECT COUNT(*) AS total FROM sync_clock WHERE origin_id = ? AND manifest_id IS NULL '
+        'AND (SELECT tbl_id FROM sync_row WHERE id = sync_clock.key / $packedKeyFactor) >= ?',
+        [originId, securityTblIdFloor]);
+    return row!['total'] as int;
+  }
+
+  /// `local_reset` keeps the security tables, so their never-sent cells move
+  /// to the new origin like any adopted cell; nobody else could serve them.
+  Future<void> _adoptUnsentSecurityCells(_Switched switched) async {
+    final keys = await _select(
+        'SELECT key FROM sync_clock WHERE origin_id = ? AND manifest_id IS NULL '
+        'AND (SELECT tbl_id FROM sync_row WHERE id = sync_clock.key / $packedKeyFactor) >= ? '
+        'ORDER BY origin_seq, key',
+        [switched.oldId, securityTblIdFloor]);
+    var nextSeq = (await _state())['next_seq'] as int;
+    for (final row in keys) {
+      await _exec(
+          'UPDATE sync_clock SET origin_id = ?, origin_seq = ? WHERE key = ?',
+          [switched.newId, nextSeq++, row['key']]);
+    }
+    await _exec(
+        'UPDATE sync_state SET next_seq = ? WHERE id = ?', [nextSeq, _stateId]);
+  }
+
   SyncOriginSwitchReport _report(_Switched switched, int? cursor,
-          {required bool reauthor}) =>
+          {required bool reauthor, int securityLeftBehind = 0}) =>
       SyncOriginSwitchReport(
           oldOrigin: switched.oldOrigin,
           newOrigin: switched.newOrigin,
           sealedCursor: cursor,
-          reauthorScheduled: reauthor);
+          reauthorScheduled: reauthor,
+          securityLeftBehind: securityLeftBehind);
 
   Future<void> _clearUserTables() async {
     for (final policy in syncTablePolicies) {

@@ -15266,7 +15266,7 @@ final class Schema38 extends i0.VersionedSchema {
         withoutRowId: false,
         isStrict: false,
         tableConstraints: [
-          'PRIMARY KEY(revoked_pub, revoker_pub)',
+          'PRIMARY KEY(revoked_pub, revoker_pub, origin_id)',
         ],
         columns: [
           _column_118,

@@ -153,3 +153,25 @@ abstract interface class ReplicaStore {
   /// changed. Applying the same batch again is a no-op.
   bool applyBatch(ChangeBatch batch);
 }
+
+/// Asynchronous counterpart of the sync-facing part of [ReplicaStore], for
+/// stores over an asynchronous connection (Drift runs in a background
+/// isolate, so the synchronous port cannot be implemented on it).
+///
+/// It carries only what a sync session needs: identity, the received vector,
+/// the batches a peer is missing and the merge of a received batch.
+abstract interface class AsyncReplicaStore {
+  /// This replica's member id; the node of local writes.
+  Future<String> nodeId();
+
+  /// Per origin, the highest seq this replica holds (see [ReplicaStore.vector]).
+  Future<Map<String, int>> vector();
+
+  /// The batches a peer holding [peerVector] is missing, each with at most
+  /// [maxCellsPerBatch] cells (see [ReplicaStore.changesSince]).
+  Future<List<ChangeBatch>> changesSince(Map<String, int> peerVector, {int maxCellsPerBatch = 256});
+
+  /// Merges a received batch. Returns `true` when any cell or the vector
+  /// changed; applying the same batch again is a no-op.
+  Future<bool> mergeBatch(ChangeBatch batch);
+}

@@ -16,20 +16,24 @@ class SyncTestDevice {
   final String name;
   final AppDatabase db;
   final DriftSyncChangeStore store;
+  final String origin;
 
-  SyncTestDevice(this.name, this.db) : store = DriftSyncChangeStore(db);
+  SyncTestDevice(this.name, this.db, {String? origin})
+      : origin = origin ?? 'origin-$name',
+        store = DriftSyncChangeStore(db);
 
-  String get origin => 'origin-$name';
-
-  static Future<SyncTestDevice> open(String name) async {
+  /// [origin] defaults to `origin-<name>`; manifests need a 32-character hex
+  /// origin.
+  static Future<SyncTestDevice> open(String name, {String? origin}) async {
     final db = AppDatabase.forTesting();
     await db.customSelect('SELECT 1').getSingle();
+    final originValue = origin ?? 'origin-$name';
     for (final statement in syncInternSeedStatements(
-        nodeValue: 'node-$name', originValue: 'origin-$name')) {
+        nodeValue: 'node-$name', originValue: originValue)) {
       await db.customStatement(statement);
     }
     await installSyncTriggers(db);
-    return SyncTestDevice(name, db);
+    return SyncTestDevice(name, db, origin: originValue);
   }
 
   Future<List<Map<String, Object?>>> rows(String sql,

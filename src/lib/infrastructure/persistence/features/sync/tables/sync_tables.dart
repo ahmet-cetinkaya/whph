@@ -103,7 +103,9 @@ class SyncOriginTable extends Table {
   Set<Column> get primaryKey => {originId};
 }
 
-/// Synced (D7): revocation records with per-origin cutoffs.
+/// Synced (D7): revocation records with per-origin cutoffs. One row per
+/// record; `origin_id` carries the record's cell pk (a hash of the record), so
+/// several records for one `(revoked, revoker)` pair coexist (grow-only).
 class SyncRevocationTable extends Table {
   @override
   String get tableName => 'sync_revocation';
@@ -116,7 +118,7 @@ class SyncRevocationTable extends Table {
   IntColumn get hlc => integer()();
 
   @override
-  Set<Column> get primaryKey => {revokedPub, revokerPub};
+  Set<Column> get primaryKey => {revokedPub, revokerPub, originId};
 }
 
 /// Synced (D7): epoch key grants.

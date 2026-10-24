@@ -3,6 +3,10 @@
 // sessions, then a quiescent sync. The oracle is the last-writer-wins rule
 // (T9) applied to the log of every cell any device authored.
 //
+// Entities: notes (field-level) and tasks with subtasks, whose deletion is a
+// cascade (D5b) caught by the cause-scoped tombstones. Sessions run through
+// the `AsyncReplicaStore` port.
+//
 // SIM_DRIFT_SEEDS (default 3), SIM_DRIFT_OPS (default 150) and
 // SIM_SEED=<n> (run one seed) scale the run; soaks use larger values.
 @Tags(['sim-drift'])
@@ -14,6 +18,7 @@ import 'dart:math';
 
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_cascade_service.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
 import 'drift_sync_test_support.dart';
@@ -22,6 +27,10 @@ const int _deviceCount = 3;
 const int _maxClockOffsetMs = 60 * 60 * msPerSecond;
 const int _maxSessionBatch = 12;
 const int _finalSyncRounds = 3;
+const double _noteShare = 0.6;
+const String _taskTable = 'task_table';
+const List<String> _comparedColumns = ['title', 'content'];
+const String _noteTable = 'note_table';
 
 int _envInt(String name, int fallback) =>
     int.tryParse(Platform.environment[name] ?? '') ?? fallback;
@@ -43,6 +52,7 @@ class _Run {
   final List<int> lastLoggedSeq = List.filled(_deviceCount, 0);
   final Map<CellKey, List<CellRecord>> writeLog = {};
   final List<List<String>> knownNotes = List.generate(_deviceCount, (_) => []);
+  final List<List<String>> knownTasks = List.generate(_deviceCount, (_) => []);
   var created = 0;
 
   _Run(this.seed, this.ops) : random = Random(seed);
@@ -76,6 +86,62 @@ class _Run {
   }
 
   Future<void> _localOp(int d, int step) async {
+    if (random.nextDouble() < _noteShare) return _noteOp(d, step);
+    return _taskOp(d, step);
+  }
+
+  Future<void> _taskOp(int d, int step) async {
+    final device = devices[d];
+    final known = knownTasks[d];
+    final r = random.nextDouble();
+    if (known.isEmpty || r < 0.3) {
+      final pk = 't${d}_${created++}';
+      final alive = await device
+          .rows('SELECT id FROM task_table WHERE deleted_date IS NULL');
+      final parent = alive.isEmpty || random.nextBool()
+          ? 'NULL'
+          : "'${alive[random.nextInt(alive.length)]['id']}'";
+      await device.sql(
+          "INSERT INTO task_table (id, created_date, title, parent_task_id) VALUES ('$pk', 1, 'task $step', $parent)");
+      known.add(pk);
+      return;
+    }
+    final pk = known[random.nextInt(known.length)];
+    final isDeleted = (await device.rows(
+                'SELECT deleted_date FROM task_table WHERE id = ?',
+                [Variable(pk)]))
+            .single['deleted_date'] !=
+        null;
+    if (isDeleted) {
+      await device
+          .sql('UPDATE task_table SET deleted_date = NULL WHERE id = ?', [pk]);
+    } else if (r < 0.65) {
+      await device.sql(
+          "UPDATE task_table SET title = 'task $step by d$d' WHERE id = ?",
+          [pk]);
+    } else {
+      await _cascadeDelete(device, pk, 1000 + step);
+    }
+  }
+
+  /// Soft-deletes task [pk] and its alive subtasks with [pk] as the cause.
+  Future<void> _cascadeDelete(SyncTestDevice device, String pk, int at) async {
+    final children = await device.rows(
+        'SELECT id FROM task_table WHERE parent_task_id = ? AND deleted_date IS NULL',
+        [Variable(pk)]);
+    await DriftSyncCascadeService(device.db).withCause(_taskTable, pk,
+        () async {
+      await device
+          .sql('UPDATE task_table SET deleted_date = $at WHERE id = ?', [pk]);
+      for (final child in children) {
+        await device.sql(
+            'UPDATE task_table SET deleted_date = $at WHERE id = ?',
+            [child['id']]);
+      }
+    });
+  }
+
+  Future<void> _noteOp(int d, int step) async {
     final device = devices[d];
     final known = knownNotes[d];
     final r = random.nextDouble();
@@ -124,36 +190,40 @@ class _Run {
     final into = (from + 1 + random.nextInt(_deviceCount - 1)) % _deviceCount;
     final source = devices[from];
     final target = devices[into];
-    final theirs = await source.store.readVector();
-    final mine = await target.store.readVector();
-    for (final entry in theirs.entries) {
-      if (entry.key == target.origin || random.nextBool()) continue;
-      var after = mine[entry.key] ?? 0;
-      while (after < entry.value) {
-        final batch = await source.store.readChanges(entry.key,
-            afterSeq: after,
-            upToSeq: entry.value,
-            limit: 1 + random.nextInt(_maxSessionBatch));
-        await target.store.applyBatch(batch);
-        after = batch.toSeq;
-        if (random.nextDouble() < 0.2) break;
+    final batches = await source.store.changesSince(await target.store.vector(),
+        maxCellsPerBatch: 1 + random.nextInt(_maxSessionBatch));
+    final skipped = <String>{};
+    for (final batch in batches) {
+      if (batch.origin == target.origin) continue;
+      if (skipped.contains(batch.origin)) continue;
+      if (random.nextDouble() < 0.15) {
+        skipped.add(batch.origin);
+        continue;
       }
+      await target.store.mergeBatch(batch);
     }
-    await _recordKnownNotes(into);
+    await _recordKnownEntities(into);
   }
 
-  Future<void> _recordKnownNotes(int d) async {
-    final ids = await devices[d].rows('SELECT id FROM note_table');
+  Future<void> _recordKnownEntities(int d) async {
     knownNotes[d]
       ..clear()
-      ..addAll(ids.map((r) => r['id'] as String));
+      ..addAll(await _ids(d, _noteTable));
+    knownTasks[d]
+      ..clear()
+      ..addAll(await _ids(d, _taskTable));
   }
+
+  Future<List<String>> _ids(int d, String table) async => [
+        for (final row in await devices[d].rows('SELECT id FROM $table'))
+          row['id'] as String
+      ];
 
   // -- oracle ---------------------------------------------------------------
 
   Future<List<_Violation>> check() async {
     for (var d = 0; d < _deviceCount; d++) {
-      await _recordKnownNotes(d);
+      await _recordKnownEntities(d);
     }
     final violations = <_Violation>[];
     final contents = [for (final device in devices) await device.content()];
@@ -180,6 +250,8 @@ class _Run {
     return 'length ${leftLines.length} vs ${rightLines.length}';
   }
 
+  /// Expected rows by `table/pk` from the merged winners, with cascade
+  /// causes resolved over the whole row set (D5b).
   Map<String, Map<String, Object?>> _expectedRows() {
     final winners = <CellKey, CellRecord>{
       for (final entry in writeLog.entries)
@@ -189,13 +261,15 @@ class _Run {
     for (final cell in winners.values) {
       byRow.putIfAbsent(cell.key.row, () => []).add(cell);
     }
+    final lookup = {
+      for (final entry in byRow.entries) entry.key: CellListRow(entry.value)
+    };
     final expected = <String, Map<String, Object?>>{};
-    for (final entry in byRow.entries) {
-      final row = CellListRow(entry.value);
+    for (final entry in lookup.entries) {
+      final row = entry.value;
       final deleted =
-          rowExistence(entry.key, (ref) => ref == entry.key ? row : null) ==
-              RowExistence.deleted;
-      expected[entry.key.pk] = {
+          rowExistence(entry.key, (ref) => lookup[ref]) == RowExistence.deleted;
+      expected['${entry.key.table}/${entry.key.pk}'] = {
         'deleted_date': deleted ? row.existence!.value : null,
         for (final cell in row.dataCells) cell.key.col: cell.value,
       };
@@ -208,27 +282,35 @@ class _Run {
   Future<List<_Violation>> _compareDevice(
       int d, Map<String, Map<String, Object?>> expected) async {
     final violations = <_Violation>[];
-    final rows = {
-      for (final row in await devices[d]
-          .rows('SELECT id, title, content, deleted_date FROM note_table'))
-        row['id'] as String: row
-    };
-    for (final entry in expected.entries) {
-      final actual = rows[entry.key];
-      if (actual == null) {
-        violations.add(_Violation('lost_edit', 'd$d lacks ${entry.key}'));
-        continue;
+    for (final table in [_noteTable, _taskTable]) {
+      final rows = {
+        for (final row in await devices[d].rows('SELECT * FROM $table'))
+          row['id'] as String: row
+      };
+      for (final entry in expected.entries) {
+        if (!entry.key.startsWith('$table/')) continue;
+        final pk = entry.key.substring(table.length + 1);
+        violations.addAll(_compareRow(d, pk, rows[pk], entry.value));
       }
-      if (actual['title'] != entry.value['title'] ||
-          actual['content'] != entry.value['content']) {
+    }
+    return violations;
+  }
+
+  List<_Violation> _compareRow(int d, String pk, Map<String, Object?>? actual,
+      Map<String, Object?> want) {
+    if (actual == null) return [_Violation('lost_edit', 'd$d lacks $pk')];
+    final violations = <_Violation>[];
+    for (final column in _comparedColumns) {
+      if (!want.containsKey(column) && actual[column] == null) continue;
+      if (actual[column] != want[column]) {
         violations.add(_Violation('lost_edit',
-            'd$d ${entry.key} has ${actual['title']}/${actual['content']}, expected ${entry.value['title']}/${entry.value['content']}'));
+            'd$d $pk $column is ${actual[column]}, expected ${want[column]}'));
       }
-      if (actual['deleted_date'] != entry.value['deleted_date']) {
-        final alive = actual['deleted_date'] == null;
-        violations.add(_Violation(alive ? 'resurrection' : 'lost_revival',
-            'd$d ${entry.key} deleted_date ${actual['deleted_date']}, expected ${entry.value['deleted_date']}'));
-      }
+    }
+    if (actual['deleted_date'] != want['deleted_date']) {
+      final alive = actual['deleted_date'] == null;
+      violations.add(_Violation(alive ? 'resurrection' : 'lost_revival',
+          'd$d $pk deleted_date ${actual['deleted_date']}, expected ${want['deleted_date']}'));
     }
     return violations;
   }

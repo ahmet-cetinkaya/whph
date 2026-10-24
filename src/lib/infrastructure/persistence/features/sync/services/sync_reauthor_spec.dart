@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_table_policy.dart';
+
 /// D6b: the predicate of the resumable `reauthor` upgrade phase, stored in
 /// `sync_state.reauthor_spec`.
 ///
-/// - [adopt] (restore, key_lost): cells of the sealed origin that no peer can
-///   hold, i.e. without a manifest or above the sent mark, move to the new
-///   origin.
+/// - [adopt] (restore, key_lost): user cells of the sealed origin that no peer
+///   can hold, i.e. without a manifest or above the sent mark, move to the new
+///   origin. Security cells stay on the sealed origin (D14, U11/rooted).
 /// - [all] (group_switch): every clock row not on the new origin is
 ///   re-authored.
 class ReauthorSpec {
@@ -44,8 +46,9 @@ class ReauthorSpec {
   /// `manifest_id`, `origin_seq`).
   (String, List<Object?>) get predicate => kind == _kindAdopt
       ? (
-          'origin_id = ? AND (manifest_id IS NULL OR (? IS NOT NULL AND origin_seq > ?))',
-          [oldOriginId, sentMark, sentMark]
+          'origin_id = ? AND (manifest_id IS NULL OR (? IS NOT NULL AND origin_seq > ?)) '
+              'AND (SELECT tbl_id FROM sync_row WHERE id = sync_clock.key / $packedKeyFactor) < ?',
+          [oldOriginId, sentMark, sentMark, securityTblIdFloor]
         )
       : ('origin_id != ?', [newOriginId]);
 }
