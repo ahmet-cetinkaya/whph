@@ -321,8 +321,8 @@ class AppDatabase extends _$AppDatabase {
           }
           await installSyncTriggers(this);
           await customStatement(
-              "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_cursor, upgrade_phase) "
-              "VALUES ('singleton', 0, 1, 0, 0, 'done') "
+              "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_phase) "
+              "VALUES ('singleton', 0, 1, 0, 'done') "
               "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'done'");
           Logger.info('Database schema created successfully');
         } catch (e, stackTrace) {

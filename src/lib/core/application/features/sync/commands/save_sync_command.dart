@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
@@ -41,14 +42,18 @@ class SaveSyncDeviceCommandHandler
     implements
         IRequestHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse> {
   final ISyncDeviceRepository _syncDeviceRepository;
+  final ISyncUpgradeService? _upgradeService;
 
   SaveSyncDeviceCommandHandler({
     required ISyncDeviceRepository syncDeviceRepository,
-  }) : _syncDeviceRepository = syncDeviceRepository;
+    ISyncUpgradeService? upgradeService,
+  })  : _syncDeviceRepository = syncDeviceRepository,
+        _upgradeService = upgradeService;
 
   @override
   Future<SaveSyncDeviceCommandResponse> call(
       SaveSyncDeviceCommand request) async {
+    await _requireUpgradeDone();
     SyncDevice? syncDevice;
 
     if (request.id != null) {
@@ -68,6 +73,15 @@ class SaveSyncDeviceCommandHandler
       createdDate: syncDevice.createdDate,
       modifiedDate: syncDevice.modifiedDate,
     );
+  }
+
+  Future<void> _requireUpgradeDone() async {
+    final upgradeService = _upgradeService;
+    if (upgradeService == null || (await upgradeService.getProgress()).isDone) {
+      return;
+    }
+    throw BusinessException('Sync upgrade is still running',
+        SyncTranslationKeys.syncPreparingError);
   }
 
   Future<SyncDevice> _add(

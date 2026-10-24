@@ -42,6 +42,8 @@ import 'package:whph/core/application/shared/services/abstraction/i_application_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_cascade_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
+import 'package:whph/infrastructure/persistence/features/sync/services/sync_upgrade_job.dart';
 import 'package:whph/infrastructure/persistence/shared/services/drift_application_transaction_service.dart';
 
 void registerPersistence(IContainer container) {
@@ -54,6 +56,7 @@ void registerPersistence(IContainer container) {
   container.registerSingleton<ISyncCascadeService>(
     (_) => DriftSyncCascadeService(database),
   );
+  container.registerSingleton<ISyncUpgradeService>((_) => SyncUpgradeJob(database));
 
   container.registerSingleton<IAppUsageIgnoreRuleRepository>((_) => DriftAppUsageIgnoreRuleRepository());
   container.registerSingleton<IAppUsageRepository>((_) => DriftAppUsageRepository());

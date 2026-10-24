@@ -76,10 +76,10 @@ List<String> syncInternSeedStatements(
       "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($_internKindNode, '$nodeValue')",
       "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($_internKindOrigin, '$originValue')",
       '''
-INSERT INTO sync_state (id, node_id, origin_id, apply_mode, next_seq, hlc, upgrade_cursor)
+INSERT INTO sync_state (id, node_id, origin_id, apply_mode, next_seq, hlc)
 VALUES ('singleton',
   (SELECT id FROM sync_intern WHERE value = '$nodeValue'),
-  (SELECT id FROM sync_intern WHERE value = '$originValue'), 0, 1, 0, 0)
+  (SELECT id FROM sync_intern WHERE value = '$originValue'), 0, 1, 0)
 ON CONFLICT (id) DO UPDATE SET node_id = excluded.node_id, origin_id = excluded.origin_id''',
     ];
 

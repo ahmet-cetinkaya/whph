@@ -44,8 +44,8 @@ Future<void> migrateV37ToV38(
 
   // The upgrade job (T17) starts from 'dedupe'.
   await db.customStatement(
-      "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_cursor, upgrade_phase) "
-      "VALUES ('singleton', 0, 1, 0, 0, 'dedupe') "
+      "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_phase) "
+      "VALUES ('singleton', 0, 1, 0, 'dedupe') "
       "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'dedupe'");
 
   await installSyncTriggers(db);

@@ -17,7 +17,7 @@ class SyncStateTable extends Table {
   TextColumn get cascadeCausePk => text().nullable()();
   TextColumn get reauthorSpec => text().nullable()();
   TextColumn get upgradePhase => text().nullable()();
-  IntColumn get upgradeCursor => integer().withDefault(const Constant(0))();
+  TextColumn get upgradeCursor => text().nullable()();
   TextColumn get captureVersion => text().nullable()();
 
   @override

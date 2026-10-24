@@ -15886,8 +15886,8 @@ class Shape65 extends i0.VersionedTable {
       columnsByName['reauthor_spec']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get upgradePhase =>
       columnsByName['upgrade_phase']! as i1.GeneratedColumn<String>;
-  i1.GeneratedColumn<int> get upgradeCursor =>
-      columnsByName['upgrade_cursor']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get upgradeCursor =>
+      columnsByName['upgrade_cursor']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get captureVersion =>
       columnsByName['capture_version']! as i1.GeneratedColumn<String>;
 }
@@ -15928,9 +15928,9 @@ i1.GeneratedColumn<String> _column_132(String aliasedName) =>
 i1.GeneratedColumn<String> _column_133(String aliasedName) =>
     i1.GeneratedColumn<String>('upgrade_phase', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_134(String aliasedName) =>
-    i1.GeneratedColumn<int>('upgrade_cursor', aliasedName, false,
-        type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
+i1.GeneratedColumn<String> _column_134(String aliasedName) =>
+    i1.GeneratedColumn<String>('upgrade_cursor', aliasedName, true,
+        type: i1.DriftSqlType.string);
 i1.GeneratedColumn<String> _column_135(String aliasedName) =>
     i1.GeneratedColumn<String>('capture_version', aliasedName, true,
         type: i1.DriftSqlType.string);
