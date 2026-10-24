@@ -86,13 +86,13 @@ void main() {
 
   group('schema and integrity', () {
     for (final name in fixtureNames) {
-      test('$name: opens with AppDatabase at schema 37 and passes integrity_check', () async {
+      test('$name: opens with AppDatabase (fixture schema 37) and passes integrity_check', () async {
         expect(headerUserVersion(results[name]!.database), fixtureSchemaVersion);
 
         final db = AppDatabase.withExecutor(NativeDatabase(copyOf(name)));
         try {
-          expect(db.schemaVersion, fixtureSchemaVersion);
-          expect(await scalar(db, 'PRAGMA user_version'), fixtureSchemaVersion);
+          expect(db.schemaVersion, greaterThanOrEqualTo(fixtureSchemaVersion));
+          expect(await scalar(db, 'PRAGMA user_version'), db.schemaVersion, reason: 'opening migrates the v37 copy');
           expect(await query(db, 'PRAGMA integrity_check'), [
             {'integrity_check': 'ok'},
           ]);
@@ -102,7 +102,7 @@ void main() {
           for (final table in db.allTables) {
             await db.customSelect('SELECT COUNT(*) FROM "${table.actualTableName}"').getSingle();
           }
-          expect(db.allTables.map((t) => t.actualTableName).toSet(), fixtureTables.toSet());
+          expect(db.allTables.map((t) => t.actualTableName).toSet(), containsAll(fixtureTables));
           expect(await db.select(db.taskTable).get(), hasLength(results[name]!.rowCounts['task_table']));
         } finally {
           await db.close();
