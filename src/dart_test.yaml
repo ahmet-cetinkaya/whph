@@ -1,0 +1,4 @@
+tags:
+  # T18 randomized multi-device convergence over the Drift change store.
+  sim-drift:
+    timeout: 30m

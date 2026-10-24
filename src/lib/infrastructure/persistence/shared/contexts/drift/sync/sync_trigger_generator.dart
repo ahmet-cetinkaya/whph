@@ -7,8 +7,8 @@ library;
 
 import 'sync_table_policy.dart';
 
-const int _internKindNode = 1;
-const int _internKindOrigin = 2;
+const int internKindNode = 1;
+const int internKindOrigin = 2;
 
 /// D3 wall clock in ms, derived inside SQLite so triggers work on every
 /// connection and isolate.
@@ -73,8 +73,8 @@ String _cells(int tblId, String pkExpr, List<_CellSpec> cells) {
 List<String> syncInternSeedStatements(
         {required String nodeValue, required String originValue}) =>
     [
-      "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($_internKindNode, '$nodeValue')",
-      "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($_internKindOrigin, '$originValue')",
+      "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($internKindNode, '$nodeValue')",
+      "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($internKindOrigin, '$originValue')",
       '''
 INSERT INTO sync_state (id, node_id, origin_id, apply_mode, next_seq, hlc)
 VALUES ('singleton',

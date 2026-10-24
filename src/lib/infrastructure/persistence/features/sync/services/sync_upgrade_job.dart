@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/domain/features/tasks/task_status_constants.dart';
+import 'package:whph/infrastructure/persistence/features/sync/services/sync_reauthor_spec.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_table_policy.dart';
 
 /// D17: the resumable upgrade job. Production port of the S5 spike
@@ -12,7 +13,8 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_
 ///   loser-edit clock migration) under `apply_mode = 4`;
 /// - `bootstrap`: D6 clock rows for every pre-existing cell, `INSERT OR IGNORE`
 ///   so a user edit made between chunks keeps its newer trigger clock;
-/// - `reauthor`: D6b, owned by T18.
+/// - `reauthor`: D6b, chunks of at most [maxReauthorRowsPerChunk] clock rows
+///   moved to the current origin with fresh seqs.
 ///
 /// Triggers stamp only at `apply_mode = 0`, so chunk transactions never
 /// capture their own writes while user edits between chunks do.
@@ -23,6 +25,10 @@ class SyncUpgradeJob implements ISyncUpgradeService {
 
   /// D17 bootstrap chunk bound (cells per transaction).
   static const int maxBootstrapCellsPerChunk = 5000;
+
+  /// D6b/D17 re-author chunk bound (`sync_clock` rows per transaction).
+  static const int maxReauthorRowsPerChunk = 5000;
+  static const int _reauthorRowsPerStatement = 500;
 
   /// S5 D-5: several groups per dedupe chunk under a row budget keeps one
   /// chunk transaction within 2 s.
@@ -75,7 +81,7 @@ class SyncUpgradeJob implements ISyncUpgradeService {
         case SyncUpgradePhase.bootstrap:
           await _bootstrapStep(cursor, stopAfterChunks);
         case SyncUpgradePhase.reauthor:
-          await _reauthorStep(state);
+          await _reauthorStep(state, stopAfterChunks);
         case SyncUpgradePhase.done:
           return true;
       }
@@ -495,15 +501,72 @@ FROM cells ORDER BY key''', [
 
   // -- reauthor -------------------------------------------------------------
 
-  /// D6b `reauthor` belongs to T18. Without a spec there is nothing to do;
-  /// with one this job cannot honour it yet, so it refuses instead of
-  /// declaring `done` over unprocessed rows.
-  Future<void> _reauthorStep(Map<String, Object?> state) async {
-    if (state['reauthor_spec'] != null) {
-      throw UnsupportedError(
-          'reauthor_spec is processed by the T18 reauthor phase');
+  /// D6b: moves the clock rows selected by `sync_state.reauthor_spec` to the
+  /// current origin, `maxReauthorRowsPerChunk` per transaction. Rows a user
+  /// edit already moved no longer match the predicate. The cursor is the last
+  /// processed clock key, so a killed job resumes where it stopped.
+  Future<void> _reauthorStep(
+      Map<String, Object?> state, int? stopAfterChunks) async {
+    final specText = state['reauthor_spec'] as String?;
+    if (specText == null) {
+      await _setPhase(SyncUpgradePhase.done, null);
+      return;
     }
-    await _setPhase(SyncUpgradePhase.done, null);
+    final spec = ReauthorSpec.decode(specText);
+    var cursor = int.tryParse(state['upgrade_cursor'] as String? ?? '') ?? 0;
+    while (_hasChunkBudget(stopAfterChunks)) {
+      final moved = await _inChunk<List<int>>(
+          SyncUpgradePhase.reauthor,
+          'reauthor@$cursor',
+          (keys) => keys.length,
+          () => _reauthorChunk(spec, cursor));
+      if (moved.isEmpty) return;
+      cursor = moved.last;
+    }
+  }
+
+  /// One chunk transaction. Returns the moved clock keys; an empty list
+  /// means no row matches any more and the phase is finished.
+  Future<List<int>> _reauthorChunk(ReauthorSpec spec, int cursor) async {
+    final (predicate, predicateArgs) = spec.predicate;
+    final keys = [
+      for (final row in await _select(
+          'SELECT key FROM sync_clock WHERE key > ? AND ($predicate) ORDER BY key LIMIT ?',
+          [cursor, ...predicateArgs, maxReauthorRowsPerChunk]))
+        row['key'] as int
+    ];
+    if (keys.isEmpty) {
+      await _db.customStatement(
+          'UPDATE sync_state SET reauthor_spec = NULL WHERE id = ?',
+          [_stateId]);
+      await _setPhase(SyncUpgradePhase.done, null);
+      return keys;
+    }
+    final firstSeq = (await _state())['next_seq'] as int;
+    for (var start = 0;
+        start < keys.length;
+        start += _reauthorRowsPerStatement) {
+      final end = (start + _reauthorRowsPerStatement).clamp(0, keys.length);
+      await _moveToNewOrigin(spec, keys.sublist(start, end), firstSeq + start);
+    }
+    await _db.customStatement(
+        'UPDATE sync_state SET next_seq = next_seq + ? WHERE id = ?',
+        [keys.length, _stateId]);
+    await _setCursor('${keys.last}');
+    return keys;
+  }
+
+  Future<void> _moveToNewOrigin(
+      ReauthorSpec spec, List<int> keys, int firstSeq) async {
+    final values = List.filled(keys.length, '(?, ?)').join(', ');
+    await _db.customStatement(
+        'WITH moved(key, seq) AS (VALUES $values) '
+        'UPDATE sync_clock SET origin_id = ?, manifest_id = NULL, origin_seq = moved.seq '
+        'FROM moved WHERE sync_clock.key = moved.key',
+        [
+          for (var i = 0; i < keys.length; i++) ...[keys[i], firstSeq + i],
+          spec.newOriginId,
+        ]);
   }
 }
 
