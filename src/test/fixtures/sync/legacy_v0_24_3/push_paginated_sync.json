@@ -1,0 +1,129 @@
+{
+  "frames": [
+    {
+      "request": {
+        "type": "paginated_sync",
+        "data": {
+          "entityType": "Task",
+          "pageIndex": 0,
+          "pageSize": 50,
+          "totalPages": 1,
+          "totalItems": 2,
+          "isLastPage": true,
+          "appVersion": "0.24.4",
+          "isDebugMode": false,
+          "syncDevice": {
+            "id": "sync-device-1",
+            "createdDate": "2026-01-01T00:00:00.000Z",
+            "modifiedDate": null,
+            "deletedDate": null,
+            "fromIp": "192.168.1.5",
+            "toIp": "192.168.1.9",
+            "fromDeviceId": "legacy-device-1",
+            "toDeviceId": "new-device",
+            "name": "Legacy Phone",
+            "lastSyncDate": null
+          },
+          "tasksSyncData": {
+            "data": {
+              "createSync": [
+                {
+                  "id": "task-0",
+                  "createdDate": "2026-01-01T00:00:00.000Z",
+                  "modifiedDate": null,
+                  "deletedDate": null,
+                  "title": "FIXTURE-TITLE-1",
+                  "description": null,
+                  "priority": null,
+                  "plannedDate": null,
+                  "deadlineDate": null,
+                  "estimatedTime": null,
+                  "completedAt": null,
+                  "isCompleted": false,
+                  "statusId": null,
+                  "parentTaskId": null,
+                  "order": "U",
+                  "plannedDateReminderTime": "none",
+                  "deadlineDateReminderTime": "none",
+                  "plannedDateReminderCustomOffset": null,
+                  "deadlineDateReminderCustomOffset": null,
+                  "recurrenceType": "RecurrenceType.none",
+                  "recurrenceInterval": null,
+                  "recurrenceDaysString": null,
+                  "recurrenceStartDate": null,
+                  "recurrenceEndDate": null,
+                  "recurrenceCount": null,
+                  "recurrenceParentId": null,
+                  "recurrenceConfiguration": null
+                },
+                {
+                  "id": "task-1",
+                  "createdDate": "2026-01-01T00:00:00.000Z",
+                  "modifiedDate": null,
+                  "deletedDate": null,
+                  "title": "FIXTURE-TITLE-2",
+                  "description": null,
+                  "priority": null,
+                  "plannedDate": null,
+                  "deadlineDate": null,
+                  "estimatedTime": null,
+                  "completedAt": null,
+                  "isCompleted": false,
+                  "statusId": null,
+                  "parentTaskId": null,
+                  "order": "U",
+                  "plannedDateReminderTime": "none",
+                  "deadlineDateReminderTime": "none",
+                  "plannedDateReminderCustomOffset": null,
+                  "deadlineDateReminderCustomOffset": null,
+                  "recurrenceType": "RecurrenceType.none",
+                  "recurrenceInterval": null,
+                  "recurrenceDaysString": null,
+                  "recurrenceStartDate": null,
+                  "recurrenceEndDate": null,
+                  "recurrenceCount": null,
+                  "recurrenceParentId": null,
+                  "recurrenceConfiguration": null
+                }
+              ],
+              "updateSync": [],
+              "deleteSync": []
+            },
+            "pageIndex": 0,
+            "pageSize": 50,
+            "totalPages": 1,
+            "totalItems": 2,
+            "isLastPage": true,
+            "entityType": "Task"
+          }
+        }
+      },
+      "expectedResponse": {
+        "type": "paginated_sync",
+        "data": {
+          "success": true,
+          "server_type": "lan_server",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "paginatedSyncDataDto": {
+            "appVersion": "0.25.0",
+            "syncDevice": {
+              "id": "",
+              "createdDate": "2026-01-01T00:00:00.000Z",
+              "fromIp": "",
+              "toIp": "",
+              "fromDeviceId": "fixture-host-member",
+              "toDeviceId": ""
+            },
+            "isDebugMode": false,
+            "entityType": "Task",
+            "pageIndex": 0,
+            "pageSize": 0,
+            "totalPages": 0,
+            "totalItems": 0,
+            "isLastPage": true
+          }
+        }
+      }
+    }
+  ]
+}

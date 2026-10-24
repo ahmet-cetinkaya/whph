@@ -65,6 +65,9 @@ class DeviceHandshakeService {
                   port: port,
                   capabilities: capabilities,
                   serverInfo: serverInfo,
+                  memberId: data['memberId'] as String?,
+                  protocolVersion: data['protocolVersion'] as int?,
+                  appVersion: data['appVersion'] as String?,
                 );
 
                 Logger.info(
@@ -236,6 +239,16 @@ class DeviceInfo {
   final DeviceCapabilities? capabilities;
   final ServerInfo? serverInfo;
 
+  /// Sync member id; `null` for a legacy responder.
+  final String? memberId;
+
+  /// Sync protocol version; `null` for a legacy responder (v0.24.3), which
+  /// predates the field.
+  final int? protocolVersion;
+
+  /// App version the device reports; legacy responders may omit it.
+  final String? appVersion;
+
   DeviceInfo({
     required this.deviceId,
     required this.deviceName,
@@ -246,7 +259,14 @@ class DeviceInfo {
     DateTime? discoveredAt,
     this.capabilities,
     this.serverInfo,
+    this.memberId,
+    this.protocolVersion,
+    this.appVersion,
   }) : discoveredAt = discoveredAt ?? DateTime.now();
+
+  /// A device without a protocol version runs the legacy sync: it is listed
+  /// as "needs update" and receives no user data (D10).
+  bool get needsUpdate => protocolVersion == null;
 
   /// Check if this device can act as a server
   bool get canActAsServer => capabilities?.canActAsServer ?? false;
