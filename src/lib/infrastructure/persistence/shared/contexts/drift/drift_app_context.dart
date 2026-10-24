@@ -91,6 +91,7 @@ String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
     SyncRevocationTable,
     SyncRowTable,
     SyncStateTable,
+    SyncSupersededTable,
     SyncVectorTable,
     TagTable,
     TagTagTable,

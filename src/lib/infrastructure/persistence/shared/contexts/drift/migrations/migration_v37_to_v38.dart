@@ -20,6 +20,7 @@ Future<void> migrateV37ToV38(
   await m.createTable(db.syncPeerStateTableTable);
   await m.createTable(db.syncHeldEnvelopeTable);
   await m.createTable(db.syncHeldCellTable);
+  await m.createTable(db.syncSupersededTable);
 
   await m.createIndex(Index('sync_clock_origin_seq_idx',
       'CREATE INDEX IF NOT EXISTS sync_clock_origin_seq_idx ON sync_clock (origin_id, origin_seq)'));

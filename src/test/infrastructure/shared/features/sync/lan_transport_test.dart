@@ -6,6 +6,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_session_host.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/infrastructure/desktop/features/sync/desktop_lan_sync_adapter.dart';
 import 'package:whph/infrastructure/shared/features/sync/lan_connection_limits.dart';
@@ -15,7 +16,9 @@ import 'package:whph/infrastructure/shared/features/sync/pairing_rate_limiter.da
 import 'package:whph/infrastructure/shared/features/sync/web_socket_sync_transport.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
+import 'drift_session_test_support.dart';
 import 'lan_test_support.dart';
+import 'sync_security_test_support.dart';
 
 const int _markerCount = 50;
 const String _loopback = '127.0.0.1';
@@ -31,7 +34,7 @@ void main() {
     }
   });
 
-  Future<LanSyncServer> startServer(DeviceHost host,
+  Future<LanSyncServer> startServer(ISyncSessionHost host,
       {LanConnectionLimits? limits,
       PairingRateLimiter? pairingLimiter,
       Duration firstFrameTimeout = defaultFirstFrameTimeout}) async {
@@ -55,36 +58,53 @@ void main() {
     return (a, b, seedMarkers(a, _markerCount));
   }
 
-  Future<SessionResult> syncOver(SyncDevice a, SyncDevice b, int port) => const LanSyncClient().runSession(
+  late Directory scratch;
+  setUp(() async => scratch = await Directory.systemTemp.createTemp('lan-drift-'));
+  tearDown(() => scratch.delete(recursive: true));
+
+  Future<(DriftEngineDevice, DriftEngineDevice, List<String>)> pairedDriftDevices() async {
+    final a = await DriftEngineDevice.open('A', scratch);
+    final b = await DriftEngineDevice.open('B', scratch);
+    addTearDown(a.close);
+    addTearDown(b.close);
+    await pairDevices(a.security, b.security);
+    return (a, b, await seedNoteMarkers(a.security, _markerCount));
+  }
+
+  Future<SessionResult> syncDrift(DriftEngineDevice a, DriftEngineDevice b, int port) =>
+      const LanSyncClient().runSession(
         _loopback,
-        (transport) => a.initiate(transport, peerMemberId: b.memberId),
+        (transport) => a.initiate(transport, b.memberId),
         port: port,
       );
 
-  test('acceptance 1: a real session moves all seeded markers (positive control)', () async {
-    final (a, b, markers) = await pairedDevices();
-    final host = DeviceHost(b);
-    final server = await startServer(host);
+  Future<Set<String>> driftTitles(DriftEngineDevice device) async => {
+        for (final row in await device.security.database.rows('SELECT title FROM note_table')) '${row['title']}',
+      };
 
-    final result = await syncOver(a, b, server.port!);
+  test('acceptance 1: a real session moves all seeded markers (positive control)', () async {
+    final (a, b, markers) = await pairedDriftDevices();
+    final server = await startServer(b.host);
+
+    final result = await syncDrift(a, b, server.port!);
 
     expect(result, isA<SessionComplete>(), reason: '$result');
-    expect(titlesOf(b).containsAll(markers), isTrue);
+    expect((await driftTitles(b)).containsAll(markers), isTrue);
     expect(markers, hasLength(_markerCount));
-    expect(contentChecksum(a), contentChecksum(b));
+    expect(await b.security.database.content(), await a.security.database.content());
   });
 
   group('acceptance 2: SC-004 raw bytes', () {
     test('the encrypted session shows 0 markers; a plaintext control shows all', () async {
-      final (a, b, markers) = await pairedDevices();
-      final server = await startServer(DeviceHost(b));
+      final (a, b, markers) = await pairedDriftDevices();
+      final server = await startServer(b.host);
       final proxy = RecordingProxy(server.port!);
       await proxy.start();
       addTearDown(proxy.stop);
 
-      final result = await syncOver(a, b, proxy.port);
+      final result = await syncDrift(a, b, proxy.port);
       expect(result, isA<SessionComplete>(), reason: '$result');
-      expect(titlesOf(b).containsAll(markers), isTrue);
+      expect((await driftTitles(b)).containsAll(markers), isTrue);
 
       for (final unmasked in [false, true]) {
         final seen = markers.where((m) => proxy.captured.occurrences(m, unmasked: unmasked) > 0);

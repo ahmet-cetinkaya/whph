@@ -14797,6 +14797,7 @@ final class Schema38 extends i0.VersionedSchema {
     syncRevocation,
     syncRow,
     syncState,
+    syncSuperseded,
     syncVector,
     tagTable,
     tagTagTable,
@@ -15151,6 +15152,7 @@ final class Schema38 extends i0.VersionedSchema {
         isStrict: false,
         tableConstraints: [
           'PRIMARY KEY(id)',
+          'UNIQUE(origin_id, origin_seq)',
         ],
         columns: [
           _column_88,
@@ -15162,6 +15164,10 @@ final class Schema38 extends i0.VersionedSchema {
           _column_98,
           _column_99,
           _column_100,
+          _column_101,
+          _column_102,
+          _column_79,
+          _column_103,
         ],
         attachedDatabase: database,
       ),
@@ -15192,12 +15198,12 @@ final class Schema38 extends i0.VersionedSchema {
         ],
         columns: [
           _column_0,
-          _column_101,
-          _column_30,
-          _column_102,
-          _column_103,
           _column_104,
+          _column_30,
           _column_105,
+          _column_106,
+          _column_107,
+          _column_108,
           _column_1,
           _column_3,
         ],
@@ -15213,12 +15219,12 @@ final class Schema38 extends i0.VersionedSchema {
           'PRIMARY KEY(manifest_id)',
         ],
         columns: [
-          _column_106,
-          _column_95,
-          _column_107,
-          _column_108,
           _column_109,
+          _column_95,
           _column_110,
+          _column_111,
+          _column_112,
+          _column_113,
         ],
         attachedDatabase: database,
       ),
@@ -15233,9 +15239,9 @@ final class Schema38 extends i0.VersionedSchema {
         ],
         columns: [
           _column_95,
-          _column_111,
-          _column_112,
-          _column_110,
+          _column_114,
+          _column_115,
+          _column_113,
           _column_1,
         ],
         attachedDatabase: database,
@@ -15250,12 +15256,12 @@ final class Schema38 extends i0.VersionedSchema {
           'PRIMARY KEY(member_id)',
         ],
         columns: [
-          _column_101,
-          _column_113,
-          _column_114,
-          _column_115,
+          _column_104,
           _column_116,
           _column_117,
+          _column_118,
+          _column_119,
+          _column_120,
         ],
         attachedDatabase: database,
       ),
@@ -15269,12 +15275,12 @@ final class Schema38 extends i0.VersionedSchema {
           'PRIMARY KEY(revoked_pub, revoker_pub, origin_id)',
         ],
         columns: [
-          _column_118,
-          _column_119,
+          _column_121,
+          _column_122,
           _column_95,
           _column_78,
-          _column_120,
-          _column_110,
+          _column_123,
+          _column_113,
           _column_75,
         ],
         attachedDatabase: database,
@@ -15290,7 +15296,7 @@ final class Schema38 extends i0.VersionedSchema {
         ],
         columns: [
           _column_88,
-          _column_121,
+          _column_124,
           _column_90,
         ],
         attachedDatabase: database,
@@ -15306,9 +15312,6 @@ final class Schema38 extends i0.VersionedSchema {
         ],
         columns: [
           _column_0,
-          _column_122,
-          _column_123,
-          _column_124,
           _column_125,
           _column_126,
           _column_127,
@@ -15320,11 +15323,30 @@ final class Schema38 extends i0.VersionedSchema {
           _column_133,
           _column_134,
           _column_135,
+          _column_136,
+          _column_137,
+          _column_138,
         ],
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape66 syncVector = Shape66(
+  late final Shape66 syncSuperseded = Shape66(
+      source: i0.VersionedTable(
+        entityName: 'sync_superseded',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(origin_id, origin_seq)',
+        ],
+        columns: [
+          _column_77,
+          _column_78,
+          _column_139,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape67 syncVector = Shape67(
       source: i0.VersionedTable(
         entityName: 'sync_vector',
         withoutRowId: false,
@@ -15334,7 +15356,7 @@ final class Schema38 extends i0.VersionedSchema {
         ],
         columns: [
           _column_95,
-          _column_136,
+          _column_140,
         ],
         attachedDatabase: database,
       ),
@@ -15665,6 +15687,14 @@ class Shape57 extends i0.VersionedTable {
       columnsByName['category']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<i2.Uint8List> get envelope =>
       columnsByName['envelope']! as i1.GeneratedColumn<i2.Uint8List>;
+  i1.GeneratedColumn<String> get originId =>
+      columnsByName['origin_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get originSeq =>
+      columnsByName['origin_seq']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get manifestId =>
+      columnsByName['manifest_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get recordedAt =>
+      columnsByName['recorded_at']! as i1.GeneratedColumn<int>;
 }
 
 i1.GeneratedColumn<String> _column_96(String aliasedName) =>
@@ -15682,6 +15712,15 @@ i1.GeneratedColumn<String> _column_99(String aliasedName) =>
 i1.GeneratedColumn<i2.Uint8List> _column_100(String aliasedName) =>
     i1.GeneratedColumn<i2.Uint8List>('envelope', aliasedName, false,
         type: i1.DriftSqlType.blob);
+i1.GeneratedColumn<String> _column_101(String aliasedName) =>
+    i1.GeneratedColumn<String>('origin_id', aliasedName, true,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<int> _column_102(String aliasedName) =>
+    i1.GeneratedColumn<int>('origin_seq', aliasedName, true,
+        type: i1.DriftSqlType.int);
+i1.GeneratedColumn<int> _column_103(String aliasedName) =>
+    i1.GeneratedColumn<int>('recorded_at', aliasedName, true,
+        type: i1.DriftSqlType.int);
 
 class Shape58 extends i0.VersionedTable {
   Shape58({required super.source, required super.alias}) : super.aliased();
@@ -15715,19 +15754,19 @@ class Shape59 extends i0.VersionedTable {
       columnsByName['deleted_date']! as i1.GeneratedColumn<DateTime>;
 }
 
-i1.GeneratedColumn<String> _column_101(String aliasedName) =>
+i1.GeneratedColumn<String> _column_104(String aliasedName) =>
     i1.GeneratedColumn<String>('member_id', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_102(String aliasedName) =>
+i1.GeneratedColumn<String> _column_105(String aliasedName) =>
     i1.GeneratedColumn<String>('platform', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_103(String aliasedName) =>
+i1.GeneratedColumn<String> _column_106(String aliasedName) =>
     i1.GeneratedColumn<String>('x25519_pub', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_104(String aliasedName) =>
+i1.GeneratedColumn<String> _column_107(String aliasedName) =>
     i1.GeneratedColumn<String>('ed25519_pub', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_105(String aliasedName) =>
+i1.GeneratedColumn<String> _column_108(String aliasedName) =>
     i1.GeneratedColumn<String>('added_by', aliasedName, false,
         type: i1.DriftSqlType.string);
 
@@ -15747,19 +15786,19 @@ class Shape60 extends i0.VersionedTable {
       columnsByName['sig']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<int> _column_106(String aliasedName) =>
+i1.GeneratedColumn<int> _column_109(String aliasedName) =>
     i1.GeneratedColumn<int>('manifest_id', aliasedName, false,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_107(String aliasedName) =>
+i1.GeneratedColumn<int> _column_110(String aliasedName) =>
     i1.GeneratedColumn<int>('from_seq', aliasedName, false,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_108(String aliasedName) =>
+i1.GeneratedColumn<int> _column_111(String aliasedName) =>
     i1.GeneratedColumn<int>('to_seq', aliasedName, false,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<i2.Uint8List> _column_109(String aliasedName) =>
+i1.GeneratedColumn<i2.Uint8List> _column_112(String aliasedName) =>
     i1.GeneratedColumn<i2.Uint8List>('hashes', aliasedName, false,
         type: i1.DriftSqlType.blob);
-i1.GeneratedColumn<String> _column_110(String aliasedName) =>
+i1.GeneratedColumn<String> _column_113(String aliasedName) =>
     i1.GeneratedColumn<String>('sig', aliasedName, false,
         type: i1.DriftSqlType.string);
 
@@ -15777,10 +15816,10 @@ class Shape61 extends i0.VersionedTable {
       columnsByName['created_date']! as i1.GeneratedColumn<DateTime>;
 }
 
-i1.GeneratedColumn<String> _column_111(String aliasedName) =>
+i1.GeneratedColumn<String> _column_114(String aliasedName) =>
     i1.GeneratedColumn<String>('member_ed25519_pub', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_112(String aliasedName) =>
+i1.GeneratedColumn<int> _column_115(String aliasedName) =>
     i1.GeneratedColumn<int>('created_hlc', aliasedName, false,
         type: i1.DriftSqlType.int);
 
@@ -15800,19 +15839,19 @@ class Shape62 extends i0.VersionedTable {
       columnsByName['last_peer_wall_received']! as i1.GeneratedColumn<DateTime>;
 }
 
-i1.GeneratedColumn<String> _column_113(String aliasedName) =>
+i1.GeneratedColumn<String> _column_116(String aliasedName) =>
     i1.GeneratedColumn<String>('addresses', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<DateTime> _column_114(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_117(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('last_success_local', aliasedName, true,
         type: i1.DriftSqlType.dateTime);
-i1.GeneratedColumn<String> _column_115(String aliasedName) =>
+i1.GeneratedColumn<String> _column_118(String aliasedName) =>
     i1.GeneratedColumn<String>('last_result_category', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_116(String aliasedName) =>
+i1.GeneratedColumn<int> _column_119(String aliasedName) =>
     i1.GeneratedColumn<int>('last_peer_wall', aliasedName, true,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<DateTime> _column_117(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_120(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('last_peer_wall_received', aliasedName, true,
         type: i1.DriftSqlType.dateTime);
 
@@ -15834,13 +15873,13 @@ class Shape63 extends i0.VersionedTable {
       columnsByName['hlc']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<String> _column_118(String aliasedName) =>
+i1.GeneratedColumn<String> _column_121(String aliasedName) =>
     i1.GeneratedColumn<String>('revoked_pub', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_119(String aliasedName) =>
+i1.GeneratedColumn<String> _column_122(String aliasedName) =>
     i1.GeneratedColumn<String>('revoker_pub', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_120(String aliasedName) =>
+i1.GeneratedColumn<String> _column_123(String aliasedName) =>
     i1.GeneratedColumn<String>('cutoffs', aliasedName, false,
         type: i1.DriftSqlType.string);
 
@@ -15854,7 +15893,7 @@ class Shape64 extends i0.VersionedTable {
       columnsByName['pk']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<int> _column_121(String aliasedName) =>
+i1.GeneratedColumn<int> _column_124(String aliasedName) =>
     i1.GeneratedColumn<int>('tbl_id', aliasedName, false,
         type: i1.DriftSqlType.int);
 
@@ -15892,58 +15931,72 @@ class Shape65 extends i0.VersionedTable {
       columnsByName['capture_version']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_122(String aliasedName) =>
+i1.GeneratedColumn<String> _column_125(String aliasedName) =>
     i1.GeneratedColumn<String>('member_id', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_123(String aliasedName) =>
+i1.GeneratedColumn<String> _column_126(String aliasedName) =>
     i1.GeneratedColumn<String>('group_id', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_124(String aliasedName) =>
+i1.GeneratedColumn<int> _column_127(String aliasedName) =>
     i1.GeneratedColumn<int>('node_id', aliasedName, true,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_125(String aliasedName) =>
+i1.GeneratedColumn<int> _column_128(String aliasedName) =>
     i1.GeneratedColumn<int>('origin_id', aliasedName, true,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<String> _column_126(String aliasedName) =>
+i1.GeneratedColumn<String> _column_129(String aliasedName) =>
     i1.GeneratedColumn<String>('local_origin_id', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_127(String aliasedName) =>
+i1.GeneratedColumn<int> _column_130(String aliasedName) =>
     i1.GeneratedColumn<int>('hlc', aliasedName, false,
         type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
-i1.GeneratedColumn<int> _column_128(String aliasedName) =>
+i1.GeneratedColumn<int> _column_131(String aliasedName) =>
     i1.GeneratedColumn<int>('next_seq', aliasedName, false,
         type: i1.DriftSqlType.int, defaultValue: const CustomExpression('1'));
-i1.GeneratedColumn<int> _column_129(String aliasedName) =>
+i1.GeneratedColumn<int> _column_132(String aliasedName) =>
     i1.GeneratedColumn<int>('apply_mode', aliasedName, false,
         type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
-i1.GeneratedColumn<int> _column_130(String aliasedName) =>
+i1.GeneratedColumn<int> _column_133(String aliasedName) =>
     i1.GeneratedColumn<int>('cascade_cause_tbl_id', aliasedName, true,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<String> _column_131(String aliasedName) =>
+i1.GeneratedColumn<String> _column_134(String aliasedName) =>
     i1.GeneratedColumn<String>('cascade_cause_pk', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_132(String aliasedName) =>
+i1.GeneratedColumn<String> _column_135(String aliasedName) =>
     i1.GeneratedColumn<String>('reauthor_spec', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_133(String aliasedName) =>
+i1.GeneratedColumn<String> _column_136(String aliasedName) =>
     i1.GeneratedColumn<String>('upgrade_phase', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_134(String aliasedName) =>
+i1.GeneratedColumn<String> _column_137(String aliasedName) =>
     i1.GeneratedColumn<String>('upgrade_cursor', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_135(String aliasedName) =>
+i1.GeneratedColumn<String> _column_138(String aliasedName) =>
     i1.GeneratedColumn<String>('capture_version', aliasedName, true,
         type: i1.DriftSqlType.string);
 
 class Shape66 extends i0.VersionedTable {
   Shape66({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get originId =>
+      columnsByName['origin_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get originSeq =>
+      columnsByName['origin_seq']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get clockKey =>
+      columnsByName['clock_key']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_139(String aliasedName) =>
+    i1.GeneratedColumn<int>('clock_key', aliasedName, false,
+        type: i1.DriftSqlType.int);
+
+class Shape67 extends i0.VersionedTable {
+  Shape67({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<String> get originId =>
       columnsByName['origin_id']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<int> get cursor =>
       columnsByName['cursor']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_136(String aliasedName) =>
+i1.GeneratedColumn<int> _column_140(String aliasedName) =>
     i1.GeneratedColumn<int>('cursor', aliasedName, false,
         type: i1.DriftSqlType.int);
 i0.MigrationStepWithVersion migrationSteps({
