@@ -102,7 +102,7 @@ class DriftAppUsageTagRepository
           t.color as tag_color,
           COALESCE((
             SELECT TOTAL(clamped) FROM (
-              SELECT MAX(aur.duration, 0) as clamped
+              SELECT MAX(TOTAL(aur.duration), 0) as clamped
               FROM app_usage_tag_table aut
               JOIN app_usage_time_record_table aur ON aur.app_usage_id = aut.app_usage_id
               WHERE aut.tag_id = t.id

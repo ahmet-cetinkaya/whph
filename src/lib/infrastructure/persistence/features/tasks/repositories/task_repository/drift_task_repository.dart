@@ -688,7 +688,7 @@ class DriftTaskRepository extends DriftBaseRepository<Task, String, TaskTable>
           '''
          SELECT task_id, TOTAL(clamped) as total_duration
          FROM (
-           SELECT task_id, MAX(duration, 0) as clamped
+           SELECT task_id, MAX(TOTAL(duration), 0) as clamped
            FROM task_time_record_table
            WHERE task_id IN (${subtaskIds.map((_) => '?').join(',')})
            AND deleted_date IS NULL

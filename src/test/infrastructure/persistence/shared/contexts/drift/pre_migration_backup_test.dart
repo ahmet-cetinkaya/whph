@@ -71,7 +71,7 @@ void main() {
     addTearDown(upgraded.close);
     final migratedType = await upgraded
         .customSelect("SELECT type FROM habit_table WHERE id = 'wal-habit'")
-        .getSingle(); // opening runs onUpgrade 36 -> 37
+        .getSingle(); // opening runs onUpgrade 36 -> 38
     await v36.close();
 
     // Then onUpgrade ran VACUUM INTO on the open connection without error
@@ -80,14 +80,14 @@ void main() {
     expect(migratedType.read<int>('type'), 0);
     final backups = preMigrationBackups();
     expect(backups, hasLength(1), reason: 'exactly one backup per upgrade');
-    expect(p.basename(backups.single.path), startsWith('backup_v36_to_v37_'));
+    expect(p.basename(backups.single.path), startsWith('backup_v36_to_v38_'));
     expect(await userVersionOf(backups.single), 36);
     expect(await integrityCheckOf(backups.single), 'ok');
     expect(
       (await queryStandalone(backups.single, 'SELECT id FROM habit_table ORDER BY created_date')).map((r) => r['id']),
       ['checkpointed-habit', 'wal-habit'],
     );
-    expect(await userVersionOf(dbFile), 37);
+    expect(await userVersionOf(dbFile), 38);
   });
 
   test('control: VACUUM INTO inside a transaction fails, so a successful onUpgrade backup proves no transaction',
@@ -115,7 +115,7 @@ void main() {
 
     await database.customSelect('SELECT 1').get();
 
-    expect(await userVersionOf(dbFile), 37);
+    expect(await userVersionOf(dbFile), 38);
     expect(preMigrationBackups(), isEmpty);
   });
 }

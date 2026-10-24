@@ -61,7 +61,7 @@ class DriftTaskTimeRecordRepository
       '''
       SELECT COALESCE(TOTAL(clamped), 0) as total_duration
       FROM (
-        SELECT MAX(duration, 0) as clamped
+        SELECT MAX(TOTAL(duration), 0) as clamped
         FROM task_time_record_table
         WHERE task_id = ?
           AND deleted_date IS NULL
@@ -95,7 +95,7 @@ class DriftTaskTimeRecordRepository
       '''
       SELECT task_id, COALESCE(TOTAL(clamped), 0) as total_duration
       FROM (
-        SELECT task_id, MAX(duration, 0) as clamped
+        SELECT task_id, MAX(TOTAL(duration), 0) as clamped
         FROM task_time_record_table
         WHERE task_id IN ($placeholders)
           AND deleted_date IS NULL

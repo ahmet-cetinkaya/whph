@@ -37,7 +37,7 @@ class TaskQueryBuilder {
       task_table.recurrence_count,
       task_table.recurrence_parent_id,
       (SELECT COALESCE(TOTAL(clamped), 0) FROM (
-         SELECT MAX(task_time_record_table.duration, 0) as clamped
+         SELECT MAX(TOTAL(task_time_record_table.duration), 0) as clamped
          FROM task_time_record_table
          WHERE task_time_record_table.task_id = task_table.id
          AND task_time_record_table.deleted_date IS NULL

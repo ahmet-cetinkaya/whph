@@ -93,7 +93,7 @@ class DriftTaskTagRepository
           t.color as tag_color,
           COALESCE((
             SELECT TOTAL(clamped) FROM (
-              SELECT MAX(tr.duration, 0) as clamped
+              SELECT MAX(TOTAL(tr.duration), 0) as clamped
               FROM task_tag_table tt
               JOIN task_time_record_table tr ON tr.task_id = tt.task_id
               WHERE tt.tag_id = t.id

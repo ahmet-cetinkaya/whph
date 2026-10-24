@@ -68,7 +68,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
         app_usage_id,
         COALESCE(TOTAL(clamped), 0) as total_duration
       FROM (
-        SELECT app_usage_id, MAX(duration, 0) as clamped
+        SELECT app_usage_id, MAX(TOTAL(duration), 0) as clamped
         FROM app_usage_time_record_table
         WHERE app_usage_id IN (${appUsageIds.map((_) => '?').join(', ')})
           AND deleted_date IS NULL
@@ -208,7 +208,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
           au.device_name,
           COALESCE((
             SELECT TOTAL(clamped) FROM (
-              SELECT MAX(autr.duration, 0) as clamped
+              SELECT MAX(TOTAL(autr.duration), 0) as clamped
               FROM app_usage_time_record_table autr
               WHERE autr.app_usage_id = au.id
                 AND autr.deleted_date IS NULL
@@ -291,7 +291,7 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
           au.device_name,
           COALESCE((
             SELECT TOTAL(clamped) FROM (
-              SELECT MAX(autr.duration, 0) as clamped
+              SELECT MAX(TOTAL(autr.duration), 0) as clamped
               FROM app_usage_time_record_table autr
               WHERE autr.app_usage_id = au.id
                 AND autr.deleted_date IS NULL

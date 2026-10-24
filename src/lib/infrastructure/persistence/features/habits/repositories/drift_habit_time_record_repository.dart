@@ -85,7 +85,7 @@ class DriftHabitTimeRecordRepository
       '''
       SELECT COALESCE(TOTAL(clamped), 0) as total_duration
       FROM (
-        SELECT MAX(duration, 0) as clamped
+        SELECT MAX(TOTAL(duration), 0) as clamped
         FROM habit_time_record_table
         WHERE habit_id = ?
           AND deleted_date IS NULL
@@ -140,7 +140,7 @@ class DriftHabitTimeRecordRepository
       '''
       SELECT habit_id, COALESCE(TOTAL(clamped), 0) as total_duration
       FROM (
-        SELECT habit_id, MAX(duration, 0) as clamped
+        SELECT habit_id, MAX(TOTAL(duration), 0) as clamped
         FROM habit_time_record_table
         WHERE habit_id IN ($placeholders)
           AND deleted_date IS NULL
