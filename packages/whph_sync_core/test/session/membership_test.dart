@@ -41,7 +41,7 @@ void main() {
     await a.removeMember(c.memberId);
     await b.removeMember(d.memberId);
     for (var round = 0; round < 3; round++) {
-      await SyncDevice.syncPair(a, b);
+      await runSessionPair(a, b);
     }
     final top = a.membership.keyring.highest;
     expect(b.membership.keyring.highest, top);
@@ -76,7 +76,7 @@ void main() {
     expect(b.membership.removed, isTrue);
     expect(b.membership.keyring.epochs, isEmpty);
     expect(b.membership.isPaired, isFalse);
-    final r = await SyncDevice.syncPair(b, a);
+    final r = await runSessionPair(b, a);
     expect((r.initiator as SessionFailed).category, SessionFailure.removedFromGroup);
     await expectLater(SyncDevice.pair(inviter: a, joiner: b), throwsA(isA<PairingException>()),
         reason: 're-pairing a removed device needs a fresh identity');
@@ -115,7 +115,7 @@ void main() {
         clock.advance(7);
         createRow(devices[i % 3], 'r${i % 11}', 'v$i');
         if (i % 4 == 3) devices[(i + 1) % 3].delete(row('r${i % 5}'));
-        final p = await SyncDevice.syncPair(
+        final p = await runSessionPair(
           devices[i % 3],
           devices[(i + 1) % 3],
           faults: i % 5 == 0 ? TransportFaults(cutAfter: 6 + i % 7) : TransportFaults.none,

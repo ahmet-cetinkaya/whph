@@ -20,7 +20,7 @@ void main() {
     await pairAll([a, b, r]);
     await syncUntilQuiet([a, b, r]);
     createRow(r, 'before', 'written before the revocation');
-    expect((await SyncDevice.syncPair(r, a)).bothComplete, isTrue);
+    expect((await runSessionPair(r, a)).bothComplete, isTrue);
     final beforeRemoval = await a.snapshotDirectory();
     await a.removeMember(r.memberId);
     final rotated = a.membership.keyring.highest!;
@@ -34,14 +34,14 @@ void main() {
     expect(a.membership.isExcluded(rPub), isTrue);
     expect(a.membership.flaggedAnchorsWithoutRecord, isEmpty);
 
-    final attempt = await SyncDevice.syncPair(r, a);
+    final attempt = await runSessionPair(r, a);
     expect((attempt.responder as SessionFailed).category, SessionFailure.notAuthorized);
     expect(attempt.responder.stats.keysHandedOver, 0);
     expect(r.membership.keyring.epochs, isNot(contains(rotated)));
 
     // B never heard of the revocation and relays R's cells to A.
-    expect((await SyncDevice.syncPair(r, b)).bothComplete, isTrue);
-    await SyncDevice.syncPair(b, a);
+    expect((await runSessionPair(r, b)).bothComplete, isTrue);
+    await runSessionPair(b, a);
     expect(aliveRows(a.store, 'task'), contains('before'));
     expect(aliveRows(a.store, 'task'), isNot(contains('after')), reason: "R's post-revocation cell is rejected");
   });
@@ -51,10 +51,10 @@ void main() {
     await pairAll([a, b, r]);
     await syncUntilQuiet([a, b, r]);
     createRow(r, 'before', 'written before the revocation');
-    expect((await SyncDevice.syncPair(r, a)).bothComplete, isTrue);
+    expect((await runSessionPair(r, a)).bothComplete, isTrue);
     await a.removeMember(r.memberId);
     createRow(r, 'after', 'written after the revocation');
-    expect((await SyncDevice.syncPair(r, b)).bothComplete, isTrue, reason: 'B is not informed yet');
+    expect((await runSessionPair(r, b)).bothComplete, isTrue, reason: 'B is not informed yet');
 
     await SyncDevice.pair(inviter: a, joiner: joiner);
     final rPub = r.membership.identity.ed25519Pub;
@@ -65,7 +65,7 @@ void main() {
 
     // B pairs the joiner too, so the uninformed B can relay R's cells to it.
     await SyncDevice.pair(inviter: b, joiner: joiner);
-    final relay = await SyncDevice.syncPair(b, joiner);
+    final relay = await runSessionPair(b, joiner);
     expect(relay.responder, isNot(isA<SessionFailed>()), reason: '$relay');
     expect(aliveRows(joiner.store, 'task'), contains('before'), reason: 'pre-cutoff cells are accepted');
     expect(aliveRows(joiner.store, 'task'), isNot(contains('after')), reason: 'post-cutoff cells are rejected');
@@ -76,7 +76,7 @@ void main() {
     await pairAll([a, b, c]);
     await a.removeMember(c.memberId);
     expect(a.ledger.revocations, hasLength(1), reason: 'own revocation');
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
     expect(b.ledger.revocations, hasLength(1), reason: 'received revocation');
 
     expect(await a.loseKeyFile(), StartupAction.keyLost);
@@ -106,14 +106,14 @@ void main() {
       await a.removeMember(c.memberId);
       final ledger = b.ledger as InMemorySyncLedger;
       ledger.failAllRevocationWrites = true;
-      final failed = await SyncDevice.syncPair(a, b);
+      final failed = await runSessionPair(a, b);
       final responder = failed.responder;
       expect(responder, isA<SessionPartial>(), reason: '$failed');
       expect((responder as SessionPartial).reasons, contains(PartialReason.storageError));
       expect(b.store.rowsOf(SecurityTables.revocation), isEmpty);
 
       ledger.failAllRevocationWrites = false;
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
       expect(b.store.rowsOf(SecurityTables.revocation), hasLength(1));
       expect(b.ledger.revocations, hasLength(1));
     });
@@ -210,7 +210,7 @@ void main() {
     forger.store.groupId = groupId;
     final registration = await forger.membership.registerOrigin(forger.store.localOrigin, forger.store);
     await forger.membership.rebuild(forger.store);
-    final attempt = await SyncDevice.syncPair(forger, a);
+    final attempt = await runSessionPair(forger, a);
     expect((attempt.responder as SessionFailed).category, SessionFailure.notAuthorized);
     expect(attempt.responder.stats.keysHandedOver, 0);
     expect(forger.membership.keyring.epochs, {forgedEpoch}, reason: 'no key was handed over');
@@ -233,7 +233,7 @@ void main() {
     await pairAll([a, b, c]);
     await syncUntilQuiet([a, b, c]);
     createRow(b, 'held', 'a cell A holds above the forged cutoff');
-    expect((await SyncDevice.syncPair(b, a)).bothComplete, isTrue);
+    expect((await runSessionPair(b, a)).bothComplete, isTrue);
     await persistLedgerRevocation(a, revoker: forger, revoked: b);
     await a.membership.reload(a.store);
     final bPub = b.membership.identity.ed25519Pub;
@@ -246,8 +246,8 @@ void main() {
     expect(a.store.rowsOf(SecurityTables.revocation), isEmpty, reason: 'no revocation signed from ledger data');
     expect(a.membership.keyring.highest, topEpoch, reason: 'no rotation from ledger data');
     expect(a.store.rowsOf(SecurityTables.epochGrant), hasLength(grantCount), reason: 'no new epoch grant');
-    expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
-    expect((await SyncDevice.syncPair(b, c)).bothComplete, isTrue);
+    expect((await runSessionPair(a, c)).bothComplete, isTrue);
+    expect((await runSessionPair(b, c)).bothComplete, isTrue);
     expect(c.store.rowsOf(SecurityTables.revocation), isEmpty);
     expect(c.membership.isExcluded(bPub), isFalse, reason: 'peers are unaffected');
   });
@@ -260,14 +260,14 @@ void main() {
     await pairAll([a, b, c]);
     await syncUntilQuiet([a, b, c]);
     createRow(b, 'held', 'cell A stores below the cutoff');
-    expect((await SyncDevice.syncPair(b, a)).bothComplete, isTrue);
+    expect((await runSessionPair(b, a)).bothComplete, isTrue);
     final bOrigin = b.store.localOrigin.hex;
     final storedMax = a.store.maxCellSeq(bOrigin);
     // A real held envelope: B writes more and A fails to apply that one cell
     // once (scenario 1.9 shape), so the envelope stays held, never stored.
     createRow(b, 'later', 'the envelope A only holds');
     a.store.applyFault = (change) => change.pk == 'later';
-    await SyncDevice.syncPair(b, a);
+    await runSessionPair(b, a);
     a.store.applyFault = null;
     final heldSeqs = [
       for (final h in a.store.heldEnvelopes.where((h) => h.origin == bOrigin)) h.seq,
@@ -322,7 +322,7 @@ void main() {
     expect(c.membership.isExcluded(bPub), isFalse, reason: 'no peer has the record');
 
     await a.maintainMembership();
-    expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
+    expect((await runSessionPair(a, c)).bothComplete, isTrue);
     await c.maintainMembership();
 
     expect(c.membership.isExcluded(bPub), isTrue, reason: 'the re-issued record reached C');
@@ -385,7 +385,7 @@ void main() {
       for (final device in [a, c, d]) device.membership.keyring.highest
     };
     expect(epochs, hasLength(1), reason: 'one converged epoch');
-    expect((await SyncDevice.syncPair(b, d)).responder, isA<SessionFailed>(), reason: 'D rejects revoked B');
+    expect((await runSessionPair(b, d)).responder, isA<SessionFailed>(), reason: 'D rejects revoked B');
   });
 
   // C3: a sent mark above the carrier seq does not make a record servable when
@@ -402,7 +402,7 @@ void main() {
     expect(c.membership.isExcluded(bPub), isFalse);
 
     await a.maintainMembership();
-    expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
+    expect((await runSessionPair(a, c)).bothComplete, isTrue);
     await c.maintainMembership();
 
     expect(c.membership.isExcluded(bPub), isTrue, reason: 'unmanifested carrier is re-issued despite the sent mark');
@@ -446,7 +446,7 @@ void main() {
     await pairAll([a, b, c]);
     await syncUntilQuiet([a, b, c]);
     createRow(b, 'held', 'a cell A holds above the cutoff');
-    expect((await SyncDevice.syncPair(b, a)).bothComplete, isTrue);
+    expect((await runSessionPair(b, a)).bothComplete, isTrue);
     final topEpoch = a.membership.keyring.highest;
     await persistLedgerRevocation(a, revoker: c, revoked: b);
     await a.membership.reload(a.store);
@@ -494,13 +494,13 @@ void main() {
     }
     final ledger = b.ledger as InMemorySyncLedger;
     ledger.failAllRevocationWrites = true;
-    final failed = await SyncDevice.syncPair(a, b);
+    final failed = await runSessionPair(a, b);
     expect((failed.responder as SessionPartial).reasons, contains(PartialReason.storageError));
     expect(b.store.rowsOf(SecurityTables.revocation), isEmpty);
     expect(aliveRows(b.store, 'task').intersection(laterRows), isEmpty, reason: 'later batches commit nothing');
 
     ledger.failAllRevocationWrites = false;
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
     expect(b.store.rowsOf(SecurityTables.revocation), hasLength(1));
     expect(aliveRows(b.store, 'task'), containsAll(laterRows));
   });
@@ -511,10 +511,10 @@ void main() {
     await syncUntilQuiet([a, b, relay, r]);
     final beforeRevocation = await b.snapshotDb();
     createRow(r, 'before', 'written before the revocation');
-    expect((await SyncDevice.syncPair(r, a)).bothComplete, isTrue);
+    expect((await runSessionPair(r, a)).bothComplete, isTrue);
     await a.removeMember(r.memberId);
     createRow(r, 'after', 'written after the revocation');
-    expect((await SyncDevice.syncPair(r, relay)).bothComplete, isTrue, reason: 'the relay is not informed yet');
+    expect((await runSessionPair(r, relay)).bothComplete, isTrue, reason: 'the relay is not informed yet');
 
     // B's DB alone learns the revocation (flagging the anchor), then B loses
     // it with a DB restore while the ledger never had it: a lost ledger.
@@ -531,7 +531,7 @@ void main() {
     await b.restoreDb(beforeRevocation);
     expect(b.membership.flaggedAnchorsWithoutRecord, {r.memberId});
 
-    final relayed = await SyncDevice.syncPair(relay, b);
+    final relayed = await runSessionPair(relay, b);
     expect(relayed.responder, isNot(isA<SessionFailed>()), reason: '$relayed');
     final rOrigin = r.store.localOrigin.hex;
     final heldFromR = [
@@ -543,7 +543,7 @@ void main() {
     expect(heldFromR.map((h) => h.reason), everyElement(HeldReason.unverified));
 
     // A peer resends the record: the held cells are re-checked against it.
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     expect(b.membership.flaggedAnchorsWithoutRecord, isEmpty);
     expect(aliveRows(b.store, 'task'), contains('before'), reason: 'pre-cutoff cells apply');
     expect(aliveRows(b.store, 'task'), isNot(contains('after')), reason: 'post-cutoff cells are rejected');

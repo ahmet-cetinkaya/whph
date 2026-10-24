@@ -7,6 +7,10 @@ import 'dart:math';
 import 'package:test/test.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
+import 'session_engine_switch.dart';
+
+export 'session_engine_switch.dart';
+
 const day = Duration.millisecondsPerDay;
 
 /// Base wall time of every test clock (2026-01-01T00:00:00Z).
@@ -72,7 +76,7 @@ Future<int> syncUntilQuiet(List<SyncDevice> devices, {int maxRounds = 8}) async 
     final before = [for (final d in devices) fingerprint(d.store, security: true)];
     for (var i = 0; i < devices.length; i++) {
       for (var j = i + 1; j < devices.length; j++) {
-        final r = await SyncDevice.syncPair(devices[i], devices[j]);
+        final r = await runSessionPair(devices[i], devices[j]);
         expect(r.initiator.exchanged, isTrue, reason: 'round $round ${devices[i].name}->${devices[j].name}: $r');
         expect(r.responder.exchanged, isTrue, reason: 'round $round ${devices[i].name}->${devices[j].name}: $r');
       }

@@ -23,7 +23,7 @@ void main() {
       clock.advance(1);
       a.write(const CellKey('task', 'n1', 'title'), 'v$i');
     }
-    final r = await SyncDevice.syncPair(a, b);
+    final r = await runSessionPair(a, b);
     expect(r.bothComplete, isTrue);
     expect(b.store.cursorOf(a.store.localOrigin.hex), a.store.highestOwnSeq);
     expect(b.store.read(const CellKey('task', 'n1', 'title'))?.value, 'v1000');
@@ -42,7 +42,7 @@ void main() {
       // only versions allowed above the snapshot (as relayed winners).
       final overwriteSeqs = <int>{};
       final narrowRanges = <(int, int)>{};
-      final r = await SyncDevice.syncPair(
+      final r = await runSessionPair(
         a,
         b,
         hooksA: SessionHooks(outgoingBatch: (batch) {
@@ -87,7 +87,7 @@ void main() {
       expect(b.store.cursorOf(own), snapshotSeq, reason: 'the session ended at the snapshot');
 
       // The next session delivers what was written during the first one.
-      final next = await SyncDevice.syncPair(a, b);
+      final next = await runSessionPair(a, b);
       expect(next.bothComplete, isTrue);
       final nextSent = next.initiator.stats.sentVersions.toSet();
       final alreadySent = {for (final s in sent) s};
@@ -110,7 +110,7 @@ void main() {
           c.advance(1);
         }
       }
-      final both = await Future.wait([SyncDevice.syncPair(a, b), SyncDevice.syncPair(b, a)]);
+      final both = await Future.wait([runSessionPair(a, b), runSessionPair(b, a)]);
       final proceeded = [
         for (final p in both)
           if (p.bothComplete) p,
@@ -123,7 +123,7 @@ void main() {
       expect(identical(both.indexOf(proceeded.single) == 0 ? a : b, smaller), isTrue,
           reason: 'the session started by the smaller member id continues');
 
-      final single = await SyncDevice.syncPair(a2, b2);
+      final single = await runSessionPair(a2, b2);
       expect(single.bothComplete, isTrue);
       expect(content(a.store), content(a2.store));
       expect(content(b.store), content(b2.store));

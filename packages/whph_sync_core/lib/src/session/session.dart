@@ -54,6 +54,7 @@ import '../store/sync_store.dart';
 import 'relay_winner.dart';
 import 'secure_channel.dart';
 import 'session_result.dart';
+import 'session_support.dart';
 import 'sync_device.dart';
 import 'transport.dart';
 
@@ -70,114 +71,6 @@ final class SessionHooks {
 
   /// Called before a received data batch is applied.
   final void Function(ChangeBatchMessage batch)? beforeApply;
-}
-
-/// Aborts a session with a failure category.
-final class _Abort implements Exception {
-  const _Abort(this.category, {this.peerCursor});
-
-  final SessionFailure category;
-  final int? peerCursor;
-
-  @override
-  String toString() => '_Abort(${category.name})';
-}
-
-sealed class _Decision {
-  const _Decision();
-}
-
-final class _Apply extends _Decision {
-  const _Apply(this.change, this.manifest);
-
-  final Change change;
-  final OriginManifest manifest;
-}
-
-final class _Hold extends _Decision {
-  const _Hold(this.reason, this.manifest, {this.rejectedAs});
-
-  final HeldReason reason;
-  final OriginManifest manifest;
-
-  /// Also counted as a rejection (revoked above cutoff).
-  final String? rejectedAs;
-}
-
-final class _Reject extends _Decision {
-  const _Reject(this.reason);
-
-  final String reason;
-}
-
-/// Per-origin send plan: stream `(declared, bound]`.
-final class _OriginPlan {
-  _OriginPlan(this.origin, this.declared, this.bound) : scanned = declared;
-
-  final String origin;
-  int declared;
-  int scanned;
-  int bound;
-  bool done = false;
-
-  /// Given up for this session: a superseded seq whose winner cannot be sent.
-  bool stopped = false;
-}
-
-/// Why a winner could not or could be put into a batch (F5).
-enum _WinnerRelay { included, changed, noRoom, unusable }
-
-/// The batch [SyncSession._stream] is filling.
-final class _BatchDraft {
-  _BatchDraft(this._config, {required this.own});
-
-  final SyncEngineConfig _config;
-
-  /// Hex of the current own origin.
-  final String own;
-
-  final Map<OriginId, List<SeqRange>> ranges = {};
-  final Set<OriginManifest> manifests = {};
-  final List<ChangeEnvelope> envelopes = [];
-  final Set<String> versions = {};
-
-  /// Superseded seqs passed together with their winner (debug oracle only).
-  final Set<String> passed = {};
-  int _bytes = 64;
-
-  /// Highest own seq the batch declares or carries (the ledger's max_sent_seq).
-  int ownTo = 0;
-
-  /// No further item fits; the batch is sent as it is.
-  bool full = false;
-
-  bool get isEmpty => ranges.isEmpty && envelopes.isEmpty;
-
-  bool overflows(int size, OriginManifest? manifest) {
-    final manifestSize = manifest == null || manifests.contains(manifest) ? 0 : SyncSession._manifestSize(manifest);
-    return envelopes.isNotEmpty &&
-        (envelopes.length >= _config.maxBatchChanges || _bytes + size + manifestSize > _config.maxBatchBytes);
-  }
-
-  /// Adds the [envelope] of version `origin#seq`.
-  void add(OriginManifest manifest, ChangeEnvelope envelope, int size, {required String origin, required int seq}) {
-    _bytes += size + (manifests.contains(manifest) ? 0 : SyncSession._manifestSize(manifest));
-    manifests.add(manifest);
-    envelopes.add(envelope);
-    versions.add('$origin#$seq');
-    if (origin == own) ownTo = math.max(ownTo, seq);
-  }
-
-  bool covers(String origin, int seq) => ranges[OriginId.fromHex(origin)]?.any((range) => range.contains(seq)) ?? false;
-
-  /// Declares [range] of [origin]. A narrow range of a winner that the new
-  /// range contains is dropped: ranges of one origin must not overlap.
-  void declare(String origin, SeqRange range) {
-    final declared = ranges.putIfAbsent(OriginId.fromHex(origin), () => []);
-    declared.removeWhere((narrow) => range.contains(narrow.to));
-    declared.add(range);
-    if (origin == own) ownTo = math.max(ownTo, range.to);
-  }
 }
 
 /// One side of one sync session (see the library documentation).
@@ -240,7 +133,7 @@ final class SyncSession {
       await _channel?.abort();
       await _transport.close();
       final failure = _failure!;
-      if (failure is _Abort && failure.category == SessionFailure.restoreDetected) {
+      if (failure is SessionAbort && failure.category == SessionFailure.restoreDetected) {
         // D15: the local DB is behind what the peer holds of this origin.
         await device.switchOriginAfterPeerCursor(failure.peerCursor!);
       }
@@ -299,11 +192,11 @@ final class SyncSession {
         hello: initiator ? SyncCodec.encode(hello) : null,
       );
     } on SyncCryptoException {
-      throw _Abort(rejectedStatic ? SessionFailure.notAuthorized : SessionFailure.securityError);
+      throw SessionAbort(rejectedStatic ? SessionFailure.notAuthorized : SessionFailure.securityError);
     }
     _channel = channel;
     final peer = m.activeMemberByX25519(channel.remoteStatic);
-    if (peer == null) throw const _Abort(SessionFailure.notAuthorized);
+    if (peer == null) throw const SessionAbort(SessionFailure.notAuthorized);
     _peerId = peer.memberId;
     _peerEd = Uint8List.fromList(peer.ed25519Pub);
 
@@ -312,7 +205,7 @@ final class SyncSession {
       if (peer.memberId != expectedPeer) {
         // The address answered with another member's key (D7): continue
         // with that member; the address list is T20's concern.
-        if (device.activeSessions.containsKey(peer.memberId)) throw const _Abort(SessionFailure.busy);
+        if (device.activeSessions.containsKey(peer.memberId)) throw const SessionAbort(SessionFailure.busy);
         _unregister();
         device.activeSessions[peer.memberId] = this;
       }
@@ -320,13 +213,13 @@ final class SyncSession {
       try {
         answer = await channel.receive();
       } on TransportClosedException {
-        throw const _Abort(SessionFailure.refusedByPeer);
+        throw const SessionAbort(SessionFailure.refusedByPeer);
       }
       switch (answer) {
         case Busy():
-          throw const _Abort(SessionFailure.busy);
+          throw const SessionAbort(SessionFailure.busy);
         case ErrorMessage(:final category):
-          throw _Abort(
+          throw SessionAbort(
               category == SyncErrorCategory.preparing ? SessionFailure.peerPreparing : SessionFailure.peerError);
         default:
           switch (evaluateHelloAnswer(local: hello, answer: answer)) {
@@ -397,7 +290,7 @@ final class SyncSession {
 
   /// Awaits [future] unless the session fails first.
   Future<T> _guard<T>(Future<T> future) =>
-      Future.any([future, _failed.future.then<T>((_) => throw _failure ?? const _Abort(SessionFailure.internal))]);
+      Future.any([future, _failed.future.then<T>((_) => throw _failure ?? const SessionAbort(SessionFailure.internal))]);
 
   Future<void> _send(SecureChannel channel, SyncMessage message) => _guard(channel.send(message));
 
@@ -434,7 +327,7 @@ final class SyncSession {
       case BatchAck(:final batchId):
         _onAck(batchId);
       case ErrorMessage(:final category):
-        throw _Abort(category == SyncErrorCategory.preparing ? SessionFailure.peerPreparing : SessionFailure.peerError);
+        throw SessionAbort(category == SyncErrorCategory.preparing ? SessionFailure.peerPreparing : SessionFailure.peerError);
       default:
         throw MalformedMessageException('unexpected ${message.type.name}');
     }
@@ -470,7 +363,7 @@ final class SyncSession {
     final peerCursor = _peerVector[_store.localOrigin.hex] ?? 0;
     if (peerCursor > _store.nextSeq - 1) {
       await _send(channel, ErrorMessage(SyncErrorCategory.preparing));
-      throw _Abort(SessionFailure.restoreDetected, peerCursor: peerCursor);
+      throw SessionAbort(SessionFailure.restoreDetected, peerCursor: peerCursor);
     }
     _peerVxReady.complete(vx);
   }
@@ -552,11 +445,11 @@ final class SyncSession {
       final manifest = cell.manifest;
       if (manifest == null || r.originSeq > (_peerVector[r.origin] ?? 0)) continue;
       if (seen.add('${r.origin}#${r.originSeq}'))
-        items.add((r.origin, r.originSeq, manifest, () => _seal(r), _estimate(r)));
+        items.add((r.origin, r.originSeq, manifest, () => _seal(r), estimateCell(r)));
     }
     for (final h in held) {
       if (h.seq > (_peerVector[h.origin] ?? 0)) continue;
-      if (seen.add('${h.origin}#${h.seq}')) items.add((h.origin, h.seq, h.manifest, () => h.envelope, _heldSize(h)));
+      if (seen.add('${h.origin}#${h.seq}')) items.add((h.origin, h.seq, h.manifest, () => h.envelope, heldSize(h)));
     }
     var sent = 0;
     var i = 0;
@@ -568,16 +461,16 @@ final class SyncSession {
       var bytes = 64;
       while (i < items.length) {
         final (origin, seq, manifest, build, size) = items[i];
-        final manifestSize = manifests.contains(manifest) ? 0 : _manifestSize(manifest);
+        final extra = manifests.contains(manifest) ? 0 : manifestSize(manifest);
         if (envelopes.isNotEmpty &&
-            (envelopes.length >= config.maxBatchChanges || bytes + size + manifestSize > config.maxBatchBytes)) {
+            (envelopes.length >= config.maxBatchChanges || bytes + size + extra > config.maxBatchBytes)) {
           break;
         }
         lo[origin] = math.min(lo[origin] ?? seq, seq);
         hi[origin] = math.max(hi[origin] ?? seq, seq);
         manifests.add(manifest);
         envelopes.add(build());
-        bytes += size + manifestSize;
+        bytes += size + extra;
         i++;
       }
       sent += envelopes.length;
@@ -596,8 +489,6 @@ final class SyncSession {
     return sent;
   }
 
-  static String _versionOf(CellRecord record) => '${record.origin}#${record.originSeq}';
-
   ChangeEnvelope _seal(CellRecord record) {
     final m = device.membership;
     final cipher =
@@ -609,11 +500,11 @@ final class SyncSession {
     final snapshot = _snapshot!;
     final plans = [
       for (final o in snapshot.keys.toList()..sort())
-        if (snapshot[o]! > (_peerVector[o] ?? 0)) _OriginPlan(o, _peerVector[o] ?? 0, snapshot[o]!),
+        if (snapshot[o]! > (_peerVector[o] ?? 0)) OriginPlan(o, _peerVector[o] ?? 0, snapshot[o]!),
     ];
     var p = 0;
     while (p < plans.length && !_storageError) {
-      final draft = _BatchDraft(device.config, own: _store.localOrigin.hex);
+      final draft = BatchDraft(device.config, own: _store.localOrigin.hex);
       while (p < plans.length && !draft.full) {
         final plan = plans[p];
         final from = plan.declared;
@@ -644,10 +535,10 @@ final class SyncSession {
   }
 
   /// Adds the items of [plan] above its scan position to [draft] in seq order,
-  /// until the plan reaches its bound ([_OriginPlan.done]), the batch is full
-  /// ([_BatchDraft.full]) or the origin is given up for this session
-  /// ([_OriginPlan.stopped]).
-  Future<void> _scanPlan(_OriginPlan plan, _BatchDraft draft) async {
+  /// until the plan reaches its bound ([OriginPlan.done]), the batch is full
+  /// ([BatchDraft.full]) or the origin is given up for this session
+  /// ([OriginPlan.stopped]).
+  Future<void> _scanPlan(OriginPlan plan, BatchDraft draft) async {
     while (true) {
       final cell = _store.nextCellOfOrigin(plan.origin, plan.scanned);
       final held = _store.nextHeldOfOrigin(plan.origin, plan.scanned);
@@ -667,7 +558,7 @@ final class SyncSession {
         if (!await _passSuperseded(plan, draft, seq, superseded!.$2)) return;
         continue;
       }
-      if (useCell && _isNeverSentSecurityCell(cell!, draft.own)) {
+      if (useCell && isNeverSentSecurityCell(cell!, draft.own)) {
         // Stayed on the sealed origin at a switch (U11/rooted): it is never
         // sent, its seq is just a gap in the declared range.
         plan.scanned = seq;
@@ -678,7 +569,7 @@ final class SyncSession {
         plan.scanned = seq;
         continue;
       }
-      final size = useCell ? _estimate(cell!.record) : _heldSize(held!);
+      final size = useCell ? estimateCell(cell!.record) : heldSize(held!);
       final manifest = useCell ? cell!.manifest : held!.manifest;
       if (draft.overflows(size, manifest)) {
         draft.full = true;
@@ -691,7 +582,7 @@ final class SyncSession {
         // superseded.
         if (current == null || !identical(current.record, cell.record)) continue;
         final signedBy = current.manifest ?? (throw StateError('own origin switched during the session'));
-        draft.add(signedBy, _seal(current.record), _estimate(current.record), origin: plan.origin, seq: seq);
+        draft.add(signedBy, _seal(current.record), estimateCell(current.record), origin: plan.origin, seq: seq);
       } else {
         draft.add(held!.manifest, held.envelope, size, origin: plan.origin, seq: seq);
         stats.heldRelayed++;
@@ -703,7 +594,7 @@ final class SyncSession {
   /// Debug oracle (F5): every superseded seq inside a declared range of [draft]
   /// is covered by its winner, already at the receiver, in this batch, or sent
   /// earlier in this session. Runs in `assert` only.
-  bool _omissionsAreCovered(_BatchDraft draft) {
+  bool _omissionsAreCovered(BatchDraft draft) {
     for (final entry in draft.ranges.entries) {
       for (final range in entry.value) {
         var superseded = _store.nextSupersededOfOrigin(entry.key.hex, range.from);
@@ -716,7 +607,7 @@ final class SyncSession {
               _wasSent(draft, version) ||
               winner == null ||
               selectRelayWinner(winner, _peerVector[winner.record.origin] ?? 0) == null ||
-              _wasSent(draft, _versionOf(winner.record));
+              _wasSent(draft, versionOf(winner.record));
           if (!covered) return false;
           superseded = _store.nextSupersededOfOrigin(entry.key.hex, superseded.$1);
         }
@@ -725,14 +616,14 @@ final class SyncSession {
     return true;
   }
 
-  bool _wasSent(_BatchDraft draft, String version) =>
+  bool _wasSent(BatchDraft draft, String version) =>
       draft.versions.contains(version) || stats.sentVersions.contains(version);
 
   /// Passes the superseded [seq] of [plan] (its winner is the cell at [key]).
   /// The receiver may move its cursor past [seq] only if it already has the
   /// winner or gets it in the same atomic batch (F5). Returns whether the scan
   /// may go on; otherwise the batch is full or the origin was given up.
-  Future<bool> _passSuperseded(_OriginPlan plan, _BatchDraft draft, int seq, CellKey key) async {
+  Future<bool> _passSuperseded(OriginPlan plan, BatchDraft draft, int seq, CellKey key) async {
     final committed = _store.storedCell(key);
     if (committed == null) {
       // A stale entry (its cell was removed) must not stall the origin for
@@ -750,16 +641,16 @@ final class SyncSession {
       return true;
     }
     switch (await _relayWinner(winner, draft)) {
-      case _WinnerRelay.included:
+      case WinnerRelay.included:
         plan.scanned = seq;
         draft.passed.add('${plan.origin}#$seq');
         return true;
-      case _WinnerRelay.changed:
+      case WinnerRelay.changed:
         return true;
-      case _WinnerRelay.noRoom:
+      case WinnerRelay.noRoom:
         draft.full = true;
         return false;
-      case _WinnerRelay.unusable:
+      case WinnerRelay.unusable:
         // As the first item of a batch nothing could progress: give the origin
         // up for this session instead of looping (a later session retries).
         if (draft.isEmpty && plan.scanned == plan.declared) {
@@ -773,30 +664,27 @@ final class SyncSession {
 
   /// Puts the committed [winner] into [draft] under a narrow range of its own
   /// unless the batch already carries it.
-  Future<_WinnerRelay> _relayWinner(StoredCell winner, _BatchDraft draft) async {
+  Future<WinnerRelay> _relayWinner(StoredCell winner, BatchDraft draft) async {
     final record = winner.record;
-    if (draft.versions.contains(_versionOf(record))) return _WinnerRelay.included;
+    if (draft.versions.contains(versionOf(record))) return WinnerRelay.included;
     var signed = winner;
     if (record.origin == draft.own) {
       // Sign through the winner only: it may lie above the snapshot, and the
       // own bound stays as it is (FR-014). Its seq still counts in `ownTo`.
       if (winner.manifest == null) await _signOwnThrough(record.originSeq, record.originSeq);
       final current = _store.storedCell(record.key);
-      if (current == null || !identical(current.record, record)) return _WinnerRelay.changed;
+      if (current == null || !identical(current.record, record)) return WinnerRelay.changed;
       signed = current;
     }
     final manifest = signed.manifest;
-    if (manifest == null) return _WinnerRelay.unusable;
-    if (draft.overflows(_estimate(record), manifest)) return _WinnerRelay.noRoom;
-    draft.add(manifest, _seal(record), _estimate(record), origin: record.origin, seq: record.originSeq);
+    if (manifest == null) return WinnerRelay.unusable;
+    if (draft.overflows(estimateCell(record), manifest)) return WinnerRelay.noRoom;
+    draft.add(manifest, _seal(record), estimateCell(record), origin: record.origin, seq: record.originSeq);
     if (!draft.covers(record.origin, record.originSeq)) {
       draft.declare(record.origin, SeqRange(record.originSeq - 1, record.originSeq));
     }
-    return _WinnerRelay.included;
+    return WinnerRelay.included;
   }
-
-  static bool _isNeverSentSecurityCell(StoredCell cell, String ownOrigin) =>
-      cell.manifest == null && cell.record.origin != ownOrigin && SecurityTables.contains(cell.record.key.table);
 
   /// Serves signed cells this store holds above its own cursor for their
   /// origin — after `local_reset` cleared the vector (D14), the retained
@@ -854,22 +742,6 @@ final class SyncSession {
       }
     }
   }
-
-  static int _estimate(CellRecord r) =>
-      160 + r.key.table.length + r.key.pk.length * 2 + r.key.col.length + r.node.length + _valueSize(r.value);
-
-  static int _valueSize(Object? value) => switch (value) {
-        null => 0,
-        int() => 8,
-        String() => value.length * 3,
-        Uint8List() => value.length,
-        _ => ChangeValue.of(value).payload.length,
-      };
-
-  static int _heldSize(HeldEnvelope h) =>
-      160 + h.envelope.tbl.length + h.envelope.pk.length * 2 + h.envelope.col.length + h.envelope.ciphertext.length;
-
-  static int _manifestSize(OriginManifest m) => 104 + m.hashes.length * changeHashLength;
 
   /// Sends one batch within the window. Returns `false` when the sent-seq
   /// mark could not be persisted (the batch is not sent, D7).
@@ -938,12 +810,12 @@ final class SyncSession {
     final verifier = device.membership.verifier;
     final verdicts = <ManifestVerdict>[for (final mf in batch.manifests) await verifier.verify(mf)];
     if (_failure != null) return;
-    final decisions = <(ChangeEnvelope, _Decision)>[
-      for (final e in batch.envelopes) (e, _decide(e, batch.manifests, verdicts)),
+    final decisions = <(ChangeEnvelope, SessionDecision)>[
+      for (final e in batch.envelopes) (e, decideEnvelope(device.membership, e, batch.manifests, verdicts)),
     ];
     final applicable = [
       for (final (_, decision) in decisions)
-        if (decision case _Apply(:final change)) change,
+        if (decision case ApplyDecision(:final change)) change,
     ];
     // Without its revocation records in the ledger the batch is not committed
     // and its ranges do not move the cursor, so the peer sends it again.
@@ -960,7 +832,7 @@ final class SyncSession {
       stats.envelopesReceived++;
       final origin = envelope.origin.hex;
       switch (decision) {
-        case _Apply(:final change, :final manifest):
+        case ApplyDecision(:final change, :final manifest):
           switch (_store.applyRemote(change, manifest, nowMs: now)) {
             case ApplyOutcome.failed:
               _holdFailed(envelope, manifest, now);
@@ -976,7 +848,7 @@ final class SyncSession {
                 ..removeHeld(origin, envelope.originSeq)
                 ..logCommit(origin, envelope.originSeq);
           }
-        case _Hold(:final reason, :final manifest, :final rejectedAs):
+        case HoldDecision(:final reason, :final manifest, :final rejectedAs):
           if (_store.heldAt(origin, envelope.originSeq) == null) {
             _store.putHeld(HeldEnvelope(
               envelope: envelope,
@@ -993,7 +865,7 @@ final class SyncSession {
             stats.heldUnverified++;
           }
           if (rejectedAs != null) stats.reject(rejectedAs);
-        case _Reject(:final reason):
+        case RejectDecision(:final reason):
           stats.reject(reason);
       }
     }
@@ -1032,70 +904,6 @@ final class SyncSession {
     _failedRows.add(RowRef(envelope.tbl, envelope.pk));
   }
 
-  _Decision _decide(ChangeEnvelope envelope, List<OriginManifest> manifests, List<ManifestVerdict> verdicts) {
-    final candidates = <int>[
-      for (var i = 0; i < manifests.length; i++)
-        if (manifests[i].origin == envelope.origin && manifests[i].coversSeq(envelope.originSeq)) i,
-    ];
-    if (candidates.isEmpty) return const _Reject('noManifest');
-    return _decideWith(envelope, [for (final i in candidates) (manifests[i], verdicts[i])]);
-  }
-
-  /// Decides one envelope against candidate manifests (FR-021, FR-023,
-  /// D7): apply, hold (missing key; signer not yet known; revoked above the
-  /// current cutoff) or reject (tampered, not listed, wrong group...).
-  _Decision _decideWith(ChangeEnvelope envelope, List<(OriginManifest, ManifestVerdict)> candidates) {
-    final m = device.membership;
-    OriginManifest? holdable;
-    String? rejection;
-    for (final (manifest, verdict) in candidates) {
-      if (verdict is ManifestRejected) {
-        if (verdict.reason == ManifestRejection.signerNotMember ||
-            verdict.reason == ManifestRejection.unregisteredOrigin) {
-          holdable ??= manifest;
-        } else {
-          rejection ??= verdict.reason.name;
-        }
-      } else {
-        holdable ??= manifest;
-      }
-    }
-    final cipher = EnvelopeCipher(groupId: m.groupId!, keyring: m.keyring);
-    switch (cipher.open(envelope)) {
-      case MissingEpochKey():
-        if (holdable != null) return _Hold(HeldReason.missingKey, holdable);
-        return _Reject(rejection ?? 'manifest');
-      case EnvelopeRejected():
-        return const _Reject('envelope');
-      case EnvelopeOpened(:final change):
-        OriginManifest? unverified;
-        String? revoked;
-        for (final (manifest, verdict) in candidates) {
-          if (verdict is! VerifiedManifest) continue;
-          // A flagged signer with no known cutoff waits for its revocation
-          // record instead of being verified without one (U11/Efe-R1).
-          if (m.isFlaggedWithoutRecord(verdict.signerPub)) {
-            unverified ??= manifest;
-            continue;
-          }
-          final check = m.verifier.checkChange(change, verdict);
-          if (check.isAccepted) return _Apply(change, manifest);
-          switch (check.rejection!) {
-            case ManifestRejection.revokedAboveCutoff:
-              unverified ??= manifest;
-              revoked = 'revokedAboveCutoff';
-            case ManifestRejection.signerNotMember || ManifestRejection.unregisteredOrigin:
-              unverified ??= manifest;
-            default:
-              rejection ??= check.rejection!.name;
-          }
-        }
-        if (unverified != null) return _Hold(HeldReason.unverified, unverified, rejectedAs: revoked);
-        if (holdable != null && rejection == null) return _Hold(HeldReason.unverified, holdable);
-        return _Reject(rejection ?? 'manifest');
-    }
-  }
-
   /// Retries held envelopes: after the peer's key handover (all reasons, the
   /// session-start retry of D15) and after membership or cutoff changes
   /// (missing key, unverified). Superseded entries leave the table.
@@ -1113,12 +921,12 @@ final class SyncSession {
         }
         final verdict = await m.verifier.verify(held.manifest);
         if (_store.heldAt(held.origin, held.seq) != held) continue;
-        final decision = _decideWith(held.envelope, [(held.manifest, verdict)]);
+        final decision = decideWith(device.membership, held.envelope, [(held.manifest, verdict)]);
         final now = device.now();
         // A held revocation whose ledger write fails stays held for later.
-        if (decision is _Apply && !await _retainRevocations([decision.change])) continue;
+        if (decision is ApplyDecision && !await _retainRevocations([decision.change])) continue;
         switch (decision) {
-          case _Apply(:final change, :final manifest):
+          case ApplyDecision(:final change, :final manifest):
             switch (_store.applyRemote(change, manifest, nowMs: now)) {
               case ApplyOutcome.failed:
                 _holdFailed(held.envelope, manifest, now);
@@ -1127,11 +935,11 @@ final class SyncSession {
                 stats.heldRetriedApplied++;
                 if (SecurityTables.contains(change.tbl)) securityTouched = true;
             }
-          case _Hold(:final reason, :final rejectedAs):
+          case HoldDecision(:final reason, :final rejectedAs):
             held
               ..reason = held.reason == HeldReason.applyFailed ? held.reason : reason
               ..category = rejectedAs ?? held.category;
-          case _Reject(:final reason):
+          case RejectDecision(:final reason):
             _store.removeHeld(held.origin, held.seq);
             stats.reject(reason);
         }
@@ -1163,7 +971,7 @@ final class SyncSession {
   Future<bool> _rebuildMembership() async {
     final m = device.membership;
     final changed = await m.rebuild(_store);
-    if (m.removed) throw const _Abort(SessionFailure.removedFromGroup);
+    if (m.removed) throw const SessionAbort(SessionFailure.removedFromGroup);
     return changed;
   }
 
@@ -1196,7 +1004,7 @@ final class SyncSession {
 
   SessionResult _failedResult(Object error) {
     final SessionFailed result;
-    if (error is _Abort) {
+    if (error is SessionAbort) {
       result = SessionFailed(stats, _peerId, error.category, peerCursor: error.peerCursor);
     } else if (error is TransportClosedException) {
       result = SessionFailed(stats, _peerId, SessionFailure.notReachable);

@@ -36,11 +36,14 @@ export 'src/model/manifest.dart' show OriginManifest, manifestSigningDomain, sig
 export 'src/protocol/errors.dart';
 export 'src/protocol/messages.dart';
 export 'src/protocol/version.dart';
+export 'src/session/async_session.dart';
+export 'src/session/async_session_device.dart';
 export 'src/session/secure_channel.dart';
 export 'src/session/session.dart';
 export 'src/session/session_result.dart';
 export 'src/session/sync_device.dart';
 export 'src/session/transport.dart';
+export 'src/store/async_sync_store_port.dart';
 export 'src/store/in_memory_replica_store.dart';
 export 'src/store/merge_policy.dart';
 export 'src/store/sync_ledger.dart';

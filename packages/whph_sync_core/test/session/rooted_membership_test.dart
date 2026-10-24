@@ -15,7 +15,7 @@ Future<void> _syncAll(List<SyncDevice> devices, {int rounds = 4}) async {
   for (var round = 0; round < rounds; round++) {
     for (var i = 0; i < devices.length; i++) {
       for (var j = i + 1; j < devices.length; j++) {
-        await SyncDevice.syncPair(devices[i], devices[j]);
+        await runSessionPair(devices[i], devices[j]);
       }
     }
   }
@@ -163,7 +163,7 @@ void main() {
       expect(d1.needsRepairing, isTrue, reason: 'the restore stranded unsent member rows');
       expect(action, anyOf(StartupAction.normal, StartupAction.restore));
       // The flag does not self-clear: sessions alone must not repair it.
-      await SyncDevice.syncPair(d1, b);
+      await runSessionPair(d1, b);
       expect(d1.needsRepairing, isTrue, reason: 'only pair() clears the flag');
 
       // Re-pair repairs it (the user acting on the prompt).

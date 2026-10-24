@@ -33,6 +33,7 @@ import 'dart:typed_data';
 
 import 'package:whph_sync_core/whph_sync_core.dart';
 
+import '../session/session_engine_switch.dart';
 import 'oracle/oracle_checks.dart';
 import 'sim_env.dart';
 import 'oracle/reference_oracle.dart';
@@ -1066,7 +1067,7 @@ final class EngineSimulation {
     final touchedB = _heldCells(b);
     final countA = a.store.cellCount;
     final countB = b.store.cellCount;
-    final pair = await SyncDevice.syncPair(
+    final pair = await runSessionPair(
       a.device,
       b.device,
       faults: faults,

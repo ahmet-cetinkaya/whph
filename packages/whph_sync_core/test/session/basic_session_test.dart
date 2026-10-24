@@ -12,7 +12,7 @@ void main() {
     createRow(a, 't1', 'from A');
     clock.advance(10);
     createRow(b, 't2', 'from B');
-    final r = await SyncDevice.syncPair(a, b);
+    final r = await runSessionPair(a, b);
     expect(r.initiator, isComplete, reason: '$r');
     expect(r.responder, isComplete, reason: '$r');
     expect(content(a.store), content(b.store));
@@ -21,7 +21,7 @@ void main() {
     expect(a.store.cursorOf(b.store.localOrigin.hex), b.store.highestOwnSeq);
 
     // A second session sends nothing new.
-    final again = await SyncDevice.syncPair(b, a);
+    final again = await runSessionPair(b, a);
     expect(again.bothComplete, isTrue, reason: '$again');
     expect(again.initiator.stats.envelopesSent, 0);
     expect(again.responder.stats.envelopesSent, 0);
@@ -30,7 +30,7 @@ void main() {
   test('an unpaired device does not sync', () async {
     final a = await newDevice('A', seed: 1);
     final b = await newDevice('B', seed: 2);
-    final r = await SyncDevice.syncPair(a, b);
+    final r = await runSessionPair(a, b);
     expect((r.initiator as SessionFailed).category, SessionFailure.notPaired);
   });
 }

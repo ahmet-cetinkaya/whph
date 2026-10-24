@@ -28,17 +28,17 @@ void main() {
     await SyncDevice.pair(inviter: a, joiner: b);
     // Warm-up session (JIT, handshake code paths).
     createRow(a, 'warm', 'x');
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     for (var i = 0; i < 10000; i++) {
       a.write(CellKey('task', 'r${i ~/ 2}', i.isEven ? 'title' : 'note'), 'value $i: some typical title text');
     }
     final sw = Stopwatch()..start();
-    final r = await SyncDevice.syncPair(a, b);
+    final r = await runSessionPair(a, b);
     final ms = sw.elapsedMicroseconds / 1000;
     expect(r.bothComplete, isTrue);
     expect(r.responder.stats.applied, 10000);
     sw.reset();
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     final emptyMs = sw.elapsedMicroseconds / 1000;
     // ignore: avoid_print
     print('ENGINE-PERF 10,000 changes one session: ${ms.toStringAsFixed(0)} ms total, '
@@ -125,7 +125,7 @@ Future<_WorkloadResult> _workload({required int seed, required int ops}) async {
               ? TransportFaults(duplicate: {3 + rng.nextInt(10)})
               : TransportFaults.none;
       sessionSw.start();
-      final p = await SyncDevice.syncPair(devices[i], devices[j], faults: faults);
+      final p = await runSessionPair(devices[i], devices[j], faults: faults);
       sessionSw.stop();
       sessions++;
       if (!p.bothComplete) failed++;
