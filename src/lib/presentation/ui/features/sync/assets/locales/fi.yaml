@@ -187,6 +187,7 @@ sync:
   error:
     scan: Skannaus epäonnistui
   errors:
+    preparing: "Synkronointia valmistellaan. Yritä hetken kuluttua uudelleen."
     connection_failed: "Yhteys epäonnistui. Varmista:
 
 

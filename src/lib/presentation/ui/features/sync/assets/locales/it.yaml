@@ -186,6 +186,7 @@ sync:
   error:
     scan: Scansione fallita
   errors:
+    preparing: "La sincronizzazione è in preparazione. Riprova tra poco."
     connection_failed: "Connessione fallita. Assicurati:
 
 

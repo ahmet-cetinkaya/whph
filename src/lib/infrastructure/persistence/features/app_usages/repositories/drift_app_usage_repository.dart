@@ -126,7 +126,7 @@ class DriftAppUsageRepository
     final query = database.customSelect(
       '''
       WITH FilteredPeriodAppUsages AS (
-        SELECT au.id, au.name, COALESCE(TOTAL(MAX(autr.duration, 0)), 0) as total_duration
+        SELECT au.id, au.name, MAX(COALESCE(TOTAL(autr.duration), 0), 0) as total_duration
         FROM app_usage_table au
         LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
           AND autr.deleted_date IS NULL

@@ -146,6 +146,36 @@ void main() {
     expect(b.membership.mustRotate, isTrue, reason: 'the anchor flag alone forces the rotation');
   });
 
+  test('ledger_revocation_with_bad_signature_is_stored_but_not_honoured', () async {
+    final [a, b] = [for (var i = 0; i < 2; i++) await newDevice('D$i', seed: 190 + i)];
+    await pairAll([a, b]);
+    final signed = await RevocationRecord.sign(
+      groupId: a.membership.groupId!,
+      revokedPub: b.membership.identity.ed25519Pub,
+      revoker: a.membership.identity.ed25519,
+      cutoffs: const {},
+    );
+    // Keys and revoker entry are consistent with the group; only the signature is wrong.
+    final tampered = RevocationRecord(
+      revokedPub: signed.revokedPub,
+      revokerPub: signed.revokerPub,
+      cutoffs: signed.cutoffs,
+      sig: Uint8List.fromList(signed.sig)..[0] ^= 0xff,
+    );
+    await a.ledger.persistRevocations([
+      LedgerRevocation(
+        recordBytes: encodeRevocationRecord(tampered),
+        revokerEntryBytes: a.membership.identity.entry(addedBy: a.memberId).encode(),
+        carrierOrigin: a.store.localOrigin,
+        carrierSeq: 1,
+      ),
+    ]);
+    await a.membership.reload(a.store);
+    expect(a.ledger.revocations, isNotEmpty, reason: 'the record is stored');
+    expect(a.membership.isRevokedEd(b.membership.identity.ed25519Pub), isFalse);
+    expect(a.membership.memberById(b.memberId), isNotNull);
+  });
+
   test('forged_ledger_revocation_entry_grants_no_trust', () async {
     final [a, b, forger, bystander] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 170 + i)];
     await pairAll([a, b]);

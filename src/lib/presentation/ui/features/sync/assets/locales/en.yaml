@@ -196,6 +196,7 @@ sync:
   error:
     scan: Failed to scan
   errors:
+    preparing: "Sync is preparing. Please try again shortly."
     connection_failed: "Connection failed. Please ensure:
 
 

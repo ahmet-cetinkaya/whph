@@ -106,6 +106,10 @@ class SyncOriginTable extends Table {
 /// Synced (D7): revocation records with per-origin cutoffs. One row per
 /// record; `origin_id` carries the record's cell pk (a hash of the record), so
 /// several records for one `(revoked, revoker)` pair coexist (grow-only).
+///
+/// The primary key was edited in place within v38, which is allowed only
+/// because v38 is unreleased; once v38 ships, any schema edit needs a v39
+/// migration.
 class SyncRevocationTable extends Table {
   @override
   String get tableName => 'sync_revocation';

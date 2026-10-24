@@ -204,6 +204,7 @@ sync:
   error:
     scan: Napaka pri skeniranju
   errors:
+    preparing: "Sinhronizacija se pripravlja. Poskusite znova čez trenutek."
     connection_failed: "Povezava ni uspela. Preverite:
 
 
