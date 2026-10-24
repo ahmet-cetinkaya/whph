@@ -58,7 +58,13 @@ final class EngineSimTuning {
     this.maxBatchChanges = 64,
     this.maxFinalRounds = 30,
     this.maxSnapshotsPerDevice = 4,
+    this.perturbAtStep,
   });
+
+  /// Draws one extra random number at this step, shifting every later random
+  /// choice: a schedule perturbation that changes no engine behavior. Used to
+  /// show that a seed's outcome depends on the schedule, not on the engine.
+  final int? perturbAtStep;
 
   final double clockJumpProbability;
   final double dbSnapshotProbability;
@@ -312,6 +318,7 @@ final class EngineSimulation {
   Future<SimResult> run() async {
     await _setup();
     for (_step = 0; _step < config.ops; _step++) {
+      if (_step == tuning.perturbAtStep) _rng.nextInt(1000);
       _now += 1 + _rng.nextInt(1000);
       if (_rng.nextDouble() < config.repartitionProbability) _repartition();
       if (!_switched && _step >= _switchAt) await _groupSwitch();
