@@ -101,27 +101,10 @@
       "expectedResponse": {
         "type": "paginated_sync",
         "data": {
-          "success": true,
+          "success": false,
+          "error": "sync.errors.version_mismatch",
           "server_type": "lan_server",
-          "timestamp": "2026-01-01T00:00:00.000Z",
-          "paginatedSyncDataDto": {
-            "appVersion": "0.25.0",
-            "syncDevice": {
-              "id": "",
-              "createdDate": "2026-01-01T00:00:00.000Z",
-              "fromIp": "",
-              "toIp": "",
-              "fromDeviceId": "fixture-host-member",
-              "toDeviceId": ""
-            },
-            "isDebugMode": false,
-            "entityType": "Task",
-            "pageIndex": 0,
-            "pageSize": 0,
-            "totalPages": 0,
-            "totalItems": 0,
-            "isLastPage": true
-          }
+          "timestamp": "2026-01-01T00:00:00.000Z"
         }
       }
     }

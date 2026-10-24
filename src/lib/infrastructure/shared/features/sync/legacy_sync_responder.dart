@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_session_host.dart';
 
@@ -42,14 +43,16 @@ class LegacyDeviceSighting {
 class LegacyDeviceRegistry {
   final Map<String, LegacyDeviceSighting> _devices = {};
 
-  List<LegacyDeviceSighting> get needsUpdate => List.unmodifiable(_devices.values);
+  List<LegacyDeviceSighting> get needsUpdate =>
+      List.unmodifiable(_devices.values);
 
   void record(LegacyDeviceSighting sighting) {
     final key = sighting.deviceId ?? sighting.displayName;
     _devices
       ..remove(key)
       ..[key] = sighting;
-    if (_devices.length > legacyRegistryCapacity) _devices.remove(_devices.keys.first);
+    if (_devices.length > legacyRegistryCapacity)
+      _devices.remove(_devices.keys.first);
   }
 }
 
@@ -77,28 +80,36 @@ class LegacySyncResponder {
   /// `null` when no reply is due.
   Future<String?> handle(String text, {required String source}) async {
     if (text.length > legacyMaxMessageChars) {
-      Logger.warning('Legacy message dropped: too large', component: 'LegacySyncResponder');
+      Logger.warning('Legacy message dropped: too large',
+          component: 'LegacySyncResponder');
       return null;
     }
     final message = _parse(text);
     final type = message?['type'];
-    if (type is! String) return _reply('error', {'success': false, 'message': 'Invalid message'});
+    if (type is! String)
+      return _reply('error', {'success': false, 'message': 'Invalid message'});
     // Only the type and the sender go to the log; the payload never does.
-    Logger.debug('Legacy message "$type" from $source', component: 'LegacySyncResponder');
+    Logger.debug('Legacy message "$type" from $source',
+        component: 'LegacySyncResponder');
     final data = message?['data'];
-    final fields = data is Map<String, dynamic> ? data : const <String, dynamic>{};
+    final fields =
+        data is Map<String, dynamic> ? data : const <String, dynamic>{};
     final presence = await _presence();
     switch (type) {
       case legacyDeviceInfoType:
         return _reply('device_info_response', _deviceInfo(presence));
       case 'test':
-        return _reply('test_response', {'success': true, 'timestamp': _timestamp()});
+        return _reply(
+            'test_response', {'success': true, 'timestamp': _timestamp()});
       case 'connection_test':
-        return _reply('connection_test_response', {'success': true, 'timestamp': _timestamp()});
+        return _reply('connection_test_response',
+            {'success': true, 'timestamp': _timestamp()});
       case 'heartbeat':
-        return _reply('heartbeat_response', {'timestamp': _timestamp(), 'serverStatus': 'healthy'});
+        return _reply('heartbeat_response',
+            {'timestamp': _timestamp(), 'serverStatus': 'healthy'});
       case 'client_connect':
-        _markNeedsUpdate(fields, source, nameKey: 'clientName', idKey: 'clientId');
+        _markNeedsUpdate(fields, source,
+            nameKey: 'clientName', idKey: 'clientId');
         return _reply('client_connected', {
           'success': true,
           'serverId': presence.memberId,
@@ -118,9 +129,10 @@ class LegacySyncResponder {
         return _versionMismatchPage(presence, entityType: fields['entityType']);
       case legacyPaginatedSyncType:
         _markPushSender(fields, source);
-        return _versionMismatchPage(presence, entityType: fields['entityType']);
+        return _versionMismatchFailure();
       default:
-        return _reply('error', {'success': false, 'message': 'Unknown message type'});
+        return _reply(
+            'error', {'success': false, 'message': 'Unknown message type'});
     }
   }
 
@@ -146,7 +158,17 @@ class LegacySyncResponder {
         'timestamp': _timestamp(),
       };
 
-  String _versionMismatchPage(SyncPresence presence, {required Object? entityType}) {
+  /// A push initiator ignores the data of a successful reply and reports
+  /// success, so the push is refused: the old client fails visibly.
+  String _versionMismatchFailure() => _reply(legacyPaginatedSyncType, {
+        'success': false,
+        'error': SyncTranslationKeys.versionMismatchError,
+        'server_type': _legacyServerType,
+        'timestamp': _timestamp(),
+      });
+
+  String _versionMismatchPage(SyncPresence presence,
+      {required Object? entityType}) {
     final now = _timestamp();
     return _reply(legacyPaginatedSyncType, {
       'success': true,
@@ -179,7 +201,8 @@ class LegacySyncResponder {
     _record(appVersion: _text(fields['appVersion']), source: source);
   }
 
-  void _markNeedsUpdate(Map<String, dynamic> fields, String source, {String? nameKey, required String idKey}) {
+  void _markNeedsUpdate(Map<String, dynamic> fields, String source,
+      {String? nameKey, required String idKey}) {
     _record(
       deviceId: _text(fields[idKey]),
       name: nameKey == null ? null : _text(fields[nameKey]),
@@ -188,7 +211,11 @@ class LegacySyncResponder {
     );
   }
 
-  void _record({String? deviceId, String? name, String? appVersion, required String source}) {
+  void _record(
+      {String? deviceId,
+      String? name,
+      String? appVersion,
+      required String source}) {
     _registry.record(LegacyDeviceSighting(
       deviceId: deviceId,
       name: name ?? _knownName(deviceId, source),
@@ -202,14 +229,17 @@ class LegacySyncResponder {
   String? _knownName(String? deviceId, String source) {
     for (final sighting in _registry.needsUpdate.reversed) {
       final sameDevice = deviceId != null && sighting.deviceId == deviceId;
-      if ((sameDevice || sighting.source == source) && sighting.name != null) return sighting.name;
+      if ((sameDevice || sighting.source == source) && sighting.name != null)
+        return sighting.name;
     }
     return null;
   }
 
-  String? _text(Object? value) => value is String && value.isNotEmpty ? value : null;
+  String? _text(Object? value) =>
+      value is String && value.isNotEmpty ? value : null;
 
   String _timestamp() => _now().toIso8601String();
 
-  String _reply(String type, Map<String, dynamic> data) => jsonEncode({'type': type, 'data': data});
+  String _reply(String type, Map<String, dynamic> data) =>
+      jsonEncode({'type': type, 'data': data});
 }
