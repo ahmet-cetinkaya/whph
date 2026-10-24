@@ -235,12 +235,16 @@ class DatabaseBackupService {
 
   /// Resets the database by closing and deleting the database file
   /// together with its `-wal`/`-shm` sidecars.
+  ///
+  /// [preResetBackup] is a backup the caller already took (U5 writes it before
+  /// it deletes the key file); without it one is taken here.
   Future<void> resetDatabase({
     required SnapshotWriter writeSnapshot,
     required Future<void> Function() closeDatabase,
     required void Function() resetInstance,
+    File? preResetBackup,
   }) async {
-    final backupFile = await createPreResetBackup(writeSnapshot: writeSnapshot);
+    final backupFile = preResetBackup ?? await createPreResetBackup(writeSnapshot: writeSnapshot);
 
     await closeDatabase();
     resetInstance();

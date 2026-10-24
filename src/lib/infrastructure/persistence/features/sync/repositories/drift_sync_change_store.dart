@@ -765,6 +765,32 @@ WHERE o.value = ? AND c.origin_seq = ?''', [cell.origin, cell.originSeq]);
   Future<String> localOrigin() => _ownOrigin();
 
   @override
+  Future<void> adoptInitialOrigin(String newOrigin) =>
+      _db.transaction(() async {
+        final state = await _state();
+        if (state['member_id'] != null)
+          throw StateError('the database already has a sync identity');
+        await _setApplyMode(_applyModeOriginSwitch);
+        await _exec(
+            'UPDATE sync_intern SET value = ? WHERE id = ? AND kind = ?',
+            [newOrigin, state['origin_id'], internKindOrigin]);
+        await _exec('UPDATE sync_state SET local_origin_id = ? WHERE id = ?',
+            [newOrigin, _stateId]);
+        await _setApplyMode(_applyModeCapture);
+      });
+
+  @override
+  Future<SyncLocalState> readLocalState() async {
+    final state = await _state();
+    return SyncLocalState(
+      memberId: state['member_id'] as String?,
+      localOrigin: await _ownOrigin(),
+      nextSeq: state['next_seq'] as int,
+      hlc: state['hlc'] as int,
+    );
+  }
+
+  @override
   Future<List<CellRecord>> readSecurityCells() async {
     final clockRows = await _select('''
 SELECT c.hlc AS hlc, n.value AS node, c.origin_seq AS seq, o.value AS origin, r.tbl_id AS tbl_id, r.pk AS pk

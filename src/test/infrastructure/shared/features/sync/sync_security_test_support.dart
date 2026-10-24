@@ -16,16 +16,17 @@ const _originHexLength = 32;
 /// One device: Drift database + key files + membership service.
 class SecurityDevice {
   final String name;
-  final SyncTestDevice database;
-  final FileSyncKeyStore keyStore;
-  final DriftSyncPeerStateStore peerStates;
-  final SyncMembershipService service;
+  SyncTestDevice database;
+  FileSyncKeyStore keyStore;
+  DriftSyncPeerStateStore peerStates;
+  SyncMembershipService service;
   final Directory root;
 
   SecurityDevice._(this.name, this.database, this.keyStore, this.peerStates,
       this.service, this.root);
 
-  static Future<SecurityDevice> open(String name, Directory parent) async {
+  static Future<SecurityDevice> open(String name, Directory parent,
+      {bool createIdentity = true}) async {
     final root = await parent.createTemp('$name-');
     final originHex = name.codeUnits
         .map((c) => c.toRadixString(16).padLeft(2, '0'))
@@ -42,7 +43,7 @@ class SecurityDevice {
         keyStore: keyStore,
         changeStore: database.store,
         peerStateStore: peerStates);
-    await service.createFreshIdentity(name: name);
+    if (createIdentity) await service.createFreshIdentity(name: name);
     return SecurityDevice._(
         name, database, keyStore, peerStates, service, root);
   }

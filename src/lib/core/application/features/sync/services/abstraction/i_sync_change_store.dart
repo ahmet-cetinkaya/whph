@@ -65,6 +65,24 @@ class SyncOriginSwitchReport {
   bool get needsRepairing => securityLeftBehind > 0;
 }
 
+/// The device's local sync state as the D14 startup check reads it.
+class SyncLocalState {
+  /// `sync_state.member_id`; `null` while the DB holds no sync identity.
+  final String? memberId;
+  final String localOrigin;
+
+  /// The next own seq (`next_seq`); the highest authored seq is one below.
+  final int nextSeq;
+  final int hlc;
+
+  const SyncLocalState({
+    required this.memberId,
+    required this.localOrigin,
+    required this.nextSeq,
+    required this.hlc,
+  });
+}
+
 /// Drift-backed replica store of the synced user tables (D1, D4, D5b, D6b,
 /// D14, D15). All methods are asynchronous because the shared Drift
 /// connection is (the package `ReplicaStore` port is synchronous, so the
@@ -123,6 +141,15 @@ abstract interface class ISyncChangeStore implements AsyncReplicaStore {
 
   /// The own origin id (hex) that stamps local writes.
   Future<String> localOrigin();
+
+  /// Renames the placeholder origin of a database that never had a sync
+  /// identity (`local-origin-...`, written by `onCreate`) to [newOrigin], a
+  /// random 128-bit id. Clock rows and `next_seq` stay: no peer ever saw the
+  /// placeholder, so the rename cannot collide with a held `(origin, seq)`.
+  Future<void> adoptInitialOrigin(String newOrigin);
+
+  /// Identity, origin, `next_seq` and HLC of this device (D14 startup check).
+  Future<SyncLocalState> readLocalState();
 
   /// Every stored security row (`sync_member`, `sync_revocation`,
   /// `sync_epoch_grant`) as a row-level `*` cell with its carrier origin and

@@ -99,6 +99,7 @@ enum OutboundKeyVerdict {
 }
 
 const _hlcCounterBits = 16;
+final RegExp _originHexPattern = RegExp(r'^[0-9a-f]{32}$');
 
 /// Members, origin registry, revocations, grants, epochs, group creation and
 /// switch, and the removed / needs-re-pairing states of this device (D7, D13),
@@ -167,7 +168,7 @@ class SyncMembershipService {
   Future<void> createFreshIdentity({required String name}) =>
       _exclusive(() async {
         final identity = await DeviceIdentity.generate(_ids, name: name);
-        final origin = OriginId.fromHex(await _changeStore.localOrigin());
+        final origin = await _initialOrigin();
         await _keyStore.append(
           OriginEntry(
               origin: origin,
@@ -179,6 +180,16 @@ class SyncMembershipService {
         await _changeStore.bindIdentity(memberId: identity.memberId);
         await _persistKeyFile();
       });
+
+  /// The DB's own origin; a fresh DB still holds the `onCreate` placeholder,
+  /// which is replaced by a random origin before the first ledger entry.
+  Future<OriginId> _initialOrigin() async {
+    final current = await _changeStore.localOrigin();
+    if (_originHexPattern.hasMatch(current)) return OriginId.fromHex(current);
+    final origin = _ids.origin();
+    await _changeStore.adoptInitialOrigin(origin.hex);
+    return origin;
+  }
 
   /// D14 rule 2 / U7: the key file is gone but the DB exists. A new identity
   /// and a new origin; never-sent cells are adopted under the new origin (the
@@ -232,6 +243,58 @@ class SyncMembershipService {
     await _keyStore.commit(newOrigin);
     return report;
   }
+
+  /// D14 `local_reset`: replace-import and demo reset. Ledger steps 1 and 3
+  /// around the one DB transaction that truncates the user tables
+  /// ([clearUserData]) and inserts the imported rows ([importRows]). A failed
+  /// reset rolls the DB back, so the pending ledger entry is dropped again.
+  Future<SyncOriginSwitchReport> localReset({
+    Future<void> Function()? clearUserData,
+    Future<void> Function()? importRows,
+  }) =>
+      _exclusive(() async {
+        final newOrigin = _ids.origin();
+        await _keyStore.append(OriginEntry(
+            origin: newOrigin,
+            state: OriginEntryState.pending,
+            reason: OriginSwitchReason.localReset));
+        final SyncOriginSwitchReport report;
+        try {
+          report = await _changeStore.localReset(
+            newOrigin: newOrigin.hex,
+            clearUserData: clearUserData,
+            importRows: importRows,
+          );
+        } on Object {
+          await _keyStore.drop(newOrigin);
+          rethrow;
+        }
+        if (membership.hasGroup) await _registerOrigin(newOrigin);
+        await _keyStore.commit(newOrigin);
+        return report;
+      });
+
+  /// Writes this device's member id and group id into the DB's `sync_state`.
+  /// A restored DB carries the identity of its backup time (D14 rule 4), while
+  /// the key file is current.
+  Future<void> bindIdentityToDatabase() =>
+      _exclusive(() => _changeStore.bindIdentity(
+          memberId: membership.memberId, groupId: membership.groupId?.hex));
+
+  /// Crash recovery of a switch that committed in the DB but not in the
+  /// ledger (D6b, D14 rule 3): the own origin gets its registration if the
+  /// crash came before it was stored.
+  Future<void> registerOwnOriginIfMissing() => _exclusive(() async {
+        if (!membership.hasGroup) return;
+        final origin = OriginId.fromHex(await _changeStore.localOrigin());
+        final known = await _changeStore.readRegistrations();
+        if (known.any((registration) => registration.origin == origin)) return;
+        await _registerOrigin(origin);
+      });
+
+  /// U6: whether this device is paired. `false` without an identity.
+  Future<bool> isPaired() async =>
+      hasIdentity && (await currentView()).isPaired;
 
   // -- pairing -----------------------------------------------------------------------------
 

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:acore/acore.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/features/sync/services/reset_local_data_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/restart_screen.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
@@ -27,7 +27,7 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
 
     try {
       // Perform reset first
-      await AppDatabase.instance().resetDatabase();
+      await container.resolve<ResetLocalDataService>().reset();
 
       // Only navigate on success
       if (context.mounted) {

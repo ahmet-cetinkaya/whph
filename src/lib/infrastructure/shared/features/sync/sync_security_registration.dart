@@ -4,7 +4,10 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_change_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_key_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_state_store.dart';
+import 'package:whph/core/application/features/sync/services/reset_local_data_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_ledger_mark_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_startup_check_service.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_peer_state_store.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
@@ -32,6 +35,29 @@ void registerSyncSecurity(IContainer container,
       keyStore: c.resolve<ISyncKeyStore>(),
       changeStore: c.resolve<ISyncChangeStore>(),
       peerStateStore: c.resolve<ISyncPeerStateStore>(),
+    ),
+  );
+  container.registerSingleton<SyncLedgerMarkService>(
+    (c) => SyncLedgerMarkService(
+      keyStore: c.resolve<ISyncKeyStore>(),
+      changeStore: c.resolve<ISyncChangeStore>(),
+    ),
+  );
+  container.registerSingleton<SyncStartupCheckService>(
+    (c) => SyncStartupCheckService(
+      membershipService: c.resolve<SyncMembershipService>(),
+      keyStore: c.resolve<ISyncKeyStore>(),
+      changeStore: c.resolve<ISyncChangeStore>(),
+      marks: c.resolve<SyncLedgerMarkService>(),
+    ),
+  );
+  container.registerSingleton<ResetLocalDataService>(
+    (c) => ResetLocalDataService(
+      keyStore: c.resolve<ISyncKeyStore>(),
+      createPreResetBackup: () =>
+          AppDatabase.instance(c).createPreResetBackup(),
+      resetDatabase: (backup) =>
+          AppDatabase.instance(c).resetDatabase(preResetBackup: backup),
     ),
   );
 }
