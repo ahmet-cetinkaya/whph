@@ -137,4 +137,34 @@ void main() {
         .getSingle();
     expect(mode.data['m'], 0);
   });
+
+  test('D5b: re-deleting the parent keeps a subtask revived by a later edit',
+      () async {
+    await db.customStatement(
+        "INSERT INTO task_table (id, created_date, title) VALUES ('p1', 0, 'P')");
+    await db.customStatement(
+        "INSERT INTO task_table (id, created_date, title, parent_task_id, modified_date) "
+        "VALUES ('c1', 0, 'C', 'p1', 100)");
+    await db.customStatement('DELETE FROM sync_clock');
+    final parentId = (await db
+            .customSelect("SELECT id FROM sync_row WHERE pk = 'p1'")
+            .getSingle())
+        .data['id'];
+    final childId = (await db
+            .customSelect("SELECT id FROM sync_row WHERE pk = 'c1'")
+            .getSingle())
+        .data['id'];
+    // The child's cascade tombstone (hlc 1) is older than its title edit (hlc 2).
+    await db.customStatement(
+        'INSERT INTO sync_clock (key, hlc, node_id, origin_id, origin_seq, tomb_value, cause_row_id, recorded_at) '
+        'VALUES ($childId * 256 + 0, 1, 1, 1, 1, 200, $parentId, 0)');
+    await db.customStatement(
+        'INSERT INTO sync_clock (key, hlc, node_id, origin_id, origin_seq, recorded_at) '
+        'VALUES ($childId * 256 + 3, 2, 1, 1, 2, 0)');
+
+    await db.customStatement(
+        "UPDATE task_table SET deleted_date = 400 WHERE id = 'p1'");
+
+    expect((await state('task_table', 'c1'))['deleted_date'], isNull);
+  });
 }

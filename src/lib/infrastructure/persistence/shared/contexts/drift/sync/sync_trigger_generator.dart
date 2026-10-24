@@ -161,6 +161,17 @@ const String _d5bCauseCheck = '''
                                  WHERE pr.tbl_id = 1 AND pr.pk = NEW.id)
       )''';
 
+/// True when a later edit of another cell revived the child (FR-006): the
+/// materialization must then stay alive, as the store's `rowExistence` says.
+const String _d5bChildEditedAfterTombstone = '''
+      EXISTS (
+        SELECT 1 FROM sync_row er, sync_clock tc, sync_intern tn, sync_clock ec, sync_intern en
+        WHERE er.tbl_id = 1 AND er.pk = task_table.id
+          AND tc.key = er.id * 256 AND tn.id = tc.node_id
+          AND ec.key > er.id * 256 AND ec.key < (er.id + 1) * 256 AND en.id = ec.node_id
+          AND (ec.hlc > tc.hlc OR (ec.hlc = tc.hlc AND en.value < tn.value))
+      )''';
+
 /// The D5b trigger, one per parent table (v38: task_table only).
 List<String> syncCascadeStatements() => [
       '''
@@ -179,7 +190,7 @@ BEGIN
                     WHERE cr.tbl_id = 1 AND cr.pk = task_table.id AND cc.key = cr.id * 256),
     modified_date = MAX(COALESCE(modified_date, 0) + 1, CAST(strftime('%s','now') AS INTEGER))
   WHERE parent_task_id = NEW.id AND deleted_date IS NULL AND NEW.deleted_date IS NOT NULL
-    AND $_d5bCauseCheck;
+    AND $_d5bCauseCheck AND NOT $_d5bChildEditedAfterTombstone;
   UPDATE sync_state SET apply_mode = 0 WHERE id = 'singleton';
 END''',
     ];
