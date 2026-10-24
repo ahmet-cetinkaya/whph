@@ -9,6 +9,12 @@ import 'package:whph/infrastructure/persistence/features/habits/repositories/dri
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_time_record_repository.dart';
 import 'package:whph/infrastructure/persistence/features/settings/repositories/drift_settings_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 /// T15 acceptance 3-5: deterministic habit records under D5c, settings
 /// delete-recreate revival, and random ids while the target exceeds 1.
@@ -32,7 +38,8 @@ void main() {
     final ops = HabitRecordOperationsService(
         habitRecordRepository: repo,
         habitTimeRecordRepository:
-            DriftHabitTimeRecordRepository.withDatabase(db));
+            DriftHabitTimeRecordRepository.withDatabase(db),
+        deviceIds: TestDeviceIds());
     final day = DateTime.utc(2026, 3, 1, 12);
     final id = syncIdentityId(identityKindHabitRecord,
         ['h1', day.toLocal().toIso8601String().substring(0, 10)]);
@@ -87,7 +94,8 @@ void main() {
     final ops = HabitRecordOperationsService(
         habitRecordRepository: repo,
         habitTimeRecordRepository:
-            DriftHabitTimeRecordRepository.withDatabase(db));
+            DriftHabitTimeRecordRepository.withDatabase(db),
+        deviceIds: TestDeviceIds());
     final day = DateTime.utc(2026, 3, 2, 9);
     for (var i = 0; i < 3; i++) {
       await ops.addHabitRecord(

@@ -18,13 +18,20 @@ import 'package:whph/infrastructure/persistence/features/habits/repositories/dri
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habit_tags_repository.dart';
 import 'package:whph/infrastructure/persistence/features/habits/repositories/drift_habits_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 class EmptySettingRepository extends Fake implements ISettingRepository {
   @override
   Future<Setting?> getByKey(String key) async => null;
 }
 
-class EmptyHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepository {}
+class EmptyHabitTimeRecordRepository extends Fake
+    implements IHabitTimeRecordRepository {}
 
 void main() {
   late Directory tempDirectory;
@@ -44,13 +51,15 @@ void main() {
     tagRepository = DriftHabitTagRepository.withDatabase(database);
   }
 
-  ToggleHabitCompletionCommandHandler toggleHandler() => ToggleHabitCompletionCommandHandler(
+  ToggleHabitCompletionCommandHandler toggleHandler() =>
+      ToggleHabitCompletionCommandHandler(
         habitRepository: habitRepository,
         habitRecordRepository: recordRepository,
         settingsRepository: settingRepository,
         operationsService: HabitRecordOperationsService(
           habitRecordRepository: recordRepository,
           habitTimeRecordRepository: EmptyHabitTimeRecordRepository(),
+          deviceIds: TestDeviceIds(),
         ),
       );
 
@@ -60,7 +69,8 @@ void main() {
   });
 
   setUp(() async {
-    tempDirectory = await Directory.systemTemp.createTemp('whph-habit-type-e2e-');
+    tempDirectory =
+        await Directory.systemTemp.createTemp('whph-habit-type-e2e-');
     databaseFile = File('${tempDirectory.path}/habit-types.sqlite');
     targetDate = DateTime.now().toUtc();
     await openDatabase();
@@ -71,8 +81,11 @@ void main() {
     await tempDirectory.delete(recursive: true);
   });
 
-  test('bad habit survives create, outcomes, conversion, filters, statistics, and restart', () async {
-    final saveHandler = SaveHabitCommandHandler(habitRepository: habitRepository);
+  test(
+      'bad habit survives create, outcomes, conversion, filters, statistics, and restart',
+      () async {
+    final saveHandler =
+        SaveHabitCommandHandler(habitRepository: habitRepository);
 
     final created = await saveHandler.call(SaveHabitCommand(
       name: 'Avoid sugar',
@@ -97,9 +110,11 @@ void main() {
       pageSize: 20,
       excludeCompletedForDate: targetDate,
     ));
-    expect(successfulFilter.items.map((habit) => habit.id), isNot(contains(created.id)));
+    expect(successfulFilter.items.map((habit) => habit.id),
+        isNot(contains(created.id)));
 
-    await toggleHandler().call(ToggleHabitCompletionCommand(habitId: created.id, date: targetDate));
+    await toggleHandler().call(
+        ToggleHabitCompletionCommand(habitId: created.id, date: targetDate));
     var records = await recordRepository.getByHabitId(created.id);
     expect(records.map((record) => record.status), [HabitRecordStatus.notDone]);
 
@@ -114,7 +129,8 @@ void main() {
     ));
     expect(failedFilter.items.map((habit) => habit.id), contains(created.id));
 
-    await toggleHandler().call(ToggleHabitCompletionCommand(habitId: created.id, date: targetDate));
+    await toggleHandler().call(
+        ToggleHabitCompletionCommand(habitId: created.id, date: targetDate));
     records = await recordRepository.getByHabitId(created.id);
     expect(records, isEmpty);
 
@@ -147,7 +163,8 @@ void main() {
     records = await recordRepository.getByHabitId(created.id);
 
     expect(details.type, HabitType.bad);
-    expect(records.map((record) => record.status), [HabitRecordStatus.complete]);
+    expect(
+        records.map((record) => record.status), [HabitRecordStatus.complete]);
     expect(details.statistics.totalRecords, 0);
   });
 }

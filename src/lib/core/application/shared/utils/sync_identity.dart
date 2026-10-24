@@ -50,3 +50,36 @@ List<int> _uuidBytes(String uuid) {
       int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16),
   ];
 }
+
+/// D12: bucket kind part for each time-record table. Stable strings.
+const String timeBucketKindTask = 'task_time';
+const String timeBucketKindHabit = 'habit_time';
+const String timeBucketKindAppUsage = 'app_usage_time';
+
+/// D12: UTC hour-start epoch milliseconds of [at], normalized for the
+/// identity key (the stored `created_date`/`usage_date` is unaffected).
+int syncBucketHourStartMs(DateTime at) {
+  final utc = at.toUtc();
+  return DateTime.utc(utc.year, utc.month, utc.day, utc.hour)
+      .millisecondsSinceEpoch;
+}
+
+/// D12: the deterministic id of this device's time-record bucket for
+/// [kind] owned by [ownerId] at the UTC hour of [at]. Habits add the
+/// `isEstimated` dimension; task and app-usage buckets do not.
+String syncTimeBucketId({
+  required String kind,
+  required String ownerId,
+  required DateTime at,
+  required String deviceId,
+  bool isEstimated = false,
+}) {
+  final parts = [
+    kind,
+    ownerId,
+    syncBucketHourStartMs(at).toString(),
+    deviceId,
+    if (kind == timeBucketKindHabit) isEstimated.toString(),
+  ];
+  return syncIdentityId(identityKindTimeBucket, parts);
+}

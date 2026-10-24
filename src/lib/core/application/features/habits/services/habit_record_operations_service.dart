@@ -3,6 +3,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_record_re
 import 'package:whph/core/application/features/habits/services/i_habit_time_record_repository.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/shared/utils/sync_identity.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_record_status.dart';
@@ -10,12 +11,15 @@ import 'package:whph/core/domain/features/habits/habit_record_status.dart';
 class HabitRecordOperationsService {
   final IHabitRecordRepository _habitRecordRepository;
   final IHabitTimeRecordRepository _habitTimeRecordRepository;
+  final IDeviceIdService _deviceIds;
 
   HabitRecordOperationsService({
     required IHabitRecordRepository habitRecordRepository,
     required IHabitTimeRecordRepository habitTimeRecordRepository,
+    required IDeviceIdService deviceIds,
   })  : _habitRecordRepository = habitRecordRepository,
-        _habitTimeRecordRepository = habitTimeRecordRepository;
+        _habitTimeRecordRepository = habitTimeRecordRepository,
+        _deviceIds = deviceIds;
 
   /// D5c: when the habit's effective `dailyTarget == 1` at creation the
   /// record id is deterministic (`habitId` + local day of `occurredAt`) and
@@ -98,6 +102,7 @@ class HabitRecordOperationsService {
         repository: _habitTimeRecordRepository,
         habitId: habitId,
         targetDate: occurredAt,
+        deviceId: await _deviceIds.getDeviceId(),
         estimatedDuration: (habit.estimatedTime! * 60).toInt(),
       );
     }

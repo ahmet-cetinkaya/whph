@@ -22,11 +22,14 @@ class AppUsageTagTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String, AppUsageTagTable>
+class DriftAppUsageTagRepository
+    extends DriftBaseRepository<AppUsageTag, String, AppUsageTagTable>
     implements IAppUsageTagRepository {
-  DriftAppUsageTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageTagTable);
+  DriftAppUsageTagRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().appUsageTagTable);
 
-  DriftAppUsageTagRepository.withDatabase(AppDatabase db) : super(db, db.appUsageTagTable);
+  DriftAppUsageTagRepository.withDatabase(AppDatabase db)
+      : super(db, db.appUsageTagTable);
 
   @override
   Expression<String> getPrimaryKey(AppUsageTagTable t) {
@@ -47,7 +50,8 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
   }
 
   @override
-  Future<PaginatedList<AppUsageTag>> getListByAppUsageId(String appUsageId, int pageIndex, int pageSize) async {
+  Future<PaginatedList<AppUsageTag>> getListByAppUsageId(
+      String appUsageId, int pageIndex, int pageSize) async {
     final query = database.select(table)
       ..where((t) => t.appUsageId.equals(appUsageId) & t.deletedDate.isNull())
       ..orderBy([(t) => OrderingTerm(expression: t.tagOrder)])
@@ -72,7 +76,10 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
   @override
   Future<bool> anyByAppUsageIdAndTagId(String appUsageId, String tagId) async {
     final query = database.select(table)
-      ..where((t) => t.appUsageId.equals(appUsageId) & t.tagId.equals(tagId) & t.deletedDate.isNull());
+      ..where((t) =>
+          t.appUsageId.equals(appUsageId) &
+          t.tagId.equals(tagId) &
+          t.deletedDate.isNull());
     final result = await query.get();
 
     return result.isNotEmpty;
@@ -94,13 +101,16 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
           t.name as tag_name,
           t.color as tag_color,
           COALESCE((
-            SELECT TOTAL(aur.duration)
-            FROM app_usage_tag_table aut
-            JOIN app_usage_time_record_table aur ON aur.app_usage_id = aut.app_usage_id
-            WHERE aut.tag_id = t.id
-            AND aut.deleted_date IS NULL
-            AND aur.usage_date BETWEEN ? AND ?
-            AND aur.deleted_date IS NULL
+            SELECT TOTAL(clamped) FROM (
+              SELECT MAX(aur.duration, 0) as clamped
+              FROM app_usage_tag_table aut
+              JOIN app_usage_time_record_table aur ON aur.app_usage_id = aut.app_usage_id
+              WHERE aut.tag_id = t.id
+              AND aut.deleted_date IS NULL
+              AND aur.usage_date BETWEEN ? AND ?
+              AND aur.deleted_date IS NULL
+              GROUP BY aur.app_usage_id, (CAST(aur.usage_date AS INTEGER) / 3600)
+            )
           ), 0) as total_duration
         FROM tag_table t
         WHERE t.deleted_date IS NULL
@@ -116,7 +126,8 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
       variables: [
         Variable<DateTime>(startDate),
         Variable<DateTime>(endDate),
-        if (filterByTags != null && filterByTags.isNotEmpty) ...filterByTags.map((id) => Variable<String>(id)),
+        if (filterByTags != null && filterByTags.isNotEmpty)
+          ...filterByTags.map((id) => Variable<String>(id)),
         if (limit != null) Variable<int>(limit),
       ],
       readsFrom: {
@@ -139,13 +150,15 @@ class DriftAppUsageTagRepository extends DriftBaseRepository<AppUsageTag, String
   }
 
   @override
-  Future<void> updateTagOrders(String appUsageId, Map<String, int> tagOrders) async {
+  Future<void> updateTagOrders(
+      String appUsageId, Map<String, int> tagOrders) async {
     await database.batch((batch) {
       for (final entry in tagOrders.entries) {
         batch.update(
           table,
           AppUsageTagTableCompanion(tagOrder: Value(entry.value)),
-          where: (t) => t.appUsageId.equals(appUsageId) & t.tagId.equals(entry.key),
+          where: (t) =>
+              t.appUsageId.equals(appUsageId) & t.tagId.equals(entry.key),
         );
       }
     });

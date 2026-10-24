@@ -19,6 +19,7 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
 import 'package:whph/core/application/features/tasks/utils/task_date_time_normalizer.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -109,17 +110,20 @@ class SaveTaskCommandHandler
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ISettingRepository _settingRepository;
   final ITaskEvents? _taskEvents;
+  final IDeviceIdService _deviceIds;
 
   SaveTaskCommandHandler({
     required ITaskRepository taskService,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
     required ISettingRepository settingRepository,
+    required IDeviceIdService deviceIds,
     ITaskEvents? taskEvents,
   })  : _taskRepository = taskService,
         _taskTagRepository = taskTagRepository,
         _taskTimeRecordRepository = taskTimeRecordRepository,
         _settingRepository = settingRepository,
+        _deviceIds = deviceIds,
         _taskEvents = taskEvents;
 
   /// Gets the default estimated time from user settings.
@@ -442,6 +446,7 @@ class SaveTaskCommandHandler
           repository: _taskTimeRecordRepository,
           taskId: task.id,
           targetDate: now,
+          deviceId: await _deviceIds.getDeviceId(),
           durationToAdd: task.estimatedTime! * 60,
         );
       }

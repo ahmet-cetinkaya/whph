@@ -36,10 +36,13 @@ class TaskQueryBuilder {
       task_table.recurrence_end_date,
       task_table.recurrence_count,
       task_table.recurrence_parent_id,
-      (SELECT COALESCE(TOTAL(task_time_record_table.duration), 0)
-       FROM task_time_record_table
-       WHERE task_time_record_table.task_id = task_table.id
-       AND task_time_record_table.deleted_date IS NULL) as total_duration
+      (SELECT COALESCE(TOTAL(clamped), 0) FROM (
+         SELECT MAX(task_time_record_table.duration, 0) as clamped
+         FROM task_time_record_table
+         WHERE task_time_record_table.task_id = task_table.id
+         AND task_time_record_table.deleted_date IS NULL
+         GROUP BY (CAST(task_time_record_table.created_date AS INTEGER) / 86400)
+       )) as total_duration
     FROM task_table
   ''';
 
@@ -103,7 +106,8 @@ class TaskQueryBuilder {
           }
 
           if (caseStatements.isEmpty) {
-            Logger.warning('All custom tag IDs were invalid, falling back to default tag sort.');
+            Logger.warning(
+                'All custom tag IDs were invalid, falling back to default tag sort.');
             final tagSubquery = '''(
               SELECT t.name 
               FROM task_tag_table tt 
@@ -148,13 +152,17 @@ class TaskQueryBuilder {
     // Determine strict null handling: if filtering by MULTIPLE fields with OR,
     // "No Date" means ALL of them must be null.
     // If filtering by single field, matching null is lenient (IS NULL).
-    final hasPlannedFilter = filterByPlannedStartDate != null || filterByPlannedEndDate != null;
-    final hasDeadlineFilter = filterByDeadlineStartDate != null || filterByDeadlineEndDate != null;
-    final isMultiFieldOrFilter = hasPlannedFilter && hasDeadlineFilter && filterDateOr;
+    final hasPlannedFilter =
+        filterByPlannedStartDate != null || filterByPlannedEndDate != null;
+    final hasDeadlineFilter =
+        filterByDeadlineStartDate != null || filterByDeadlineEndDate != null;
+    final isMultiFieldOrFilter =
+        hasPlannedFilter && hasDeadlineFilter && filterDateOr;
 
     // Use "lenient" null checks for individual fields only if we are NOT in the special multi-field OR mode
     // If we ARE in multi-field OR mode, we will append a separate "ALL NULL" condition at the end.
-    final bool useIndividualNullCheck = includeNullDates && !isMultiFieldOrFilter;
+    final bool useIndividualNullCheck =
+        includeNullDates && !isMultiFieldOrFilter;
 
     if (hasPlannedFilter) {
       if (areParentAndSubTasksIncluded) {
@@ -171,9 +179,12 @@ class TaskQueryBuilder {
         )''';
         dateParts.add(plannedCondition);
         // Add variables for: task_table, subtask, parent
-        final startVar = Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0));
-        final endVar = Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999));
-        variables.addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
+        final startVar =
+            Variable.withDateTime(filterByPlannedStartDate ?? DateTime(0));
+        final endVar =
+            Variable.withDateTime(filterByPlannedEndDate ?? DateTime(9999));
+        variables
+            .addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
       } else {
         dateParts.add(useIndividualNullCheck
             ? '(task_table.planned_date IS NULL OR (task_table.planned_date >= ? AND task_table.planned_date <= ?))'
@@ -200,9 +211,12 @@ class TaskQueryBuilder {
         )''';
         dateParts.add(deadlineCondition);
         // Add variables for: task_table, subtask, parent
-        final startVar = Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0));
-        final endVar = Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999));
-        variables.addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
+        final startVar =
+            Variable.withDateTime(filterByDeadlineStartDate ?? DateTime(0));
+        final endVar =
+            Variable.withDateTime(filterByDeadlineEndDate ?? DateTime(9999));
+        variables
+            .addAll([startVar, endVar, startVar, endVar, startVar, endVar]);
       } else {
         dateParts.add(useIndividualNullCheck
             ? '(task_table.deadline_date IS NULL OR (task_table.deadline_date >= ? AND task_table.deadline_date <= ?))'
@@ -232,7 +246,8 @@ class TaskQueryBuilder {
             // For subtasks/parents, we assume the same strictness applies.
 
             // Strict null condition for main task
-            const strictNullSelf = '(task_table.planned_date IS NULL AND task_table.deadline_date IS NULL)';
+            const strictNullSelf =
+                '(task_table.planned_date IS NULL AND task_table.deadline_date IS NULL)';
 
             // Strict null condition for subtasks
             const strictNullSub =
@@ -242,16 +257,20 @@ class TaskQueryBuilder {
             const strictNullParent =
                 'EXISTS(SELECT 1 FROM task_table parent WHERE parent.id = task_table.parent_task_id AND parent.planned_date IS NULL AND parent.deadline_date IS NULL)';
 
-            condition = '($joinedParts OR $strictNullSelf OR $strictNullSub OR $strictNullParent)';
+            condition =
+                '($joinedParts OR $strictNullSelf OR $strictNullSub OR $strictNullParent)';
           } else {
-            condition = '($joinedParts OR (task_table.planned_date IS NULL AND task_table.deadline_date IS NULL))';
+            condition =
+                '($joinedParts OR (task_table.planned_date IS NULL AND task_table.deadline_date IS NULL))';
           }
         } else {
           condition = '($joinedParts)';
         }
       } else {
         // Standard behavior (Single filter OR multiple with AND)
-        condition = dateParts.length == 1 ? dateParts[0] : '(${dateParts.join(filterDateOr ? ' OR ' : ' AND ')})';
+        condition = dateParts.length == 1
+            ? dateParts[0]
+            : '(${dateParts.join(filterDateOr ? ' OR ' : ' AND ')})';
       }
     }
 
@@ -288,7 +307,8 @@ class TaskQueryBuilder {
   }) {
     final variables = <Variable>[];
 
-    if (filterByCompleted == null) return (condition: '1=1', variables: variables);
+    if (filterByCompleted == null)
+      return (condition: '1=1', variables: variables);
 
     try {
       if (areParentAndSubTasksIncluded) {
@@ -307,12 +327,17 @@ class TaskQueryBuilder {
 
         return (condition: condition, variables: variables);
       } else {
-        final condition = filterByCompleted ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL';
+        final condition = filterByCompleted
+            ? 'task_table.completed_at IS NOT NULL'
+            : 'task_table.completed_at IS NULL';
         return (condition: condition, variables: variables);
       }
     } catch (e, stackTrace) {
-      Logger.error('Failed to build completion condition', error: e, stackTrace: stackTrace);
-      final condition = filterByCompleted ? 'task_table.completed_at IS NOT NULL' : 'task_table.completed_at IS NULL';
+      Logger.error('Failed to build completion condition',
+          error: e, stackTrace: stackTrace);
+      final condition = filterByCompleted
+          ? 'task_table.completed_at IS NOT NULL'
+          : 'task_table.completed_at IS NULL';
       return (condition: condition, variables: variables);
     }
   }
@@ -327,7 +352,11 @@ class TaskQueryBuilder {
     required List<String>? filterByTags,
   }) {
     final conditions = [searchCondition, dateCondition, completedCondition];
-    final variables = <Variable>[...searchVariables, ...dateVariables, ...completedVariables];
+    final variables = <Variable>[
+      ...searchVariables,
+      ...dateVariables,
+      ...completedVariables
+    ];
 
     if (filterByTags != null && filterByTags.isNotEmpty) {
       final tagPlaceholders = List.filled(filterByTags.length, '?').join(',');
@@ -354,8 +383,8 @@ class TaskQueryBuilder {
     }
 
     if (filterNoTags) {
-      conditions
-          .add('(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
+      conditions.add(
+          '(SELECT COUNT(*) FROM task_tag_table WHERE task_id = task_table.id AND deleted_date IS NULL) = 0');
     }
 
     if (conditions.isEmpty) {
@@ -390,17 +419,22 @@ class TaskQueryBuilder {
     final conditions = <String>[];
     final variables = <Variable>[];
 
-    if (filterByCompletedStartDate != null || filterByCompletedEndDate != null) {
-      if (filterByCompletedStartDate != null && filterByCompletedEndDate != null) {
+    if (filterByCompletedStartDate != null ||
+        filterByCompletedEndDate != null) {
+      if (filterByCompletedStartDate != null &&
+          filterByCompletedEndDate != null) {
         // Convert DateTime to Unix timestamp (seconds) to match database storage format
-        conditions.add('task_table.completed_at >= ? AND task_table.completed_at < ?');
-        variables.add(Variable.withInt(filterByCompletedStartDate.millisecondsSinceEpoch ~/ 1000));
+        conditions.add(
+            'task_table.completed_at >= ? AND task_table.completed_at < ?');
+        variables.add(Variable.withInt(
+            filterByCompletedStartDate.millisecondsSinceEpoch ~/ 1000));
         // Add one day to end date to include the entire end day
         final nextDay = filterByCompletedEndDate.add(const Duration(days: 1));
         variables.add(Variable.withInt(nextDay.millisecondsSinceEpoch ~/ 1000));
       } else if (filterByCompletedStartDate != null) {
         conditions.add('task_table.completed_at >= ?');
-        variables.add(Variable.withInt(filterByCompletedStartDate.millisecondsSinceEpoch ~/ 1000));
+        variables.add(Variable.withInt(
+            filterByCompletedStartDate.millisecondsSinceEpoch ~/ 1000));
       } else if (filterByCompletedEndDate != null) {
         // Include the entire end day by adding one day and using < instead of <=
         conditions.add('task_table.completed_at < ?');

@@ -20,11 +20,14 @@ class AppUsageTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppUsageTable>
+class DriftAppUsageRepository
+    extends DriftBaseRepository<AppUsage, String, AppUsageTable>
     implements IAppUsageRepository {
-  DriftAppUsageRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageTable);
+  DriftAppUsageRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().appUsageTable);
 
-  DriftAppUsageRepository.withDatabase(AppDatabase db) : super(db, db.appUsageTable);
+  DriftAppUsageRepository.withDatabase(AppDatabase db)
+      : super(db, db.appUsageTable);
 
   @override
   Expression<String> getPrimaryKey(AppUsageTable t) {
@@ -46,7 +49,8 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
   }
 
   @override
-  Future<DateTime?> updateIfRevision(AppUsage appUsage, DateTime expectedRevision) async {
+  Future<DateTime?> updateIfRevision(
+      AppUsage appUsage, DateTime expectedRevision) async {
     final nextRevision = nextDatabaseRevision(expectedRevision);
     final affectedRows = await database.customUpdate(
       '''
@@ -70,7 +74,8 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
   }
 
   @override
-  Future<DateTime?> deleteIfRevision(AppUsage appUsage, DateTime expectedRevision) async {
+  Future<DateTime?> deleteIfRevision(
+      AppUsage appUsage, DateTime expectedRevision) async {
     final deletedAt = nextDatabaseRevision(expectedRevision);
     final affectedRows = await database.customUpdate(
       '''
@@ -93,7 +98,11 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
 
   @override
   Future<AppUsage?> getByDateAndHour(
-      {required String name, required int year, required int month, required int day, required int hour}) async {
+      {required String name,
+      required int year,
+      required int month,
+      required int day,
+      required int hour}) async {
     // Note: This method correctly uses created_date as it's finding when the app usage entity was first created,
     // not when the actual usage occurred (which would use usage_date from app_usage_time_record_table)
     return await (database.select(table)
@@ -117,14 +126,14 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
     final query = database.customSelect(
       '''
       WITH FilteredPeriodAppUsages AS (
-        SELECT au.id, au.name, COALESCE(TOTAL(autr.duration), 0) as total_duration
+        SELECT au.id, au.name, COALESCE(TOTAL(MAX(autr.duration, 0)), 0) as total_duration
         FROM app_usage_table au
         LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id 
           AND autr.deleted_date IS NULL
           ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
           ${endDate != null ? 'AND autr.usage_date < ?' : ''}
         WHERE au.deleted_date IS NULL
-        GROUP BY au.id, au.name
+        GROUP BY au.id, au.name, (CAST(autr.usage_date AS INTEGER) / 3600)
       ),
       FirstAppUsage AS (
         SELECT 
@@ -166,7 +175,8 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
       variables: [
         if (startDate != null) Variable.withDateTime(startDate),
         if (endDate != null) Variable.withDateTime(endDate),
-        if (filterByTags != null) ...filterByTags.map((tag) => Variable.withString(tag)),
+        if (filterByTags != null)
+          ...filterByTags.map((tag) => Variable.withString(tag)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize),
       ],
@@ -210,12 +220,17 @@ class DriftAppUsageRepository extends DriftBaseRepository<AppUsage, String, AppU
       variables: [
         if (startDate != null) Variable.withDateTime(startDate),
         if (endDate != null) Variable.withDateTime(endDate),
-        if (filterByTags != null) ...filterByTags.map((tag) => Variable.withString(tag)),
+        if (filterByTags != null)
+          ...filterByTags.map((tag) => Variable.withString(tag)),
       ],
     );
 
-    final totalItemCount = await totalCountQuery.map((row) => row.read<int>('count')).getSingle();
+    final totalItemCount =
+        await totalCountQuery.map((row) => row.read<int>('count')).getSingle();
     return PaginatedList<AppUsage>(
-        items: result, totalItemCount: totalItemCount, pageIndex: pageIndex, pageSize: pageSize);
+        items: result,
+        totalItemCount: totalItemCount,
+        pageIndex: pageIndex,
+        pageSize: pageSize);
   }
 }

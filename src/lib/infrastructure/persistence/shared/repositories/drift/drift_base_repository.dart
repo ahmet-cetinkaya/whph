@@ -250,12 +250,11 @@ abstract class DriftBaseRepository<
   @override
   Future<void> upsertRevive(TEntity item) async {
     try {
-      item.createdDate = DateTime.now().toUtc();
+      // Keep the caller's createdDate (time buckets key on it); only the
+      // revival bookkeeping below changes.
       item.modifiedDate = null;
       item.deletedDate = null;
-      await database
-          .into(table)
-          .insertOnConflictUpdate(toCompanion(item));
+      await database.into(table).insertOnConflictUpdate(toCompanion(item));
       Logger.debug(
           'Upserted (reviving) ${table.actualTableName} id=${item.id}');
     } catch (e, stackTrace) {

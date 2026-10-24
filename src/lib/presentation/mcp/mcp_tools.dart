@@ -69,6 +69,7 @@ List<McpToolDefinition> buildMcpTools(
     tagRepository: container.resolve<ITagRepository>(),
     recurrenceService: container.resolve<ITaskRecurrenceService>(),
     mediator: mediator,
+    deviceIds: container.resolve<IDeviceIdService>(),
   );
   final habitActions = HabitActions(
     transactions: transactions,
@@ -78,18 +79,21 @@ List<McpToolDefinition> buildMcpTools(
     habitTimeRecordRepository: container.resolve<IHabitTimeRecordRepository>(),
     tagRepository: container.resolve<ITagRepository>(),
     habitEvents: container.resolve<IHabitEvents>(),
+    deviceIds: container.resolve<IDeviceIdService>(),
   );
   final appUsageActions = AppUsageActions(
     transactionService: transactions,
     appUsageRepository: container.resolve<IAppUsageRepository>(),
     appUsageTagRepository: container.resolve<IAppUsageTagRepository>(),
-    appUsageTimeRecordRepository: container.resolve<IAppUsageTimeRecordRepository>(),
+    appUsageTimeRecordRepository:
+        container.resolve<IAppUsageTimeRecordRepository>(),
     tagRuleRepository: container.resolve<IAppUsageTagRuleRepository>(),
     ignoreRuleRepository: container.resolve<IAppUsageIgnoreRuleRepository>(),
     appUsageService: container.resolve<IAppUsageService>(),
     appUsageEvents: container.resolve<IAppUsageEvents>(),
     tagRepository: container.resolve<ITagRepository>(),
-    isTrackingSupported: Platform.isLinux || Platform.isWindows || Platform.isAndroid,
+    isTrackingSupported:
+        Platform.isLinux || Platform.isWindows || Platform.isAndroid,
   );
   final settingsActions = SettingsActions(
     repository: container.resolve<ISettingRepository>(),
@@ -104,7 +108,8 @@ List<McpToolDefinition> buildMcpTools(
     networkInterfaces: container.resolve<INetworkInterfaceService>(),
     handshake: container.resolve<DeviceHandshakeService>(),
   );
-  Future<bool> authorize(_, Set<String> scopes) => requestContext.isAuthorized(scopes);
+  Future<bool> authorize(_, Set<String> scopes) =>
+      requestContext.isAuthorized(scopes);
 
   return List<McpToolDefinition>.unmodifiable([
     ...buildTaskTools(
@@ -122,7 +127,8 @@ List<McpToolDefinition> buildMcpTools(
       actions: habitActions,
       habitRepository: container.resolve<IHabitRepository>(),
       habitRecordRepository: container.resolve<IHabitRecordRepository>(),
-      habitTimeRecordRepository: container.resolve<IHabitTimeRecordRepository>(),
+      habitTimeRecordRepository:
+          container.resolve<IHabitTimeRecordRepository>(),
       authorizeBeforeCommit: authorize,
     ),
     ...buildNoteTools(mediator, requestContext: requestContext),
@@ -131,7 +137,8 @@ List<McpToolDefinition> buildMcpTools(
       timerSessionService: container.resolve<ITimerSessionService>(),
       mediator: mediator,
       authorize: authorize,
-      selectNextMarathonTask: (selectedTaskId) => _selectNextMarathonTask(mediator, selectedTaskId),
+      selectNextMarathonTask: (selectedTaskId) =>
+          _selectNextMarathonTask(mediator, selectedTaskId),
     ),
     ...buildAppUsageTools(
       mediator: mediator,
@@ -164,10 +171,14 @@ Future<String?> _selectNextMarathonTask(
   Mediator mediator,
   String? selectedTaskId,
 ) async {
-  final response = await mediator.send<GetListTasksQuery, GetListTasksQueryResponse>(GetListTasksQuery(
+  final response = await mediator
+      .send<GetListTasksQuery, GetListTasksQueryResponse>(GetListTasksQuery(
     pageIndex: 0,
     pageSize: 2,
     filterByCompleted: false,
   ));
-  return response.items.where((task) => task.id != selectedTaskId).firstOrNull?.id;
+  return response.items
+      .where((task) => task.id != selectedTaskId)
+      .firstOrNull
+      ?.id;
 }

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/tasks/commands/save_task_command.dart';
+import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
@@ -18,6 +19,12 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
 
 import 'save_task_command_test.mocks.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 @GenerateMocks([
   ITaskRepository,
@@ -43,6 +50,7 @@ void main() {
       taskTagRepository: mockTaskTagRepository,
       taskTimeRecordRepository: mockTaskTimeRecordRepository,
       settingRepository: mockSettingRepository,
+      deviceIds: TestDeviceIds(),
     );
 
     // Mock setting repository to return default value (null means use default)
@@ -53,11 +61,14 @@ void main() {
             customWhereFilter: anyNamed('customWhereFilter'),
             customOrder: anyNamed('customOrder'),
             includeDeleted: anyNamed('includeDeleted')))
-        .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+        .thenAnswer((_) async => PaginatedList<Task>(
+            items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
   });
 
   group('SaveTaskCommand Date Normalization', () {
-    test('should treat date-only plannedDate as all-day and normalize to UTC day start', () {
+    test(
+        'should treat date-only plannedDate as all-day and normalize to UTC day start',
+        () {
       // Arrange
       final localDateOnly = DateTime(2026, 3, 12);
 
@@ -68,7 +79,8 @@ void main() {
       );
 
       // Assert
-      expect(command.plannedDate, DateTimeHelper.toUtcDateTime(DateTime(2026, 3, 12)));
+      expect(command.plannedDate,
+          DateTimeHelper.toUtcDateTime(DateTime(2026, 3, 12)));
     });
 
     test('should preserve explicit plannedDate time when provided', () {
@@ -85,7 +97,9 @@ void main() {
       expect(command.plannedDate, DateTimeHelper.toUtcDateTime(localDateTime));
     });
 
-    test('should throw BusinessException when deadlineDate is before plannedDate', () {
+    test(
+        'should throw BusinessException when deadlineDate is before plannedDate',
+        () {
       // Arrange
       final plannedDate = DateTime(2026, 3, 12, 9, 0);
       final invalidDeadline = DateTime(2026, 3, 12, 8, 59);
@@ -113,8 +127,10 @@ void main() {
 
       // Setup mocks
       when(mockTaskRepository.getList(any, any,
-              customWhereFilter: anyNamed('customWhereFilter'), customOrder: anyNamed('customOrder')))
-          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+              customWhereFilter: anyNamed('customWhereFilter'),
+              customOrder: anyNamed('customOrder')))
+          .thenAnswer((_) async => PaginatedList<Task>(
+              items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
       // Act & Assert - should not throw
@@ -138,7 +154,8 @@ void main() {
         1,
         customWhereFilter: anyNamed('customWhereFilter'),
         customOrder: anyNamed('customOrder'),
-      )).thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+      )).thenAnswer((_) async => PaginatedList<Task>(
+          items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
@@ -180,7 +197,8 @@ void main() {
         1,
         customWhereFilter: anyNamed('customWhereFilter'),
         customOrder: anyNamed('customOrder'),
-      )).thenAnswer((_) async => PaginatedList<Task>(items: [lastTask], totalItemCount: 1, pageIndex: 0, pageSize: 1));
+      )).thenAnswer((_) async => PaginatedList<Task>(
+          items: [lastTask], totalItemCount: 1, pageIndex: 0, pageSize: 1));
 
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
@@ -193,7 +211,8 @@ void main() {
       ))).called(1);
     });
 
-    test('creates an empty custom-ordered task list at the initial rank', () async {
+    test('creates an empty custom-ordered task list at the initial rank',
+        () async {
       when(mockTaskRepository.add(any)).thenAnswer((_) async {});
 
       await handler(SaveTaskCommand(title: 'First task'));
@@ -219,7 +238,8 @@ void main() {
         1,
         customWhereFilter: anyNamed('customWhereFilter'),
         customOrder: anyNamed('customOrder'),
-      )).thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+      )).thenAnswer((_) async => PaginatedList<Task>(
+          items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
@@ -247,7 +267,8 @@ void main() {
         1,
         customWhereFilter: anyNamed('customWhereFilter'),
         customOrder: anyNamed('customOrder'),
-      )).thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+      )).thenAnswer((_) async => PaginatedList<Task>(
+          items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
@@ -256,10 +277,19 @@ void main() {
         0,
         1,
         customWhereFilter: anyNamed('customWhereFilter'),
-      )).thenAnswer((_) async => PaginatedList(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+      )).thenAnswer((_) async => PaginatedList(
+          items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
       // Mock getFirst to return null (no existing time record) - used by TaskTimeRecordService.findOrCreateTaskTimeRecord
-      when(mockTaskTimeRecordRepository.getFirst(any, includeDeleted: false)).thenAnswer((_) async => null);
+      when(mockTaskTimeRecordRepository.getById(any))
+          .thenAnswer((_) async => null);
+      when(mockTaskTimeRecordRepository.getAll(
+              includeDeleted: anyNamed('includeDeleted'),
+              customWhereFilter: anyNamed('customWhereFilter'),
+              customOrder: anyNamed('customOrder')))
+          .thenAnswer((_) async => <TaskTimeRecord>[]);
+      when(mockTaskTimeRecordRepository.getFirst(any, includeDeleted: false))
+          .thenAnswer((_) async => null);
 
       // Act
       final result = await handler(command);
@@ -267,18 +297,19 @@ void main() {
       // Assert
       expect(result.id, isNotNull);
       verify(mockTaskRepository.add(argThat(
-        predicate<Task>(
-            (task) => task.title == 'Test Task' && task.description == 'Test Description' && task.completedAt != null),
+        predicate<Task>((task) =>
+            task.title == 'Test Task' &&
+            task.description == 'Test Description' &&
+            task.completedAt != null),
       ))).called(1);
 
-      // Verify that repository methods were called to add and update time records
-      // The TaskTimeRecordService.addDurationToTaskTimeRecord will call:
-      // 1. getFirst to check if a record exists for the hour
-      // 2. add to create a new record if none exists
-      // 3. update to update the duration
-      verify(mockTaskTimeRecordRepository.getFirst(any, includeDeleted: false)).called(1);
-      verify(mockTaskTimeRecordRepository.add(any)).called(1); // Creating the new time record
-      verify(mockTaskTimeRecordRepository.update(any)).called(1); // Updating the duration
+      // D12: bucket lookup by deterministic id (getById inside
+      // find-or-create), created via upsertRevive, duration applied via
+      // update. getById fires twice: find-or-create + post-write re-read.
+      verify(mockTaskTimeRecordRepository.getById(any))
+          .called(greaterThanOrEqualTo(1));
+      verify(mockTaskTimeRecordRepository.upsertRevive(any)).called(1);
+      verify(mockTaskTimeRecordRepository.update(any)).called(1);
     });
   });
 
@@ -305,9 +336,11 @@ void main() {
         completedAt: null,
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
 
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       final result = await handler(command);
@@ -342,9 +375,11 @@ void main() {
         completedAt: DateTime.now().toUtc(),
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
 
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       final result = await handler(command);
@@ -353,7 +388,8 @@ void main() {
       expect(result.id, taskId);
       verify(mockTaskRepository.getById(taskId)).called(1);
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.id == taskId && task.completedAt != null),
+        predicate<Task>(
+            (task) => task.id == taskId && task.completedAt != null),
       ))).called(1);
     });
 
@@ -373,9 +409,11 @@ void main() {
         completedAt: null,
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
 
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       final result = await handler(command);
@@ -384,11 +422,13 @@ void main() {
       expect(result.id, taskId);
       verify(mockTaskRepository.getById(taskId)).called(1);
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.id == taskId && task.completedAt == null),
+        predicate<Task>(
+            (task) => task.id == taskId && task.completedAt == null),
       ))).called(1);
     });
 
-    test('should throw BusinessException when updating non-existent task', () async {
+    test('should throw BusinessException when updating non-existent task',
+        () async {
       // Arrange
       const taskId = 'task-1';
       final command = SaveTaskCommand(
@@ -402,7 +442,9 @@ void main() {
       expect(
         () => handler(command),
         throwsA(
-          predicate((e) => e is BusinessException && e.message.contains('Task with id $taskId not found')),
+          predicate((e) =>
+              e is BusinessException &&
+              e.message.contains('Task with id $taskId not found')),
         ),
       );
       verify(mockTaskRepository.getById(taskId)).called(1);
@@ -426,11 +468,14 @@ void main() {
         tagIdsToAdd: ['tag-1', 'tag-2'],
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
 
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
-      when(mockTaskTagRepository.upsertRevive(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskTagRepository.upsertRevive(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       await handler(command);
@@ -458,7 +503,8 @@ void main() {
         title: 'New Title',
       );
 
-      when(mockTaskRepository.getById(taskId)).thenThrow(Exception('Database error'));
+      when(mockTaskRepository.getById(taskId))
+          .thenThrow(Exception('Database error'));
 
       // Act & Assert
       expect(
@@ -484,7 +530,8 @@ void main() {
         1,
         customWhereFilter: anyNamed('customWhereFilter'),
         customOrder: anyNamed('customOrder'),
-      )).thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+      )).thenAnswer((_) async => PaginatedList<Task>(
+          items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
@@ -498,7 +545,8 @@ void main() {
                 task.title == 'Test Task' &&
                 task.description == null &&
                 task.priority == null &&
-                task.estimatedTime == TaskConstants.defaultEstimatedTime // Default value used
+                task.estimatedTime ==
+                    TaskConstants.defaultEstimatedTime // Default value used
             ),
       ))).called(1);
     });
@@ -530,9 +578,11 @@ void main() {
         recurrenceCount: 10,
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
 
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       await handler(command);
@@ -543,13 +593,16 @@ void main() {
             task.id == taskId &&
             task.recurrenceType == RecurrenceType.daysOfWeek &&
             task.recurrenceInterval == 2 &&
-            task.recurrenceStartDate == DateTimeHelper.toUtcDateTime(recurrenceStartDate) &&
-            task.recurrenceEndDate == DateTimeHelper.toUtcDateTime(recurrenceEndDate) &&
+            task.recurrenceStartDate ==
+                DateTimeHelper.toUtcDateTime(recurrenceStartDate) &&
+            task.recurrenceEndDate ==
+                DateTimeHelper.toUtcDateTime(recurrenceEndDate) &&
             task.recurrenceCount == 10),
       ))).called(1);
     });
 
-    test('should clear recurrence settings when recurrence type is none', () async {
+    test('should clear recurrence settings when recurrence type is none',
+        () async {
       // Arrange
       const taskId = 'task-1';
       final existingTask = Task(
@@ -570,9 +623,11 @@ void main() {
         recurrenceType: RecurrenceType.none,
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
 
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       await handler(command);
@@ -614,8 +669,10 @@ void main() {
         recurrenceType: RecurrenceType.monthly,
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       await handler(command);
@@ -629,7 +686,8 @@ void main() {
       ))).called(1);
     });
 
-    test('should clear recurrenceConfiguration when recurrence type is none', () async {
+    test('should clear recurrenceConfiguration when recurrence type is none',
+        () async {
       // Arrange
       const taskId = 'task-1';
       final existingTask = Task(
@@ -649,8 +707,10 @@ void main() {
         recurrenceType: RecurrenceType.none,
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       await handler(command);
@@ -658,7 +718,9 @@ void main() {
       // Assert
       verify(mockTaskRepository.update(argThat(
         predicate<Task>((task) =>
-            task.id == taskId && task.recurrenceType == RecurrenceType.none && task.recurrenceConfiguration == null),
+            task.id == taskId &&
+            task.recurrenceType == RecurrenceType.none &&
+            task.recurrenceConfiguration == null),
       ))).called(1);
     });
   });
@@ -705,7 +767,8 @@ void main() {
         modifiedDate: DateTime.now().toUtc(),
       );
 
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime)).thenAnswer((_) async => setting);
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime))
+          .thenAnswer((_) async => setting);
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Task(
             id: 'test-id',
             createdDate: DateTime.now().toUtc(),
@@ -738,7 +801,8 @@ void main() {
         modifiedDate: DateTime.now().toUtc(),
       );
 
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime)).thenAnswer((_) async => setting);
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime))
+          .thenAnswer((_) async => setting);
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Task(
             id: 'test-id',
             createdDate: DateTime.now().toUtc(),
@@ -772,7 +836,8 @@ void main() {
         modifiedDate: DateTime.now().toUtc(),
       );
 
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime)).thenAnswer((_) async => setting);
+      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime))
+          .thenAnswer((_) async => setting);
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Task(
             id: 'test-id',
             createdDate: DateTime.now().toUtc(),
@@ -791,7 +856,9 @@ void main() {
   });
 
   group('SaveTaskCommandHandler Tests - Planned Date Reminder', () {
-    test('should apply default reminder when creating task with plannedDate and no explicit reminder', () async {
+    test(
+        'should apply default reminder when creating task with plannedDate and no explicit reminder',
+        () async {
       // Arrange
       final command = SaveTaskCommand(
         title: 'Test Task',
@@ -807,13 +874,16 @@ void main() {
         modifiedDate: DateTime.now().toUtc(),
       );
 
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder)).thenAnswer((_) async => setting);
+      when(mockSettingRepository
+              .getByKey(SettingKeys.taskDefaultPlannedDateReminder))
+          .thenAnswer((_) async => setting);
 
       when(mockTaskRepository.getList(any, any,
               customWhereFilter: anyNamed('customWhereFilter'),
               customOrder: anyNamed('customOrder'),
               includeDeleted: anyNamed('includeDeleted')))
-          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+          .thenAnswer((_) async => PaginatedList<Task>(
+              items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
@@ -822,11 +892,13 @@ void main() {
 
       // Assert
       verify(mockTaskRepository.add(argThat(
-        predicate<Task>((task) => task.plannedDateReminderTime == ReminderTime.atTime),
+        predicate<Task>(
+            (task) => task.plannedDateReminderTime == ReminderTime.atTime),
       ))).called(1);
     });
 
-    test('should NOT apply default reminder when explicit reminder provided', () async {
+    test('should NOT apply default reminder when explicit reminder provided',
+        () async {
       // Arrange
       final command = SaveTaskCommand(
         title: 'Test Task',
@@ -844,13 +916,16 @@ void main() {
         modifiedDate: DateTime.now().toUtc(),
       );
 
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder)).thenAnswer((_) async => setting);
+      when(mockSettingRepository
+              .getByKey(SettingKeys.taskDefaultPlannedDateReminder))
+          .thenAnswer((_) async => setting);
 
       when(mockTaskRepository.getList(any, any,
               customWhereFilter: anyNamed('customWhereFilter'),
               customOrder: anyNamed('customOrder'),
               includeDeleted: anyNamed('includeDeleted')))
-          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+          .thenAnswer((_) async => PaginatedList<Task>(
+              items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
@@ -859,11 +934,14 @@ void main() {
 
       // Assert
       verify(mockTaskRepository.add(argThat(
-        predicate<Task>((task) => task.plannedDateReminderTime == ReminderTime.fiveMinutesBefore),
+        predicate<Task>((task) =>
+            task.plannedDateReminderTime == ReminderTime.fiveMinutesBefore),
       ))).called(1);
     });
 
-    test('should apply default reminder when updating task with changed plannedDate', () async {
+    test(
+        'should apply default reminder when updating task with changed plannedDate',
+        () async {
       // Arrange
       const taskId = 'task-1';
       final existingTask = Task(
@@ -890,9 +968,13 @@ void main() {
         modifiedDate: DateTime.now().toUtc(),
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder)).thenAnswer((_) async => setting);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockSettingRepository
+              .getByKey(SettingKeys.taskDefaultPlannedDateReminder))
+          .thenAnswer((_) async => setting);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       await handler(command);
@@ -906,7 +988,8 @@ void main() {
       ))).called(1);
     });
 
-    test('should NOT update reminder when plannedDate is NOT changed', () async {
+    test('should NOT update reminder when plannedDate is NOT changed',
+        () async {
       // Arrange
       const taskId = 'task-1';
       final date = DateTime.now().toUtc();
@@ -915,7 +998,8 @@ void main() {
         createdDate: DateTime.now().toUtc(),
         title: 'Task',
         plannedDate: date,
-        plannedDateReminderTime: ReminderTime.fifteenMinutesBefore, // Existing valid reminder
+        plannedDateReminderTime:
+            ReminderTime.fifteenMinutesBefore, // Existing valid reminder
       );
 
       final command = SaveTaskCommand(
@@ -934,9 +1018,13 @@ void main() {
         modifiedDate: DateTime.now().toUtc(),
       );
 
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder)).thenAnswer((_) async => setting);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockSettingRepository
+              .getByKey(SettingKeys.taskDefaultPlannedDateReminder))
+          .thenAnswer((_) async => setting);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
       // Act
       await handler(command);
@@ -945,12 +1033,15 @@ void main() {
       verify(mockTaskRepository.update(argThat(
         predicate<Task>((task) =>
                 task.id == taskId &&
-                task.plannedDateReminderTime == ReminderTime.fifteenMinutesBefore // Should stay same
+                task.plannedDateReminderTime ==
+                    ReminderTime.fifteenMinutesBefore // Should stay same
             ),
       ))).called(1);
     });
 
-    test('should apply custom default reminder offset when creating task given default setting is custom', () async {
+    test(
+        'should apply custom default reminder offset when creating task given default setting is custom',
+        () async {
       // Arrange
       final command = SaveTaskCommand(
         title: 'Test Task',
@@ -975,16 +1066,19 @@ void main() {
         modifiedDate: DateTime.now().toUtc(),
       );
 
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder))
+      when(mockSettingRepository
+              .getByKey(SettingKeys.taskDefaultPlannedDateReminder))
           .thenAnswer((_) async => reminderSetting);
-      when(mockSettingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminderCustomOffset))
+      when(mockSettingRepository
+              .getByKey(SettingKeys.taskDefaultPlannedDateReminderCustomOffset))
           .thenAnswer((_) async => offsetSetting);
 
       when(mockTaskRepository.getList(any, any,
               customWhereFilter: anyNamed('customWhereFilter'),
               customOrder: anyNamed('customOrder'),
               includeDeleted: anyNamed('includeDeleted')))
-          .thenAnswer((_) async => PaginatedList<Task>(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
+          .thenAnswer((_) async => PaginatedList<Task>(
+              items: [], totalItemCount: 0, pageIndex: 0, pageSize: 1));
 
       when(mockTaskRepository.add(any)).thenAnswer((_) async => Future.value());
 
@@ -994,7 +1088,8 @@ void main() {
       // Assert
       verify(mockTaskRepository.add(argThat(
         predicate<Task>((task) =>
-            task.plannedDateReminderTime == ReminderTime.custom && task.plannedDateReminderCustomOffset == 45),
+            task.plannedDateReminderTime == ReminderTime.custom &&
+            task.plannedDateReminderCustomOffset == 45),
       ))).called(1);
     });
   });
@@ -1009,13 +1104,18 @@ void main() {
         statusId: TaskStatusConstants.todoId,
         completedAt: null,
       );
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
-      await handler(SaveTaskCommand(id: taskId, title: 'Task', statusId: TaskStatusConstants.doneId));
+      await handler(SaveTaskCommand(
+          id: taskId, title: 'Task', statusId: TaskStatusConstants.doneId));
 
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.statusId == TaskStatusConstants.doneId && task.completedAt != null),
+        predicate<Task>((task) =>
+            task.statusId == TaskStatusConstants.doneId &&
+            task.completedAt != null),
       ))).called(1);
     });
 
@@ -1028,13 +1128,18 @@ void main() {
         statusId: TaskStatusConstants.doneId,
         completedAt: DateTime.now().toUtc(),
       );
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
-      await handler(SaveTaskCommand(id: taskId, title: 'Task', statusId: TaskStatusConstants.todoId));
+      await handler(SaveTaskCommand(
+          id: taskId, title: 'Task', statusId: TaskStatusConstants.todoId));
 
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.statusId == TaskStatusConstants.todoId && task.completedAt == null),
+        predicate<Task>((task) =>
+            task.statusId == TaskStatusConstants.todoId &&
+            task.completedAt == null),
       ))).called(1);
     });
 
@@ -1047,17 +1152,24 @@ void main() {
         statusId: null,
         completedAt: null,
       );
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
-      await handler(SaveTaskCommand(id: taskId, title: 'Task', completedAt: DateTime.now().toUtc()));
+      await handler(SaveTaskCommand(
+          id: taskId, title: 'Task', completedAt: DateTime.now().toUtc()));
 
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.statusId == TaskStatusConstants.doneId && task.completedAt != null),
+        predicate<Task>((task) =>
+            task.statusId == TaskStatusConstants.doneId &&
+            task.completedAt != null),
       ))).called(1);
     });
 
-    test('completing via completedAt assigns the done status even when task has an existing todo status', () async {
+    test(
+        'completing via completedAt assigns the done status even when task has an existing todo status',
+        () async {
       const taskId = 'task-status-4';
       final existingTask = Task(
         id: taskId,
@@ -1066,17 +1178,24 @@ void main() {
         statusId: TaskStatusConstants.todoId,
         completedAt: null,
       );
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
-      await handler(SaveTaskCommand(id: taskId, title: 'Task', completedAt: DateTime.now().toUtc()));
+      await handler(SaveTaskCommand(
+          id: taskId, title: 'Task', completedAt: DateTime.now().toUtc()));
 
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.statusId == TaskStatusConstants.doneId && task.completedAt != null),
+        predicate<Task>((task) =>
+            task.statusId == TaskStatusConstants.doneId &&
+            task.completedAt != null),
       ))).called(1);
     });
 
-    test('uncompleting via null completedAt resets status to todo status when currently done', () async {
+    test(
+        'uncompleting via null completedAt resets status to todo status when currently done',
+        () async {
       const taskId = 'task-status-5';
       final existingTask = Task(
         id: taskId,
@@ -1085,13 +1204,18 @@ void main() {
         statusId: TaskStatusConstants.doneId,
         completedAt: DateTime.now().toUtc(),
       );
-      when(mockTaskRepository.getById(taskId)).thenAnswer((_) async => existingTask);
-      when(mockTaskRepository.update(any)).thenAnswer((_) async => Future.value());
+      when(mockTaskRepository.getById(taskId))
+          .thenAnswer((_) async => existingTask);
+      when(mockTaskRepository.update(any))
+          .thenAnswer((_) async => Future.value());
 
-      await handler(SaveTaskCommand(id: taskId, title: 'Task', completedAt: null));
+      await handler(
+          SaveTaskCommand(id: taskId, title: 'Task', completedAt: null));
 
       verify(mockTaskRepository.update(argThat(
-        predicate<Task>((task) => task.statusId == TaskStatusConstants.todoId && task.completedAt == null),
+        predicate<Task>((task) =>
+            task.statusId == TaskStatusConstants.todoId &&
+            task.completedAt == null),
       ))).called(1);
     });
 
@@ -1101,7 +1225,9 @@ void main() {
       await handler(SaveTaskCommand(title: 'Fresh Task'));
 
       verify(mockTaskRepository.add(argThat(
-        predicate<Task>((task) => task.statusId == TaskStatusConstants.todoId && task.completedAt == null),
+        predicate<Task>((task) =>
+            task.statusId == TaskStatusConstants.todoId &&
+            task.completedAt == null),
       ))).called(1);
     });
 
@@ -1114,7 +1240,9 @@ void main() {
       ));
 
       verify(mockTaskRepository.add(argThat(
-        predicate<Task>((task) => task.statusId == 'task-status-custom-inprogress' && task.completedAt == null),
+        predicate<Task>((task) =>
+            task.statusId == 'task-status-custom-inprogress' &&
+            task.completedAt == null),
       ))).called(1);
     });
   });

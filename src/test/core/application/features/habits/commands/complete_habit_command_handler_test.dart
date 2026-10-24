@@ -14,6 +14,12 @@ import 'package:whph/core/application/features/habits/services/habit_day_state_r
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 class FakeHabitRepository extends Fake implements IHabitRepository {
   final Map<String, Habit> _habits = {};
@@ -73,6 +79,21 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
 
 class FakeHabitTimeRecordRepository extends Fake
     implements IHabitTimeRecordRepository {
+  @override
+  Future<HabitTimeRecord?> getById(String id,
+      {bool includeDeleted = false}) async {
+    for (final record in records) {
+      if (record.id == id) return record;
+    }
+    return null;
+  }
+
+  @override
+  Future<void> upsertRevive(HabitTimeRecord record) async {
+    addCount++;
+    records.add(record);
+  }
+
   final List<HabitTimeRecord> records = [];
   int addCount = 0;
   int updateCount = 0;
@@ -141,6 +162,7 @@ void main() {
     final operationsService = HabitRecordOperationsService(
       habitRecordRepository: habitRecordRepository,
       habitTimeRecordRepository: habitTimeRecordRepository,
+      deviceIds: TestDeviceIds(),
     );
 
     handler = CompleteHabitCommandHandler(
