@@ -279,6 +279,33 @@ void main() {
       expect(c.membership.memberById(newcomer.memberId), isNotNull);
     });
 
+    test('reinvited_stranded_joiner_is_verified_by_bystander', () async {
+      final [a, b, c, joiner] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 760 + i)];
+      await pairAll([a, b, c]);
+      await syncUntilQuiet([a, b, c]);
+      await SyncDevice.pair(inviter: a, joiner: joiner);
+      final oldDb = await a.snapshotDb();
+      final oldA = a.memberId;
+      await a.loseKeyFile(oldDb: oldDb, loseLedger: true);
+      final stranded = strandedMemberIds(a.store, a.memberId);
+      expect(stranded, {joiner.memberId});
+      await b.removeMember(oldA);
+      await SyncDevice.pair(inviter: b, joiner: a);
+
+      createRow(joiner, 'joiner-task', 'kept');
+      await _syncAll([a, b, c, joiner], rounds: 4);
+      expect(c.membership.memberById(joiner.memberId), isNull, reason: 'nobody but the old origin knew the joiner');
+
+      for (final memberId in stranded) {
+        expect(memberId, joiner.memberId);
+        await SyncDevice.pair(inviter: b, joiner: joiner);
+      }
+      await syncUntilQuiet([a, b, c, joiner], maxRounds: 10);
+
+      expect(c.store.heldEnvelopes, isEmpty, reason: 'the re-invite lets C verify the joiner');
+      expect(content(c.store), containsPair(cellKey('joiner-task', 'title').toString(), contains('kept')));
+    });
+
     test('restore_older_db_keeps_rooted_members', () async {
       final [a, b, c, d] = [for (var n = 0; n < 4; n++) await newDevice('D$n', seed: 750 + n)];
       await pairAll([a, b, c]);

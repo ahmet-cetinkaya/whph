@@ -800,12 +800,18 @@ final class EngineSimulation {
     _oracle.startIncarnation(d.name, saved.knowledge);
     _simOfMember[d.device.memberId] = d.name;
     d.forgetSnapshots();
+    final stranded = strandedMemberIds(d.store, d.device.memberId);
     final remover = _pick(removers);
     await remover.device.removeMember(oldId);
     remover.forgetSnapshots();
     final inviter = _pick(_g1Finals(except: d));
     await SyncDevice.pair(inviter: inviter.device, joiner: d.device);
     inviter.forgetSnapshots();
+    // The re-pair above clears needsRepairing, so _repairStranded never sees
+    // this loss: act on the stranded-member prompt here (Efe ruling).
+    if (!simRepairDisabled && stranded.isNotEmpty) {
+      await _reinviteStranded(d, stranded, remover);
+    }
     _event(
         'keyLost|${d.name}|${saved.step}|$loseLedger|${action.name}|${d.device.memberId}'
         '|removedBy=${remover.name}|invitedBy=${inviter.name}');
