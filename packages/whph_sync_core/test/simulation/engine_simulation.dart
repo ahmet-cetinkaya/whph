@@ -59,7 +59,13 @@ final class EngineSimTuning {
     this.maxFinalRounds = 30,
     this.maxSnapshotsPerDevice = 4,
     this.perturbAtStep,
+    this.reinviteAfterKeyLoss = true,
   });
+
+  /// Whether a key-lost device re-invites the members stranded on its sealed
+  /// origin after re-pairing (the designed repair). Off only for the
+  /// stale-cluster test, which needs members the group never learns about.
+  final bool reinviteAfterKeyLoss;
 
   /// Draws one extra random number at this step, shifting every later random
   /// choice: a schedule perturbation that changes no engine behavior. Used to
@@ -809,7 +815,7 @@ final class EngineSimulation {
     inviter.forgetSnapshots();
     // The re-pair above clears needsRepairing, so _repairStranded never sees
     // this loss: act on the stranded-member prompt here (Efe ruling).
-    if (!simRepairDisabled && stranded.isNotEmpty) {
+    if (!simRepairDisabled && tuning.reinviteAfterKeyLoss && stranded.isNotEmpty) {
       await _reinviteStranded(d, stranded, remover);
     }
     _event(
