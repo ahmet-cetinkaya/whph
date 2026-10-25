@@ -339,6 +339,22 @@ platform.
 | Linux and Android device run (SC-012, SC-013, PA-6) | **Not done.** Needs hardware; a human gap. |
 | Windows (SC-013) | **Not done.** Recorded as a gap. SC-013 is not passed for every supported platform. |
 
+### Measured speed and the follow-up
+
+On desktop loopback a first sync runs at about 480 cells/s and grows linearly
+with the number of cells (1000 notes 9.4 s, 4000 notes 34.5 s). `large_usage`
+has 657,744 cells, which is about 23 minutes at that rate against the 10-minute
+SC-012 gate. Real data is mostly app-usage rows, so the device run is the
+number that counts.
+
+Follow-up, not done: batch the per-cell apply (one `manifest_id` update per
+batch, per-batch caches of row, intern and node/HLC lookups). The profile
+suggests about 2x at best. After the manifest-copy fix, ChaCha20/Poly1305 is
+about 1% of CPU, so native crypto on devices is not a lever for SC-012.
+
+Development databases created on schema v38 before commit `0224f92a0` miss the
+sync indexes and must be recreated (the v38 schema is unreleased).
+
 ## Troubleshooting
 
 | Symptom | Likely cause | What to do |
