@@ -66,7 +66,7 @@ class DriftAsyncSyncStore implements AsyncSyncStorePort {
   @override
   Future<StoredCell?> nextCellOfOrigin(String origin, int afterSeq) async {
     final rows = await _store._select(
-        '${DriftSyncChangeStore._clockCellSelect} WHERE o.value = ? AND c.origin_seq > ? '
+        '${DriftSyncChangeStore._clockCellSelect} WHERE c.origin_id = (SELECT id FROM sync_intern WHERE kind = $internKindOrigin AND value = ?) AND c.origin_seq > ? '
         'ORDER BY c.origin_seq, c.key LIMIT 1',
         [origin, afterSeq]);
     final clockCell = (await _storedCells(rows)).firstOrNull;

@@ -307,7 +307,7 @@ LEFT JOIN sync_row cr ON cr.id = c.cause_row_id''';
   Future<List<CellRecord>> _readClockCells(
           String origin, int afterSeq, int bound, int limit) async =>
       _recordsOfClockRows(await _select(
-          '$_clockCellSelect WHERE o.value = ? AND c.origin_seq > ? AND c.origin_seq <= ? '
+          '$_clockCellSelect WHERE c.origin_id = (SELECT id FROM sync_intern WHERE kind = $internKindOrigin AND value = ?) AND c.origin_seq > ? AND c.origin_seq <= ? '
           'ORDER BY c.origin_seq, c.key LIMIT ?',
           [origin, afterSeq, bound, limit + 1]));
 

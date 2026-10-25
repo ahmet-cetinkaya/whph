@@ -22,8 +22,8 @@ Future<void> migrateV37ToV38(
   await m.createTable(db.syncHeldCellTable);
   await m.createTable(db.syncSupersededTable);
 
-  await m.createIndex(Index('sync_clock_origin_seq_idx',
-      'CREATE INDEX IF NOT EXISTS sync_clock_origin_seq_idx ON sync_clock (origin_id, origin_seq)'));
+  await m.createIndex(Index('sync_clock_origin_seq_key_idx',
+      'CREATE INDEX IF NOT EXISTS sync_clock_origin_seq_key_idx ON sync_clock (origin_id, origin_seq, key)'));
   await m.createIndex(Index('sync_clock_cause_idx',
       'CREATE INDEX IF NOT EXISTS sync_clock_cause_idx ON sync_clock (cause_row_id) WHERE cause_row_id IS NOT NULL'));
 
