@@ -3,10 +3,16 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
 
 /// Writes a consistent snapshot of the open database to a destination path,
 /// typically with `VACUUM INTO` on the live connection.
 typedef SnapshotWriter = Future<void> Function(String destinationPath);
+
+/// Sync device state kept outside every backup: the secret key file and the
+/// ledger (D7, FR-027). Backups hold the database only, and no backup may be
+/// written over these files.
+const List<String> syncFilesExcludedFromBackups = [keyFileName, ledgerFileName];
 
 /// Service for managing database backup and restore operations.
 ///
@@ -182,6 +188,9 @@ class DatabaseBackupService {
   }) async {
     final File snapshot;
     if (destination != null) {
+      if (syncFilesExcludedFromBackups.contains(p.basename(destination.path))) {
+        throw StateError('Snapshot destination is a protected sync file: ${p.basename(destination.path)}');
+      }
       if (await destination.exists()) {
         throw StateError('Snapshot destination already exists: ${destination.path}');
       }
@@ -226,12 +235,16 @@ class DatabaseBackupService {
 
   /// Resets the database by closing and deleting the database file
   /// together with its `-wal`/`-shm` sidecars.
+  ///
+  /// [preResetBackup] is a backup the caller already took (U5 writes it before
+  /// it deletes the key file); without it one is taken here.
   Future<void> resetDatabase({
     required SnapshotWriter writeSnapshot,
     required Future<void> Function() closeDatabase,
     required void Function() resetInstance,
+    File? preResetBackup,
   }) async {
-    final backupFile = await createPreResetBackup(writeSnapshot: writeSnapshot);
+    final backupFile = preResetBackup ?? await createPreResetBackup(writeSnapshot: writeSnapshot);
 
     await closeDatabase();
     resetInstance();

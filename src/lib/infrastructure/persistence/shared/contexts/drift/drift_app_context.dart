@@ -286,9 +286,16 @@ class AppDatabase extends _$AppDatabase {
     return backupService.createConsistentSnapshot(writeSnapshot: _vacuumInto);
   }
 
+  /// Writes the pre-reset backup (VACUUM INTO) without resetting anything.
+  Future<File?> createPreResetBackup() =>
+      backupService.createPreResetBackup(writeSnapshot: _vacuumInto);
+
   /// Resets the database by closing the connection and deleting the database file
-  Future<void> resetDatabase() {
+  ///
+  /// [preResetBackup] is a backup taken earlier by [createPreResetBackup].
+  Future<void> resetDatabase({File? preResetBackup}) {
     return backupService.resetDatabase(
+      preResetBackup: preResetBackup,
       writeSnapshot: _vacuumInto,
       closeDatabase: close,
       resetInstance: () => _instance = null,

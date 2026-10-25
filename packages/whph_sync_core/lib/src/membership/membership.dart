@@ -97,7 +97,7 @@ final class _LiveDirectory implements MemberDirectory {
 /// A copy of the key file for whole-directory snapshots (secret material; it
 /// never prints key bytes).
 final class KeyFileSnapshot {
-  KeyFileSnapshot._({
+  KeyFileSnapshot({
     required this.memberId,
     required this.name,
     required Uint8List x25519Private,
@@ -117,6 +117,11 @@ final class KeyFileSnapshot {
   final Uint8List _ed25519Seed;
   final GroupId? groupId;
   final Map<EpochId, Uint8List> _epochKeys;
+
+  /// The private keys and epoch keys, for the key-file writer only (T20).
+  Uint8List get x25519Private => Uint8List.fromList(_x25519Private);
+  Uint8List get ed25519Seed => Uint8List.fromList(_ed25519Seed);
+  Map<EpochId, Uint8List> get epochKeys => {for (final e in _epochKeys.entries) e.key: Uint8List.fromList(e.value)};
   final List<MemberEntry> anchors;
 
   /// Member ids of the anchors flagged revoked.
@@ -225,7 +230,7 @@ final class Membership {
   }
 
   /// A copy of the key file.
-  KeyFileSnapshot snapshotKeyFile() => KeyFileSnapshot._(
+  KeyFileSnapshot snapshotKeyFile() => KeyFileSnapshot(
         memberId: memberId,
         name: _identity.name,
         x25519Private: _identity.x25519.exportPrivateKey(),
