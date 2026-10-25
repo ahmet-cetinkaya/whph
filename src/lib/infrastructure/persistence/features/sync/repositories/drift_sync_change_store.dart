@@ -304,12 +304,24 @@ JOIN sync_intern n ON n.id = c.node_id
 JOIN sync_row r ON r.id = c.key / $packedKeyFactor
 LEFT JOIN sync_row cr ON cr.id = c.cause_row_id''';
 
+  /// The first [limit] clock cells of an origin above a seq, in (seq, key)
+  /// order. The keys are picked first by a plain index range, because with the
+  /// joins in one query SQLite scanned and sorted the whole clock table for
+  /// every page (a first sync grew ~n^1.4; T28). Arguments: origin, afterSeq,
+  /// upToSeq, limit.
+  static const String clockCellPageSql = '''
+$_clockCellSelect
+WHERE c.key IN (
+  SELECT key FROM sync_clock
+  WHERE origin_id = (SELECT id FROM sync_intern WHERE kind = $internKindOrigin AND value = ?)
+    AND origin_seq > ? AND origin_seq <= ?
+  ORDER BY origin_seq, key LIMIT ?)
+ORDER BY c.origin_seq, c.key''';
+
   Future<List<CellRecord>> _readClockCells(
           String origin, int afterSeq, int bound, int limit) async =>
       _recordsOfClockRows(await _select(
-          '$_clockCellSelect WHERE c.origin_id = (SELECT id FROM sync_intern WHERE kind = $internKindOrigin AND value = ?) AND c.origin_seq > ? AND c.origin_seq <= ? '
-          'ORDER BY c.origin_seq, c.key LIMIT ?',
-          [origin, afterSeq, bound, limit + 1]));
+          clockCellPageSql, [origin, afterSeq, bound, limit + 1]));
 
   Future<List<CellRecord>> _recordsOfClockRows(
       List<Map<String, Object?>> rows) async {

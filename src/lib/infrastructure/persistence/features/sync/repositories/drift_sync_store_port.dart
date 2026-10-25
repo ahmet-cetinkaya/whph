@@ -2,6 +2,7 @@ part of 'drift_sync_change_store.dart';
 
 const String _noPeer = '';
 const String _unknownHeldKindClause = "kind = '$_heldKindUnknown'";
+const int _maxSeq = 0x7fffffffffffffff;
 
 /// The cell-level store the async session engine runs over, served from the
 /// same tables and the same connection as [DriftSyncChangeStore] (T22e).
@@ -66,9 +67,7 @@ class DriftAsyncSyncStore implements AsyncSyncStorePort {
   @override
   Future<StoredCell?> nextCellOfOrigin(String origin, int afterSeq) async {
     final rows = await _store._select(
-        '${DriftSyncChangeStore._clockCellSelect} WHERE c.origin_id = (SELECT id FROM sync_intern WHERE kind = $internKindOrigin AND value = ?) AND c.origin_seq > ? '
-        'ORDER BY c.origin_seq, c.key LIMIT 1',
-        [origin, afterSeq]);
+        DriftSyncChangeStore.clockCellPageSql, [origin, afterSeq, _maxSeq, 1]);
     final clockCell = (await _storedCells(rows)).firstOrNull;
     final unknownCell = await _nextUnknownCell(origin, afterSeq);
     if (clockCell == null) return unknownCell;

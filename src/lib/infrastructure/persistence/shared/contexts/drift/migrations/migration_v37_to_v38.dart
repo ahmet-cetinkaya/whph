@@ -22,6 +22,25 @@ Future<void> migrateV37ToV38(
   await m.createTable(db.syncHeldCellTable);
   await m.createTable(db.syncSupersededTable);
 
+  await createSyncV38Indexes(m);
+
+  // Legacy pairing marking (FR-061): every existing device row needs repair.
+  await m.addColumn(db.syncDeviceTable, db.syncDeviceTable.needsRepair);
+  await db.customStatement('UPDATE sync_device_table SET needs_repair = 1');
+
+  // The upgrade job (T17) starts from 'dedupe'.
+  await db.customStatement(
+      "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_phase) "
+      "VALUES ('singleton', 0, 1, 0, 'dedupe') "
+      "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'dedupe'");
+
+  await installSyncTriggers(db);
+}
+
+/// The v38 indexes (sync clock scans and the PA-1/S5 foreign-key indexes). A
+/// fresh install creates them in onCreate as well: without them every sync
+/// page scans and sorts the whole clock table (T28).
+Future<void> createSyncV38Indexes(Migrator m) async {
   await m.createIndex(Index('sync_clock_origin_seq_key_idx',
       'CREATE INDEX IF NOT EXISTS sync_clock_origin_seq_key_idx ON sync_clock (origin_id, origin_seq, key)'));
   await m.createIndex(Index('sync_clock_cause_idx',
@@ -38,16 +57,4 @@ Future<void> migrateV37ToV38(
       'CREATE INDEX IF NOT EXISTS task_recurrence_parent_id_idx ON task_table (recurrence_parent_id)'));
   await m.createIndex(Index('task_status_id_idx',
       'CREATE INDEX IF NOT EXISTS task_status_id_idx ON task_table (status_id)'));
-
-  // Legacy pairing marking (FR-061): every existing device row needs repair.
-  await m.addColumn(db.syncDeviceTable, db.syncDeviceTable.needsRepair);
-  await db.customStatement('UPDATE sync_device_table SET needs_repair = 1');
-
-  // The upgrade job (T17) starts from 'dedupe'.
-  await db.customStatement(
-      "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_phase) "
-      "VALUES ('singleton', 0, 1, 0, 'dedupe') "
-      "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'dedupe'");
-
-  await installSyncTriggers(db);
 }
