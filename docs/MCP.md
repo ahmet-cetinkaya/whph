@@ -312,3 +312,41 @@ unknown schemes, traversal segments, extra query parameters, negative or
 out-of-range offsets, expired artifacts, and artifacts owned by another
 connection are rejected. Resource errors do not disclose paths, database
 details, tokens, or other records.
+
+## Sync tools and time-record aggregates
+
+Sync tools act on the LAN sync engine described in [SYNC.md](SYNC.md). Pairing
+and removal always keep the on-screen confirmation step; no MCP call can pair a
+device by itself (FR-024).
+
+> TODO-until-T25: the sync tool contract below is the plan (D14b). Replace it
+> with the final shapes from the slice A report
+> `.agents/state/reliable-secure-lan-sync/reports/t25-mcp-contract.md` when it
+> lands, and re-check field names against `presentation/mcp/tools/sync_tools.dart`.
+
+| Tool | Change under the new engine |
+| ---- | --------------------------- |
+| `whph_sync_devices_list`, `whph_sync_devices_read` | Return **member status** (paired, needs re-pairing, removed, revoked) with the revision used for updates. |
+| `whph_sync_devices_update` | `id`, `expectedRevision`, `name?`, `addresses?`. Only the display name and addresses can change. A stale `expectedRevision` after a remote apply is rejected. |
+| `whph_sync_devices_delete` | Group removal: revokes the member and rotates the group key. Requires `id`, `expectedRevision`. |
+| `whph_sync_pair_prepare` | Only starts pairing. The result carries `requiresUserConfirmation: true`; it creates no member, origin or key handover until the user scans the QR or confirms the code on both devices. |
+| `whph_sync_start`, `whph_sync_stop` | Unchanged. |
+
+MCP tokens, grants and scopes never enter sync data, `sync_clock`,
+`sync_member`, `sync_origin` or exports.
+
+### Time-record list shapes (U8)
+
+With per-device buckets, time-record list tools return **aggregates**, clamped at
+≥ 0, and no per-record ids:
+
+| Tool | Aggregate |
+| ---- | --------- |
+| `whph_task_time_records_list` | One item per UTC day: `{date,durationSeconds}` (plus `totalDurationSeconds`). |
+| `whph_habit_time_records_list` | One item per hour: `{hour,durationSeconds,isEstimated}` (plus `totalDurationSeconds`). |
+
+Updates stay keyed by `taskId + date` or `habitId + date`
+(`totalDurationSeconds`, `expectedRevision`) and write
+`target + concurrent delta` into this device's own bucket, so a concurrent add on
+another device is kept. TODO-until-T16/T25: confirm exact output field names
+against the implemented schemas.
