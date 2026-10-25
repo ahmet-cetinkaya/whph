@@ -13,6 +13,8 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_trigger_generator.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
+part 'drift_sync_store_port.dart';
+
 /// Wires the Drift change store (T23 calls this from the app bootstrap).
 void registerSyncPersistence(IContainer container) {
   final database = AppDatabase.instance(container);
@@ -275,22 +277,29 @@ class DriftSyncChangeStore implements ISyncChangeStore {
     return report.applied > 0 || report.cursorAdvanced;
   }
 
-  Future<List<CellRecord>> _readClockCells(
-      String origin, int afterSeq, int bound, int limit) async {
-    final rows = await _select('''
-SELECT c.key AS key, c.hlc AS hlc, n.value AS node, c.origin_seq AS seq, c.tomb_value AS tomb_value,
+  static const String _clockCellSelect = '''
+SELECT c.key AS key, c.hlc AS hlc, n.value AS node, o.value AS origin, c.origin_seq AS seq, c.tomb_value AS tomb_value,
+       c.recorded_at AS recorded_at, c.manifest_id AS manifest_id,
        r.tbl_id AS tbl_id, r.pk AS pk, cr.tbl_id AS cause_tbl_id, cr.pk AS cause_pk
 FROM sync_clock c
-JOIN sync_intern o ON o.id = c.origin_id AND o.value = ?
+JOIN sync_intern o ON o.id = c.origin_id
 JOIN sync_intern n ON n.id = c.node_id
 JOIN sync_row r ON r.id = c.key / $packedKeyFactor
-LEFT JOIN sync_row cr ON cr.id = c.cause_row_id
-WHERE c.origin_seq > ? AND c.origin_seq <= ?
-ORDER BY c.origin_seq, c.key
-LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
+LEFT JOIN sync_row cr ON cr.id = c.cause_row_id''';
+
+  Future<List<CellRecord>> _readClockCells(
+          String origin, int afterSeq, int bound, int limit) async =>
+      _recordsOfClockRows(await _select(
+          '$_clockCellSelect WHERE o.value = ? AND c.origin_seq > ? AND c.origin_seq <= ? '
+          'ORDER BY c.origin_seq, c.key LIMIT ?',
+          [origin, afterSeq, bound, limit + 1]));
+
+  Future<List<CellRecord>> _recordsOfClockRows(
+      List<Map<String, Object?>> rows) async {
     final baseRows = <String, Map<String, Object?>?>{};
     final cells = <CellRecord>[];
     for (final row in rows) {
+      final origin = row['origin'] as String;
       final security = _securityById[row['tbl_id'] as int];
       if (security != null) {
         final cell = await _readSecurityCell(security, row, origin);
@@ -463,7 +472,7 @@ LIMIT ?''', [origin, afterSeq, bound, limit + 1]);
         : error.runtimeType.toString();
     final key = cell.key;
     final existing = await _selectOne(
-        'SELECT id FROM sync_held_envelope WHERE tbl = ? AND pk = ? AND col = ?',
+        'SELECT id FROM sync_held_envelope WHERE tbl = ? AND pk = ? AND col = ? AND origin_id IS NULL',
         [key.table, key.pk, key.col]);
     if (existing != null) {
       await _exec(
@@ -631,13 +640,13 @@ WHERE o.value = ? AND c.origin_seq = ?''', [cell.origin, cell.originSeq]);
   // -- held envelopes (FR-010, FR-011) ------------------------------------------
 
   Future<void> _clearHeldEnvelope(CellKey key) => _exec(
-      'DELETE FROM sync_held_envelope WHERE tbl = ? AND pk = ? AND col = ?',
+      'DELETE FROM sync_held_envelope WHERE tbl = ? AND pk = ? AND col = ? AND origin_id IS NULL',
       [key.table, key.pk, key.col]);
 
   @override
   Future<List<CellKey>> refetchKeys() async => [
         for (final row in await _select(
-            "SELECT tbl, pk, col FROM sync_held_envelope WHERE reason = '$_heldReasonApplyFailed' ORDER BY id"))
+            "SELECT tbl, pk, col FROM sync_held_envelope WHERE reason = '$_heldReasonApplyFailed' AND origin_id IS NULL ORDER BY id"))
           CellKey(
               row['tbl'] as String, row['pk'] as String, row['col'] as String),
       ];

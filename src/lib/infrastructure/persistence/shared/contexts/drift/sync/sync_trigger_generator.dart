@@ -145,6 +145,39 @@ List<String> allSyncTriggerStatements() => [
       for (final policy in syncTablePolicies) ...syncTriggerStatements(policy),
     ];
 
+/// F5 superseded index upkeep, on `sync_clock` itself so every write path
+/// (capture triggers, remote apply) is covered. A replaced version is indexed
+/// unless an origin switch (`apply_mode = 3`) re-keys the cell; a stored
+/// version leaves the index; a deleted clock row takes its entries along.
+const String supersededOnUpdateTrigger = 'sync_superseded_on_update';
+const String supersededOnInsertTrigger = 'sync_superseded_on_insert';
+const String supersededOnDeleteTrigger = 'sync_superseded_on_delete';
+
+List<String> syncSupersededStatements() => [
+      '''
+CREATE TRIGGER IF NOT EXISTS $supersededOnUpdateTrigger
+AFTER UPDATE ON sync_clock
+WHEN (OLD.origin_id <> NEW.origin_id OR OLD.origin_seq <> NEW.origin_seq)
+  AND (SELECT apply_mode FROM sync_state WHERE id = 'singleton') <> 3
+BEGIN
+  INSERT OR REPLACE INTO sync_superseded (origin_id, origin_seq, clock_key)
+  VALUES (OLD.origin_id, OLD.origin_seq, NEW.key);
+  DELETE FROM sync_superseded WHERE origin_id = NEW.origin_id AND origin_seq = NEW.origin_seq;
+END''',
+      '''
+CREATE TRIGGER IF NOT EXISTS $supersededOnInsertTrigger
+AFTER INSERT ON sync_clock
+BEGIN
+  DELETE FROM sync_superseded WHERE origin_id = NEW.origin_id AND origin_seq = NEW.origin_seq;
+END''',
+      '''
+CREATE TRIGGER IF NOT EXISTS $supersededOnDeleteTrigger
+AFTER DELETE ON sync_clock
+BEGIN
+  DELETE FROM sync_superseded WHERE clock_key = OLD.key;
+END''',
+    ];
+
 /// D5b parent-side cascade materialization: when a parent task's
 /// `deleted_date` flips, children tombstoned *by that parent* (their winning
 /// `~` cell's `cause_row_id` points at the parent's `sync_row`) are
@@ -160,6 +193,20 @@ const String _d5bCauseCheck = '''
           AND cc.cause_row_id = (SELECT pr.id FROM sync_row pr
                                  WHERE pr.tbl_id = 1 AND pr.pk = NEW.id)
       )''';
+
+/// Pks of every task whose tombstone cause chain leads to `NEW.id`: a revived
+/// parent revives its children and, through them, the children their own
+/// cascades deleted (the store's `rowExistence` follows the same chain).
+const String _d5bCauseDescendants = '''
+      WITH RECURSIVE descendants(row_id) AS (
+        SELECT cc.key / 256 FROM sync_clock cc
+        WHERE cc.key % 256 = 0 AND cc.cause_row_id =
+          (SELECT pr.id FROM sync_row pr WHERE pr.tbl_id = 1 AND pr.pk = NEW.id)
+        UNION
+        SELECT cc.key / 256 FROM sync_clock cc JOIN descendants d ON cc.cause_row_id = d.row_id
+        WHERE cc.key % 256 = 0
+      )
+      SELECT r.pk FROM descendants d JOIN sync_row r ON r.id = d.row_id AND r.tbl_id = 1''';
 
 /// True when a later edit of another cell revived the child (FR-006): the
 /// materialization must then stay alive, as the store's `rowExistence` says.
@@ -183,8 +230,8 @@ BEGIN
   UPDATE task_table SET
     deleted_date = NULL,
     modified_date = MAX(COALESCE(modified_date, 0) + 1, CAST(strftime('%s','now') AS INTEGER))
-  WHERE parent_task_id = NEW.id AND deleted_date IS NOT NULL AND NEW.deleted_date IS NULL
-    AND $_d5bCauseCheck;
+  WHERE deleted_date IS NOT NULL AND NEW.deleted_date IS NULL
+    AND id IN ($_d5bCauseDescendants);
   UPDATE task_table SET
     deleted_date = (SELECT cc.tomb_value FROM sync_row cr, sync_clock cc
                     WHERE cr.tbl_id = 1 AND cr.pk = task_table.id AND cc.key = cr.id * 256),

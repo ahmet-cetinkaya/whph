@@ -15,7 +15,7 @@ Future<void> _syncAll(List<SyncDevice> devices, {int rounds = 4}) async {
   for (var round = 0; round < rounds; round++) {
     for (var i = 0; i < devices.length; i++) {
       for (var j = i + 1; j < devices.length; j++) {
-        await SyncDevice.syncPair(devices[i], devices[j]);
+        await runSessionPair(devices[i], devices[j]);
       }
     }
   }
@@ -163,7 +163,7 @@ void main() {
       expect(d1.needsRepairing, isTrue, reason: 'the restore stranded unsent member rows');
       expect(action, anyOf(StartupAction.normal, StartupAction.restore));
       // The flag does not self-clear: sessions alone must not repair it.
-      await SyncDevice.syncPair(d1, b);
+      await runSessionPair(d1, b);
       expect(d1.needsRepairing, isTrue, reason: 'only pair() clears the flag');
 
       // Re-pair repairs it (the user acting on the prompt).
@@ -277,6 +277,33 @@ void main() {
       await c.membership.mergeRegistrations([row], c.store);
       await c.membership.rebuild(c.store);
       expect(c.membership.memberById(newcomer.memberId), isNotNull);
+    });
+
+    test('reinvited_stranded_joiner_is_verified_by_bystander', () async {
+      final [a, b, c, joiner] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 760 + i)];
+      await pairAll([a, b, c]);
+      await syncUntilQuiet([a, b, c]);
+      await SyncDevice.pair(inviter: a, joiner: joiner);
+      final oldDb = await a.snapshotDb();
+      final oldA = a.memberId;
+      await a.loseKeyFile(oldDb: oldDb, loseLedger: true);
+      final stranded = strandedMemberIds(a.store, a.memberId);
+      expect(stranded, {joiner.memberId});
+      await b.removeMember(oldA);
+      await SyncDevice.pair(inviter: b, joiner: a);
+
+      createRow(joiner, 'joiner-task', 'kept');
+      await _syncAll([a, b, c, joiner], rounds: 4);
+      expect(c.membership.memberById(joiner.memberId), isNull, reason: 'nobody but the old origin knew the joiner');
+
+      for (final memberId in stranded) {
+        expect(memberId, joiner.memberId);
+        await SyncDevice.pair(inviter: b, joiner: joiner);
+      }
+      await syncUntilQuiet([a, b, c, joiner], maxRounds: 10);
+
+      expect(c.store.heldEnvelopes, isEmpty, reason: 'the re-invite lets C verify the joiner');
+      expect(content(c.store), containsPair(cellKey('joiner-task', 'title').toString(), contains('kept')));
     });
 
     test('restore_older_db_keeps_rooted_members', () async {

@@ -49,29 +49,29 @@ void main() {
       createRow(a, 'secret', 'not for X');
       final before = content(x.store);
       for (final (i, r) in [(x, a), (a, x)]) {
-        final p = await SyncDevice.syncPair(i, r);
+        final p = await runSessionPair(i, r);
         expect(
             (p.initiator as SessionFailed).category, anyOf(SessionFailure.notAuthorized, SessionFailure.notReachable));
         expect(p.responder, isA<SessionFailed>());
         expect(p.initiator.stats.envelopesReceived + p.responder.stats.envelopesReceived, 0);
       }
       expect(content(x.store), before);
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
-      expect((await SyncDevice.syncPair(x, y)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(x, y)).bothComplete, isTrue);
     });
 
     test('a removed member that still trusts the group is refused at authentication (FR-026)', () async {
       final [a, b, c] = await _paired(['A', 'B', 'C'], 20);
       await syncUntilQuiet([a, b, c]);
       await a.removeMember(c.memberId);
-      final p = await SyncDevice.syncPair(c, a);
+      final p = await runSessionPair(c, a);
       expect((p.responder as SessionFailed).category, SessionFailure.notAuthorized);
       expect((p.initiator as SessionFailed).category, SessionFailure.refusedByPeer);
       expect(p.initiator.stats.envelopesSent, 0);
       // B learns the removal from A and refuses C too; the new epoch never
       // reaches C.
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
-      expect((await SyncDevice.syncPair(c, b)).responder, isA<SessionFailed>());
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(c, b)).responder, isA<SessionFailed>());
       final newest = a.membership.keyring.highest!;
       expect(b.membership.keyring.holds(newest), isTrue);
       expect(c.membership.keyring.holds(newest), isFalse, reason: 'changes after removal are unreadable for C');
@@ -85,7 +85,7 @@ void main() {
         createRow(a, 'r$i', 'title $i');
       }
       var tampered = 0;
-      final r = await SyncDevice.syncPair(
+      final r = await runSessionPair(
         a,
         b,
         hooksA: SessionHooks(outgoingBatch: (batch) {
@@ -110,7 +110,7 @@ void main() {
     test('a manifest altered in transit is rejected and none of its changes is applied', () async {
       final [a, b] = await _paired(['A', 'B'], 40);
       createRow(a, 'r0', 'x');
-      final r = await SyncDevice.syncPair(
+      final r = await runSessionPair(
         a,
         b,
         hooksA: SessionHooks(outgoingBatch: (batch) {
@@ -143,10 +143,10 @@ void main() {
         for (var i = 0; i < 50; i++) {
           createRow(a, 'r$i', 't$i');
         }
-        final r = await SyncDevice.syncPair(a, b, faults: faults);
+        final r = await runSessionPair(a, b, faults: faults);
         final failures = [r.initiator, r.responder].whereType<SessionFailed>().map((f) => f.category).toSet();
         expect(failures, contains(SessionFailure.securityError), reason: '$r');
-        final ok = await SyncDevice.syncPair(a, b);
+        final ok = await runSessionPair(a, b);
         expect(ok.bothComplete, isTrue);
         expect(content(a.store), content(b.store));
       });
@@ -155,7 +155,7 @@ void main() {
     test('an altered Noise frame tears the session down', () async {
       final [a, b] = await _paired(['A', 'B'], 60);
       createRow(a, 'r', 't');
-      final r = await SyncDevice.syncPair(
+      final r = await runSessionPair(
         a,
         b,
         faults: TransportFaults(tamper: (i, f) => i == 8 ? (f..[f.length - 1] ^= 1) : f),
@@ -178,14 +178,14 @@ void main() {
     // C keeps writing; B has not learned of the removal and takes it.
     clock.advance(1000);
     createRow(c, 'c2', 'after removal');
-    expect((await SyncDevice.syncPair(c, b)).bothComplete, isTrue);
+    expect((await runSessionPair(c, b)).bothComplete, isTrue);
     // B relays C's post-removal change to A: A rejects it (above cutoff).
-    final relay = await SyncDevice.syncPair(b, a);
+    final relay = await runSessionPair(b, a);
     expect(relay.responder, isA<SessionPartial>());
     expect(relay.responder.stats.rejectedByReason['revokedAboveCutoff'], greaterThan(0));
     expect(a.store.isRowAlive('task', 'c2'), isFalse);
     // B now knows the removal and refuses C.
-    expect((await SyncDevice.syncPair(c, b)).responder, isA<SessionFailed>());
+    expect((await runSessionPair(c, b)).responder, isA<SessionFailed>());
     // B held c2 when it learned the removal: it extends the cutoff (D7), so
     // every member ends with the same accepted set.
     await syncUntilQuiet([a, b]);
@@ -193,8 +193,8 @@ void main() {
     expect(content(a.store), content(b.store));
     // Anything C writes now never enters the group.
     createRow(c, 'c3', 'never accepted');
-    expect((await SyncDevice.syncPair(c, a)).initiator, isA<SessionFailed>());
-    expect((await SyncDevice.syncPair(c, b)).initiator, isA<SessionFailed>());
+    expect((await runSessionPair(c, a)).initiator, isA<SessionFailed>());
+    expect((await runSessionPair(c, b)).initiator, isA<SessionFailed>());
     expect(a.store.rowsOf('task'), isNot(contains('c3')));
   });
 
@@ -218,7 +218,7 @@ void main() {
       ]);
     }
 
-    final first = await SyncDevice.syncPair(a, b, hooksA: SessionHooks(outgoingBatch: reseal));
+    final first = await runSessionPair(a, b, hooksA: SessionHooks(outgoingBatch: reseal));
     expect(first.bothComplete, isTrue, reason: 'held for a missing key is not a failure');
     expect(first.responder.stats.heldMissingKey, 2);
     expect(b.store.heldEnvelopes.map((h) => h.reason).toSet(), {HeldReason.missingKey});
@@ -226,7 +226,7 @@ void main() {
 
     // B forwards the ciphertext verbatim to C, which cannot read it either.
     final ciphertexts = {for (final h in b.store.heldEnvelopes) h.envelope.ciphertext.toString()};
-    final relay = await SyncDevice.syncPair(b, c);
+    final relay = await runSessionPair(b, c);
     expect(relay.bothComplete, isTrue);
     expect(relay.initiator.stats.heldRelayed, 2);
     expect({for (final h in c.store.heldEnvelopes) h.envelope.ciphertext.toString()}, ciphertexts);
@@ -234,12 +234,12 @@ void main() {
 
     // The key reaches A's keyring; A hands it to B, B to C; both apply.
     a.membership.keyring.add(laterEpoch, laterKey);
-    final handover = await SyncDevice.syncPair(a, b);
+    final handover = await runSessionPair(a, b);
     expect(handover.bothComplete, isTrue);
     expect(handover.initiator.stats.keysHandedOver, 1);
     expect(b.store.isRowAlive('task', 'k'), isTrue);
     expect(b.store.heldEnvelopes, isEmpty);
-    expect((await SyncDevice.syncPair(b, c)).bothComplete, isTrue);
+    expect((await runSessionPair(b, c)).bothComplete, isTrue);
     expect(c.store.isRowAlive('task', 'k'), isTrue);
     expect(c.store.heldEnvelopes, isEmpty);
     expect(c.peerState(b.memberId).itemsCannotBeApplied, isFalse);
@@ -256,7 +256,7 @@ void main() {
     createRow(a, 'r', 'v');
     createRow(b, 's', 'w');
     for (final (i, r) in [(a, b), (b, a)]) {
-      final p = await SyncDevice.syncPair(i, r);
+      final p = await runSessionPair(i, r);
       for (final side in [p.initiator, p.responder]) {
         final f = side as SessionFailed;
         expect(f.category, SessionFailure.needsUpdate);

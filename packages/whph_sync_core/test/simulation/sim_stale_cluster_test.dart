@@ -7,17 +7,25 @@ library;
 import 'dart:io';
 
 import 'package:test/test.dart';
+import '../session/session_engine_switch.dart';
 import 'engine_simulation.dart';
 import 'sim_env.dart';
 import 'simulator.dart';
+
+/// Seed 100006 with the post-key-loss re-invite off: the members stranded on a
+/// lost-key device's sealed origin are never re-invited, which is what
+/// produces the stale clusters this test pins.
+Future<SimResult> _runStale() => EngineSimulation(
+        100006, soakSuite.config, 'engine',
+        tuning: const EngineSimTuning(reinviteAfterKeyLoss: false))
+    .run();
 
 void main() {
   _engineered();
   test(
       'stale clusters are excluded with evidence and stranded revocations counted (seed 100006)',
       () async {
-    final first = await runSimulation(
-        seed: 100006, config: soakSuite.config, engine: engineUnderTest);
+    final first = await _runStale();
     expect(first.violations, isEmpty, reason: first.report(tag: soakSuite.tag));
     final excluded = first.stats.counters['endgame.staleExcluded'] ?? 0;
     final stranded =
@@ -36,8 +44,7 @@ void main() {
     expect(strandedMembers, greaterThan(0),
         reason: '100006 must exercise the member-row strand rule');
 
-    final second = await runSimulation(
-        seed: 100006, config: soakSuite.config, engine: engineUnderTest);
+    final second = await _runStale();
     expect(second.traceHash, first.traceHash,
         reason: 'exclusion sets must be deterministic');
     // F2: the counters and per-run stats must match too, not just the hash.
@@ -64,7 +71,11 @@ void main() {
     expect(
         result.stats.counters['endgame.memberRowStrandedInStaleCluster'] ?? 0,
         0);
-  }, timeout: const Timeout(Duration(minutes: 10)));
+  },
+      skip: useAsyncEngine
+          ? 'seed 100006 without the post-key-loss re-invite is schedule-dependent under the async engine'
+          : false,
+      timeout: const Timeout(Duration(minutes: 10)));
 
   test(
       'with the repair prompt disabled, stranding must surface as violations (seed 100160)',

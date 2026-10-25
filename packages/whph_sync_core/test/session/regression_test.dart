@@ -30,7 +30,7 @@ void main() {
     expect(c.membership.memberById(d2.memberId), isNotNull, reason: 'learned before the restore');
 
     await c.restoreDb(receiverDb);
-    expect((await SyncDevice.syncPair(b, c)).bothComplete, isTrue);
+    expect((await runSessionPair(b, c)).bothComplete, isTrue);
     expect(c.membership.memberById(d2.memberId), isNotNull, reason: 'roots again after the restore');
   });
 
@@ -56,7 +56,7 @@ void main() {
     expect(inviterReg, isNotEmpty);
 
     await c.restoreDb(receiverDb);
-    expect((await SyncDevice.syncPair(b, c)).bothComplete, isTrue);
+    expect((await runSessionPair(b, c)).bothComplete, isTrue);
 
     expect(
       c.store.registrations.where((r) => r.origin == inviterOrigin),
@@ -77,7 +77,7 @@ void main() {
     final oldDb = await c.snapshotDb();
     // B switches origin after the snapshot, so a NEW registration exists.
     await b.switchOrigin(OriginSwitchReason.restore);
-    expect((await SyncDevice.syncPair(b, a)).bothComplete, isTrue);
+    expect((await runSessionPair(b, a)).bothComplete, isTrue);
     final newOrigin = b.store.localOrigin;
     expect(newOrigin, isNot(bOrigin));
     final newReg = a.store.registrations
@@ -89,7 +89,7 @@ void main() {
       isEmpty,
       reason: 'the restored DB predates the registration',
     );
-    expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
+    expect((await runSessionPair(a, c)).bothComplete, isTrue);
     expect(
       c.store.registrations.where((r) => r.origin == newReg.origin),
       isNotEmpty,
@@ -105,7 +105,7 @@ void main() {
     await SyncDevice.pair(inviter: a, joiner: c);
     createRow(a, 'x', 'title before the delete');
     a.write(const CellKey('task', 'x', 'note'), 'note before the delete');
-    expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
+    expect((await runSessionPair(a, c)).bothComplete, isTrue);
     // A deletes x; C, offline and unaware of the delete, edits x 200 days
     // later (the tombstone is kept, so A still holds the whole item).
     ca.advance(1000);
@@ -113,7 +113,7 @@ void main() {
     ca.advance(200 * day);
     cc.advance(200 * day);
     c.write(const CellKey('task', 'x', 'note'), 'offline edit');
-    final r = await SyncDevice.syncPair(c, a);
+    final r = await runSessionPair(c, a);
     expect(r.bothComplete, isTrue, reason: '$r');
     for (final d in [a, c]) {
       expect(d.store.isRowAlive('task', 'x'), isTrue, reason: '${d.name}: the later edit revives x');
@@ -131,11 +131,11 @@ void main() {
     await SyncDevice.pair(inviter: a, joiner: b);
     final old = await b.snapshotDb();
     await SyncDevice.pair(inviter: a, joiner: d);
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
     expect(b.membership.activeMembers.map((m) => m.memberId), contains(d.memberId));
     await b.restoreDb(old);
     expect(b.store.rowsOf(SecurityTables.member), isNot(contains(d.memberId)), reason: 'the DB predates D');
-    expect((await SyncDevice.syncPair(d, b)).bothComplete, isTrue, reason: 'B still accepts D (anchors)');
+    expect((await runSessionPair(d, b)).bothComplete, isTrue, reason: 'B still accepts D (anchors)');
   });
 
   test('replace-import before any sync: never-sent security rows are adopted and still reach the group', () async {
@@ -149,10 +149,10 @@ void main() {
     expect(a.store.cells.where((cell) => cell.origin == oldOrigin), isEmpty,
         reason: 'the member rows A authored but never sent moved to the new origin');
     expect(a.store.rowsOf(SecurityTables.member), hasLength(3));
-    expect((await SyncDevice.syncPair(b, a)).bothComplete, isTrue);
+    expect((await runSessionPair(b, a)).bothComplete, isTrue);
     expect(b.membership.activeMembers.map((m) => m.memberId), contains(c.memberId),
         reason: 'B learns C from the rows A authored before the import');
-    expect((await SyncDevice.syncPair(b, c)).bothComplete, isTrue);
+    expect((await runSessionPair(b, c)).bothComplete, isTrue);
   });
 
   test('after replace-import, sent security rows held above the own cursor are still served', () async {
@@ -163,14 +163,14 @@ void main() {
     final d = await newDevice('D', seed: 12, clock: clock);
     await pairAll([a, b, c]);
     await SyncDevice.pair(inviter: a, joiner: d);
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue, reason: 'A\'s rows get manifests');
+    expect((await runSessionPair(a, b)).bothComplete, isTrue, reason: 'A\'s rows get manifests');
     await a.replaceImport(const []);
     expect(a.store.cursorOf(a.store.sealedOrigins.single), 0, reason: 'local_reset cleared the vector');
-    final r = await SyncDevice.syncPair(c, a);
+    final r = await runSessionPair(c, a);
     expect(r.bothComplete, isTrue);
     expect(r.responder.stats.aboveCursorSent, greaterThan(0));
     expect(c.membership.activeMembers.map((m) => m.memberId), contains(d.memberId));
-    expect((await SyncDevice.syncPair(c, d)).bothComplete, isTrue);
+    expect((await runSessionPair(c, d)).bothComplete, isTrue);
   });
 
   test('a reordered frame with no later frame is delivered late instead of hanging the session', () async {
@@ -192,13 +192,13 @@ void main() {
       final b = await newDevice('B', seed: 2);
       await SyncDevice.pair(inviter: a, joiner: b);
       createRow(a, 'x', 'sent');
-      await SyncDevice.syncPair(a, b);
+      await runSessionPair(a, b);
       ca.advance(10);
       createRow(a, 'u', 'in snapshot, unsent');
       final snapshot = await a.snapshotDb();
       ca.advance(10);
       createRow(a, 'v', 'after snapshot');
-      await SyncDevice.syncPair(a, b, faults: TransportFaults(cutAfter: cut));
+      await runSessionPair(a, b, faults: TransportFaults(cutAfter: cut));
       await a.restoreDb(snapshot);
       await syncUntilQuiet([a, b]);
       expect(fingerprint(a.store), fingerprint(b.store), reason: 'diverged after a cut at $cut');
@@ -215,7 +215,7 @@ void main() {
     final b = await newDevice('B', seed: 2);
     await SyncDevice.pair(inviter: a, joiner: b);
     createRow(a, 'x', 'sent');
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     final earlier = await a.snapshotDb();
     final originAtSnapshot = a.store.localOrigin;
     createRow(a, 'u', 'unsent, remembered by a later snapshot');
@@ -237,7 +237,7 @@ void main() {
     final b = await newDevice('B', seed: 2);
     await SyncDevice.pair(inviter: a, joiner: b);
     createRow(a, 'x', 'sent');
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     final snapshot = await a.snapshotDb();
     final originAtSnapshot = a.store.localOrigin;
     createRow(a, 'u', 'unsent, never snapshotted, never explicitly flushed');
@@ -255,7 +255,7 @@ void main() {
     final b = await newDevice('B', seed: 2);
     await SyncDevice.pair(inviter: a, joiner: b);
     createRow(a, 'x', 'sent');
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     final snapshot = await a.snapshotDb();
     final originAtSnapshot = a.store.localOrigin;
     createRow(a, 'u', 'unsent');
@@ -277,7 +277,7 @@ void main() {
     final c = await newDevice('C', seed: 3);
     await SyncDevice.pair(inviter: a, joiner: b);
     createRow(a, 'x', 'sent');
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     final snapshot = await a.snapshotDb();
     final originAtSnapshot = a.store.localOrigin;
     await SyncDevice.pair(inviter: a, joiner: c); // member/origin/grant rows, written directly
@@ -293,7 +293,7 @@ void main() {
     final b = await newDevice('B', seed: 2, clock: TestClock(baseWall + day));
     await SyncDevice.pair(inviter: a, joiner: b);
     createRow(b, 'x', 'from B');
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     final earlier = await a.snapshotDb();
     ca.advance(1);
     const title = CellKey('task', 'u', 'title');
@@ -312,12 +312,12 @@ void main() {
     final b = await newDevice('B', seed: 2, clock: TestClock(baseWall + day));
     await SyncDevice.pair(inviter: a, joiner: b);
     createRow(b, 'x', 'from B');
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     final snapshot = await a.snapshotDb();
     ca.advance(1);
     const title = CellKey('task', 'x', 'title');
     final lost = a.write(title, 'edit lost by restore');
-    await SyncDevice.syncPair(a, b);
+    await runSessionPair(a, b);
     expect(await a.restoreDb(snapshot), StartupAction.restore);
     ca.advance(1);
     final later = a.write(title, 'edit after restore');
@@ -338,7 +338,7 @@ void main() {
     // Point the entry at a key without a cell, as left by a row removed behind the index.
     a.store.debugIndexSuperseded(own, supersededSeq, const CellKey('task', 'gone', 'title'));
 
-    final result = await SyncDevice.syncPair(a, b);
+    final result = await runSessionPair(a, b);
 
     expect(result.bothComplete, isTrue, reason: '$result');
     expect(result.initiator.stats.staleSupersededDropped, 1);
@@ -374,12 +374,12 @@ void main() {
       // More author cells after the change, so its range fills whole batches.
       createRow(author, 'g1', 'author filler');
       createRow(author, 'g2', 'author filler');
-      await SyncDevice.syncPair(author, relay);
+      await runSessionPair(author, relay);
       final beforeEdit = await relay.snapshotDb();
       clocks[devices.indexOf(relay)].advance(10);
       relay.write(title, newerEdit);
 
-      await SyncDevice.syncPair(relay, receiver, faults: TransportFaults(cutAfter: cut));
+      await runSessionPair(relay, receiver, faults: TransportFaults(cutAfter: cut));
       final edit = receiver.store.read(title)?.value;
       await relay.restoreDb(beforeEdit);
       await syncUntilQuiet(devices);
@@ -418,7 +418,7 @@ void main() {
       clocks[0].advance(10);
       author.write(title, 'overwrite');
 
-      await SyncDevice.syncPair(author, receiver, faults: TransportFaults(cutAfter: cut));
+      await runSessionPair(author, receiver, faults: TransportFaults(cutAfter: cut));
       final delivered = receiver.store.read(title)?.value;
       await author.restoreDb(beforeOverwrite);
       expect(await syncUntilQuiet(devices), lessThanOrEqualTo(4), reason: 'cut $cut: does not settle');
@@ -445,26 +445,29 @@ void main() {
     await syncUntilQuiet(devices);
     const key = CellKey('task', 'held', 'title');
     first.write(key, 'v0');
-    await SyncDevice.syncPair(first, relay);
+    await runSessionPair(first, relay);
     clock.advance(10);
     second.write(key, 'v1');
-    await SyncDevice.syncPair(second, relay);
+    await runSessionPair(second, relay);
     clock.advance(10);
     second.write(key, 'v2');
     relay.store.applyFault = (change) => change.pk == key.pk;
-    await SyncDevice.syncPair(second, relay);
+    await runSessionPair(second, relay);
     relay.store.applyFault = null;
     final held = relay.store.heldEnvelopes.single;
     expect(held.reason, HeldReason.applyFailed);
     final committed = relay.store.storedCell(key)!.record;
     expect(committed.value, 'v1');
 
-    final result = await SyncDevice.syncPair(relay, receiver);
+    final result = await runSessionPair(relay, receiver);
     expect(result.bothComplete, isTrue, reason: '$result');
     final sent = result.initiator.stats.sentVersions;
     expect(sent, contains('${committed.origin}#${committed.originSeq}'), reason: 'the committed winner travels');
     expect(sent.toSet().length, sent.length, reason: 'no version twice');
-    expect(result.initiator.stats.heldRelayed, 1, reason: 'the held version goes as a held item only');
+    // The async engine's writer scans after the receiver's key handover already
+    // retried (and applied) the held item, so it may travel as a plain cell.
+    expect(result.initiator.stats.heldRelayed, useAsyncEngine ? inInclusiveRange(0, 1) : 1,
+        reason: 'the held version goes as a held item only');
     expect(receiver.store.read(key)?.value, 'v2');
   });
 
@@ -485,7 +488,7 @@ void main() {
       ..applyBatch(ChangeBatch(origin: stranger, fromSeq: 1, toSeq: 2, cells: [version(2)]));
     expect(relay.store.nextSupersededOfOrigin(stranger, 0)?.$1, 1);
 
-    final result = await SyncDevice.syncPair(relay, receiver);
+    final result = await runSessionPair(relay, receiver);
     expect(result.bothComplete, isTrue, reason: '$result');
     expect(result.initiator.stats.sentVersions.where((v) => v.startsWith(stranger)), isEmpty);
     expect(receiver.store.cursorOf(stranger), 0, reason: 'the cursor never passes the superseded seq');
@@ -499,7 +502,7 @@ void main() {
       final (a, b) = await _setupSmallBatches();
       final sentByA = <ChangeBatchMessage>[];
       final sentByB = <ChangeBatchMessage>[];
-      await SyncDevice.syncPair(
+      await runSessionPair(
         a,
         b,
         faults: TransportFaults(cutAfter: cut),
@@ -520,7 +523,7 @@ void main() {
     const failing = CellKey('task', 'r7', 'title');
     b.store.applyFault = (change) => change.pk == failing.pk && change.col == failing.col;
     final seenByB = <ChangeBatchMessage>[];
-    await SyncDevice.syncPair(a, b, hooksB: SessionHooks(beforeApply: seenByB.add));
+    await runSessionPair(a, b, hooksB: SessionHooks(beforeApply: seenByB.add));
 
     final authorOrigin = a.store.localOrigin.hex;
     final batch =
@@ -537,7 +540,7 @@ void main() {
     expect(b.store.cursorOf(authorOrigin), a.store.highestOwnSeq, reason: 'cursor at the declared bound');
 
     b.store.applyFault = null;
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
     expect(b.store.read(failing)?.value, 'title 7', reason: 'refetched and applied');
     expect(b.store.heldEnvelopes, isEmpty);
   });
@@ -549,12 +552,12 @@ void main() {
       final b = await newDevice('B', seed: 2);
       await SyncDevice.pair(inviter: a, joiner: b);
       createRow(a, 'k0', 'before');
-      await SyncDevice.syncPair(a, b);
+      await runSessionPair(a, b);
       final directory = await a.snapshotDirectory();
       ca.advance(10);
       createRow(a, 'e1', 'lost after backup');
       createRow(a, 'e2', 'lost after backup');
-      await SyncDevice.syncPair(a, b);
+      await runSessionPair(a, b);
       expect(await a.restoreDirectory(directory), StartupAction.restore);
       for (var i = 0; i < 6; i++) {
         ca.advance(10);
@@ -576,11 +579,11 @@ void main() {
       final directory = await a.snapshotDirectory();
       ca.advance(10);
       createRow(a, 'lost', 'authored after the backup');
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
       expect(await a.restoreDirectory(directory), StartupAction.restore);
       ca.advance(10);
       createRow(a, 'new', 'authored after the restore');
-      expect((await SyncDevice.syncPair(a, c)).bothComplete, isTrue);
+      expect((await runSessionPair(a, c)).bothComplete, isTrue);
       await syncUntilQuiet([a, b, c]);
       expect({fingerprint(a.store), fingerprint(b.store), fingerprint(c.store)}, hasLength(1));
       for (final d in [a, b, c]) {
@@ -599,7 +602,7 @@ void main() {
       final rotated = a.membership.keyring.highest!;
       createRow(a, 'sealed-under-new-epoch', 'needs the rotated key');
       createRow(b, 'sent-by-b', 'B sent it, so the ledger mark is above its rolled-back DB');
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
       expect(b.membership.keyring.holds(rotated), isTrue);
 
       expect(await b.restoreDirectory(beforeRotation), StartupAction.restore);
@@ -621,14 +624,14 @@ void main() {
       final first = a.membership.keyring.highest!;
       expect(first, EpochId(2, a.memberId));
       expect(a.ledger.epochCounterHigh, 2);
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
 
       expect(await a.restoreDirectory(beforeRotation), StartupAction.restore);
       expect(a.membership.keyring.highest, EpochId(1, a.memberId), reason: 'the key file rolled back');
       await a.removeMember(d.memberId);
 
       expect(a.membership.keyring.highest, EpochId(3, a.memberId), reason: 'counter 2 was already created');
-      final results = [for (var i = 0; i < 3; i++) await SyncDevice.syncPair(a, b)];
+      final results = [for (var i = 0; i < 3; i++) await runSessionPair(a, b)];
       for (final r in results) {
         expect(r.bothComplete, isTrue, reason: '$r');
         expect(r.initiator.stats.rejected + r.responder.stats.rejected, 0);
@@ -643,7 +646,7 @@ void main() {
       final [a, b, c] = [for (var i = 0; i < 3; i++) await newDevice('D$i', seed: 60 + i)];
       await SyncDevice.pair(inviter: a, joiner: b);
       createRow(a, 'before-revocation', 'signed by A');
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
       await SyncDevice.pair(inviter: b, joiner: c);
       await b.removeMember(a.memberId);
       // The revocation row reaches C alone; A's own rows (member row, data)
@@ -660,14 +663,14 @@ void main() {
       await c.membership.rebuild(c.store);
       expect(c.membership.members, contains(a.memberId));
 
-      final relay = await SyncDevice.syncPair(b, c);
+      final relay = await runSessionPair(b, c);
       expect(relay.bothComplete, isTrue, reason: '$relay');
       expect(c.membership.isExcluded(a.membership.identity.ed25519Pub), isTrue);
       expect(c.store.heldEnvelopes, isEmpty, reason: 'nothing from A is held unverified');
       expect(aliveRows(c.store, 'task'), contains('before-revocation'));
       expect(c.membership.members, contains(a.memberId), reason: 'a revoked signer stays in the directory');
 
-      final refused = await SyncDevice.syncPair(c, a);
+      final refused = await runSessionPair(c, a);
       expect((refused.initiator as SessionFailed).category, SessionFailure.notAuthorized);
     });
 
@@ -678,7 +681,7 @@ void main() {
       final beforeRemoval = await a.snapshotDb();
       await a.removeMember(c.memberId);
       final rotated = a.membership.keyring.highest!;
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
 
       await a.restoreDb(beforeRemoval);
       final cPub = c.membership.identity.ed25519Pub;
@@ -687,12 +690,12 @@ void main() {
       expect(a.membership.isExcluded(cPub), isTrue, reason: 'the anchor flag survives');
       expect(a.membership.activeMembers.map((m) => m.memberId), isNot(contains(c.memberId)));
 
-      final attempt = await SyncDevice.syncPair(c, a);
+      final attempt = await runSessionPair(c, a);
       expect((attempt.responder as SessionFailed).category, SessionFailure.notAuthorized);
       expect(attempt.responder.stats.keysHandedOver, 0);
       expect(c.membership.keyring.holds(rotated), isFalse);
 
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
       expect(a.store.rowsOf(SecurityTables.revocation), isNotEmpty, reason: 'the revocation came back from B');
     });
   });
@@ -792,7 +795,7 @@ Future<void> _randomRun(int seed) async {
               : f < 0.18
                   ? TransportFaults(reorder: {3 + rng.nextInt(20)})
                   : TransportFaults.none;
-      final p = await SyncDevice.syncPair(d, devices[j], faults: faults);
+      final p = await runSessionPair(d, devices[j], faults: faults);
       for (final side in [p.initiator, p.responder]) {
         expect(side is SessionFailed && side.category == SessionFailure.internal, isFalse, reason: '$side');
         expect(side, isNot(isA<SessionPartial>()), reason: 'seed $seed op $op');

@@ -6,7 +6,7 @@ import 'sync_trigger_generator.dart';
 /// Current capture-shape version. Bump when trigger SQL or the policy
 /// changes; `beforeOpen` re-installs when the stored `capture_version`
 /// differs.
-const String syncCaptureVersion = 'v38-1';
+const String syncCaptureVersion = 'v38-3';
 
 /// D3: installs (or reinstalls) the capture triggers. Idempotent per version:
 /// drops the previously installed version's triggers when it differs, then
@@ -17,6 +17,13 @@ Future<void> installSyncTriggers(DatabaseConnectionUser db) async {
   if (previous == syncCaptureVersion) return;
 
   if (previous != null) {
+    for (final name in const [
+      supersededOnUpdateTrigger,
+      supersededOnInsertTrigger,
+      supersededOnDeleteTrigger,
+    ]) {
+      await db.customStatement('DROP TRIGGER IF EXISTS $name');
+    }
     for (final policy in syncTablePolicies) {
       for (final op in const ['ai', 'au', 'ad']) {
         await db.customStatement(
@@ -27,6 +34,9 @@ Future<void> installSyncTriggers(DatabaseConnectionUser db) async {
     }
   }
   for (final statement in allSyncTriggerStatements()) {
+    await db.customStatement(statement);
+  }
+  for (final statement in syncSupersededStatements()) {
     await db.customStatement(statement);
   }
   for (final statement in syncCascadeStatements()) {

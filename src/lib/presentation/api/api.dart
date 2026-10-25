@@ -1,15 +1,10 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/main.dart';
-import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/services/sync_completion_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 
@@ -73,8 +68,6 @@ void startWebSocketServer() async {
 }
 
 Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
-  ISyncService? syncService;
-
   try {
     Logger.debug('Received message: $message');
 
@@ -108,6 +101,7 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
               'deviceId': deviceId,
               'deviceName': deviceName,
               'appName': 'WHPH',
+              'appVersion': AppInfo.version,
               'platform': Platform.isAndroid
                   ? 'android'
                   : Platform.isIOS
@@ -145,148 +139,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
         )));
         break;
 
-      case 'paginated_sync':
-        Logger.info('Processing paginated sync request...');
-
-        try {
-          syncService = container.resolve<ISyncService>();
-          syncService.updateSyncStatus(SyncStatus(
-            state: SyncState.syncing,
-            isManual: false,
-            lastSyncTime: DateTime.now(),
-          ));
-        } catch (e) {
-          Logger.debug('Could not update sync status (server may not have sync service): $e');
-        }
-
-        final paginatedSyncData = parsedMessage.data;
-        if (paginatedSyncData == null) {
-          throw FormatException('Paginated sync message missing data');
-        }
-
-        Logger.debug(
-            'Paginated sync data received for entity: ${(paginatedSyncData as Map<String, dynamic>)['entityType']}');
-
-        try {
-          final mediator = container.resolve<Mediator>();
-          final command = PaginatedSyncCommand(paginatedSyncDataDto: PaginatedSyncDataDto.fromJson(paginatedSyncData));
-          final response = await mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
-          Logger.info('Paginated sync processing completed successfully');
-
-          final completionPayload = await SyncCompletionService(mediator).recordCompletion(
-            syncDeviceData: paginatedSyncData['syncDevice'] as Map<String, dynamic>?,
-            isComplete: response.isComplete,
-            succeeded: true,
-          );
-
-          WebSocketMessage responseMessage = WebSocketMessage(type: 'paginated_sync_complete', data: {
-            'paginatedSyncDataDto': response.paginatedSyncDataDto?.toJson(),
-            'success': true,
-            'isComplete': response.isComplete,
-            'timestamp': DateTime.now().toIso8601String(),
-            ...completionPayload,
-          });
-          socket.add(JsonMapper.serialize(responseMessage));
-          Logger.info('Paginated sync response sent to client');
-
-          // Ensure response is fully transmitted before closing the socket
-          await Future.delayed(const Duration(milliseconds: 1000));
-          await socket.close();
-
-          if (syncService != null) {
-            try {
-              Timer(const Duration(seconds: 1), () {
-                syncService!.updateSyncStatus(SyncStatus(
-                  state: SyncState.idle,
-                  lastSyncTime: DateTime.now(),
-                ));
-              });
-            } catch (e) {
-              Logger.debug('Could not update sync status on completion: $e');
-            }
-          }
-        } catch (e, stackTrace) {
-          Logger.error('Paginated sync processing failed: $e');
-          Logger.error('Stack trace: $stackTrace');
-
-          final errorData = <String, dynamic>{
-            'success': false,
-            'message': e.toString(),
-            'type': e.runtimeType.toString(),
-            'timestamp': DateTime.now().toIso8601String(),
-            'entityType': (parsedMessage.data as Map<String, dynamic>?)?.containsKey('entityType') == true
-                ? (parsedMessage.data as Map<String, dynamic>)['entityType']
-                : 'unknown',
-            'metadata': <String, dynamic>{},
-          };
-
-          if (e is FormatException) {
-            errorData['metadata']['errorCategory'] = 'JSON_PARSING';
-            errorData['metadata']['source'] = e.source;
-            errorData['metadata']['offset'] = e.offset;
-          } else if (e is ArgumentError) {
-            errorData['metadata']['errorCategory'] = 'ARGUMENT_ERROR';
-            errorData['metadata']['invalidValue'] = e.invalidValue?.toString();
-            errorData['metadata']['name'] = e.name;
-          } else if (e is StateError) {
-            errorData['metadata']['errorCategory'] = 'STATE_ERROR';
-          } else if (e.toString().contains('Unable to instantiate')) {
-            errorData['metadata']['errorCategory'] = 'ENTITY_INSTANTIATION';
-            final instantiationMatch = RegExp(r"Unable to instantiate class '(\w+)'").firstMatch(e.toString());
-            if (instantiationMatch != null) {
-              errorData['metadata']['failedEntityClass'] = instantiationMatch.group(1);
-            }
-            final argumentsMatch = RegExp(r'with null named arguments \[(.*?)\]').firstMatch(e.toString());
-            if (argumentsMatch != null) {
-              errorData['metadata']['missingArguments'] = argumentsMatch.group(1)?.split(', ');
-            }
-          } else {
-            errorData['metadata']['errorCategory'] = 'UNKNOWN';
-          }
-
-          try {
-            final paginatedSyncData = parsedMessage.data;
-            if (paginatedSyncData is Map<String, dynamic>) {
-              errorData['metadata']['pageIndex'] = paginatedSyncData['pageIndex'];
-              errorData['metadata']['pageSize'] = paginatedSyncData['pageSize'];
-              errorData['metadata']['totalItems'] = paginatedSyncData['totalItems'];
-
-              final entityTypeKey = '${paginatedSyncData['entityType']}sSyncData';
-              final syncDataMap = paginatedSyncData[entityTypeKey] as Map<String, dynamic>?;
-              if (syncDataMap?['data'] is Map<String, dynamic>) {
-                final dataMap = syncDataMap!['data'] as Map<String, dynamic>;
-                for (final listKey in ['createSync', 'updateSync', 'deleteSync']) {
-                  final entityList = dataMap[listKey] as List?;
-                  if (entityList != null && entityList.isNotEmpty) {
-                    errorData['metadata']['sampleEntityData'] = entityList.first;
-                    break;
-                  }
-                }
-              }
-            }
-          } catch (metadataError) {
-            errorData['metadata']['metadataExtractionError'] = metadataError.toString();
-          }
-
-          WebSocketMessage errorMessage = WebSocketMessage(type: 'paginated_sync_error', data: errorData);
-          socket.add(JsonMapper.serialize(errorMessage));
-          await socket.close();
-
-          if (syncService != null) {
-            try {
-              Timer(const Duration(seconds: 2), () {
-                syncService!.updateSyncStatus(SyncStatus(
-                  state: SyncState.idle,
-                  lastSyncTime: DateTime.now(),
-                ));
-              });
-            } catch (statusUpdateError) {
-              Logger.debug('Could not update sync status on error: $statusUpdateError');
-            }
-          }
-        }
-        break;
-
       default:
         socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': 'Unknown message type'})));
         await socket.close();
@@ -297,18 +149,6 @@ Future<void> _handleWebSocketMessage(String message, WebSocket socket) async {
     socket.add(JsonMapper.serialize(WebSocketMessage(type: 'error', data: {'message': e.toString()})));
     await socket.close();
 
-    if (syncService != null) {
-      try {
-        Timer(const Duration(seconds: 1), () {
-          syncService!.updateSyncStatus(SyncStatus(
-            state: SyncState.idle,
-            lastSyncTime: DateTime.now(),
-          ));
-        });
-      } catch (e) {
-        Logger.debug('Could not reset sync status on error: $e');
-      }
-    }
     rethrow;
   }
 }

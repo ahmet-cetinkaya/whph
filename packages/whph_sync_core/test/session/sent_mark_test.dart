@@ -20,7 +20,7 @@ void main() {
       createRow(a, 'r$i', 't$i');
     }
     final writesBefore = ledger.sentMarkWrites;
-    final r = await SyncDevice.syncPair(a, b);
+    final r = await runSessionPair(a, b);
     expect(r.bothComplete, isTrue);
     expect(a.ledger.entryOf(a.store.localOrigin)!.maxSentSeq, a.store.highestOwnSeq);
     expect(ledger.sentMarkWrites - writesBefore, lessThanOrEqualTo(r.initiator.stats.batchesSent));
@@ -38,7 +38,7 @@ void main() {
     createRow(a, 'fromA', 'x');
     createRow(b, 'fromB', 'y');
     ledger.failAllSentMarkWrites = true;
-    final r = await SyncDevice.syncPair(a, b);
+    final r = await runSessionPair(a, b);
     expect(delays, const [Duration(seconds: 1), Duration(seconds: 2), Duration(seconds: 4)]);
     final aSide = r.initiator as SessionPartial;
     expect(aSide.reasons, {PartialReason.storageError});
@@ -48,7 +48,7 @@ void main() {
     expect(b.store.rowsOf('task'), ['fromB']);
 
     ledger.failAllSentMarkWrites = false;
-    final again = await SyncDevice.syncPair(a, b);
+    final again = await runSessionPair(a, b);
     expect(again.bothComplete, isTrue);
     expect(content(a.store), content(b.store));
   });

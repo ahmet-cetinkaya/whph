@@ -194,8 +194,34 @@ class SyncHeldEnvelopeTable extends Table {
   TextColumn get category => text().nullable()();
   BlobColumn get envelope => blob()();
 
+  /// Relayed held envelopes (D15) carry their identity and manifest so they
+  /// can be stored and forwarded verbatim; rows of the older per-item failure
+  /// path leave these empty.
+  TextColumn get originId => text().nullable()();
+  IntColumn get originSeq => integer().nullable()();
+  IntColumn get manifestId => integer().nullable()();
+  IntColumn get recordedAt => integer().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
+
+  @override
+  List<String> get customConstraints => ['UNIQUE(origin_id, origin_seq)'];
+}
+
+/// Local-only (F5): versions that lost to a stored winner, indexed by their
+/// origin seq so a relay can send the winner in their place and leave no hole
+/// behind a receiver's cursor. `originId` is the intern id of the origin;
+/// `clockKey` names the winning cell.
+class SyncSupersededTable extends Table {
+  @override
+  String get tableName => 'sync_superseded';
+  IntColumn get originId => integer()();
+  IntColumn get originSeq => integer()();
+  IntColumn get clockKey => integer()();
+
+  @override
+  Set<Column> get primaryKey => {originId, originSeq};
 }
 
 /// Local-only (D13): decrypted cells held outside base rows.

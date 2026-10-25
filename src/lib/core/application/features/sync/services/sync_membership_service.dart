@@ -470,6 +470,11 @@ class SyncMembershipService {
         return wrote;
       });
 
+  /// Writes the key file with the membership as it is now. A session that
+  /// accepted an epoch key calls this; the membership has no other hook for
+  /// keys it learned outside [refresh].
+  Future<void> persistKeyFile() => _exclusive(_persistKeyFile);
+
   /// Rotation: the ledger counter first, then the key file with the new key,
   /// then the own grant row.
   Future<void> _rotate() async {

@@ -62,7 +62,7 @@ void main() {
     final big = Uint8List.fromList(List<int>.generate(1536 * 1024, (i) => i * 31 & 0xff));
     a.write(const CellKey('note', 'n1', 'body'), big);
     final trace = TransportTrace();
-    final r = await SyncDevice.syncPair(a, b, trace: trace);
+    final r = await runSessionPair(a, b, trace: trace);
     expect(r.bothComplete, isTrue);
     expect(b.store.read(const CellKey('note', 'n1', 'body'))?.value, big);
     expect(trace.bytesSent, greaterThan(big.length));
@@ -77,8 +77,8 @@ void main() {
     await pairAll([a, b, c]);
     final unknown = UnknownValue(0x42, [1, 2, 3]);
     a.write(const CellKey('future_table', 'f1', 'future_col'), unknown);
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
-    expect((await SyncDevice.syncPair(b, c)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(b, c)).bothComplete, isTrue);
     final relayed = c.store.read(const CellKey('future_table', 'f1', 'future_col'))!;
     expect(relayed.value, unknown);
     expect(relayed.origin, a.store.localOrigin.hex);

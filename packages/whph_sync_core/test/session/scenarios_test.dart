@@ -25,10 +25,10 @@ void main() {
       final [ca, cb, cc] = clocks;
       createRow(a, 'x', 'seen by B');
       createRow(a, 'y', 'kept');
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
       cc.advance(5);
       createRow(c, 'c', 'authored by C, reached A before the snapshot');
-      expect((await SyncDevice.syncPair(c, a)).bothComplete, isTrue);
+      expect((await runSessionPair(c, a)).bothComplete, isTrue);
       ca.advance(10);
       createRow(a, 'u', 'in the snapshot, not yet sent');
       final oldDb = await a.snapshotDb();
@@ -50,10 +50,10 @@ void main() {
       expect(a.store.localOrigin, isNot(oldOrigin));
       expect(a.store.isRowAlive('task', 'x'), isTrue, reason: 'the snapshot predates the delete');
 
-      final withB = await SyncDevice.syncPair(a, b);
+      final withB = await runSessionPair(a, b);
       expect(withB.bothComplete, isTrue, reason: '$withB');
       expect(a.store.isRowAlive('task', 'x'), isFalse, reason: 'B\'s kept tombstone re-deletes x on A');
-      final withC = await SyncDevice.syncPair(a, c);
+      final withC = await runSessionPair(a, c);
       expect(withC.bothComplete, isTrue, reason: '$withC');
       await syncUntilQuiet([a, b, c]);
       for (final d in [a, b, c]) {
@@ -71,16 +71,16 @@ void main() {
       final [a, b] = await _group(['A', 'B'], 110, clocks);
       final [ca, cb] = clocks;
       createRow(a, 'x', 'seen');
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
       createRow(a, 'u', 'never sent');
       final oldDb = await a.snapshotDb();
       ca.advance(1000);
       createRow(a, 'v', 'sent after the snapshot');
-      expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+      expect((await runSessionPair(a, b)).bothComplete, isTrue);
       cb.advance(1000);
       b.delete(row('x'));
       expect(await a.restoreDb(oldDb), StartupAction.restore, reason: 'the DB is behind the sent mark');
-      final r = await SyncDevice.syncPair(a, b);
+      final r = await runSessionPair(a, b);
       expect(r.bothComplete, isTrue, reason: '$r');
       await syncUntilQuiet([a, b]);
       for (final d in [a, b]) {
@@ -126,7 +126,7 @@ void main() {
     for (final old in [d, e]) {
       for (final fresh in [a, b, c]) {
         for (final (i, r) in [(old, fresh), (fresh, old)]) {
-          final p = await SyncDevice.syncPair(i, r);
+          final p = await runSessionPair(i, r);
           expect(p.initiator, isA<SessionFailed>(), reason: '${i.name}->${r.name}');
           expect(p.responder, isA<SessionFailed>(), reason: '${i.name}->${r.name}');
           expect(p.initiator.stats.envelopesSent + p.responder.stats.envelopesSent, 0);
@@ -135,7 +135,7 @@ void main() {
       }
     }
     expect({for (final m in d.membership.activeMembers) m.memberId}, containsAll([d.memberId, e.memberId]));
-    expect((await SyncDevice.syncPair(d, e)).bothComplete, isTrue, reason: 'G2 keeps working without C');
+    expect((await runSessionPair(d, e)).bothComplete, isTrue, reason: 'G2 keeps working without C');
   });
 
   test('cascade delete concurrent with a later parent edit: parent and cause-linked children alive everywhere',
@@ -159,7 +159,7 @@ void main() {
     b.write(const CellKey('task', 'p', 'title'), 'edited later on B');
 
     final causes = <RowRef?>[];
-    final r = await SyncDevice.syncPair(
+    final r = await runSessionPair(
       a,
       c,
       hooksA: SessionHooks(outgoingBatch: (batch) {
@@ -257,13 +257,13 @@ void main() {
     await pairAll([a, b]);
     final ca = clocks[0];
     createRow(a, 'k0', 'before the backup');
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
     final backup = await a.snapshotDirectory();
     final ledgerBackup = ledger.snapshot();
     ca.advance(10);
     createRow(a, 'e1', 'after the backup');
     createRow(a, 'e2', 'after the backup');
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
 
     // DB, key file and sync ledger are rolled back together (the accepted
     // U11 full-rollback case; the engine has no API for it).
@@ -273,7 +273,7 @@ void main() {
     ca.advance(10);
     createRow(a, 'e3', 'after the restore'); // reuses seqs B already holds
 
-    final r = await SyncDevice.syncPair(a, b);
+    final r = await runSessionPair(a, b);
     expect(r.retried, isTrue);
     expect(a.store.localOrigin, isNot(origin), reason: 'switch_origin(restore) ran');
     expect(r.bothComplete, isTrue, reason: '$r');
@@ -289,13 +289,13 @@ void main() {
     final [a, b] = await _group(['A', 'B'], 700, clocks);
     final [ca, _] = clocks;
     createRow(a, 'x', 'sent before the backup');
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
     ca.advance(10);
     createRow(a, 'u', 'never sent before the backup');
     final oldDb = await a.snapshotDb();
     ca.advance(10);
     createRow(a, 'y', 'sent after the backup');
-    expect((await SyncDevice.syncPair(a, b)).bothComplete, isTrue);
+    expect((await runSessionPair(a, b)).bothComplete, isTrue);
     final oldId = a.memberId;
     final oldOrigin = a.store.localOrigin;
 

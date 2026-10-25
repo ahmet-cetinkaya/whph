@@ -33,6 +33,7 @@ import 'dart:typed_data';
 
 import 'package:whph_sync_core/whph_sync_core.dart';
 
+import '../session/session_engine_switch.dart';
 import 'oracle/oracle_checks.dart';
 import 'sim_env.dart';
 import 'oracle/reference_oracle.dart';
@@ -57,7 +58,19 @@ final class EngineSimTuning {
     this.maxBatchChanges = 64,
     this.maxFinalRounds = 30,
     this.maxSnapshotsPerDevice = 4,
+    this.perturbAtStep,
+    this.reinviteAfterKeyLoss = true,
   });
+
+  /// Whether a key-lost device re-invites the members stranded on its sealed
+  /// origin after re-pairing (the designed repair). Off only for the
+  /// stale-cluster test, which needs members the group never learns about.
+  final bool reinviteAfterKeyLoss;
+
+  /// Draws one extra random number at this step, shifting every later random
+  /// choice: a schedule perturbation that changes no engine behavior. Used to
+  /// show that a seed's outcome depends on the schedule, not on the engine.
+  final int? perturbAtStep;
 
   final double clockJumpProbability;
   final double dbSnapshotProbability;
@@ -311,6 +324,7 @@ final class EngineSimulation {
   Future<SimResult> run() async {
     await _setup();
     for (_step = 0; _step < config.ops; _step++) {
+      if (_step == tuning.perturbAtStep) _rng.nextInt(1000);
       _now += 1 + _rng.nextInt(1000);
       if (_rng.nextDouble() < config.repartitionProbability) _repartition();
       if (!_switched && _step >= _switchAt) await _groupSwitch();
@@ -792,12 +806,18 @@ final class EngineSimulation {
     _oracle.startIncarnation(d.name, saved.knowledge);
     _simOfMember[d.device.memberId] = d.name;
     d.forgetSnapshots();
+    final stranded = strandedMemberIds(d.store, d.device.memberId);
     final remover = _pick(removers);
     await remover.device.removeMember(oldId);
     remover.forgetSnapshots();
     final inviter = _pick(_g1Finals(except: d));
     await SyncDevice.pair(inviter: inviter.device, joiner: d.device);
     inviter.forgetSnapshots();
+    // The re-pair above clears needsRepairing, so _repairStranded never sees
+    // this loss: act on the stranded-member prompt here (Efe ruling).
+    if (!simRepairDisabled && tuning.reinviteAfterKeyLoss && stranded.isNotEmpty) {
+      await _reinviteStranded(d, stranded, remover);
+    }
     _event(
         'keyLost|${d.name}|${saved.step}|$loseLedger|${action.name}|${d.device.memberId}'
         '|removedBy=${remover.name}|invitedBy=${inviter.name}');
@@ -1066,7 +1086,7 @@ final class EngineSimulation {
     final touchedB = _heldCells(b);
     final countA = a.store.cellCount;
     final countB = b.store.cellCount;
-    final pair = await SyncDevice.syncPair(
+    final pair = await runSessionPair(
       a.device,
       b.device,
       faults: faults,

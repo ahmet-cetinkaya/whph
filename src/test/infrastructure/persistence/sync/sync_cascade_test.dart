@@ -77,6 +77,36 @@ void main() {
     }
   });
 
+  test('D5b: reviving a root revives subtasks whose cause is a deleted child',
+      () async {
+    await db.customStatement(
+        "INSERT INTO task_table (id, created_date, title) VALUES ('root', 0, 'R')");
+    await db.customStatement(
+        "INSERT INTO task_table (id, created_date, title, parent_task_id) "
+        "VALUES ('mid', 0, 'M', 'root')");
+    await db.customStatement(
+        "INSERT INTO task_table (id, created_date, title, parent_task_id) "
+        "VALUES ('leaf', 0, 'L', 'mid')");
+    await cascade.withCause('task_table', 'mid', () async {
+      await db.customStatement(
+          "UPDATE task_table SET deleted_date = 100 WHERE id = 'leaf'");
+      await db.customStatement(
+          "UPDATE task_table SET deleted_date = 100 WHERE id = 'mid'");
+    });
+    await cascade.withCause('task_table', 'root', () async {
+      await db.customStatement(
+          "UPDATE task_table SET deleted_date = 200 WHERE id = 'mid'");
+      await db.customStatement(
+          "UPDATE task_table SET deleted_date = 200 WHERE id = 'root'");
+    });
+
+    await db.customStatement(
+        "UPDATE task_table SET deleted_date = NULL WHERE id = 'root'");
+
+    expect((await state('task_table', 'mid'))['deleted_date'], isNull);
+    expect((await state('task_table', 'leaf'))['deleted_date'], isNull);
+  });
+
   test('D5b: reviving the parent revives cause-linked subtasks, 0 clock rows',
       () async {
     await db.customStatement(
