@@ -372,6 +372,7 @@ sync:
     not_reachable: "Apparaat niet bereikbaar"
     needs_repairing: "Opnieuw koppelen vereist"
     needs_update: "{device} heeft een nieuwere versie van WHPH nodig om te synchroniseren"
+    this_device_needs_update: "Werk WHPH op dit apparaat bij om te synchroniseren met {device}, dat een nieuwere versie gebruikt"
     items_failed: "Sommige items konden niet worden gesynchroniseerd"
     items_rejected: "Sommige items zijn als ongeldig geweigerd"
     preparing: "Het andere apparaat bereidt zijn synchronisatiegegevens voor"

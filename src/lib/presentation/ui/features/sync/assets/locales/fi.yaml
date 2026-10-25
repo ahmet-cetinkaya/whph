@@ -371,6 +371,7 @@ sync:
     not_reachable: "Laitetta ei tavoiteta"
     needs_repairing: "Vaatii uudelleenparituksen"
     needs_update: "{device} tarvitsee WHPH:n uudemman version synkronointia varten"
+    this_device_needs_update: "Päivitä WHPH tällä laitteella synkronoidaksesi laitteen {device} kanssa, jolla on uudempi versio"
     items_failed: "Joitakin kohteita ei voitu synkronoida"
     items_rejected: "Joitakin kohteita ei hyväksytty virheellisinä"
     preparing: "Toinen laite valmistelee synkronointitietojaan"

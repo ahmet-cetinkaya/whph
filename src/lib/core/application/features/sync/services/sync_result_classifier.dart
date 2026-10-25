@@ -8,7 +8,7 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 SyncResultCategory? classifySessionResult(SessionResult result) => switch (result) {
       SessionComplete() => null,
       SessionPartial(:final reasons) => _classifyPartial(reasons),
-      SessionFailed(:final category) => _classifyFailure(category),
+      SessionFailed() => _classifyFailure(result),
     };
 
 SyncResultCategory _classifyPartial(Set<PartialReason> reasons) {
@@ -17,10 +17,18 @@ SyncResultCategory _classifyPartial(Set<PartialReason> reasons) {
   return SyncResultCategory.someItemsFailed;
 }
 
-SyncResultCategory? _classifyFailure(SessionFailure failure) => switch (failure) {
+/// The release check names the device with the older release; when that is not
+/// the peer, it is this device (FR-016, SC-008).
+SyncResultCategory _classifyNeedsUpdate(SessionFailed result) {
+  final deviceToUpdate = result.mustUpdate?.memberId;
+  final peerMustUpdate = deviceToUpdate == null || deviceToUpdate == result.peerMemberId;
+  return peerMustUpdate ? SyncResultCategory.needsUpdate : SyncResultCategory.thisDeviceNeedsUpdate;
+}
+
+SyncResultCategory? _classifyFailure(SessionFailed result) => switch (result.category) {
       SessionFailure.notReachable => SyncResultCategory.notReachable,
       SessionFailure.notAuthorized || SessionFailure.refusedByPeer => SyncResultCategory.needsRepairing,
-      SessionFailure.needsUpdate => SyncResultCategory.needsUpdate,
+      SessionFailure.needsUpdate => _classifyNeedsUpdate(result),
       SessionFailure.peerPreparing || SessionFailure.restoreDetected => SyncResultCategory.preparing,
       SessionFailure.protocolError || SessionFailure.securityError => SyncResultCategory.rejectedItems,
       SessionFailure.peerError || SessionFailure.internal => SyncResultCategory.someItemsFailed,

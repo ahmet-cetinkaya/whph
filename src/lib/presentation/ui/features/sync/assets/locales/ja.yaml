@@ -320,6 +320,7 @@ sync:
     not_reachable: "デバイスに接続できません"
     needs_repairing: "再ペアリングが必要です"
     needs_update: "{device} が同期するには WHPH の新しいバージョンが必要です"
+    this_device_needs_update: "このデバイスの WHPH を更新してください。{device} はより新しいバージョンを使用しているため、同期するには更新が必要です"
     items_failed: "一部の項目を同期できませんでした"
     items_rejected: "一部の項目は無効として拒否されました"
     preparing: "相手のデバイスが同期データを準備中です"

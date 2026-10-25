@@ -369,6 +369,7 @@ sync:
     not_reachable: "Zařízení není dostupné"
     needs_repairing: "Vyžaduje nové spárování"
     needs_update: "{device} potřebuje k synchronizaci novější verzi WHPH"
+    this_device_needs_update: "Pro synchronizaci se zařízením {device} aktualizujte WHPH v tomto zařízení, protože {device} používá novější verzi"
     items_failed: "Některé položky se nepodařilo synchronizovat"
     items_rejected: "Některé položky byly odmítnuty jako neplatné"
     preparing: "Druhé zařízení připravuje data pro synchronizaci"

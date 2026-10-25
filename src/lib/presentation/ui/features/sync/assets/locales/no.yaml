@@ -370,6 +370,7 @@ sync:
     not_reachable: "Enheten kan ikke nås"
     needs_repairing: "Må pares på nytt"
     needs_update: "{device} trenger en nyere versjon av WHPH for å synkronisere"
+    this_device_needs_update: "Oppdater WHPH på denne enheten for å synkronisere med {device}, som kjører en nyere versjon"
     items_failed: "Noen elementer kunne ikke synkroniseres"
     items_rejected: "Noen elementer ble avvist som ugyldige"
     preparing: "Den andre enheten forbereder synkroniseringsdataene sine"

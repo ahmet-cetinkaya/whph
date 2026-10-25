@@ -375,6 +375,7 @@ sync:
     not_reachable: "Enheten kan inte nås"
     needs_repairing: "Måste paras ihop igen"
     needs_update: "{device} behöver en nyare version av WHPH för att synkronisera"
+    this_device_needs_update: "Uppdatera WHPH på den här enheten för att synkronisera med {device}, som kör en nyare version"
     items_failed: "Vissa objekt kunde inte synkroniseras"
     items_rejected: "Vissa objekt avvisades som ogiltiga"
     preparing: "Den andra enheten förbereder sina synkroniseringsdata"

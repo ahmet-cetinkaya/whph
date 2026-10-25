@@ -4,7 +4,12 @@
 enum SyncResultCategory {
   notReachable('not_reachable'),
   needsRepairing('needs_repairing'),
+
+  /// The peer runs the older release: its user must update.
   needsUpdate('needs_update'),
+
+  /// This device runs the older release: its user must update.
+  thisDeviceNeedsUpdate('this_device_needs_update'),
   someItemsFailed('items_failed'),
   rejectedItems('items_rejected'),
   preparing('preparing'),

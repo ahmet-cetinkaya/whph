@@ -317,6 +317,7 @@ sync:
     not_reachable: "无法连接到设备"
     needs_repairing: "需要重新配对"
     needs_update: "{device} 需要更新版本的 WHPH 才能同步"
+    this_device_needs_update: "请更新此设备上的 WHPH 以与 {device} 同步，该设备使用的是更新版本"
     items_failed: "部分项目无法同步"
     items_rejected: "部分项目因无效而被拒绝"
     preparing: "对方设备正在准备同步数据"

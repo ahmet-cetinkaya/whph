@@ -385,6 +385,7 @@ sync:
     not_reachable: "Dispozitivul nu poate fi contactat"
     needs_repairing: "Necesită asociere din nou"
     needs_update: "{device} are nevoie de o versiune mai nouă a WHPH pentru a sincroniza"
+    this_device_needs_update: "Actualizați WHPH pe acest dispozitiv pentru a sincroniza cu {device}, care rulează o versiune mai nouă"
     items_failed: "Unele elemente nu au putut fi sincronizate"
     items_rejected: "Unele elemente au fost respinse ca invalide"
     preparing: "Celălalt dispozitiv își pregătește datele de sincronizare"

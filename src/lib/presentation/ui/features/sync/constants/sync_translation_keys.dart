@@ -167,6 +167,7 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String syncStatusNotReachable = 'sync.status.not_reachable';
   static const String syncStatusNeedsRepairing = 'sync.status.needs_repairing';
   static const String syncStatusNeedsUpdate = 'sync.status.needs_update';
+  static const String syncStatusThisDeviceNeedsUpdate = 'sync.status.this_device_needs_update';
   static const String syncStatusItemsFailed = 'sync.status.items_failed';
   static const String syncStatusItemsRejected = 'sync.status.items_rejected';
   static const String syncStatusPeerPreparing = 'sync.status.preparing';

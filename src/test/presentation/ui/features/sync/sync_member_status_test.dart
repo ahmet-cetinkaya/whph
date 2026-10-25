@@ -70,6 +70,29 @@ void main() {
       expect(find.text('Pixel 9 needs a newer version of WHPH to sync'), findsOneWidget);
     });
 
+    testWidgets('older peer: names the peer device as needing the update', (tester) async {
+      await pumpItem(
+        tester,
+        const SyncMemberSummary(memberId: 'm1', name: 'Old phone', lastResult: SyncResultCategory.needsUpdate),
+      );
+
+      expect(find.text('Old phone needs a newer version of WHPH to sync'), findsOneWidget);
+    });
+
+    testWidgets('older this device: tells the user to update this device and names the newer peer', (tester) async {
+      await pumpItem(
+        tester,
+        const SyncMemberSummary(
+          memberId: 'm1',
+          name: 'New laptop',
+          lastResult: SyncResultCategory.thisDeviceNeedsUpdate,
+        ),
+      );
+
+      expect(
+          find.text('Update WHPH on this device to sync with New laptop, which runs a newer version'), findsOneWidget);
+    });
+
     testWidgets('warns about items that repeatedly cannot be applied', (tester) async {
       await pumpItem(tester, const SyncMemberSummary(memberId: 'm1', name: 'Pixel', itemsCannotBeApplied: true));
 
