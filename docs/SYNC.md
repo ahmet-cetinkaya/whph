@@ -102,6 +102,11 @@ trust (café Wi-Fi, shared LAN).
 | Removed or lost device | Revocation records with per-origin cutoffs, then a new epoch key; the removed device cannot read later changes (FR-026). |
 | Secrets leaking through export or logs | Key file and sync ledger are never in exports or logs; tests scan the DB, logs and export for key bytes (FR-027). |
 
+The server also refuses connections whose source address is not a private LAN
+address (HTTP 403). This is a coarse heuristic that trims noise from the public
+internet; it is not a security boundary. A spoofed or same-LAN source passes it,
+so the boundary is the Noise handshake and the member check described above.
+
 ### Accepted residual risks
 
 - **HLC forward skew.** There is no forward clamp on remote HLCs. A member whose
