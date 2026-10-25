@@ -8,6 +8,8 @@ import 'package:whph/core/application/features/sync/commands/paginated_sync_comm
 import 'package:whph/core/application/features/sync/commands/update_sync_device_ip_command.dart';
 import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
+import 'package:whph/core/application/features/sync/queries/get_sync_upgrade_progress_query.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
 import 'package:whph/core/application/features/sync/services/network_interface_service.dart';
@@ -129,7 +131,10 @@ void registerSyncFeature(
 
   mediator
     ..registerHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse, SaveSyncDeviceCommandHandler>(
-      () => SaveSyncDeviceCommandHandler(syncDeviceRepository: syncDeviceRepository),
+      () => SaveSyncDeviceCommandHandler(
+        syncDeviceRepository: syncDeviceRepository,
+        upgradeService: container.resolve<ISyncUpgradeService>(),
+      ),
     )
     ..registerHandler<DeleteSyncDeviceCommand, DeleteSyncDeviceCommandResponse, DeleteSyncDeviceCommandHandler>(
       () => DeleteSyncDeviceCommandHandler(syncDeviceRepository: syncDeviceRepository),
@@ -149,7 +154,11 @@ void registerSyncFeature(
         dataProcessingService: container.resolve<ISyncDataProcessingService>(),
         paginationService: container.resolve<ISyncPaginationService>(),
         restoreBarrier: container.resolve<IRestoreBarrier>(),
+        upgradeService: container.resolve<ISyncUpgradeService>(),
       ),
+    )
+    ..registerHandler<GetSyncUpgradeProgressQuery, SyncUpgradeProgress, GetSyncUpgradeProgressQueryHandler>(
+      () => GetSyncUpgradeProgressQueryHandler(upgradeService: container.resolve<ISyncUpgradeService>()),
     )
     ..registerHandler<StartSyncCommand, void, StartSyncCommandHandler>(
       () => StartSyncCommandHandler(

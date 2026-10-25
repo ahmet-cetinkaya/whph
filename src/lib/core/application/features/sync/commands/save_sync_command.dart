@@ -1,6 +1,7 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
@@ -37,21 +38,29 @@ class SaveSyncDeviceCommandResponse {
   });
 }
 
-class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse> {
+class SaveSyncDeviceCommandHandler
+    implements
+        IRequestHandler<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse> {
   final ISyncDeviceRepository _syncDeviceRepository;
+  final ISyncUpgradeService? _upgradeService;
 
   SaveSyncDeviceCommandHandler({
     required ISyncDeviceRepository syncDeviceRepository,
-  }) : _syncDeviceRepository = syncDeviceRepository;
+    ISyncUpgradeService? upgradeService,
+  })  : _syncDeviceRepository = syncDeviceRepository,
+        _upgradeService = upgradeService;
 
   @override
-  Future<SaveSyncDeviceCommandResponse> call(SaveSyncDeviceCommand request) async {
+  Future<SaveSyncDeviceCommandResponse> call(
+      SaveSyncDeviceCommand request) async {
+    await _requireUpgradeDone();
     SyncDevice? syncDevice;
 
     if (request.id != null) {
       syncDevice = await _syncDeviceRepository.getById(request.id!);
       if (syncDevice == null) {
-        throw BusinessException('Sync device not found', SyncTranslationKeys.syncDeviceNotFoundError);
+        throw BusinessException('Sync device not found',
+            SyncTranslationKeys.syncDeviceNotFoundError);
       }
 
       await _update(syncDevice, request);
@@ -66,26 +75,42 @@ class SaveSyncDeviceCommandHandler implements IRequestHandler<SaveSyncDeviceComm
     );
   }
 
-  Future<SyncDevice> _add(SyncDevice? syncDevice, SaveSyncDeviceCommand request) async {
+  Future<void> _requireUpgradeDone() async {
+    final upgradeService = _upgradeService;
+    if (upgradeService == null || (await upgradeService.getProgress()).isDone) {
+      return;
+    }
+    throw BusinessException('Sync upgrade is still running',
+        SyncTranslationKeys.syncPreparingError);
+  }
+
+  Future<SyncDevice> _add(
+      SyncDevice? syncDevice, SaveSyncDeviceCommand request) async {
     syncDevice = SyncDevice(
-      id: KeyHelper.generateStringId(),
+      // D5: paired-device entry identity is the device member id.
+      id: syncIdentityId(identityKindPairedDevice, [request.toDeviceId]),
       createdDate: DateTime.now().toUtc(),
       fromIp: request.fromIP,
       toIp: request.toIP,
       fromDeviceId: request.fromDeviceId,
       toDeviceId: request.toDeviceId,
       name: request.name,
-      lastSyncDate: request.lastSyncDate != null ? DateTimeHelper.toUtcDateTime(request.lastSyncDate!) : null,
+      lastSyncDate: request.lastSyncDate != null
+          ? DateTimeHelper.toUtcDateTime(request.lastSyncDate!)
+          : null,
     );
     await _syncDeviceRepository.add(syncDevice);
     return syncDevice;
   }
 
-  Future<SyncDevice> _update(SyncDevice syncDevice, SaveSyncDeviceCommand request) async {
+  Future<SyncDevice> _update(
+      SyncDevice syncDevice, SaveSyncDeviceCommand request) async {
     syncDevice.fromIp = request.fromIP;
     syncDevice.toIp = request.toIP;
     syncDevice.name = request.name;
-    syncDevice.lastSyncDate = request.lastSyncDate != null ? DateTimeHelper.toUtcDateTime(request.lastSyncDate!) : null;
+    syncDevice.lastSyncDate = request.lastSyncDate != null
+        ? DateTimeHelper.toUtcDateTime(request.lastSyncDate!)
+        : null;
     syncDevice.fromDeviceId = request.fromDeviceId;
     syncDevice.toDeviceId = request.toDeviceId;
 

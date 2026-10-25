@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/notes/note_tag.dart';
 
@@ -34,7 +34,7 @@ class AddNoteTagCommandHandler implements IRequestHandler<AddNoteTagCommand, Add
       throw BusinessException('Tag already exists', NoteTranslationKeys.tagAlreadyExists);
     }
 
-    final id = KeyHelper.generateStringId();
+    final id = syncIdentityId(identityKindNoteTag, [request.noteId, request.tagId]);
     final now = DateTime.now().toUtc();
 
     final noteTag = NoteTag(
@@ -44,7 +44,7 @@ class AddNoteTagCommandHandler implements IRequestHandler<AddNoteTagCommand, Add
       createdDate: now,
     );
 
-    await _noteTagRepository.add(noteTag);
+    await _noteTagRepository.upsertRevive(noteTag);
 
     return AddNoteTagCommandResponse(id: id);
   }

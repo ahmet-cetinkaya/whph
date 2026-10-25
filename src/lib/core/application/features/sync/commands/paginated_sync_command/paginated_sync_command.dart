@@ -4,6 +4,7 @@ import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data_dto.dart';
 import 'package:whph/core/application/features/sync/models/bidirectional_sync_progress.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_configuration_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_validation_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_communication_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_data_processing_service.dart';
@@ -60,6 +61,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   final ISyncDataProcessingService _dataProcessingService;
   final ISyncPaginationService _paginationService;
   final IRestoreBarrier _restoreBarrier;
+  final ISyncUpgradeService? _upgradeService;
   late final SyncPageAccumulator _pageAccumulator;
   late final SyncResponseBuilder _responseBuilder;
   late final SyncProgressTracker _progressTracker;
@@ -76,6 +78,7 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
     required ISyncDataProcessingService dataProcessingService,
     required ISyncPaginationService paginationService,
     required IRestoreBarrier restoreBarrier,
+    ISyncUpgradeService? upgradeService,
     SyncPageAccumulator? pageAccumulator,
     SyncResponseBuilder? responseBuilder,
     SyncProgressTracker? progressTracker,
@@ -86,7 +89,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   })  : _configurationService = configurationService,
         _dataProcessingService = dataProcessingService,
         _paginationService = paginationService,
-        _restoreBarrier = restoreBarrier {
+        _restoreBarrier = restoreBarrier,
+        _upgradeService = upgradeService {
     _pageAccumulator = pageAccumulator ?? SyncPageAccumulator();
     _responseBuilder = responseBuilder ?? SyncResponseBuilder();
     _progressTracker = progressTracker ?? SyncProgressTracker();
@@ -158,6 +162,8 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
   ) async {
     Logger.info('Starting paginated sync operation...');
 
+    if (!await _isUpgradeDone()) return _preparingResponse();
+
     try {
       if (request.paginatedSyncDataDto != null) {
         Logger.info('Handling incoming sync data');
@@ -193,6 +199,19 @@ class PaginatedSyncCommandHandler implements IRequestHandler<PaginatedSyncComman
       );
     }
   }
+
+  Future<bool> _isUpgradeDone() async {
+    final upgradeService = _upgradeService;
+    return upgradeService == null || (await upgradeService.getProgress()).isDone;
+  }
+
+  PaginatedSyncCommandResponse _preparingResponse() => PaginatedSyncCommandResponse(
+        isComplete: false,
+        syncedDeviceCount: 0,
+        hadMeaningfulSync: false,
+        hasErrors: true,
+        errorMessages: [SyncTranslationKeys.syncPreparingError],
+      );
 
   Future<PaginatedSyncCommandResponse> _handleIncomingSync(PaginatedSyncDataDto dto) async {
     final result = await _incomingHandler.handleIncomingSync(

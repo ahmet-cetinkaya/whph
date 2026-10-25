@@ -25,11 +25,16 @@ class AppUsageTimeRecordTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTimeRecord, String, AppUsageTimeRecordTable>
-    implements IAppUsageTimeRecordRepository {
-  DriftAppUsageTimeRecordRepository() : super(AppDatabase.instance(), AppDatabase.instance().appUsageTimeRecordTable);
+class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<
+    AppUsageTimeRecord,
+    String,
+    AppUsageTimeRecordTable> implements IAppUsageTimeRecordRepository {
+  DriftAppUsageTimeRecordRepository()
+      : super(AppDatabase.instance(),
+            AppDatabase.instance().appUsageTimeRecordTable);
 
-  DriftAppUsageTimeRecordRepository.withDatabase(AppDatabase db) : super(db, db.appUsageTimeRecordTable);
+  DriftAppUsageTimeRecordRepository.withDatabase(AppDatabase db)
+      : super(db, db.appUsageTimeRecordTable);
 
   @override
   Expression<String> getPrimaryKey(AppUsageTimeRecordTable t) {
@@ -59,14 +64,18 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
 
     final query = database.customSelect(
       '''
-      SELECT 
+      SELECT
         app_usage_id,
-        COALESCE(TOTAL(duration), 0) as total_duration
-      FROM app_usage_time_record_table
-      WHERE app_usage_id IN (${appUsageIds.map((_) => '?').join(', ')})
-        AND deleted_date IS NULL
-        ${startDate != null ? 'AND usage_date >= ?' : ''}
-        ${endDate != null ? 'AND usage_date < ?' : ''}
+        COALESCE(TOTAL(clamped), 0) as total_duration
+      FROM (
+        SELECT app_usage_id, MAX(TOTAL(duration), 0) as clamped
+        FROM app_usage_time_record_table
+        WHERE app_usage_id IN (${appUsageIds.map((_) => '?').join(', ')})
+          AND deleted_date IS NULL
+          ${startDate != null ? 'AND usage_date >= ?' : ''}
+          ${endDate != null ? 'AND usage_date < ?' : ''}
+        GROUP BY app_usage_id, (CAST(usage_date AS INTEGER) / 3600)
+      )
       GROUP BY app_usage_id
       ''',
       variables: [
@@ -80,17 +89,23 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     final results = await query.get();
 
     return {
-      for (final row in results) row.read<String>('app_usage_id'): parseDurationAggregate(row.data['total_duration'])
+      for (final row in results)
+        row.read<String>('app_usage_id'):
+            parseDurationAggregate(row.data['total_duration'])
     };
   }
 
   @override
   Future<List<AppUsageTimeRecord>> getByAppUsageId(String appUsageId) async {
-    return (database.select(table)..where((t) => t.appUsageId.equals(appUsageId) & t.deletedDate.isNull())).get();
+    return (database.select(table)
+          ..where(
+              (t) => t.appUsageId.equals(appUsageId) & t.deletedDate.isNull()))
+        .get();
   }
 
   @override
-  Future<PaginatedList<AppUsageTimeRecordWithDetails>> getTopAppUsagesWithDetails({
+  Future<PaginatedList<AppUsageTimeRecordWithDetails>>
+      getTopAppUsagesWithDetails({
     int pageIndex = 0,
     int pageSize = 10,
     List<String>? filterByTags,
@@ -113,7 +128,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
         if (customTagSortOrder != null && customTagSortOrder.isNotEmpty) {
           final caseStatements = StringBuffer();
           for (int i = 0; i < customTagSortOrder.length; i++) {
-            final safeId = customTagSortOrder[i].replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '');
+            final safeId =
+                customTagSortOrder[i].replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '');
             caseStatements.write("WHEN '$safeId' THEN $i ");
           }
           final tagSubquery =
@@ -127,11 +143,13 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       }
 
       if (groupBy != null) {
-        final direction = groupBy.direction == SortDirection.desc ? 'DESC' : 'ASC';
+        final direction =
+            groupBy.direction == SortDirection.desc ? 'DESC' : 'ASC';
         switch (groupBy.field) {
           case AppUsageSortFields.name:
             // Use only the first character for grouping to allow secondary sorting within the group
-            clauses.add('SUBSTR(COALESCE($alias.display_name, $alias.name), 1, 1) COLLATE NOCASE $direction');
+            clauses.add(
+                'SUBSTR(COALESCE($alias.display_name, $alias.name), 1, 1) COLLATE NOCASE $direction');
             break;
           case AppUsageSortFields.duration:
             clauses.add('$alias.total_duration $direction');
@@ -156,7 +174,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
               clauses.add('$alias.total_duration $direction');
               break;
             case AppUsageSortFields.name:
-              clauses.add('COALESCE($alias.display_name, $alias.name) COLLATE NOCASE $direction');
+              clauses.add(
+                  'COALESCE($alias.display_name, $alias.name) COLLATE NOCASE $direction');
               break;
             case AppUsageSortFields.device:
               clauses.add('$alias.device_name $direction');
@@ -187,11 +206,18 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           au.display_name,
           au.color,
           au.device_name,
-          COALESCE(TOTAL(autr.duration), 0) as total_duration
+          COALESCE((
+            SELECT TOTAL(clamped) FROM (
+              SELECT MAX(TOTAL(autr.duration), 0) as clamped
+              FROM app_usage_time_record_table autr
+              WHERE autr.app_usage_id = au.id
+                AND autr.deleted_date IS NULL
+                ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
+                ${endDate != null ? 'AND autr.usage_date <= ?' : ''}
+              GROUP BY (CAST(autr.usage_date AS INTEGER) / 3600)
+            )
+          ), 0) as total_duration
         FROM app_usage_table au
-        LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id AND autr.deleted_date IS NULL
-        ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
-        ${endDate != null ? 'AND autr.usage_date <= ?' : ''}
         WHERE au.deleted_date IS NULL
         ${searchByProcessName != null ? 'AND au.name = ?' : ''}
         GROUP BY au.id, au.name, au.display_name, au.color, au.device_name
@@ -240,7 +266,8 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
       },
     );
 
-    final totalCount = await countQuery.map((row) => row.read<int>('total_count')).getSingle();
+    final totalCount =
+        await countQuery.map((row) => row.read<int>('total_count')).getSingle();
 
     if (pageIndex * pageSize >= totalCount) {
       return PaginatedList<AppUsageTimeRecordWithDetails>(
@@ -262,11 +289,18 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
           au.display_name,
           au.color,
           au.device_name,
-          COALESCE(TOTAL(autr.duration), 0) as total_duration
+          COALESCE((
+            SELECT TOTAL(clamped) FROM (
+              SELECT MAX(TOTAL(autr.duration), 0) as clamped
+              FROM app_usage_time_record_table autr
+              WHERE autr.app_usage_id = au.id
+                AND autr.deleted_date IS NULL
+                ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
+                ${endDate != null ? 'AND autr.usage_date <= ?' : ''}
+              GROUP BY (CAST(autr.usage_date AS INTEGER) / 3600)
+            )
+          ), 0) as total_duration
         FROM app_usage_table au
-        LEFT JOIN app_usage_time_record_table autr ON au.id = autr.app_usage_id AND autr.deleted_date IS NULL
-        ${startDate != null ? 'AND autr.usage_date >= ?' : ''}
-        ${endDate != null ? 'AND autr.usage_date <= ?' : ''}
         WHERE au.deleted_date IS NULL
         ${searchByProcessName != null ? 'AND au.name = ?' : ''}
         GROUP BY au.id, au.name, au.display_name, au.color, au.device_name
@@ -365,8 +399,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
 
         if (tagId != null && tagName != null) {
           final tagTypeInt = row.read<int?>('tag_type') ?? 0;
-          final tagType =
-              tagTypeInt >= 0 && tagTypeInt < TagType.values.length ? TagType.values[tagTypeInt] : TagType.label;
+          final tagType = tagTypeInt >= 0 && tagTypeInt < TagType.values.length
+              ? TagType.values[tagTypeInt]
+              : TagType.label;
 
           appUsageMap[id]!.tags.add(AppUsageTagListItem(
                 id: tagAppUsageTagId,
@@ -384,7 +419,9 @@ class DriftAppUsageTimeRecordRepository extends DriftBaseRepository<AppUsageTime
     // Convert to list - no need for additional pagination since SQL already handles it
     final allResults = appUsageMap.values.toList();
 
-    if (compareStartDate != null && compareEndDate != null && allResults.isNotEmpty) {
+    if (compareStartDate != null &&
+        compareEndDate != null &&
+        allResults.isNotEmpty) {
       final appUsageIds = allResults.map((e) => e.id).toList();
       final comparisonDurations = await getAppUsageDurations(
         appUsageIds: appUsageIds,

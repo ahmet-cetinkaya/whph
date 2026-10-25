@@ -45,6 +45,7 @@ import 'package:whph/infrastructure/persistence/features/notes/repositories/drif
 import 'package:whph/infrastructure/persistence/features/notes/repositories/drift_note_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/settings/repositories/drift_settings_repository.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_device_repository.dart';
+import 'package:whph/infrastructure/persistence/features/sync/tables/sync_tables.dart';
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tags/repositories/drift_tag_tag_repository.dart';
 import 'package:whph/infrastructure/persistence/features/tasks/repositories/task_repository/drift_task_repository.dart';
@@ -54,6 +55,9 @@ import 'package:whph/infrastructure/persistence/features/tasks/repositories/drif
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/database_backup_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/migrations/migrations.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/restore_barrier_query_interceptor.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sqlite_connection_setup.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_trigger_generator.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_trigger_installer.dart';
 
 part 'drift_app_context.g.dart';
 
@@ -74,7 +78,20 @@ String databaseName = "${AppInfo.shortName.toLowerCase()}.db";
     NoteTable,
     NoteTagTable,
     SettingTable,
+    SyncClockTable,
     SyncDeviceTable,
+    SyncEpochGrantTable,
+    SyncHeldCellTable,
+    SyncHeldEnvelopeTable,
+    SyncInternTable,
+    SyncMemberTableTable,
+    SyncOriginBatchTable,
+    SyncOriginTable,
+    SyncPeerStateTableTable,
+    SyncRevocationTable,
+    SyncRowTable,
+    SyncStateTable,
+    SyncVectorTable,
     TagTable,
     TagTagTable,
     TaskTable,
@@ -99,6 +116,12 @@ class AppDatabase extends _$AppDatabase {
       isTestMode: isTestMode,
     );
   }
+
+  /// Replaces the backup service, so tests can point backups at a temporary
+  /// directory. Cleared by [resetInstance].
+  @visibleForTesting
+  static set backupServiceForTesting(DatabaseBackupService? service) =>
+      _backupService = service;
 
   static AppDatabase instance([IContainer? container]) {
     if (container != null) {
@@ -157,7 +180,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 37;
+  int get schemaVersion => 38;
 
   /// Validates migration version numbers
   void _validateMigrationVersions(int from, int to) {
@@ -174,17 +197,20 @@ class AppDatabase extends _$AppDatabase {
       // 2. Test database from newer version is being reused
       if (isTestMode) {
         // In test mode, throw a clear error suggesting recreation
-        throw StateError('Test database version ($from) is newer than schema version ($to). '
+        throw StateError(
+            'Test database version ($from) is newer than schema version ($to). '
             'This indicates a stale test database. The test framework should recreate the database.');
       } else {
         // In production, this is a critical error
-        throw StateError('Database version ($from) cannot be greater than schema version ($to). '
+        throw StateError(
+            'Database version ($from) cannot be greater than schema version ($to). '
             'This may indicate a database from a newer app version. '
             'Please update the app or restore from backup.');
       }
     }
     if (to > schemaVersion) {
-      throw StateError('Migration to version ($to) cannot exceed schema version ($schemaVersion)');
+      throw StateError(
+          'Migration to version ($to) cannot exceed schema version ($schemaVersion)');
     }
   }
 
@@ -201,8 +227,20 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Creates a backup of the database before migration
+  ///
+  /// Drift does not wrap `onUpgrade` in a transaction, so `VACUUM INTO` can run
+  /// here on the open connection, before the migration transaction starts.
   Future<void> _createBackupBeforeMigration(int from, int to) async {
-    await backupService.createBackupBeforeMigration(from, to);
+    await backupService.createBackupBeforeMigration(from, to,
+        writeSnapshot: _vacuumInto);
+  }
+
+  /// Writes a consistent snapshot of this database, including content that
+  /// still lives in the WAL, to [destinationPath]. Must run outside a
+  /// transaction.
+  Future<void> _vacuumInto(String destinationPath) {
+    return customStatement(
+        "VACUUM INTO '${destinationPath.replaceAll("'", "''")}'");
   }
 
   /// Validates data integrity after migration
@@ -210,7 +248,8 @@ class AppDatabase extends _$AppDatabase {
     try {
       final violations = await customSelect('PRAGMA foreign_key_check').get();
       if (violations.isNotEmpty) {
-        throw StateError('Foreign key integrity violations detected: ${violations.length} violations');
+        throw StateError(
+            'Foreign key integrity violations detected: ${violations.length} violations');
       }
 
       final tables = await customSelect('''
@@ -221,7 +260,8 @@ class AppDatabase extends _$AppDatabase {
         throw StateError('No tables found in database after migration');
       }
 
-      Logger.info('Data integrity validation passed: ${tables.length} tables verified');
+      Logger.info(
+          'Data integrity validation passed: ${tables.length} tables verified');
     } catch (e) {
       throw StateError('Data integrity validation failed: $e');
     }
@@ -236,29 +276,28 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Creates a manual database backup
-  Future<File?> createDatabaseBackup() => backupService.createDatabaseBackup();
+  Future<File?> createDatabaseBackup() =>
+      backupService.createDatabaseBackup(writeSnapshot: _vacuumInto);
 
   Future<File> createRestoreSnapshot() {
     if (!restoreBarrier.isRestoreOwner) {
       throw StateError('Restore snapshots require exclusive database access');
     }
-    return backupService.createConsistentSnapshot(
-      writeSnapshot: (destinationPath) => customStatement(
-        "VACUUM INTO '${destinationPath.replaceAll("'", "''")}'",
-      ),
-    );
+    return backupService.createConsistentSnapshot(writeSnapshot: _vacuumInto);
   }
 
   /// Resets the database by closing the connection and deleting the database file
   Future<void> resetDatabase() {
     return backupService.resetDatabase(
+      writeSnapshot: _vacuumInto,
       closeDatabase: close,
       resetInstance: () => _instance = null,
     );
   }
 
   /// Lists available pre-reset backups for recovery purposes
-  Future<List<File>> listPreResetBackups() => backupService.listPreResetBackups();
+  Future<List<File>> listPreResetBackups() =>
+      backupService.listPreResetBackups();
 
   /// Restores database from a pre-reset backup file
   Future<bool> restoreFromPreResetBackup(File backupFile) {
@@ -277,6 +316,14 @@ class AppDatabase extends _$AppDatabase {
           Logger.info('Creating database schema version $schemaVersion');
           await m.createAll();
           await customStatement('PRAGMA foreign_keys = ON');
+          for (final statement in syncPlaceholderIdentityStatements()) {
+            await customStatement(statement);
+          }
+          await installSyncTriggers(this);
+          await customStatement(
+              "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_phase) "
+              "VALUES ('singleton', 0, 1, 0, 'done') "
+              "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'done'");
           Logger.info('Database schema created successfully');
         } catch (e, stackTrace) {
           Logger.error('Error creating database schema: $e\n$stackTrace');
@@ -301,9 +348,29 @@ class AppDatabase extends _$AppDatabase {
           // Enable foreign keys
           await customStatement('PRAGMA foreign_keys = ON');
 
+          // D3: keep the capture triggers at the current generator version.
+          await installSyncTriggers(this);
+          // Databases from before identities (or tests that never seeded one)
+          // must not capture with a NULL node.
+          final schemaHasSyncState = (await customSelect(
+                      "SELECT 1 AS present FROM sqlite_master WHERE type = 'table' AND name = 'sync_state'")
+                  .get())
+              .isNotEmpty;
+          final identityless = schemaHasSyncState
+              ? await customSelect(
+                      "SELECT 1 AS present FROM sync_state WHERE id = 'singleton' AND node_id IS NULL")
+                  .get()
+              : const <QueryRow>[];
+          if (identityless.isNotEmpty) {
+            for (final statement in syncPlaceholderIdentityStatements()) {
+              await customStatement(statement);
+            }
+          }
+
           // Log migration info
           if (details.hadUpgrade) {
-            Logger.info('Migration completed from v${details.versionBefore} to v${details.versionNow}');
+            Logger.info(
+                'Migration completed from v${details.versionBefore} to v${details.versionNow}');
           } else if (details.versionNow == schemaVersion) {
             Logger.info('Database schema is current: v${details.versionNow}');
           }
@@ -330,14 +397,17 @@ class AppDatabase extends _$AppDatabase {
             await transaction(() async {
               await runMigrationSteps(m, from, to);
               await _validateDataIntegrity();
-              Logger.info('Migration from v$from to v$to completed successfully');
+              Logger.info(
+                  'Migration from v$from to v$to completed successfully');
             });
           } finally {
             await customStatement('PRAGMA foreign_keys = ON');
           }
         } catch (e, stackTrace) {
-          Logger.error('CRITICAL: Migration from v$from to v$to failed: $e\n$stackTrace');
-          Logger.info('No changes were committed: migration steps run in a transaction that rolls back on failure, '
+          Logger.error(
+              'CRITICAL: Migration from v$from to v$to failed: $e\n$stackTrace');
+          Logger.info(
+              'No changes were committed: migration steps run in a transaction that rolls back on failure, '
               'and this failure may have occurred before that transaction started.');
           rethrow;
         }
@@ -349,20 +419,24 @@ class AppDatabase extends _$AppDatabase {
     return LazyDatabase(() async {
       late final File file;
       if (isTestMode) {
-        file = File(p.join(testDirectory?.path ?? Directory.systemTemp.path, databaseName));
+        file = File(p.join(
+            testDirectory?.path ?? Directory.systemTemp.path, databaseName));
       } else {
         final dbFolder = await _getApplicationDirectory();
-        file = File(p.join(dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
+        file = File(p.join(
+            dbFolder.path, kDebugMode ? 'debug_$databaseName' : databaseName));
         await file.parent.create(recursive: true);
       }
-      return NativeDatabase.createInBackground(file);
+      return NativeDatabase.createInBackground(file,
+          setup: configureSqliteConnection);
     });
   }
 
   /// Gets the application directory using the injected application directory service
   static Future<Directory> _getApplicationDirectory() async {
     _container ??= Container().instance;
-    final applicationDirectoryService = _container!.resolve<IApplicationDirectoryService>();
+    final applicationDirectoryService =
+        _container!.resolve<IApplicationDirectoryService>();
     return await applicationDirectoryService.getApplicationDirectory();
   }
 }

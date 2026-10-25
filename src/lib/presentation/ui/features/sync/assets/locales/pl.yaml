@@ -206,6 +206,7 @@ sync:
   error:
     scan: Błąd skanowania
   errors:
+    preparing: "Synchronizacja jest przygotowywana. Spróbuj ponownie za chwilę."
     connection_failed: "Połączenie nie powiodło się. Upewnij się:
 
 

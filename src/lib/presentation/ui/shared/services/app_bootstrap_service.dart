@@ -6,6 +6,7 @@ import 'package:whph/core/application/application_container.dart';
 import 'package:whph/core/application/features/app_usages/commands/start_track_app_usages_command.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_service.dart';
 import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_pagination_service.dart';
 import 'package:whph/core/domain/shared/constants/demo_config.dart';
@@ -105,7 +106,16 @@ class AppBootstrapService {
 
   static Future<void> _startBackgroundWorkers(IContainer container) async {
     final mediator = container.resolve<Mediator>();
+    _startSyncUpgrade(container);
     await _startAppUsageTracking(mediator);
+  }
+
+  /// D17: the heavy upgrade work runs after the database opens, never inside the migration.
+  /// Sync and pairing refuse ("preparing") until it reaches `done`, so it must not block startup.
+  static void _startSyncUpgrade(IContainer container) {
+    container.resolve<ISyncUpgradeService>().run().catchError((Object error, StackTrace stackTrace) {
+      Logger.error('AppBootstrapService: Sync upgrade job failed: $error', error: error, stackTrace: stackTrace);
+    });
   }
 
   /// Starts app usage tracking as a best-effort background worker.

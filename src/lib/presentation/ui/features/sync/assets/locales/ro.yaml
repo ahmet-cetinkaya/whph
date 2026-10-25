@@ -205,6 +205,7 @@ sync:
   error:
     scan: Eroare la scanare
   errors:
+    preparing: "Sincronizarea se pregătește. Încearcă din nou în scurt timp."
     connection_failed: "Conexiune eșuată. Asigurați-vă:
 
 

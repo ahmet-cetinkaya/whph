@@ -9,6 +9,12 @@ import 'package:whph/core/application/features/habits/services/i_habit_time_reco
 import 'package:whph/core/domain/features/habits/habit.dart';
 import 'package:whph/core/domain/features/habits/habit_record.dart';
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 class NotificationHabitRepository extends Fake implements IHabitRepository {
   final Map<String, Habit> _habits = {};
@@ -16,11 +22,16 @@ class NotificationHabitRepository extends Fake implements IHabitRepository {
   void addHabit(Habit habit) => _habits[habit.id] = habit;
 
   @override
-  Future<Habit?> getById(String id, {bool includeDeleted = false}) async => _habits[id];
+  Future<Habit?> getById(String id, {bool includeDeleted = false}) async =>
+      _habits[id];
 }
 
-class NotificationHabitRecordRepository extends Fake implements IHabitRecordRepository {
+class NotificationHabitRecordRepository extends Fake
+    implements IHabitRecordRepository {
   final List<HabitRecord> records = [];
+
+  @override
+  Future<void> upsertRevive(HabitRecord item) async => records.add(item);
 
   @override
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(
@@ -32,7 +43,9 @@ class NotificationHabitRecordRepository extends Fake implements IHabitRecordRepo
   ) async {
     final matchingRecords = records
         .where((record) =>
-            record.habitId == habitId && !record.occurredAt.isBefore(startDate) && !record.occurredAt.isAfter(endDate))
+            record.habitId == habitId &&
+            !record.occurredAt.isBefore(startDate) &&
+            !record.occurredAt.isAfter(endDate))
         .toList();
     return PaginatedList(
       items: matchingRecords,
@@ -51,7 +64,8 @@ class NotificationHabitRecordRepository extends Fake implements IHabitRecordRepo
   }
 }
 
-class NotificationHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepository {
+class NotificationHabitTimeRecordRepository extends Fake
+    implements IHabitTimeRecordRepository {
   @override
   Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(
     String habitId,
@@ -73,6 +87,7 @@ class NotificationHabitMediator extends Mediator {
           operationsService: HabitRecordOperationsService(
             habitRecordRepository: habitRecordRepository,
             habitTimeRecordRepository: NotificationHabitTimeRecordRepository(),
+            deviceIds: TestDeviceIds(),
           ),
         ),
         super(Pipeline());
@@ -83,6 +98,7 @@ class NotificationHabitMediator extends Mediator {
       final command = (request as Object) as CompleteHabitCommand;
       return await _handler(command) as R;
     }
-    throw UnsupportedError('Unsupported notification test command: ${request.runtimeType}');
+    throw UnsupportedError(
+        'Unsupported notification test command: ${request.runtimeType}');
   }
 }

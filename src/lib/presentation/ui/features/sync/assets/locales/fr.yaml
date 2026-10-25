@@ -191,6 +191,7 @@ sync:
   error:
     scan: Échec du scan
   errors:
+    preparing: "La synchronisation se prépare. Réessayez dans un instant."
     connection_failed: "Connexion échouée. Veuillez vous assurer :
 
 

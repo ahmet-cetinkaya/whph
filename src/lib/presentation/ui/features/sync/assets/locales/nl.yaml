@@ -186,6 +186,7 @@ sync:
   error:
     scan: Scan mislukt
   errors:
+    preparing: "Synchronisatie wordt voorbereid. Probeer het zo meteen opnieuw."
     connection_failed: "Verbinding mislukt. Zorg ervoor:
 
 

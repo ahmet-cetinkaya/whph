@@ -184,6 +184,7 @@ sync:
   error:
     scan: Scanning fejlede
   errors:
+    preparing: "Synkronisering forberedes. Prøv igen om et øjeblik."
     connection_failed: "Forbindelse mislykkedes. Sørg for:
 
 

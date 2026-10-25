@@ -185,6 +185,7 @@ sync:
   error:
     scan: Selhání skenování
   errors:
+    preparing: "Synchronizace se připravuje. Zkuste to prosím za chvíli."
     connection_failed: "Připojení selhalo. Ujistěte se prosím:
 
 

@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/tasks/constants/task_translation_keys.dart';
 import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/domain/features/tasks/models/recurrence_configuration.dart';
@@ -18,6 +19,7 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/domain/shared/constants/task_error_ids.dart';
 import 'package:whph/core/domain/shared/constants/domain_log_components.dart';
 import 'package:whph/core/application/features/tasks/utils/task_date_time_normalizer.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
@@ -78,9 +80,15 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     this.recurrenceConfiguration,
   })  : plannedDate = TaskDateTimeNormalizer.normalize(plannedDate),
         deadlineDate = TaskDateTimeNormalizer.normalize(deadlineDate),
-        completedAt = completedAt != null ? DateTimeHelper.toUtcDateTime(completedAt) : null,
-        recurrenceStartDate = recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(recurrenceStartDate) : null,
-        recurrenceEndDate = recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(recurrenceEndDate) : null;
+        completedAt = completedAt != null
+            ? DateTimeHelper.toUtcDateTime(completedAt)
+            : null,
+        recurrenceStartDate = recurrenceStartDate != null
+            ? DateTimeHelper.toUtcDateTime(recurrenceStartDate)
+            : null,
+        recurrenceEndDate = recurrenceEndDate != null
+            ? DateTimeHelper.toUtcDateTime(recurrenceEndDate)
+            : null;
 }
 
 class SaveTaskCommandResponse {
@@ -95,30 +103,35 @@ class SaveTaskCommandResponse {
   });
 }
 
-class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTaskCommandResponse> {
+class SaveTaskCommandHandler
+    implements IRequestHandler<SaveTaskCommand, SaveTaskCommandResponse> {
   final ITaskRepository _taskRepository;
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ISettingRepository _settingRepository;
   final ITaskEvents? _taskEvents;
+  final IDeviceIdService _deviceIds;
 
   SaveTaskCommandHandler({
     required ITaskRepository taskService,
     required ITaskTagRepository taskTagRepository,
     required ITaskTimeRecordRepository taskTimeRecordRepository,
     required ISettingRepository settingRepository,
+    required IDeviceIdService deviceIds,
     ITaskEvents? taskEvents,
   })  : _taskRepository = taskService,
         _taskTagRepository = taskTagRepository,
         _taskTimeRecordRepository = taskTimeRecordRepository,
         _settingRepository = settingRepository,
+        _deviceIds = deviceIds,
         _taskEvents = taskEvents;
 
   /// Gets the default estimated time from user settings.
   /// Returns null if user has disabled default estimated time.
   Future<int?> _getDefaultEstimatedTime() async {
     try {
-      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime);
+      final setting = await _settingRepository
+          .getByKey(SettingKeys.taskDefaultEstimatedTime);
       if (setting == null) {
         return TaskConstants.defaultEstimatedTime;
       }
@@ -147,7 +160,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
   Future<(ReminderTime, int?)> _getDefaultPlannedDateReminder() async {
     String? value;
     try {
-      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder);
+      final setting = await _settingRepository
+          .getByKey(SettingKeys.taskDefaultPlannedDateReminder);
       if (setting == null) return (TaskConstants.defaultReminderTime, null);
 
       value = setting.getValue<String>();
@@ -202,7 +216,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
   /// Gets the default planned date reminder custom offset
   Future<int?> _getDefaultPlannedDateReminderCustomOffset() async {
     try {
-      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminderCustomOffset);
+      final setting = await _settingRepository
+          .getByKey(SettingKeys.taskDefaultPlannedDateReminderCustomOffset);
       if (setting == null) return null;
 
       final value = setting.getValue<int?>();
@@ -234,7 +249,9 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     final isCreating = request.id == null;
     final plannedDate = request.plannedDate;
     final deadlineDate = request.deadlineDate;
-    if (plannedDate != null && deadlineDate != null && deadlineDate.isBefore(plannedDate)) {
+    if (plannedDate != null &&
+        deadlineDate != null &&
+        deadlineDate.isBefore(plannedDate)) {
       throw BusinessException(
         'Deadline date must be at or after planned date',
         TaskTranslationKeys.invalidDateRangeError,
@@ -246,7 +263,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     if (request.id != null) {
       task = await _taskRepository.getById(request.id!);
       if (task == null) {
-        throw BusinessException("Task with id ${request.id} not found", TaskTranslationKeys.taskNotFoundError);
+        throw BusinessException("Task with id ${request.id} not found",
+            TaskTranslationKeys.taskNotFoundError);
       }
 
       task.title = request.title;
@@ -257,19 +275,24 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       task.plannedDate = request.plannedDate;
 
       task.deadlineDate = request.deadlineDate;
-      task.estimatedTime = request.estimatedTime != null && request.estimatedTime! > 0 ? request.estimatedTime : null;
+      task.estimatedTime =
+          request.estimatedTime != null && request.estimatedTime! > 0
+              ? request.estimatedTime
+              : null;
 
       task.completedAt = request.completedAt;
 
       // Status⇔completion sync
       if (request.statusId != null) {
         task.statusId = request.statusId;
-        if (TaskStatusConstants.isDoneStatusId(request.statusId) && task.completedAt == null) {
+        if (TaskStatusConstants.isDoneStatusId(request.statusId) &&
+            task.completedAt == null) {
           task.completedAt = DateTime.now().toUtc();
         } else if (!TaskStatusConstants.isDoneStatusId(request.statusId)) {
           task.completedAt = null;
         }
-      } else if (request.completedAt != null && !TaskStatusConstants.isDoneStatusId(task.statusId)) {
+      } else if (request.completedAt != null &&
+          !TaskStatusConstants.isDoneStatusId(task.statusId)) {
         task.statusId = TaskStatusConstants.doneId;
       } else if (request.completedAt == null &&
           task.statusId != null &&
@@ -281,11 +304,13 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       if (request.plannedDateReminderTime != null) {
         task.plannedDateReminderTime = request.plannedDateReminderTime!;
-        task.plannedDateReminderCustomOffset = request.plannedDateReminderCustomOffset;
+        task.plannedDateReminderCustomOffset =
+            request.plannedDateReminderCustomOffset;
       } else if (isPlannedDateChanged) {
         if (task.plannedDate != null) {
           // Apply default reminder when date changes
-          final (defaultReminder, customOffset) = await _getDefaultPlannedDateReminder();
+          final (defaultReminder, customOffset) =
+              await _getDefaultPlannedDateReminder();
           task.plannedDateReminderTime = defaultReminder;
           task.plannedDateReminderCustomOffset = customOffset;
         } else {
@@ -296,7 +321,8 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
       if (request.deadlineDateReminderTime != null) {
         task.deadlineDateReminderTime = request.deadlineDateReminderTime!;
-        task.deadlineDateReminderCustomOffset = request.deadlineDateReminderCustomOffset;
+        task.deadlineDateReminderCustomOffset =
+            request.deadlineDateReminderCustomOffset;
       }
 
       if (request.recurrenceType != null) {
@@ -336,20 +362,26 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           "parent_task_id ${request.parentTaskId != null ? '= ?' : 'IS NULL'} AND deleted_date IS NULL",
           request.parentTaskId != null ? [request.parentTaskId!] : [],
         ),
-        customOrder: [CustomOrder(field: "order", direction: SortDirection.desc)],
+        customOrder: [
+          CustomOrder(field: "order", direction: SortDirection.desc)
+        ],
       );
 
-      final lastOrder = lastTasks.items.isNotEmpty ? lastTasks.items.first.order : null;
-      final newOrder = request.order ?? OrderRank.neighborRank(beforeOrder: lastOrder, afterOrder: null);
+      final lastOrder =
+          lastTasks.items.isNotEmpty ? lastTasks.items.first.order : null;
+      final newOrder = request.order ??
+          OrderRank.neighborRank(beforeOrder: lastOrder, afterOrder: null);
 
       // Resolve default reminder for new task
       ReminderTime plannedDateReminderTime;
-      int? plannedDateReminderCustomOffset = request.plannedDateReminderCustomOffset;
+      int? plannedDateReminderCustomOffset =
+          request.plannedDateReminderCustomOffset;
 
       if (request.plannedDateReminderTime != null) {
         plannedDateReminderTime = request.plannedDateReminderTime!;
       } else if (request.plannedDate != null) {
-        final (defaultReminder, customOffset) = await _getDefaultPlannedDateReminder();
+        final (defaultReminder, customOffset) =
+            await _getDefaultPlannedDateReminder();
         plannedDateReminderTime = defaultReminder;
         plannedDateReminderCustomOffset = customOffset;
       } else {
@@ -357,7 +389,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
       }
 
       task = Task(
-          id: KeyHelper.generateStringId(),
+          id: request.id ?? KeyHelper.generateStringId(),
           createdDate: DateTime.now().toUtc(),
           title: request.title,
           description: request.description,
@@ -369,13 +401,17 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
               : (request.estimatedTime! > 0 ? request.estimatedTime : null),
           completedAt: request.completedAt,
           statusId: request.statusId ??
-              (request.completedAt != null ? TaskStatusConstants.doneId : TaskStatusConstants.todoId),
+              (request.completedAt != null
+                  ? TaskStatusConstants.doneId
+                  : TaskStatusConstants.todoId),
           parentTaskId: request.parentTaskId,
           order: newOrder,
           plannedDateReminderTime: plannedDateReminderTime,
           plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
-          deadlineDateReminderTime: request.deadlineDateReminderTime ?? ReminderTime.none,
-          deadlineDateReminderCustomOffset: request.deadlineDateReminderCustomOffset,
+          deadlineDateReminderTime:
+              request.deadlineDateReminderTime ?? ReminderTime.none,
+          deadlineDateReminderCustomOffset:
+              request.deadlineDateReminderCustomOffset,
           recurrenceType: request.recurrenceType ?? RecurrenceType.none,
           recurrenceInterval: request.recurrenceInterval,
           recurrenceStartDate: request.recurrenceStartDate,
@@ -393,11 +429,14 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
 
     // Auto-add time record when completing a task with estimated time but no existing time records
     final bool isTaskCompleted = task.completedAt != null;
-    if (isTaskCompleted && task.estimatedTime != null && task.estimatedTime! > 0) {
+    if (isTaskCompleted &&
+        task.estimatedTime != null &&
+        task.estimatedTime! > 0) {
       final existingTimeRecords = await _taskTimeRecordRepository.getList(
         0,
         1,
-        customWhereFilter: CustomWhereFilter('task_id = ? AND deleted_date IS NULL', [task.id]),
+        customWhereFilter: CustomWhereFilter(
+            'task_id = ? AND deleted_date IS NULL', [task.id]),
       );
 
       if (existingTimeRecords.items.isEmpty) {
@@ -407,6 +446,7 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
           repository: _taskTimeRecordRepository,
           taskId: task.id,
           targetDate: now,
+          deviceId: await _deviceIds.getDeviceId(),
           durationToAdd: task.estimatedTime! * 60,
         );
       }
@@ -415,12 +455,12 @@ class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTas
     if (request.tagIdsToAdd != null) {
       for (final tagId in request.tagIdsToAdd!) {
         final taskTag = TaskTag(
-          id: KeyHelper.generateStringId(),
+          id: syncIdentityId(identityKindTaskTag, [task.id, tagId]),
           taskId: task.id,
           tagId: tagId,
           createdDate: DateTime.now().toUtc(),
         );
-        await _taskTagRepository.add(taskTag);
+        await _taskTagRepository.upsertRevive(taskTag);
       }
     }
 

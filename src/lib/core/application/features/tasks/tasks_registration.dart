@@ -1,4 +1,6 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_tag_command.dart';
 import 'package:whph/core/application/features/tasks/commands/add_task_time_record_command.dart';
 import 'package:whph/core/application/features/tasks/commands/complete_task_command.dart';
@@ -54,7 +56,8 @@ void registerTasksFeature(
 
   // Register the reminder calculation service
   container.registerSingleton<IReminderCalculationService>(
-    (container) => ReminderCalculationService(container.resolve<ITaskRecurrenceService>()),
+    (container) =>
+        ReminderCalculationService(container.resolve<ITaskRecurrenceService>()),
   );
 
   // Register the default task settings service
@@ -73,31 +76,38 @@ void registerTasksFeature(
       container.resolve<ITaskRecurrenceService>(),
       mediator,
       container.resolve<ITaskEvents>(),
+      container.resolve<IDeviceIdService>(),
     ),
   );
 
   mediator
-    ..registerHandler<CompleteTaskCommand, CompleteTaskCommandResponse, CompleteTaskCommandHandler>(
+    ..registerHandler<CompleteTaskCommand, CompleteTaskCommandResponse,
+        CompleteTaskCommandHandler>(
       () => container.resolve<CompleteTaskCommandHandler>(),
     )
-    ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse, SaveTaskCommandHandler>(
+    ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse,
+        SaveTaskCommandHandler>(
       () => SaveTaskCommandHandler(
         taskService: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
         settingRepository: settingRepository,
+        deviceIds: container.resolve<IDeviceIdService>(),
         taskEvents: container.resolve<ITaskEvents>(),
       ),
     )
-    ..registerHandler<DeleteTaskCommand, DeleteTaskCommandResponse, DeleteTaskCommandHandler>(
+    ..registerHandler<DeleteTaskCommand, DeleteTaskCommandResponse,
+        DeleteTaskCommandHandler>(
       () => DeleteTaskCommandHandler(
         taskRepository: taskRepository,
         taskTagRepository: taskTagRepository,
         taskTimeRecordRepository: taskTimeRecordRepository,
         taskEvents: container.resolve<ITaskEvents>(),
+        syncCascadeService: container.resolve<ISyncCascadeService>(),
       ),
     )
-    ..registerHandler<GetListTasksQuery, GetListTasksQueryResponse, GetListTasksQueryHandler>(
+    ..registerHandler<GetListTasksQuery, GetListTasksQueryResponse,
+        GetListTasksQueryHandler>(
       () => GetListTasksQueryHandler(
         taskRepository: taskRepository,
         taskStatusRepository: taskStatusRepository,
@@ -109,63 +119,86 @@ void registerTasksFeature(
         taskTimeRecordRepository: taskTimeRecordRepository,
       ),
     )
-    ..registerHandler<AddTaskTagCommand, AddTaskTagCommandResponse, AddTaskTagCommandHandler>(
+    ..registerHandler<AddTaskTagCommand, AddTaskTagCommandResponse,
+        AddTaskTagCommandHandler>(
       () => AddTaskTagCommandHandler(taskTagRepository: taskTagRepository),
     )
-    ..registerHandler<RemoveTaskTagCommand, RemoveTaskTagCommandResponse, RemoveTaskTagCommandHandler>(
+    ..registerHandler<RemoveTaskTagCommand, RemoveTaskTagCommandResponse,
+        RemoveTaskTagCommandHandler>(
       () => RemoveTaskTagCommandHandler(taskTagRepository: taskTagRepository),
     )
-    ..registerHandler<GetListTaskTagsQuery, GetListTaskTagsQueryResponse, GetListTaskTagsQueryHandler>(
+    ..registerHandler<GetListTaskTagsQuery, GetListTaskTagsQueryResponse,
+        GetListTaskTagsQueryHandler>(
       () => GetListTaskTagsQueryHandler(
         tagRepository: tagRepository,
         taskTagRepository: taskTagRepository,
       ),
     )
-    ..registerHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse, SaveTaskTimeRecordCommandHandler>(
+    ..registerHandler<SaveTaskTimeRecordCommand,
+        SaveTaskTimeRecordCommandResponse, SaveTaskTimeRecordCommandHandler>(
       () => SaveTaskTimeRecordCommandHandler(
         taskTimeRecordRepository: taskTimeRecordRepository,
+        deviceIds: container.resolve<IDeviceIdService>(),
         taskEvents: container.resolve<ITaskEvents>(),
       ),
     )
-    ..registerHandler<UpdateTaskOrderCommand, UpdateTaskOrderResponse, UpdateTaskOrderCommandHandler>(
+    ..registerHandler<UpdateTaskOrderCommand, UpdateTaskOrderResponse,
+        UpdateTaskOrderCommandHandler>(
       () => UpdateTaskOrderCommandHandler(taskRepository),
     )
-    ..registerHandler<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse, NormalizeTaskOrdersCommandHandler>(
+    ..registerHandler<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse,
+        NormalizeTaskOrdersCommandHandler>(
       () => NormalizeTaskOrdersCommandHandler(taskRepository),
     )
-    ..registerHandler<UpdateTaskTagsOrderCommand, void, UpdateTaskTagsOrderCommandHandler>(
-      () => UpdateTaskTagsOrderCommandHandler(taskTagRepository: taskTagRepository),
+    ..registerHandler<UpdateTaskTagsOrderCommand, void,
+        UpdateTaskTagsOrderCommandHandler>(
+      () => UpdateTaskTagsOrderCommandHandler(
+          taskTagRepository: taskTagRepository),
     )
-    ..registerHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
+    ..registerHandler<AddTaskTimeRecordCommand,
+        AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
       () => AddTaskTimeRecordCommandHandler(
         taskTimeRecordRepository: taskTimeRecordRepository,
+        deviceIds: container.resolve<IDeviceIdService>(),
         taskEvents: container.resolve<ITaskEvents>(),
       ),
     )
-    ..registerHandler<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse,
+    ..registerHandler<
+        GetTotalDurationByTaskIdQuery,
+        GetTotalDurationByTaskIdQueryResponse,
         GetTotalDurationByTaskIdQueryHandler>(
-      () => GetTotalDurationByTaskIdQueryHandler(taskTimeRecordRepository: taskTimeRecordRepository),
+      () => GetTotalDurationByTaskIdQueryHandler(
+          taskTimeRecordRepository: taskTimeRecordRepository),
     )
-    ..registerHandler<ImportTasksCommand, ImportTasksCommandResponse, ImportTasksCommandHandler>(
+    ..registerHandler<ImportTasksCommand, ImportTasksCommandResponse,
+        ImportTasksCommandHandler>(
       () => ImportTasksCommandHandler(mediator),
     )
-    ..registerHandler<SaveTaskStatusCommand, SaveTaskStatusCommandResponse, SaveTaskStatusCommandHandler>(
-      () => SaveTaskStatusCommandHandler(taskStatusRepository: taskStatusRepository),
+    ..registerHandler<SaveTaskStatusCommand, SaveTaskStatusCommandResponse,
+        SaveTaskStatusCommandHandler>(
+      () => SaveTaskStatusCommandHandler(
+          taskStatusRepository: taskStatusRepository),
     )
-    ..registerHandler<DeleteTaskStatusCommand, DeleteTaskStatusCommandResponse, DeleteTaskStatusCommandHandler>(
+    ..registerHandler<DeleteTaskStatusCommand, DeleteTaskStatusCommandResponse,
+        DeleteTaskStatusCommandHandler>(
       () => DeleteTaskStatusCommandHandler(
         taskStatusRepository: taskStatusRepository,
         taskRepository: taskRepository,
       ),
     )
-    ..registerHandler<ReorderTaskStatusesCommand, ReorderTaskStatusesCommandResponse,
-        ReorderTaskStatusesCommandHandler>(
-      () => ReorderTaskStatusesCommandHandler(taskStatusRepository: taskStatusRepository),
+    ..registerHandler<ReorderTaskStatusesCommand,
+        ReorderTaskStatusesCommandResponse, ReorderTaskStatusesCommandHandler>(
+      () => ReorderTaskStatusesCommandHandler(
+          taskStatusRepository: taskStatusRepository),
     )
-    ..registerHandler<GetListTaskStatusesQuery, GetListTaskStatusesQueryResponse, GetListTaskStatusesQueryHandler>(
-      () => GetListTaskStatusesQueryHandler(taskStatusRepository: taskStatusRepository),
+    ..registerHandler<GetListTaskStatusesQuery,
+        GetListTaskStatusesQueryResponse, GetListTaskStatusesQueryHandler>(
+      () => GetListTaskStatusesQueryHandler(
+          taskStatusRepository: taskStatusRepository),
     )
-    ..registerHandler<GetTaskStatusQuery, GetTaskStatusQueryResponse, GetTaskStatusQueryHandler>(
-      () => GetTaskStatusQueryHandler(taskStatusRepository: taskStatusRepository),
+    ..registerHandler<GetTaskStatusQuery, GetTaskStatusQueryResponse,
+        GetTaskStatusQueryHandler>(
+      () =>
+          GetTaskStatusQueryHandler(taskStatusRepository: taskStatusRepository),
     );
 }

@@ -188,6 +188,7 @@ sync:
   error:
     scan: Tarama hatası
   errors:
+    preparing: "Senkronizasyon hazırlanıyor. Lütfen kısa süre sonra tekrar deneyin."
     connection_failed: "Bağlantı başarısız. Lütfen şunu sağlayın:
 
 

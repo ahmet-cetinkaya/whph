@@ -171,6 +171,7 @@ sync:
   error:
     scan: 扫描失败
   errors:
+    preparing: "正在准备同步，请稍后重试。"
     connection_failed: "连接失败。请确保：
 
 

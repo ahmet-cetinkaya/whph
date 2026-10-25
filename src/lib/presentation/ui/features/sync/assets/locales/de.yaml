@@ -185,6 +185,7 @@ sync:
   error:
     scan: Scan fehlgeschlagen
   errors:
+    preparing: "Die Synchronisierung wird vorbereitet. Bitte versuche es gleich noch einmal."
     connection_failed: "Verbindung fehlgeschlagen. Bitte stellen Sie sicher:
 
 

@@ -175,6 +175,7 @@ sync:
   error:
     scan: 스캔에 실패했습니다
   errors:
+    preparing: "동기화를 준비 중입니다. 잠시 후 다시 시도해 주세요."
     connection_failed: "연결에 실패했습니다. 다음을 확인하세요:
 
 

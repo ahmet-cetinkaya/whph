@@ -26,6 +26,12 @@ import 'package:whph/presentation/mcp/models/mcp_tool_arguments.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_definition.dart';
 import 'package:whph/presentation/mcp/mcp_tool_registry.dart';
 import 'package:whph/presentation/mcp/tools/habit_tools.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 final class _EmptySettings extends Fake implements ISettingRepository {
   @override
@@ -68,8 +74,10 @@ void main() {
   var grantedScopes = McpScopes.all;
 
   setUp(() async {
-    temporaryDirectory = await Directory.systemTemp.createTemp('whph-habit-tools-');
-    database = AppDatabase(NativeDatabase(File('${temporaryDirectory.path}/habits.sqlite')));
+    temporaryDirectory =
+        await Directory.systemTemp.createTemp('whph-habit-tools-');
+    database = AppDatabase(
+        NativeDatabase(File('${temporaryDirectory.path}/habits.sqlite')));
     AppDatabase.setInstanceForTesting(database);
     habits = DriftHabitRepository.withDatabase(database);
     records = DriftHabitRecordRepository.withDatabase(database);
@@ -80,16 +88,29 @@ void main() {
     canCommit = true;
     grantedScopes = McpScopes.all;
     final mediator = Mediator(Pipeline())
-      ..registerHandler<GetHabitQuery, GetHabitQueryResponse, GetHabitQueryHandler>(() => GetHabitQueryHandler(
-          habitRepository: habits, habitRecordRepository: records, settingsRepository: _EmptySettings()))
-      ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse, GetListHabitsQueryHandler>(() =>
-          GetListHabitsQueryHandler(
-              habitRepository: habits, habitTagRepository: habitTags, habitRecordRepository: records))
-      ..registerHandler<GetListHabitRecordsQuery, GetListHabitRecordsQueryResponse, GetListHabitRecordsQueryHandler>(
+      ..registerHandler<GetHabitQuery, GetHabitQueryResponse,
+              GetHabitQueryHandler>(
+          () => GetHabitQueryHandler(
+              habitRepository: habits,
+              habitRecordRepository: records,
+              settingsRepository: _EmptySettings()))
+      ..registerHandler<GetListHabitsQuery, GetListHabitsQueryResponse,
+              GetListHabitsQueryHandler>(
+          () => GetListHabitsQueryHandler(
+              habitRepository: habits,
+              habitTagRepository: habitTags,
+              habitRecordRepository: records))
+      ..registerHandler<
+              GetListHabitRecordsQuery,
+              GetListHabitRecordsQueryResponse,
+              GetListHabitRecordsQueryHandler>(
           () => GetListHabitRecordsQueryHandler(habitRecordRepository: records))
-      ..registerHandler<GetTotalDurationByHabitIdQuery, GetTotalDurationByHabitIdQueryResponse,
+      ..registerHandler<
+          GetTotalDurationByHabitIdQuery,
+          GetTotalDurationByHabitIdQueryResponse,
           GetTotalDurationByHabitIdQueryHandler>(
-        () => GetTotalDurationByHabitIdQueryHandler(habitTimeRecordRepository: times),
+        () => GetTotalDurationByHabitIdQueryHandler(
+            habitTimeRecordRepository: times),
       );
     final actions = HabitActions(
       transactions: DriftApplicationTransactionService(database),
@@ -99,6 +120,7 @@ void main() {
       habitTimeRecordRepository: times,
       tagRepository: tags,
       habitEvents: events,
+      deviceIds: TestDeviceIds(),
     );
     tools = {
       for (final tool in buildHabitTools(
@@ -107,7 +129,8 @@ void main() {
         habitRepository: habits,
         habitRecordRepository: records,
         habitTimeRecordRepository: times,
-        authorizeBeforeCommit: (extra, scopes) async => canCommit && grantedScopes.containsAll(scopes),
+        authorizeBeforeCommit: (extra, scopes) async =>
+            canCommit && grantedScopes.containsAll(scopes),
       ))
         tool.name: tool,
     };
@@ -119,9 +142,19 @@ void main() {
     await temporaryDirectory.delete(recursive: true);
   });
 
-  test('good and bad habits support multi-target, undo, archive, time, and statistics', () async {
-    await tags.add(Tag(id: 'health', createdDate: DateTime.now().toUtc(), name: 'Health', type: TagType.label));
-    await tags.add(Tag(id: 'morning', createdDate: DateTime.now().toUtc(), name: 'Morning', type: TagType.label));
+  test(
+      'good and bad habits support multi-target, undo, archive, time, and statistics',
+      () async {
+    await tags.add(Tag(
+        id: 'health',
+        createdDate: DateTime.now().toUtc(),
+        name: 'Health',
+        type: TagType.label));
+    await tags.add(Tag(
+        id: 'morning',
+        createdDate: DateTime.now().toUtc(),
+        name: 'Morning',
+        type: TagType.label));
     final good = await _call(tools, 'whph_habits_create', {
       'name': 'Read',
       'description': 'Thirty pages',
@@ -135,7 +168,8 @@ void main() {
       'reminderDays': [1, 3, 5],
       'tagIds': ['health', 'morning'],
     });
-    final bad = await _call(tools, 'whph_habits_create', {'name': 'Sugar', 'type': 'bad'});
+    final bad = await _call(
+        tools, 'whph_habits_create', {'name': 'Sugar', 'type': 'bad'});
     final goodId = good['id'] as String;
     final badId = bad['id'] as String;
     final badHabitDate = DateTime.now().toIso8601String().substring(0, 10);
@@ -165,7 +199,8 @@ void main() {
     });
     final recordItems = listed['items'] as List<dynamic>;
     expect(recordItems, hasLength(3));
-    final removedId = (recordItems.first as Map<String, dynamic>)['id'] as String;
+    final removedId =
+        (recordItems.first as Map<String, dynamic>)['id'] as String;
     final undo = await _call(tools, 'whph_habit_records_undo', {
       'habitId': goodId,
       'date': '2026-09-08',
@@ -186,8 +221,10 @@ void main() {
       'durationSeconds': 90,
       'occurredAt': '2026-09-08T09:00:00+03:00',
     });
-    final timeList = await _call(tools, 'whph_habit_time_records_list', {'habitId': goodId});
-    final timeItem = ((timeList['items'] as List).single as Map<String, dynamic>);
+    final timeList =
+        await _call(tools, 'whph_habit_time_records_list', {'habitId': goodId});
+    final timeItem =
+        ((timeList['items'] as List).single as Map<String, dynamic>);
     expect(timeItem['id'], time['id']);
     expect(timeList['totalDurationSeconds'], 90);
     await _call(tools, 'whph_habit_time_records_update', {
@@ -204,7 +241,8 @@ void main() {
       'isArchived': true,
     });
     expect(archived['isArchived'], isTrue);
-    final statistics = await _call(tools, 'whph_habit_statistics', {'id': goodId});
+    final statistics =
+        await _call(tools, 'whph_habit_statistics', {'id': goodId});
     expect(statistics, containsPair('topStreaks', isA<List<dynamic>>()));
     expect(events.created, [goodId, badId]);
     expect(events.recordsRemoved, [goodId]);
@@ -224,7 +262,8 @@ void main() {
     }}');
   });
 
-  test('malformed, negative, stale, and revoked writes fail without mutation', () async {
+  test('malformed, negative, stale, and revoked writes fail without mutation',
+      () async {
     expect(tools.keys, {
       'whph_habits_list',
       'whph_habits_read',
@@ -243,7 +282,8 @@ void main() {
       'whph_habit_time_records_update',
       'whph_habit_time_total',
     });
-    final created = await _call(tools, 'whph_habits_create', {'name': 'Safe', 'type': 'good'});
+    final created = await _call(
+        tools, 'whph_habits_create', {'name': 'Safe', 'type': 'good'});
     final id = created['id'] as String;
     final malformed = await _raw(tools, 'whph_habit_records_set', {
       'habitId': id,
@@ -301,8 +341,10 @@ void main() {
     }}');
   });
 
-  test('time totals use occurrence ranges and replace the complete dated total', () async {
-    final created = await _call(tools, 'whph_habits_create', {'name': 'Timed', 'type': 'good'});
+  test('time totals use occurrence ranges and replace the complete dated total',
+      () async {
+    final created = await _call(
+        tools, 'whph_habits_create', {'name': 'Timed', 'type': 'good'});
     final id = created['id'] as String;
     await _call(tools, 'whph_habit_time_records_add', {
       'habitId': id,
@@ -325,23 +367,30 @@ void main() {
       'to': '2026-09-08T09:45:00Z',
     });
     final habitList = await _call(tools, 'whph_habits_list', {});
-    final timeList = await _call(tools, 'whph_habit_time_records_list', {'habitId': id});
-    final revision = ((timeList['items'] as List).first as Map<String, dynamic>)['revision'];
+    final timeList =
+        await _call(tools, 'whph_habit_time_records_list', {'habitId': id});
+    final revision =
+        ((timeList['items'] as List).first as Map<String, dynamic>)['revision'];
     await _call(tools, 'whph_habit_time_records_update', {
       'habitId': id,
       'date': '2026-09-08',
       'totalDurationSeconds': 120,
       'expectedRevision': revision,
     });
-    final replaced = await _call(tools, 'whph_habit_time_total', {'habitId': id});
+    final replaced =
+        await _call(tools, 'whph_habit_time_total', {'habitId': id});
 
     expect(rangedList['totalDurationSeconds'], 30);
     expect(rangedTotal['totalDurationSeconds'], 30);
-    expect(((habitList['items'] as List).single as Map<String, dynamic>)['totalDurationSeconds'], 70);
+    expect(
+        ((habitList['items'] as List).single
+            as Map<String, dynamic>)['totalDurationSeconds'],
+        70);
     expect(replaced['totalDurationSeconds'], 120);
   });
 
-  test('name-only update preserves disabled reminder weekday preferences', () async {
+  test('name-only update preserves disabled reminder weekday preferences',
+      () async {
     final created = await _call(tools, 'whph_habits_create', {
       'name': 'Reminder',
       'type': 'good',
@@ -364,7 +413,8 @@ void main() {
     expect(await habits.getReminderDaysById(id), '1,3');
   });
 
-  test('record changes preserve manual time and guard derived timer writes', () async {
+  test('record changes preserve manual time and guard derived timer writes',
+      () async {
     final manual = await _call(tools, 'whph_habits_create', {
       'name': 'Manual time',
       'type': 'good',
@@ -435,11 +485,13 @@ void main() {
     expect(eventsAfterDenied, 1);
     expect(await records.getByHabitId(estimated['id'] as String), isEmpty);
     expect(clearedDerived.isError, isFalse);
-    expect(await times.getTotalDurationByHabitId(estimated['id'] as String), 90);
+    expect(
+        await times.getTotalDurationByHabitId(estimated['id'] as String), 90);
   });
 
   test('record count replacement clears every existing dated record', () async {
-    final created = await _call(tools, 'whph_habits_create', {'name': 'Counted', 'type': 'good'});
+    final created = await _call(
+        tools, 'whph_habits_create', {'name': 'Counted', 'type': 'good'});
     final id = created['id'] as String;
     await _call(tools, 'whph_habit_records_set', {
       'habitId': id,
@@ -459,8 +511,8 @@ void main() {
   });
 }
 
-Future<Map<String, dynamic>> _call(
-    Map<String, McpToolDefinition> tools, String name, Map<String, dynamic> arguments) async {
+Future<Map<String, dynamic>> _call(Map<String, McpToolDefinition> tools,
+    String name, Map<String, dynamic> arguments) async {
   tools[name]!.inputSchema.validate(arguments);
   final result = await _raw(tools, name, arguments);
   expect(result.isError, isFalse, reason: result.toJson().toString());
@@ -468,15 +520,20 @@ Future<Map<String, dynamic>> _call(
   return Map<String, dynamic>.from(result.structuredContent!);
 }
 
-Future<CallToolResult> _raw(Map<String, McpToolDefinition> tools, String name, Map<String, dynamic> arguments) =>
-    Future<CallToolResult>.value(tools[name]!.handler(McpToolArguments(arguments), _extra()));
+Future<CallToolResult> _raw(Map<String, McpToolDefinition> tools, String name,
+        Map<String, dynamic> arguments) =>
+    Future<CallToolResult>.value(
+        tools[name]!.handler(McpToolArguments(arguments), _extra()));
 
 String? _errorCode(CallToolResult result) =>
-    (result.structuredContent?['error'] as Map<String, dynamic>?)?['code'] as String?;
+    (result.structuredContent?['error'] as Map<String, dynamic>?)?['code']
+        as String?;
 
 RequestHandlerExtra _extra() => RequestHandlerExtra(
       signal: BasicAbortController().signal,
       requestId: 'habit-tools-test',
       sendNotification: (notification, {relatedTask}) async {},
-      sendRequest: <T extends BaseResultData>(request, resultFactory, options) async => resultFactory(const {}),
+      sendRequest:
+          <T extends BaseResultData>(request, resultFactory, options) async =>
+              resultFactory(const {}),
     );

@@ -202,6 +202,7 @@ sync:
   error:
     scan: Skanning mislyktes
   errors:
+    preparing: "Synkroniseringen forberedes. Prøv igjen om litt."
     connection_failed: "Tilkobling mislyktes. Sørg for:
 
 

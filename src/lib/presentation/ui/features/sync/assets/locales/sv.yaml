@@ -201,6 +201,7 @@ sync:
   error:
     scan: Skanning misslyckades
   errors:
+    preparing: "Synkroniseringen förbereds. Försök igen om en stund."
     connection_failed: "Anslutning misslyckades. Se till:
 
 
