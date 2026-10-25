@@ -99,6 +99,9 @@ void main() {
     // later real-time edit loses to A's fast clock (FR-004).
     await a.insertTask('t2', 'base');
     await fleet.settleOver([('A', 'B')]);
+    // Two edits on A: B's one edit then cannot tie A's hybrid time (a tie is
+    // broken by the random node id and would make this control flaky).
+    await a.setTaskTitle('t2', 'first fast clock edit');
     await a.setTaskTitle('t2', 'fast clock edit');
     await b.setTaskTitle('t2', 'concurrent edit on B');
     await fleet.settleOver([('A', 'B')]);

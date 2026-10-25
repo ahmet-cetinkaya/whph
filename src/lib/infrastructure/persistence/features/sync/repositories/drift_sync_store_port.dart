@@ -47,10 +47,20 @@ class DriftAsyncSyncStore implements AsyncSyncStorePort {
   @override
   Future<StoredCell?> storedCell(CellKey key) async {
     final clockKey = await _clockKeyOf(key);
-    if (clockKey == null) return null;
+    if (clockKey == null) return _storedUnknownCell(key);
     final rows = await _store._select(
         '${DriftSyncChangeStore._clockCellSelect} WHERE c.key = ?', [clockKey]);
     return (await _storedCells(rows)).firstOrNull;
+  }
+
+  /// The held cell of a table or column this release does not know (FR-042).
+  /// The session engine re-reads a cell it relays by key, so without this a
+  /// relayed unknown cell would look superseded and be skipped forever.
+  Future<StoredCell?> _storedUnknownCell(CellKey key) async {
+    final row = await _store._selectOne(
+        "SELECT * FROM sync_held_cell WHERE $_unknownHeldKindClause AND tbl = ? AND pk = ? AND col = ?",
+        [key.table, key.pk, key.col]);
+    return row == null ? null : _unknownStoredCell(row);
   }
 
   @override
@@ -152,7 +162,11 @@ class DriftAsyncSyncStore implements AsyncSyncStorePort {
         "SELECT * FROM sync_held_cell WHERE $_unknownHeldKindClause AND origin_id = ? AND origin_seq > ? "
         'ORDER BY origin_seq LIMIT 1',
         [origin, afterSeq]);
-    if (row == null) return null;
+    return row == null ? null : _unknownStoredCell(row);
+  }
+
+  Future<StoredCell> _unknownStoredCell(Map<String, Object?> row) async {
+    final origin = row['origin_id'] as String;
     final record = (await _store._readUnknownCells(
             origin, (row['origin_seq'] as int) - 1, row['origin_seq'] as int))
         .first;
