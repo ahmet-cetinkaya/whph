@@ -84,7 +84,6 @@ void registerSettingsFeature(
         habitRepository: habitRepository,
         habitTagRepository: habitTagRepository,
         settingRepository: settingRepository,
-        syncDeviceRepository: syncDeviceRepository,
         tagRepository: tagRepository,
         tagTagRepository: tagTagRepository,
         taskRepository: taskRepository,

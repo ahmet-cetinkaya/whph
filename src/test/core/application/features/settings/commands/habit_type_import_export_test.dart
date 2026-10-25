@@ -129,7 +129,6 @@ void main() {
       taskTagRepository: taskTagRepository,
       taskTimeRecordRepository: taskTimeRecordRepository,
       settingRepository: settingRepository,
-      syncDeviceRepository: syncDeviceRepository,
       appUsageIgnoreRuleRepository: appUsageIgnoreRuleRepository,
       noteRepository: noteRepository,
       noteTagRepository: noteTagRepository,
@@ -203,6 +202,31 @@ void main() {
       {for (final habit in storedHabits) habit.id: habit.type},
       {'good': HabitType.good, 'bad': HabitType.bad},
     );
+  });
+
+  test('export carries no sync device or sync table data (FR-027)', () async {
+    for (final option in ExportDataFileOptions.values) {
+      final exported = await exportHandler.call(ExportDataCommand(option));
+      expect(exported.fileContent.toString().toLowerCase(), isNot(contains('syncdevices')));
+    }
+    verifyNever(syncDeviceRepository.getAll(
+      customWhereFilter: anyNamed('customWhereFilter'),
+      customOrder: anyNamed('customOrder'),
+    ));
+  });
+
+  test('import ignores syncDevices from older exports', () async {
+    final backup = await compressionService.createWhphFile(jsonEncode({
+      'appInfo': {'version': AppInfo.version},
+      'syncDevices': [
+        {'id': 'old-device', 'createdDate': '2026-01-01T00:00:00.000Z', 'name': 'legacy'},
+      ],
+    }));
+
+    await importHandler.call(ImportDataCommand(backup, ImportStrategy.merge));
+
+    verifyNever(syncDeviceRepository.add(any));
+    verifyNever(syncDeviceRepository.update(any));
   });
 
   test('JSON and CSV exports keep deterministic habit headers including type', () async {
