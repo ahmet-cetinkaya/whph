@@ -319,18 +319,13 @@ Sync tools act on the LAN sync engine described in [SYNC.md](SYNC.md). Pairing
 and removal always keep the on-screen confirmation step; no MCP call can pair a
 device by itself (FR-024).
 
-> TODO-until-T25: the sync tool contract below is the plan (D14b). Replace it
-> with the final shapes from the slice A report
-> `.agents/state/reliable-secure-lan-sync/reports/t25-mcp-contract.md` when it
-> lands, and re-check field names against `presentation/mcp/tools/sync_tools.dart`.
-
-| Tool | Change under the new engine |
-| ---- | --------------------------- |
-| `whph_sync_devices_list`, `whph_sync_devices_read` | Return **member status** (paired, needs re-pairing, removed, revoked) with the revision used for updates. |
-| `whph_sync_devices_update` | `id`, `expectedRevision`, `name?`, `addresses?`. Only the display name and addresses can change. A stale `expectedRevision` after a remote apply is rejected. |
-| `whph_sync_devices_delete` | Group removal: revokes the member and rotates the group key. Requires `id`, `expectedRevision`. |
-| `whph_sync_pair_prepare` | Only starts pairing. The result carries `requiresUserConfirmation: true`; it creates no member, origin or key handover until the user scans the QR or confirms the code on both devices. |
-| `whph_sync_start`, `whph_sync_stop` | Unchanged. |
+| Tool | Contract |
+| ---- | -------- |
+| `whph_sync_devices_list`, `whph_sync_devices_read` | Member status: `{id, name, platform?, addresses[], status, itemsCannotBeApplied, needsRepairing, isThisDevice, lastSuccessfulSync?, revision}`. `status` is `ok`, `not_reachable`, `needs_repairing` and the other result categories. |
+| `whph_sync_devices_update` | `id`, `expectedRevision`, `name?`, `addresses?` (private IPv4 only). Returns the member and `committed`. A stale `expectedRevision` after a remote apply is a conflict. |
+| `whph_sync_devices_delete` | Group removal with key rotation. `id`, `expectedRevision`; returns `{id, committed}`. |
+| `whph_sync_pair_prepare` | `{peer: {ipAddress, port?}}`. Returns an operation with `requiresApproval` and `requiresUserConfirmation: true`. Pairing starts only after in-app approval and both devices confirm the code. It creates no member, origin or key handover on its own. |
+| `whph_sync_start`, `whph_sync_stop` | Return `{running}`. |
 
 MCP tokens, grants and scopes never enter sync data, `sync_clock`,
 `sync_member`, `sync_origin` or exports.
