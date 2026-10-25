@@ -15,6 +15,17 @@ int _pageIndex(String? cursor) {
 String _revisionOf(String name, List<String> addresses) =>
     sha256.convert(utf8.encode(jsonEncode([name, addresses]))).toString().substring(0, _revisionLength);
 
+bool isPairableIpAddress(String value) {
+  final address = InternetAddress.tryParse(value);
+  if (address == null || address.type != InternetAddressType.IPv4) return false;
+  final octets = value.split('.').map(int.parse).toList(growable: false);
+  return octets.first == 10 ||
+      octets.first == 127 ||
+      (octets.first == 172 && octets[1] >= 16 && octets[1] <= 31) ||
+      (octets.first == 192 && octets[1] == 168) ||
+      (octets.first == 169 && octets[1] == 254);
+}
+
 List<String> _addressesOf(McpToolArguments arguments) {
   final values = arguments.optionalList('addresses') ?? const [];
   final addresses = values.whereType<String>().toList(growable: false);

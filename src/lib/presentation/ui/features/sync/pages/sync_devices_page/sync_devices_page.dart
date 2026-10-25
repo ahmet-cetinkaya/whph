@@ -9,12 +9,11 @@ import 'package:whph/core/application/features/sync/queries/get_is_paired_query.
 import 'package:whph/core/application/features/sync/queries/get_list_sync_members_query.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:whph/infrastructure/desktop/features/sync/desktop_lan_sync_adapter.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
@@ -59,15 +58,13 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   final _settingRepository = container.resolve<ISettingRepository>();
   late final _repairBannerPreference =
       SyncRepairBannerPreference(settingRepository: _settingRepository, mediator: _mediator);
-  late final ISyncService _syncService;
-  AndroidServerSyncService? _serverSyncService;
-  DesktopSyncService? _desktopSyncService;
+  ISyncServerControl? _syncServer;
+  DesktopLanSyncAdapter? _desktopLanSyncAdapter;
 
   List<SyncMemberSummary>? _members;
   SyncGroupState _groupState = SyncGroupState.ungrouped;
   bool _isRepairBannerDismissed = true;
   SyncStatus _currentSyncStatus = const SyncStatus(state: SyncState.idle);
-  late AnimationController _syncIconAnimationController;
   late AnimationController _syncButtonAnimationController;
 
   // Mixin service accessors
@@ -78,13 +75,9 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   @override
   ISettingRepository get settingRepository => _settingRepository;
   @override
-  ISyncService get syncService => _syncService;
+  ISyncServerControl? get syncServer => _syncServer;
   @override
-  AndroidServerSyncService? get serverSyncService => _serverSyncService;
-  @override
-  DesktopSyncService? get desktopSyncService => _desktopSyncService;
-  @override
-  AnimationController get syncIconAnimationController => _syncIconAnimationController;
+  DesktopLanSyncAdapter? get desktopLanSyncAdapter => _desktopLanSyncAdapter;
   @override
   AnimationController get syncButtonAnimationController => _syncButtonAnimationController;
   @override
@@ -103,42 +96,22 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     _initializeServices();
     _initializeAnimationControllers();
     _loadPreferences();
-    setupSyncStatusListeners();
     refresh();
   }
 
   void _initializeServices() {
-    // CRITICAL: Use the same sync service instance from container
-    _syncService = container.resolve<ISyncService>();
-    Logger.info('SyncDevicesPage: Resolved sync service: ${_syncService.runtimeType}');
-
     if (Platform.isAndroid) {
-      _serverSyncService = container.resolve<AndroidServerSyncService>();
-      Logger.info('SyncDevicesPage: Resolved server sync service: ${_serverSyncService.runtimeType}');
-
-      if (_syncService == _serverSyncService) {
-        Logger.info('SyncDevicesPage: Same instance - sync status will work');
-      } else {
-        Logger.warning('SyncDevicesPage: Different instances - sync status may not work!');
-      }
+      _syncServer = container.resolve<ISyncServerControl>();
+      return;
     }
 
-    // Initialize desktop sync service for enhanced mode switching
     if (PlatformUtils.isDesktop) {
-      _desktopSyncService = _syncService as DesktopSyncService;
-      desktopSyncMode = _desktopSyncService!.currentMode;
+      _desktopLanSyncAdapter = container.resolve<DesktopLanSyncAdapter>();
       isServerMode = desktopSyncMode == DesktopSyncMode.server;
-      Logger.info('Desktop sync mode initialized: $desktopSyncMode, serverMode: $isServerMode');
-    } else if (Platform.isAndroid) {
-      Logger.info('Android platform detected - will check server mode in loadServerModePreference');
     }
   }
 
   void _initializeAnimationControllers() {
-    _syncIconAnimationController = AnimationController(
-      duration: const Duration(seconds: 1),
-      vsync: this,
-    );
     _syncButtonAnimationController = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -152,8 +125,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
   @override
   void dispose() {
-    disposeSyncStatusResources();
-    _syncIconAnimationController.dispose();
     _syncButtonAnimationController.dispose();
     super.dispose();
   }
@@ -214,48 +185,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       return;
     }
 
-    if (_currentSyncStatus.isSyncing) return;
-
-    try {
-      _simulateDeviceSpecificSync();
-      await _syncService.runSync(isManual: true);
-    } catch (e) {
-      Logger.error('Manual sync failed: $e');
-    }
-  }
-
-  void _simulateDeviceSpecificSync() {
-    if (_members == null || _members!.isEmpty) return;
-
-    int currentDeviceIndex = 0;
-
-    // Start with first device
-    if (_members!.isNotEmpty) {
-      _syncService.updateSyncStatus(_currentSyncStatus.copyWith(
-        currentDeviceId: _members![0].memberId,
-      ));
-    }
-
-    // Simulate individual device sync progress
-    Timer.periodic(const Duration(milliseconds: 800), (timer) {
-      if (!_currentSyncStatus.isSyncing) {
-        timer.cancel();
-        return;
-      }
-
-      currentDeviceIndex++;
-      if (currentDeviceIndex < _members!.length) {
-        final device = _members![currentDeviceIndex];
-        _syncService.updateSyncStatus(_currentSyncStatus.copyWith(
-          currentDeviceId: device.memberId,
-        ));
-      } else {
-        _syncService.updateSyncStatus(_currentSyncStatus.copyWith(
-          currentDeviceId: null,
-        ));
-        timer.cancel();
-      }
-    });
+    await runManualSync();
   }
 
   Future<void> _removeDevice(String memberId) async {
@@ -298,23 +228,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
   void _onFirewallPermissionChanged() {
     Logger.debug('Firewall permission status changed');
-  }
-
-  Widget _buildSyncStatusIndicator() {
-    return AnimatedBuilder(
-      animation: _syncIconAnimationController,
-      builder: (context, child) {
-        return Transform.rotate(
-          angle: _syncIconAnimationController.value * 2 * 3.14159,
-          child: child,
-        );
-      },
-      child: Icon(
-        Icons.sync,
-        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
-        size: 24,
-      ),
-    );
   }
 
   @override
@@ -400,7 +313,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                         member: member,
                         onRemove: _removeDevice,
                         onRepair: _repairDevice,
-                        isBeingSynced: _currentSyncStatus.isSyncing && _currentSyncStatus.currentDeviceId == member.memberId,
                         lastSyncResult: lastSyncResultOf(member.memberId),
                       ),
                     );
@@ -417,13 +329,6 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
   List<Widget> _buildAppBarActions() {
     return [
-      // Sync status indicator - only show in server mode during actual sync activity
-      if (isServerMode && isServerSyncActive)
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: _buildSyncStatusIndicator(),
-        ),
-
       // Sync button - behavior depends on mode
       if (!isServerMode && (_members?.isNotEmpty ?? false))
         IconButton(

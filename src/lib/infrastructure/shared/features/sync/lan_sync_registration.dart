@@ -14,6 +14,7 @@ import 'package:whph/core/application/features/sync/services/sync_runtime_servic
 import 'package:whph/core/application/features/sync/services/sync_scheduler.dart';
 import 'package:whph/core/application/features/sync/services/sync_startup_check_service.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
+import 'package:whph/infrastructure/desktop/features/sync/desktop_lan_sync_adapter.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_change_store.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/shared/features/sync/drift_async_session_device.dart';
@@ -62,6 +63,7 @@ void registerSyncTransport(IContainer container) {
     ),
   );
   container.registerSingleton<ISyncServerControl>((c) => c.resolve<LanSyncServer>());
+  container.registerSingleton<DesktopLanSyncAdapter>((c) => DesktopLanSyncAdapter(c.resolve<LanSyncServer>()));
   container.registerSingleton<ISyncRuntime>(
     (c) => SyncRuntimeService(
       startupCheck: c.resolve<SyncStartupCheckService>(),

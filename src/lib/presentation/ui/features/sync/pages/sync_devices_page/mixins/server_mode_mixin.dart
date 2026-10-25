@@ -5,7 +5,7 @@ import 'package:whph/core/application/features/settings/commands/save_setting_co
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
@@ -18,7 +18,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
   Mediator get mediator;
   ITranslationService get translationService;
   ISettingRepository get settingRepository;
-  AndroidServerSyncService? get serverSyncService;
+  ISyncServerControl? get syncServer;
 
   bool _isServerMode = false;
   bool get isServerMode => _isServerMode;
@@ -26,11 +26,11 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
 
   /// Load server mode preference and sync UI state
   Future<void> loadServerModePreference() async {
-    if (!Platform.isAndroid || serverSyncService == null) return;
+    if (!Platform.isAndroid || syncServer == null) return;
 
     try {
       // Check if server is already running (started by platform initialization)
-      final isServerRunning = serverSyncService!.isServerMode;
+      final isServerRunning = syncServer!.isRunning;
       Logger.info('Android server mode check: isServerRunning=$isServerRunning');
 
       if (isServerRunning && mounted) {
@@ -56,10 +56,10 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
 
   /// Start server mode without UI notifications (for auto-start)
   Future<void> startServerModeFromPreference() async {
-    if (serverSyncService == null) return;
+    if (syncServer == null) return;
 
     try {
-      final success = await serverSyncService!.startAsServer();
+      final success = await syncServer!.start();
 
       if (success && mounted) {
         setState(() {
@@ -76,13 +76,13 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
 
   /// Toggle server mode on/off
   Future<void> toggleServerMode() async {
-    if (!Platform.isAndroid || serverSyncService == null) return;
+    if (!Platform.isAndroid || syncServer == null) return;
 
     try {
       if (_isServerMode) {
         // Stop server mode
         Logger.info('Stopping mobile sync server mode...');
-        await serverSyncService!.stopServer();
+        await syncServer!.stop();
 
         // Save preference: server mode disabled
         await saveServerModePreference(false);
@@ -110,7 +110,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
           );
         }
 
-        final success = await serverSyncService!.startAsServer();
+        final success = await syncServer!.start();
 
         if (mounted) {
           OverlayNotificationHelper.hideNotification();

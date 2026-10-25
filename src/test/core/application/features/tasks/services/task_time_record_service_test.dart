@@ -3,8 +3,6 @@ import 'package:whph/core/application/features/tasks/services/task_time_record_s
 import 'package:whph/core/domain/features/tasks/task_time_record.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:acore/acore.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/sync_data.dart';
 
 const String testDeviceId = 'test-device';
 
@@ -110,27 +108,6 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   }
 
   // Implementation of app.IRepository methods
-  @override
-  Future<PaginatedSyncData<TaskTimeRecord>> getPaginatedSyncData(
-      DateTime lastSyncDate,
-      {int pageIndex = 0,
-      int pageSize = 200,
-      String? entityType}) async {
-    return PaginatedSyncData<TaskTimeRecord>(
-      data: SyncData<TaskTimeRecord>(
-        createSync: _records,
-        updateSync: [],
-        deleteSync: [],
-      ),
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalPages: 1,
-      totalItems: _records.length,
-      isLastPage: true,
-      entityType: entityType ?? 'TaskTimeRecord',
-    );
-  }
-
   @override
   Future<void> hardDeleteSoftDeleted(DateTime beforeDate) async {}
 
@@ -268,30 +245,6 @@ class _ErrorThrowingTaskTimeRecordRepository
   }
 
   // Implementation of app.IRepository methods
-  @override
-  Future<PaginatedSyncData<TaskTimeRecord>> getPaginatedSyncData(
-      DateTime lastSyncDate,
-      {int pageIndex = 0,
-      int pageSize = 200,
-      String? entityType}) async {
-    if (methodToThrow == 'getPaginatedSyncData') {
-      throw Exception(errorMessage);
-    }
-    return PaginatedSyncData<TaskTimeRecord>(
-      data: SyncData<TaskTimeRecord>(
-        createSync: [],
-        updateSync: [],
-        deleteSync: [],
-      ),
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      totalPages: 0,
-      totalItems: 0,
-      isLastPage: true,
-      entityType: entityType ?? 'TaskTimeRecord',
-    );
-  }
-
   @override
   Future<void> hardDeleteSoftDeleted(DateTime beforeDate) async {
     if (methodToThrow == 'hardDeleteSoftDeleted') {

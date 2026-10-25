@@ -1,34 +1,28 @@
 // T22 acceptance 4, 5 and 6: the legacy v0.24.3 responder of the LAN server.
-// The legacy clients are the in-tree code (identical to v0.24.3, D10).
-// Set RECORD_LEGACY_FIXTURES=1 to re-record the frame fixtures.
+// The frames under test/fixtures/sync/legacy_v0_24_3 were recorded from the
+// v0.24.3 desktop and Android client code (D10) before that code was removed
+// (T29); they are the frozen client side of these tests.
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/constants/sync_translation_keys.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_session_host.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_communication_service/sync_communication_service.dart';
-import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/infrastructure/shared/features/sync/legacy_sync_responder.dart';
 import 'package:whph/infrastructure/shared/features/sync/lan_sync_server.dart';
-import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:whph/main.mapper.g.dart' show initializeJsonMapper;
-import 'package:yaml/yaml.dart';
 
 import 'lan_test_support.dart';
-import 'legacy_client_harness.dart';
 
 const String _fixtureDirectory = 'test/fixtures/sync/legacy_v0_24_3';
-const String _localeFile =
-    'lib/presentation/ui/features/sync/assets/locales/en.yaml';
-const String _fixtureClientName = 'Legacy Desktop';
 const String _fixtureHostId = 'fixture-host-member';
 const String _fixtureAppVersion = '0.25.0';
 const int _pushCount = 10;
+const String _pushFixture = 'push_paginated_sync';
 const List<String> _fixtureFiles = [
   'discovery_device_info',
   'desktop_client_session',
@@ -47,7 +41,7 @@ const SyncPresence _fixturePresence = SyncPresence(
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   initializeJsonMapper();
-  setUpAll(mockDeviceInfoChannel);
+  setUpAll(_mockDeviceInfoChannel);
 
   late LanSyncServer server;
   late DeviceHost host;
@@ -68,60 +62,26 @@ void main() {
 
   group('acceptance 4: legacy clients against the new server', () {
     test(
-        'desktop client path ends in versionMismatchError before any item is processed',
+        'push path (Android and desktop initiators): refused with versionMismatchError, no silent success',
         () async {
       final b = host.device;
       final checksumBefore = contentChecksum(b);
-      final side = LegacyClientSide();
-      final client = side.desktopClient();
 
-      unawaited(client.connectToServer('127.0.0.1', server.port!));
-      await eventually(() => side.validation.thrown.isNotEmpty);
-      // Gap (recorded in the T22 evidence): the legacy client drops the error
-      // list of the command response and waits for a completion message, so
-      // it keeps showing "syncing" instead of the mismatch text.
-      expect(client.currentSyncStatus.state, SyncState.syncing);
-      await client.disconnectFromServer();
+      final reply = await _sendLegacyFrame(server.port!, _loadFrames(_pushFixture).single['request']);
 
-      final error = side.validation.thrown.first;
-      expect(error.code, SyncTranslationKeys.versionMismatchError);
-      expect(error.params,
-          {'currentVersion': AppInfo.version, 'remoteVersion': '9.9.9'});
-      expect(side.processing.calls, 0);
-      expect(host.results, isEmpty,
-          reason: 'no engine session ran on the server');
+      final data = reply['data'] as Map<String, dynamic>;
+      expect(reply['type'], 'paginated_sync');
+      expect(data['success'], isFalse);
+      expect(data['error'], SyncTranslationKeys.versionMismatchError);
+      expect(host.results, isEmpty, reason: 'no engine session ran on the server');
       expect(contentChecksum(b), checksumBefore);
-
-      final listed = registry.needsUpdate.single;
-      expect(listed.displayName, await DeviceInfoHelper.getDeviceName());
-      debugPrint('LEGACY UI MESSAGE: ${_observedUiMessage(error.params!)}');
-    });
-
-    test(
-        'push path (Android and desktop initiators): refused with versionMismatchError, no silent success',
-        () async {
-      final markers = [for (var i = 0; i < 3; i++) 'LEGACY-PUSH-MARKER-$i'];
-      final communication =
-          SyncCommunicationService(websocketPort: server.port!, maxRetries: 1);
-
-      final response = await communication.sendPaginatedDataToDevice(
-          '127.0.0.1', syntheticPushDto(markers));
-
-      // The legacy pagination code treats `success: false` as a failed page:
-      // the entity sync returns false and the orchestrator reports
-      // syncWithDeviceFailedError ("Failed to sync with device.") instead of
-      // a silent success. The mismatch key is only logged by the old client.
-      expect(response.success, isFalse);
-      expect(response.error, SyncTranslationKeys.versionMismatchError);
-      expect(response.responseData, isNull);
-      expect(host.results, isEmpty);
       expect(registry.needsUpdate.single.displayName, 'Device at 127.0.0.1');
     });
 
     test(
         'a new device reads a legacy responder as "needs update" and a new one as current',
         () async {
-      final stub = LegacyCaptureStub();
+      final stub = _LegacyDeviceInfoStub();
       await stub.start();
       addTearDown(stub.stop);
 
@@ -162,48 +122,6 @@ void main() {
   });
 
   group('acceptance 5: recorded legacy_v0_24_3 fixtures', () {
-    test('recording (only with RECORD_LEGACY_FIXTURES=1)', () async {
-      final stub = LegacyCaptureStub();
-      await stub.start();
-      final side = LegacyClientSide();
-
-      final marks = <int>[0];
-      await DeviceHandshakeService().getDeviceInfo('127.0.0.1', stub.port);
-      marks.add(stub.requests.length);
-      final client = side.desktopClient();
-      unawaited(client.connectToServer('127.0.0.1', stub.port));
-      await eventually(() =>
-          stub.requests.any((r) => r['type'] == 'paginated_sync_request'));
-      await client.disconnectFromServer();
-      marks.add(stub.requests.length);
-      await SyncCommunicationService(websocketPort: stub.port, maxRetries: 1)
-          .sendPaginatedDataToDevice('127.0.0.1',
-              syntheticPushDto(['FIXTURE-TITLE-1', 'FIXTURE-TITLE-2']));
-      marks.add(stub.requests.length);
-      await stub.stop();
-
-      final responder = _fixtureResponder();
-      for (var i = 0; i < _fixtureFiles.length; i++) {
-        final frames = <Map<String, dynamic>>[];
-        for (final request in stub.requests.sublist(marks[i], marks[i + 1])) {
-          _anonymize(request);
-          final reply =
-              await responder.handle(jsonEncode(request), source: '127.0.0.1');
-          frames.add({
-            'request': request,
-            'expectedResponse': reply == null ? null : jsonDecode(reply)
-          });
-        }
-        File('$_fixtureDirectory/${_fixtureFiles[i]}.json').writeAsStringSync(
-            '${const JsonEncoder.withIndent('  ').convert({
-              'frames': frames
-            })}\n');
-      }
-    },
-        skip: Platform.environment['RECORD_LEGACY_FIXTURES'] == '1'
-            ? false
-            : 'set RECORD_LEGACY_FIXTURES=1 to record');
-
     for (final name in _fixtureFiles) {
       test('replaying $name gives the recorded responder output', () async {
         final frames = _loadFrames(name);
@@ -253,8 +171,7 @@ void main() {
         final marker = 'LOG-MARKER-$push-do-not-log';
         markers.add(marker);
         final socket = await WebSocket.connect('ws://127.0.0.1:${server.port}');
-        final page = syntheticPushDto([marker, '$marker-b']).toJson();
-        socket.add(jsonEncode({'type': 'paginated_sync', 'data': page}));
+        socket.add(jsonEncode(_pushFrameWithTitles([marker, '$marker-b'])));
         await socket.first;
         await socket.close();
       }
@@ -273,13 +190,6 @@ void main() {
   });
 }
 
-/// Fixtures hold synthetic data only: the recording host's name is replaced.
-void _anonymize(Map<String, dynamic> request) {
-  final data = request['data'];
-  if (data is Map<String, dynamic> && data.containsKey('clientName'))
-    data['clientName'] = _fixtureClientName;
-}
-
 LegacySyncResponder _fixtureResponder() => LegacySyncResponder(
       presence: () async => _fixturePresence,
       registry: LegacyDeviceRegistry(),
@@ -293,11 +203,72 @@ List<Map<String, dynamic>> _loadFrames(String name) {
   return (decoded['frames'] as List).cast<Map<String, dynamic>>();
 }
 
-/// The text the legacy UI shows for the mismatch key (`sync_error_handler`
-/// translates the key with the exception's params).
-String _observedUiMessage(Map<String, String> params) {
-  final locale = loadYaml(File(_localeFile).readAsStringSync()) as YamlMap;
-  var text = (locale['sync']['errors']['version_mismatch'] as String);
-  params.forEach((name, value) => text = text.replaceAll('{$name}', value));
-  return text;
+Future<Map<String, dynamic>> _sendLegacyFrame(int port, Object frame) async {
+  final socket = await WebSocket.connect('ws://127.0.0.1:$port');
+  socket.add(jsonEncode(frame));
+  final reply = jsonDecode(await socket.first as String) as Map<String, dynamic>;
+  await socket.close();
+  return reply;
+}
+
+/// The recorded legacy push frame with [titles] as the pushed task titles.
+Map<String, dynamic> _pushFrameWithTitles(List<String> titles) {
+  final frame = Map<String, dynamic>.from(_loadFrames(_pushFixture).single['request'] as Map);
+  final data = Map<String, dynamic>.from(frame['data'] as Map);
+  final tasks = [
+    for (var index = 0; index < titles.length; index++)
+      {'id': 'task-$index', 'createdDate': '2026-01-01T00:00:00.000Z', 'title': titles[index]},
+  ];
+  data['tasksSyncData'] = {
+    'data': {'createSync': tasks, 'updateSync': <Object>[], 'deleteSync': <Object>[]},
+  };
+  return {...frame, 'data': data};
+}
+
+/// Answers the device-info plugin the server asks for its name.
+void _mockDeviceInfoChannel() {
+  const channel = MethodChannel('dev.fluttercommunity.plus/device_info');
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    channel,
+    (call) async => {
+      'name': 'Test Linux',
+      'version': '1',
+      'id': 'test',
+      'idLike': <String>[],
+      'versionCodename': 'test',
+      'versionId': '1',
+      'prettyName': 'Test Linux',
+      'buildId': 'test',
+      'variant': 'test',
+      'variantId': 'test',
+      'machineId': 'test',
+    },
+  );
+}
+
+/// A v0.24.3 device: its device_info reply has no member id and no protocol
+/// version, so a new device reads it as "needs update".
+class _LegacyDeviceInfoStub {
+  late final HttpServer _server;
+
+  int get port => _server.port;
+
+  Future<void> start() async {
+    _server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+    unawaited(_server.forEach((request) async {
+      final socket = await WebSocketTransformer.upgrade(request);
+      socket.listen((_) => socket.add(jsonEncode({
+            'type': 'device_info_response',
+            'data': {
+              'success': true,
+              'deviceId': 'stub',
+              'deviceName': 'Stub',
+              'appName': 'WHPH',
+              'platform': 'linux',
+            },
+          })));
+    }));
+  }
+
+  Future<void> stop() => _server.close(force: true);
 }

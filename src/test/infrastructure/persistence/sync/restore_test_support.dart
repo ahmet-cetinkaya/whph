@@ -33,8 +33,16 @@ extension RestorableSecurityDevice on SecurityDevice {
   Directory get keyDirectory => Directory('${root.path}/data');
   Directory get ledgerDirectory => Directory('${root.path}/state');
 
-  SyncLedgerMarkService get marks => SyncLedgerMarkService(
-      keyStore: keyStore, changeStore: database.store, delay: noDelay);
+  SyncLedgerMarkService get marks =>
+      SyncLedgerMarkService(keyStore: keyStore, changeStore: database.store);
+
+  /// What a session does before it sends: records that this device sent every
+  /// change up to [seq] of its own origin.
+  Future<void> persistSentMark(int seq) async {
+    final state = await database.store.readLocalState();
+    await keyStore.persistSentMark(
+        OriginId.fromHex(state.localOrigin), seq, state.hlc);
+  }
 
   SyncStartupCheckService get startup => SyncStartupCheckService(
       membershipService: service,

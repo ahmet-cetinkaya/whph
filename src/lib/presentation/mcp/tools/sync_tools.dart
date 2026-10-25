@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:mcp_dart/mcp_dart.dart';
@@ -16,7 +17,6 @@ import 'package:whph/core/application/features/sync/models/sync_pairing_models.d
 import 'package:whph/core/application/features/sync/queries/get_list_sync_members_query.dart';
 import 'package:whph/core/application/features/sync/queries/get_sync_member_query.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
-import 'package:whph/core/application/features/sync/services/sync_actions.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_arguments.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_definition.dart';

@@ -58,7 +58,7 @@ Future<int> _live(LabDevice device, String table) => countRows(device, table, li
 
 Future<void> _markSent(LabDevice device) async {
   final top = (await device.db.store.readVector())[await device.origin()]!;
-  expect(await device.security.marks.persistSentMarkBefore(top), isTrue);
+  await device.security.persistSentMark(top);
 }
 
 void main() {

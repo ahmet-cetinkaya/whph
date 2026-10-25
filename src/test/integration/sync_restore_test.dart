@@ -51,7 +51,7 @@ void main() {
   Future<void> markSent(SecurityDevice device) async {
     final top = (await device.database.store
         .readVector())[await device.currentOrigin()]!;
-    expect(await device.marks.persistSentMarkBefore(top), isTrue);
+    await device.persistSentMark(top);
   }
 
   Future<void> author(SecurityDevice device, String id,

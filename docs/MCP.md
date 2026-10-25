@@ -316,16 +316,23 @@ details, tokens, or other records.
 ## Sync tools and time-record aggregates
 
 Sync tools act on the LAN sync engine described in [SYNC.md](SYNC.md). Pairing
-and removal always keep the on-screen confirmation step; no MCP call can pair a
-device by itself (FR-024).
+always keeps the on-screen confirmation step; no MCP call can pair a device by
+itself (FR-024). Removal does not: see `whph_sync_devices_delete` below.
 
 | Tool | Contract |
 | ---- | -------- |
 | `whph_sync_devices_list`, `whph_sync_devices_read` | Member status: `{id, name, platform?, addresses[], status, itemsCannotBeApplied, needsRepairing, isThisDevice, lastSuccessfulSync?, revision}`. `status` is `ok`, `not_reachable`, `needs_repairing` and the other result categories. |
 | `whph_sync_devices_update` | `id`, `expectedRevision`, `name?`, `addresses?` (private IPv4 only). Returns the member and `committed`. A stale `expectedRevision` after a remote apply is a conflict. |
-| `whph_sync_devices_delete` | Group removal with key rotation. `id`, `expectedRevision`; returns `{id, committed}`. |
+| `whph_sync_devices_delete` | Group removal with key rotation. `id`, `expectedRevision`; returns `{id, committed}`. It needs the `sync:manage` scope and the current `expectedRevision`. It has no separate human-approval operation: once the scope and revision checks pass, the removal runs at once, with no in-app confirmation (unlike `whph_sync_pair_prepare`). |
 | `whph_sync_pair_prepare` | `{peer: {ipAddress, port?}}`. Returns an operation with `requiresApproval` and `requiresUserConfirmation: true`. Pairing starts only after in-app approval and both devices confirm the code. It creates no member, origin or key handover on its own. |
 | `whph_sync_start`, `whph_sync_stop` | Return `{running}`. |
+
+A sync device `revision` is a content hash (the first 16 hex characters of a
+SHA-256 over the member name and addresses), not a version counter or a lock.
+Update and delete check it against the current member and then act, so they
+are check-then-act: a change that lands between the check and the write is not
+detected. They do check the connection authorization again just before the
+write.
 
 MCP tokens, grants and scopes never enter sync data, `sync_clock`,
 `sync_member`, `sync_origin` or exports.
