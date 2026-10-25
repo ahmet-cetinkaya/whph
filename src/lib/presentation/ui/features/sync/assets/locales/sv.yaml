@@ -371,3 +371,61 @@ sync:
     last_seen: Senast sedd kl. {time}
     already_added: Redan tillagd
   multi_interface_connection: Multi-interface anslutning
+  status:
+    not_reachable: "Enheten kan inte nås"
+    needs_repairing: "Måste paras ihop igen"
+    needs_update: "{device} behöver en nyare version av WHPH för att synkronisera"
+    items_failed: "Vissa objekt kunde inte synkroniseras"
+    items_rejected: "Vissa objekt avvisades som ogiltiga"
+    preparing: "Den andra enheten förbereder sina synkroniseringsdata"
+    duplicated_identity: "En annan enhet använder samma synkroniseringsidentitet"
+    storage_error: "Ett lagringsfel avbröt synkroniseringen"
+    items_cannot_be_applied: "Vissa objekt misslyckades upprepade gånger och hoppas över tills vidare"
+    repair_badge: "Ny ihopparning krävs"
+    repair_action: "Para ihop igen"
+  pairing:
+    show_qr: "Visa QR-kod"
+    in_progress: "Ihopparning pågår…"
+    success: "Ihopparad med {device}"
+    qr:
+      title: "Para ihop med en QR-kod"
+      description: "Skanna den här koden med den andra enheten."
+      expires_in: "Går ut om {time}"
+      expired: "Den här koden har gått ut."
+      used: "Den här koden har redan använts."
+      regenerate: "Visa en ny kod"
+      paired: "Enheten är ihopparad"
+    code:
+      title: "Jämför koderna"
+      description: "Kontrollera att {device} visar samma kod."
+      match: "Koderna stämmer"
+      mismatch: "Koderna skiljer sig"
+    group_switch:
+      title: "Byta synkroniseringsgrupp?"
+      description: "{device} finns i en annan synkroniseringsgrupp. Om du fortsätter lämnar den här enheten sin nuvarande grupp och synkroniserar inte längre med dess enheter."
+      confirm: "Byt grupp"
+    errors:
+      code_expired_or_used: "Koden har gått ut eller redan använts. Visa en ny kod och försök igen."
+      codes_differ: "Koderna stämde inte överens. Ihopparningen avbröts."
+      cancelled: "Ihopparningen avbröts."
+      unreachable: "Den andra enheten kunde inte nås. Kontrollera att båda är på samma nätverk."
+      invalid_invitation: "Det här är inte en WHPH-ihopparningskod."
+      group_switch_declined: "Du valde att inte byta synkroniseringsgrupp."
+      preparing: "Synkroniseringen förbereds fortfarande. Försök igen om en stund."
+      refused: "Den andra enheten avvisade ihopparningen."
+      not_active: "Ingen ihopparning pågår."
+  members:
+    remove_confirm:
+      title: "Ta bort {device}?"
+      description: "Det här tar bort {device} från hela synkroniseringsgruppen, inte bara från den här enheten. Den slutar synkronisera med alla enheter i gruppen och gruppens nycklar byts ut. Para ihop den igen för att synkronisera senare."
+      action: "Ta bort från gruppen"
+    removed_from_group:
+      title: "Borttagen från synkroniseringsgruppen"
+      description: "Den här enheten togs bort från sin synkroniseringsgrupp och synkroniserar inte längre. Para ihop den igen för att fortsätta."
+    repair_banner:
+      title: "Synkroniseringen har uppgraderats"
+      description: "Enheter som parats ihop med den gamla synkroniseringen måste paras ihop igen. Dina data finns kvar på varje enhet."
+      dismiss: "Stäng"
+    upgrade_progress: "Förbereder synkroniseringsdata… {percent} %"
+  demo:
+    reset_blocked: "Demodata kan inte återställas medan den här enheten är ihopparad, eftersom återställningen skulle synkroniseras till dina andra enheter. Ta först bort den här enheten från synkroniseringsgruppen."

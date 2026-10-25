@@ -2,28 +2,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/commands/save_sync_command.dart';
-import 'package:whph/core/application/features/sync/queries/get_sync_query.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_concurrent_connection_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
+import 'package:whph/core/application/features/sync/queries/get_list_sync_members_query.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/models/discovered_device.dart';
+import 'package:whph/presentation/ui/features/sync/services/sync_pairing_flow.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/shared/utils/async_error_handler.dart';
-import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
-import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
-import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
-import 'package:acore/acore.dart' show BusinessException;
 
 /// Controller for managing device discovery and connection logic
 class AddSyncDeviceController extends ChangeNotifier {
   final _networkInterfaceService = container.resolve<INetworkInterfaceService>();
-  final _connectionService = container.resolve<IConcurrentConnectionService>();
   final _handshakeService = container.resolve<DeviceHandshakeService>();
   final _translationService = container.resolve<ITranslationService>();
 
@@ -155,7 +147,7 @@ class AddSyncDeviceController extends ChangeNotifier {
 
       if (deviceInfo != null) {
         // Check if device is already paired
-        final isAlreadyAdded = await _checkIfDeviceAlreadyAdded(deviceInfo.deviceId);
+        final isAlreadyAdded = await _checkIfDeviceAlreadyAdded(deviceInfo.memberId);
 
         final device = DiscoveredDevice(
           name: deviceInfo.deviceName,
@@ -196,154 +188,24 @@ class AddSyncDeviceController extends ChangeNotifier {
     }
   }
 
-  Future<bool> _checkIfDeviceAlreadyAdded(String deviceId) async {
+  /// A device counts as added when its sync member id is in the group.
+  Future<bool> _checkIfDeviceAlreadyAdded(String? memberId) async {
+    if (memberId == null) return false;
     try {
-      final mediator = container.resolve<Mediator>();
-      final deviceIdService = container.resolve<IDeviceIdService>();
-      final localDeviceId = await deviceIdService.getDeviceId();
-
-      // Check if device already exists in either direction (bidirectional sync)
-      final existingDevice1 = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
-          GetSyncDeviceQuery(fromDeviceId: deviceId, toDeviceId: localDeviceId));
-
-      final existingDevice2 = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
-          GetSyncDeviceQuery(fromDeviceId: localDeviceId, toDeviceId: deviceId));
-
-      // Device is considered already added if it exists in either direction
-      // Note: The base repository automatically filters out soft deleted devices
-      final device1Exists = existingDevice1?.id.isNotEmpty == true;
-      final device2Exists = existingDevice2?.id.isNotEmpty == true;
-
-      return device1Exists || device2Exists;
+      final response = await container.resolve<Mediator>().send<GetListSyncMembersQuery, GetListSyncMembersQueryResponse>(
+            GetListSyncMembersQuery(),
+          );
+      return response.members.any((member) => !member.isLegacy && member.memberId == memberId);
     } catch (e) {
       return false; // If we can't check, assume it's not added
     }
   }
 
-  /// Connects to a discovered device and creates sync pairing
-  Future<void> connectToDevice(DiscoveredDevice device, BuildContext context) async {
+  /// Pairs with a discovered or manually entered device: both users compare a
+  /// code (and confirm a group switch when needed) before anything is shared.
+  Future<SyncPairingStatus> connectToDevice(DiscoveredDevice device, BuildContext context) async {
     HapticFeedback.selectionClick();
-
-    await AsyncErrorHandler.executeChain<void>(
-      context: context,
-      errorMessage: _translationService.translate(SyncTranslationKeys.saveDeviceError),
-      operation: () async {
-        // Show testing connection message
-        OverlayNotificationHelper.showLoading(
-          context: context,
-          message: _translationService.translate(SyncTranslationKeys.testingConnection),
-          duration: const Duration(seconds: 15),
-        );
-
-        // Test connection again to ensure device is still available
-        final isReachable = await _connectionService.testWebSocketConnection(
-          device.ipAddress,
-          device.port,
-          timeout: const Duration(seconds: 5),
-        );
-
-        if (!isReachable) {
-          throw BusinessException(
-            _translationService.translate(SyncTranslationKeys.connectionFailedError),
-            SyncTranslationKeys.connectionFailedError,
-          );
-        }
-
-        return;
-      },
-      intermediateContextChecks: [
-        (context) => OverlayNotificationHelper.hideNotification(),
-      ],
-      onSuccess: (_) async {
-        // Create and save the sync device
-        await _createSyncDevice(device, context);
-      },
-    );
-  }
-
-  Future<void> _createSyncDevice(DiscoveredDevice device, BuildContext context) async {
-    final mediator = container.resolve<Mediator>();
-    final deviceIdService = container.resolve<IDeviceIdService>();
-
-    await AsyncErrorHandler.executeChain<void>(
-      context: context,
-      errorMessage: _translationService.translate(SyncTranslationKeys.saveDeviceError),
-      operation: () async {
-        // Get local device information
-        final localIp = await NetworkUtils.getLocalIpAddress();
-        if (localIp == null) {
-          throw BusinessException(
-            _translationService.translate(SyncTranslationKeys.localIpError),
-            SyncTranslationKeys.ipAddressError,
-          );
-        }
-
-        final localDeviceId = await deviceIdService.getDeviceId();
-        final localDeviceName = await DeviceInfoHelper.getDeviceName();
-
-        // Check if device already exists (including soft-deleted ones)
-        final existingDevice = await mediator.send<GetSyncDeviceQuery, GetSyncDeviceQueryResponse?>(
-            GetSyncDeviceQuery(fromDeviceId: device.deviceId, toDeviceId: localDeviceId));
-
-        if (existingDevice?.id.isNotEmpty == true) {
-          if (existingDevice?.deletedDate == null) {
-            // Device already exists and is active
-            throw BusinessException(
-              _translationService.translate(SyncTranslationKeys.deviceAlreadyPairedError),
-              SyncTranslationKeys.deviceAlreadyPaired,
-            );
-          } else {
-            // Device exists but is soft-deleted - reactivate it
-            Logger.info('Reactivating soft-deleted sync device ${existingDevice!.id}');
-            final reactivateCommand = SaveSyncDeviceCommand(
-              id: existingDevice.id,
-              fromIP: device.ipAddress,
-              toIP: localIp,
-              fromDeviceId: device.deviceId,
-              toDeviceId: localDeviceId,
-              name: "${device.name} ↔ $localDeviceName",
-            );
-            await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(reactivateCommand);
-            return;
-          }
-        }
-
-        // Create the sync device
-        // Remote device acts as server, local device as client
-        final saveCommand = SaveSyncDeviceCommand(
-          fromIP: device.ipAddress, // Remote device IP (server)
-          toIP: localIp, // Local device IP (client)
-          fromDeviceId: device.deviceId,
-          toDeviceId: localDeviceId,
-          name: "${device.name} ↔ $localDeviceName",
-        );
-
-        await mediator.send<SaveSyncDeviceCommand, SaveSyncDeviceCommandResponse>(saveCommand);
-
-        return;
-      },
-      onSuccess: (_) async {
-        // Device created successfully - start sync in background
-        _startSyncInBackground();
-      },
-    );
-  }
-
-  void _startSyncInBackground() {
-    // Start sync in background without blocking UI
-    final syncService = container.resolve<ISyncService>();
-
-    // Run sync in background without awaiting
-    () async {
-      try {
-        // Mark as manual sync so UI updates properly
-        await syncService.runSync(isManual: true);
-        Logger.info('Background sync completed successfully after device pairing');
-      } catch (e) {
-        Logger.error('Background sync failed after device pairing: $e');
-        // Sync errors will be handled by the sync service and shown in the main sync UI
-      }
-    }();
+    return SyncPairingFlow(container.resolve<Mediator>()).pairWithAddress(context, device.ipAddress, port: device.port);
   }
 
   /// Gets the appropriate icon for a platform

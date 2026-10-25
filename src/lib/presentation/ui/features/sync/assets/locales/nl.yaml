@@ -368,3 +368,61 @@ sync:
     client_mode_stopped: Teruggeschakeld naar server modus
     sync_mode_toggle_error: Kan synchrone modus niet omschakelen
   multi_interface_connection: Multi-interface verbinding
+  status:
+    not_reachable: "Apparaat niet bereikbaar"
+    needs_repairing: "Opnieuw koppelen vereist"
+    needs_update: "{device} heeft een nieuwere versie van WHPH nodig om te synchroniseren"
+    items_failed: "Sommige items konden niet worden gesynchroniseerd"
+    items_rejected: "Sommige items zijn als ongeldig geweigerd"
+    preparing: "Het andere apparaat bereidt zijn synchronisatiegegevens voor"
+    duplicated_identity: "Een ander apparaat gebruikt dezelfde synchronisatie-identiteit"
+    storage_error: "Een opslagfout onderbrak de synchronisatie"
+    items_cannot_be_applied: "Sommige items mislukten herhaaldelijk en worden voorlopig overgeslagen"
+    repair_badge: "Opnieuw koppelen nodig"
+    repair_action: "Opnieuw koppelen"
+  pairing:
+    show_qr: "QR-code tonen"
+    in_progress: "Koppelen bezig…"
+    success: "Gekoppeld met {device}"
+    qr:
+      title: "Koppelen met een QR-code"
+      description: "Scan deze code met het andere apparaat."
+      expires_in: "Verloopt over {time}"
+      expired: "Deze code is verlopen."
+      used: "Deze code is al gebruikt."
+      regenerate: "Nieuwe code tonen"
+      paired: "Apparaat gekoppeld"
+    code:
+      title: "Codes vergelijken"
+      description: "Controleer of {device} dezelfde code toont."
+      match: "Codes komen overeen"
+      mismatch: "Codes verschillen"
+    group_switch:
+      title: "Synchronisatiegroep wisselen?"
+      description: "{device} zit in een andere synchronisatiegroep. Als je doorgaat, verlaat dit apparaat zijn huidige groep en synchroniseert het niet meer met die apparaten."
+      confirm: "Groep wisselen"
+    errors:
+      code_expired_or_used: "Deze code is verlopen of al gebruikt. Toon een nieuwe code en probeer het opnieuw."
+      codes_differ: "De codes kwamen niet overeen. Het koppelen is geannuleerd."
+      cancelled: "Het koppelen is geannuleerd."
+      unreachable: "Het andere apparaat is niet bereikbaar. Controleer of beide op hetzelfde netwerk zitten."
+      invalid_invitation: "Dit is geen WHPH-koppelcode."
+      group_switch_declined: "Je hebt ervoor gekozen de synchronisatiegroep niet te wisselen."
+      preparing: "De synchronisatie wordt nog voorbereid. Probeer het zo meteen opnieuw."
+      refused: "Het andere apparaat heeft het koppelen geweigerd."
+      not_active: "Er is geen koppeling bezig."
+  members:
+    remove_confirm:
+      title: "{device} verwijderen?"
+      description: "Dit verwijdert {device} uit de hele synchronisatiegroep, niet alleen van dit apparaat. Het synchroniseert niet meer met apparaten in de groep en de groepssleutels worden vervangen. Koppel het opnieuw om later te synchroniseren."
+      action: "Uit groep verwijderen"
+    removed_from_group:
+      title: "Verwijderd uit de synchronisatiegroep"
+      description: "Dit apparaat is uit zijn synchronisatiegroep verwijderd en synchroniseert niet meer. Koppel het opnieuw om verder te gaan."
+    repair_banner:
+      title: "Synchronisatie is bijgewerkt"
+      description: "Apparaten die met de oude synchronisatie zijn gekoppeld, moeten opnieuw worden gekoppeld. Je gegevens blijven op elk apparaat staan."
+      dismiss: "Sluiten"
+    upgrade_progress: "Synchronisatiegegevens voorbereiden… {percent}%"
+  demo:
+    reset_blocked: "Demogegevens kunnen niet worden gereset zolang dit apparaat is gekoppeld, omdat de reset naar je andere apparaten zou worden gesynchroniseerd. Verwijder dit apparaat eerst uit de synchronisatiegroep."

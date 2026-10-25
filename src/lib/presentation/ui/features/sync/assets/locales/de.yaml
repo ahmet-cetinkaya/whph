@@ -372,3 +372,61 @@ sync:
     client_mode_stopped: Zurück zum Server-Modus gewechselt
     sync_mode_toggle_error: Sync-Modus konnte nicht umgeschaltet werden
   multi_interface_connection: Multi-Interface-Verbindung
+  status:
+    not_reachable: "Gerät nicht erreichbar"
+    needs_repairing: "Muss neu gekoppelt werden"
+    needs_update: "{device} benötigt eine neuere WHPH-Version zum Synchronisieren"
+    items_failed: "Einige Elemente konnten nicht synchronisiert werden"
+    items_rejected: "Einige Elemente wurden als ungültig abgelehnt"
+    preparing: "Das andere Gerät bereitet seine Synchronisierungsdaten vor"
+    duplicated_identity: "Ein anderes Gerät verwendet dieselbe Synchronisierungsidentität"
+    storage_error: "Ein Speicherfehler hat die Synchronisierung unterbrochen"
+    items_cannot_be_applied: "Einige Elemente sind wiederholt fehlgeschlagen und werden vorerst übersprungen"
+    repair_badge: "Neu koppeln erforderlich"
+    repair_action: "Neu koppeln"
+  pairing:
+    show_qr: "QR-Code anzeigen"
+    in_progress: "Kopplung läuft…"
+    success: "Mit {device} gekoppelt"
+    qr:
+      title: "Per QR-Code koppeln"
+      description: "Scanne diesen Code mit dem anderen Gerät."
+      expires_in: "Läuft ab in {time}"
+      expired: "Dieser Code ist abgelaufen."
+      used: "Dieser Code wurde bereits verwendet."
+      regenerate: "Neuen Code anzeigen"
+      paired: "Gerät gekoppelt"
+    code:
+      title: "Codes vergleichen"
+      description: "Prüfe, ob {device} denselben Code anzeigt."
+      match: "Codes stimmen überein"
+      mismatch: "Codes unterscheiden sich"
+    group_switch:
+      title: "Synchronisierungsgruppe wechseln?"
+      description: "{device} gehört zu einer anderen Synchronisierungsgruppe. Wenn du fortfährst, verlässt dieses Gerät seine aktuelle Gruppe und synchronisiert nicht mehr mit deren Geräten."
+      confirm: "Gruppe wechseln"
+    errors:
+      code_expired_or_used: "Dieser Code ist abgelaufen oder wurde bereits verwendet. Zeige einen neuen Code an und versuche es erneut."
+      codes_differ: "Die Codes stimmten nicht überein. Die Kopplung wurde abgebrochen."
+      cancelled: "Die Kopplung wurde abgebrochen."
+      unreachable: "Das andere Gerät ist nicht erreichbar. Prüfe, ob beide im selben Netzwerk sind."
+      invalid_invitation: "Das ist kein WHPH-Kopplungscode."
+      group_switch_declined: "Du hast den Wechsel der Synchronisierungsgruppe abgelehnt."
+      preparing: "Die Synchronisierung wird noch vorbereitet. Bitte versuche es gleich noch einmal."
+      refused: "Das andere Gerät hat die Kopplung abgelehnt."
+      not_active: "Es läuft keine Kopplung."
+  members:
+    remove_confirm:
+      title: "{device} entfernen?"
+      description: "Dadurch wird {device} aus der gesamten Synchronisierungsgruppe entfernt, nicht nur von diesem Gerät. Es synchronisiert nicht mehr mit den Geräten der Gruppe, und die Gruppenschlüssel werden ersetzt. Koppele es erneut, um später wieder zu synchronisieren."
+      action: "Aus Gruppe entfernen"
+    removed_from_group:
+      title: "Aus der Synchronisierungsgruppe entfernt"
+      description: "Dieses Gerät wurde aus seiner Synchronisierungsgruppe entfernt und synchronisiert nicht mehr. Koppele es erneut, um fortzufahren."
+    repair_banner:
+      title: "Synchronisierung wurde aktualisiert"
+      description: "Geräte, die mit der alten Synchronisierung gekoppelt wurden, müssen neu gekoppelt werden. Deine Daten bleiben auf jedem Gerät erhalten."
+      dismiss: "Schließen"
+    upgrade_progress: "Synchronisierungsdaten werden vorbereitet… {percent} %"
+  demo:
+    reset_blocked: "Demodaten können nicht zurückgesetzt werden, solange dieses Gerät gekoppelt ist, weil das Zurücksetzen auf deine anderen Geräte synchronisiert würde. Entferne dieses Gerät zuerst aus der Synchronisierungsgruppe."

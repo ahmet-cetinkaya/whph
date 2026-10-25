@@ -7,6 +7,8 @@ import 'package:whph/core/application/features/sync/services/reset_local_data_se
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/restart_screen.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_paired_notice.dart';
+import 'package:whph/presentation/ui/features/sync/utils/sync_result_texts.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
@@ -54,6 +56,9 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
 
     // Log the actual error for debugging
     Logger.error('Database reset failed: ${error.toString()}');
+
+    final refusalKey = SyncResultTexts.refusalKey(error);
+    if (refusalKey != null) return translationService.translate(refusalKey);
 
     if (error is FileSystemException) {
       if (error.osError?.errorCode == 13 || error.message.contains('Permission denied')) {
@@ -154,6 +159,8 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
                 ),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: AppTheme.sizeLarge),
+              const SyncPairedNotice(translationKey: SettingsTranslationKeys.resetDatabaseDialogPairedNote),
               const SizedBox(height: AppTheme.sizeXLarge),
               _isResetting
                   ? Column(

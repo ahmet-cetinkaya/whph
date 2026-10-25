@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
+import 'package:whph/core/application/features/sync/models/sync_member_summary.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
 import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
@@ -89,7 +89,7 @@ class FakeSyncService extends Fake implements ISyncService {
 class _TestSyncDevicesHost extends StatefulWidget {
   final ISyncService syncService;
   final ITranslationService translationService;
-  final List<SyncDeviceListItem> items;
+  final List<SyncMemberSummary> items;
 
   const _TestSyncDevicesHost({
     required this.syncService,
@@ -147,10 +147,10 @@ class _TestSyncDevicesHostState extends State<_TestSyncDevicesHost>
     return Column(
       children: widget.items
           .map((item) => SyncDeviceListItemWidget(
-                key: ValueKey(item.id),
-                item: item,
+                key: ValueKey(item.memberId),
+                member: item,
                 onRemove: (_) {},
-                lastSyncResult: lastSyncResultOf(item.id),
+                lastSyncResult: lastSyncResultOf(item.memberId),
               ))
           .toList(),
     );
@@ -161,20 +161,12 @@ void main() {
   late FakeContainer fakeContainer;
   late FakeSyncService syncService;
 
-  final deviceX = SyncDeviceListItem(
-    id: 'device-x',
-    fromIP: '192.168.1.2',
-    toIP: '192.168.1.3',
-    fromDeviceID: 'from-x',
-    toDeviceID: 'to-x',
+  final deviceX = SyncMemberSummary(
+    memberId: 'device-x',
     name: 'Device X',
   );
-  final deviceY = SyncDeviceListItem(
-    id: 'device-y',
-    fromIP: '192.168.1.4',
-    toIP: '192.168.1.5',
-    fromDeviceID: 'from-y',
-    toDeviceID: 'to-y',
+  final deviceY = SyncMemberSummary(
+    memberId: 'device-y',
     name: 'Device Y',
   );
 

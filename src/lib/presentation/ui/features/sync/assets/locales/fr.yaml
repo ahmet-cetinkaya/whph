@@ -389,3 +389,61 @@ sync:
     client_mode_stopped: Revenu au mode serveur
     sync_mode_toggle_error: Impossible de basculer le mode de synchronisation
   multi_interface_connection: Connexion multi-interface
+  status:
+    not_reachable: "Appareil inaccessible"
+    needs_repairing: "Nécessite un nouvel appairage"
+    needs_update: "{device} a besoin d'une version plus récente de WHPH pour synchroniser"
+    items_failed: "Certains éléments n'ont pas pu être synchronisés"
+    items_rejected: "Certains éléments ont été rejetés comme invalides"
+    preparing: "L'autre appareil prépare ses données de synchronisation"
+    duplicated_identity: "Un autre appareil utilise la même identité de synchronisation"
+    storage_error: "Une erreur de stockage a interrompu la synchronisation"
+    items_cannot_be_applied: "Certains éléments ont échoué à plusieurs reprises et sont ignorés pour l'instant"
+    repair_badge: "Nouvel appairage requis"
+    repair_action: "Appairer à nouveau"
+  pairing:
+    show_qr: "Afficher le code QR"
+    in_progress: "Appairage en cours…"
+    success: "Appairé avec {device}"
+    qr:
+      title: "Appairer avec un code QR"
+      description: "Scannez ce code avec l'autre appareil."
+      expires_in: "Expire dans {time}"
+      expired: "Ce code a expiré."
+      used: "Ce code a déjà été utilisé."
+      regenerate: "Afficher un nouveau code"
+      paired: "Appareil appairé"
+    code:
+      title: "Comparer les codes"
+      description: "Vérifiez que {device} affiche le même code."
+      match: "Les codes correspondent"
+      mismatch: "Les codes diffèrent"
+    group_switch:
+      title: "Changer de groupe de synchronisation ?"
+      description: "{device} est dans un autre groupe de synchronisation. Si vous continuez, cet appareil quitte son groupe actuel et ne se synchronise plus avec ses appareils."
+      confirm: "Changer de groupe"
+    errors:
+      code_expired_or_used: "Ce code a expiré ou a déjà été utilisé. Affichez un nouveau code et réessayez."
+      codes_differ: "Les codes ne correspondaient pas. L'appairage a été annulé."
+      cancelled: "L'appairage a été annulé."
+      unreachable: "Impossible de joindre l'autre appareil. Vérifiez que les deux sont sur le même réseau."
+      invalid_invitation: "Ce n'est pas un code d'appairage WHPH."
+      group_switch_declined: "Vous avez choisi de ne pas changer de groupe de synchronisation."
+      preparing: "La synchronisation est encore en préparation. Réessayez dans un instant."
+      refused: "L'autre appareil a refusé l'appairage."
+      not_active: "Aucun appairage n'est en cours."
+  members:
+    remove_confirm:
+      title: "Retirer {device} ?"
+      description: "Cela retire {device} de tout le groupe de synchronisation, pas seulement de cet appareil. Il ne se synchronise plus avec aucun appareil du groupe et les clés du groupe sont remplacées. Appairez-le à nouveau pour synchroniser plus tard."
+      action: "Retirer du groupe"
+    removed_from_group:
+      title: "Retiré du groupe de synchronisation"
+      description: "Cet appareil a été retiré de son groupe de synchronisation et ne se synchronise plus. Appairez-le à nouveau pour reprendre."
+    repair_banner:
+      title: "La synchronisation a été mise à niveau"
+      description: "Les appareils appairés avec l'ancienne synchronisation doivent être appairés à nouveau. Vos données restent sur chaque appareil."
+      dismiss: "Ignorer"
+    upgrade_progress: "Préparation des données de synchronisation… {percent} %"
+  demo:
+    reset_blocked: "Les données de démonstration ne peuvent pas être réinitialisées tant que cet appareil est appairé, car la réinitialisation serait synchronisée vers vos autres appareils. Retirez d'abord cet appareil du groupe de synchronisation."

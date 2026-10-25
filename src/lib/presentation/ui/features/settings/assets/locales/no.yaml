@@ -31,6 +31,7 @@ settings:
       av appen.
     select_file: Velg fil
     strategy:
+      paired_note: "Denne enheten synkroniserer med andre. Å erstatte eksisterende data sletter ikke elementer i hele gruppen: elementer som mangler i filen, blir værende på de andre enhetene dine og kommer tilbake til denne enheten ved neste synkronisering."
       merge: Slå sammen med eksisterende data
       replace: Slett eksisterende data og legg til nye
       title: Importstrategi
@@ -332,6 +333,7 @@ settings:
       title: Tilbakestill Database
       description: Slett alle data og tilbakestill applikasjonen
       dialog:
+        paired_note: "Denne enheten synkroniserer med andre. Tilbakestilling fjerner den også fra synkroniseringsgruppen, så du må pare den på nytt etterpå."
         title: Tilbakestill Database
         warning:
           "Advarsel: Denne handlingen kan ikke angres. Alle dine data vil bli

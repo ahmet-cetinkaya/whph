@@ -313,3 +313,61 @@ sync:
     client_mode_stopped: 切换回服务器模式
     sync_mode_toggle_error: 切换同步模式失败
   multi_interface_connection: 多接口连接
+  status:
+    not_reachable: "无法连接到设备"
+    needs_repairing: "需要重新配对"
+    needs_update: "{device} 需要更新版本的 WHPH 才能同步"
+    items_failed: "部分项目无法同步"
+    items_rejected: "部分项目因无效而被拒绝"
+    preparing: "对方设备正在准备同步数据"
+    duplicated_identity: "另一台设备使用了相同的同步标识"
+    storage_error: "存储错误中断了同步"
+    items_cannot_be_applied: "部分项目多次失败，暂时跳过"
+    repair_badge: "请重新配对"
+    repair_action: "重新配对"
+  pairing:
+    show_qr: "显示二维码"
+    in_progress: "正在配对…"
+    success: "已与 {device} 配对"
+    qr:
+      title: "使用二维码配对"
+      description: "请用另一台设备扫描此二维码。"
+      expires_in: "{time} 后过期"
+      expired: "此二维码已过期。"
+      used: "此二维码已被使用。"
+      regenerate: "显示新二维码"
+      paired: "设备已配对"
+    code:
+      title: "比对验证码"
+      description: "请确认 {device} 显示相同的验证码。"
+      match: "验证码一致"
+      mismatch: "验证码不一致"
+    group_switch:
+      title: "切换同步组？"
+      description: "{device} 属于另一个同步组。继续的话，此设备将离开当前同步组，不再与该组的设备同步。"
+      confirm: "切换同步组"
+    errors:
+      code_expired_or_used: "此二维码已过期或已被使用。请显示新的二维码后重试。"
+      codes_differ: "验证码不一致，配对已取消。"
+      cancelled: "配对已取消。"
+      unreachable: "无法连接到对方设备。请确认两台设备在同一网络中。"
+      invalid_invitation: "这不是 WHPH 的配对二维码。"
+      group_switch_declined: "你选择了不切换同步组。"
+      preparing: "同步仍在准备中，请稍后再试。"
+      refused: "对方设备拒绝了配对。"
+      not_active: "当前没有正在进行的配对。"
+  members:
+    remove_confirm:
+      title: "移除 {device}？"
+      description: "这会将 {device} 从整个同步组中移除，而不仅仅是从此设备移除。它将不再与组内任何设备同步，且组密钥会被更换。之后如需同步，请重新配对。"
+      action: "从同步组中移除"
+    removed_from_group:
+      title: "已从同步组中移除"
+      description: "此设备已从其同步组中移除，不再同步。请重新配对以恢复。"
+    repair_banner:
+      title: "同步已升级"
+      description: "使用旧版同步配对的设备需要重新配对。你的数据会保留在每台设备上。"
+      dismiss: "忽略"
+    upgrade_progress: "正在准备同步数据… {percent}%"
+  demo:
+    reset_blocked: "此设备处于配对状态时无法重置演示数据，因为重置会同步到你的其他设备。请先将此设备从同步组中移除。"

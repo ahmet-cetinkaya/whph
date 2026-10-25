@@ -366,3 +366,61 @@ sync:
     last_seen: Sist sett kl. {time}
     already_added: Allerede lagt til
   multi_interface_connection: Multi-interface tilkobling
+  status:
+    not_reachable: "Enheten kan ikke nås"
+    needs_repairing: "Må pares på nytt"
+    needs_update: "{device} trenger en nyere versjon av WHPH for å synkronisere"
+    items_failed: "Noen elementer kunne ikke synkroniseres"
+    items_rejected: "Noen elementer ble avvist som ugyldige"
+    preparing: "Den andre enheten forbereder synkroniseringsdataene sine"
+    duplicated_identity: "En annen enhet bruker samme synkroniseringsidentitet"
+    storage_error: "En lagringsfeil avbrøt synkroniseringen"
+    items_cannot_be_applied: "Noen elementer feilet gjentatte ganger og hoppes over foreløpig"
+    repair_badge: "Ny paring kreves"
+    repair_action: "Par på nytt"
+  pairing:
+    show_qr: "Vis QR-kode"
+    in_progress: "Paring pågår…"
+    success: "Paret med {device}"
+    qr:
+      title: "Par med en QR-kode"
+      description: "Skann denne koden med den andre enheten."
+      expires_in: "Utløper om {time}"
+      expired: "Denne koden har utløpt."
+      used: "Denne koden er allerede brukt."
+      regenerate: "Vis en ny kode"
+      paired: "Enhet paret"
+    code:
+      title: "Sammenlign kodene"
+      description: "Kontroller at {device} viser samme kode."
+      match: "Kodene stemmer"
+      mismatch: "Kodene er forskjellige"
+    group_switch:
+      title: "Bytte synkroniseringsgruppe?"
+      description: "{device} er i en annen synkroniseringsgruppe. Hvis du fortsetter, forlater denne enheten sin nåværende gruppe og synkroniserer ikke lenger med de enhetene."
+      confirm: "Bytt gruppe"
+    errors:
+      code_expired_or_used: "Koden har utløpt eller er allerede brukt. Vis en ny kode og prøv igjen."
+      codes_differ: "Kodene stemte ikke overens. Parringen ble avbrutt."
+      cancelled: "Parringen ble avbrutt."
+      unreachable: "Den andre enheten kunne ikke nås. Kontroller at begge er på samme nettverk."
+      invalid_invitation: "Dette er ikke en WHPH-parringskode."
+      group_switch_declined: "Du valgte å ikke bytte synkroniseringsgruppe."
+      preparing: "Synkroniseringen klargjøres fortsatt. Prøv igjen om litt."
+      refused: "Den andre enheten avviste parringen."
+      not_active: "Ingen paring pågår."
+  members:
+    remove_confirm:
+      title: "Fjerne {device}?"
+      description: "Dette fjerner {device} fra hele synkroniseringsgruppen, ikke bare fra denne enheten. Den slutter å synkronisere med alle enheter i gruppen, og gruppenøklene byttes ut. Par den på nytt for å synkronisere senere."
+      action: "Fjern fra gruppen"
+    removed_from_group:
+      title: "Fjernet fra synkroniseringsgruppen"
+      description: "Denne enheten ble fjernet fra synkroniseringsgruppen sin og synkroniserer ikke lenger. Par den på nytt for å fortsette."
+    repair_banner:
+      title: "Synkroniseringen er oppgradert"
+      description: "Enheter som er paret med den gamle synkroniseringen, må pares på nytt. Dataene dine blir værende på hver enhet."
+      dismiss: "Lukk"
+    upgrade_progress: "Forbereder synkroniseringsdata… {percent} %"
+  demo:
+    reset_blocked: "Demodata kan ikke tilbakestilles mens denne enheten er paret, fordi tilbakestillingen ville synkroniseres til de andre enhetene dine. Fjern først denne enheten fra synkroniseringsgruppen."

@@ -33,6 +33,7 @@ settings:
       različico aplikacije.
     select_file: Izberite datoteko
     strategy:
+      paired_note: "Ta naprava se sinhronizira z drugimi. Zamenjava obstoječih podatkov ne izbriše elementov v celotni skupini: elementi, ki manjkajo v datoteki, ostanejo na vaših drugih napravah in se ob naslednji sinhronizaciji vrnejo na to napravo."
       merge: Združi z obstoječimi podatki
       replace: Izbriši obstoječe podatke in dodaj nove
       title: Strategija uvoza
@@ -345,6 +346,7 @@ settings:
       title: Ponastavi Zbirko Podatkov
       description: Izbriši vse podatke in ponastavi aplikacijo
       dialog:
+        paired_note: "Ta naprava se sinhronizira z drugimi. Ponastavitev jo odstrani tudi iz skupine za sinhronizacijo, zato jo boste morali pozneje znova seznaniti."
         title: Ponastavi Zbirko Podatkov
         warning:
           "Opozorilo: Tega dejanja ni mogoče razveljaviti. Vsi vaši podatki

@@ -381,3 +381,61 @@ sync:
     last_seen: Văzut ultima dată la {time}
     already_added: Deja adăugat
   multi_interface_connection: Conexiune multi-interfață
+  status:
+    not_reachable: "Dispozitivul nu poate fi contactat"
+    needs_repairing: "Necesită asociere din nou"
+    needs_update: "{device} are nevoie de o versiune mai nouă a WHPH pentru a sincroniza"
+    items_failed: "Unele elemente nu au putut fi sincronizate"
+    items_rejected: "Unele elemente au fost respinse ca invalide"
+    preparing: "Celălalt dispozitiv își pregătește datele de sincronizare"
+    duplicated_identity: "Alt dispozitiv folosește aceeași identitate de sincronizare"
+    storage_error: "O eroare de stocare a întrerupt sincronizarea"
+    items_cannot_be_applied: "Unele elemente au eșuat în mod repetat și sunt omise deocamdată"
+    repair_badge: "Asociere necesară din nou"
+    repair_action: "Asociază din nou"
+  pairing:
+    show_qr: "Afișează codul QR"
+    in_progress: "Asociere în curs…"
+    success: "Asociat cu {device}"
+    qr:
+      title: "Asociază cu un cod QR"
+      description: "Scanează acest cod cu celălalt dispozitiv."
+      expires_in: "Expiră în {time}"
+      expired: "Acest cod a expirat."
+      used: "Acest cod a fost deja folosit."
+      regenerate: "Afișează un cod nou"
+      paired: "Dispozitiv asociat"
+    code:
+      title: "Compară codurile"
+      description: "Verifică dacă {device} afișează același cod."
+      match: "Codurile se potrivesc"
+      mismatch: "Codurile diferă"
+    group_switch:
+      title: "Schimbi grupul de sincronizare?"
+      description: "{device} se află într-un alt grup de sincronizare. Dacă continui, acest dispozitiv părăsește grupul curent și nu se mai sincronizează cu dispozitivele lui."
+      confirm: "Schimbă grupul"
+    errors:
+      code_expired_or_used: "Codul a expirat sau a fost deja folosit. Afișează un cod nou și încearcă din nou."
+      codes_differ: "Codurile nu s-au potrivit. Asocierea a fost anulată."
+      cancelled: "Asocierea a fost anulată."
+      unreachable: "Celălalt dispozitiv nu poate fi contactat. Verifică dacă ambele sunt în aceeași rețea."
+      invalid_invitation: "Acesta nu este un cod de asociere WHPH."
+      group_switch_declined: "Ai ales să nu schimbi grupul de sincronizare."
+      preparing: "Sincronizarea se pregătește încă. Încearcă din nou în scurt timp."
+      refused: "Celălalt dispozitiv a refuzat asocierea."
+      not_active: "Nicio asociere nu este în curs."
+  members:
+    remove_confirm:
+      title: "Elimini {device}?"
+      description: "Aceasta elimină {device} din întregul grup de sincronizare, nu doar de pe acest dispozitiv. Nu se mai sincronizează cu niciun dispozitiv din grup, iar cheile grupului sunt înlocuite. Asociază-l din nou pentru a sincroniza mai târziu."
+      action: "Elimină din grup"
+    removed_from_group:
+      title: "Eliminat din grupul de sincronizare"
+      description: "Acest dispozitiv a fost eliminat din grupul de sincronizare și nu se mai sincronizează. Asociază-l din nou pentru a relua."
+    repair_banner:
+      title: "Sincronizarea a fost actualizată"
+      description: "Dispozitivele asociate cu vechea sincronizare trebuie asociate din nou. Datele tale rămân pe fiecare dispozitiv."
+      dismiss: "Ignoră"
+    upgrade_progress: "Se pregătesc datele de sincronizare… {percent}%"
+  demo:
+    reset_blocked: "Datele demo nu pot fi resetate cât timp acest dispozitiv este asociat, deoarece resetarea s-ar sincroniza pe celelalte dispozitive. Elimină mai întâi acest dispozitiv din grupul de sincronizare."
