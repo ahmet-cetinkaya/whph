@@ -1,6 +1,6 @@
 // T28 regression: the first sync must scale about linearly with the number of
 // cells. A per-cell query that scans or sorts a growing table made it ~n^1.4
-// (n=4000 took 155 s). Doubling the notes must not more than ~2.6x the time.
+// (n=4000 took 155 s). Quadrupling the notes must not take more than ~5x the time.
 import 'package:drift/drift.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -8,10 +8,13 @@ import '../integration/sync_acceptance/support2/lab.dart';
 import '../integration/sync_acceptance/support2/lan_support.dart';
 
 const int _smallNotes = 1000;
-const int _largeNotes = 2000;
-const double _maxGrowthFactor = 2.6;
+const int _largeNotes = 4000;
+// Linear growth is 4x; the quadratic-ish scan made ~6.9x (1000 -> 4000).
+const double _maxGrowthFactor = 5;
+const int _bytesProbeNotes = 300;
+const int _maxBytesPerNote = 4096;
 
-Future<Duration> _firstSyncOf(int notes) async {
+Future<({Duration elapsed, int bytes})> _firstSyncOf(int notes) async {
   final lab = await Lab.create();
   try {
     final a = await lab.add('A');
@@ -32,7 +35,10 @@ Future<Duration> _firstSyncOf(int notes) async {
         .customSelect('SELECT COUNT(*) c FROM note_table')
         .getSingle();
     expect(received.data['c'], notes);
-    return elapsed;
+    return (
+      elapsed: elapsed,
+      bytes: result.stats.bytesSent + recorder.results.last.stats.bytesSent
+    );
   } finally {
     await lab.close();
   }
@@ -43,12 +49,21 @@ void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
   test('first sync time grows about linearly with the cell count', () async {
-    final small = await _firstSyncOf(_smallNotes);
-    final large = await _firstSyncOf(_largeNotes);
+    final small = (await _firstSyncOf(_smallNotes)).elapsed;
+    final large = (await _firstSyncOf(_largeNotes)).elapsed;
     // ignore: avoid_print
     print('SCALING $_smallNotes notes: $small, $_largeNotes notes: $large');
     expect(
         large.inMicroseconds / small.inMicroseconds, lessThan(_maxGrowthFactor),
         reason: '$small -> $large');
   }, timeout: const Timeout(Duration(minutes: 10)));
+
+  test('a first sync ships each manifest once per batch, not once per cell',
+      () async {
+    final run = await _firstSyncOf(_bytesProbeNotes);
+    // ignore: avoid_print
+    print('BYTES $_bytesProbeNotes notes: ${run.bytes}');
+    // Per-cell manifest copies made this ~130 KB per note.
+    expect(run.bytes / _bytesProbeNotes, lessThan(_maxBytesPerNote));
+  }, timeout: const Timeout(Duration(minutes: 5)));
 }

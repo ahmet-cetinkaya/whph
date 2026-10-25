@@ -308,7 +308,9 @@ LEFT JOIN sync_row cr ON cr.id = c.cause_row_id''';
   /// order. The keys are picked first by a plain index range, because with the
   /// joins in one query SQLite scanned and sorted the whole clock table for
   /// every page (a first sync grew ~n^1.4; T28). Arguments: origin, afterSeq,
-  /// upToSeq, limit.
+  /// upToSeq, limit. The inner join to sync_row cannot drop a picked key:
+  /// the only sync_row delete (SyncUpgradeJob dedupe) removes the row's clock
+  /// cells first, so a page is never shorter than its picked keys.
   static const String clockCellPageSql = '''
 $_clockCellSelect
 WHERE c.key IN (
@@ -663,8 +665,9 @@ ON CONFLICT (key) DO UPDATE SET hlc = excluded.hlc, node_id = excluded.node_id, 
       CellRecord cell, int clockKey, _ApplyContext context) async {
     final clash = await _selectOne('''
 SELECT c.key AS key, c.hlc AS hlc, n.value AS node
-FROM sync_clock c JOIN sync_intern o ON o.id = c.origin_id JOIN sync_intern n ON n.id = c.node_id
-WHERE o.value = ? AND c.origin_seq = ?''', [cell.origin, cell.originSeq]);
+FROM sync_clock c JOIN sync_intern n ON n.id = c.node_id
+WHERE c.origin_id = (SELECT id FROM sync_intern WHERE kind = $internKindOrigin AND value = ?)
+  AND c.origin_seq = ?''', [cell.origin, cell.originSeq]);
     if (clash == null) return;
     final sameVersion = clash['key'] == clockKey &&
         clash['hlc'] == cell.clock &&
