@@ -288,26 +288,56 @@ Targets (SC-012, SC-013): first full sync of the `large_usage` fixture ≤ 10 mi
 500 changes ≤ 15 s; every sampled UI action < 1 s on Linux and Android; Android
 group-switch re-author ≤ 120 s with each chunk ≤ 2 s.
 
-Setup:
+Two runs exist. Do not mix their numbers.
 
-1. One Linux desktop and one Android phone on the same Wi-Fi. Measure the link
-   with `iperf3` if available (≥ 20 Mbit/s).
-2. Load the `large_usage` dataset on both (full state on both sides for the
-   two-way case).
-3. Run on each device:
+**Headless loopback run (this machine, desktop only).** Two `AppDatabase`
+devices with the real `LanSyncServer` and `LanSyncClient` on `127.0.0.1`.
+It checks the same gates as soft gates, and it writes
+`.agents/state/reliable-secure-lan-sync/reports/t28-perf-loopback.md`.
+The network is free and the sampler shares the isolate with both databases, so
+the numbers are loopback desktop numbers. They are not device evidence.
 
 ```sh
 cd src
-fvm flutter test integration_test/sync_performance_test.dart -d linux
-fvm flutter test integration_test/sync_performance_test.dart -d <android-device-id>
+timeout 30m fvm flutter test --tags perf-sync --timeout=25m \
+  test/performance_sync/sync_performance_loopback_test.dart
 ```
 
-The test header file is the source of truth for the exact steps; this section
-mirrors it. Record: first full sync time, a 500-change session, list-open and
-edit latency during sync on each device, the Android group-switch job time,
+**Two-device run (a human, with hardware).** The procedure is in the header of
+`src/integration_test/sync_performance_test.dart`. Summary:
+
+1. One Linux desktop and one Android phone on the same Wi-Fi. Measure the link
+   with `iperf3` if available (at least 20 Mbit/s).
+2. Start the `server` role on the device that holds `large_usage`
+   (`--dart-define=PERF_ROLE=server`). It prints `PERF_INVITATION=...`.
+3. Start the `client` role on the other device with
+   `--dart-define=PERF_ROLE=client --dart-define=PERF_INVITATION=<text>`.
+   `PERF_MODE=twoway` loads `large_usage` on both sides for the full-state
+   first sync against the 6-minute T6 gate.
+4. Swap the roles, and record the metrics table that the client prints.
+
+```sh
+cd src
+fvm flutter test integration_test/sync_performance_test.dart -d linux \
+  --dart-define=PERF_ROLE=server
+fvm flutter test integration_test/sync_performance_test.dart -d <android-device-id> \
+  --dart-define=PERF_ROLE=client --dart-define=PERF_INVITATION=<text>
+```
+
+Record: first full sync time, a 500-change session, list-open and edit latency
+during sync on each device, the Android group-switch job time and chunk times,
 tombstone count and its share of first-sync time and bytes, and the full-state
-two-way first sync against the 6-minute gate. Windows needs an available machine;
-otherwise record it as a gap and do not mark SC-013 as passed for every platform.
+two-way first sync against the 6-minute gate. Windows needs an available
+machine; otherwise record it as a gap and do not mark SC-013 as passed for every
+platform.
+
+### Status of the measurements
+
+| Item | Status |
+|---|---|
+| Loopback desktop run (SC-012 and SC-013 shapes) | See `t28-perf-loopback.md` for the numbers of the last run. |
+| Linux and Android device run (SC-012, SC-013, PA-6) | **Not done.** Needs hardware; a human gap. |
+| Windows (SC-013) | **Not done.** Recorded as a gap. SC-013 is not passed for every supported platform. |
 
 ## Troubleshooting
 
