@@ -23,11 +23,7 @@ import 'package:whph/core/application/features/settings/services/abstraction/i_s
 import 'package:whph/core/application/features/settings/services/abstraction/i_settings_effects.dart';
 import 'package:whph/core/application/features/settings/services/settings_actions.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
-import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_actions.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_events.dart';
@@ -100,14 +96,6 @@ List<McpToolDefinition> buildMcpTools(
     transactions: transactions,
     effects: container.resolve<ISettingsEffects>(),
   );
-  final syncActions = SyncActions(
-    repository: container.resolve<ISyncDeviceRepository>(),
-    transactions: transactions,
-    syncService: container.resolve<ISyncService>(),
-    deviceIds: container.resolve<IDeviceIdService>(),
-    networkInterfaces: container.resolve<INetworkInterfaceService>(),
-    handshake: container.resolve<DeviceHandshakeService>(),
-  );
   Future<bool> authorize(_, Set<String> scopes) =>
       requestContext.isAuthorized(scopes);
 
@@ -154,7 +142,8 @@ List<McpToolDefinition> buildMcpTools(
       requestContext: requestContext,
     ),
     ...createSyncTools(
-      actions: syncActions,
+      mediator: mediator,
+      statusStore: container.resolve<ISyncPeerStatusStore>(),
       operations: container.resolve<IMcpOperationService>(),
       requestContext: requestContext,
     ),
