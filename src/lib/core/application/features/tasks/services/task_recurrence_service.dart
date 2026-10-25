@@ -627,7 +627,7 @@ class TaskRecurrenceService implements ITaskRecurrenceService {
     return SaveTaskCommand(
       // D5: recurring occurrence identity = series root + planned day;
       // paired devices offline generate the same instance (FR-030).
-      id: syncIdentityId(identityKindRecurringTask, [
+      newTaskId: syncIdentityId(identityKindRecurringTask, [
         recurrenceParentIdToUse,
         nextPlannedDate.toUtc().toIso8601String().substring(0, 10),
       ]),
