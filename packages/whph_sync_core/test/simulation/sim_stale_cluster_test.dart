@@ -55,7 +55,12 @@ void main() {
         relaxedWinners);
     expect(second.stats.counters['endgame.memberRowStrandedInStaleCluster'],
         strandedMembers);
-  }, timeout: const Timeout(Duration(minutes: 10)));
+  },
+      skip: useAsyncEngine
+          ? 'seed 100006 without the post-key-loss re-invite is schedule-dependent under the async engine; '
+              'the engine-independent evidence is test/session/stale_cluster_engineered_test.dart'
+          : false,
+      timeout: const Timeout(Duration(minutes: 10)));
 
   test(
       'a clean seed without stale restores stays clean and uses no exclusion (seed 100003)',
@@ -71,11 +76,7 @@ void main() {
     expect(
         result.stats.counters['endgame.memberRowStrandedInStaleCluster'] ?? 0,
         0);
-  },
-      skip: useAsyncEngine
-          ? 'seed 100006 without the post-key-loss re-invite is schedule-dependent under the async engine'
-          : false,
-      timeout: const Timeout(Duration(minutes: 10)));
+  }, timeout: const Timeout(Duration(minutes: 10)));
 
   test(
       'with the repair prompt disabled, stranding must surface as violations (seed 100160)',
