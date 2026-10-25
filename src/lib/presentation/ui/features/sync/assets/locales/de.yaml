@@ -6,171 +6,7 @@ sync:
       sync_failed: Fehler beim Synchronisieren der Geräte
     from_label: Von
     help:
-      content: '🔄 **Was ist Sync?**
-
-
-        Sync hält Ihre Gewohnheiten, Aufgaben, Notizen und Daten auf dem gleichen
-        Wi-Fi über Geräte (Handys, Tablets, Laptops, Desktops) aktuell. Kein Cloud
-        oder Internet — Daten bleiben privat und lokal.
-
-
-        Es ist einfach zu bedienen: Richten Sie es einmal ein, und Änderungen synchronisieren
-        automatisch oder auf Abruf. Wechseln Sie nahtlos zwischen Geräten, wie Sie
-        auf dem Handy anfangen und am PC beenden.
-
-
-        ## 🔗 **Sync-Modi**
-
-
-        Alle Geräte unterstützen Client- oder Server-Modi für flexible Synchronisation.
-        Server leitet (teilt Daten), Clients schließen sich an und tauschen aus. Mindestens
-        ein Server erforderlich.
-
-
-        - **Client-Modus:** Verbinde mit einem Server zum Synchronisieren. Ideal zum
-        Beitreten von Gruppen via QR oder manueller Eingabe.
-
-        - **Server-Modus:** Wirkt als Hub; zeigt QR oder String für andere zum Verbinden.
-
-
-        **Plattform-Hinweise:**
-
-        - **Mobile:** Umschalten über Wi-Fi-Hotspot-Symbol. Server für tragbare Hubs.
-
-        - **Desktop (Standard: Server):** In Sync-Einstellungen wechseln. Client für
-        Laptops, die zu Haupt-PCs synchronisieren.
-
-
-        **Beispiele:** Mobile-zu-Mobile (ein Server), Desktop-zu-Mobile (in beide
-        Richtungen), Desktop-zu-Desktop (ein Server, ein Client).
-
-
-        Modi in Sync-Einstellungen wechseln; App merkt sich Ihre Wahl.
-
-
-        ## 🛠️ **Sync aktivieren**
-
-
-        Geräte müssen Wi-Fi teilen; WHPH offen halten.
-
-
-        ### **QR-Code-Einrichtung**
-
-        1. Server: Server-Modus in Sync starten — QR erscheint.
-
-        2. Client: "Gerät hinzufügen" > QR scannen.
-
-        3. Verbinde automatisch und synchronisiere.
-
-
-        Unterstützt alle Kombinationen.
-
-
-        ### **Verbindungs-String**
-
-        1. Server: String kopieren (z.B. "whph://IP:44040?...") aus Sync.
-
-        2. Client: "Gerät hinzufügen" > Manuell > String einfügen > Verbinden.
-
-
-        Keine Kamera erforderlich.
-
-
-        ### **Manuelle Eingabe**
-
-        1. Server: IP/Port (Standard 44040) aus Verbindungsinfo notieren.
-
-        2. Client: "Gerät hinzufügen" > Manuell > IP, Port, Name eingeben > Testen
-        > Verbinden.
-
-
-        **Desktop-Clients:** Zuerst zu Client-Modus wechseln, dann verbinden. Automatische
-        Synchronisation; jederzeit zurückwechseln.
-
-
-        Für Zuverlässigkeit Auto-Reconnect in Einstellungen aktivieren.
-
-
-        ## 📋 **Geräte verwalten**
-
-
-        - **Anzeigen:** Geräte, Sync-Zeiten, Status in Sync-Einstellungen sehen.
-
-        - **Manuelle Sync:** Button pro Gerät drücken.
-
-        - **Entfernen:** Auswählen und entfernen, um Sync zu stoppen.
-
-
-        ## 🔧 **Fehlerbehebung**
-
-
-        **Verbindungsprobleme:**
-
-        1. Gleiches Wi-Fi? Kein VPN.
-
-        2. App neu starten.
-
-        3. Server-Modus überprüfen.
-
-        4. Ohne Firewall testen.
-
-
-        **Keine Geräte?**
-
-        - Stabiles Wi-Fi, keine Proxies.
-
-        - Scan aktualisieren.
-
-        - Manuelles IP verwenden.
-
-
-        **Sync-Fehler/Timeouts:**
-
-        1. Manuelle Sync.
-
-        2. App-Versionen abgleichen.
-
-        3. Für große Daten warten.
-
-
-        **Firewall (Port 44040):**
-
-
-        Wenn Verbindungen nicht funktionieren, blockiert möglicherweise Ihre Computer-Firewall
-        das Sync-Signal. Öffnen Sie Port 44040, damit Geräte lokal kommunizieren —
-        sicher für Ihr Heimnetzwerk.
-
-
-        **Windows (GUI):**
-
-        1. Defender Firewall öffnen > Erweitert > Eingehende Regeln > Neue Regel.
-
-        2. Port > TCP > 44040 > Erlauben > Alle Profile > "WHPH Sync" nennen > Fertig.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Tipps: Router neu starten, private Netzwerke nutzen. Bei "nicht gefunden"-Fehlern
-        neu pairen.
-
-        '
+      content: "🔄 **Was ist Sync?**\n\nSync hält deine Gewohnheiten, Aufgaben, Notizen und Daten auf deinen Geräten im selben WLAN aktuell. Keine Cloud, kein Internet: Die Daten bleiben privat und lokal.\n\n## 🛠️ **Sync aktivieren**\n\n1. Lasse WHPH auf beiden Geräten im selben WLAN geöffnet.\n2. Wähle auf einem Gerät „Gerät hinzufügen“ und zeige den QR-Code an.\n3. Scanne ihn mit dem anderen Gerät und prüfe, dass beide Bildschirme denselben Code zeigen.\n4. Danach werden Änderungen automatisch synchronisiert.\n\n## 📋 **Geräte verwalten**\n\n- **Ansehen:** Geräte, Sync-Zeiten und Status findest du in den Sync-Einstellungen.\n- **Manueller Sync:** Tippe auf die Schaltfläche beim Gerät.\n- **Entfernen:** Wähle ein Gerät und entferne es, um den Sync zu beenden.\n\n## 🔧 **Fehlerbehebung**\n\n1. Gleiches WLAN? Kein VPN.\n2. App neu starten.\n3. Ohne Firewall testen.\n\n**Keine Geräte?**\n- Stabiles WLAN, keine Proxys.\n- Suche aktualisieren."
       title: Hilfe zur Gerätesynchronisation
     last_sync_label: Letzte Synchronisation
     no_devices_found: Keine synchronisierten Geräte
@@ -269,14 +105,11 @@ sync:
   server:
     starting: Server-Modus wird gestartet...
     active: Server-Modus aktiv - QR-Code anderen Geräten zeigen
-    stopped: Server-Modus gestoppt - Gerät ist jetzt im Client-Modus
+    stopped: "Verbindungen von anderen Geräten werden nicht mehr angenommen"
     start_failed:
       Start des Server-Modus fehlgeschlagen - Überprüfen Sie, ob Port
       44040 verfügbar ist
-    start_tooltip: Server-Modus starten
-    stop_tooltip: Server-Modus stoppen
     error: Fehler
-    device_became_server: Dieses Gerät ist jetzt der Synchronisationsserver
     start_menu: Server starten
     stop_menu: Server stoppen
     mode_title: Server-Modus
@@ -303,13 +136,9 @@ sync:
     connection_string_label: Verbindungszeichenfolge
     test_connection: Verbindung testen
     enter_server_details: Serververbindungsdetails manuell eingeben
-    connection_timeout:
-      Verbindungs-Timeout. Überprüfen Sie die Serveradresse und
-      versuchen Sie es erneut.
+    connection_timeout: "Zeitüberschreitung bei der Verbindung. Überprüfe die Geräteadresse und versuche es erneut."
     connection_test_successful: Verbindungs-Test erfolgreich!
-    connection_test_timeout:
-      Verbindungs-Test-Timeout. Überprüfen Sie die Serveradresse
-      und versuchen Sie es erneut.
+    connection_test_timeout: "Zeitüberschreitung beim Verbindungstest. Überprüfe die Geräteadresse und versuche es erneut."
     connection_test_failed_no_response:
       Verbindungs-Test fehlgeschlagen - Keine Antwort
       vom Server
@@ -355,21 +184,10 @@ sync:
     copy: Kopieren
   desktop:
     mode_title: Desktop-Synchronisierungsmodus
-    client_mode_start: Als Client verbinden
-    client_mode_stop: Zum Server-Modus wechseln
-    client_mode_description:
-      Verbinden Sie sich mit dem Server eines anderen Geräts,
-      um Daten zu synchronisieren
-    server_mode_description:
-      Erlauben Sie anderen Geräten, sich zu verbinden und mit
-      diesem Gerät zu synchronisieren
-    sync_mode_start: Client-Modus starten
-    sync_mode_stop: Client-Modus stoppen
-    sync_mode_start_menu: Client-Modus starten
-    sync_mode_stop_menu: Client-Modus stoppen
-    client_mode_starting: Client-Modus wird gestartet...
-    client_mode_started: Client-Modus gestartet
-    client_mode_stopped: Zurück zum Server-Modus gewechselt
+    sync_mode_start_menu: "Keine Verbindungen mehr annehmen"
+    sync_mode_stop_menu: "Verbindungen annehmen"
+    client_mode_started: "Nimmt keine Verbindungen mehr an"
+    client_mode_stopped: "Nimmt wieder Verbindungen an"
     sync_mode_toggle_error: Sync-Modus konnte nicht umgeschaltet werden
   multi_interface_connection: Multi-Interface-Verbindung
   status:

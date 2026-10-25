@@ -51,12 +51,9 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String serverModeActive = 'sync.server.active';
   static const String serverModeStopped = 'sync.server.stopped';
   static const String serverModeStartFailed = 'sync.server.start_failed';
-  static const String serverModeStartTooltip = 'sync.server.start_tooltip';
-  static const String serverModeStopTooltip = 'sync.server.stop_tooltip';
   static const String serverModeStartMenu = 'sync.server.start_menu';
   static const String serverModeStopMenu = 'sync.server.stop_menu';
   static const String serverModeError = 'sync.server.error';
-  static const String deviceBecameServer = 'sync.server.device_became_server';
 
   // Sync Devices Page
   static const String pageTitle = 'sync.devices.title';
@@ -105,15 +102,8 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
 
   // Desktop Sync Mode
   static const String desktopSyncMode = 'sync.desktop.mode_title';
-  static const String desktopClientModeStart = 'sync.desktop.client_mode_start';
-  static const String desktopClientModeStop = 'sync.desktop.client_mode_stop';
-  static const String desktopClientModeDescription = 'sync.desktop.client_mode_description';
-  static const String desktopServerModeDescription = 'sync.desktop.server_mode_description';
-  static const String desktopSyncModeStart = 'sync.desktop.sync_mode_start';
-  static const String desktopSyncModeStop = 'sync.desktop.sync_mode_stop';
   static const String desktopSyncModeStartMenu = 'sync.desktop.sync_mode_start_menu';
   static const String desktopSyncModeStopMenu = 'sync.desktop.sync_mode_stop_menu';
-  static const String desktopClientModeStarting = 'sync.desktop.client_mode_starting';
   static const String desktopClientModeStarted = 'sync.desktop.client_mode_started';
   static const String desktopClientModeStopped = 'sync.desktop.client_mode_stopped';
   static const String desktopSyncModeToggleError = 'sync.desktop.sync_mode_toggle_error';

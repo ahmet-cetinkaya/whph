@@ -6,157 +6,7 @@ sync:
       sync_failed: 同步设备失败
     from_label: 从
     help:
-      content: '🔄 **什么是 Sync？**
-
-
-        Sync 保持您的习惯、任务、笔记和数据在同一 Wi-Fi 上跨设备（手机、平板、笔记本、桌面）更新。没有云或互联网 — 数据保持私密和本地。
-
-
-        使用简单：设置一次，变更自动或按需同步。从设备无缝切换，比如在手机开始，在 PC 完成。
-
-
-        ## 🔗 **Sync 模式**
-
-
-        所有设备支持客户端或服务器模式以实现灵活同步。服务器领导（共享数据），客户端加入并交换。需要至少一个服务器。
-
-
-        - **客户端模式:** 连接到服务器以同步。通过 QR 或手动输入加入组理想。
-
-        - **服务器模式:** 作为 hub 行事；显示 QR 或字符串供他人连接。
-
-
-        **平台说明:**
-
-        - **移动:** 通过 Wi-Fi 热点图标切换。服务器用于便携 hub。
-
-        - **桌面 (默认: 服务器):** 在 Sync 设置中切换。客户端用于同步到主 PC 的笔记本。
-
-
-        **示例:** 移动到移动 (一个服务器)，桌面到移动 (任一方式)，桌面到桌面 (一个服务器，一个客户端)。
-
-
-        在 Sync 设置中切换模式；应用记住您的选择。
-
-
-        ## 🛠️ **启用 Sync**
-
-
-        设备必须共享 Wi-Fi；保持 WHPH 打开。
-
-
-        ### **QR 码设置**
-
-        1. 服务器: 在 Sync 中启动服务器模式 — QR 出现。
-
-        2. 客户端: “添加设备” > 扫描 QR。
-
-        3. 自动连接并同步。
-
-
-        支持所有组合。
-
-
-        ### **连接字符串**
-
-        1. 服务器: 从 Sync 复制字符串 (例如 "whph://IP:44040?...")。
-
-        2. 客户端: “添加设备” > 手动 > 粘贴字符串 > 连接。
-
-
-        不需要相机。
-
-
-        ### **手动输入**
-
-        1. 服务器: 从连接信息记下 IP/端口 (默认 44040)。
-
-        2. 客户端: “添加设备” > 手动 > 输入 IP、端口、名称 > 测试 > 连接。
-
-
-        **桌面客户端:** 先切换到客户端模式，然后连接。自动同步；随时切换回。
-
-
-        在设置中启用自动重连以提高可靠性。
-
-
-        ## 📋 **管理设备**
-
-
-        - **查看:** 在 Sync 设置中查看设备、同步时间、状态。
-
-        - **手动同步:** 每个设备按按钮。
-
-        - **移除:** 选择并移除以停止同步。
-
-
-        ## 🔧 **故障排除**
-
-
-        **连接问题:**
-
-        1. 同一 Wi-Fi？无 VPN。
-
-        2. 重启应用。
-
-        3. 验证服务器模式。
-
-        4. 无防火墙测试。
-
-
-        **无设备？**
-
-        - 稳定 Wi-Fi，无代理。
-
-        - 刷新扫描。
-
-        - 使用手动 IP。
-
-
-        **同步失败/超时:**
-
-        1. 手动同步。
-
-        2. 匹配应用版本。
-
-        3. 等待大文件。
-
-
-        **防火墙 (端口 44040):**
-
-
-        如果连接不工作，您的计算机防火墙可能阻塞同步信号。打开端口 44040 以允许设备本地通信 — 对家庭网络安全。
-
-
-        **Windows (GUI):**
-
-        1. 打开 Defender 防火墙 > 高级 > 入站规则 > 新规则。
-
-        2. 端口 > TCP > 44040 > 允许 > 所有配置文件 > 命名 "WHPH Sync" > 完成。
-
-
-        **Windows (管理员 CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        提示: 重启路由器，使用私有网络。如果“未找到”错误，重配对。
-
-        '
+      content: "🔄 **什么是同步？**\n\n同步可让同一 Wi-Fi 下的各台设备上的习惯、任务、笔记和数据保持最新。无需云端或互联网：数据保持私密并留在本地。\n\n## 🛠️ **启用同步**\n\n1. 在同一 Wi-Fi 下，让两台设备都保持打开 WHPH。\n2. 在一台设备上选择“添加设备”并显示二维码。\n3. 用另一台设备扫描，并确认两个屏幕显示相同的代码。\n4. 之后更改会自动同步。\n\n## 📋 **管理设备**\n\n- **查看：** 在同步设置中查看设备、同步时间和状态。\n- **手动同步：** 点击对应设备的按钮。\n- **移除：** 选择设备并移除即可停止同步。\n\n## 🔧 **故障排除**\n\n1. 是否在同一 Wi-Fi？请关闭 VPN。\n2. 重启应用。\n3. 关闭防火墙后再试。\n\n**没有设备？**\n- 使用稳定的 Wi-Fi，不要使用代理。\n- 刷新扫描。"
       title: 设备同步帮助
     last_sync_label: 最后同步
     no_devices_found: 没有同步设备
@@ -230,12 +80,9 @@ sync:
   server:
     starting: 启动服务器模式...
     active: 服务器模式活跃 - 向其他设备显示 QR 码
-    stopped: 服务器模式停止 - 设备现在处于客户端模式
+    stopped: "已停止接受来自其他设备的连接"
     start_failed: 启动服务器模式失败 - 检查端口 44040 是否可用
-    start_tooltip: 启动服务器模式
-    stop_tooltip: 停止服务器模式
     error: 错误
-    device_became_server: 此设备现在是同步服务器
     start_menu: 启动服务器
     stop_menu: 停止服务器
     mode_title: 服务器模式
@@ -262,9 +109,9 @@ sync:
     connection_string_label: 连接字符串
     test_connection: 测试连接
     enter_server_details: 手动输入服务器连接详细信息
-    connection_timeout: 连接超时。请检查服务器地址并重试。
+    connection_timeout: "连接超时。请检查设备地址后重试。"
     connection_test_successful: 连接测试成功！
-    connection_test_timeout: 连接测试超时。请检查服务器地址并重试。
+    connection_test_timeout: "连接测试超时。请检查设备地址后重试。"
     connection_test_failed_no_response: 连接测试失败 - 服务器无响应
     connection_test_failed_generic: "连接测试失败: {0}"
     connection_string_instruction: 将服务器设备提供的连接字符串粘贴此处进行手动连接。
@@ -300,17 +147,10 @@ sync:
     copy: 复制
   desktop:
     mode_title: 桌面同步模式
-    client_mode_start: 以客户端连接
-    client_mode_stop: 切换到服务器模式
-    client_mode_description: 连接到其他设备的服务器以同步数据
-    server_mode_description: 允许其他设备连接并与此设备同步
-    sync_mode_start: 启动客户端模式
-    sync_mode_stop: 停止客户端模式
-    sync_mode_start_menu: 启动客户端模式
-    sync_mode_stop_menu: 停止客户端模式
-    client_mode_starting: 启动客户端模式...
-    client_mode_started: 客户端模式已启动
-    client_mode_stopped: 切换回服务器模式
+    sync_mode_start_menu: "停止接受连接"
+    sync_mode_stop_menu: "接受连接"
+    client_mode_started: "不再接受连接"
+    client_mode_stopped: "已重新接受连接"
     sync_mode_toggle_error: 切换同步模式失败
   multi_interface_connection: 多接口连接
   status:

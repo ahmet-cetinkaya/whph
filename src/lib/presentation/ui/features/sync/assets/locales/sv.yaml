@@ -1,21 +1,10 @@
 sync:
   desktop:
     mode_title: Desktop Synkroniseringsläge
-    client_mode_start: Anslut som klient
-    client_mode_stop: Byt till serverläge
-    client_mode_description:
-      Anslut till en annan enhets server för att synkronisera
-      data
-    server_mode_description:
-      Tillåt andra enheter att ansluta och synkronisera med
-      denna enhet
-    sync_mode_start: Starta klientläge
-    sync_mode_stop: Stoppa klientläge
-    sync_mode_start_menu: Starta klientläge
-    sync_mode_stop_menu: Stoppa klientläge
-    client_mode_starting: Startar klientläge...
-    client_mode_started: Klientläge startat
-    client_mode_stopped: Byt tillbaka till serverläge
+    sync_mode_start_menu: "Sluta ta emot anslutningar"
+    sync_mode_stop_menu: "Ta emot anslutningar"
+    client_mode_started: "Tar inte emot anslutningar"
+    client_mode_stopped: "Tar emot anslutningar igen"
     sync_mode_toggle_error: Kunde inte växla synkroniseringsläge
   devices:
     errors:
@@ -24,169 +13,7 @@ sync:
       sync_failed: Fel vid synkronisering av enheter
     from_label: Från
     help:
-      content: '🔄 **Vad är Sync?**
-
-
-        Sync håller dina vanor, uppgifter, anteckningar och data uppdaterade över
-        enheter (telefoner, surfplattor, bärbara datorer, stationära) på samma Wi-Fi.
-        Inget moln eller internet — data förblir privata och lokala.
-
-
-        Det är enkelt att använda: Ställ in en gång, och ändringar synkroniseras automatiskt
-        eller på begäran. Byt enheter sömlöst, som att börja på telefonen och slutföra
-        på PC:n.
-
-
-        ## 🔗 **Synkroniseringslägen**
-
-
-        Alla enheter stödjer klient- eller serverläge för flexibel synkronisering.
-        Servern leder (delar data), klienterna ansluter och byter. Kräver minst en
-        server.
-
-
-        - **Klientläge:** Ansluter till en server för synkronisering. Idealiskt för
-        att ansluta till grupper via QR eller manuell inmatning.
-
-        - **Serverläge:** Fungerar som nav; visar QR eller sträng för andra att ansluta.
-
-
-        **Plattformsnoteringar:**
-
-        - **Mobil:** Byt via Wi-Fi-hotspot-ikonen. Server för portabla nav.
-
-        - **Stationär (Standard: Server):** Byt i Sync-inställningar. Klient för bärbara
-        som synkroniserar med huvud-PC:er.
-
-
-        **Exempel:** Mobil-till-mobil (en server), stationär-till-mobil (båda vägar),
-        stationär-till-stationär (en server, en klient).
-
-
-        Byt lägen i Sync-inställningar; appen kommer ihåg ditt val.
-
-
-        ## 🛠️ **Aktivera Sync**
-
-
-        Enheterna måste dela Wi-Fi; håll WHPH öppen.
-
-
-        ### **QR-kodinställning**
-
-        1. Server: Starta serverläge i Sync — QR visas.
-
-        2. Klient: „Lägg till enhet” > Skanna QR.
-
-        3. Ansluter och synkroniserar automatiskt.
-
-
-        Stödjer alla kombinationer.
-
-
-        ### **Anslutningssträng**
-
-        1. Server: Kopiera strängen (t.ex. „whph://IP:44040?...”) från Sync.
-
-        2. Klient: „Lägg till enhet” > Manuell > Klistra in sträng > Anslut.
-
-
-        Kräver ingen kamera.
-
-
-        ### **Manuell inmatning**
-
-        1. Server: Notera IP/port (standard 44040) från anslutningsinfo.
-
-        2. Klient: „Lägg till enhet” > Manuell > Ange IP, port, namn > Test > Anslut.
-
-
-        **Stationära klienter:** Byt till klientläge först, sedan anslut. Synkroniserar
-        automatiskt; byt tillbaka när som helst.
-
-
-        Aktivera automatisk omanslutning i inställningarna för tillförlitlighet.
-
-
-        ## 📋 **Hantera enheter**
-
-
-        - **Visa:** Se enheter, synkroniseringstider, status i Sync-inställningar.
-
-        - **Manuell synkronisering:** Tryck knapp per enhet.
-
-        - **Ta bort:** Välj och ta bort för att stoppa synkronisering.
-
-
-        ## 🔧 **Felsökning**
-
-
-        **Anslutningsproblem:**
-
-        1. Samma Wi-Fi? Inga VPN:er.
-
-        2. Starta om appen.
-
-        3. Bekräfta serverläge.
-
-        4. Testa utan brandvägg.
-
-
-        **Inga enheter?**
-
-        - Stabil Wi-Fi, inga proxyservrar.
-
-        - Uppdatera skanning.
-
-        - Använd manuell IP.
-
-
-        **Synkronisering misslyckas/Timeouts:**
-
-        1. Manuell synkronisering.
-
-        2. Matcha appversioner.
-
-        3. Vänta på stora data.
-
-
-        **Brandvägg (Port 44040):**
-
-
-        Om anslutningar inte fungerar kan brandväggen på din dator blockera synkroniseringssignalen.
-        Öppna port 44040 för att låta enheter kommunicera lokalt — det är säkert för
-        ditt hemnätverk.
-
-
-        **Windows (GUI):**
-
-        1. Öppna Defender Brandvägg > Avancerat > Inkommande regler > Ny regel.
-
-        2. Port > TCP > 44040 > Tillåt > Alla profiler > Namnge „WHPH Sync” > Slutför.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Tips: Starta om routern, använd privata nätverk. Para om vid „inte hittat”-fel.
-
-        '
+      content: "🔄 **Vad är synkronisering?**\n\nSynkronisering håller dina vanor, uppgifter, anteckningar och data uppdaterade på dina enheter på samma Wi-Fi. Inget moln eller internet: data förblir privata och lokala.\n\n## 🛠️ **Aktivera synkronisering**\n\n1. Låt WHPH vara öppet på båda enheterna, på samma Wi-Fi.\n2. Välj \"Lägg till enhet\" på den ena enheten och visa QR-koden.\n3. Skanna den med den andra enheten och kontrollera att båda skärmarna visar samma kod.\n4. Ändringar synkroniseras sedan automatiskt.\n\n## 📋 **Hantera enheter**\n\n- **Visa:** Se enheter, synkroniseringstider och status i synkroniseringsinställningarna.\n- **Manuell synkronisering:** Tryck på knappen vid enheten.\n- **Ta bort:** Välj en enhet och ta bort den för att sluta synkronisera.\n\n## 🔧 **Felsökning**\n\n1. Samma Wi-Fi? Inget VPN.\n2. Starta om appen.\n3. Testa utan brandvägg.\n\n**Inga enheter?**\n- Stabilt Wi-Fi, ingen proxy.\n- Uppdatera sökningen."
       title: Hjälp med enhetssynkronisering
     last_sync_label: Senaste synkronisering
     no_devices_found: Inga synkroniserade enheter
@@ -302,16 +129,13 @@ sync:
   server:
     starting: Startar serverläge...
     active: Serverläge aktivt - Visa QR-kod för andra enheter
-    stopped: Serverläge stoppat - Enheten är nu i klientläge
+    stopped: "Tar inte längre emot anslutningar från andra enheter"
     start_failed:
       Start av serverläge misslyckades - Kontrollera om port 44040 är
       tillgänglig
-    start_tooltip: Starta serverläge
-    stop_tooltip: Stoppa serverläge
     start_menu: Starta serverläge
     stop_menu: Stoppa serverläge
     error: Fel
-    device_became_server: Denna enhet är nu synkroniseringsservern
     mode_title: Serverläge
     mode_inactive: Server inaktiv
   manual:
@@ -336,13 +160,9 @@ sync:
     connection_string_label: Anslutningssträng
     test_connection: Testa anslutning
     enter_server_details: Ange serveranslutningsdetaljer manuellt
-    connection_timeout:
-      Anslutningstimeout. Kontrollera serveradressen och försök
-      igen.
+    connection_timeout: "Tidsgränsen för anslutningen gick ut. Kontrollera enhetens adress och försök igen."
     connection_test_successful: Anslutningstest lyckad!
-    connection_test_timeout:
-      Anslutningstest timeout. Kontrollera serveradressen och
-      försök igen.
+    connection_test_timeout: "Tidsgränsen för anslutningstestet gick ut. Kontrollera enhetens adress och försök igen."
     connection_test_failed_no_response:
       Anslutningstest misslyckades - inget svar
       från server

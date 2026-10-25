@@ -1,21 +1,10 @@
 sync:
   desktop:
     mode_title: Mod sincronizare desktop
-    client_mode_start: Conectați-vă ca client
-    client_mode_stop: Schimbați la modul server
-    client_mode_description:
-      Conectați-vă la serverul unui alt dispozitiv pentru a
-      sincroniza datele
-    server_mode_description:
-      Permiteți altor dispozitive să se conecteze și să se
-      sincronizeze cu acest dispozitiv
-    sync_mode_start: Porniți modul client
-    sync_mode_stop: Opriți modul client
-    sync_mode_start_menu: Porniți modul client
-    sync_mode_stop_menu: Opriți modul client
-    client_mode_starting: Pornire modul client...
-    client_mode_started: Modul client pornit
-    client_mode_stopped: Revenit la modul server
+    sync_mode_start_menu: "Nu mai accepta conexiuni"
+    sync_mode_stop_menu: "Acceptă conexiuni"
+    client_mode_started: "Nu mai acceptă conexiuni"
+    client_mode_stopped: "Acceptă din nou conexiuni"
     sync_mode_toggle_error: Eșec la comutarea modului de sincronizare
   devices:
     errors:
@@ -24,173 +13,7 @@ sync:
       sync_failed: Eroare la sincronizarea dispozitivelor
     from_label: De la
     help:
-      content: '🔄 **Ce este Sync?**
-
-
-        Sync menține obiceiurile, sarcinile, notele și datele tale actualizate pe
-        dispozitive (telefoane, tablete, laptopuri, desktopuri) în aceeași rețea Wi-Fi.
-        Fără cloud sau internet — datele rămân private și locale.
-
-
-        Este simplu de utilizat: Configurează o dată, iar modificările se sincronizează
-        automat sau la cerere. Treci seamless între dispozitive, cum ar fi să începi
-        pe telefon și să termini pe PC.
-
-
-        ## 🔗 **Moduri Sync**
-
-
-        Toate dispozitivele suportă moduri client sau server pentru sincronizare flexibilă.
-        Serverul conduce (împărtășește date), clienții se alătură și schimbă. Ai nevoie
-        de cel puțin un server.
-
-
-        - **Mod client:** Se conectează la un server pentru sincronizare. Ideal pentru
-        alăturarea la grupuri prin QR sau introducere manuală.
-
-        - **Mod server:** Acționează ca hub; arată QR sau șir pentru alții să se conecteze.
-
-
-        **Note platformă:**
-
-        - **Mobil:** Schimbă prin iconul hotspot Wi-Fi. Server pentru hub-uri portabile.
-
-        - **Desktop (Implicit: Server):** Schimbă în setările Sync. Client pentru
-        laptopuri care se sincronizează cu PC-urile principale.
-
-
-        **Exemple:** Mobil-la-mobil (un server), desktop-la-mobil (oricare), desktop-la-desktop
-        (un server, un client).
-
-
-        Schimbă modurile în setările Sync; aplicația își amintește alegerea ta.
-
-
-        ## 🛠️ **Activarea Sync**
-
-
-        Dispozitivele trebuie să împărtășească Wi-Fi; ține WHPH deschis.
-
-
-        ### **Configurare cu cod QR**
-
-        1. Server: Pornește modul server în Sync — apare QR.
-
-        2. Client: „Adaugă dispozitiv” > Scanează QR.
-
-        3. Se conectează și sincronizează automat.
-
-
-        Suportă toate combinațiile.
-
-
-        ### **Șir de conexiune**
-
-        1. Server: Copiază șirul (ex. „whph://IP:44040?...”) din Sync.
-
-        2. Client: „Adaugă dispozitiv” > Manual > Lipește șirul > Conectează.
-
-
-        Nu necesită cameră.
-
-
-        ### **Introducere manuală**
-
-        1. Server: Notează IP/port (implicit 44040) din Info conexiune.
-
-        2. Client: „Adaugă dispozitiv” > Manual > Introdu IP, port, nume > Test >
-        Conectează.
-
-
-        **Clienți desktop:** Schimbă mai întâi la modul client, apoi conectează. Sincronizează
-        automat; schimbă înapoi oricând.
-
-
-        Activează reconectare automată în setări pentru fiabilitate.
-
-
-        ## 📋 **Gestionarea dispozitivelor**
-
-
-        - **Vizualizează:** Vezi dispozitivele, timpi de sync, status în setările
-        Sync.
-
-        - **Sync manual:** Apasă buton per dispozitiv.
-
-        - **Elimină:** Selectează și elimină pentru a opri sync.
-
-
-        ## 🔧 **Depanare**
-
-
-        **Probleme de conexiune:**
-
-        1. Aceeași Wi-Fi? Fără VPN-uri.
-
-        2. Repornește aplicația.
-
-        3. Verifică modul server.
-
-        4. Testează fără firewall.
-
-
-        **Fără dispozitive?**
-
-        - Wi-Fi stabil, fără proxy.
-
-        - Reîmprospătează scanarea.
-
-        - Folosește IP manual.
-
-
-        **Sync eșuează/Timeout-uri:**
-
-        1. Sync manual.
-
-        2. Potrivește versiuni aplicație.
-
-        3. Așteaptă date mari.
-
-
-        **Firewall (Port 44040):**
-
-
-        Dacă conexiunile nu funcționează, firewall-ul computerului tău poate bloca
-        semnalul de sync. Deschide portul 44040 pentru a permite dispozitivelor să
-        comunice local — este sigur pentru rețeaua ta de acasă.
-
-
-        **Windows (GUI):**
-
-        1. Deschide Defender Firewall > Avansat > Reguli inbound > Regula nouă.
-
-        2. Port > TCP > 44040 > Permite > Toate profilele > Numește „WHPH Sync” >
-        Finalizează.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Sfaturi: Repornește routerul, folosește rețele private. Re-parează la erori
-        „nu găsit”.
-
-        '
+      content: "🔄 **Ce este sincronizarea?**\n\nSincronizarea păstrează obiceiurile, sarcinile, notițele și datele actualizate pe dispozitivele din aceeași rețea Wi-Fi. Fără cloud sau internet: datele rămân private și locale.\n\n## 🛠️ **Activarea sincronizării**\n\n1. Ține WHPH deschis pe ambele dispozitive, în aceeași rețea Wi-Fi.\n2. Pe un dispozitiv alege „Adaugă dispozitiv” și afișează codul QR.\n3. Scanează-l cu celălalt dispozitiv și verifică dacă ambele ecrane arată același cod.\n4. Modificările se sincronizează apoi automat.\n\n## 📋 **Gestionarea dispozitivelor**\n\n- **Vezi:** Vezi dispozitivele, orele de sincronizare și starea în setările de sincronizare.\n- **Sincronizare manuală:** Atinge butonul de lângă dispozitiv.\n- **Elimină:** Selectează un dispozitiv și elimină-l pentru a opri sincronizarea.\n\n## 🔧 **Depanare**\n\n1. Aceeași rețea Wi-Fi? Fără VPN.\n2. Repornește aplicația.\n3. Testează fără firewall.\n\n**Niciun dispozitiv?**\n- Wi-Fi stabil, fără proxy.\n- Reîmprospătează căutarea."
       title: Ajutor sincronizare dispozitive
     last_sync_label: Ultima sincronizare
     no_devices_found: Niciun dispozitiv sincronizat
@@ -314,14 +137,11 @@ sync:
   server:
     starting: Pornire mod server...
     active: Mod server activ - Arătați codul QR altor dispozitive
-    stopped: Mod server oprit - Dispozitivul este acum în mod client
+    stopped: "Nu se mai acceptă conexiuni de la alte dispozitive"
     start_failed: Pornire mod server eșuată - Verificați dacă portul 44040 este disponibil
-    start_tooltip: Pornire mod server
-    stop_tooltip: Oprire mod server
     start_menu: Pornire mod server
     stop_menu: Oprire mod server
     error: Eroare
-    device_became_server: Acest dispozitiv este acum serverul de sincronizare
     mode_title: Mod server
     mode_inactive: Server inactiv
   manual:
@@ -346,13 +166,9 @@ sync:
     connection_string_label: Șir de conexiune
     test_connection: Testați conexiunea
     enter_server_details: Introduceți detaliile conexiunii serverului manual
-    connection_timeout:
-      Timeout conexiune. Verificați adresa serverului și încercați
-      din nou.
+    connection_timeout: "Timpul de conectare a expirat. Verifică adresa dispozitivului și încearcă din nou."
     connection_test_successful: Test conexiune reușit!
-    connection_test_timeout:
-      Timeout test conexiune. Verificați adresa serverului
-      și încercați din nou.
+    connection_test_timeout: "Timpul testului de conexiune a expirat. Verifică adresa dispozitivului și încearcă din nou."
     connection_test_failed_no_response:
       Test conexiune eșuat - fără răspuns de la
       server
