@@ -99,6 +99,9 @@ enum OutboundKeyVerdict {
 }
 
 const _hlcCounterBits = 16;
+
+/// Longest device name a member entry may carry.
+const int maxMemberNameLength = 100;
 final RegExp _originHexPattern = RegExp(r'^[0-9a-f]{32}$');
 
 /// Members, origin registry, revocations, grants, epochs, group creation and
@@ -407,6 +410,28 @@ class SyncMembershipService {
     await _registerOrigin(OriginId.fromHex(await _changeStore.localOrigin()));
     await _refresh();
   }
+
+  // -- naming, removal, rotation ------------------------------------------------------------
+
+  /// Changes the name the group shows for [memberId]: a new member entry with
+  /// the same keys, which the group learns like any member row.
+  Future<void> renameMember(String memberId, String name) => _exclusive(() async {
+        final trimmed = name.trim();
+        if (trimmed.isEmpty || trimmed.length > maxMemberNameLength) {
+          throw const SyncMembershipException('the member name is empty or too long');
+        }
+        final entry = membership.memberById(memberId) ??
+            (throw SyncMembershipException('unknown member $memberId'));
+        final renamed = MemberEntry(
+          memberId: entry.memberId,
+          x25519Pub: entry.x25519Pub,
+          ed25519Pub: entry.ed25519Pub,
+          name: trimmed,
+          addedBy: entry.addedBy,
+        );
+        await _writeSecurity(memberCellKey(memberId), renamed.encode());
+        await _refresh();
+      });
 
   // -- removal, rotation -------------------------------------------------------------------
 

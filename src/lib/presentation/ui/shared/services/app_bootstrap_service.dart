@@ -56,10 +56,12 @@ class AppBootstrapService {
     final container = Container();
     initializeJsonMapper();
 
+    final directoryService = applicationDirectoryService ?? createPlatformApplicationDirectoryService();
     registerPersistence(container);
     registerInfrastructure(
       container,
-      applicationDirectoryService: applicationDirectoryService,
+      applicationDirectoryService: directoryService,
+      syncDataDirectory: await directoryService.getApplicationDirectory(),
     );
     registerApplication(container);
     registerUIPresentation(container);

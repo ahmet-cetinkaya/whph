@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_completion_service.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
@@ -26,8 +27,13 @@ class AndroidServerSyncService extends AndroidSyncService {
   final IDeviceIdService _deviceIdService;
   final DeviceInfoPlugin _deviceInfoPlugin;
 
+  /// The consolidated LAN server (D7). When set it owns port 44040 and this
+  /// service no longer binds it; the legacy responder (D10) lives there.
+  final ISyncServerControl? _lanServer;
+
   AndroidServerSyncService(super.mediator, this._deviceIdService, this._deviceInfoPlugin,
-      {required super.restoreBarrier});
+      {required super.restoreBarrier, ISyncServerControl? lanServer})
+      : _lanServer = lanServer;
 
   @override
   void updateSyncStatus(SyncStatus status) {
@@ -64,6 +70,8 @@ class AndroidServerSyncService extends AndroidSyncService {
 
   /// Attempt to start as WebSocket server
   Future<bool> startAsServer([int port = webSocketPort]) async {
+    final lanServer = _lanServer;
+    if (lanServer != null) return _startLanServer(lanServer);
     try {
       Logger.info('Attempting to start mobile WebSocket server on port $port...');
 
@@ -95,6 +103,14 @@ class AndroidServerSyncService extends AndroidSyncService {
       _isServerMode = false;
       return false;
     }
+  }
+
+  Future<bool> _startLanServer(ISyncServerControl lanServer) async {
+    _isServerMode = await lanServer.start();
+    if (_isServerMode) {
+      updateSyncStatus(SyncStatus(state: SyncState.idle, isManual: false, lastSyncTime: DateTime.now()));
+    }
+    return _isServerMode;
   }
 
   void _handleServerConnections() async {
@@ -379,6 +395,12 @@ class AndroidServerSyncService extends AndroidSyncService {
   }
 
   Future<void> stopServer() async {
+    final lanServer = _lanServer;
+    if (lanServer != null) {
+      await lanServer.stop();
+      _isServerMode = false;
+      return;
+    }
     if (_isServerMode) {
       Logger.info('Stopping mobile WebSocket server...');
 

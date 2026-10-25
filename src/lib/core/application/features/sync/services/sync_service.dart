@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:flutter/foundation.dart';
-import 'package:whph/core/application/features/sync/commands/paginated_sync_command/paginated_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/sync_now_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/database_integrity_service.dart';
@@ -144,8 +144,7 @@ class SyncService implements ISyncService {
       }
 
       // Create paginated sync command handler and listen to progress
-      final command = PaginatedSyncCommand();
-      final response = await _mediator.send<PaginatedSyncCommand, PaginatedSyncCommandResponse>(command);
+      final response = await _mediator.send<SyncNowCommand, SyncNowCommandResponse>(SyncNowCommand());
 
       // Check if sync was actually successful and had no errors
       if (response.isComplete && !response.hasErrors) {
@@ -186,20 +185,14 @@ class SyncService implements ISyncService {
       } else {
         // Sync failed, was incomplete, or had errors
         // Use first error's translation key for user display
-        final errorKey = response.hasErrors && response.errorMessages.isNotEmpty
-            ? response.errorMessages.first
-            : 'sync.errors.sync_failed';
+        // The per-peer categories are on the report; their texts are T24.
+        const errorKey = 'sync.errors.sync_failed';
 
-        Logger.error('Paginated sync failed: $errorKey (${response.errorMessages.length} total errors)');
-        if (response.errorMessages.length > 1) {
-          Logger.error('Additional errors: ${response.errorMessages.skip(1).join(", ")}');
-        }
+        Logger.error('Sync failed: ${response.report.peers.map((peer) => peer.category?.code).nonNulls.join(', ')}');
 
-        // Update sync status to error with translation key and params
         updateSyncStatus(SyncStatus(
           state: SyncState.error,
           errorMessage: errorKey,
-          errorParams: response.errorParams,
           isManual: isManual,
           lastSyncTime: DateTime.now(),
         ));
@@ -257,7 +250,7 @@ class SyncService implements ISyncService {
 
   /// Determines if sync completion should trigger a notification
   /// Only notify for meaningful syncs to avoid premature notifications
-  void _notifySyncCompleteIfMeaningful(bool isManual, PaginatedSyncCommandResponse response) {
+  void _notifySyncCompleteIfMeaningful(bool isManual, SyncNowCommandResponse response) {
     // Always notify for manual syncs - user initiated these
     if (isManual) {
       Logger.debug('Notifying sync completion for manual sync at ${DateTime.now()}');
@@ -266,9 +259,9 @@ class SyncService implements ISyncService {
     }
 
     // For background syncs, use the response data to determine if notification should be shown
-    if (!response.hadMeaningfulSync || response.syncedDeviceCount == 0) {
+    if (response.syncedDeviceCount == 0) {
       Logger.debug(
-          'Skipping notification for background sync - no meaningful sync activity (devices: ${response.syncedDeviceCount}, meaningful: ${response.hadMeaningfulSync})');
+          'Skipping notification for background sync - no sync activity (devices: ${response.syncedDeviceCount})');
       return;
     }
 

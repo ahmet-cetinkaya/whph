@@ -37,7 +37,7 @@ class DriftSyncSessionHost implements ISyncSessionHost {
   Future<SessionResult> respond(ISyncTransport transport, String source) =>
       AsyncSyncSession(device, transport, initiator: false, hooks: hooks).run();
 
-  /// Runs the initiator side towards [peerMemberId] on an open transport.
+  @override
   Future<SessionResult> initiate(
           ISyncTransport transport, String peerMemberId) =>
       AsyncSyncSession(device, transport,

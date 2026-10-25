@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/sync_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_settings.dart';
@@ -21,13 +22,19 @@ class DesktopSyncService extends SyncService {
   final IDeviceIdService _deviceIdService;
   final IRestoreBarrier _restoreBarrier;
 
+  /// The consolidated LAN server (D7). When set it owns port 44040: server
+  /// mode starts it and every other mode stops it (PB-6).
+  final ISyncServerControl? _lanServer;
+
   bool _isModeSwitching = false;
 
   DesktopSyncService(
     super.mediator,
     this._deviceIdService, {
     required super.restoreBarrier,
-  }) : _restoreBarrier = restoreBarrier {
+    ISyncServerControl? lanServer,
+  })  : _lanServer = lanServer,
+        _restoreBarrier = restoreBarrier {
     _validateAndRecoverSyncState();
   }
 
@@ -71,7 +78,7 @@ class DesktopSyncService extends SyncService {
 
   bool get isConnectedAsClient => _clientService?.isConnectedToServer ?? false;
 
-  bool get isServerActive => _serverService?.isServerMode ?? false;
+  bool get isServerActive => _lanServer?.isRunning ?? _serverService?.isServerMode ?? false;
 
   int get serverConnectionCount => _serverService?.activeConnectionCount ?? 0;
 
@@ -187,6 +194,8 @@ class DesktopSyncService extends SyncService {
     _periodicTimer?.cancel();
     _periodicTimer = null;
 
+    await _lanServer?.stop();
+
     if (_serverService != null) {
       try {
         await _serverService!.stopServer();
@@ -297,6 +306,12 @@ class DesktopSyncService extends SyncService {
 
   Future<void> _startServerMode() async {
     Logger.debug('Starting desktop server mode');
+
+    final lanServer = _lanServer;
+    if (lanServer != null) {
+      if (!await lanServer.start()) throw Exception('Failed to start desktop server');
+      return;
+    }
 
     _serverService = DesktopServerSyncService(
       mediator,

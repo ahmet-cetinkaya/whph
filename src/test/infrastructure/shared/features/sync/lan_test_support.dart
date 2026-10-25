@@ -38,6 +38,10 @@ class DeviceHost implements ISyncSessionHost {
   }
 
   @override
+  Future<SessionResult> initiate(ISyncTransport transport, String peerMemberId) =>
+      device.initiate(transport, peerMemberId: peerMemberId, hooks: hooks);
+
+  @override
   Future<void> pair(ISyncTransport transport, String source) async {
     final handler = onPair;
     if (handler != null) await handler(transport, source);

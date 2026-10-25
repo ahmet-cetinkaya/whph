@@ -18,6 +18,7 @@ import 'package:whph/core/application/features/notes/services/abstraction/i_note
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_tag_repository.dart';
 import 'package:whph/core/application/features/settings/settings_registration.dart';
 import 'package:whph/core/application/features/sync/sync_registration.dart';
+import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tags/tags_registration.dart';
@@ -88,6 +89,7 @@ void registerApplication(IContainer container) {
         appUsageRepository: appUsageRepository,
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
         appUsageTagRepository: appUsageTagRepository,
+        syncMembership: _syncMembershipOrNull(container),
       ));
 
   // Register Features
@@ -173,3 +175,9 @@ void registerApplication(IContainer container) {
   );
   registerWidgetFeature(container, mediator);
 }
+
+/// The sync membership service, or `null` where sync security is not
+/// registered (the destructive demo and import operations then run without the
+/// `local_reset` of D14).
+SyncMembershipService? _syncMembershipOrNull(IContainer container) =>
+    container.isRegistered<SyncMembershipService>() ? container.resolve<SyncMembershipService>() : null;

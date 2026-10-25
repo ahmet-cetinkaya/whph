@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
+import 'package:whph/core/application/features/sync/commands/start_sync_command.dart';
 import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
-import 'package:whph/presentation/api/api.dart';
 import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
@@ -33,11 +33,8 @@ class PlatformInitializationService {
     await _configureStartupSettings(container);
     await _handleStartupVisibility(container);
 
-    startWebSocketServer();
-
     try {
-      final syncService = container.resolve<ISyncService>();
-      syncService.startSync();
+      await container.resolve<Mediator>().send<StartSyncCommand, void>(StartSyncCommand());
     } catch (e, stackTrace) {
       Logger.error('PlatformInitializationService: Failed to start Desktop sync service: $e');
       Logger.error('StackTrace: $stackTrace');
@@ -58,6 +55,7 @@ class PlatformInitializationService {
       );
       await androidSyncService.startSync();
 
+      await mediator.send<StartSyncCommand, void>(StartSyncCommand());
       await _initializeAndroidServerMode(container);
     }
 

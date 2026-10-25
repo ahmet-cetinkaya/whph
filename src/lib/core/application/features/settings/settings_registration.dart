@@ -22,6 +22,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_time_reco
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
+import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
@@ -119,6 +120,7 @@ void registerSettingsFeature(
         migrationService: container.resolve<IImportDataMigrationService>(),
         compressionService: container.resolve<ICompressionService>(),
         mediator: mediator,
+        syncMembership: container.isRegistered<SyncMembershipService>() ? container.resolve<SyncMembershipService>() : null,
       ),
     );
 }
