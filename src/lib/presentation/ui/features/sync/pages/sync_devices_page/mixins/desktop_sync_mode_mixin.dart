@@ -46,7 +46,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
       await adapter.applyMode(mode);
       _showMode(mode);
     } catch (e) {
-      Logger.error('Failed to load desktop sync mode preference: $e');
+      Logger.error('Failed to load desktop sync mode preference: ${e.runtimeType}');
     }
   }
 
@@ -71,7 +71,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
         duration: const Duration(seconds: 3),
       );
     } catch (e) {
-      Logger.error('Error toggling desktop sync mode: $e');
+      Logger.error('Error toggling desktop sync mode: ${e.runtimeType}');
       if (!mounted) return;
       OverlayNotificationHelper.showError(
         context: context,
@@ -100,7 +100,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
         valueType: SettingValueType.string,
       ));
     } catch (e) {
-      Logger.error('Failed to save desktop sync mode preference: $e');
+      Logger.error('Failed to save desktop sync mode preference: ${e.runtimeType}');
     }
   }
 }
