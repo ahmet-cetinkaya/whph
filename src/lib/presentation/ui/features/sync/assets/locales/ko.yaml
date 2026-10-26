@@ -323,6 +323,7 @@ sync:
     not_reachable: "기기에 연결할 수 없습니다"
     needs_repairing: "다시 페어링해야 합니다"
     needs_update: "{device}에서 동기화하려면 더 새로운 WHPH 버전이 필요합니다"
+    this_device_needs_update: "{device}이(가) 더 최신 버전을 사용 중이므로 동기화하려면 이 기기의 WHPH를 업데이트하세요"
     items_failed: "일부 항목을 동기화하지 못했습니다"
     items_rejected: "일부 항목이 유효하지 않아 거부되었습니다"
     preparing: "상대 기기가 동기화 데이터를 준비 중입니다"

@@ -328,6 +328,7 @@ class AppDatabase extends _$AppDatabase {
           Logger.info('Creating database schema version $schemaVersion');
           createdThisLaunch = true;
           await m.createAll();
+          await createSyncV38Indexes(this);
           await customStatement('PRAGMA foreign_keys = ON');
           for (final statement in syncPlaceholderIdentityStatements()) {
             await customStatement(statement);

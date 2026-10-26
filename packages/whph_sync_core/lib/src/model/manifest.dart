@@ -118,6 +118,23 @@ final class OriginManifest {
     }
   }
 
+  /// Equal when authored identically: the author's signature covers origin,
+  /// range and hashes, so equal signatures over equal ranges are the same
+  /// manifest (a forged copy fails verification instead). Batches collect manifests in sets, and without value equality
+  /// every cell of one range carried its own copy (T28: 32 KB per cell).
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OriginManifest &&
+      other.fromSeq == fromSeq &&
+      other.toSeq == toSeq &&
+      other.origin == origin &&
+      other.hashes.length == hashes.length &&
+      bytesEqual(other.sig, sig);
+
+  @override
+  int get hashCode => Object.hash(origin, fromSeq, toSeq);
+
   @override
   String toString() => 'OriginManifest($origin, ($fromSeq, $toSeq], ${hashes.length} hashes)';
 }

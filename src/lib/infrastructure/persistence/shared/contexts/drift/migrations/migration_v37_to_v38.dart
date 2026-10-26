@@ -22,22 +22,7 @@ Future<void> migrateV37ToV38(
   await m.createTable(db.syncHeldCellTable);
   await m.createTable(db.syncSupersededTable);
 
-  await m.createIndex(Index('sync_clock_origin_seq_idx',
-      'CREATE INDEX IF NOT EXISTS sync_clock_origin_seq_idx ON sync_clock (origin_id, origin_seq)'));
-  await m.createIndex(Index('sync_clock_cause_idx',
-      'CREATE INDEX IF NOT EXISTS sync_clock_cause_idx ON sync_clock (cause_row_id) WHERE cause_row_id IS NOT NULL'));
-
-  // PA-1/S5 FK indexes.
-  await m.createIndex(Index('task_tag_task_id_idx',
-      'CREATE INDEX IF NOT EXISTS task_tag_task_id_idx ON task_tag_table (task_id)'));
-  await m.createIndex(Index('task_time_record_task_id_idx',
-      'CREATE INDEX IF NOT EXISTS task_time_record_task_id_idx ON task_time_record_table (task_id)'));
-  await m.createIndex(Index('task_parent_task_id_idx',
-      'CREATE INDEX IF NOT EXISTS task_parent_task_id_idx ON task_table (parent_task_id)'));
-  await m.createIndex(Index('task_recurrence_parent_id_idx',
-      'CREATE INDEX IF NOT EXISTS task_recurrence_parent_id_idx ON task_table (recurrence_parent_id)'));
-  await m.createIndex(Index('task_status_id_idx',
-      'CREATE INDEX IF NOT EXISTS task_status_id_idx ON task_table (status_id)'));
+  await createSyncV38Indexes(db);
 
   // Legacy pairing marking (FR-061): every existing device row needs repair.
   await m.addColumn(db.syncDeviceTable, db.syncDeviceTable.needsRepair);
@@ -50,4 +35,26 @@ Future<void> migrateV37ToV38(
       "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'dedupe'");
 
   await installSyncTriggers(db);
+}
+
+/// The v38 indexes (sync clock scans and the PA-1/S5 foreign-key indexes).
+/// Run by the migration and by onCreate (a fresh install builds no migration
+/// indexes); without them every sync page scans and sorts the whole clock
+/// table (T28). Not run on every open: the S2 trigger spike reopens databases
+/// with a spike-shaped sync_clock. A dev database created on v38 before this
+/// existed misses them and must be recreated (the schema is unreleased).
+const List<String> syncV38IndexStatements = [
+  'CREATE INDEX IF NOT EXISTS sync_clock_origin_seq_key_idx ON sync_clock (origin_id, origin_seq, key)',
+  'CREATE INDEX IF NOT EXISTS sync_clock_cause_idx ON sync_clock (cause_row_id) WHERE cause_row_id IS NOT NULL',
+  'CREATE INDEX IF NOT EXISTS task_tag_task_id_idx ON task_tag_table (task_id)',
+  'CREATE INDEX IF NOT EXISTS task_time_record_task_id_idx ON task_time_record_table (task_id)',
+  'CREATE INDEX IF NOT EXISTS task_parent_task_id_idx ON task_table (parent_task_id)',
+  'CREATE INDEX IF NOT EXISTS task_recurrence_parent_id_idx ON task_table (recurrence_parent_id)',
+  'CREATE INDEX IF NOT EXISTS task_status_id_idx ON task_table (status_id)',
+];
+
+Future<void> createSyncV38Indexes(GeneratedDatabase db) async {
+  for (final statement in syncV38IndexStatements) {
+    await db.customStatement(statement);
+  }
 }

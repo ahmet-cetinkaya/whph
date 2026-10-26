@@ -51,6 +51,23 @@ void main() {
     });
   });
 
+  group('needs update names the device with the older release', () {
+    SessionFailed needsUpdate(String mustUpdateMemberId) => SessionFailed(
+          SessionStats(),
+          'peer',
+          SessionFailure.needsUpdate,
+          mustUpdate: DeviceRef(mustUpdateMemberId, 'Some device'),
+        );
+
+    test('the peer is older: the peer must update', () {
+      expect(classifySessionResult(needsUpdate('peer')), SyncResultCategory.needsUpdate);
+    });
+
+    test('this device is older: this device must update', () {
+      expect(classifySessionResult(needsUpdate('this-device')), SyncResultCategory.thisDeviceNeedsUpdate);
+    });
+  });
+
   group('partial sessions', () {
     test('each reason has its category', () {
       expect(classifySessionResult(_partial({PartialReason.itemsFailed})), SyncResultCategory.someItemsFailed);

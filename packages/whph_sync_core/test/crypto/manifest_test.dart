@@ -175,6 +175,12 @@ void main() {
       for (final f in [forgedHashes, forgedRange]) {
         expect((await verifier.verify(f) as ManifestRejected).reason, ManifestRejection.badSignature);
       }
+
+      // Value equality compares the signature, not the hash contents: a copy
+      // with the same signature but altered hashes equals the genuine one, so
+      // verification (not equality) is what rejects it.
+      expect(forgedHashes, m);
+      expect((await verifier.verify(forgedHashes) as ManifestRejected).reason, ManifestRejection.badSignature);
     });
 
     test('unregistered origin rejects; conflicting registrations reject everything of that origin', () async {

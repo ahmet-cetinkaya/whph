@@ -6,7 +6,7 @@ import 'sync_trigger_generator.dart';
 /// Current capture-shape version. Bump when trigger SQL or the policy
 /// changes; `beforeOpen` re-installs when the stored `capture_version`
 /// differs.
-const String syncCaptureVersion = 'v38-4';
+const String syncCaptureVersion = 'v38-5';
 
 /// D3: installs (or reinstalls) the capture triggers. Idempotent per version:
 /// drops the previously installed version's triggers when it differs, then

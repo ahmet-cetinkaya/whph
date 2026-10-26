@@ -12,6 +12,7 @@ abstract final class SyncResultTexts {
         SyncResultCategory.notReachable => SyncTranslationKeys.syncStatusNotReachable,
         SyncResultCategory.needsRepairing => SyncTranslationKeys.syncStatusNeedsRepairing,
         SyncResultCategory.needsUpdate => SyncTranslationKeys.syncStatusNeedsUpdate,
+        SyncResultCategory.thisDeviceNeedsUpdate => SyncTranslationKeys.syncStatusThisDeviceNeedsUpdate,
         SyncResultCategory.someItemsFailed => SyncTranslationKeys.syncStatusItemsFailed,
         SyncResultCategory.rejectedItems => SyncTranslationKeys.syncStatusItemsRejected,
         SyncResultCategory.preparing => SyncTranslationKeys.syncStatusPeerPreparing,

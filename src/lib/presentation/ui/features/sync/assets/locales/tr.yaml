@@ -378,6 +378,7 @@ sync:
     not_reachable: "Cihaza ulaşılamıyor"
     needs_repairing: "Yeniden eşleştirme gerekiyor"
     needs_update: "{device} cihazının eşitleme yapabilmesi için WHPH'nin daha yeni bir sürümü gerekiyor"
+    this_device_needs_update: "{device} daha yeni bir sürüm kullandığı için eşitlemek üzere bu cihazdaki WHPH'yi güncelleyin"
     items_failed: "Bazı öğeler eşitlenemedi"
     items_rejected: "Bazı öğeler geçersiz olduğu için reddedildi"
     preparing: "Diğer cihaz eşitleme verilerini hazırlıyor"

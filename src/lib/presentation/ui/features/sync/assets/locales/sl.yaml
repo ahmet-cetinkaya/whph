@@ -378,6 +378,7 @@ sync:
     not_reachable: "Naprava ni dosegljiva"
     needs_repairing: "Potrebno je novo seznanjanje"
     needs_update: "{device} potrebuje novejšo različico WHPH za sinhronizacijo"
+    this_device_needs_update: "Posodobite WHPH v tej napravi za sinhronizacijo z napravo {device}, ki uporablja novejšo različico"
     items_failed: "Nekaterih elementov ni bilo mogoče sinhronizirati"
     items_rejected: "Nekateri elementi so bili zavrnjeni kot neveljavni"
     preparing: "Druga naprava pripravlja podatke za sinhronizacijo"

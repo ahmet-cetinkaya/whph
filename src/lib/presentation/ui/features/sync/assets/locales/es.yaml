@@ -379,6 +379,7 @@ sync:
     not_reachable: "Dispositivo no accesible"
     needs_repairing: "Requiere emparejar de nuevo"
     needs_update: "{device} necesita una versión más reciente de WHPH para sincronizar"
+    this_device_needs_update: "Actualiza WHPH en este dispositivo para sincronizar con {device}, que usa una versión más reciente"
     items_failed: "Algunos elementos no se pudieron sincronizar"
     items_rejected: "Algunos elementos se rechazaron por no ser válidos"
     preparing: "El otro dispositivo está preparando sus datos de sincronización"

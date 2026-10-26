@@ -539,6 +539,7 @@ final class SyncSession {
   /// ([BatchDraft.full]) or the origin is given up for this session
   /// ([OriginPlan.stopped]).
   Future<void> _scanPlan(OriginPlan plan, BatchDraft draft) async {
+    int? rereadMissSeq;
     while (true) {
       final cell = _store.nextCellOfOrigin(plan.origin, plan.scanned);
       final held = _store.nextHeldOfOrigin(plan.origin, plan.scanned);
@@ -580,7 +581,16 @@ final class SyncSession {
         final current = _store.storedCell(cell.record.key);
         // Superseded while signing: the next pass handles its seq as
         // superseded.
-        if (current == null || !identical(current.record, cell.record)) continue;
+        if (current == null || !identical(current.record, cell.record)) {
+          // One retry covers a cell superseded while signing. A second miss
+          // for the same seq means the store cannot re-read what it just
+          // listed; looping again would spin without ever yielding to timers.
+          if (rereadMissSeq == seq) {
+            throw StateError('cell $seq of ${plan.origin} cannot be re-read by key');
+          }
+          rereadMissSeq = seq;
+          continue;
+        }
         final signedBy = current.manifest ?? (throw StateError('own origin switched during the session'));
         draft.add(signedBy, _seal(current.record), estimateCell(current.record), origin: plan.origin, seq: seq);
       } else {

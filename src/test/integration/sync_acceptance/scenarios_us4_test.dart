@@ -161,11 +161,14 @@ void main() {
       final fromNewer = await lab.engineSync(newer, older);
       final fromOlder = await lab.engineSync(older, newer);
 
-      expect(fromNewer.category, SyncResultCategory.needsUpdate);
-      expect(fromOlder.category, SyncResultCategory.needsUpdate);
-      for (final (device, peer) in [(newer, older), (older, newer)]) {
+      expect(fromNewer.category, SyncResultCategory.needsUpdate, reason: 'the newer device names the older peer');
+      expect(fromOlder.category, SyncResultCategory.thisDeviceNeedsUpdate, reason: 'the older device must update');
+      for (final (device, peer, expected) in [
+        (newer, older, SyncResultCategory.needsUpdate),
+        (older, newer, SyncResultCategory.thisDeviceNeedsUpdate),
+      ]) {
         final status = await DriftSyncPeerStatusStore(device.db.db).read(peer.memberId);
-        expect(status?.lastResult, SyncResultCategory.needsUpdate, reason: device.name);
+        expect(status?.lastResult, expected, reason: device.name);
         expect(status?.lastSuccessLocal, isNull);
       }
       expect(await findRow(older, 'note_table', 'from-newer'), isNull);
@@ -174,6 +177,7 @@ void main() {
 
     test('Scenario 4.2 [simulated]: the message template names the device', () {
       expect(_englishText('needs_update'), contains('{device}'));
+      expect(_englishText('this_device_needs_update'), contains('{device}'));
     });
 
     test('Scenario 4.2 [simulated]: after the older device updates (min3), they sync again', () async {
