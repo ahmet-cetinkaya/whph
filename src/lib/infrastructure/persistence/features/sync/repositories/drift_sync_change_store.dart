@@ -55,6 +55,15 @@ const Set<String> _bookkeepingColumns = {
   'deleted_date'
 };
 
+/// Row-level tables whose `created_date` is data, not bookkeeping: a task time
+/// record keeps its hour bucket there (D12), so it travels in the `*` cell.
+const Set<String> _createdDateIsContentTables = {'task_time_record_table'};
+
+Set<String> _bookkeepingOf(String table) =>
+    _createdDateIsContentTables.contains(table)
+        ? _bookkeepingColumns.difference({'created_date'})
+        : _bookkeepingColumns;
+
 /// Tables that hold the replicated security state (D7, D13). `local_reset`
 /// keeps them; `group_switch` clears them.
 const List<String> _securityTables = [
@@ -386,7 +395,9 @@ LEFT JOIN sync_row cr ON cr.id = c.cause_row_id''';
     if (colId == tombstoneColId) return tombValue;
     final base = baseRows[policy.tableName + pk] ??= await _selectOne(
         'SELECT * FROM "${policy.tableName}" WHERE id = ?', [pk]);
-    if (policy.rowLevel) return base == null ? null : _encodeRowLevel(base);
+    if (policy.rowLevel) {
+      return base == null ? null : _encodeRowLevel(policy, base);
+    }
     final column = _wireColumn(policy, colId);
     if (base != null) return base[column];
     final staged = await _selectOne(
@@ -395,11 +406,11 @@ LEFT JOIN sync_row cr ON cr.id = c.cause_row_id''';
     return staged == null ? null : _decodeHeldValue(staged['value']);
   }
 
-  String _encodeRowLevel(Map<String, Object?> base) {
+  String _encodeRowLevel(SyncTablePolicy policy, Map<String, Object?> base) {
+    final bookkeeping = _bookkeepingOf(policy.tableName);
     final content = SplayTreeMap<String, Object?>();
     for (final entry in base.entries) {
-      if (!_bookkeepingColumns.contains(entry.key))
-        content[entry.key] = entry.value;
+      if (!bookkeeping.contains(entry.key)) content[entry.key] = entry.value;
     }
     return jsonEncode(content);
   }
@@ -1019,10 +1030,16 @@ WHERE c.key = ?''', [key]);
       return true;
     }
     final now = _nowSeconds;
+    final row = <String, Object?>{
+      'id': cell.key.pk,
+      'created_date': now,
+      'modified_date': now,
+      for (var i = 0; i < columns.length; i++) columns[i]: values[i],
+    };
     await _exec(
-        'INSERT INTO "${policy.tableName}" (id, created_date, modified_date${columns.map((c) => ', "$c"').join()}) '
-        'VALUES (?, ?, ?${', ?' * columns.length})',
-        [cell.key.pk, now, now, ...values]);
+        'INSERT INTO "${policy.tableName}" (${row.keys.map((c) => '"$c"').join(', ')}) '
+        'VALUES (${List.filled(row.length, '?').join(', ')})',
+        row.values.toList());
     return true;
   }
 
@@ -1033,8 +1050,9 @@ WHERE c.key = ?''', [key]);
     if (decoded is! Map<String, dynamic>)
       throw const SyncItemRejected('malformed_row_cell');
     final allowed = (await _shapeOf(policy.tableName)).columns;
+    final bookkeeping = _bookkeepingOf(policy.tableName);
     for (final column in decoded.keys) {
-      if (!allowed.contains(column) || _bookkeepingColumns.contains(column))
+      if (!allowed.contains(column) || bookkeeping.contains(column))
         throw const SyncItemRejected('unknown_row_column');
     }
     return decoded;

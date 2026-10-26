@@ -23,6 +23,10 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_devic
 
 class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   final String? id;
+
+  /// The id a new task is created with (D5 deterministic identities). Unlike
+  /// [id], it never makes the command an update of an existing task.
+  final String? newTaskId;
   final String title;
   final String? description;
   final EisenhowerPriority? priority;
@@ -55,6 +59,7 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
   /// Throws [BusinessException] if deadlineDate is before plannedDate.
   SaveTaskCommand({
     this.id,
+    this.newTaskId,
     required this.title,
     this.description,
     this.priority,
@@ -389,7 +394,7 @@ class SaveTaskCommandHandler
       }
 
       task = Task(
-          id: request.id ?? KeyHelper.generateStringId(),
+          id: request.id ?? request.newTaskId ?? KeyHelper.generateStringId(),
           createdDate: DateTime.now().toUtc(),
           title: request.title,
           description: request.description,

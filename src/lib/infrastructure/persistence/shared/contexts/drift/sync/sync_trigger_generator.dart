@@ -20,6 +20,12 @@ const String _captureEnabled =
 
 String _q(String column) => '"$column"';
 
+/// When an update of a row-level row writes its `*` cell: not for a soft delete.
+/// The `*` cell would be stamped after the tombstone and out-rank it on every
+/// peer, so a deleted time record or tag link would come back (FR-006).
+const String _rowLevelContentWritten =
+    'NEW.deleted_date IS NULL OR OLD.deleted_date IS NEW.deleted_date';
+
 class _CellSpec {
   final int colId;
   final String condition;
@@ -113,7 +119,8 @@ List<String> syncTriggerStatements(SyncTablePolicy policy) {
   final changed = [
     for (final c in policy.columns.keys) 'OLD.${_q(c)} IS NOT NEW.${_q(c)}'
   ];
-  final rowChanged = changed.isEmpty ? '1' : changed.join(' OR ');
+  final rowChanged =
+      changed.isEmpty ? _rowLevelContentWritten : changed.join(' OR ');
   final updateCells = [
     if (policy.rowLevel)
       _CellSpec(rowLevelColId, rowChanged)

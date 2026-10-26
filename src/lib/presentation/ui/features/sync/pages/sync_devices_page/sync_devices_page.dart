@@ -182,7 +182,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       final response = await _mediator.send<GetIsPairedQuery, GetIsPairedQueryResponse>(GetIsPairedQuery());
       if (mounted) setState(() => _groupState = response.groupState);
     } catch (e) {
-      Logger.error('Reading the sync group state failed: $e');
+      Logger.error('Reading the sync group state failed: ${e.runtimeType}');
     }
   }
 
@@ -191,7 +191,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       final isDismissed = await _repairBannerPreference.isDismissed();
       if (mounted) setState(() => _isRepairBannerDismissed = isDismissed);
     } catch (e) {
-      Logger.error('Reading the re-pair banner state failed: $e');
+      Logger.error('Reading the re-pair banner state failed: ${e.runtimeType}');
     }
   }
 
@@ -200,7 +200,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     try {
       await _repairBannerPreference.dismiss();
     } catch (e) {
-      Logger.error('Saving the re-pair banner state failed: $e');
+      Logger.error('Saving the re-pair banner state failed: ${e.runtimeType}');
     }
   }
 

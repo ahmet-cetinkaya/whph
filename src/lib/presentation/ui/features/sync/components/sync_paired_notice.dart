@@ -34,7 +34,7 @@ class _SyncPairedNoticeState extends State<SyncPairedNotice> {
           );
       if (mounted) setState(() => _isPaired = response.isPaired);
     } catch (error) {
-      Logger.error('SyncPairedNotice: reading the paired state failed: $error');
+      Logger.error('SyncPairedNotice: reading the paired state failed: ${error.runtimeType}');
     }
   }
 
