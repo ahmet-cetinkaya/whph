@@ -52,7 +52,7 @@ sync:
     local_ip_error: Yerel IP hatası
     device_already_paired: Cihaz zaten eşleştirilmiş
     no_active_interfaces: Aktif ağ arabirimi yok
-    device_discovery_failed: Cihaz keşfi başarısız
+    device_discovery_failed: "Cihaz keşfi başlatılamadı: {error}"
     no_server_configured:
       Yapılandırılmış sunucu yok. Lütfen önce bir senkronizasyon
       cihazı ekleyin veya manuel bağlantıyı kullanarak sunucu bağlantısını kurun.
@@ -85,7 +85,7 @@ sync:
     sync_completed: Senkronizasyon başarıyla tamamlandı
     sync_in_progress: Senkronizasyon devam ediyor...
     testing_connection: Bağlantı test ediliyor...
-    device_added_success: Cihaz başarıyla eklendi
+    device_added_success: "{deviceName} eşitleme cihazlarına başarıyla eklendi"
   qr_code:
     close_button: Kapat
     dialog_title: Senkronize etmek için QR kodunu tarayın
@@ -127,7 +127,7 @@ sync:
     port_required: Port gerekli
     invalid_port: Geçersiz port numarası
     connection_failed: Bağlantı başarısız
-    connection_error: Bağlantı hatası
+    connection_error: "Bağlantı hatası: {0}"
     connection_string_tab: Bağlantı Dizesi
     manual_entry_tab: Manuel Giriş
     connection_string_required: Bağlantı dizesi gerekli
@@ -157,7 +157,7 @@ sync:
     alternative_methods_hint: Manuel bağlantı veya QR kodu deneyin
     scan_qr_code: QR Kodu Tarayın
     refresh_scan: Tarama Yenile
-    last_seen: Son görülme
+    last_seen: "Son görülme: {time}"
     already_added: Zaten eklendi
   connect_info:
     dialog_title: Cihaz Bağlantı Bilgileri

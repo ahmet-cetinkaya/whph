@@ -50,7 +50,7 @@ sync:
     local_ip_error: Lokale IP-fout
     device_already_paired: Apparaat al gepaart
     no_active_interfaces: Geen actieve netwerkinterfaces
-    device_discovery_failed: Apparaatontdekking mislukt
+    device_discovery_failed: "Apparaatdetectie kon niet worden gestart: {error}"
     no_server_configured:
       Geen server geconfigureerd. Voeg eerst een sync-apparaat
       toe of gebruik handmatige verbinding om een serververbinding in te stellen.
@@ -81,7 +81,7 @@ sync:
     sync_completed: Synchronisatie succesvol voltooid
     sync_in_progress: Synchroniseren in uitvoering...
     testing_connection: Test verbinding...
-    device_added_success: Apparaat succesvol toegevoegd
+    device_added_success: "{deviceName} is toegevoegd aan de synchronisatieapparaten"
   qr_code:
     close_button: Sluiten
     dialog_title: Scan QR-code om te synchroniseren
@@ -123,7 +123,7 @@ sync:
     port_required: Poort vereist
     invalid_port: Ongeldig poortnummer
     connection_failed: Verbinding mislukt
-    connection_error: Verbindingsfout
+    connection_error: "Verbindingsfout: {0}"
     connection_string_tab: Verbindingsreeks
     manual_entry_tab: Handmatige invoer
     connection_string_required: Verbindingsreeks vereist
@@ -153,7 +153,7 @@ sync:
     alternative_methods_hint: Probeer handmatige verbinding of QR-code
     scan_qr_code: Scan QR-code
     refresh_scan: Scan vernieuwen
-    last_seen: Laatst gezien
+    last_seen: "Laatst gezien om {time}"
     already_added: Al toegevoegd
   connect_info:
     dialog_title: Apparaatverbindinginformatie

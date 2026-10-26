@@ -52,7 +52,7 @@ sync:
     local_ip_error: Σφάλμα τοπικής IP
     device_already_paired: Η συσκευή είναι ήδη ζευγμένη
     no_active_interfaces: Καμία ενεργή διεπαφή δικτύου
-    device_discovery_failed: Αποτυχία ανίχνευσης συσκευής
+    device_discovery_failed: "Αποτυχία έναρξης ανίχνευσης συσκευών: {error}"
     no_server_configured:
       Καμία ρύθμιση server. Προσθέστε πρώτα μια συσκευή συγχρονισμού
       ή χρησιμοποιήστε χειροκίνητη σύνδεση για να ρυθμίσετε σύνδεση server.
@@ -85,7 +85,7 @@ sync:
     sync_completed: Ο συγχρονισμός ολοκληρώθηκε επιτυχώς
     sync_in_progress: Συγχρονισμός σε εξέλιξη...
     testing_connection: Δοκιμή σύνδεσης...
-    device_added_success: Η συσκευή προστέθηκε επιτυχώς
+    device_added_success: "Η συσκευή {deviceName} προστέθηκε επιτυχώς στις συσκευές συγχρονισμού"
   qr_code:
     close_button: Κλείσιμο
     dialog_title: Σάρωση QR Κωδικού για Συγχρονισμό
@@ -127,7 +127,7 @@ sync:
     port_required: Η θύρα είναι απαραίτητη
     invalid_port: Μη έγκυρο νούμερο θύρας
     connection_failed: Η σύνδεση απέτυχε
-    connection_error: Σφάλμα σύνδεσης
+    connection_error: "Σφάλμα σύνδεσης: {0}"
     connection_string_tab: Συμβολοσειρά Σύνδεσης
     manual_entry_tab: Χειροκίνητη Εισαγωγή
     connection_string_required: Απαιτείται συμβολοσειρά σύνδεσης
@@ -157,7 +157,7 @@ sync:
     alternative_methods_hint: Δοκιμάστε χειροκίνητη σύνδεση ή QR κωδικό
     scan_qr_code: Σάρωση QR Κωδικού
     refresh_scan: Ανανέωση Σάρωσης
-    last_seen: Τελευταία εμφάνιση
+    last_seen: "Τελευταία εμφάνιση στις {time}"
     already_added: Ήδη προστέθηκε
   connect_info:
     dialog_title: Πληροφορίες Σύνδεσης Συσκευής

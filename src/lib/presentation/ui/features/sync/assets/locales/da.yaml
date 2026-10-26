@@ -50,7 +50,7 @@ sync:
     local_ip_error: Lokal IP-fejl
     device_already_paired: Enhed allerede parret
     no_active_interfaces: Ingen aktive netværksgrænseflader
-    device_discovery_failed: Enhedsopdagelse mislykkedes
+    device_discovery_failed: "Kunne ikke starte enhedsopdagelse: {error}"
     no_server_configured:
       Ingen server konfigureret. Tilføj først en synkroniseringsenhed
       eller brug manuel forbindelse til at opsætte serverforbindelse.
@@ -79,7 +79,7 @@ sync:
     sync_completed: Synkronisering fuldført succesfuldt
     sync_in_progress: Synkronisering i gang...
     testing_connection: Tester forbindelse...
-    device_added_success: Enhed tilføjet succesfuldt
+    device_added_success: "{deviceName} blev tilføjet til synkroniseringsenhederne"
   qr_code:
     close_button: Luk
     dialog_title: Scan QR-kode for at synkronisere
@@ -119,7 +119,7 @@ sync:
     port_required: Port er påkrævet
     invalid_port: Ugyldigt portnummer
     connection_failed: Forbindelse mislykkedes
-    connection_error: Forbindelsesfejl
+    connection_error: "Forbindelsesfejl: {0}"
     connection_string_tab: Forbindelsesstreng
     manual_entry_tab: Manuel indtastning
     connection_string_required: Forbindelsesstreng er påkrævet
@@ -149,7 +149,7 @@ sync:
     alternative_methods_hint: Prøv manuel forbindelse eller QR-kode
     scan_qr_code: Scan QR-kode
     refresh_scan: Opdater scan
-    last_seen: Sidst set
+    last_seen: "Sidst set {time}"
     already_added: Allerede tilføjet
   connect_info:
     dialog_title: Enhedsforbindelsesinformation

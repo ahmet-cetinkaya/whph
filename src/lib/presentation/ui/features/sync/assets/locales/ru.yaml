@@ -52,7 +52,7 @@ sync:
     local_ip_error: Ошибка локального IP
     device_already_paired: Устройство уже сопряжено
     no_active_interfaces: Нет активных сетевых интерфейсов
-    device_discovery_failed: Обнаружение устройств не удалось
+    device_discovery_failed: "Не удалось запустить обнаружение устройств: {error}"
     no_server_configured:
       Нет настроенного сервера. Сначала добавьте устройство синхронизации
       или используйте ручное подключение для настройки подключения к серверу.
@@ -81,7 +81,7 @@ sync:
     sync_completed: Синхронизация успешно завершена
     sync_in_progress: Синхронизация в процессе...
     testing_connection: Тестирование подключения...
-    device_added_success: Устройство успешно добавлено
+    device_added_success: "{deviceName} успешно добавлено в устройства синхронизации"
   qr_code:
     close_button: Закрыть
     dialog_title: Сканировать QR-код для синхронизации
@@ -121,7 +121,7 @@ sync:
     port_required: Порт обязателен
     invalid_port: Недопустимый номер порта
     connection_failed: Подключение не удалось
-    connection_error: Ошибка подключения
+    connection_error: "Ошибка подключения: {0}"
     connection_string_tab: Строка подключения
     manual_entry_tab: Ручной ввод
     connection_string_required: Требуется строка подключения
@@ -151,7 +151,7 @@ sync:
     alternative_methods_hint: Попробуйте ручное подключение или QR-код
     scan_qr_code: Сканировать QR-код
     refresh_scan: Обновить сканирование
-    last_seen: Последний раз видено
+    last_seen: "Последний раз в сети: {time}"
     already_added: Уже добавлено
   connect_info:
     dialog_title: Информация о подключении устройства

@@ -50,7 +50,7 @@ sync:
     local_ip_error: Chyba lokální IP adresy
     device_already_paired: Zařízení již spárováno
     no_active_interfaces: Žádné aktivní síťové rozhraní
-    device_discovery_failed: Objevování zařízení selhalo
+    device_discovery_failed: "Nepodařilo se spustit objevování zařízení: {error}"
     no_server_configured:
       Žádný server není nakonfigurován. Nejprve přidejte synchronizační
       zařízení nebo použijte manuální připojení k nastavení serverového připojení.
@@ -81,7 +81,7 @@ sync:
     sync_completed: Synchronizace dokončena úspěšně
     sync_in_progress: Synchronizace probíhá...
     testing_connection: Testování připojení...
-    device_added_success: Zařízení úspěšně přidáno
+    device_added_success: "Zařízení {deviceName} bylo úspěšně přidáno do synchronizovaných zařízení"
   qr_code:
     close_button: Zavřít
     dialog_title: Naskenujte QR kód pro synchronizaci
@@ -123,7 +123,7 @@ sync:
     port_required: Port je povinný
     invalid_port: Neplatné číslo portu
     connection_failed: Připojení selhalo
-    connection_error: Chyba připojení
+    connection_error: "Chyba připojení: {0}"
     connection_string_tab: Připojovací řetězec
     manual_entry_tab: Manuální zadání
     connection_string_required: Připojovací řetězec je povinný
@@ -151,7 +151,7 @@ sync:
     alternative_methods_hint: Zkuste manuální připojení nebo QR kód
     scan_qr_code: Naskenujte QR kód
     refresh_scan: Obnovit sken
-    last_seen: Naposledy viděno
+    last_seen: "Naposledy viděno {time}"
     already_added: Již přidáno
   connect_info:
     dialog_title: Informace o připojení zařízení

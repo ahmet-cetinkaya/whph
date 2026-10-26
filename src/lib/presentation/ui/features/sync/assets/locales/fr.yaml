@@ -53,7 +53,7 @@ sync:
     local_ip_error: Erreur d'IP locale
     device_already_paired: Appareil déjà appairé
     no_active_interfaces: Aucune interface réseau active
-    device_discovery_failed: Échec de la découverte des appareils
+    device_discovery_failed: "Échec du démarrage de la découverte des appareils : {error}"
     no_server_configured:
       Aucun serveur configuré. Ajoutez d'abord un appareil de
       synchronisation ou utilisez une connexion manuelle pour configurer une connexion
@@ -95,7 +95,7 @@ sync:
     sync_completed: Synchronisation terminée avec succès
     sync_in_progress: Synchronisation en cours...
     testing_connection: Test de connexion...
-    device_added_success: Appareil ajouté avec succès
+    device_added_success: "{deviceName} a été ajouté avec succès aux appareils de synchronisation"
   qr_code:
     close_button: Fermer
     dialog_title: Scanner le code QR pour synchroniser
@@ -137,7 +137,7 @@ sync:
     port_required: Le port est requis
     invalid_port: Numéro de port invalide
     connection_failed: Connexion échouée
-    connection_error: Erreur de connexion
+    connection_error: "Erreur de connexion : {0}"
     connection_string_tab: Chaîne de connexion
     manual_entry_tab: Saisie manuelle
     connection_string_required: Chaîne de connexion requise
@@ -169,7 +169,7 @@ sync:
     alternative_methods_hint: Essayez la connexion manuelle ou le code QR
     scan_qr_code: Scanner le code QR
     refresh_scan: Actualiser le scan
-    last_seen: Vu pour la dernière fois
+    last_seen: "Vu pour la dernière fois à {time}"
     already_added: Déjà ajouté
   connect_info:
     dialog_title: Informations de connexion de l'appareil
