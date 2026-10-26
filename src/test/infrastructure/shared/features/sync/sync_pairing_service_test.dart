@@ -2,9 +2,12 @@
 // application layer over real devices: a QR token has one successful use and
 // 5 minutes; a failed attempt does not burn it; code pairing needs both
 // users; leaving a group needs a confirmation.
+import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph_sync_core/whph_sync_core.dart';
 import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
 import 'package:whph/core/application/features/sync/models/sync_result_category.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
@@ -22,6 +25,32 @@ const int _codeDigits = 6;
 class _LoopbackNetwork extends Fake implements INetworkInterfaceService {
   @override
   Future<List<String>> getPreferredIPAddresses() async => [loopbackAddress];
+}
+
+/// A responder-side transport that delivers the first inbound frame (the
+/// pairing mode) and holds every later one until [release] completes, so a
+/// second joiner passes the token check while the first is still pairing.
+class _HeldAfterFirstFrame implements ISyncTransport {
+  final ISyncTransport _inner;
+  final Future<void> _release;
+  var _received = 0;
+
+  _HeldAfterFirstFrame(this._inner, this._release);
+
+  @override
+  Future<Uint8List> receive() async {
+    if (_received++ > 0) await _release;
+    return _inner.receive();
+  }
+
+  @override
+  Future<void> send(Uint8List frame) => _inner.send(frame);
+
+  @override
+  Future<void> close() => _inner.close();
+
+  @override
+  bool get isClosed => _inner.isClosed;
 }
 
 /// One side of a pairing: a device, its pairing service and its clock.
@@ -111,6 +140,28 @@ void main() {
       expect(status.phase, SyncPairingPhase.failed);
       expect(status.errorCode, SyncPairingErrorCode.codeExpiredOrUsed);
       expect(await second.device.service.isPaired(), isFalse);
+    });
+
+    test('a joiner that passed the token check but loses the consume race is refused', () async {
+      final (inviter, firstJoiner) = await twoSides();
+      final secondJoiner = await newSide('second');
+      final firstJoinerDone = Completer<void>();
+      secondJoiner.connector.responder = (transport) => inviter.service.respond(
+            _HeldAfterFirstFrame(transport, firstJoinerDone.future),
+            loopbackAddress,
+          );
+      final invitation = await inviter.service.createInvitation();
+
+      final secondPairing = secondJoiner.service.pairFromInvitation(invitation);
+      await Future<void>.delayed(Duration.zero);
+      final firstStatus = await firstJoiner.service.pairFromInvitation(invitation);
+      firstJoinerDone.complete();
+      final secondStatus = await secondPairing;
+
+      expect(firstStatus.phase, SyncPairingPhase.completed, reason: '${firstStatus.errorCode}');
+      expect(secondStatus.phase, SyncPairingPhase.failed);
+      expect(await secondJoiner.device.service.isPaired(), isFalse);
+      expect(inviter.device.membership.members, hasLength(2));
     });
 
     test('at 5:01 the token is expired', () async {
