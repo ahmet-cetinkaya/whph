@@ -57,7 +57,7 @@ class _SyncPairingStatusListenerState extends State<SyncPairingStatusListener> {
       final finalStatus = await SyncPairingFlow(_mediator).resolve(context, status);
       widget.onFinished?.call(finalStatus);
     } catch (error) {
-      Logger.error('SyncPairingStatusListener: following the pairing failed: $error');
+      Logger.error('SyncPairingStatusListener: following the pairing failed: ${error.runtimeType}');
     }
   }
 

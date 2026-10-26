@@ -61,7 +61,7 @@ class _SyncUpgradeProgressBannerState extends State<SyncUpgradeProgressBanner> {
       if (progress.isDone) _poller?.cancel();
       setState(() => _progress = progress);
     } catch (error) {
-      Logger.error('SyncUpgradeProgressBanner: reading the upgrade progress failed: $error');
+      Logger.error('SyncUpgradeProgressBanner: reading the upgrade progress failed: ${error.runtimeType}');
     }
   }
 
