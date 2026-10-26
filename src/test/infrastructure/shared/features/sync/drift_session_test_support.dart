@@ -23,13 +23,14 @@ class DriftEngineDevice {
 
   static Future<DriftEngineDevice> open(String name, Directory parent,
       {int Function()? nowMs,
-      SessionHooks hooks = const SessionHooks()}) async {
+      SessionHooks hooks = const SessionHooks(),
+      DriftAsyncSyncStore? store}) async {
     final security = await SecurityDevice.open(name, parent);
-    return DriftEngineDevice.over(security, nowMs: nowMs, hooks: hooks);
+    return DriftEngineDevice.over(security, nowMs: nowMs, hooks: hooks, store: store);
   }
 
   factory DriftEngineDevice.over(SecurityDevice security,
-      {int Function()? nowMs, SessionHooks hooks = const SessionHooks()}) {
+      {int Function()? nowMs, SessionHooks hooks = const SessionHooks(), DriftAsyncSyncStore? store}) {
     final marks = SyncLedgerMarkService(
         keyStore: security.keyStore,
         changeStore: security.database.store,
@@ -43,7 +44,7 @@ class DriftEngineDevice {
       membershipService: security.service,
       keyStore: security.keyStore,
       changeStore: security.database.store,
-      store: DriftAsyncSyncStore(security.database.store),
+      store: store ?? DriftAsyncSyncStore(security.database.store),
       marks: marks,
       startupCheck: startupCheck,
       config: SyncEngineConfig(delay: (_) async {}),

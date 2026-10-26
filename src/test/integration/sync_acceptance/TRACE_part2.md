@@ -1,7 +1,7 @@
 # T27 part 2 traceability
 
 Run: `cd src && fvm flutter test test/integration/sync_acceptance/{scenarios_us2,scenarios_us4,edit_catalog,upgrade,edge_cases}_test.dart`
-(`scenarios_us2` and `upgrade` carry the tag `t27-slow`; the tag is not declared in `dart_test.yaml`, which this part does not own, so the runner prints a warning.)
+(`scenarios_us2` and `upgrade` carry the tag `t27-slow`, declared in `dart_test.yaml` with a 15-minute timeout.)
 
 Every test is a real-device test: `AppDatabase.forTesting()` per device, file key store, membership with real Noise identities
 paired through the real handover, the Drift capture triggers, the async session engine over `DriftSyncSessionHost`,
