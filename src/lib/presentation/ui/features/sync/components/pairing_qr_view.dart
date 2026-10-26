@@ -57,7 +57,7 @@ class PairingQrController extends ChangeNotifier {
       state = PairingQrState.showing;
       _ticker = Timer.periodic(tickInterval, (_) => _tick());
     } catch (error) {
-      Logger.error('PairingQrController: creating the invitation failed: $error');
+      Logger.error('PairingQrController: creating the invitation failed: ${error.runtimeType}');
       if (_isDisposed) return;
       state = PairingQrState.failed;
       errorCode = error is SyncPairingException ? error.code : SyncPairingErrorCode.refused;
@@ -83,7 +83,7 @@ class PairingQrController extends ChangeNotifier {
       if (status.phase == SyncPairingPhase.completed) _finish(PairingQrState.paired);
       if (status.phase == SyncPairingPhase.failed) _finishWithFailure(status.errorCode);
     } catch (error) {
-      Logger.error('PairingQrController: reading the pairing status failed: $error');
+      Logger.error('PairingQrController: reading the pairing status failed: ${error.runtimeType}');
     }
   }
 
