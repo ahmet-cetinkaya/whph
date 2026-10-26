@@ -20,11 +20,17 @@ const String _captureEnabled =
 
 String _q(String column) => '"$column"';
 
-/// When an update of a row-level row writes its `*` cell: not for a soft delete.
-/// The `*` cell would be stamped after the tombstone and out-rank it on every
-/// peer, so a deleted time record or tag link would come back (FR-006).
-const String _rowLevelContentWritten =
-    'NEW.deleted_date IS NULL OR OLD.deleted_date IS NEW.deleted_date';
+/// When an update of a row-level row writes its `*` cell: only while the row
+/// ends up alive (an edit or a revive). A cell written for a soft delete or for
+/// an edit of an already deleted row would be stamped after the tombstone and
+/// out-rank it on every peer, so a deleted time record or tag link would come
+/// back while it stays deleted here (FR-006).
+const String _rowLevelContentWritten = 'NEW.deleted_date IS NULL';
+
+/// Same rule for the data cells of a field-level row: an edit that leaves the
+/// row deleted (deleted_date unchanged and set) must not out-rank its tombstone.
+const String _rowNotLeftDeletedByEdit =
+    'NEW.deleted_date IS NULL OR OLD.deleted_date IS NOT NEW.deleted_date';
 
 class _CellSpec {
   final int colId;
@@ -126,7 +132,8 @@ List<String> syncTriggerStatements(SyncTablePolicy policy) {
       _CellSpec(rowLevelColId, rowChanged)
     else
       for (final e in policy.columns.entries)
-        _CellSpec(e.value, 'OLD.${_q(e.key)} IS NOT NEW.${_q(e.key)}'),
+        _CellSpec(e.value,
+            '(OLD.${_q(e.key)} IS NOT NEW.${_q(e.key)}) AND ($_rowNotLeftDeletedByEdit)'),
     const _CellSpec(tombstoneColId, 'OLD.deleted_date IS NOT NEW.deleted_date',
         'NEW.deleted_date'),
   ];
