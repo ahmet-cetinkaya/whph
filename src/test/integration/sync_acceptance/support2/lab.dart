@@ -68,7 +68,6 @@ class LabDevice {
     final marks = SyncLedgerMarkService(
       keyStore: security.keyStore,
       changeStore: security.database.store,
-      delay: (_) async {},
     );
     final startupCheck = SyncStartupCheckService(
       membershipService: security.service,

@@ -6,170 +6,7 @@ sync:
       sync_failed: Fejl ved synkronisering af enheder
     from_label: Fra
     help:
-      content: '🔄 **Hvad er Sync?**
-
-
-        Sync holder dine vaner, opgaver, noter og data opdateret på tværs af enheder
-        (telefoner, tablets, laptops, desktops) på samme Wi-Fi. Ingen cloud eller
-        internet — data forbliver private og lokale.
-
-
-        Det er enkelt at bruge: Opsæt det én gang, og ændringer synkroniseres automatisk
-        eller på forespørgsel. Skift mellem enheder sømløst, som at starte på din
-        telefon og afslutte på din PC.
-
-
-        ## 🔗 **Sync-tilstande**
-
-
-        Alle enheder understøtter Klient- eller Server-tilstande for fleksibel synkronisering.
-        Server leder (deler data), Klienter tilslutter og udveksler. Du har brug for
-        mindst én Server.
-
-
-        - **Klient-tilstand:** Tilslutter til en Server for at synkronisere. Ideel
-        til at tilslutte grupper via QR eller manuel input.
-
-        - **Server-tilstand:** Fungerer som hub; viser QR eller streng for andre at
-        tilslutte.
-
-
-        **Platform-bemærkninger:**
-
-        - **Mobil:** Skift via Wi-Fi hotspot-ikonet. Server for bærbare hubs.
-
-        - **Desktop (Standard: Server):** Skift i Sync-indstillinger. Klient for laptops,
-        der synkroniserer til hoved-PC''er.
-
-
-        **Eksempler:** Mobil-til-mobil (én Server), desktop-til-mobil (begge veje),
-        desktop-til-desktop (én Server, én Klient).
-
-
-        Skift tilstande i Sync-indstillinger; appen husker dit valg.
-
-
-        ## 🛠️ **Aktivering af Sync**
-
-
-        Enheder skal dele Wi-Fi; hold WHPH åben.
-
-
-        ### **QR-kode-opsætning**
-
-        1. Server: Start Server-tilstand i Sync — QR vises.
-
-        2. Klient: "Tilføj enhed" > Scan QR.
-
-        3. Auto-forbinder og synkroniserer.
-
-
-        Understøtter alle kombinationer.
-
-
-        ### **Forbindelsesstreng**
-
-        1. Server: Kopier streng (f.eks. "whph://IP:44040?...") fra Sync.
-
-        2. Klient: "Tilføj enhed" > Manuel > Indsæt streng > Tilslut.
-
-
-        Ingen kamera kræves.
-
-
-        ### **Manuel indtastning**
-
-        1. Server: Notér IP/port (standard 44040) fra Forbindelsesinfo.
-
-        2. Klient: "Tilføj enhed" > Manuel > Indtast IP, port, navn > Test > Tilslut.
-
-
-        **Desktop-klienter:** Skift til Klient-tilstand først, derefter tilslut. Auto-synkroniserer;
-        skift tilbage når som helst.
-
-
-        Aktivér auto-genforbindelse i indstillinger for pålidelighed.
-
-
-        ## 📋 **Håndtering af enheder**
-
-
-        - **Vis:** Se enheder, synkroniseringstider, status i Sync-indstillinger.
-
-        - **Manuel Sync:** Tryk knap pr. enhed.
-
-        - **Fjern:** Vælg og fjern for at stoppe synkronisering.
-
-
-        ## 🔧 **Fejlfinding**
-
-
-        **Forbindelsesproblemer:**
-
-        1. Samme Wi-Fi? Ingen VPN''er.
-
-        2. Genstart app.
-
-        3. Bekræft Server-tilstand.
-
-        4. Test uden firewall.
-
-
-        **Ingen enheder?**
-
-        - Stabil Wi-Fi, ingen proxies.
-
-        - Opdater scan.
-
-        - Brug manuel IP.
-
-
-        **Sync fejler/timeouts:**
-
-        1. Manuel sync.
-
-        2. Match app-versioner.
-
-        3. Vent på store data.
-
-
-        **Firewall (Port 44040):**
-
-
-        Hvis forbindelser ikke virker, kan din computers firewall blokere sync-signalet.
-        Åbn port 44040 for at lade enheder kommunikere lokalt — det er sikkert for
-        dit hjemmenetværk.
-
-
-        **Windows (GUI):**
-
-        1. Åbn Defender Firewall > Avanceret > Indgående regler > Ny regel.
-
-        2. Port > TCP > 44040 > Tillad > Alle profiler > Navn "WHPH Sync" > Færdig.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Tips: Genstart router, brug private netværk. Gen-par ved "ikke fundet" fejl.
-
-        '
+      content: "🔄 **Hvad er synkronisering?**\n\nSynkronisering holder dine vaner, opgaver, noter og data opdateret på tværs af dine enheder på samme Wi-Fi. Ingen sky eller internet: data forbliver private og lokale.\n\n## 🛠️ **Aktivér synkronisering**\n\n1. Hold WHPH åben på begge enheder på samme Wi-Fi.\n2. Vælg \"Tilføj enhed\" på den ene enhed, og vis QR-koden.\n3. Scan den med den anden enhed, og tjek at begge skærme viser den samme kode.\n4. Ændringer synkroniseres derefter automatisk.\n\n## 📋 **Administrer enheder**\n\n- **Vis:** Se enheder, synkroniseringstidspunkter og status i synkroniseringsindstillinger.\n- **Manuel synkronisering:** Tryk på knappen ved enheden.\n- **Fjern:** Vælg en enhed og fjern den for at stoppe synkroniseringen.\n\n## 🔧 **Fejlfinding**\n\n1. Samme Wi-Fi? Ingen VPN.\n2. Genstart appen.\n3. Prøv uden firewall.\n\n**Ingen enheder?**\n- Stabilt Wi-Fi, ingen proxy.\n- Opdater scanningen."
       title: Hjælp til enhedssynkronisering
     last_sync_label: Sidste synkronisering
     no_devices_found: Ingen synkroniserede enheder
@@ -261,12 +98,9 @@ sync:
   server:
     starting: Starter server-tilstand...
     active: Server-tilstand aktiv - Vis QR-kode til andre enheder
-    stopped: Server-tilstand stoppet - Enhed er nu i klient-tilstand
+    stopped: "Modtager ikke længere forbindelser fra andre enheder"
     start_failed: Fejl ved start af server-tilstand - Tjek, om port 44040 er tilgængelig
-    start_tooltip: Start server-tilstand
-    stop_tooltip: Stop server-tilstand
     error: Fejl
-    device_became_server: Denne enhed er nu synkroniserings-serveren
     start_menu: Start server
     stop_menu: Stop server
     mode_title: Servertilstand
@@ -293,11 +127,9 @@ sync:
     connection_string_label: Forbindelsesstreng
     test_connection: Test forbindelse
     enter_server_details: Indtast serverforbindelsesdetaljer manuelt
-    connection_timeout: Forbindelse timeout. Tjek serveradressen og prøv igen.
+    connection_timeout: "Timeout for forbindelsen. Tjek enhedens adresse, og prøv igen."
     connection_test_successful: Forbindelsetest succesfuld!
-    connection_test_timeout:
-      Forbindelsetest timeout. Tjek serveradressen og prøv
-      igen.
+    connection_test_timeout: "Timeout for forbindelsestesten. Tjek enhedens adresse, og prøv igen."
     connection_test_failed_no_response:
       Forbindelsetest mislykkedes - ingen svar fra
       server
@@ -343,21 +175,10 @@ sync:
     copy: Kopier
   desktop:
     mode_title: Desktop Synkroniseringsmode
-    client_mode_start: Forbind som klient
-    client_mode_stop: Skift til servermode
-    client_mode_description:
-      Forbind til en anden enheds server for at synkronisere
-      data
-    server_mode_description:
-      Tillad andre enheder at forbinde og synkronisere med
-      denne enhed
-    sync_mode_start: Start klientmode
-    sync_mode_stop: Stop klientmode
-    sync_mode_start_menu: Start klientmode
-    sync_mode_stop_menu: Stop klientmode
-    client_mode_starting: Starter klientmode...
-    client_mode_started: Klientmode startet
-    client_mode_stopped: Skiftet tilbage til servermode
+    sync_mode_start_menu: "Stop med at modtage forbindelser"
+    sync_mode_stop_menu: "Modtag forbindelser"
+    client_mode_started: "Modtager ikke længere forbindelser"
+    client_mode_stopped: "Modtager forbindelser igen"
     sync_mode_toggle_error: Kunne ikke skifte synkroniseringstilstand
   multi_interface_connection: Multi-interface forbindelse
   status:

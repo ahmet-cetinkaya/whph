@@ -5,55 +5,15 @@ import 'dart:io';
 
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/sync/services/sync_ledger_mark_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_startup_check_service.dart';
 import 'package:whph/infrastructure/persistence/features/sync/services/sync_upgrade_job.dart';
-import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
 import '../../shared/features/sync/sync_security_test_support.dart';
 import 'restore_test_support.dart';
 
 const String _unrelatedOriginHex = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
-const int _retryCount = 3;
-const List<Duration> _expectedRetryDelays = [
-  Duration(seconds: 1),
-  Duration(seconds: 2),
-  Duration(seconds: 4),
-];
-
-/// A key store whose sent-mark writes fail on demand and are recorded.
-class _FlakyKeyStore extends FileSyncKeyStore {
-  _FlakyKeyStore(Directory keyDirectory, Directory ledgerDirectory)
-      : super(keyDirectory: keyDirectory, ledgerDirectory: ledgerDirectory);
-
-  int failures = 0;
-  int watermarkFailures = 0;
-  final List<int> attempts = [];
-  final List<int> persisted = [];
-
-  @override
-  Future<void> persistWrittenWatermark(OriginId origin, int nextSeq, int hlc) {
-    if (watermarkFailures > 0) {
-      watermarkFailures--;
-      throw const SyncLedgerWriteException('injected');
-    }
-    return super.persistWrittenWatermark(origin, nextSeq, hlc);
-  }
-
-  @override
-  Future<void> persistSentMark(OriginId origin, int seq, int hlc) async {
-    attempts.add(seq);
-    if (failures > 0) {
-      failures--;
-      throw const SyncLedgerWriteException('injected');
-    }
-    await super.persistSentMark(origin, seq, hlc);
-    persisted.add(seq);
-  }
-}
-
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
@@ -108,8 +68,7 @@ void main() {
           "WHERE r.pk = '$noteId' ORDER BY c.origin_seq");
 
   Future<void> markSent(SecurityDevice device) async {
-    expect(
-        await device.marks.persistSentMarkBefore(await topSeq(device)), isTrue);
+    await device.persistSentMark(await topSeq(device));
   }
 
   group('startup check rules (D14)', () {
@@ -352,67 +311,4 @@ void main() {
     });
   });
 
-  group('acceptance 10: sent-seq mark', () {
-    late SecurityDevice device;
-    late _FlakyKeyStore flaky;
-    late List<Duration> waits;
-    late SyncLedgerMarkService marks;
-
-    setUp(() async {
-      device = await openDevice('a', createIdentity: true);
-      flaky = _FlakyKeyStore(device.keyDirectory, device.ledgerDirectory);
-      await flaky.load();
-      waits = [];
-      marks = SyncLedgerMarkService(
-          keyStore: flaky,
-          changeStore: device.database.store,
-          delay: (d) async => waits.add(d));
-      await author(device, 'n1');
-      await author(device, 'n2');
-    });
-
-    test('is written before a batch above it and never lowered', () async {
-      final top = await topSeq(device);
-
-      expect(await marks.persistSentMarkBefore(top - 1), isTrue);
-      expect(await marks.persistSentMarkBefore(top), isTrue);
-      expect(await marks.persistSentMarkBefore(top - 1), isTrue);
-
-      expect(flaky.persisted, [top - 1, top]);
-      expect(flaky.latestCommitted!.maxSentSeq, top);
-    });
-
-    test('a failing write is retried 3 times, then reported', () async {
-      final top = await topSeq(device);
-      flaky.failures = 100;
-
-      expect(await marks.persistSentMarkBefore(top), isFalse);
-
-      expect(flaky.attempts, hasLength(_retryCount + 1));
-      expect(waits, _expectedRetryDelays);
-      expect(flaky.latestCommitted!.maxSentSeq, 0);
-
-      flaky.failures = 0;
-      expect(await marks.persistSentMarkBefore(top), isTrue);
-      expect(flaky.latestCommitted!.maxSentSeq, top);
-    });
-
-    test('a write that succeeds on the last retry lets the send continue',
-        () async {
-      final top = await topSeq(device);
-      flaky.failures = _retryCount;
-
-      expect(await marks.persistSentMarkBefore(top), isTrue);
-      expect(waits, _expectedRetryDelays);
-    });
-
-    test('a failed watermark flush is reported and retried on the next flush',
-        () async {
-      flaky.watermarkFailures = 1;
-      expect(await marks.flushWrittenWatermark(), isFalse);
-      expect(await marks.flushWrittenWatermark(), isTrue);
-      expect(await marks.flushWrittenWatermark(), isFalse,
-          reason: 'nothing new to write');
-    });
-  });
 }

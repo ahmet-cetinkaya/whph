@@ -6,172 +6,7 @@ sync:
       sync_failed: Errore nella sincronizzazione dei dispositivi
     from_label: Da
     help:
-      content: '🔄 **Cos''è Sync?**
-
-
-        Sync mantiene le tue abitudini, attività, note e dati aggiornati su tutti
-        i dispositivi (telefoni, tablet, laptop, desktop) nella stessa rete Wi-Fi.
-        Nessun cloud o internet — i dati rimangono privati e locali.
-
-
-        È semplice da usare: Impostalo una volta e i cambiamenti si sincronizzano
-        automaticamente o su richiesta. Passa da un dispositivo all''altro senza intoppi,
-        come iniziare sul telefono e finire sul PC.
-
-
-        ## 🔗 **Modalità Sync**
-
-
-        Tutti i dispositivi supportano modalità Client o Server per sincronizzazione
-        flessibile. Il Server guida (condivide dati), i Client si uniscono e scambiano.
-        Serve almeno un Server.
-
-
-        - **Modalità Client:** Si connette a un Server per sincronizzare. Ideale per
-        unirsi a gruppi tramite QR o input manuale.
-
-        - **Modalità Server:** Funge da hub; mostra QR o stringa per gli altri per
-        connettersi.
-
-
-        **Note sulla Piattaforma:**
-
-        - **Mobile:** Passa tramite icona hotspot Wi-Fi. Server per hub portatili.
-
-        - **Desktop (Predefinito: Server):** Passa nelle impostazioni Sync. Client
-        per laptop che sincronizzano con PC principali.
-
-
-        **Esempi:** Mobile-a-mobile (un Server), desktop-a-mobile (in entrambi i modi),
-        desktop-a-desktop (un Server, un Client).
-
-
-        Passa modalità nelle impostazioni Sync; l''app ricorda la tua scelta.
-
-
-        ## 🛠️ **Abilitare Sync**
-
-
-        I dispositivi devono condividere Wi-Fi; mantieni WHPH aperto.
-
-
-        ### **Setup con Codice QR**
-
-        1. Server: Avvia modalità Server in Sync — appare QR.
-
-        2. Client: "Aggiungi Dispositivo" > Scansiona QR.
-
-        3. Si connette e sincronizza automaticamente.
-
-
-        Supporta tutte le combinazioni.
-
-
-        ### **Stringa di Connessione**
-
-        1. Server: Copia stringa (es. "whph://IP:44040?...") da Sync.
-
-        2. Client: "Aggiungi Dispositivo" > Manuale > Incolla stringa > Connetti.
-
-
-        Non richiede fotocamera.
-
-
-        ### **Ingresso Manuale**
-
-        1. Server: Nota IP/porta (predefinita 44040) da Info Connessione.
-
-        2. Client: "Aggiungi Dispositivo" > Manuale > Inserisci IP, porta, nome >
-        Test > Connetti.
-
-
-        **Client Desktop:** Passa a modalità Client prima, poi connetti. Sincronizza
-        automaticamente; passa indietro quando vuoi.
-
-
-        Abilita riconnessione automatica nelle impostazioni per affidabilità.
-
-
-        ## 📋 **Gestire Dispositivi**
-
-
-        - **Visualizza:** Vedi dispositivi, tempi sync, stato nelle impostazioni Sync.
-
-        - **Sync Manuale:** Tocca pulsante per dispositivo.
-
-        - **Rimuovi:** Seleziona e rimuovi per fermare sync.
-
-
-        ## 🔧 **Risoluzione Problemi**
-
-
-        **Problemi di Connessione:**
-
-        1. Stessa Wi-Fi? Nessun VPN.
-
-        2. Riavvia app.
-
-        3. Verifica modalità Server.
-
-        4. Test senza firewall.
-
-
-        **Nessun Dispositivo?**
-
-        - Wi-Fi stabile, nessun proxy.
-
-        - Aggiorna scansione.
-
-        - Usa IP manuale.
-
-
-        **Sync Fallisce/Timeouts:**
-
-        1. Sync manuale.
-
-        2. Abbina versioni app.
-
-        3. Aspetta dati grandi.
-
-
-        **Firewall (Porta 44040):**
-
-
-        Se le connessioni non funzionano, il firewall del tuo computer potrebbe bloccare
-        il segnale sync. Apri la porta 44040 per permettere ai dispositivi di comunicare
-        localmente — è sicuro per la tua rete domestica.
-
-
-        **Windows (GUI):**
-
-        1. Apri Defender Firewall > Avanzato > Regole in Ingresso > Nuova Regola.
-
-        2. Porta > TCP > 44040 > Consenti > Tutti i profili > Nome "WHPH Sync" > Fine.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Suggerimenti: Riavvia router, usa reti private. Ri-accoppia se errori "non
-        trovato".
-
-        '
+      content: "🔄 **Che cos'è la sincronizzazione?**\n\nLa sincronizzazione mantiene aggiornati abitudini, attività, note e dati sui tuoi dispositivi nella stessa rete Wi-Fi. Niente cloud né internet: i dati restano privati e locali.\n\n## 🛠️ **Attivare la sincronizzazione**\n\n1. Tieni WHPH aperto su entrambi i dispositivi, sulla stessa rete Wi-Fi.\n2. Su un dispositivo scegli «Aggiungi dispositivo» e mostra il codice QR.\n3. Inquadralo con l'altro dispositivo e controlla che entrambi gli schermi mostrino lo stesso codice.\n4. Le modifiche si sincronizzano poi automaticamente.\n\n## 📋 **Gestire i dispositivi**\n\n- **Visualizza:** Vedi dispositivi, orari di sincronizzazione e stato nelle impostazioni di sincronizzazione.\n- **Sincronizzazione manuale:** Tocca il pulsante del dispositivo.\n- **Rimuovi:** Seleziona un dispositivo e rimuovilo per interrompere la sincronizzazione.\n\n## 🔧 **Risoluzione dei problemi**\n\n1. Stessa rete Wi-Fi? Niente VPN.\n2. Riavvia l'app.\n3. Prova senza firewall.\n\n**Nessun dispositivo?**\n- Wi-Fi stabile, nessun proxy.\n- Aggiorna la ricerca."
       title: Aiuto alla sincronizzazione dei dispositivi
     last_sync_label: Ultima sincronizzazione
     no_devices_found: Nessun dispositivo sincronizzato
@@ -277,12 +112,9 @@ sync:
   server:
     starting: Avvio modalità server...
     active: Modalità server attiva - Mostra codice QR ad altri dispositivi
-    stopped: Modalità server fermata - Il dispositivo è ora in modalità client
+    stopped: "Le connessioni da altri dispositivi non vengono più accettate"
     start_failed: Avvio modalità server fallito - Controlla se la porta 44040 è disponibile
-    start_tooltip: Avvia modalità server
-    stop_tooltip: Ferma modalità server
     error: Errore
-    device_became_server: Questo dispositivo è ora il server di sincronizzazione
     start_menu: Avvia server
     stop_menu: Ferma server
     mode_title: Modalità server
@@ -309,11 +141,9 @@ sync:
     connection_string_label: Stringa di connessione
     test_connection: Testa connessione
     enter_server_details: Inserisci dettagli di connessione server manualmente
-    connection_timeout: Timeout connessione. Controlla l'indirizzo del server e riprova.
+    connection_timeout: "Timeout della connessione. Controlla l'indirizzo del dispositivo e riprova."
     connection_test_successful: Test connessione riuscito!
-    connection_test_timeout:
-      Timeout test connessione. Controlla l'indirizzo del server
-      e riprova.
+    connection_test_timeout: "Timeout del test di connessione. Controlla l'indirizzo del dispositivo e riprova."
     connection_test_failed_no_response:
       Test connessione fallito - nessuna risposta
       dal server
@@ -359,21 +189,10 @@ sync:
     copy: Copia
   desktop:
     mode_title: Modalità sincronizzazione desktop
-    client_mode_start: Connettiti come client
-    client_mode_stop: Passa alla modalità server
-    client_mode_description:
-      Connettiti al server di un altro dispositivo per sincronizzare
-      i dati
-    server_mode_description:
-      Consenti ad altri dispositivi di connettersi e sincronizzare
-      con questo dispositivo
-    sync_mode_start: Avvia modalità client
-    sync_mode_stop: Ferma modalità client
-    sync_mode_start_menu: Avvia modalità client
-    sync_mode_stop_menu: Ferma modalità client
-    client_mode_starting: Avvio modalità client...
-    client_mode_started: Modalità client avviata
-    client_mode_stopped: Tornato alla modalità server
+    sync_mode_start_menu: "Smetti di accettare connessioni"
+    sync_mode_stop_menu: "Accetta connessioni"
+    client_mode_started: "Non accetta più connessioni"
+    client_mode_stopped: "Accetta di nuovo connessioni"
     sync_mode_toggle_error: Impossibile cambiare modalità di sincronizzazione
   multi_interface_connection: Connessione multi-interfaccia
   status:

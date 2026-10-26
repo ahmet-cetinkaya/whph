@@ -33,8 +33,7 @@ class DriftEngineDevice {
       {int Function()? nowMs, SessionHooks hooks = const SessionHooks(), DriftAsyncSyncStore? store}) {
     final marks = SyncLedgerMarkService(
         keyStore: security.keyStore,
-        changeStore: security.database.store,
-        delay: (_) async {});
+        changeStore: security.database.store);
     final startupCheck = SyncStartupCheckService(
         membershipService: security.service,
         keyStore: security.keyStore,

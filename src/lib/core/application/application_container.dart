@@ -151,28 +151,7 @@ void registerApplication(IContainer container) {
     noteRepository,
     noteTagRepository,
   );
-  registerSyncFeature(
-    container,
-    mediator,
-    appUsageIgnoreRuleRepository,
-    appUsageRepository,
-    appUsageTagRepository,
-    appUsageTagRuleRepository,
-    appUsageTimeRecordRepository,
-    habitRecordRepository,
-    habitRepository,
-    habitTagRepository,
-    settingRepository,
-    syncDeviceRepository,
-    tagRepository,
-    tagTagRepository,
-    taskRepository,
-    taskStatusRepository,
-    taskTagRepository,
-    taskTimeRecordRepository,
-    noteRepository,
-    noteTagRepository,
-  );
+  registerSyncFeature(container, mediator, syncDeviceRepository);
   registerWidgetFeature(container, mediator);
 }
 

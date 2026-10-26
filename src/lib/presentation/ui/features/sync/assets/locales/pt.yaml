@@ -6,173 +6,7 @@ sync:
       sync_failed: Erro ao sincronizar dispositivos
     from_label: De
     help:
-      content: '🔄 **O que é Sync?**
-
-
-        O Sync mantém seus hábitos, tarefas, notas e dados atualizados em todos os
-        dispositivos (telefones, tablets, laptops, desktops) na mesma Wi-Fi. Sem cloud
-        ou internet — os dados permanecem privados e locais.
-
-
-        É simples de usar: Configure uma vez, e as mudanças sincronizam automaticamente
-        ou sob demanda. Mude de dispositivos sem problemas, como começar no telefone
-        e terminar no PC.
-
-
-        ## 🔗 **Modos de Sync**
-
-
-        Todos os dispositivos suportam modos Cliente ou Servidor para sincronização
-        flexível. O Servidor lidera (compartilha dados), os Clientes se juntam e trocam.
-        Precisa de pelo menos um Servidor.
-
-
-        - **Modo Cliente:** Conecta-se a um Servidor para sincronizar. Ideal para
-        juntar-se a grupos via QR ou entrada manual.
-
-        - **Modo Servidor:** Atua como hub; mostra QR ou string para outros se conectarem.
-
-
-        **Notas de Plataforma:**
-
-        - **Móvel:** Alterne via ícone de hotspot Wi-Fi. Servidor para hubs portáteis.
-
-        - **Desktop (Padrão: Servidor):** Altere nas configurações de Sync. Cliente
-        para laptops sincronizando com PCs principais.
-
-
-        **Exemplos:** Móvel-para-móvel (um Servidor), desktop-para-móvel (de qualquer
-        forma), desktop-para-desktop (um Servidor, um Cliente).
-
-
-        Altere modos nas configurações de Sync; o app lembra sua escolha.
-
-
-        ## 🛠️ **Habilitar Sync**
-
-
-        Os dispositivos devem compartilhar Wi-Fi; mantenha WHPH aberto.
-
-
-        ### **Configuração com Código QR**
-
-        1. Servidor: Inicie modo Servidor em Sync — QR aparece.
-
-        2. Cliente: "Adicionar Dispositivo" > Escanear QR.
-
-        3. Conecta e sincroniza automaticamente.
-
-
-        Suporta todas as combinações.
-
-
-        ### **String de Conexão**
-
-        1. Servidor: Copie string (ex. "whph://IP:44040?...") de Sync.
-
-        2. Cliente: "Adicionar Dispositivo" > Manual > Colar string > Conectar.
-
-
-        Não requer câmera.
-
-
-        ### **Entrada Manual**
-
-        1. Servidor: Anote IP/porta (padrão 44040) de Info de Conexão.
-
-        2. Cliente: "Adicionar Dispositivo" > Manual > Inserir IP, porta, nome > Testar
-        > Conectar.
-
-
-        **Clientes Desktop:** Mude para modo Cliente primeiro, depois conecte. Sincroniza
-        automaticamente; mude de volta a qualquer momento.
-
-
-        Ative reconexão automática nas configurações para confiabilidade.
-
-
-        ## 📋 **Gerenciar Dispositivos**
-
-
-        - **Ver:** Veja dispositivos, tempos de sync, status nas configurações de
-        Sync.
-
-        - **Sync Manual:** Toque botão por dispositivo.
-
-        - **Remover:** Selecione e remova para parar sync.
-
-
-        ## 🔧 **Solução de Problemas**
-
-
-        **Problemas de Conexão:**
-
-        1. Mesma Wi-Fi? Sem VPNs.
-
-        2. Reinicie o app.
-
-        3. Verifique modo Servidor.
-
-        4. Teste sem firewall.
-
-
-        **Sem Dispositivos?**
-
-        - Wi-Fi estável, sem proxies.
-
-        - Atualize scan.
-
-        - Use IP manual.
-
-
-        **Sync Falha/Timeouts:**
-
-        1. Sync manual.
-
-        2. Combine versões do app.
-
-        3. Espere por dados grandes.
-
-
-        **Firewall (Porta 44040):**
-
-
-        Se as conexões não funcionarem, o firewall do seu computador pode estar bloqueando
-        o sinal de sync. Abra a porta 44040 para permitir que os dispositivos se comuniquem
-        localmente — é seguro para sua rede doméstica.
-
-
-        **Windows (GUI):**
-
-        1. Abra Defender Firewall > Avançado > Regras de Entrada > Nova Regra.
-
-        2. Porta > TCP > 44040 > Permitir > Todos os perfis > Nomeie "WHPH Sync" >
-        Concluir.
-
-
-        **Windows (CMD Admin):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Dicas: Reinicie o roteador, use redes privadas. Re-emparelhe se erros "não
-        encontrado".
-
-        '
+      content: "🔄 **O que é a sincronização?**\n\nA sincronização mantém os seus hábitos, tarefas, notas e dados atualizados nos seus dispositivos na mesma rede Wi-Fi. Sem nuvem nem internet: os dados continuam privados e locais.\n\n## 🛠️ **Ativar a sincronização**\n\n1. Mantenha o WHPH aberto nos dois dispositivos, na mesma rede Wi-Fi.\n2. Num dispositivo, escolha \"Adicionar dispositivo\" e mostre o código QR.\n3. Leia-o com o outro dispositivo e confirme que os dois ecrãs mostram o mesmo código.\n4. As alterações passam a sincronizar automaticamente.\n\n## 📋 **Gerir dispositivos**\n\n- **Ver:** Veja dispositivos, horas de sincronização e estado nas definições de sincronização.\n- **Sincronização manual:** Toque no botão de cada dispositivo.\n- **Remover:** Selecione um dispositivo e remova-o para parar a sincronização.\n\n## 🔧 **Resolução de problemas**\n\n1. Mesma rede Wi-Fi? Sem VPN.\n2. Reinicie a aplicação.\n3. Teste sem firewall.\n\n**Sem dispositivos?**\n- Wi-Fi estável, sem proxy.\n- Atualize a pesquisa."
       title: Ajuda de sincronização de dispositivos
     last_sync_label: Última sincronização
     no_devices_found: Nenhum dispositivo sincronizado
@@ -271,14 +105,11 @@ sync:
   server:
     starting: Iniciando modo servidor...
     active: Modo servidor ativo - Mostrar código QR para outros dispositivos
-    stopped: Modo servidor parado - O dispositivo agora está em modo cliente
+    stopped: "Deixou de aceitar ligações de outros dispositivos"
     start_failed:
       Falha ao iniciar modo servidor - Verifique se a porta 44040 está
       disponível
-    start_tooltip: Iniciar modo servidor
-    stop_tooltip: Parar modo servidor
     error: Erro
-    device_became_server: Este dispositivo é agora o servidor de sincronização
     start_menu: Iniciar servidor
     stop_menu: Parar servidor
     mode_title: Modo servidor
@@ -305,13 +136,9 @@ sync:
     connection_string_label: Cadeia de conexão
     test_connection: Testar conexão
     enter_server_details: Insira os detalhes de conexão do servidor manualmente
-    connection_timeout:
-      Tempo limite de conexão esgotado. Verifique o endereço do
-      servidor e tente novamente.
+    connection_timeout: "Tempo de ligação esgotado. Verifique o endereço do dispositivo e tente novamente."
     connection_test_successful: Teste de conexão bem-sucedido!
-    connection_test_timeout:
-      Tempo limite do teste de conexão esgotado. Verifique
-      o endereço do servidor e tente novamente.
+    connection_test_timeout: "Tempo do teste de ligação esgotado. Verifique o endereço do dispositivo e tente novamente."
     connection_test_failed_no_response:
       Teste de conexão falhou - nenhuma resposta
       do servidor
@@ -359,21 +186,10 @@ sync:
     copy: Copiar
   desktop:
     mode_title: Modo de sincronização de desktop
-    client_mode_start: Conectar como cliente
-    client_mode_stop: Alternar para modo servidor
-    client_mode_description:
-      Conecte-se ao servidor de outro dispositivo para sincronizar
-      dados
-    server_mode_description:
-      Permita que outros dispositivos se conectem e sincronizem
-      com este dispositivo
-    sync_mode_start: Iniciar modo cliente
-    sync_mode_stop: Parar modo cliente
-    sync_mode_start_menu: Iniciar modo cliente
-    sync_mode_stop_menu: Parar modo cliente
-    client_mode_starting: Iniciando modo cliente...
-    client_mode_started: Modo cliente iniciado
-    client_mode_stopped: Alternado de volta para modo servidor
+    sync_mode_start_menu: "Parar de aceitar ligações"
+    sync_mode_stop_menu: "Aceitar ligações"
+    client_mode_started: "Já não aceita ligações"
+    client_mode_stopped: "Voltou a aceitar ligações"
     sync_mode_toggle_error: Falha ao alternar modo de sincronização
   multi_interface_connection: Conexão multi-interface
   status:

@@ -11,7 +11,6 @@ import 'package:whph/core/application/features/app_usages/services/abstraction/i
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/app_usage_filter_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_shutdown_service.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_access_service.dart';
@@ -22,12 +21,9 @@ import 'package:acore/acore.dart';
 import 'package:whph/infrastructure/android/features/app_usage/android_app_usage_service.dart';
 import 'package:whph/infrastructure/android/features/reminder/android_reminder_service.dart';
 import 'package:whph/infrastructure/android/features/settings/android_startup_settings_service.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
-import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
 import 'package:whph/infrastructure/desktop/features/notification/desktop_notification_service.dart';
 import 'package:whph/infrastructure/desktop/features/reminder/desktop_reminder_service.dart';
 import 'package:whph/infrastructure/desktop/features/system_tray/desktop_system_tray_service.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
 import 'package:whph/infrastructure/desktop/settings/desktop_startup_settings_service.dart';
 import 'package:whph/infrastructure/linux/features/app_usages/linux_app_usage_service.dart';
 import 'package:whph/infrastructure/linux/features/notification/flatpak_notification_service.dart';
@@ -80,11 +76,9 @@ import 'package:whph/infrastructure/desktop/features/single_instance/desktop_sin
 import 'package:whph/infrastructure/linux/features/file_system/linux_application_directory_service.dart';
 import 'package:whph/infrastructure/windows/features/file_system/windows_application_directory_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/infrastructure/shared/features/sync/lan_sync_registration.dart';
 import 'package:whph/infrastructure/shared/features/sync/sync_security_registration.dart';
 import 'package:whph/core/application/features/sync/services/device_id_service.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
 
 /// The application directory service of the running platform.
 IApplicationDirectoryService createPlatformApplicationDirectoryService() {
@@ -370,47 +364,4 @@ void registerInfrastructure(
     throw Exception('Unsupported platform for reminder service.');
   });
 
-  // Registered explicitly for AppBootstrapService cleanup resolution
-  if (PlatformUtils.isDesktop) {
-    container.registerSingleton<DesktopSyncService>((_) {
-      final mediator = container.resolve<Mediator>();
-      final deviceIdService = container.resolve<IDeviceIdService>();
-      return DesktopSyncService(
-        mediator,
-        deviceIdService,
-        restoreBarrier: container.resolve<IRestoreBarrier>(),
-        lanServer: container.resolve<ISyncServerControl>(),
-      );
-    });
-  }
-
-  container.registerSingleton<ISyncService>((_) {
-    final mediator = container.resolve<Mediator>();
-
-    if (PlatformUtils.isDesktop) {
-      return container.resolve<DesktopSyncService>();
-    }
-
-    if (Platform.isAndroid) {
-      return AndroidSyncService(
-        mediator,
-        restoreBarrier: container.resolve<IRestoreBarrier>(),
-      );
-    }
-
-    throw Exception('Unsupported platform for sync service.');
-  });
-
-  container.registerSingleton<AndroidServerSyncService>((_) {
-    final mediator = container.resolve<Mediator>();
-    final deviceIdService = container.resolve<IDeviceIdService>();
-    final deviceInfoPlugin = container.resolve<DeviceInfoPlugin>();
-    return AndroidServerSyncService(
-      mediator,
-      deviceIdService,
-      deviceInfoPlugin,
-      restoreBarrier: container.resolve<IRestoreBarrier>(),
-      lanServer: container.resolve<ISyncServerControl>(),
-    );
-  });
 }

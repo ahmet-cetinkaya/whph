@@ -1,14 +1,14 @@
-import 'dart:async';
-
 import 'package:acore/acore.dart' hide Container;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
+import 'package:whph_sync_core/whph_sync_core.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/commands/sync_now_command.dart';
+import 'package:whph/core/application/features/sync/models/sync_result_category.dart';
+import 'package:whph/core/application/features/sync/models/sync_run_report.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/models/sync_member_summary.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/domain/shared/constants/app_theme.dart' as domain;
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
 import 'package:whph/main.dart' as app_main;
 import 'package:whph/presentation/ui/features/sync/components/sync_device_list_item/sync_device_list_item.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
@@ -61,38 +61,32 @@ class FakeContainer extends Fake implements IContainer {
   }
 }
 
-class FakeSyncService extends Fake implements ISyncService {
-  final _statusController = StreamController<SyncStatus>.broadcast();
+/// Answers [SyncNowCommand] with the report the test set up.
+class FakeMediator extends Fake implements Mediator {
+  SyncRunReport report = const SyncRunReport();
 
   @override
-  Stream<SyncStatus> get syncStatusStream => _statusController.stream;
-
-  @override
-  SyncStatus get currentSyncStatus => const SyncStatus(state: SyncState.idle);
-
-  @override
-  Stream<SyncProgress> get progressStream => const Stream.empty();
-
-  @override
-  Stream<bool> get onSyncComplete => const Stream.empty();
-
-  @override
-  void updateSyncStatus(SyncStatus status) => _statusController.add(status);
-
-  void emit(SyncStatus status) => _statusController.add(status);
-
-  void close() => _statusController.close();
+  Future<TResponse> send<TRequest extends IRequest<TResponse>, TResponse>(TRequest request) async =>
+      SyncNowCommandResponse(report) as TResponse;
 }
 
+SyncPeerReport completePeer(String memberId) => SyncPeerReport(
+      memberId: memberId,
+      result: SessionComplete(SessionStats(), memberId),
+    );
+
+SyncPeerReport failedPeer(String memberId) =>
+    SyncPeerReport(memberId: memberId, category: SyncResultCategory.notReachable);
+
 /// Minimal host reproducing how `SyncDevicesPage` feeds list items from the
-/// single page-level sync status subscription owned by [SyncStatusMixin].
+/// manual sync run owned by [SyncStatusMixin].
 class _TestSyncDevicesHost extends StatefulWidget {
-  final ISyncService syncService;
+  final Mediator mediator;
   final ITranslationService translationService;
   final List<SyncMemberSummary> items;
 
   const _TestSyncDevicesHost({
-    required this.syncService,
+    required this.mediator,
     required this.translationService,
     required this.items,
   });
@@ -103,20 +97,13 @@ class _TestSyncDevicesHost extends StatefulWidget {
 
 class _TestSyncDevicesHostState extends State<_TestSyncDevicesHost>
     with TickerProviderStateMixin, SyncStatusMixin<_TestSyncDevicesHost> {
-  late final AnimationController _iconController;
   late final AnimationController _buttonController;
   SyncStatus _currentSyncStatus = const SyncStatus(state: SyncState.idle);
 
   @override
-  ISyncService get syncService => widget.syncService;
+  Mediator get mediator => widget.mediator;
   @override
   ITranslationService get translationService => widget.translationService;
-  @override
-  AndroidServerSyncService? get serverSyncService => null;
-  @override
-  bool get isServerMode => false;
-  @override
-  AnimationController get syncIconAnimationController => _iconController;
   @override
   AnimationController get syncButtonAnimationController => _buttonController;
   @override
@@ -126,18 +113,16 @@ class _TestSyncDevicesHostState extends State<_TestSyncDevicesHost>
   @override
   Future<void> Function() get onRefresh => () async {};
 
+  Future<void> sync() => runManualSync();
+
   @override
   void initState() {
     super.initState();
-    _iconController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _buttonController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    setupSyncStatusListeners();
   }
 
   @override
   void dispose() {
-    disposeSyncStatusResources();
-    _iconController.dispose();
     _buttonController.dispose();
     super.dispose();
   }
@@ -159,7 +144,7 @@ class _TestSyncDevicesHostState extends State<_TestSyncDevicesHost>
 
 void main() {
   late FakeContainer fakeContainer;
-  late FakeSyncService syncService;
+  late FakeMediator mediator;
 
   final deviceX = SyncMemberSummary(
     memberId: 'device-x',
@@ -177,21 +162,25 @@ void main() {
 
   setUp(() {
     AppTheme.resetService();
-    syncService = FakeSyncService();
+    mediator = FakeMediator();
   });
-
-  tearDown(() => syncService.close());
 
   Future<void> pumpHost(WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: _TestSyncDevicesHost(
-          syncService: syncService,
+          mediator: mediator,
           translationService: fakeContainer.translationService,
           items: [deviceX, deviceY],
         ),
       ),
     ));
+    await tester.pump();
+  }
+
+  Future<void> runManualSync(WidgetTester tester, List<SyncPeerReport> peers) async {
+    mediator.report = SyncRunReport(peers: peers);
+    await tester.runAsync(() => tester.state<_TestSyncDevicesHostState>(find.byType(_TestSyncDevicesHost)).sync());
     await tester.pump();
   }
 
@@ -211,10 +200,7 @@ void main() {
     testWidgets('renders success icon only on the completed device row', (tester) async {
       await pumpHost(tester);
 
-      syncService.emit(const SyncStatus(state: SyncState.completed, currentDeviceId: 'device-x'));
-      await tester.pump();
-      // Flush the mixin's post-completion refresh timer so no timer outlives the test.
-      await tester.pump(const Duration(milliseconds: 200));
+      await runManualSync(tester, [completePeer('device-x')]);
 
       expect(iconInRow('device-x', Icons.check_circle), findsOneWidget);
       expect(iconInRow('device-y', Icons.check_circle), findsNothing);
@@ -224,10 +210,7 @@ void main() {
     testWidgets('renders warning icon only on the errored device row', (tester) async {
       await pumpHost(tester);
 
-      syncService.emit(const SyncStatus(state: SyncState.error, currentDeviceId: 'device-y'));
-      await tester.pump();
-      // Flush the mixin's post-completion refresh timer so no timer outlives the test.
-      await tester.pump(const Duration(milliseconds: 200));
+      await runManualSync(tester, [failedPeer('device-y')]);
 
       expect(iconInRow('device-y', Icons.warning_amber), findsOneWidget);
       expect(iconInRow('device-x', Icons.warning_amber), findsNothing);
@@ -237,11 +220,7 @@ void main() {
     testWidgets('tracks each device result independently', (tester) async {
       await pumpHost(tester);
 
-      syncService.emit(const SyncStatus(state: SyncState.completed, currentDeviceId: 'device-x'));
-      syncService.emit(const SyncStatus(state: SyncState.error, currentDeviceId: 'device-y'));
-      await tester.pump();
-      // Flush the mixin's post-completion refresh timer so no timer outlives the test.
-      await tester.pump(const Duration(milliseconds: 200));
+      await runManualSync(tester, [completePeer('device-x'), failedPeer('device-y')]);
 
       expect(iconInRow('device-x', Icons.check_circle), findsOneWidget);
       expect(iconInRow('device-y', Icons.warning_amber), findsOneWidget);
@@ -250,11 +229,7 @@ void main() {
     testWidgets('uses translation keys for the indicator tooltips', (tester) async {
       await pumpHost(tester);
 
-      syncService.emit(const SyncStatus(state: SyncState.completed, currentDeviceId: 'device-x'));
-      syncService.emit(const SyncStatus(state: SyncState.error, currentDeviceId: 'device-y'));
-      await tester.pump();
-      // Flush the mixin's post-completion refresh timer so no timer outlives the test.
-      await tester.pump(const Duration(milliseconds: 200));
+      await runManualSync(tester, [completePeer('device-x'), failedPeer('device-y')]);
 
       expect(find.byTooltip(SyncTranslationKeys.lastSyncSucceeded), findsOneWidget);
       expect(find.byTooltip(SyncTranslationKeys.lastSyncFailed), findsOneWidget);

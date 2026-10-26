@@ -123,6 +123,30 @@ void main() {
   });
 
   test(
+      'acceptance 1 (backup): the decompressed .whph backup has no key, token or SAS code and no sync rows',
+      () async {
+    final json = await CompressionService().extractFromWhphFile(exportBackup);
+    final decompressed = Uint8List.fromList(utf8.encode(json));
+
+    expect(_findLeaks(decompressed, secrets), isEmpty);
+    expect(json.toLowerCase(), isNot(contains('sync_origin')));
+    expect(json, contains('${_markerPrefix}0'),
+        reason: 'the scan ran over the real content, not an empty backup');
+  });
+
+  test('control (backup): a planted key in a backup is found after decompression',
+      () async {
+    final planted = _Secret.bytes('planted', _filled(32, 9));
+    final hexSpelling = utf8.decode(planted.needles[1]);
+    final backup = await CompressionService()
+        .createWhphFile(jsonEncode({'notes': [], 'leak': hexSpelling}));
+    final json = await CompressionService().extractFromWhphFile(backup);
+
+    expect(_findLeaks(Uint8List.fromList(utf8.encode(json)), [planted]),
+        ['planted']);
+  });
+
+  test(
       'acceptance 2: the database dump holds no private key or epoch key bytes',
       () async {
     final dump = await _databaseDump(deviceA.database.db);

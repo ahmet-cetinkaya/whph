@@ -1,21 +1,10 @@
 sync:
   desktop:
     mode_title: Tryb synchronizacji pulpitu
-    client_mode_start: Połącz jako klient
-    client_mode_stop: Przełącz na tryb serwera
-    client_mode_description:
-      Połącz się z serwerem innego urządzenia, aby zsynchronizować
-      dane
-    server_mode_description:
-      Pozwól innym urządzeniom na połączenie i synchronizację
-      z tym urządzeniem
-    sync_mode_start: Uruchom tryb klienta
-    sync_mode_stop: Zatrzymaj tryb klienta
-    sync_mode_start_menu: Uruchom tryb klienta
-    sync_mode_stop_menu: Zatrzymaj tryb klienta
-    client_mode_starting: Uruchamianie trybu klienta...
-    client_mode_started: Tryb klienta uruchomiony
-    client_mode_stopped: Przełączono z powrotem do trybu serwera
+    sync_mode_start_menu: "Przestań przyjmować połączenia"
+    sync_mode_stop_menu: "Przyjmuj połączenia"
+    client_mode_started: "Połączenia nie są już przyjmowane"
+    client_mode_stopped: "Połączenia są znów przyjmowane"
     sync_mode_toggle_error: Nie udało się przełączyć trybu synchronizacji
   devices:
     errors:
@@ -24,174 +13,7 @@ sync:
       sync_failed: Błąd podczas synchronizacji urządzeń
     from_label: Od
     help:
-      content: '🔄 **Co to jest Sync?**
-
-
-        Sync utrzymuje Twoje nawyki, zadania, notatki i dane zaktualizowane na wszystkich
-        urządzeniach (telefony, tablety, laptopy, komputery stacjonarne) w tej samej
-        sieci Wi-Fi. Bez chmury lub internetu — dane pozostają prywatne i lokalne.
-
-
-        Jest prosty w użyciu: skonfiguruj raz, a zmiany synchronizują się automatycznie
-        lub na żądanie. Przełączaj się między urządzeniami bezproblemowo, np. zacznij
-        na telefonie i dokończ na PC.
-
-
-        ## 🔗 **Tryby Sync**
-
-
-        Wszystkie urządzenia obsługują tryby klienta lub serwera dla elastycznej synchronizacji.
-        Serwer prowadzi (dzieli się danymi), klienci dołączają i wymieniają. Potrzebny
-        jest co najmniej jeden serwer.
-
-
-        - **Tryb klienta:** Łączy się z serwerem w celu synchronizacji. Idealny do
-        dołączania do grup za pomocą QR lub ręcznego wprowadzenia.
-
-        - **Tryb serwera:** Działa jako hub; pokazuje QR lub ciąg dla innych do połączenia.
-
-
-        **Uwagi dotyczące platform:**
-
-        - **Mobilne:** Przełączaj za pomocą ikony hotspotu Wi-Fi. Serwer dla przenośnych
-        hubów.
-
-        - **Pulpit (Domyślnie: Serwer):** Przełącz w ustawieniach Sync. Klient dla
-        laptopów synchronizujących z głównymi PC.
-
-
-        **Przykłady:** Mobilne do mobilnego (jeden serwer), pulpit do mobilnego (w
-        obie strony), pulpit do pulpitu (jeden serwer, jeden klient).
-
-
-        Przełączaj tryby w ustawieniach Sync; aplikacja pamięta Twój wybór.
-
-
-        ## 🛠️ **Włączanie Sync**
-
-
-        Urządzenia muszą dzielić Wi-Fi; utrzymuj WHPH otwartą.
-
-
-        ### **Konfiguracja z kodem QR**
-
-        1. Serwer: Uruchom tryb serwera w Sync — pojawi się QR.
-
-        2. Klient: „Dodaj urządzenie” > Skanuj QR.
-
-        3. Automatycznie łączy się i synchronizuje.
-
-
-        Obsługuje wszystkie kombinacje.
-
-
-        ### **Ciąg połączenia**
-
-        1. Serwer: Skopiuj ciąg (np. „whph://IP:44040?...”) z Sync.
-
-        2. Klient: „Dodaj urządzenie” > Ręczne > Wklej ciąg > Połącz.
-
-
-        Nie wymaga aparatu.
-
-
-        ### **Ręczne wprowadzenie**
-
-        1. Serwer: Zapisz IP/port (domyślnie 44040) z informacji o połączeniu.
-
-        2. Klient: „Dodaj urządzenie” > Ręczne > Wprowadź IP, port, nazwę > Test >
-        Połącz.
-
-
-        **Klienci pulpitu:** Najpierw przełącz na tryb klienta, potem połącz. Automatyczna
-        synchronizacja; przełącz powrotem w dowolnym momencie.
-
-
-        Włącz automatyczne ponowne połączenie w ustawieniach dla niezawodności.
-
-
-        ## 📋 **Zarządzanie urządzeniami**
-
-
-        - **Wyświetl:** Zobacz urządzenia, czasy synchronizacji, status w ustawieniach
-        Sync.
-
-        - **Ręczna synchronizacja:** Naciśnij przycisk dla każdego urządzenia.
-
-        - **Usuń:** Wybierz i usuń, aby zatrzymać synchronizację.
-
-
-        ## 🔧 **Rozwiązywanie problemów**
-
-
-        **Problemy z połączeniem:**
-
-        1. Ta sama Wi-Fi? Bez VPN.
-
-        2. Uruchom ponownie aplikację.
-
-        3. Sprawdź tryb serwera.
-
-        4. Testuj bez firewalla.
-
-
-        **Brak urządzeń?**
-
-        - Stabilne Wi-Fi, bez proxy.
-
-        - Odśwież skanowanie.
-
-        - Użyj ręcznego IP.
-
-
-        **Synchronizacja nie powiodła się/Timeout:**
-
-        1. Ręczna synchronizacja.
-
-        2. Dopasuj wersje aplikacji.
-
-        3. Poczekaj na duże dane.
-
-
-        **Firewall (Port 44040):**
-
-
-        Jeśli połączenia nie działają, zapora ogniowa Twojego komputera może blokować
-        sygnał synchronizacji. Otwórz port 44040, aby urządzenia mogły komunikować
-        się lokalnie — jest bezpieczny dla sieci domowej.
-
-
-        **Windows (GUI):**
-
-        1. Otwórz Defender Firewall > Zaawansowane > Reguły przychodzące > Nowa reguła.
-
-        2. Port > TCP > 44040 > Zezwól > Wszystkie profile > Nazwij „WHPH Sync” >
-        Zakończ.
-
-
-        **Windows (CMD Administrator):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Wskazówki: Uruchom ponownie router, używaj sieci prywatnych. Ponownie sparuj
-        w przypadku błędów „nie znaleziono”.
-
-        '
+      content: "🔄 **Czym jest synchronizacja?**\n\nSynchronizacja utrzymuje aktualność nawyków, zadań, notatek i danych na urządzeniach w tej samej sieci Wi-Fi. Bez chmury i internetu: dane pozostają prywatne i lokalne.\n\n## 🛠️ **Włączanie synchronizacji**\n\n1. Pozostaw WHPH otwarte na obu urządzeniach w tej samej sieci Wi-Fi.\n2. Na jednym urządzeniu wybierz „Dodaj urządzenie” i pokaż kod QR.\n3. Zeskanuj go drugim urządzeniem i sprawdź, czy oba ekrany pokazują ten sam kod.\n4. Zmiany będą potem synchronizowane automatycznie.\n\n## 📋 **Zarządzanie urządzeniami**\n\n- **Podgląd:** Urządzenia, czasy synchronizacji i stan zobaczysz w ustawieniach synchronizacji.\n- **Synchronizacja ręczna:** Dotknij przycisku przy urządzeniu.\n- **Usuń:** Wybierz urządzenie i usuń je, aby zatrzymać synchronizację.\n\n## 🔧 **Rozwiązywanie problemów**\n\n1. Ta sama sieć Wi-Fi? Bez VPN.\n2. Uruchom aplikację ponownie.\n3. Spróbuj bez zapory.\n\n**Brak urządzeń?**\n- Stabilne Wi-Fi, bez serwerów proxy.\n- Odśwież wyszukiwanie."
       title: Pomoc synchronizacji urządzeń
     last_sync_label: Ostatnia synchronizacja
     no_devices_found: Brak zsynchronizowanych urządzeń
@@ -312,16 +134,13 @@ sync:
   server:
     starting: Uruchamianie trybu serwera...
     active: Tryb serwera aktywny - Pokaż kod QR innym urządzeniom
-    stopped: Tryb serwera zatrzymany - Urządzenie jest teraz w trybie klienta
+    stopped: "Przestano przyjmować połączenia z innych urządzeń"
     start_failed:
       Uruchomienie trybu serwera nie powiodło się - Sprawdź, czy port
       44040 jest dostępny
-    start_tooltip: Uruchom tryb serwera
-    stop_tooltip: Zatrzymaj tryb serwera
     start_menu: Uruchom tryb serwera
     stop_menu: Zatrzymaj tryb serwera
     error: Błąd
-    device_became_server: To urządzenie jest teraz serwerem synchronizacji
     mode_title: Tryb serwera
     mode_inactive: Serwer nieaktywny
   manual:
@@ -346,11 +165,9 @@ sync:
     connection_string_label: Ciąg połączenia
     test_connection: Testuj połączenie
     enter_server_details: Wprowadź szczegóły połączenia serwera ręcznie
-    connection_timeout: Limit czasu połączenia. Sprawdź adres serwera i spróbuj ponownie.
+    connection_timeout: "Przekroczono limit czasu połączenia. Sprawdź adres urządzenia i spróbuj ponownie."
     connection_test_successful: Test połączenia udany!
-    connection_test_timeout:
-      Limit czasu testu połączenia. Sprawdź adres serwera i
-      spróbuj ponownie.
+    connection_test_timeout: "Przekroczono limit czasu testu połączenia. Sprawdź adres urządzenia i spróbuj ponownie."
     connection_test_failed_no_response:
       Test połączenia nieudany - brak odpowiedzi
       z serwera

@@ -6,172 +6,7 @@ sync:
       sync_failed: Fout bij synchroniseren van apparaten
     from_label: Van
     help:
-      content: '🔄 **Wat is Sync?**
-
-
-        Sync houdt je gewoonten, taken, notities en data up-to-date op alle apparaten
-        (telefoons, tablets, laptops, desktops) in hetzelfde Wi-Fi-netwerk. Geen cloud
-        of internet — data blijven privé en lokaal.
-
-
-        Het is eenvoudig te gebruiken: Stel het één keer in, en wijzigingen synchroniseren
-        automatisch of op verzoek. Schakel naadloos tussen apparaten, zoals beginnen
-        op je telefoon en afmaken op je PC.
-
-
-        ## 🔗 **Sync-modi**
-
-
-        Alle apparaten ondersteunen Client- of Server-modi voor flexibele synchronisatie.
-        Server leidt (deelt data), Clients sluiten aan en wisselen uit. Je hebt minstens
-        één Server nodig.
-
-
-        - **Client-modus:** Verbindt met een Server om te synchroniseren. Ideaal voor
-        het aansluiten bij groepen via QR of handmatige invoer.
-
-        - **Server-modus:** Fungeert als hub; toont QR of string voor anderen om aan
-        te sluiten.
-
-
-        **Platform-opmerkingen:**
-
-        - **Mobiel:** Schakel via Wi-Fi-hotspot-icoon. Server voor draagbare hubs.
-
-        - **Desktop (Standaard: Server):** Schakel in Sync-instellingen. Client voor
-        laptops die synchroniseren met hoofd-PC''s.
-
-
-        **Voorbeelden:** Mobiel-naar-mobiel (één Server), desktop-naar-mobiel (beide
-        kanten op), desktop-naar-desktop (één Server, één Client).
-
-
-        Schakel modi in Sync-instellingen; de app onthoudt je keuze.
-
-
-        ## 🛠️ **Sync inschakelen**
-
-
-        Apparaten moeten Wi-Fi delen; houd WHPH open.
-
-
-        ### **QR-code-setup**
-
-        1. Server: Start Server-modus in Sync — QR verschijnt.
-
-        2. Client: "Apparaat toevoegen" > Scan QR.
-
-        3. Verbindt en synchroniseert automatisch.
-
-
-        Ondersteunt alle combinaties.
-
-
-        ### **Verbindingsstring**
-
-        1. Server: Kopieer string (bijv. "whph://IP:44040?...") uit Sync.
-
-        2. Client: "Apparaat toevoegen" > Handmatig > Plak string > Verbind.
-
-
-        Geen camera vereist.
-
-
-        ### **Handmatige invoer**
-
-        1. Server: Noteer IP/poort (standaard 44040) uit Verbindingsinfo.
-
-        2. Client: "Apparaat toevoegen" > Handmatig > Voer IP, poort, naam in > Test
-        > Verbind.
-
-
-        **Desktop-clients:** Schakel eerst naar Client-modus, dan verbinden. Synchroniseert
-        automatisch; schakel terug wanneer je wilt.
-
-
-        Schakel auto-herverbinding in in instellingen voor betrouwbaarheid.
-
-
-        ## 📋 **Apparaten beheren**
-
-
-        - **Bekijk:** Zie apparaten, sync-tijden, status in Sync-instellingen.
-
-        - **Handmatige Sync:** Tik knop per apparaat.
-
-        - **Verwijder:** Selecteer en verwijder om synchronisatie te stoppen.
-
-
-        ## 🔧 **Probleemoplossing**
-
-
-        **Verbindingsproblemen:**
-
-        1. Zelfde Wi-Fi? Geen VPN''s.
-
-        2. Herstart app.
-
-        3. Bevestig Server-modus.
-
-        4. Test zonder firewall.
-
-
-        **Geen apparaten?**
-
-        - Stabiele Wi-Fi, geen proxies.
-
-        - Vernieuw scan.
-
-        - Gebruik handmatige IP.
-
-
-        **Sync mislukt/time-outs:**
-
-        1. Handmatige sync.
-
-        2. Match app-versies.
-
-        3. Wacht op grote data.
-
-
-        **Firewall (Poort 44040):**
-
-
-        Als verbindingen niet werken, blokkeert de firewall van je computer mogelijk
-        het sync-signaal. Open poort 44040 om apparaten lokaal te laten communiceren
-        — het is veilig voor je thuisnetwerk.
-
-
-        **Windows (GUI):**
-
-        1. Open Defender Firewall > Geavanceerd > Inkomende regels > Nieuwe regel.
-
-        2. Poort > TCP > 44040 > Toestaan > Alle profielen > Naam "WHPH Sync" > Voltooien.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Tips: Herstart router, gebruik privé-netwerken. Her-pair bij "niet gevonden"
-        fouten.
-
-        '
+      content: "🔄 **Wat is synchroniseren?**\n\nSynchroniseren houdt je gewoontes, taken, notities en gegevens up-to-date op je apparaten op hetzelfde wifi-netwerk. Geen cloud of internet: je gegevens blijven privé en lokaal.\n\n## 🛠️ **Synchronisatie inschakelen**\n\n1. Houd WHPH open op beide apparaten, op hetzelfde wifi-netwerk.\n2. Kies op één apparaat 'Apparaat toevoegen' en toon de QR-code.\n3. Scan de code met het andere apparaat en controleer of beide schermen dezelfde code tonen.\n4. Wijzigingen worden daarna automatisch gesynchroniseerd.\n\n## 📋 **Apparaten beheren**\n\n- **Bekijken:** Zie apparaten, synchronisatietijden en status in de synchronisatie-instellingen.\n- **Handmatig synchroniseren:** Tik op de knop bij het apparaat.\n- **Verwijderen:** Selecteer een apparaat en verwijder het om te stoppen met synchroniseren.\n\n## 🔧 **Probleemoplossing**\n\n1. Hetzelfde wifi-netwerk? Geen VPN.\n2. Start de app opnieuw.\n3. Test zonder firewall.\n\n**Geen apparaten?**\n- Stabiel wifi, geen proxy's.\n- Vernieuw het zoeken."
       title: Hulp bij apparaat-synchronisatie
     last_sync_label: Laatste synchronisatie
     no_devices_found: Geen gesynchroniseerde apparaten
@@ -265,14 +100,11 @@ sync:
   server:
     starting: Server-modus starten...
     active: Server-modus actief - Toon QR-code aan andere apparaten
-    stopped: Server-modus gestopt - Apparaat is nu in client-modus
+    stopped: "Verbindingen van andere apparaten worden niet meer geaccepteerd"
     start_failed:
       Starten van server-modus mislukt - Controleer of poort 44040 beschikbaar
       is
-    start_tooltip: Start server-modus
-    stop_tooltip: Stop server-modus
     error: Fout
-    device_became_server: Dit apparaat is nu de sync-server
     start_menu: Server starten
     stop_menu: Server stoppen
     mode_title: Servermodus
@@ -299,13 +131,9 @@ sync:
     connection_string_label: Verbindingsreeks
     test_connection: Test verbinding
     enter_server_details: Voer serververbindingdetails handmatig in
-    connection_timeout:
-      Verbindingstimeout. Controleer het serveradres en probeer
-      het opnieuw.
+    connection_timeout: "Time-out van de verbinding. Controleer het adres van het apparaat en probeer het opnieuw."
     connection_test_successful: Verbindingstest succesvol!
-    connection_test_timeout:
-      Verbindingstest timeout. Controleer het serveradres en
-      probeer het opnieuw.
+    connection_test_timeout: "Time-out van de verbindingstest. Controleer het adres van het apparaat en probeer het opnieuw."
     connection_test_failed_no_response:
       Verbindingstest mislukt - geen reactie van
       server
@@ -351,21 +179,10 @@ sync:
     copy: Kopiëren
   desktop:
     mode_title: Desktop Sync Modus
-    client_mode_start: Verbinden als Client
-    client_mode_stop: Schakel naar Server Modus
-    client_mode_description:
-      Verbind met de server van een ander apparaat om gegevens
-      te synchroniseren
-    server_mode_description:
-      Laat andere apparaten verbinden en synchroniseren met
-      dit apparaat
-    sync_mode_start: Start Client Modus
-    sync_mode_stop: Stop Client Modus
-    sync_mode_start_menu: Start Client Modus
-    sync_mode_stop_menu: Stop Client Modus
-    client_mode_starting: Start client modus...
-    client_mode_started: Client modus gestart
-    client_mode_stopped: Teruggeschakeld naar server modus
+    sync_mode_start_menu: "Stop met verbindingen accepteren"
+    sync_mode_stop_menu: "Verbindingen accepteren"
+    client_mode_started: "Accepteert geen verbindingen meer"
+    client_mode_stopped: "Accepteert weer verbindingen"
     sync_mode_toggle_error: Kan synchrone modus niet omschakelen
   multi_interface_connection: Multi-interface verbinding
   status:
