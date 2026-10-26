@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
@@ -210,7 +211,7 @@ class ServerInfo {
   factory ServerInfo.fromJson(Map<String, dynamic> json) {
     return ServerInfo(
       isServerActive: json['isServerActive'] as bool? ?? false,
-      serverPort: json['serverPort'] as int? ?? 44040,
+      serverPort: json['serverPort'] as int? ?? syncLanPort,
       activeConnections: json['activeConnections'] as int? ?? 0,
     );
   }
