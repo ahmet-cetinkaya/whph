@@ -11,8 +11,6 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 /// [ISyncKeyStore], and the cells from the Drift store (T22e).
 class DriftAsyncSessionDevice implements AsyncSessionDevice {
   @override
-  final String name;
-  @override
   final SyncEngineConfig config;
   @override
   final DriftAsyncSyncStore store;
@@ -32,7 +30,6 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
   final Map<String, PeerState> _peers = {};
 
   DriftAsyncSessionDevice({
-    required this.name,
     required SyncMembershipService membershipService,
     required ISyncKeyStore keyStore,
     required ISyncChangeStore changeStore,
@@ -47,6 +44,9 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
         _marks = marks,
         _startupCheck = startupCheck,
         _nowMs = nowMs ?? (() => DateTime.now().millisecondsSinceEpoch);
+
+  @override
+  String get name => membership.identity.name;
 
   @override
   String get memberId => membership.memberId;

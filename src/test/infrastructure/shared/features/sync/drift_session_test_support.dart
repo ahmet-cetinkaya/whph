@@ -40,7 +40,6 @@ class DriftEngineDevice {
         changeStore: security.database.store,
         marks: marks);
     final device = DriftAsyncSessionDevice(
-      name: security.name,
       membershipService: security.service,
       keyStore: security.keyStore,
       changeStore: security.database.store,

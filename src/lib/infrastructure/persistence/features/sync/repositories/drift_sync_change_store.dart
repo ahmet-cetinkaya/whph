@@ -6,6 +6,8 @@ import 'dart:typed_data';
 import 'package:acore/acore.dart';
 import 'package:drift/drift.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_change_store.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
+import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_peer_status_store.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/sync_security_cells.dart';
 import 'package:whph/infrastructure/persistence/features/sync/services/sync_reauthor_spec.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
@@ -15,17 +17,23 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 
 part 'drift_sync_store_port.dart';
 
-/// Wires the Drift change store (T23 calls this from the app bootstrap).
+/// Wires the Drift change store and the peer status store (called from
+/// `registerPersistence`).
 void registerSyncPersistence(IContainer container) {
   final database = AppDatabase.instance(container);
-  container.registerSingleton<ISyncChangeStore>(
+  container.registerSingleton<DriftSyncChangeStore>(
       (_) => DriftSyncChangeStore(database));
+  container.registerSingleton<ISyncChangeStore>(
+      (c) => c.resolve<DriftSyncChangeStore>());
+  container.registerSingleton<ISyncPeerStatusStore>(
+      (_) => DriftSyncPeerStatusStore(database));
 }
 
 const int _applyModeCapture = 0;
 const int _applyModeRemote = 1;
 const int _applyModeOriginSwitch = 3;
 const String _stateId = 'singleton';
+const String _memberTable = 'sync_member_table';
 
 const String _heldKindUnknown = 'unknown';
 const String _heldKindStaged = 'staged';
@@ -568,12 +576,21 @@ ON CONFLICT (key) DO UPDATE SET hlc = excluded.hlc, node_id = excluded.node_id, 
       return _ItemOutcome.unchanged;
 
     await _writeClock(clockKey, cell, null, null);
+    await _keepLocalMemberPlatform(spec, row);
     final columns = row.keys.toList();
     await _exec(
         'INSERT OR REPLACE INTO "${spec.tableName}" (${columns.map((c) => '"$c"').join(', ')}) '
         'VALUES (${List.filled(columns.length, '?').join(', ')})',
         [for (final column in columns) row[column]]);
     return _ItemOutcome.applied;
+  }
+
+  /// The platform of a member is local knowledge (the member record has no
+  /// such field), so a replaced member row keeps the one it had.
+  Future<void> _keepLocalMemberPlatform(SecurityCellSpec spec, Map<String, Object?> row) async {
+    if (spec.tableName != _memberTable) return;
+    final existing = await _selectOne('SELECT platform FROM "$_memberTable" WHERE id = ?', [row['id']]);
+    row['platform'] = existing?['platform'];
   }
 
   @override

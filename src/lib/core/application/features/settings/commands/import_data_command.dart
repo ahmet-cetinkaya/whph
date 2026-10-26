@@ -39,7 +39,6 @@ import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart'
 import 'package:whph/core/domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/notes/note.dart';
 import 'package:whph/core/domain/features/notes/note_tag.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
@@ -209,11 +208,6 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         name: 'settings',
         repository: settingRepository,
         fromJson: (json) => JsonMapper.deserialize<Setting>(jsonEncode(json))!,
-      ),
-      ImportConfig<SyncDevice>(
-        name: 'syncDevices',
-        repository: syncDeviceRepository,
-        fromJson: (json) => JsonMapper.deserialize<SyncDevice>(jsonEncode(json))!,
       ),
       ImportConfig<AppUsageIgnoreRule>(
         name: 'appUsageIgnoreRules',

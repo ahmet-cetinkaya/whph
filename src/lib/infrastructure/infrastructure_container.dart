@@ -80,12 +80,34 @@ import 'package:whph/infrastructure/desktop/features/single_instance/desktop_sin
 import 'package:whph/infrastructure/linux/features/file_system/linux_application_directory_service.dart';
 import 'package:whph/infrastructure/windows/features/file_system/windows_application_directory_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
+import 'package:whph/infrastructure/shared/features/sync/lan_sync_registration.dart';
+import 'package:whph/infrastructure/shared/features/sync/sync_security_registration.dart';
 import 'package:whph/core/application/features/sync/services/device_id_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
 
+/// The application directory service of the running platform.
+IApplicationDirectoryService createPlatformApplicationDirectoryService() {
+  if (Platform.isAndroid) {
+    return AndroidApplicationDirectoryService();
+  }
+  if (Platform.isWindows) {
+    return WindowsApplicationDirectoryService();
+  }
+  if (Platform.isLinux) {
+    return LinuxApplicationDirectoryService();
+  }
+  throw Exception('Unsupported platform for application directory service.');
+}
+
+/// [syncDataDirectory] is the resolved application data directory the sync key
+/// file lives in; without it sync security (identity, membership) is not
+/// registered, which only tests that do not use sync leave out.
 void registerInfrastructure(
   IContainer container, {
   IApplicationDirectoryService? applicationDirectoryService,
+  Directory? syncDataDirectory,
+  Directory? syncLedgerDirectory,
 }) {
   container.registerSingleton<ILogger>((_) => const ConsoleLogger());
 
@@ -98,21 +120,13 @@ void registerInfrastructure(
   container
       .registerSingleton<IAppUsageFilterService>((_) => appUsageFilterService);
 
-  container.registerSingleton<IApplicationDirectoryService>((_) {
-    if (applicationDirectoryService != null) {
-      return applicationDirectoryService;
-    }
-    if (Platform.isAndroid) {
-      return AndroidApplicationDirectoryService();
-    }
-    if (Platform.isWindows) {
-      return WindowsApplicationDirectoryService();
-    }
-    if (Platform.isLinux) {
-      return LinuxApplicationDirectoryService();
-    }
-    throw Exception('Unsupported platform for application directory service.');
-  });
+  container.registerSingleton<IApplicationDirectoryService>(
+      (_) => applicationDirectoryService ?? createPlatformApplicationDirectoryService());
+
+  if (syncDataDirectory != null) {
+    registerSyncSecurity(container, dataDirectory: syncDataDirectory, ledgerDirectory: syncLedgerDirectory);
+  }
+  registerSyncTransport(container);
 
   container.registerSingleton<McpAccessStore>(
     (_) => McpAccessStore(
@@ -365,6 +379,7 @@ void registerInfrastructure(
         mediator,
         deviceIdService,
         restoreBarrier: container.resolve<IRestoreBarrier>(),
+        lanServer: container.resolve<ISyncServerControl>(),
       );
     });
   }
@@ -395,6 +410,7 @@ void registerInfrastructure(
       deviceIdService,
       deviceInfoPlugin,
       restoreBarrier: container.resolve<IRestoreBarrier>(),
+      lanServer: container.resolve<ISyncServerControl>(),
     );
   });
 }

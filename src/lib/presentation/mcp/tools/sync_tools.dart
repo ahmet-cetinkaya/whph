@@ -2,12 +2,22 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:mcp_dart/mcp_dart.dart';
+import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_access_service.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_operation_service.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_server_service.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
+import 'package:whph/core/application/features/sync/commands/remove_sync_member_command.dart';
+import 'package:whph/core/application/features/sync/commands/rename_sync_member_command.dart';
+import 'package:whph/core/application/features/sync/commands/start_pairing_with_address_command.dart';
+import 'package:whph/core/application/features/sync/commands/start_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/stop_sync_command.dart';
+import 'package:whph/core/application/features/sync/models/sync_member_summary.dart';
+import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
+import 'package:whph/core/application/features/sync/queries/get_list_sync_members_query.dart';
+import 'package:whph/core/application/features/sync/queries/get_sync_member_query.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
 import 'package:whph/core/application/features/sync/services/sync_actions.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
+import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_arguments.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_definition.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_error.dart';
@@ -26,127 +36,207 @@ const syncToolNames = <String>{
   'whph_sync_stop',
 };
 
+const _defaultPageSize = 50;
+const _maxPageSize = 200;
+
 List<McpToolDefinition> createSyncTools({
-  required SyncActions actions,
+  required Mediator mediator,
+  required ISyncPeerStatusStore statusStore,
   required IMcpOperationService operations,
   required IMcpRequestContext requestContext,
-}) =>
-    List.unmodifiable([
-      _tool('whph_sync_devices_list', 'Lists paired sync devices.', _listInput, _pageOutput, const {McpScopes.syncRead},
-          _read, (arguments, extra) async {
-        final pageSize = arguments.optionalInt('pageSize') ?? 50;
+}) {
+  Future<Map<String, dynamic>> memberJson(SyncMemberSummary member) async =>
+      _memberJson(member, (await statusStore.read(member.memberId))?.addresses ?? const []);
+
+  Future<SyncMemberSummary?> readMember(String id) async =>
+      (await mediator.send<GetSyncMemberQuery, SyncMemberSummary?>(GetSyncMemberQuery(memberId: id)));
+
+  /// Rejects the write when the member changed after the caller read it.
+  Future<CallToolResult?> rejectUnlessCurrent(McpToolArguments arguments, SyncMemberSummary? member) async {
+    if (member == null) return _failure(McpToolErrorCode.notFound, 'Sync device not found.');
+    final current = (await memberJson(member))['revision'];
+    if (current == arguments.requireString('expectedRevision')) return null;
+    return _failure(McpToolErrorCode.conflict, 'The sync device changed after it was read.');
+  }
+
+  return List.unmodifiable([
+    _tool(
+      'whph_sync_devices_list',
+      'Lists devices of the sync group with their sync status.',
+      _listInput,
+      _pageOutput,
+      const {McpScopes.syncRead},
+      _read,
+      (arguments, extra) async {
+        final pageSize = arguments.optionalInt('pageSize') ?? _defaultPageSize;
         final pageIndex = _pageIndex(arguments.optionalString('cursor'));
-        if (pageSize < 1 || pageSize > 200) return _validation('pageSize', 'Page size must be from 1 through 200.');
-        final page = await actions.list(pageIndex: pageIndex, pageSize: pageSize);
+        if (pageSize < 1 || pageSize > _maxPageSize) {
+          return _validation('pageSize', 'Page size must be from 1 through $_maxPageSize.');
+        }
+        final response = await mediator.send<GetListSyncMembersQuery, GetListSyncMembersQueryResponse>(
+          GetListSyncMembersQuery(),
+        );
+        final start = pageIndex * pageSize;
+        final page = response.members.skip(start).take(pageSize).toList(growable: false);
         return McpToolResult.success({
-          'items': page.items.map((device) => _deviceJson(device, actions.status)).toList(growable: false),
-          'total': page.total,
-          if (page.nextCursor != null) 'nextCursor': page.nextCursor,
+          'items': [for (final member in page) await memberJson(member)],
+          'total': response.members.length,
+          if (start + pageSize < response.members.length) 'nextCursor': '${pageIndex + 1}',
         });
-      }),
-      _tool('whph_sync_devices_read', 'Reads one paired sync device.', _idInput, _deviceOutput,
-          const {McpScopes.syncRead}, _read, (arguments, extra) async {
-        final device = await actions.read(arguments.requireString('id'));
-        if (device == null) return _failure(McpToolErrorCode.notFound, 'Sync device not found.');
-        return McpToolResult.success(_deviceJson(device, actions.status));
-      }),
-      _tool('whph_sync_devices_update', 'Updates a paired device using its current revision.', _updateInput,
-          _deviceMutationOutput, const {McpScopes.syncManage}, _mutation, (arguments, extra) async {
-        if (!const {'name', 'fromIp', 'toIp'}.any(arguments.contains)) {
+      },
+    ),
+    _tool(
+      'whph_sync_devices_read',
+      'Reads one device of the sync group with its sync status.',
+      _idInput,
+      _memberOutput,
+      const {McpScopes.syncRead},
+      _read,
+      (arguments, extra) async {
+        final member = await readMember(arguments.requireString('id'));
+        if (member == null) return _failure(McpToolErrorCode.notFound, 'Sync device not found.');
+        return McpToolResult.success(await memberJson(member));
+      },
+    ),
+    _tool(
+      'whph_sync_devices_update',
+      'Renames a device or changes its addresses using its current revision.',
+      _updateInput,
+      _memberMutationOutput,
+      const {McpScopes.syncManage},
+      _mutation,
+      (arguments, extra) async {
+        if (!arguments.contains('name') && !arguments.contains('addresses')) {
           return _validation('id', 'At least one editable field is required.');
         }
-        final fromIp = _ipUpdate(arguments, 'fromIp');
-        final toIp = _ipUpdate(arguments, 'toIp');
+        final id = arguments.requireString('id');
+        final addresses = arguments.contains('addresses') ? _addressesOf(arguments) : null;
+        final stale = await rejectUnlessCurrent(arguments, await readMember(id));
+        if (stale != null) return stale;
+        await _requireAuthorized(requestContext, extra, const {McpScopes.syncManage});
         try {
-          final updated = await actions.update(
-            SyncDeviceUpdate(
-              id: arguments.requireString('id'),
-              expectedRevision: _revision(arguments, 'expectedRevision'),
-              name: arguments.contains('name') ? ReplaceField(arguments.optionalString('name')) : const PreserveField(),
-              fromIp: fromIp,
-              toIp: toIp,
-            ),
-            () => _requireAuthorized(requestContext, extra, const {McpScopes.syncManage}),
-          );
-          return McpToolResult.success({
-            ..._deviceJson(updated.value, actions.status),
-            'committed': true,
-            'syncStatus': updated.syncSucceeded ? 'succeeded' : 'failed',
-          });
-        } on SyncRevisionConflictException {
-          return _failure(McpToolErrorCode.conflict, 'The sync device changed after it was read.');
-        } on StateError {
-          return _failure(McpToolErrorCode.notFound, 'Sync device not found.');
+          if (arguments.contains('name')) {
+            await mediator.send<RenameSyncMemberCommand, void>(
+              RenameSyncMemberCommand(memberId: id, name: arguments.requireString('name')),
+            );
+          }
+        } on SyncMembershipException catch (error) {
+          return _validation('name', error.message);
         }
-      }),
-      _tool('whph_sync_devices_delete', 'Deletes a paired sync device using its current revision.', _deleteInput,
-          _deleteOutput, const {McpScopes.syncManage}, _delete, (arguments, extra) async {
+        if (addresses != null) await statusStore.saveAddresses(id, addresses);
+        final updated = await readMember(id);
+        if (updated == null) return _failure(McpToolErrorCode.notFound, 'Sync device not found.');
+        return McpToolResult.success({...await memberJson(updated), 'committed': true});
+      },
+    ),
+    _tool(
+      'whph_sync_devices_delete',
+      'Removes a device from the sync group for every member, with a key rotation, using its current revision.',
+      _deleteInput,
+      _deleteOutput,
+      const {McpScopes.syncManage},
+      _delete,
+      (arguments, extra) async {
+        final id = arguments.requireString('id');
+        final stale = await rejectUnlessCurrent(arguments, await readMember(id));
+        if (stale != null) return stale;
+        await _requireAuthorized(requestContext, extra, const {McpScopes.syncManage});
         try {
-          final deletedAt = await actions.delete(
-            arguments.requireString('id'),
-            _revision(arguments, 'expectedRevision'),
-            () => _requireAuthorized(requestContext, extra, const {McpScopes.syncManage}),
-          );
-          return McpToolResult.success({
-            'id': arguments.requireString('id'),
-            'deletedAt': deletedAt.value.toUtc().toIso8601String(),
-            'committed': true,
-            'syncStatus': deletedAt.syncSucceeded ? 'succeeded' : 'failed',
-          });
-        } on SyncRevisionConflictException {
-          return _failure(McpToolErrorCode.conflict, 'The sync device changed after it was read.');
-        } on StateError {
+          await mediator.send<RemoveSyncMemberCommand, void>(RemoveSyncMemberCommand(memberId: id));
+        } on ArgumentError {
           return _failure(McpToolErrorCode.notFound, 'Sync device not found.');
+        } on StateError {
+          return _failure(McpToolErrorCode.conflict, 'This device is not in a sync group.');
         }
-      }),
-      _tool('whph_sync_pair_prepare', 'Prepares a local-user-approved WHPH device pairing.', _pairInput,
-          _operationOutput, const {McpScopes.syncManage}, _additive, (arguments, extra) async {
-        final peer = _peer(arguments.optionalObject('peer'));
+        return McpToolResult.success({'id': id, 'committed': true});
+      },
+    ),
+    _tool(
+      'whph_sync_pair_prepare',
+      'Prepares pairing with a WHPH device. Nothing is paired until the user approves it in the app and '
+          'confirms the same code on both devices.',
+      _pairInput,
+      _operationOutput,
+      const {McpScopes.syncManage},
+      _additive,
+      (arguments, extra) async {
+        final peer = _peerAddress(arguments.optionalObject('peer'));
         extra.signal.throwIfAborted();
         final grant = await requestContext.currentGrant(requiredScopes: const {McpScopes.syncManage});
-        if (grant == null)
+        if (grant == null) {
           return _failure(McpToolErrorCode.permissionDenied, 'The connection is not permitted to pair devices.');
-        final normalized = <String, Object>{
-          'deviceId': peer.deviceId,
-          'ipAddress': peer.ipAddress,
-          'name': peer.name,
-          'port': peer.port,
-        };
+        }
+        final summary = 'Pair with the device at ${peer.address}:${peer.port}';
         final operation = await operations.prepare(
           clientGrantId: grant.id,
           type: McpOperationType.syncPair,
           requiredScopes: const {McpScopes.syncManage},
-          requestHash: sha256.convert(utf8.encode(jsonEncode(normalized))).toString(),
-          summary: 'Pair with ${peer.name} (${peer.ipAddress}:${peer.port})',
+          requestHash: sha256.convert(utf8.encode(jsonEncode([peer.address, peer.port]))).toString(),
+          summary: summary,
           execute: () async {
-            final paired = await actions.pair(peer);
+            final status = await mediator.send<StartPairingWithAddressCommand, SyncPairingStatus>(
+              StartPairingWithAddressCommand(address: peer.address, port: peer.port),
+            );
             return McpOperationResult({
-              'deviceId': paired.value.id,
-              'status': paired.syncSucceeded ? 'paired' : 'paired_sync_failed',
+              'status': status.phase.name,
+              'requiresUserConfirmation': true,
+              if (status.errorCode != null) 'error': status.errorCode,
             });
           },
         );
-        return McpToolResult.success(_operationJson(operation, peer));
-      }),
-      _tool('whph_sync_start', 'Starts the configured WHPH sync service.', _emptyInput, _statusOutput,
-          const {McpScopes.syncManage}, _mutation, (arguments, extra) async {
+        return McpToolResult.success({
+          'operationId': operation.id,
+          'status': operation.status.name,
+          'requiresApproval': true,
+          'expiresAt': operation.approvalExpiresAt.toUtc().toIso8601String(),
+          'peerSummary': summary,
+          'requiresUserConfirmation': true,
+        });
+      },
+    ),
+    _tool(
+      'whph_sync_start',
+      'Starts the sync server and periodic sync.',
+      _emptyInput,
+      _runningOutput,
+      const {McpScopes.syncManage},
+      _mutation,
+      (arguments, extra) async {
         await _requireAuthorized(requestContext, extra, const {McpScopes.syncManage});
-        return McpToolResult.success(_statusJson(await actions.start()));
-      }),
-      _tool('whph_sync_stop', 'Stops the configured WHPH sync service.', _emptyInput, _statusOutput,
-          const {McpScopes.syncManage}, _mutation, (arguments, extra) async {
+        await mediator.send<StartSyncCommand, void>(StartSyncCommand());
+        return McpToolResult.success({'running': true});
+      },
+    ),
+    _tool(
+      'whph_sync_stop',
+      'Stops the sync server and periodic sync.',
+      _emptyInput,
+      _runningOutput,
+      const {McpScopes.syncManage},
+      _mutation,
+      (arguments, extra) async {
         await _requireAuthorized(requestContext, extra, const {McpScopes.syncManage});
-        return McpToolResult.success(_statusJson(actions.stop()));
-      }),
-    ]);
+        await mediator.send<StopSyncCommand, StopSyncCommandResponse>(StopSyncCommand());
+        return McpToolResult.success({'running': false});
+      },
+    ),
+  ]);
+}
 
-McpToolDefinition _tool(String name, String description, JsonObject input, JsonObject output, Set<String> scopes,
-        ToolAnnotations annotations, McpToolHandler handler) =>
-    McpToolDefinition(
-        name: name,
-        description: description,
-        inputSchema: input,
-        outputSchema: output,
-        annotations: annotations,
-        requiredScopes: scopes,
-        handler: handler);
+McpToolDefinition _tool(
+  String name,
+  String description,
+  JsonObject input,
+  JsonObject output,
+  Set<String> scopes,
+  ToolAnnotations annotations,
+  McpToolHandler handler,
+) => McpToolDefinition(
+  name: name,
+  description: description,
+  inputSchema: input,
+  outputSchema: output,
+  annotations: annotations,
+  requiredScopes: scopes,
+  handler: handler,
+);

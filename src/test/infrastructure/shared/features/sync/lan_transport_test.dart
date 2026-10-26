@@ -37,6 +37,7 @@ void main() {
   Future<LanSyncServer> startServer(ISyncSessionHost host,
       {LanConnectionLimits? limits,
       PairingRateLimiter? pairingLimiter,
+      bool Function(String address)? isAllowedSource,
       Duration firstFrameTimeout = defaultFirstFrameTimeout}) async {
     final server = LanSyncServer(
       host: host,
@@ -44,6 +45,7 @@ void main() {
       bindAddress: InternetAddress.loopbackIPv4,
       limits: limits,
       pairingLimiter: pairingLimiter,
+      isAllowedSource: isAllowedSource,
       firstFrameTimeout: firstFrameTimeout,
     );
     expect(await server.start(), isTrue);
@@ -134,6 +136,17 @@ void main() {
       for (final socket in open) {
         await socket.close();
       }
+    });
+
+    test('a connection from a source the allow-check rejects gets 403', () async {
+      final (_, b, _) = await pairedDevices();
+      final server = await startServer(DeviceHost(b), isAllowedSource: (_) => false);
+      final client = HttpClient();
+      addTearDown(client.close);
+
+      final response = await (await client.getUrl(Uri.parse('http://$_loopback:${server.port}'))).close();
+
+      expect(response.statusCode, HttpStatus.forbidden);
     });
 
     test('a connection that sends no handshake is closed after the first-frame timeout', () async {

@@ -27,6 +27,9 @@ abstract interface class ISyncSessionHost {
   /// Runs the responder side of a sync session.
   Future<SessionResult> respond(ISyncTransport transport, String source);
 
-  /// Runs the responder side of a QR pairing handshake.
+  /// Runs the initiator side of a sync session towards [peerMemberId].
+  Future<SessionResult> initiate(ISyncTransport transport, String peerMemberId);
+
+  /// Runs the responder side of a pairing connection.
   Future<void> pair(ISyncTransport transport, String source);
 }

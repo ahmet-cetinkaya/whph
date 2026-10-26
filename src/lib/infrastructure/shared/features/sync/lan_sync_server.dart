@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/domain/shared/utils/network_utils.dart';
 import 'package:whph/infrastructure/shared/features/sync/lan_connection_limits.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_session_host.dart';
 import 'package:whph/infrastructure/shared/features/sync/legacy_sync_responder.dart';
 import 'package:whph/infrastructure/shared/features/sync/pairing_rate_limiter.dart';
 import 'package:whph/infrastructure/shared/features/sync/web_socket_sync_transport.dart';
 
 /// TCP port of the LAN sync server.
-const int lanSyncPort = 44040;
+const int lanSyncPort = syncLanPort;
 
 /// WebSocket sub-protocol of an authenticated sync session (Noise `XX`).
 const String lanSyncSubprotocol = 'whph-sync.1';
@@ -28,7 +30,7 @@ const String _component = 'LanSyncServer';
 ///
 /// Start and stop are the desktop server toggle (PB-6): a stopped server does
 /// not listen, so a connection attempt is refused by the OS.
-class LanSyncServer {
+class LanSyncServer implements ISyncServerControl {
   final ISyncSessionHost _host;
   final LegacySyncResponder _legacyResponder;
   final PairingRateLimiter _pairingLimiter;
@@ -64,6 +66,7 @@ class LanSyncServer {
         _firstFrameTimeout = firstFrameTimeout,
         _idleFrameTimeout = idleFrameTimeout;
 
+  @override
   bool get isRunning => _server != null;
 
   /// The bound port; `null` while stopped.
@@ -72,6 +75,7 @@ class LanSyncServer {
   int get activeConnectionCount => _limits.activeCount;
 
   /// Starts listening. Returns `false` when the port cannot be bound.
+  @override
   Future<bool> start() async {
     if (_server != null) return true;
     try {
@@ -87,6 +91,7 @@ class LanSyncServer {
   }
 
   /// Stops listening and closes every open connection.
+  @override
   Future<void> stop() async {
     final server = _server;
     _server = null;

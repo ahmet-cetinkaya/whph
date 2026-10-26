@@ -106,6 +106,10 @@ class AppDatabase extends _$AppDatabase {
 
   static AppDatabase? _instance;
   static bool isTestMode = false;
+
+  /// Whether this launch created the database file (the D14 startup check
+  /// treats a key file that outlived its database differently).
+  static bool createdThisLaunch = false;
   static Directory? testDirectory;
   static IContainer? _container;
   static DatabaseBackupService? _backupService;
@@ -322,6 +326,7 @@ class AppDatabase extends _$AppDatabase {
       onCreate: (Migrator m) async {
         try {
           Logger.info('Creating database schema version $schemaVersion');
+          createdThisLaunch = true;
           await m.createAll();
           await customStatement('PRAGMA foreign_keys = ON');
           for (final statement in syncPlaceholderIdentityStatements()) {

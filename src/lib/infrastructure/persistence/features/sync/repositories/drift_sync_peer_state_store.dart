@@ -49,14 +49,15 @@ class DriftSyncPeerStateStore implements ISyncPeerStateStore {
   @override
   Future<void> moveAddress(String address,
       {required String fromMemberId, required String toMemberId}) async {
-    await _writeAddresses(fromMemberId,
+    await saveAddresses(fromMemberId,
         (await addressesOf(fromMemberId)).where((a) => a != address).toList());
     final target = await addressesOf(toMemberId);
     if (!target.contains(address))
-      await _writeAddresses(toMemberId, [...target, address]);
+      await saveAddresses(toMemberId, [...target, address]);
   }
 
-  Future<void> _writeAddresses(String memberId, List<String> addresses) =>
+  /// Replaces the stored address list of [memberId].
+  Future<void> saveAddresses(String memberId, List<String> addresses) =>
       _database.customStatement(
         'INSERT INTO sync_peer_state_table (member_id, addresses) VALUES (?, ?) '
         'ON CONFLICT (member_id) DO UPDATE SET addresses = excluded.addresses',
