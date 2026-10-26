@@ -16,6 +16,8 @@ import 'lab.dart';
 
 const String loopbackHost = '127.0.0.1';
 const Duration _plaintextWait = Duration(seconds: 5);
+const Duration _resultWait = Duration(seconds: 30);
+const Duration _resultPoll = Duration(milliseconds: 10);
 
 /// Wraps the host of [device] and remembers the result of each session it
 /// answered.
@@ -33,6 +35,20 @@ class RecordingHost implements ISyncSessionHost {
     final result = await device.host.respond(transport, source);
     results.add(result);
     return result;
+  }
+
+  /// The result of the session that ended after [knownCount] results existed.
+  /// The initiator can finish before the responder records its result, so
+  /// reading [results] right after a sync races.
+  Future<SessionResult> resultAfter(int knownCount) async {
+    final deadline = DateTime.now().add(_resultWait);
+    while (results.length <= knownCount) {
+      if (DateTime.now().isAfter(deadline)) {
+        throw TimeoutException('no responder result after $knownCount within $_resultWait');
+      }
+      await Future<void>.delayed(_resultPoll);
+    }
+    return results.last;
   }
 
   @override

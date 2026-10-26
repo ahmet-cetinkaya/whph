@@ -18,7 +18,11 @@ class _UnreadableCellStore extends DriftAsyncSyncStore {
   _UnreadableCellStore(super.changeStore);
 
   @override
-  Future<StoredCell?> storedCell(CellKey key) async => null;
+  Future<StoredCell?> storedCell(CellKey key) async {
+    // Yields so a session that keeps retrying lets the test timeout fire.
+    await Future<void>.delayed(Duration.zero);
+    return null;
+  }
 }
 
 void main() {

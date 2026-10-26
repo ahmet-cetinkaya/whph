@@ -50,9 +50,10 @@ class LanLink {
   /// One session of [from] towards the server; returns the time and both ends' bytes.
   Future<({Duration elapsed, int bytes, bool complete})> sync(LabDevice from) async {
     final stopwatch = Stopwatch()..start();
+    final before = recorder.results.length;
     final initiator = await syncOverLan(from, device, port);
     final elapsed = stopwatch.elapsed;
-    final responder = recorder.results.last;
+    final responder = await recorder.resultAfter(before);
     return (
       elapsed: elapsed,
       bytes: initiator.stats.bytesSent + responder.stats.bytesSent,

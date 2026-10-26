@@ -29,6 +29,7 @@ Future<({Duration elapsed, int bytes})> _firstSyncOf(int notes) async {
     final server = await startLanServer(recorder);
     final stopwatch = Stopwatch()..start();
     final result = await syncOverLan(a, b, server.port!);
+    final responder = await recorder.resultAfter(0);
     final elapsed = stopwatch.elapsed;
     expect(result.isComplete, isTrue);
     final received = await b.appDatabase
@@ -37,7 +38,7 @@ Future<({Duration elapsed, int bytes})> _firstSyncOf(int notes) async {
     expect(received.data['c'], notes);
     return (
       elapsed: elapsed,
-      bytes: result.stats.bytesSent + recorder.results.last.stats.bytesSent
+      bytes: result.stats.bytesSent + responder.stats.bytesSent
     );
   } finally {
     await lab.close();
