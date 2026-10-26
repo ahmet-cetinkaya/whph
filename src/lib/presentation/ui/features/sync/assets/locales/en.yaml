@@ -358,3 +358,61 @@ sync:
     last_seen: Last seen at {time}
     already_added: Already added
   multi_interface_connection: Multi-interface connection
+  status:
+    not_reachable: "Device not reachable"
+    needs_repairing: "Needs re-pairing"
+    needs_update: "{device} needs a newer version of WHPH to sync"
+    items_failed: "Some items could not be synced"
+    items_rejected: "Some items were rejected as invalid"
+    preparing: "The other device is preparing its sync data"
+    duplicated_identity: "Another device uses the same sync identity"
+    storage_error: "A storage error interrupted the sync"
+    items_cannot_be_applied: "Some items failed repeatedly and are skipped for now"
+    repair_badge: "Re-pair needed"
+    repair_action: "Re-pair"
+  pairing:
+    show_qr: "Show QR code"
+    in_progress: "Pairing in progress…"
+    success: "Paired with {device}"
+    qr:
+      title: "Pair with a QR code"
+      description: "Scan this code with the other device."
+      expires_in: "Expires in {time}"
+      expired: "This code has expired."
+      used: "This code was already used."
+      regenerate: "Show a new code"
+      paired: "Device paired"
+    code:
+      title: "Compare codes"
+      description: "Make sure {device} shows the same code."
+      match: "Codes match"
+      mismatch: "Codes differ"
+    group_switch:
+      title: "Switch sync group?"
+      description: "{device} is in a different sync group. If you continue, this device leaves its current group and no longer syncs with those devices."
+      confirm: "Switch group"
+    errors:
+      code_expired_or_used: "This code expired or was already used. Show a new code and try again."
+      codes_differ: "The codes did not match. Pairing was cancelled."
+      cancelled: "Pairing was cancelled."
+      unreachable: "The other device could not be reached. Check that both are on the same network."
+      invalid_invitation: "This is not a WHPH pairing code."
+      group_switch_declined: "You chose not to switch sync groups."
+      preparing: "Sync is still preparing. Please try again shortly."
+      refused: "The other device refused the pairing."
+      not_active: "No pairing is in progress."
+  members:
+    remove_confirm:
+      title: "Remove {device}?"
+      description: "This removes {device} from the whole sync group, not just from this device. It stops syncing with every device in the group and the group keys are replaced. Pair it again to sync later."
+      action: "Remove from group"
+    removed_from_group:
+      title: "Removed from the sync group"
+      description: "This device was removed from its sync group and no longer syncs. Pair it again to resume."
+    repair_banner:
+      title: "Sync was upgraded"
+      description: "Devices paired with the old sync must be paired again. Your data stays on every device."
+      dismiss: "Dismiss"
+    upgrade_progress: "Preparing sync data… {percent}%"
+  demo:
+    reset_blocked: "Demo data cannot be reset while this device is paired, because the reset would sync to your other devices. Remove this device from the sync group first."

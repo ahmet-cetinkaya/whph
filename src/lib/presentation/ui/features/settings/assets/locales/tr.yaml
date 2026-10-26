@@ -33,6 +33,7 @@ settings:
       yüklediğinizden emin olun.
     select_file: Dosya seçin
     strategy:
+      paired_note: "Bu cihaz diğerleriyle eşitleniyor. Mevcut verileri değiştirmek grup genelinde öğe silmez: dosyada olmayan öğeler diğer cihazlarınızda kalır ve bir sonraki eşitlemede bu cihaza geri döner."
       merge: Mevcut Verilerle Birleştir
       replace: Mevcut Verileri Sil ve Yenisini Ekle
       title: İçe Aktarma Stratejisi
@@ -343,6 +344,7 @@ settings:
       title: Veritabanını Sıfırla
       description: Tüm verileri sil ve uygulamayı sıfırla
       dialog:
+        paired_note: "Bu cihaz diğerleriyle eşitleniyor. Sıfırlama onu eşitleme grubundan da kaldırır; bu yüzden sonrasında yeniden eşleştirmeniz gerekir."
         title: Veritabanını Sıfırla
         warning: "Uyarı: Bu işlem geri alınamaz. Tüm verileriniz kalıcı olarak silinecektir."
         confirm_text: Onaylamak için kaydırın

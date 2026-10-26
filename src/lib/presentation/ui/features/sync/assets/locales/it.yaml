@@ -376,3 +376,61 @@ sync:
     client_mode_stopped: Tornato alla modalità server
     sync_mode_toggle_error: Impossibile cambiare modalità di sincronizzazione
   multi_interface_connection: Connessione multi-interfaccia
+  status:
+    not_reachable: "Dispositivo non raggiungibile"
+    needs_repairing: "Richiede un nuovo abbinamento"
+    needs_update: "{device} richiede una versione più recente di WHPH per sincronizzare"
+    items_failed: "Alcuni elementi non sono stati sincronizzati"
+    items_rejected: "Alcuni elementi sono stati rifiutati perché non validi"
+    preparing: "L'altro dispositivo sta preparando i dati di sincronizzazione"
+    duplicated_identity: "Un altro dispositivo usa la stessa identità di sincronizzazione"
+    storage_error: "Un errore di archiviazione ha interrotto la sincronizzazione"
+    items_cannot_be_applied: "Alcuni elementi hanno fallito più volte e per ora vengono saltati"
+    repair_badge: "Nuovo abbinamento necessario"
+    repair_action: "Abbina di nuovo"
+  pairing:
+    show_qr: "Mostra codice QR"
+    in_progress: "Abbinamento in corso…"
+    success: "Abbinato a {device}"
+    qr:
+      title: "Abbina con un codice QR"
+      description: "Scansiona questo codice con l'altro dispositivo."
+      expires_in: "Scade tra {time}"
+      expired: "Questo codice è scaduto."
+      used: "Questo codice è già stato usato."
+      regenerate: "Mostra un nuovo codice"
+      paired: "Dispositivo abbinato"
+    code:
+      title: "Confronta i codici"
+      description: "Verifica che {device} mostri lo stesso codice."
+      match: "I codici corrispondono"
+      mismatch: "I codici sono diversi"
+    group_switch:
+      title: "Cambiare gruppo di sincronizzazione?"
+      description: "{device} si trova in un altro gruppo di sincronizzazione. Se continui, questo dispositivo lascia il gruppo attuale e non si sincronizza più con i suoi dispositivi."
+      confirm: "Cambia gruppo"
+    errors:
+      code_expired_or_used: "Il codice è scaduto o già usato. Mostra un nuovo codice e riprova."
+      codes_differ: "I codici non corrispondevano. L'abbinamento è stato annullato."
+      cancelled: "L'abbinamento è stato annullato."
+      unreachable: "Impossibile raggiungere l'altro dispositivo. Verifica che entrambi siano sulla stessa rete."
+      invalid_invitation: "Questo non è un codice di abbinamento WHPH."
+      group_switch_declined: "Hai scelto di non cambiare gruppo di sincronizzazione."
+      preparing: "La sincronizzazione è ancora in preparazione. Riprova tra poco."
+      refused: "L'altro dispositivo ha rifiutato l'abbinamento."
+      not_active: "Nessun abbinamento in corso."
+  members:
+    remove_confirm:
+      title: "Rimuovere {device}?"
+      description: "Questo rimuove {device} dall'intero gruppo di sincronizzazione, non solo da questo dispositivo. Smette di sincronizzarsi con tutti i dispositivi del gruppo e le chiavi del gruppo vengono sostituite. Abbinalo di nuovo per sincronizzare in seguito."
+      action: "Rimuovi dal gruppo"
+    removed_from_group:
+      title: "Rimosso dal gruppo di sincronizzazione"
+      description: "Questo dispositivo è stato rimosso dal suo gruppo di sincronizzazione e non si sincronizza più. Abbinalo di nuovo per riprendere."
+    repair_banner:
+      title: "La sincronizzazione è stata aggiornata"
+      description: "I dispositivi abbinati con la vecchia sincronizzazione devono essere abbinati di nuovo. I tuoi dati restano su ogni dispositivo."
+      dismiss: "Ignora"
+    upgrade_progress: "Preparazione dei dati di sincronizzazione… {percent}%"
+  demo:
+    reset_blocked: "I dati demo non possono essere reimpostati finché questo dispositivo è abbinato, perché la reimpostazione verrebbe sincronizzata sugli altri dispositivi. Rimuovi prima questo dispositivo dal gruppo di sincronizzazione."

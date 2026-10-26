@@ -374,3 +374,61 @@ sync:
     last_seen: Zadnjič viden ob {time}
     already_added: Že dodano
   multi_interface_connection: Večvmesniška povezava
+  status:
+    not_reachable: "Naprava ni dosegljiva"
+    needs_repairing: "Potrebno je novo seznanjanje"
+    needs_update: "{device} potrebuje novejšo različico WHPH za sinhronizacijo"
+    items_failed: "Nekaterih elementov ni bilo mogoče sinhronizirati"
+    items_rejected: "Nekateri elementi so bili zavrnjeni kot neveljavni"
+    preparing: "Druga naprava pripravlja podatke za sinhronizacijo"
+    duplicated_identity: "Druga naprava uporablja isto sinhronizacijsko identiteto"
+    storage_error: "Napaka pri shranjevanju je prekinila sinhronizacijo"
+    items_cannot_be_applied: "Nekateri elementi so večkrat spodleteli in so zaenkrat preskočeni"
+    repair_badge: "Potrebno ponovno seznanjanje"
+    repair_action: "Ponovno seznani"
+  pairing:
+    show_qr: "Prikaži kodo QR"
+    in_progress: "Seznanjanje poteka…"
+    success: "Seznanjeno z napravo {device}"
+    qr:
+      title: "Seznani s kodo QR"
+      description: "Skenirajte to kodo z drugo napravo."
+      expires_in: "Poteče čez {time}"
+      expired: "Ta koda je potekla."
+      used: "Ta koda je že bila uporabljena."
+      regenerate: "Prikaži novo kodo"
+      paired: "Naprava seznanjena"
+    code:
+      title: "Primerjaj kodi"
+      description: "Preverite, ali naprava {device} prikazuje isto kodo."
+      match: "Kodi se ujemata"
+      mismatch: "Kodi se razlikujeta"
+    group_switch:
+      title: "Zamenjati skupino za sinhronizacijo?"
+      description: "Naprava {device} je v drugi skupini za sinhronizacijo. Če nadaljujete, ta naprava zapusti trenutno skupino in se ne sinhronizira več z njenimi napravami."
+      confirm: "Zamenjaj skupino"
+    errors:
+      code_expired_or_used: "Koda je potekla ali je bila že uporabljena. Prikažite novo kodo in poskusite znova."
+      codes_differ: "Kodi se nista ujemali. Seznanjanje je bilo preklicano."
+      cancelled: "Seznanjanje je bilo preklicano."
+      unreachable: "Druge naprave ni mogoče doseči. Preverite, ali sta obe v istem omrežju."
+      invalid_invitation: "To ni koda za seznanjanje WHPH."
+      group_switch_declined: "Odločili ste se, da skupine za sinhronizacijo ne zamenjate."
+      preparing: "Sinhronizacija se še pripravlja. Poskusite znova čez trenutek."
+      refused: "Druga naprava je zavrnila seznanjanje."
+      not_active: "Nobeno seznanjanje ni v teku."
+  members:
+    remove_confirm:
+      title: "Odstraniti napravo {device}?"
+      description: "To odstrani napravo {device} iz celotne skupine za sinhronizacijo, ne samo s te naprave. Ne sinhronizira se več z nobeno napravo v skupini, ključi skupine pa se zamenjajo. Znova jo seznanite, če želite pozneje sinhronizirati."
+      action: "Odstrani iz skupine"
+    removed_from_group:
+      title: "Odstranjeno iz skupine za sinhronizacijo"
+      description: "Ta naprava je bila odstranjena iz skupine za sinhronizacijo in se ne sinhronizira več. Znova jo seznanite, če želite nadaljevati."
+    repair_banner:
+      title: "Sinhronizacija je bila nadgrajena"
+      description: "Naprave, seznanjene s staro sinhronizacijo, je treba znova seznaniti. Vaši podatki ostanejo na vsaki napravi."
+      dismiss: "Opusti"
+    upgrade_progress: "Priprava podatkov za sinhronizacijo… {percent} %"
+  demo:
+    reset_blocked: "Demo podatkov ni mogoče ponastaviti, dokler je ta naprava seznanjena, ker bi se ponastavitev sinhronizirala na vaše druge naprave. Najprej odstranite to napravo iz skupine za sinhronizacijo."

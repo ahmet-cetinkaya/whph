@@ -367,3 +367,61 @@ sync:
     client_mode_stopped: Palattu server-tilaan
     sync_mode_toggle_error: Synkronointitilan vaihto epäonnistui
   multi_interface_connection: Moniliitäntäyhteys
+  status:
+    not_reachable: "Laitetta ei tavoiteta"
+    needs_repairing: "Vaatii uudelleenparituksen"
+    needs_update: "{device} tarvitsee WHPH:n uudemman version synkronointia varten"
+    items_failed: "Joitakin kohteita ei voitu synkronoida"
+    items_rejected: "Joitakin kohteita ei hyväksytty virheellisinä"
+    preparing: "Toinen laite valmistelee synkronointitietojaan"
+    duplicated_identity: "Toinen laite käyttää samaa synkronointitunnusta"
+    storage_error: "Tallennusvirhe keskeytti synkronoinnin"
+    items_cannot_be_applied: "Joitakin kohteita ei saatu toistuvasti käyttöön, ja ne ohitetaan toistaiseksi"
+    repair_badge: "Pariliitos uusittava"
+    repair_action: "Muodosta pari uudelleen"
+  pairing:
+    show_qr: "Näytä QR-koodi"
+    in_progress: "Pariliitos käynnissä…"
+    success: "Pariliitos muodostettu laitteeseen {device}"
+    qr:
+      title: "Muodosta pari QR-koodilla"
+      description: "Skannaa tämä koodi toisella laitteella."
+      expires_in: "Vanhenee: {time}"
+      expired: "Tämä koodi on vanhentunut."
+      used: "Tämä koodi on jo käytetty."
+      regenerate: "Näytä uusi koodi"
+      paired: "Laite pariutettu"
+    code:
+      title: "Vertaa koodeja"
+      description: "Varmista, että {device} näyttää saman koodin."
+      match: "Koodit täsmäävät"
+      mismatch: "Koodit eroavat"
+    group_switch:
+      title: "Vaihdetaanko synkronointiryhmää?"
+      description: "{device} kuuluu toiseen synkronointiryhmään. Jos jatkat, tämä laite poistuu nykyisestä ryhmästään eikä enää synkronoi sen laitteiden kanssa."
+      confirm: "Vaihda ryhmää"
+    errors:
+      code_expired_or_used: "Koodi on vanhentunut tai jo käytetty. Näytä uusi koodi ja yritä uudelleen."
+      codes_differ: "Koodit eivät täsmänneet. Pariliitos peruttiin."
+      cancelled: "Pariliitos peruttiin."
+      unreachable: "Toista laitetta ei tavoitettu. Tarkista, että molemmat ovat samassa verkossa."
+      invalid_invitation: "Tämä ei ole WHPH-pariliitoskoodi."
+      group_switch_declined: "Päätit olla vaihtamatta synkronointiryhmää."
+      preparing: "Synkronointia valmistellaan vielä. Yritä hetken kuluttua uudelleen."
+      refused: "Toinen laite hylkäsi pariliitoksen."
+      not_active: "Pariliitosta ei ole käynnissä."
+  members:
+    remove_confirm:
+      title: "Poistetaanko {device}?"
+      description: "Tämä poistaa laitteen {device} koko synkronointiryhmästä, ei vain tältä laitteelta. Se lopettaa synkronoinnin kaikkien ryhmän laitteiden kanssa ja ryhmän avaimet vaihdetaan. Muodosta pari uudelleen synkronoidaksesi myöhemmin."
+      action: "Poista ryhmästä"
+    removed_from_group:
+      title: "Poistettu synkronointiryhmästä"
+      description: "Tämä laite poistettiin synkronointiryhmästään, eikä se enää synkronoi. Muodosta pari uudelleen jatkaaksesi."
+    repair_banner:
+      title: "Synkronointi on päivitetty"
+      description: "Vanhalla synkronoinnilla pariutetut laitteet on pariutettava uudelleen. Tietosi pysyvät jokaisella laitteella."
+      dismiss: "Ohita"
+    upgrade_progress: "Valmistellaan synkronointitietoja… {percent} %"
+  demo:
+    reset_blocked: "Demotietoja ei voi nollata, kun tämä laite on pariutettu, koska nollaus synkronoitaisiin muille laitteillesi. Poista tämä laite ensin synkronointiryhmästä."

@@ -316,3 +316,61 @@ sync:
     client_mode_stopped: サーバーモードに戻りました
     sync_mode_toggle_error: 同期モードの切り替えに失敗しました
   multi_interface_connection: マルチインターフェース接続
+  status:
+    not_reachable: "デバイスに接続できません"
+    needs_repairing: "再ペアリングが必要です"
+    needs_update: "{device} が同期するには WHPH の新しいバージョンが必要です"
+    items_failed: "一部の項目を同期できませんでした"
+    items_rejected: "一部の項目は無効として拒否されました"
+    preparing: "相手のデバイスが同期データを準備中です"
+    duplicated_identity: "別のデバイスが同じ同期IDを使用しています"
+    storage_error: "ストレージエラーにより同期が中断されました"
+    items_cannot_be_applied: "一部の項目が繰り返し失敗したため、今回はスキップされます"
+    repair_badge: "再ペアリングが必要"
+    repair_action: "再ペアリング"
+  pairing:
+    show_qr: "QRコードを表示"
+    in_progress: "ペアリング中…"
+    success: "{device} とペアリングしました"
+    qr:
+      title: "QRコードでペアリング"
+      description: "このコードをもう一方のデバイスでスキャンしてください。"
+      expires_in: "有効期限まで {time}"
+      expired: "このコードの有効期限が切れました。"
+      used: "このコードはすでに使用されています。"
+      regenerate: "新しいコードを表示"
+      paired: "デバイスをペアリングしました"
+    code:
+      title: "コードを比較"
+      description: "{device} に同じコードが表示されていることを確認してください。"
+      match: "コードが一致"
+      mismatch: "コードが異なる"
+    group_switch:
+      title: "同期グループを切り替えますか？"
+      description: "{device} は別の同期グループに属しています。続行すると、このデバイスは現在のグループを離れ、そのグループのデバイスとは同期されなくなります。"
+      confirm: "グループを切り替える"
+    errors:
+      code_expired_or_used: "コードの有効期限が切れたか、すでに使用されています。新しいコードを表示してもう一度お試しください。"
+      codes_differ: "コードが一致しませんでした。ペアリングはキャンセルされました。"
+      cancelled: "ペアリングはキャンセルされました。"
+      unreachable: "相手のデバイスに接続できません。両方が同じネットワークにあることを確認してください。"
+      invalid_invitation: "これは WHPH のペアリングコードではありません。"
+      group_switch_declined: "同期グループの切り替えを行わないことを選択しました。"
+      preparing: "同期はまだ準備中です。しばらくしてからもう一度お試しください。"
+      refused: "相手のデバイスがペアリングを拒否しました。"
+      not_active: "進行中のペアリングはありません。"
+  members:
+    remove_confirm:
+      title: "{device} を削除しますか？"
+      description: "{device} はこのデバイスだけでなく同期グループ全体から削除されます。グループ内のすべてのデバイスとの同期が止まり、グループの鍵が入れ替えられます。後で同期するには再度ペアリングしてください。"
+      action: "グループから削除"
+    removed_from_group:
+      title: "同期グループから削除されました"
+      description: "このデバイスは同期グループから削除され、同期されなくなりました。再開するには再度ペアリングしてください。"
+    repair_banner:
+      title: "同期がアップグレードされました"
+      description: "旧方式の同期でペアリングしたデバイスは、再度ペアリングが必要です。データは各デバイスに残ります。"
+      dismiss: "閉じる"
+    upgrade_progress: "同期データを準備中… {percent}%"
+  demo:
+    reset_blocked: "このデバイスがペアリングされている間はデモデータをリセットできません。リセットが他のデバイスに同期されてしまうためです。先にこのデバイスを同期グループから削除してください。"

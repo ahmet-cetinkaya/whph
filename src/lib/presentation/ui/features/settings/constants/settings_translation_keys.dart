@@ -360,4 +360,8 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
       'settings.advanced.reset_database.restart_screen.mobile_message';
   static const String resetDatabaseRestartNowButton =
       'settings.advanced.reset_database.restart_screen.restart_now_button';
+
+  // Paired-device notes (U4, U5)
+  static const String importStrategyPairedNote = 'settings.import.strategy.paired_note';
+  static const String resetDatabaseDialogPairedNote = 'settings.advanced.reset_database.dialog.paired_note';
 }

@@ -375,3 +375,61 @@ sync:
     client_mode_stopped: Cambiado de vuelta al modo servidor
     sync_mode_toggle_error: Error al cambiar el modo de sincronización
   multi_interface_connection: Conexión multi-interfaz
+  status:
+    not_reachable: "Dispositivo no accesible"
+    needs_repairing: "Requiere emparejar de nuevo"
+    needs_update: "{device} necesita una versión más reciente de WHPH para sincronizar"
+    items_failed: "Algunos elementos no se pudieron sincronizar"
+    items_rejected: "Algunos elementos se rechazaron por no ser válidos"
+    preparing: "El otro dispositivo está preparando sus datos de sincronización"
+    duplicated_identity: "Otro dispositivo usa la misma identidad de sincronización"
+    storage_error: "Un error de almacenamiento interrumpió la sincronización"
+    items_cannot_be_applied: "Algunos elementos fallaron repetidamente y se omiten por ahora"
+    repair_badge: "Hay que emparejar"
+    repair_action: "Emparejar"
+  pairing:
+    show_qr: "Mostrar código QR"
+    in_progress: "Emparejando…"
+    success: "Emparejado con {device}"
+    qr:
+      title: "Emparejar con un código QR"
+      description: "Escanea este código con el otro dispositivo."
+      expires_in: "Caduca en {time}"
+      expired: "Este código ha caducado."
+      used: "Este código ya se usó."
+      regenerate: "Mostrar un código nuevo"
+      paired: "Dispositivo emparejado"
+    code:
+      title: "Comparar códigos"
+      description: "Comprueba que {device} muestra el mismo código."
+      match: "Los códigos coinciden"
+      mismatch: "Los códigos no coinciden"
+    group_switch:
+      title: "¿Cambiar de grupo de sincronización?"
+      description: "{device} está en otro grupo de sincronización. Si continúas, este dispositivo sale de su grupo actual y deja de sincronizarse con esos dispositivos."
+      confirm: "Cambiar de grupo"
+    errors:
+      code_expired_or_used: "El código caducó o ya se usó. Muestra un código nuevo e inténtalo de nuevo."
+      codes_differ: "Los códigos no coincidían. Se canceló el emparejamiento."
+      cancelled: "Se canceló el emparejamiento."
+      unreachable: "No se pudo acceder al otro dispositivo. Comprueba que ambos están en la misma red."
+      invalid_invitation: "Este no es un código de emparejamiento de WHPH."
+      group_switch_declined: "Decidiste no cambiar de grupo de sincronización."
+      preparing: "La sincronización aún se está preparando. Inténtalo de nuevo en breve."
+      refused: "El otro dispositivo rechazó el emparejamiento."
+      not_active: "No hay ningún emparejamiento en curso."
+  members:
+    remove_confirm:
+      title: "¿Quitar {device}?"
+      description: "Esto quita {device} de todo el grupo de sincronización, no solo de este dispositivo. Deja de sincronizarse con todos los dispositivos del grupo y se reemplazan las claves del grupo. Vuelve a emparejarlo para sincronizar más adelante."
+      action: "Quitar del grupo"
+    removed_from_group:
+      title: "Quitado del grupo de sincronización"
+      description: "Este dispositivo se quitó de su grupo de sincronización y ya no se sincroniza. Vuelve a emparejarlo para reanudar."
+    repair_banner:
+      title: "La sincronización se actualizó"
+      description: "Los dispositivos emparejados con la sincronización anterior deben emparejarse de nuevo. Tus datos permanecen en cada dispositivo."
+      dismiss: "Descartar"
+    upgrade_progress: "Preparando datos de sincronización… {percent} %"
+  demo:
+    reset_blocked: "Los datos de demostración no se pueden restablecer mientras este dispositivo esté emparejado, porque el restablecimiento se sincronizaría con tus otros dispositivos. Quita primero este dispositivo del grupo de sincronización."

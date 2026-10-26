@@ -379,3 +379,61 @@ sync:
     last_seen: Ostatnio widziany o {time}
     already_added: Już dodany
   multi_interface_connection: Połączenie wielo-interfejsowe
+  status:
+    not_reachable: "Urządzenie jest niedostępne"
+    needs_repairing: "Wymaga ponownego sparowania"
+    needs_update: "{device} potrzebuje nowszej wersji WHPH, aby synchronizować"
+    items_failed: "Nie udało się zsynchronizować niektórych elementów"
+    items_rejected: "Niektóre elementy odrzucono jako nieprawidłowe"
+    preparing: "Drugie urządzenie przygotowuje dane synchronizacji"
+    duplicated_identity: "Inne urządzenie używa tej samej tożsamości synchronizacji"
+    storage_error: "Błąd pamięci masowej przerwał synchronizację"
+    items_cannot_be_applied: "Niektóre elementy wielokrotnie zawiodły i są na razie pomijane"
+    repair_badge: "Wymagane ponowne sparowanie"
+    repair_action: "Sparuj ponownie"
+  pairing:
+    show_qr: "Pokaż kod QR"
+    in_progress: "Trwa parowanie…"
+    success: "Sparowano z urządzeniem {device}"
+    qr:
+      title: "Sparuj za pomocą kodu QR"
+      description: "Zeskanuj ten kod drugim urządzeniem."
+      expires_in: "Wygasa za {time}"
+      expired: "Ten kod wygasł."
+      used: "Ten kod został już użyty."
+      regenerate: "Pokaż nowy kod"
+      paired: "Urządzenie sparowane"
+    code:
+      title: "Porównaj kody"
+      description: "Upewnij się, że {device} pokazuje ten sam kod."
+      match: "Kody są zgodne"
+      mismatch: "Kody się różnią"
+    group_switch:
+      title: "Zmienić grupę synchronizacji?"
+      description: "Urządzenie {device} należy do innej grupy synchronizacji. Jeśli kontynuujesz, to urządzenie opuści obecną grupę i przestanie synchronizować się z jej urządzeniami."
+      confirm: "Zmień grupę"
+    errors:
+      code_expired_or_used: "Kod wygasł lub został już użyty. Pokaż nowy kod i spróbuj ponownie."
+      codes_differ: "Kody nie były zgodne. Parowanie anulowano."
+      cancelled: "Parowanie anulowano."
+      unreachable: "Nie można połączyć się z drugim urządzeniem. Sprawdź, czy oba są w tej samej sieci."
+      invalid_invitation: "To nie jest kod parowania WHPH."
+      group_switch_declined: "Zdecydowano się nie zmieniać grupy synchronizacji."
+      preparing: "Synchronizacja jest jeszcze przygotowywana. Spróbuj ponownie za chwilę."
+      refused: "Drugie urządzenie odrzuciło parowanie."
+      not_active: "Nie trwa żadne parowanie."
+  members:
+    remove_confirm:
+      title: "Usunąć urządzenie {device}?"
+      description: "To usuwa urządzenie {device} z całej grupy synchronizacji, nie tylko z tego urządzenia. Przestaje ono synchronizować się ze wszystkimi urządzeniami w grupie, a klucze grupy zostają wymienione. Sparuj je ponownie, aby synchronizować później."
+      action: "Usuń z grupy"
+    removed_from_group:
+      title: "Usunięto z grupy synchronizacji"
+      description: "To urządzenie zostało usunięte ze swojej grupy synchronizacji i już się nie synchronizuje. Sparuj je ponownie, aby wznowić."
+    repair_banner:
+      title: "Synchronizacja została zaktualizowana"
+      description: "Urządzenia sparowane ze starą synchronizacją trzeba sparować ponownie. Twoje dane pozostają na każdym urządzeniu."
+      dismiss: "Odrzuć"
+    upgrade_progress: "Przygotowywanie danych synchronizacji… {percent}%"
+  demo:
+    reset_blocked: "Nie można zresetować danych demonstracyjnych, gdy to urządzenie jest sparowane, ponieważ reset zsynchronizowałby się z innymi urządzeniami. Najpierw usuń to urządzenie z grupy synchronizacji."

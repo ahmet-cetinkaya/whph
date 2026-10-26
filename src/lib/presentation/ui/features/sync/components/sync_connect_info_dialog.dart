@@ -1,14 +1,11 @@
-import 'dart:io';
 import 'package:flutter/services.dart';
-import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/utils/network_utils.dart';
-import 'package:whph/presentation/ui/features/sync/models/sync_qr_code_message.dart';
+import 'package:whph/presentation/ui/features/sync/components/pairing_qr_view.dart';
 import 'package:whph/presentation/ui/features/sync/models/sync_connection_string.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
@@ -42,8 +39,6 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
   List<String> _ipAddresses = const [];
   String? _deviceName;
   String? _deviceId;
-  String? _platform;
-  String? _qrData;
   String? _connectionString;
   bool _isLoading = true;
   String? _errorMessage;
@@ -66,29 +61,6 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
       _ipAddress = _ipAddresses.isNotEmpty ? _ipAddresses.first : null;
       _deviceName = await DeviceInfoHelper.getDeviceName();
       _deviceId = await _deviceIdService.getDeviceId();
-
-      // Determine platform
-      if (Platform.isAndroid) {
-        _platform = 'android';
-      } else if (Platform.isIOS) {
-        _platform = 'ios';
-      } else if (PlatformUtils.isDesktop) {
-        _platform = 'desktop';
-      } else {
-        _platform = 'unknown';
-      }
-
-      // Create QR code data
-      final syncQrCodeMessage = SyncQrCodeMessage(
-        localIP: _ipAddress ?? _translationService.translate(SyncTranslationKeys.unknownIp),
-        deviceName: _deviceName!,
-        deviceId: _deviceId!,
-        platform: _platform!,
-        ipAddresses: _ipAddresses.isEmpty ? null : _ipAddresses,
-      );
-
-      Logger.debug('Sync QR Code Message: ${syncQrCodeMessage.toCsv()}');
-      _qrData = syncQrCodeMessage.toCsv();
 
       // Create connection string
       if (_ipAddress != null) {
@@ -157,7 +129,6 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
                   ),
                 )
               : _ConnectInfoTabs(
-                  qrData: _qrData!,
                   connectionString: _connectionString,
                   ipAddress: _ipAddress!,
                   port: webSocketPort,
@@ -167,13 +138,11 @@ class _SyncConnectInfoDialogState extends State<SyncConnectInfoDialog> {
 }
 
 class _ConnectInfoTabs extends StatefulWidget {
-  final String qrData;
   final String? connectionString;
   final String ipAddress;
   final int port;
 
   const _ConnectInfoTabs({
-    required this.qrData,
     required this.connectionString,
     required this.ipAddress,
     required this.port,
@@ -245,7 +214,7 @@ class _ConnectInfoTabsState extends State<_ConnectInfoTabs> {
             onPageChanged: _onPageChanged,
             children: [
               // QR Code Tab Content
-              _QrCodeTabContent(qrData: widget.qrData),
+              const PairingQrView(),
 
               // Connection String Tab Content
               _ConnectionStringTabContent(
@@ -257,56 +226,6 @@ class _ConnectInfoTabsState extends State<_ConnectInfoTabs> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _QrCodeTabContent extends StatelessWidget {
-  final String qrData;
-
-  const _QrCodeTabContent({required this.qrData});
-
-  @override
-  Widget build(BuildContext context) {
-    final translationService = container.resolve<ITranslationService>();
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.sizeMedium),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // QR Code Description
-          Text(
-            translationService.translate(SyncTranslationKeys.connectInfoQrDescription),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppTheme.sizeMedium),
-
-          // QR Code
-          SizedBox(
-            width: 200.0,
-            height: 200.0,
-            child: Center(
-              child: QrImageView(
-                data: qrData,
-                version: QrVersions.auto,
-                size: 200.0,
-                eyeStyle: QrEyeStyle(
-                  eyeShape: QrEyeShape.square,
-                  color: AppTheme.textColor,
-                ),
-                dataModuleStyle: QrDataModuleStyle(
-                  dataModuleShape: QrDataModuleShape.circle,
-                  color: AppTheme.textColor,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:acore/acore.dart' hide Container;
-import 'package:whph/core/application/features/sync/commands/delete_sync_command.dart';
-import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
+import 'package:whph/core/application/features/sync/commands/remove_sync_member_command.dart';
+import 'package:whph/core/application/features/sync/models/sync_member_summary.dart';
+import 'package:whph/core/application/features/sync/queries/get_is_paired_query.dart';
+import 'package:whph/core/application/features/sync/queries/get_list_sync_members_query.dart';
+import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
@@ -20,8 +23,14 @@ import 'package:whph/presentation/ui/shared/components/kebab_menu.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_connect_info_button.dart';
 import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card/firewall_permission_card.dart';
+import 'package:whph/presentation/ui/features/sync/components/remove_member_dialog.dart';
+import 'package:whph/presentation/ui/features/sync/components/removed_from_group_card.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_device_list_item/sync_device_list_item.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_pairing_status_listener.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_repair_banner.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_upgrade_progress_banner.dart';
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/add_sync_device_page.dart';
+import 'package:whph/presentation/ui/features/sync/services/sync_pairing_flow.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/server_mode_mixin.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/desktop_sync_mode_mixin.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/sync_status_mixin.dart';
@@ -48,11 +57,15 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   final _mediator = container.resolve<Mediator>();
   final _translationService = container.resolve<ITranslationService>();
   final _settingRepository = container.resolve<ISettingRepository>();
+  late final _repairBannerPreference =
+      SyncRepairBannerPreference(settingRepository: _settingRepository, mediator: _mediator);
   late final ISyncService _syncService;
   AndroidServerSyncService? _serverSyncService;
   DesktopSyncService? _desktopSyncService;
 
-  GetListSyncDevicesQueryResponse? _list;
+  List<SyncMemberSummary>? _members;
+  SyncGroupState _groupState = SyncGroupState.ungrouped;
+  bool _isRepairBannerDismissed = true;
   SyncStatus _currentSyncStatus = const SyncStatus(state: SyncState.idle);
   late AnimationController _syncIconAnimationController;
   late AnimationController _syncButtonAnimationController;
@@ -146,26 +159,53 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   }
 
   Future<void> refresh() async {
-    await _getDevices(pageIndex: 0, pageSize: 10);
+    await _loadMembers();
+    await _loadGroupState();
+    await _loadRepairBannerState();
   }
 
-  Future<void> _getDevices({required int pageIndex, required int pageSize}) async {
-    await AsyncErrorHandler.execute<GetListSyncDevicesQueryResponse>(
+  Future<void> _loadMembers() async {
+    await AsyncErrorHandler.execute<GetListSyncMembersQueryResponse>(
       context: context,
       errorMessage: _translationService.translate(SyncTranslationKeys.loadDevicesError),
-      operation: () async {
-        final query = GetListSyncDevicesQuery(pageIndex: pageIndex, pageSize: pageSize);
-        return await _mediator.send<GetListSyncDevicesQuery, GetListSyncDevicesQueryResponse>(query);
-      },
+      operation: () => _mediator.send<GetListSyncMembersQuery, GetListSyncMembersQueryResponse>(
+        GetListSyncMembersQuery(),
+      ),
       onSuccess: (response) {
-        if (mounted) {
-          setState(() {
-            _list = response;
-          });
-        }
+        if (mounted) setState(() => _members = response.members);
       },
     );
   }
+
+  Future<void> _loadGroupState() async {
+    try {
+      final response = await _mediator.send<GetIsPairedQuery, GetIsPairedQueryResponse>(GetIsPairedQuery());
+      if (mounted) setState(() => _groupState = response.groupState);
+    } catch (e) {
+      Logger.error('Reading the sync group state failed: $e');
+    }
+  }
+
+  Future<void> _loadRepairBannerState() async {
+    try {
+      final isDismissed = await _repairBannerPreference.isDismissed();
+      if (mounted) setState(() => _isRepairBannerDismissed = isDismissed);
+    } catch (e) {
+      Logger.error('Reading the re-pair banner state failed: $e');
+    }
+  }
+
+  Future<void> _dismissRepairBanner() async {
+    setState(() => _isRepairBannerDismissed = true);
+    try {
+      await _repairBannerPreference.dismiss();
+    } catch (e) {
+      Logger.error('Saving the re-pair banner state failed: $e');
+    }
+  }
+
+  bool get _shouldShowRepairBanner =>
+      !_isRepairBannerDismissed && (_members?.any((member) => member.isLegacy) ?? false);
 
   Future<void> _sync() async {
     // Only allow sync in client mode
@@ -185,14 +225,14 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   }
 
   void _simulateDeviceSpecificSync() {
-    if (_list == null || _list!.items.isEmpty) return;
+    if (_members == null || _members!.isEmpty) return;
 
     int currentDeviceIndex = 0;
 
     // Start with first device
-    if (_list!.items.isNotEmpty) {
+    if (_members!.isNotEmpty) {
       _syncService.updateSyncStatus(_currentSyncStatus.copyWith(
-        currentDeviceId: _list!.items[0].id,
+        currentDeviceId: _members![0].memberId,
       ));
     }
 
@@ -204,10 +244,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       }
 
       currentDeviceIndex++;
-      if (currentDeviceIndex < _list!.items.length) {
-        final device = _list!.items[currentDeviceIndex];
+      if (currentDeviceIndex < _members!.length) {
+        final device = _members![currentDeviceIndex];
         _syncService.updateSyncStatus(_currentSyncStatus.copyWith(
-          currentDeviceId: device.id,
+          currentDeviceId: device.memberId,
         ));
       } else {
         _syncService.updateSyncStatus(_currentSyncStatus.copyWith(
@@ -218,24 +258,23 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     });
   }
 
-  Future<void> _removeDevice(String id) async {
+  Future<void> _removeDevice(String memberId) async {
+    final member = _members?.firstWhere((candidate) => candidate.memberId == memberId);
+    if (member == null) return;
+    final confirmed = await RemoveMemberDialog.confirm(context, deviceName: member.name);
+    if (!confirmed || !mounted) return;
+
     await AsyncErrorHandler.execute<void>(
       context: context,
       errorMessage: _translationService.translate(SyncTranslationKeys.removeDeviceError),
-      operation: () async {
-        final command = DeleteSyncDeviceCommand(id: id);
-        await _mediator.send<DeleteSyncDeviceCommand, void>(command);
-        return;
-      },
-      onSuccess: (_) {
-        if (mounted) {
-          setState(() {
-            _list!.items.removeWhere((item) => item.id == id);
-          });
-        }
+      operation: () => _mediator.send<RemoveSyncMemberCommand, void>(RemoveSyncMemberCommand(memberId: memberId)),
+      onSuccess: (_) async {
+        if (mounted) await refresh();
       },
     );
   }
+
+  void _repairDevice(String memberId) => _showAddDevicePage();
 
   Future<void> _showAddDevicePage() async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
@@ -290,7 +329,12 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
       ),
       body: Padding(
         padding: context.pageBodyPadding,
-        child: CustomScrollView(
+        child: SyncPairingStatusListener(
+          onFinished: (status) {
+            SyncPairingFlow.showOutcome(context, status);
+            refresh();
+          },
+          child: CustomScrollView(
           slivers: [
             // Firewall permission card (desktop only)
             SliverToBoxAdapter(
@@ -316,8 +360,26 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
               ),
             ],
 
+            const SliverToBoxAdapter(child: SyncUpgradeProgressBanner()),
+
+            if (_groupState == SyncGroupState.removedFromGroup)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
+                  child: RemovedFromGroupCard(onPair: _showAddDevicePage),
+                ),
+              ),
+
+            if (_shouldShowRepairBanner)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
+                  child: SyncRepairBanner(onPair: _showAddDevicePage, onDismiss: _dismissRepairBanner),
+                ),
+              ),
+
             // Device List
-            if (_list == null || _list!.items.isEmpty)
+            if (_members == null || _members!.isEmpty)
               SliverFillRemaining(
                 child: SyncDevicesEmptyState(
                   message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
@@ -330,22 +392,24 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
+                    final member = _members![index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
                       child: SyncDeviceListItemWidget(
-                        key: ValueKey(_list!.items[index].id),
-                        item: _list!.items[index],
+                        key: ValueKey(member.memberId),
+                        member: member,
                         onRemove: _removeDevice,
-                        isBeingSynced: _currentSyncStatus.isSyncing &&
-                            _currentSyncStatus.currentDeviceId == _list!.items[index].id,
-                        lastSyncResult: lastSyncResultOf(_list!.items[index].id),
+                        onRepair: _repairDevice,
+                        isBeingSynced: _currentSyncStatus.isSyncing && _currentSyncStatus.currentDeviceId == member.memberId,
+                        lastSyncResult: lastSyncResultOf(member.memberId),
                       ),
                     );
                   },
-                  childCount: _list!.items.length,
+                  childCount: _members!.length,
                 ),
               ),
           ],
+          ),
         ),
       ),
     );
@@ -361,7 +425,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         ),
 
       // Sync button - behavior depends on mode
-      if (!isServerMode && (_list?.items.isNotEmpty ?? false))
+      if (!isServerMode && (_members?.isNotEmpty ?? false))
         IconButton(
           onPressed: _currentSyncStatus.isSyncing ? null : _sync,
           icon: _currentSyncStatus.isSyncing

@@ -162,4 +162,53 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   // Per-device last sync result indicator
   static const String lastSyncSucceeded = 'sync.devices.last_sync_succeeded';
   static const String lastSyncFailed = 'sync.devices.last_sync_failed';
+
+  // Pairing, status and removal UI (T24)
+  static const String syncStatusNotReachable = 'sync.status.not_reachable';
+  static const String syncStatusNeedsRepairing = 'sync.status.needs_repairing';
+  static const String syncStatusNeedsUpdate = 'sync.status.needs_update';
+  static const String syncStatusItemsFailed = 'sync.status.items_failed';
+  static const String syncStatusItemsRejected = 'sync.status.items_rejected';
+  static const String syncStatusPeerPreparing = 'sync.status.preparing';
+  static const String syncStatusDuplicatedIdentity = 'sync.status.duplicated_identity';
+  static const String syncStatusStorageError = 'sync.status.storage_error';
+  static const String syncStatusItemsCannotBeApplied = 'sync.status.items_cannot_be_applied';
+  static const String syncStatusRepairBadge = 'sync.status.repair_badge';
+  static const String syncStatusRepairAction = 'sync.status.repair_action';
+  static const String pairingShowQr = 'sync.pairing.show_qr';
+  static const String pairingInProgress = 'sync.pairing.in_progress';
+  static const String pairingSuccess = 'sync.pairing.success';
+  static const String pairingQrTitle = 'sync.pairing.qr.title';
+  static const String pairingQrDescription = 'sync.pairing.qr.description';
+  static const String pairingQrExpiresIn = 'sync.pairing.qr.expires_in';
+  static const String pairingQrExpired = 'sync.pairing.qr.expired';
+  static const String pairingQrUsed = 'sync.pairing.qr.used';
+  static const String pairingQrRegenerate = 'sync.pairing.qr.regenerate';
+  static const String pairingQrPaired = 'sync.pairing.qr.paired';
+  static const String pairingCodeTitle = 'sync.pairing.code.title';
+  static const String pairingCodeDescription = 'sync.pairing.code.description';
+  static const String pairingCodeMatch = 'sync.pairing.code.match';
+  static const String pairingCodeMismatch = 'sync.pairing.code.mismatch';
+  static const String pairingGroupSwitchTitle = 'sync.pairing.group_switch.title';
+  static const String pairingGroupSwitchDescription = 'sync.pairing.group_switch.description';
+  static const String pairingGroupSwitchConfirm = 'sync.pairing.group_switch.confirm';
+  static const String pairingErrorCodeExpiredOrUsed = 'sync.pairing.errors.code_expired_or_used';
+  static const String pairingErrorCodesDiffer = 'sync.pairing.errors.codes_differ';
+  static const String pairingErrorCancelled = 'sync.pairing.errors.cancelled';
+  static const String pairingErrorUnreachable = 'sync.pairing.errors.unreachable';
+  static const String pairingErrorInvalidInvitation = 'sync.pairing.errors.invalid_invitation';
+  static const String pairingErrorGroupSwitchDeclined = 'sync.pairing.errors.group_switch_declined';
+  static const String pairingErrorPreparing = 'sync.pairing.errors.preparing';
+  static const String pairingErrorRefused = 'sync.pairing.errors.refused';
+  static const String pairingErrorNotActive = 'sync.pairing.errors.not_active';
+  static const String removeMemberTitle = 'sync.members.remove_confirm.title';
+  static const String removeMemberDescription = 'sync.members.remove_confirm.description';
+  static const String removeMemberAction = 'sync.members.remove_confirm.action';
+  static const String removedFromGroupTitle = 'sync.members.removed_from_group.title';
+  static const String removedFromGroupDescription = 'sync.members.removed_from_group.description';
+  static const String repairBannerTitle = 'sync.members.repair_banner.title';
+  static const String repairBannerDescription = 'sync.members.repair_banner.description';
+  static const String repairBannerDismiss = 'sync.members.repair_banner.dismiss';
+  static const String upgradeProgress = 'sync.members.upgrade_progress';
+  static const String demoResetBlocked = 'sync.demo.reset_blocked';
 }

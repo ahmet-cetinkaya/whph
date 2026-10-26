@@ -319,3 +319,61 @@ sync:
     client_mode_stopped: 서버 모드로 돌아갔습니다
     sync_mode_toggle_error: 동기화 모드 전환 실패
   multi_interface_connection: 다중 인터페이스 연결
+  status:
+    not_reachable: "기기에 연결할 수 없습니다"
+    needs_repairing: "다시 페어링해야 합니다"
+    needs_update: "{device}에서 동기화하려면 더 새로운 WHPH 버전이 필요합니다"
+    items_failed: "일부 항목을 동기화하지 못했습니다"
+    items_rejected: "일부 항목이 유효하지 않아 거부되었습니다"
+    preparing: "상대 기기가 동기화 데이터를 준비 중입니다"
+    duplicated_identity: "다른 기기가 같은 동기화 ID를 사용하고 있습니다"
+    storage_error: "저장소 오류로 동기화가 중단되었습니다"
+    items_cannot_be_applied: "일부 항목이 반복적으로 실패하여 당분간 건너뜁니다"
+    repair_badge: "다시 페어링 필요"
+    repair_action: "다시 페어링"
+  pairing:
+    show_qr: "QR 코드 표시"
+    in_progress: "페어링 중…"
+    success: "{device}와(과) 페어링되었습니다"
+    qr:
+      title: "QR 코드로 페어링"
+      description: "다른 기기로 이 코드를 스캔하세요."
+      expires_in: "{time} 후 만료"
+      expired: "이 코드가 만료되었습니다."
+      used: "이 코드는 이미 사용되었습니다."
+      regenerate: "새 코드 표시"
+      paired: "기기가 페어링되었습니다"
+    code:
+      title: "코드 비교"
+      description: "{device}에 같은 코드가 표시되는지 확인하세요."
+      match: "코드가 일치함"
+      mismatch: "코드가 다름"
+    group_switch:
+      title: "동기화 그룹을 전환할까요?"
+      description: "{device}은(는) 다른 동기화 그룹에 속해 있습니다. 계속하면 이 기기는 현재 그룹을 떠나며 해당 기기들과 더 이상 동기화되지 않습니다."
+      confirm: "그룹 전환"
+    errors:
+      code_expired_or_used: "코드가 만료되었거나 이미 사용되었습니다. 새 코드를 표시하고 다시 시도하세요."
+      codes_differ: "코드가 일치하지 않아 페어링이 취소되었습니다."
+      cancelled: "페어링이 취소되었습니다."
+      unreachable: "상대 기기에 연결할 수 없습니다. 두 기기가 같은 네트워크에 있는지 확인하세요."
+      invalid_invitation: "WHPH 페어링 코드가 아닙니다."
+      group_switch_declined: "동기화 그룹 전환을 하지 않기로 했습니다."
+      preparing: "동기화를 아직 준비하는 중입니다. 잠시 후 다시 시도하세요."
+      refused: "상대 기기가 페어링을 거부했습니다."
+      not_active: "진행 중인 페어링이 없습니다."
+  members:
+    remove_confirm:
+      title: "{device}을(를) 제거할까요?"
+      description: "{device}이(가) 이 기기뿐 아니라 동기화 그룹 전체에서 제거됩니다. 그룹의 모든 기기와 동기화가 중단되고 그룹 키가 교체됩니다. 나중에 동기화하려면 다시 페어링하세요."
+      action: "그룹에서 제거"
+    removed_from_group:
+      title: "동기화 그룹에서 제거됨"
+      description: "이 기기는 동기화 그룹에서 제거되어 더 이상 동기화되지 않습니다. 다시 사용하려면 다시 페어링하세요."
+    repair_banner:
+      title: "동기화가 업그레이드되었습니다"
+      description: "이전 동기화로 페어링한 기기는 다시 페어링해야 합니다. 데이터는 각 기기에 그대로 남습니다."
+      dismiss: "닫기"
+    upgrade_progress: "동기화 데이터 준비 중… {percent}%"
+  demo:
+    reset_blocked: "이 기기가 페어링된 동안에는 데모 데이터를 초기화할 수 없습니다. 초기화가 다른 기기로 동기화되기 때문입니다. 먼저 이 기기를 동기화 그룹에서 제거하세요."

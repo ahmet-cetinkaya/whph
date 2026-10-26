@@ -31,6 +31,7 @@ settings:
       version af appen.
     select_file: Vælg fil
     strategy:
+      paired_note: "Denne enhed synkroniserer med andre. Udskiftning af eksisterende data sletter ikke elementer i hele gruppen: elementer, der mangler i filen, bliver på dine andre enheder og vender tilbage til denne enhed ved næste synkronisering."
       merge: Flet med eksisterende data
       replace: Slet eksisterende data og tilføj nye
       title: Importstrategi
@@ -330,6 +331,7 @@ settings:
       title: Nulstil Database
       description: Slet alle data og nulstil applikationen
       dialog:
+        paired_note: "Denne enhed synkroniserer med andre. Nulstilling fjerner den også fra synkroniseringsgruppen, så du skal parre den igen bagefter."
         title: Nulstil Database
         warning:
           "Advarsel: Denne handling kan ikke fortrydes. Alle dine data bliver

@@ -33,6 +33,7 @@ settings:
       verzi aplikace.
     select_file: Vyberte soubor
     strategy:
+      paired_note: "Toto zařízení se synchronizuje s dalšími. Nahrazení stávajících dat nesmaže položky v celé skupině: položky chybějící v souboru zůstanou na vašich dalších zařízeních a při příští synchronizaci se vrátí do tohoto zařízení."
       merge: Sloučit s existujícími daty
       replace: Smazat existující data a přidat nová
       title: Strategie importu
@@ -338,6 +339,7 @@ settings:
       title: Resetovat databázi
       description: Smazat všechna data a resetovat aplikaci
       dialog:
+        paired_note: "Toto zařízení se synchronizuje s dalšími. Reset ho také odebere ze skupiny synchronizace, takže ho poté musíte spárovat znovu."
         title: Resetovat databázi
         warning:
           "Upozornění: Tuto akci nelze vrátit zpět. Všechna vaše data budou

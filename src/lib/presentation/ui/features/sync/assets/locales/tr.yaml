@@ -374,3 +374,61 @@ sync:
     client_mode_stopped: Sunucu moduna geri dönüldü
     sync_mode_toggle_error: Senkronizasyon modu değiştirilemedi
   multi_interface_connection: Çoklu arabirim bağlantısı
+  status:
+    not_reachable: "Cihaza ulaşılamıyor"
+    needs_repairing: "Yeniden eşleştirme gerekiyor"
+    needs_update: "{device} cihazının eşitleme yapabilmesi için WHPH'nin daha yeni bir sürümü gerekiyor"
+    items_failed: "Bazı öğeler eşitlenemedi"
+    items_rejected: "Bazı öğeler geçersiz olduğu için reddedildi"
+    preparing: "Diğer cihaz eşitleme verilerini hazırlıyor"
+    duplicated_identity: "Başka bir cihaz aynı eşitleme kimliğini kullanıyor"
+    storage_error: "Bir depolama hatası eşitlemeyi kesintiye uğrattı"
+    items_cannot_be_applied: "Bazı öğeler defalarca başarısız oldu ve şimdilik atlanıyor"
+    repair_badge: "Yeniden eşleştirme şart"
+    repair_action: "Yeniden eşleştir"
+  pairing:
+    show_qr: "QR kodunu göster"
+    in_progress: "Eşleştirme sürüyor…"
+    success: "{device} ile eşleştirildi"
+    qr:
+      title: "QR kodu ile eşleştir"
+      description: "Bu kodu diğer cihazla tarayın."
+      expires_in: "{time} içinde sona erer"
+      expired: "Bu kodun süresi doldu."
+      used: "Bu kod zaten kullanıldı."
+      regenerate: "Yeni kod göster"
+      paired: "Cihaz eşleştirildi"
+    code:
+      title: "Kodları karşılaştır"
+      description: "{device} cihazında aynı kodun göründüğünden emin olun."
+      match: "Kodlar eşleşiyor"
+      mismatch: "Kodlar farklı"
+    group_switch:
+      title: "Eşitleme grubu değiştirilsin mi?"
+      description: "{device} farklı bir eşitleme grubunda. Devam ederseniz bu cihaz mevcut grubundan ayrılır ve o gruptaki cihazlarla artık eşitlenmez."
+      confirm: "Grubu değiştir"
+    errors:
+      code_expired_or_used: "Kodun süresi doldu veya zaten kullanıldı. Yeni bir kod gösterip tekrar deneyin."
+      codes_differ: "Kodlar eşleşmedi. Eşleştirme iptal edildi."
+      cancelled: "Eşleştirme iptal edildi."
+      unreachable: "Diğer cihaza ulaşılamadı. İkisinin de aynı ağda olduğundan emin olun."
+      invalid_invitation: "Bu bir WHPH eşleştirme kodu değil."
+      group_switch_declined: "Eşitleme grubunu değiştirmemeyi seçtiniz."
+      preparing: "Eşitleme hâlâ hazırlanıyor. Lütfen kısa süre sonra tekrar deneyin."
+      refused: "Diğer cihaz eşleştirmeyi reddetti."
+      not_active: "Devam eden bir eşleştirme yok."
+  members:
+    remove_confirm:
+      title: "{device} kaldırılsın mı?"
+      description: "Bu işlem {device} cihazını yalnızca bu cihazdan değil, tüm eşitleme grubundan kaldırır. Gruptaki hiçbir cihazla eşitlenmez ve grup anahtarları değiştirilir. Daha sonra eşitlemek için yeniden eşleştirin."
+      action: "Gruptan kaldır"
+    removed_from_group:
+      title: "Eşitleme grubundan kaldırıldı"
+      description: "Bu cihaz eşitleme grubundan kaldırıldı ve artık eşitlenmiyor. Devam etmek için yeniden eşleştirin."
+    repair_banner:
+      title: "Eşitleme yükseltildi"
+      description: "Eski eşitleme ile eşleştirilen cihazlar yeniden eşleştirilmelidir. Verileriniz her cihazda kalır."
+      dismiss: "Kapat"
+    upgrade_progress: "Eşitleme verileri hazırlanıyor… %{percent}"
+  demo:
+    reset_blocked: "Bu cihaz eşleştirilmişken demo verileri sıfırlanamaz, çünkü sıfırlama diğer cihazlarınıza eşitlenirdi. Önce bu cihazı eşitleme grubundan kaldırın."

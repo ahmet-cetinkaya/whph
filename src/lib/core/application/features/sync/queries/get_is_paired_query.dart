@@ -9,7 +9,11 @@ class GetIsPairedQuery implements IRequest<GetIsPairedQueryResponse> {}
 class GetIsPairedQueryResponse {
   final bool isPaired;
 
-  const GetIsPairedQueryResponse({required this.isPaired});
+  /// Distinguishes a device removed from its group (the UI says so) from one
+  /// that never paired.
+  final SyncGroupState groupState;
+
+  const GetIsPairedQueryResponse({required this.isPaired, this.groupState = SyncGroupState.ungrouped});
 }
 
 class GetIsPairedQueryHandler
@@ -19,6 +23,9 @@ class GetIsPairedQueryHandler
   GetIsPairedQueryHandler(this._membershipService);
 
   @override
-  Future<GetIsPairedQueryResponse> call(GetIsPairedQuery request) async =>
-      GetIsPairedQueryResponse(isPaired: await _membershipService.isPaired());
+  Future<GetIsPairedQueryResponse> call(GetIsPairedQuery request) async {
+    if (!_membershipService.hasIdentity) return const GetIsPairedQueryResponse(isPaired: false);
+    final view = await _membershipService.currentView();
+    return GetIsPairedQueryResponse(isPaired: view.isPaired, groupState: view.state);
+  }
 }
