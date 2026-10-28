@@ -27,7 +27,7 @@ class DeviceHandshakeService {
       try {
         await channel.ready;
       } catch (e) {
-        Logger.debug('WebSocket connection failed during handshake with $ipAddress:$port - $e');
+        Logger.debug('WebSocket connection failed during handshake with $ipAddress:$port - ${e.runtimeType}');
         return null;
       }
 
@@ -89,7 +89,7 @@ class DeviceHandshakeService {
               }
             }
           } catch (e) {
-            Logger.error('Failed to parse handshake response: $e');
+            Logger.error('Failed to parse handshake response: ${e.runtimeType}');
             if (!completer.isCompleted) {
               completer.complete(null);
             }
@@ -134,21 +134,21 @@ class DeviceHandshakeService {
 
       return result;
     } catch (e) {
-      Logger.error('Device handshake failed for $ipAddress:$port - $e');
+      Logger.error('Device handshake failed for $ipAddress:$port - ${e.runtimeType}');
       return null;
     } finally {
       // Clean up subscription
       try {
         await subscription?.cancel();
       } catch (e) {
-        Logger.debug('Warning: Failed to cancel subscription during cleanup: $e');
+        Logger.debug('Warning: Failed to cancel subscription during cleanup: ${e.runtimeType}');
       }
 
       // Clean up WebSocket
       try {
         await channel?.sink.close();
       } catch (e) {
-        Logger.debug('Warning: Failed to close WebSocket during cleanup: $e');
+        Logger.debug('Warning: Failed to close WebSocket during cleanup: ${e.runtimeType}');
       }
     }
   }
