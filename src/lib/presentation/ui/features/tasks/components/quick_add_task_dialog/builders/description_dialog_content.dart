@@ -87,7 +87,7 @@ class _DescriptionDialogContentState extends State<DescriptionDialogContent> {
       ),
       child: MarkdownEditor.simple(
         controller: _controller,
-        hintText: widget.translationService.translate('tasks.details.description.hint'),
+        hintText: widget.translationService.translate(TaskTranslationKeys.addDescriptionHint),
         style: widget.theme.textTheme.bodySmall?.copyWith(
           color: widget.theme.colorScheme.onSurface,
         ),
