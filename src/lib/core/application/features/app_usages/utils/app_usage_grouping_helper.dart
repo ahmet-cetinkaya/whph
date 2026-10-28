@@ -1,3 +1,4 @@
+import 'package:whph/core/application/features/app_usages/constants/app_usage_translation_keys.dart';
 import 'package:whph/core/application/features/app_usages/models/app_usage_list_item.dart';
 import 'package:whph/core/application/features/app_usages/models/app_usage_sort_fields.dart';
 import 'package:whph/core/application/shared/utils/grouping_utils.dart';
@@ -26,7 +27,7 @@ class AppUsageGroupInfo {
 
   AppUsageGroupInfo.type(AppUsageGroupType groupType)
       : name = switch (groupType) {
-          AppUsageGroupType.unknownDevice => 'app_usages.details.device.unknown',
+          AppUsageGroupType.unknownDevice => AppUsageTranslationKeys.unknownDeviceLabel,
         },
         isTranslatable = true,
         type = groupType;
