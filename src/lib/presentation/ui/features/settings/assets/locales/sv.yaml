@@ -450,6 +450,8 @@ settings:
   habit:
     title: Vanainställningar
     description: Anpassa vanebeteende och inställningar
+    save_error: "Fel vid sparande av vaneinställningar"
+    load_error: "Fel vid inläsning av vaneinställningar"
     three_state:
       title: Aktivera 3-tillståndsspårning
       description: Växla mellan tillstånden Ej klar, Överhoppad och Klar.

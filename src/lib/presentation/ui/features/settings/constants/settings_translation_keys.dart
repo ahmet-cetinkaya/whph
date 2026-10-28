@@ -129,6 +129,8 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   // Habit Settings
   static const String habitSettingsTitle = 'settings.habit.title';
   static const String habitSettingsDescription = 'settings.habit.description';
+  static const String habitSettingsSaveError = 'settings.habit.save_error';
+  static const String habitSettingsLoadError = 'settings.habit.load_error';
   static const String habitThreeStateTitle = 'settings.habit.three_state.title';
   static const String habitThreeStateDescription = 'settings.habit.three_state.description';
   static const String habitReverseDayOrderTitle = 'settings.habit.reverse_day_order.title';

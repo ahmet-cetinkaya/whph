@@ -468,6 +468,8 @@ settings:
   habit:
     title: Ustawienia nawyków
     description: Dostosuj zachowanie i preferencje śledzenia nawyków
+    save_error: "Błąd zapisywania ustawień nawyków"
+    load_error: "Błąd wczytywania ustawień nawyków"
     three_state:
       title: Włącz śledzenie 3 stanów
       description: Przełączaj między stanami Nieukończone, Pominięto i Ukończone.

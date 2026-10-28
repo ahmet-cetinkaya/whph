@@ -463,6 +463,8 @@ settings:
   habit:
     title: Nastavitve navad
     description: Prilagodi obnašanje in nastavitve sledenja navad
+    save_error: "Napaka pri shranjevanju nastavitev navad"
+    load_error: "Napaka pri nalaganju nastavitev navad"
     three_state:
       title: Omogoči sledenje 3 stanj
       description: Preklapljaj med stanji Nedokončano, Preskočeno in Končano.
