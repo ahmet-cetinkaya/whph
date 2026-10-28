@@ -184,7 +184,7 @@ class AddSyncDeviceController extends ChangeNotifier {
       }
     } catch (e) {
       // Log connection failures during discovery for debugging purposes
-      Logger.debug('Device check failed for $ipAddress: $e');
+      Logger.debug('Device check failed for $ipAddress: ${e.runtimeType}');
     }
   }
 

@@ -50,7 +50,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
         }
       }
     } catch (e) {
-      Logger.error('Failed to load server mode preference: $e');
+      Logger.error('Failed to load server mode preference: ${e.runtimeType}');
     }
   }
 
@@ -70,7 +70,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
         Logger.warning('Failed to auto-start server mode');
       }
     } catch (e) {
-      Logger.error('Error auto-starting server mode: $e');
+      Logger.error('Error auto-starting server mode: ${e.runtimeType}');
     }
   }
 
@@ -140,7 +140,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
         }
       }
     } catch (e) {
-      Logger.error('Error toggling server mode: $e');
+      Logger.error('Error toggling server mode: ${e.runtimeType}');
       if (mounted) {
         OverlayNotificationHelper.hideNotification();
         OverlayNotificationHelper.showError(
@@ -164,7 +164,7 @@ mixin ServerModeMixin<T extends StatefulWidget> on State<T> {
       await mediator.send<SaveSettingCommand, SaveSettingCommandResponse>(command);
       Logger.debug('Server mode preference saved: $enabled');
     } catch (e) {
-      Logger.error('Failed to save server mode preference: $e');
+      Logger.error('Failed to save server mode preference: ${e.runtimeType}');
     }
   }
 }
