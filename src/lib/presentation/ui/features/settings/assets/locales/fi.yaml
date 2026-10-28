@@ -447,6 +447,8 @@ settings:
   habit:
     title: Tottumusasetukset
     description: Mukauta tottumusten seurantaa ja asetuksia
+    save_error: "Virhe tapa-asetusten tallennuksessa"
+    load_error: "Virhe tapa-asetusten latauksessa"
     three_state:
       title: Ota 3 tilan seuranta käyttöön
       description: Vaihda tilojen Tekemättä, Ohitettu ja Valmis välillä.

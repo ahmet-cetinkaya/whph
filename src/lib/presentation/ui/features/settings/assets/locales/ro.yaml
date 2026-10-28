@@ -466,6 +466,8 @@ settings:
   habit:
     title: Setări obiceiuri
     description: Personalizați comportamentul și preferințele de urmărire a obiceiurilor
+    save_error: "Eroare la salvarea setărilor pentru obiceiuri"
+    load_error: "Eroare la încărcarea setărilor pentru obiceiuri"
     three_state:
       title: Activați urmărirea cu 3 stări
       description: Comutați între stările Nefinalizat, Sărit și Finalizat.

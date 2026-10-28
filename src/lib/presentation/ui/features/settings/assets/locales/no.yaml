@@ -444,6 +444,8 @@ settings:
   habit:
     title: Vanerinnstillinger
     description: Tilpass vaneoppførsel og innstillinger
+    save_error: "Feil ved lagring av vaneinnstillinger"
+    load_error: "Feil ved lasting av vaneinnstillinger"
     three_state:
       title: Aktiver 3-tilstandssporing
       description: Bytt mellom tilstandene Ikke gjort, Overhoppet og Fullført.

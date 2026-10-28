@@ -482,6 +482,8 @@ settings:
   habit:
     title: Gewohnheiteneinstellungen
     description: Gewohnheitsverhalten und Einstellungen anpassen
+    save_error: "Fehler beim Speichern der Gewohnheitseinstellungen"
+    load_error: "Fehler beim Laden der Gewohnheitseinstellungen"
     three_state:
       title: 3-Status-Tracking aktivieren
       description:

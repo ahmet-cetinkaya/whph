@@ -366,6 +366,8 @@ settings:
   habit:
     title: 习惯设置
     description: 自定义习惯跟踪行为和偏好设置
+    save_error: "保存习惯设置时出错"
+    load_error: "加载习惯设置时出错"
     three_state:
       title: 启用三态跟踪
       description: 在未完成、已跳过和已完成状态之间切换。

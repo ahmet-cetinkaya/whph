@@ -471,6 +471,8 @@ settings:
     description:
       Personalizza il comportamento e le preferenze di tracciamento delle
       abitudini
+    save_error: "Errore nel salvataggio delle impostazioni delle abitudini"
+    load_error: "Errore nel caricamento delle impostazioni delle abitudini"
     three_state:
       title: Attiva tracciamento a 3 stati
       description: Alterna tra gli stati Non fatto, Saltato e Completato.

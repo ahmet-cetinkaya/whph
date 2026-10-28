@@ -494,6 +494,8 @@ settings:
   habit:
     title: Paramètres d'habitudes
     description: Personnaliser le comportement et les préférences de suivi des habitudes
+    save_error: "Erreur lors de l'enregistrement des paramètres des habitudes"
+    load_error: "Erreur lors du chargement des paramètres des habitudes"
     three_state:
       title: Activer le suivi à 3 états
       description: Basculer entre les états Non fait, Passé et Terminé.

@@ -456,6 +456,8 @@ settings:
   habit:
     title: Alışkanlık Ayarları
     description: Alışkanlık takip davranışını ve tercihlerini özelleştir
+    save_error: "Alışkanlık ayarları kaydedilirken hata oluştu"
+    load_error: "Alışkanlık ayarları yüklenirken hata oluştu"
     three_state:
       title: 3 Durak Takipini Etkinleştir
       description: Tamamlanmadı, Atlandı ve Tamamlandı durumları arasında geçiş yap.

@@ -465,6 +465,8 @@ settings:
   habit:
     title: Gewoonte-instellingen
     description: Gewoontegedrag en voorkeuren aanpassen
+    save_error: "Fout bij het opslaan van gewoonte-instellingen"
+    load_error: "Fout bij het laden van gewoonte-instellingen"
     three_state:
       title: 3-status tracking inschakelen
       description: Wissel tussen de statussen Niet gedaan, Overgeslagen en Voltooid.

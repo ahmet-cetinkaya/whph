@@ -452,6 +452,8 @@ settings:
   habit:
     title: Nastavení návyků
     description: Přizpůsobte sledování návyků a předvolby
+    save_error: "Chyba při ukládání nastavení návyků"
+    load_error: "Chyba při načítání nastavení návyků"
     three_state:
       title: Povolit 3-stavové sledování
       description: Přepínání mezi stavy Nedokončeno, Přeskočeno a Hotovo.
