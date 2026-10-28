@@ -46,7 +46,7 @@ sync:
     local_ip_error: ローカルIPエラー
     device_already_paired: デバイスはすでにペアリングされています
     no_active_interfaces: アクティブなネットワークインターフェースがありません
-    device_discovery_failed: デバイス検出に失敗しました
+    device_discovery_failed: "デバイス検出を開始できませんでした: {error}"
     no_server_configured: サーバーが構成されていません。まず同期デバイスを追加するか、手動接続を使用してサーバー接続を設定してください。
     device_id_unavailable: デバイスIDが利用できません。同期を続行できません。
     local_ip_unavailable: ローカルIPアドレスが利用できません。ネットワーク接続を確認してください。
@@ -65,7 +65,7 @@ sync:
     sync_completed: 同期が正常に完了しました
     sync_in_progress: 同期中...
     testing_connection: 接続をテスト中...
-    device_added_success: デバイスが正常に追加されました
+    device_added_success: "{deviceName} を同期デバイスに追加しました"
   qr_code:
     close_button: 閉じる
     dialog_title: QRコードをスキャンして同期
@@ -101,7 +101,7 @@ sync:
     port_required: ポートが必要です
     invalid_port: ポート番号が無効です
     connection_failed: 接続に失敗しました
-    connection_error: 接続エラー
+    connection_error: "接続エラー: {0}"
     connection_string_tab: 接続文字列
     manual_entry_tab: 手動入力
     connection_string_required: 接続文字列が必要です
@@ -127,7 +127,7 @@ sync:
     alternative_methods_hint: 手動接続またはQRコードを試してください
     scan_qr_code: QRコードをスキャン
     refresh_scan: スキャンを更新
-    last_seen: 最後に見られた
+    last_seen: "最終確認: {time}"
     already_added: すでに追加済み
   connect_info:
     dialog_title: デバイス接続情報

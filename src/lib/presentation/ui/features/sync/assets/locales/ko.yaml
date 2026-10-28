@@ -48,7 +48,7 @@ sync:
     local_ip_error: 로컬 IP 오류
     device_already_paired: 기기는 이미 페어링되었습니다
     no_active_interfaces: 활성 네트워크 인터페이스가 없습니다
-    device_discovery_failed: 기기 검색에 실패했습니다
+    device_discovery_failed: "기기 검색을 시작하지 못했습니다: {error}"
     no_server_configured: 서버가 구성되지 않았습니다. 먼저 동기화 기기를 추가하거나 수동 연결을 사용하여 서버 연결을 설정하세요.
     device_id_unavailable: 기기 ID를 사용할 수 없습니다. 동기화를 계속할 수 없습니다.
     local_ip_unavailable: 로컬 IP 주소를 사용할 수 없습니다. 네트워크 연결을 확인하세요.
@@ -67,7 +67,7 @@ sync:
     sync_completed: 동기화가 성공적으로 완료되었습니다
     sync_in_progress: 동기화 진행 중...
     testing_connection: 연결 테스트 중...
-    device_added_success: 기기가 성공적으로 추가되었습니다
+    device_added_success: "{deviceName} 기기를 동기화 기기에 추가했습니다"
   qr_code:
     close_button: 닫기
     dialog_title: QR 코드를 스캔하여 동기화
@@ -103,7 +103,7 @@ sync:
     port_required: 포트가 필요합니다
     invalid_port: 포트 번호가 잘못되었습니다
     connection_failed: 연결에 실패했습니다
-    connection_error: 연결 오류
+    connection_error: "연결 오류: {0}"
     connection_string_tab: 연결 문자열
     manual_entry_tab: 수동 입력
     connection_string_required: 연결 문자열이 필요합니다
@@ -129,7 +129,7 @@ sync:
     alternative_methods_hint: 수동 연결 또는 QR 코드를 시도해 보세요
     scan_qr_code: QR 코드 스캔
     refresh_scan: 검색 새로 고침
-    last_seen: 마지막으로 본 시간
+    last_seen: "마지막으로 본 시간: {time}"
     already_added: 이미 추가됨
   connect_info:
     dialog_title: 기기 연결 정보

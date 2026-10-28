@@ -52,7 +52,7 @@ sync:
     local_ip_error: Paikallinen IP-virhe
     device_already_paired: Laite on jo paritettu
     no_active_interfaces: Ei aktiivisia verkkoliittymiä
-    device_discovery_failed: Laitteen löytäminen epäonnistui
+    device_discovery_failed: "Laitteiden löytämisen käynnistys epäonnistui: {error}"
     no_server_configured:
       Ei serveriä konfiguroitu. Lisää ensin synkronointilaite
       tai käytä manuaalista yhteyttä server-yhteyden asettamiseksi.
@@ -83,7 +83,7 @@ sync:
     sync_completed: Synkronointi valmistui onnistuneesti
     sync_in_progress: Synkronointi meneillään...
     testing_connection: Testaa yhteyttä...
-    device_added_success: Laite lisätty onnistuneesti
+    device_added_success: "{deviceName} lisättiin onnistuneesti synkronointilaitteisiin"
   qr_code:
     close_button: Sulje
     dialog_title: Skannaa QR-koodi synkronoimiseksi
@@ -125,7 +125,7 @@ sync:
     port_required: Portti on pakollinen
     invalid_port: Virheellinen porttinumero
     connection_failed: Yhteys epäonnistui
-    connection_error: Yhteysvirhe
+    connection_error: "Yhteysvirhe: {0}"
     connection_string_tab: Yhteysmerkkijono
     manual_entry_tab: Manuaalinen syöttö
     connection_string_required: Yhteysmerkkijono vaaditaan
@@ -155,7 +155,7 @@ sync:
     alternative_methods_hint: Kokeile manuaalista yhteyttä tai QR-koodia
     scan_qr_code: Skannaa QR-koodi
     refresh_scan: Päivitä skannaus
-    last_seen: Viimeksi nähty
+    last_seen: "Viimeksi nähty {time}"
     already_added: Jo lisätty
   connect_info:
     dialog_title: Laitteen yhteys tiedot

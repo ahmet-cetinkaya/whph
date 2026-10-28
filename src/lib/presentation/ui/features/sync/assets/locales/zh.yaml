@@ -46,7 +46,7 @@ sync:
     local_ip_error: 本地 IP 错误
     device_already_paired: 设备已配对
     no_active_interfaces: 没有活动网络接口
-    device_discovery_failed: 设备发现失败
+    device_discovery_failed: "无法启动设备发现：{error}"
     no_server_configured: 未配置服务器。请先添加同步设备或使用手动连接设置服务器连接。
     device_id_unavailable: 设备 ID 不可用。无法继续同步。
     local_ip_unavailable: 本地 IP 地址不可用。请检查网络连接。
@@ -65,7 +65,7 @@ sync:
     sync_completed: 同步成功完成
     sync_in_progress: 同步进行中...
     testing_connection: 测试连接...
-    device_added_success: 设备添加成功
+    device_added_success: "已成功将 {deviceName} 添加到同步设备"
   qr_code:
     close_button: 关闭
     dialog_title: 扫描 QR 码以同步
@@ -101,7 +101,7 @@ sync:
     port_required: 端口是必需的
     invalid_port: 无效的端口号
     connection_failed: 连接失败
-    connection_error: 连接错误
+    connection_error: "连接错误：{0}"
     connection_string_tab: 连接字符串
     manual_entry_tab: 手动输入
     connection_string_required: 需要连接字符串
@@ -127,7 +127,7 @@ sync:
     alternative_methods_hint: 尝试手动连接或 QR 码
     scan_qr_code: 扫描 QR 码
     refresh_scan: 刷新扫描
-    last_seen: 最后看到
+    last_seen: "最后在线：{time}"
     already_added: 已添加
   connect_info:
     dialog_title: 设备连接信息
