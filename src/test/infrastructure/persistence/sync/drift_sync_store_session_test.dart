@@ -202,6 +202,20 @@ JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100''');
             greaterThan(0));
       });
 
+      test('restore lists only other members, sorted, and ignores other security tables', () async {
+        const ownId = 'm-own';
+        await a.store.bindIdentity(memberId: ownId);
+        await a.store.writeSecurityCell(memberCellKey(ownId), _member(ownId).encode());
+        await a.store.writeSecurityCell(memberCellKey('m0'), _member('m0').encode());
+        final revocation = _revocation();
+        await a.store.writeSecurityCell(revocationCellKey(revocation), encodeRevocationRecord(revocation));
+
+        final report = await a.store.switchOrigin(OriginSwitchReason.restore, newOrigin: 'origin-a2');
+
+        expect(report.securityLeftBehind, 4, reason: 'two members + own member + revocation never left');
+        expect(report.strandedMemberIds, ['m0', 'm1'], reason: 'own id and the revocation row are not joiners');
+      });
+
       test('local_reset keeps the security row and adopts its cell', () async {
         final report = await a.store.localReset(newOrigin: 'origin-a2');
         expect(report.securityLeftBehind, 0);

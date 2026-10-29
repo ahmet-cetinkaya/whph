@@ -162,6 +162,16 @@ void main() {
         expect(out.strandedMemberIds, isEmpty);
       });
 
+      test('a member row above the sent mark but covered by a manifest is not stranded', () {
+        final s = storeWithMembers(['m-b']);
+        s.attachOwnManifest(_manifest(s.localOrigin, 0, 1));
+
+        final out = s.switchOrigin(reason: OriginSwitchReason.restore, newOrigin: _origin(9), sentMark: 0);
+
+        expect(out.securityLeftBehind, 0, reason: 'a peer may hold it');
+        expect(out.strandedMemberIds, isEmpty);
+      });
+
       test('other reasons report none', () {
         final s = storeWithMembers(['m-b']);
 
