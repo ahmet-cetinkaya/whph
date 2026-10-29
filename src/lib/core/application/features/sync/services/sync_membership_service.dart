@@ -163,8 +163,23 @@ class SyncMembershipService {
         _membership = restored;
         _needsRepairing = content.needsRepairing;
         await _refresh();
+        if ((await _keyStore.adoptLegacyRevocations(_isGenuineLegacyRevocation)).adopted > 0) await _refresh();
         return true;
       });
+
+  /// Whether a ledger record without a MAC is a genuine revocation of the
+  /// current group: correctly signed by a member the database knows. A forged
+  /// pair cannot meet both, so only real records get a MAC.
+  Future<bool> _isGenuineLegacyRevocation(LedgerRevocation retained) async {
+    final groupId = membership.groupId;
+    if (groupId == null) return false;
+    try {
+      final record = decodeRevocationRecord(retained.recordBytes);
+      return membership.memberByEd25519(record.revokerPub) != null && await record.verify(groupId);
+    } on Object {
+      return false;
+    }
+  }
 
   /// First run: a new identity, no group, the DB's current local origin as the
   /// first committed ledger origin. [name] is the device name members see.

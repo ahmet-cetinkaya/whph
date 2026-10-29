@@ -46,6 +46,7 @@ export 'src/session/transport.dart';
 export 'src/store/async_sync_store_port.dart';
 export 'src/store/in_memory_replica_store.dart';
 export 'src/store/merge_policy.dart';
+export 'src/store/ledger_mac.dart';
 export 'src/store/sync_ledger.dart';
 export 'src/store/replica_store.dart';
 export 'src/store/sync_store.dart';
