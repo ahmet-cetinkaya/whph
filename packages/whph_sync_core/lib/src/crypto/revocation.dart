@@ -265,14 +265,14 @@ final class RevocationSet {
   /// Publish-what-you-enforce (card B.2): per revoked member, the cutoffs of
   /// records [isServed] says no peer can fetch (their carrier is stranded on
   /// a sealed origin, or lost to a restore), so the caller re-signs them under
-  /// its own key on its live origin. Only records [isAuthoredHere] returns
-  /// `true` for are considered (C1/C2: never re-issue another device's
-  /// record, only this device's own authoring), and a record already covered
+  /// its own key on its live origin. Only records [isReissuable] returns
+  /// `true` for are considered (C1/C2: own authoring, or a record whose
+  /// carrier lost its owner, ACF-49; never a ledger-only record), and a record already covered
   /// by a servable record of the same revoked member is skipped (idempotent,
   /// C3). Cutoffs of unserved records merge by max per origin.
   Map<Uint8List, Map<OriginId, int>> unpublished({
     required bool Function(RevocationRecord record) isServed,
-    required bool Function(RevocationRecord record) isAuthoredHere,
+    required bool Function(RevocationRecord record) isReissuable,
   }) {
     final out = <Uint8List, Map<OriginId, int>>{};
     for (final list in _byRevoked.values) {
@@ -281,7 +281,7 @@ final class RevocationSet {
       for (final r in list.where(isServed)) {
         r.cutoffs.forEach((o, c) => servedCutoffs[o] = math.max(servedCutoffs[o] ?? 0, c));
       }
-      final stranded = list.where((r) => !isServed(r) && isAuthoredHere(r)).toList();
+      final stranded = list.where((r) => !isServed(r) && isReissuable(r)).toList();
       final hasServed = list.any(isServed);
       final missing = <OriginId, int>{};
       for (final r in stranded) {
