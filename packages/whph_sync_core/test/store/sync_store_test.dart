@@ -133,6 +133,42 @@ void main() {
       expect(s.cursorOf(o1), 30);
     });
 
+    group('stranded members (ACF-37)', () {
+      SyncStore storeWithMembers(List<String> memberIds) {
+        final s = _store();
+        for (final id in memberIds) {
+          s.writeLocal(memberCellKey(id), Uint8List(1), nowMs: _t0);
+        }
+        return s;
+      }
+
+      for (final reason in [OriginSwitchReason.restore, OriginSwitchReason.keyLost]) {
+        test('${reason.name} lists the other members whose rows never left, sorted', () {
+          final s = storeWithMembers(['m-c', 'm-a', 'm-b']);
+
+          final out = s.switchOrigin(reason: reason, newOrigin: _origin(9), sentMark: 0);
+
+          expect(out.securityLeftBehind, 3);
+          expect(out.strandedMemberIds, ['m-b', 'm-c'], reason: 'own member id m-a is not a joiner');
+        });
+      }
+
+      test('a member row that has a manifest is not stranded', () {
+        final s = storeWithMembers(['m-b']);
+        s.attachOwnManifest(_manifest(s.localOrigin, 0, 1));
+
+        final out = s.switchOrigin(reason: OriginSwitchReason.restore, newOrigin: _origin(9), sentMark: 1);
+
+        expect(out.strandedMemberIds, isEmpty);
+      });
+
+      test('other reasons report none', () {
+        final s = storeWithMembers(['m-b']);
+
+        expect(s.switchOrigin(reason: OriginSwitchReason.localReset, newOrigin: _origin(9)).strandedMemberIds, isEmpty);
+      });
+    });
+
     test('restore adopts every un-manifested sealed cell', () {
       final s = _store();
       final written = _writeCells(s, 40);

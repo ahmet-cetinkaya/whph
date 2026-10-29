@@ -188,6 +188,7 @@ void main() {
             .switchOrigin(OriginSwitchReason.restore, newOrigin: 'origin-a2');
         expect(report.securityLeftBehind, 1);
         expect(report.needsRepairing, isTrue);
+        expect(report.strandedMemberIds, ['m1']);
         expect(await SyncUpgradeJob(a.db).runChunks(), isTrue);
 
         final securityOrigin = await a.rows('''
@@ -204,6 +205,7 @@ JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100''');
       test('local_reset keeps the security row and adopts its cell', () async {
         final report = await a.store.localReset(newOrigin: 'origin-a2');
         expect(report.securityLeftBehind, 0);
+        expect(report.strandedMemberIds, isEmpty);
         expect(await a.count('SELECT COUNT(*) FROM note_table'), 0);
         expect(await a.count('SELECT COUNT(*) FROM sync_member_table'), 1);
         final adopted = await a.rows('''
