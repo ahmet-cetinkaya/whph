@@ -5,13 +5,23 @@ import 'dart:typed_data';
 
 import 'package:path/path.dart' as p;
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_key_store.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/shared/utils/owner_only_file_utils.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
 const keyFileName = 'sync_keys.json';
 const ledgerFileName = 'sync_ledger.json';
 
+/// One-line backup of the version 1 revocation records the migration dropped,
+/// so a bad migration can be undone by hand.
+const droppedLegacyLedgerFileName = 'sync_ledger.json.dropped-v1';
+
 const _documentVersion = 1;
+
+/// Version 2 adds the per-record MAC (D13a); version 1 records carry none.
+const _ledgerDocumentVersion = 2;
+const _legacyLedgerDocumentVersion = 1;
+const _component = 'FileSyncKeyStore';
 const _maximumDocumentBytes = 8 * 1024 * 1024;
 const _keySubject = 'sync key file';
 const _ledgerSubject = 'sync ledger';
@@ -83,7 +93,7 @@ class FileSyncKeyStore implements ISyncKeyStore {
     try {
       if (!await ledgerFile.exists()) return _ledger = null;
       await rejectSymbolicLink(ledgerFile.path, _ledgerSubject);
-      _ledger = _decodeLedger(await _readBounded(ledgerFile));
+      _ledger = _decodeLedger(await _readBounded(ledgerFile), await _readMacKey());
     } on Object {
       _ledger = null;
     }
@@ -136,13 +146,56 @@ class FileSyncKeyStore implements ISyncKeyStore {
   @override
   Future<void> persistRevocations(Iterable<LedgerRevocation> revocations) => _mutate((state) {
         for (final revocation in revocations) {
-          state.revocations.putIfAbsent(_revocationId(revocation), () => revocation);
+          final id = _revocationId(revocation);
+          state.legacyRevocations.remove(id);
+          state.revocations.putIfAbsent(id, () => revocation);
         }
       });
 
   @override
   Future<void> clearRevocations() async {
-    if (_ledger != null) await _mutate((state) => state.revocations.clear());
+    if (_ledger != null) {
+      await _mutate((state) {
+        state.revocations.clear();
+        state.legacyRevocations.clear();
+      });
+    }
+  }
+
+  @override
+  Future<({int adopted, int dropped})> adoptLegacyRevocations(
+    Future<bool> Function(LedgerRevocation) isGenuine,
+  ) async {
+    final pending = _ledger?.legacyRevocations;
+    if (pending == null || pending.isEmpty) return (adopted: 0, dropped: 0);
+    final genuine = <LedgerRevocation>[];
+    final dropped = <LedgerRevocation>[];
+    for (final revocation in pending.values) {
+      (await isGenuine(revocation) ? genuine : dropped).add(revocation);
+    }
+    if (dropped.isNotEmpty) await _backUpDroppedLegacy(dropped);
+    await _mutate((state) {
+      state.legacyRevocations.clear();
+      for (final revocation in genuine) {
+        state.revocations.putIfAbsent(_revocationId(revocation), () => revocation);
+      }
+    });
+    if (dropped.isNotEmpty) {
+      Logger.warning(
+          'Dropped ${dropped.length} unverifiable legacy ledger revocation record(s)', component: _component);
+    }
+    return (adopted: genuine.length, dropped: dropped.length);
+  }
+
+  Future<void> _backUpDroppedLegacy(List<LedgerRevocation> dropped) async {
+    try {
+      await _prepareDirectory(ledgerDirectory);
+      final line = jsonEncode([for (final revocation in dropped) _encodeRevocation(revocation, mac: null)]);
+      await _writer.write(File(p.join(ledgerDirectory.path, droppedLegacyLedgerFileName)), utf8.encode(line),
+          subject: _ledgerSubject);
+    } on Object {
+      throw const SyncLedgerWriteException('dropped ledger records could not be backed up');
+    }
   }
 
   @override
@@ -165,9 +218,22 @@ class FileSyncKeyStore implements ISyncKeyStore {
   Future<void> _saveLedger(_LedgerState state) async {
     try {
       await _prepareDirectory(ledgerDirectory);
-      await _writer.write(ledgerFile, utf8.encode(jsonEncode(_encodeLedger(state))), subject: _ledgerSubject);
+      final macKey = state.revocations.isEmpty ? null : await _readMacKey();
+      if (state.revocations.isNotEmpty && macKey == null) throw const FormatException('no ledger MAC key');
+      await _writer.write(ledgerFile, utf8.encode(jsonEncode(_encodeLedger(state, macKey))), subject: _ledgerSubject);
     } on Object {
       throw const SyncLedgerWriteException('sync ledger could not be saved safely');
+    }
+  }
+
+  /// The ledger MAC key from the key file's identity seed, or `null` when the
+  /// key file is missing or unreadable (no record can then be authenticated).
+  Future<Uint8List?> _readMacKey() async {
+    try {
+      final content = await readKeyFile();
+      return content == null ? null : deriveLedgerMacKey(content.snapshot.ed25519Seed);
+    } on Object {
+      return null;
     }
   }
 
@@ -199,11 +265,16 @@ class _LedgerState {
   int epochCounterHigh;
   final Map<String, LedgerRevocation> revocations;
 
-  _LedgerState(this.entries, this.epochCounterHigh, this.revocations);
+  /// Records without a MAC (version 1 files): kept on disk, never returned as
+  /// [revocations] until [FileSyncKeyStore.adoptLegacyRevocations] checks them.
+  final Map<String, LedgerRevocation> legacyRevocations;
 
-  factory _LedgerState.empty() => _LedgerState([], 0, {});
+  _LedgerState(this.entries, this.epochCounterHigh, this.revocations, this.legacyRevocations);
 
-  _LedgerState copy() => _LedgerState(List.of(entries), epochCounterHigh, Map.of(revocations));
+  factory _LedgerState.empty() => _LedgerState([], 0, {}, {});
+
+  _LedgerState copy() =>
+      _LedgerState(List.of(entries), epochCounterHigh, Map.of(revocations), Map.of(legacyRevocations));
 
   void replace(OriginId origin, OriginEntry Function(OriginEntry) update) {
     final index = entries.lastIndexWhere((e) => e.origin == origin);
@@ -214,8 +285,8 @@ class _LedgerState {
 
 // -- ledger codec ---------------------------------------------------------------------
 
-Map<String, Object?> _encodeLedger(_LedgerState state) => {
-      'version': _documentVersion,
+Map<String, Object?> _encodeLedger(_LedgerState state, Uint8List? macKey) => {
+      'version': _ledgerDocumentVersion,
       'epoch_counter_high': state.epochCounterHigh,
       'origins': [
         for (final e in state.entries)
@@ -230,34 +301,52 @@ Map<String, Object?> _encodeLedger(_LedgerState state) => {
           },
       ],
       'revocations': [
-        for (final r in state.revocations.values)
-          {
-            'record': base64Encode(r.recordBytes),
-            'revoker_entry': r.revokerEntryBytes == null ? null : base64Encode(r.revokerEntryBytes!),
-            'carrier_origin': r.carrierOrigin.hex,
-            'carrier_seq': r.carrierSeq,
-          },
+        for (final r in state.revocations.values) _encodeRevocation(r, mac: ledgerRevocationMac(macKey!, r)),
+        for (final r in state.legacyRevocations.values) _encodeRevocation(r, mac: null),
       ],
     };
 
-_LedgerState _decodeLedger(String source) {
-  final json = _versionedMap(jsonDecode(source));
+Map<String, Object?> _encodeRevocation(LedgerRevocation r, {required List<int>? mac}) => {
+      'record': base64Encode(r.recordBytes),
+      'revoker_entry': r.revokerEntryBytes == null ? null : base64Encode(r.revokerEntryBytes!),
+      'carrier_origin': r.carrierOrigin.hex,
+      'carrier_seq': r.carrierSeq,
+      'mac': mac == null ? null : base64Encode(mac),
+    };
+
+/// Decodes the ledger. A record whose MAC is wrong, or present while [macKey]
+/// is unavailable, is forged or unusable and is skipped; a record without a
+/// MAC (version 1) is kept apart as legacy. A bad record never makes the
+/// whole ledger unreadable.
+_LedgerState _decodeLedger(String source, Uint8List? macKey) {
+  final json = _versionedMap(jsonDecode(source), {_ledgerDocumentVersion, _legacyLedgerDocumentVersion});
   final revocations = <String, LedgerRevocation>{};
+  final legacyRevocations = <String, LedgerRevocation>{};
   for (final item in _list(json['revocations'])) {
     final map = _map(item);
-    final revokerEntry = map['revoker_entry'];
-    final revocation = LedgerRevocation(
-      recordBytes: base64Decode(_string(map['record'])),
-      revokerEntryBytes: revokerEntry == null ? null : base64Decode(_string(revokerEntry)),
-      carrierOrigin: OriginId.fromHex(_string(map['carrier_origin'])),
-      carrierSeq: _int(map['carrier_seq']),
-    );
-    revocations[_revocationId(revocation)] = revocation;
+    final revocation = _decodeRevocation(map);
+    final mac = map['mac'];
+    if (mac == null) {
+      legacyRevocations[_revocationId(revocation)] = revocation;
+    } else if (macKey != null && isLedgerRevocationMacValid(macKey, revocation, base64Decode(_string(mac)))) {
+      revocations[_revocationId(revocation)] = revocation;
+    }
   }
   return _LedgerState(
     [for (final item in _list(json['origins'])) _decodeEntry(_map(item))],
     _int(json['epoch_counter_high']),
     revocations,
+    legacyRevocations,
+  );
+}
+
+LedgerRevocation _decodeRevocation(Map<String, Object?> map) {
+  final revokerEntry = map['revoker_entry'];
+  return LedgerRevocation(
+    recordBytes: base64Decode(_string(map['record'])),
+    revokerEntryBytes: revokerEntry == null ? null : base64Decode(_string(revokerEntry)),
+    carrierOrigin: OriginId.fromHex(_string(map['carrier_origin'])),
+    carrierSeq: _int(map['carrier_seq']),
   );
 }
 
@@ -337,9 +426,9 @@ SyncKeyFileContent _decodeKeyFile(String source) {
   return SyncKeyFileContent(snapshot: snapshot, needsRepairing: json['needs_repairing'] == true);
 }
 
-Map<String, Object?> _versionedMap(Object? decoded) {
+Map<String, Object?> _versionedMap(Object? decoded, [Set<int> supportedVersions = const {_documentVersion}]) {
   final map = _map(decoded);
-  if (map['version'] != _documentVersion) throw const FormatException('unsupported version');
+  if (!supportedVersions.contains(map['version'])) throw const FormatException('unsupported version');
   return map;
 }
 

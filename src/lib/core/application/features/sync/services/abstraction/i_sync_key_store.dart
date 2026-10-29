@@ -41,6 +41,12 @@ abstract interface class ISyncKeyStore implements SyncLedger {
   /// link, wrong mode, damaged content).
   Future<SyncKeyFileContent?> readKeyFile();
 
+  /// Checks the ledger's revocation records that carry no MAC (written by an
+  /// older version): those [isGenuine] accepts are kept and MACed with this
+  /// device's key; the others are dropped after a one-line backup of them is
+  /// written next to the ledger. Returns how many were kept and dropped.
+  Future<({int adopted, int dropped})> adoptLegacyRevocations(Future<bool> Function(LedgerRevocation) isGenuine);
+
   /// Replaces the key file atomically and owner-only. A failed write leaves
   /// the previous file byte-identical.
   Future<void> writeKeyFile(SyncKeyFileContent content);

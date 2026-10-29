@@ -1,6 +1,7 @@
 // T20 acceptance 1 (Linux 0600 from the first byte, symlink, crash), 9
 // (rename durability, deleteAll, pending survives a crash, torn ledger write
 // leaves the key file byte-identical).
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -208,6 +209,130 @@ void main() {
       expect(await healthy.ledgerFile.readAsBytes(), ledgerBytes);
       expect(tearing.epochCounterHigh, 0,
           reason: 'a failed write changes nothing in memory');
+    });
+  });
+
+  group('ledger revocation MACs (D13a)', () {
+    final revocation = LedgerRevocation(
+      recordBytes: const [1, 2, 3],
+      revokerEntryBytes: const [4, 5],
+      carrierOrigin: OriginId(List.filled(16, 7)),
+      carrierSeq: 9,
+    );
+
+    Future<FileSyncKeyStore> storeWithRevocation() async {
+      final store = storeWith(null);
+      await store.writeKeyFile(content);
+      await store.append(pendingOrigin(4));
+      await store.persistRevocations([revocation]);
+      return store;
+    }
+
+    Future<Map<String, dynamic>> ledgerJson(FileSyncKeyStore store) async =>
+        jsonDecode(await store.ledgerFile.readAsString()) as Map<String, dynamic>;
+
+    Future<void> rewriteLedger(FileSyncKeyStore store, void Function(Map<String, dynamic> json) edit) async {
+      final json = await ledgerJson(store);
+      edit(json);
+      await store.ledgerFile.writeAsString(jsonEncode(json));
+    }
+
+    Future<FileSyncKeyStore> loadedStore() async {
+      final store = storeWith(null);
+      await store.load();
+      return store;
+    }
+
+    test('a persisted record carries a MAC and is read back after a restart', () async {
+      final store = await storeWithRevocation();
+
+      expect((await ledgerJson(store))['revocations'].single['mac'], isNotNull);
+      expect((await loadedStore()).revocations.single.carrierId, revocation.carrierId);
+    });
+
+    test('a record written into the file without the key file secret is not returned', () async {
+      final store = await storeWithRevocation();
+      await rewriteLedger(store, (json) {
+        json['revocations'].single['mac'] = base64Encode(List.filled(64, 1));
+        json['revocations'].add({...json['revocations'].single, 'carrier_seq': 10});
+      });
+
+      final restarted = await loadedStore();
+
+      expect(restarted.isReadable, isTrue);
+      expect(restarted.revocations, isEmpty);
+      expect(restarted.entries, hasLength(1), reason: 'a forged record does not damage the origin list');
+    });
+
+    test('changing any covered field of a stored record invalidates it', () async {
+      final store = await storeWithRevocation();
+      await rewriteLedger(store, (json) => json['revocations'].single['carrier_seq'] = 99);
+
+      expect((await loadedStore()).revocations, isEmpty);
+    });
+
+    test('a record whose MAC was made for another identity is not returned', () async {
+      final store = await storeWithRevocation();
+      await store.writeKeyFile(otherContent);
+
+      expect((await loadedStore()).revocations, isEmpty);
+    });
+
+    test('without a key file no record can be verified', () async {
+      final store = await storeWithRevocation();
+      await store.keyFile.delete();
+
+      expect((await loadedStore()).revocations, isEmpty);
+    });
+
+    test('a version 1 record without a MAC is not returned until it is adopted', () async {
+      final store = await storeWithRevocation();
+      await rewriteLedger(store, (json) {
+        json['version'] = 1;
+        json['revocations'].single.remove('mac');
+      });
+
+      final restarted = await loadedStore();
+
+      expect(restarted.isReadable, isTrue);
+      expect(restarted.revocations, isEmpty);
+    });
+
+    test('adoption keeps genuine legacy records with a MAC and drops the rest after a backup', () async {
+      final store = await storeWithRevocation();
+      final dropped = LedgerRevocation(
+        recordBytes: const [8],
+        revokerEntryBytes: null,
+        carrierOrigin: OriginId(List.filled(16, 3)),
+        carrierSeq: 2,
+      );
+      await rewriteLedger(store, (json) {
+        json['version'] = 1;
+        json['revocations'].single.remove('mac');
+        json['revocations'].add({
+          'record': base64Encode(dropped.recordBytes),
+          'revoker_entry': null,
+          'carrier_origin': dropped.carrierOrigin.hex,
+          'carrier_seq': dropped.carrierSeq,
+        });
+      });
+      final migrating = await loadedStore();
+
+      final outcome = await migrating.adoptLegacyRevocations((r) async => r.carrierSeq == revocation.carrierSeq);
+
+      expect(outcome, (adopted: 1, dropped: 1));
+      final backup = File(p.join(root.path, 'state', droppedLegacyLedgerFileName));
+      expect(jsonDecode(await backup.readAsString()).single['carrier_seq'], dropped.carrierSeq);
+      expect((await ledgerJson(migrating))['version'], 2);
+      expect((await loadedStore()).revocations.single.carrierId, revocation.carrierId);
+    });
+
+    test('adoption of a ledger without legacy records changes nothing', () async {
+      final store = await storeWithRevocation();
+      final before = await store.ledgerFile.readAsBytes();
+
+      expect(await store.adoptLegacyRevocations((_) async => false), (adopted: 0, dropped: 0));
+      expect(await store.ledgerFile.readAsBytes(), before);
     });
   });
 }
