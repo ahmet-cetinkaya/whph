@@ -1281,13 +1281,16 @@ WHERE c.key >= ? AND c.key < ?''',
       case OriginSwitchReason.keyLost:
         final cursor = await _sealWithCursor(switched, sentMark);
         final leftBehind = await _countUnsentSecurityCells(switched.oldId);
+        final strandedMembers = await _unsentMemberIds(switched.oldId);
         if (reason == OriginSwitchReason.restore) await _raiseHlc(hlcFloor);
         await _scheduleReauthor(ReauthorSpec.adopt(
             oldOriginId: switched.oldId,
             newOriginId: switched.newId,
             sentMark: sentMark));
         return _report(switched, cursor,
-            reauthor: true, securityLeftBehind: leftBehind);
+            reauthor: true,
+            securityLeftBehind: leftBehind,
+            strandedMemberIds: strandedMembers);
       case OriginSwitchReason.localReset:
         await _exec(
             'DELETE FROM sync_clock WHERE key / $packedKeyFactor IN (SELECT id FROM sync_row WHERE tbl_id < $securityTblIdFloor)');
@@ -1347,6 +1350,16 @@ WHERE c.key >= ? AND c.key < ?''',
     return row!['total'] as int;
   }
 
+  /// Ids of the other members whose `sync_member` cell on [originId] was
+  /// never sent, sorted.
+  Future<List<String>> _unsentMemberIds(int originId) async {
+    final rows = await _select(
+        'SELECT r.pk AS pk FROM sync_clock c JOIN sync_row r ON r.id = c.key / $packedKeyFactor '
+        'WHERE c.origin_id = ? AND c.manifest_id IS NULL AND r.tbl_id = ? AND r.pk IS NOT ? ORDER BY r.pk',
+        [originId, securityTblIdFloor, (await _state())['member_id']]);
+    return [for (final row in rows) row['pk'] as String];
+  }
+
   /// `local_reset` keeps the security tables, so their never-sent cells move
   /// to the new origin like any adopted cell; nobody else could serve them.
   Future<void> _adoptUnsentSecurityCells(_Switched switched) async {
@@ -1366,13 +1379,16 @@ WHERE c.key >= ? AND c.key < ?''',
   }
 
   SyncOriginSwitchReport _report(_Switched switched, int? cursor,
-          {required bool reauthor, int securityLeftBehind = 0}) =>
+          {required bool reauthor,
+          int securityLeftBehind = 0,
+          List<String> strandedMemberIds = const []}) =>
       SyncOriginSwitchReport(
           oldOrigin: switched.oldOrigin,
           newOrigin: switched.newOrigin,
           sealedCursor: cursor,
           reauthorScheduled: reauthor,
-          securityLeftBehind: securityLeftBehind);
+          securityLeftBehind: securityLeftBehind,
+          strandedMemberIds: strandedMemberIds);
 
   Future<void> _clearUserTables() async {
     for (final policy in syncTablePolicies) {

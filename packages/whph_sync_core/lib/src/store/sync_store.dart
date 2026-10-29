@@ -152,6 +152,7 @@ final class SwitchOriginOutcome {
     required this.moved,
     required this.purged,
     this.securityLeftBehind = 0,
+    this.strandedMemberIds = const [],
   });
 
   final OriginId oldOrigin;
@@ -165,6 +166,10 @@ final class SwitchOriginOutcome {
   /// `keyLost`, U11/rooted): their carrier cannot vouch for them under a new
   /// origin, so the device needs re-pairing when this is above 0.
   final int securityLeftBehind;
+
+  /// Ids of the other members whose `sync_member` rows stayed behind (sorted):
+  /// the joiners this device admitted that the group has to re-invite.
+  final List<String> strandedMemberIds;
 
   /// Cells moved to the new origin (adopted or re-authored).
   final int moved;
@@ -590,6 +595,7 @@ final class SyncStore implements ReplicaStore {
     var toMove = <StoredCell>[];
     var purged = 0;
     var securityLeftBehind = 0;
+    var strandedMemberIds = const <String>[];
     var clearVector = false;
     switch (reason) {
       case OriginSwitchReason.restore || OriginSwitchReason.keyLost:
@@ -603,6 +609,7 @@ final class SyncStore implements ReplicaStore {
         ];
         securityLeftBehind =
             neverSent.where((c) => c.manifest == null && SecurityTables.contains(c.record.key.table)).length;
+        strandedMemberIds = _strandedMemberIds(neverSent);
         toMove = [
           for (final c in neverSent)
             if (!SecurityTables.contains(c.record.key.table)) c,
@@ -683,8 +690,17 @@ final class SyncStore implements ReplicaStore {
       moved: toMove.length,
       purged: purged,
       securityLeftBehind: securityLeftBehind,
+      strandedMemberIds: strandedMemberIds,
     );
   }
+
+  /// The members other than this device whose never-sent `sync_member` cell
+  /// has no manifest, so no peer can ever receive it.
+  List<String> _strandedMemberIds(List<StoredCell> neverSent) => [
+        for (final cell in neverSent)
+          if (cell.manifest == null && cell.record.key.table == SecurityTables.member && cell.record.key.pk != _memberId)
+            cell.record.key.pk,
+      ]..sort();
 
   /// Whether no peer is known to hold [cell] of the sealed own origin:
   /// without a manifest, or above [sentMark] (D6b).

@@ -52,12 +52,17 @@ class SyncOriginSwitchReport {
   /// after `restore` or `key_lost` (D14, U11/rooted).
   final int securityLeftBehind;
 
+  /// Ids of the other members whose `sync_member` rows stayed behind (sorted):
+  /// the joiners the group has to re-invite.
+  final List<String> strandedMemberIds;
+
   const SyncOriginSwitchReport({
     required this.oldOrigin,
     required this.newOrigin,
     required this.sealedCursor,
     required this.reauthorScheduled,
     this.securityLeftBehind = 0,
+    this.strandedMemberIds = const [],
   });
 
   /// The group must re-invite this device when its security rows could not
