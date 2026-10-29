@@ -388,6 +388,38 @@ void main() {
     expect((await runSessionPair(b, d)).responder, isA<SessionFailed>(), reason: 'D rejects revoked B');
   });
 
+  // ACF-49: A revokes X on A's own origin and C holds the record. A second
+  // member then registers the same origin (a copied data folder), so the origin
+  // is conflicted: peers reject its cells as unrooted and the record can no
+  // longer be fetched from it. C, a converged member, re-signs the record on
+  // its own origin.
+  test('third_party_revocation_with_conflicted_carrier_is_reissued_by_a_converged_member', () async {
+    final [a, b, c, x] = [for (var i = 0; i < 4; i++) await newDevice('D$i', seed: 270 + i)];
+    await pairAll([a, b, c, x]);
+    await syncUntilQuiet([a, b, c, x]);
+    await a.removeMember(x.memberId);
+    await syncUntilQuiet([a, b, c]);
+    final xPub = x.membership.identity.ed25519Pub;
+    expect(c.membership.isExcluded(xPub), isTrue);
+    expect(await c.maintainMembership(), isFalse, reason: 'the carrier origin has one owner: nothing to publish');
+    final before = c.store.rowsOf(SecurityTables.revocation).length;
+
+    final clash = await signOriginRegistration(
+      groupId: c.membership.groupId!,
+      origin: a.store.localOrigin,
+      member: b.membership.identity.ed25519,
+      createdHlc: c.store.hlc + 1,
+    );
+    c.store.addRegistration(clash);
+    await c.membership.rebuild(c.store);
+    expect(c.membership.registry!.ownerOf(a.store.localOrigin), isA<OriginConflicted>());
+
+    expect(await c.maintainMembership(), isTrue, reason: 'the record is stranded on a conflicted origin');
+    expect(c.store.rowsOf(SecurityTables.revocation).length, greaterThan(before));
+    expect(c.membership.isExcluded(xPub), isTrue);
+    expect(await c.maintainMembership(), isFalse, reason: 'the re-issue is idempotent');
+  });
+
   // C3: a sent mark above the carrier seq does not make a record servable when
   // the carrying cell has no manifest (peers were never handed it).
   test('sent_mark_without_manifest_does_not_count_as_served', () async {

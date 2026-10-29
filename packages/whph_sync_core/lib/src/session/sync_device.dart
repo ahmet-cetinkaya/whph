@@ -417,7 +417,7 @@ final class SyncDevice {
     final extension = revocations.selfExtension(registry, (o) => store.maxKnownSeq(o.hex));
     final stranded = revocations.unpublished(
       isServed: _isRevocationServed,
-      isAuthoredHere: _isRevocationAuthoredHere,
+      isReissuable: (record) => _isRevocationAuthoredHere(record) || _isRevocationOrphaned(record),
     );
     for (final e in _mergeCutoffsByRevoked([extension, stranded]).entries) {
       final record = await RevocationRecord.sign(
@@ -469,11 +469,23 @@ final class SyncDevice {
   /// as served (never re-issued: it is not this device's to publish, C1).
   bool _isRevocationServed(RevocationRecord record) {
     final carrier = _revocationCarriers()[_hex(record.sig)];
-    if (carrier == null || !store.sealedOrigins.contains(carrier.origin)) return true;
+    if (carrier == null) return true;
+    if (!store.sealedOrigins.contains(carrier.origin)) return !_isRevocationOrphaned(record);
     final origin = OriginId.fromHex(carrier.origin);
     final sent = ledger.isReadable ? ledger.entryOf(origin)?.maxSentSeq ?? 0 : 0;
     final rooted = membership.registry?.ownerOf(origin) is OriginRegisteredTo;
     return carrier.hasManifest && rooted && carrier.seq <= sent;
+  }
+
+  /// Whether [record] is carried on another device's origin that no member
+  /// owns any more (its owner left the group), so peers reject the cell as
+  /// unrooted and only a converged member can still publish it (ACF-49). Only
+  /// DB-verified records reach this (the caller reads `directoryRevocations`).
+  bool _isRevocationOrphaned(RevocationRecord record) {
+    final carrier = _revocationCarriers()[_hex(record.sig)];
+    final registry = membership.registry;
+    if (carrier == null || registry == null || store.sealedOrigins.contains(carrier.origin)) return false;
+    return registry.ownerOf(OriginId.fromHex(carrier.origin)) is! OriginRegisteredTo;
   }
 
   /// Whether this device authored [record]: its carrier is an own former
