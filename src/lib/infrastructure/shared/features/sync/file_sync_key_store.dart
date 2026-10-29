@@ -148,6 +148,7 @@ class FileSyncKeyStore implements ISyncKeyStore {
         for (final revocation in revocations) {
           final id = _revocationId(revocation);
           state.legacyRevocations.remove(id);
+          state.unverifiedRevocations.remove(id);
           state.revocations.putIfAbsent(id, () => revocation);
         }
       });
@@ -158,6 +159,7 @@ class FileSyncKeyStore implements ISyncKeyStore {
       await _mutate((state) {
         state.revocations.clear();
         state.legacyRevocations.clear();
+        state.unverifiedRevocations.clear();
       });
     }
   }
@@ -269,12 +271,29 @@ class _LedgerState {
   /// [revocations] until [FileSyncKeyStore.adoptLegacyRevocations] checks them.
   final Map<String, LedgerRevocation> legacyRevocations;
 
-  _LedgerState(this.entries, this.epochCounterHigh, this.revocations, this.legacyRevocations);
+  /// Records with a MAC that could not be checked because the key file was
+  /// unreadable, kept as read and written back unchanged so a later load with
+  /// the key still sees them.
+  final Map<String, Map<String, Object?>> unverifiedRevocations;
 
-  factory _LedgerState.empty() => _LedgerState([], 0, {}, {});
+  _LedgerState(
+    this.entries,
+    this.epochCounterHigh,
+    this.revocations,
+    this.legacyRevocations,
+    this.unverifiedRevocations,
+  );
+
+  factory _LedgerState.empty() => _LedgerState([], 0, {}, {}, {});
 
   _LedgerState copy() =>
-      _LedgerState(List.of(entries), epochCounterHigh, Map.of(revocations), Map.of(legacyRevocations));
+      _LedgerState(
+        List.of(entries),
+        epochCounterHigh,
+        Map.of(revocations),
+        Map.of(legacyRevocations),
+        Map.of(unverifiedRevocations),
+      );
 
   void replace(OriginId origin, OriginEntry Function(OriginEntry) update) {
     final index = entries.lastIndexWhere((e) => e.origin == origin);
@@ -303,6 +322,7 @@ Map<String, Object?> _encodeLedger(_LedgerState state, Uint8List? macKey) => {
       'revocations': [
         for (final r in state.revocations.values) _encodeRevocation(r, mac: ledgerRevocationMac(macKey!, r)),
         for (final r in state.legacyRevocations.values) _encodeRevocation(r, mac: null),
+        ...state.unverifiedRevocations.values,
       ],
     };
 
@@ -314,22 +334,31 @@ Map<String, Object?> _encodeRevocation(LedgerRevocation r, {required List<int>? 
       'mac': mac == null ? null : base64Encode(mac),
     };
 
-/// Decodes the ledger. A record whose MAC is wrong, or present while [macKey]
-/// is unavailable, is forged or unusable and is skipped; a record without a
-/// MAC (version 1) is kept apart as legacy. A bad record never makes the
+/// Decodes the ledger. A record whose MAC is wrong is forged and skipped; one
+/// that cannot be checked because [macKey] is unavailable is kept as read in
+/// [_LedgerState.unverifiedRevocations]; a record without a MAC (version 1) is
+/// kept apart as legacy. A malformed record is skipped and never makes the
 /// whole ledger unreadable.
 _LedgerState _decodeLedger(String source, Uint8List? macKey) {
   final json = _versionedMap(jsonDecode(source), {_ledgerDocumentVersion, _legacyLedgerDocumentVersion});
   final revocations = <String, LedgerRevocation>{};
   final legacyRevocations = <String, LedgerRevocation>{};
+  final unverifiedRevocations = <String, Map<String, Object?>>{};
   for (final item in _list(json['revocations'])) {
-    final map = _map(item);
-    final revocation = _decodeRevocation(map);
-    final mac = map['mac'];
-    if (mac == null) {
-      legacyRevocations[_revocationId(revocation)] = revocation;
-    } else if (macKey != null && isLedgerRevocationMacValid(macKey, revocation, base64Decode(_string(mac)))) {
-      revocations[_revocationId(revocation)] = revocation;
+    try {
+      final map = _map(item);
+      final revocation = _decodeRevocation(map);
+      final id = _revocationId(revocation);
+      final mac = map['mac'];
+      if (mac == null) {
+        legacyRevocations[id] = revocation;
+      } else if (macKey == null) {
+        unverifiedRevocations[id] = map;
+      } else if (isLedgerRevocationMacValid(macKey, revocation, base64Decode(_string(mac)))) {
+        revocations[id] = revocation;
+      }
+    } on Object {
+      continue;
     }
   }
   return _LedgerState(
@@ -337,6 +366,7 @@ _LedgerState _decodeLedger(String source, Uint8List? macKey) {
     _int(json['epoch_counter_high']),
     revocations,
     legacyRevocations,
+    unverifiedRevocations,
   );
 }
 

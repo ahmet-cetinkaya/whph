@@ -285,6 +285,33 @@ void main() {
       expect((await loadedStore()).revocations, isEmpty);
     });
 
+    for (final malformed in <Object>['!!!not-base64!!!', 12345, 'AAA']) {
+      test('a malformed MAC field ($malformed) skips only that record', () async {
+        final store = await storeWithRevocation();
+        await rewriteLedger(store, (json) => json['revocations'].single['mac'] = malformed);
+
+        final restarted = await loadedStore();
+
+        expect(restarted.isReadable, isTrue);
+        expect(restarted.entries, hasLength(1));
+        expect(restarted.revocations, isEmpty);
+      });
+    }
+
+    test('a record that could not be checked without the key file verifies again once the key is back', () async {
+      final store = await storeWithRevocation();
+      await store.keyFile.rename('${store.keyFile.path}.away');
+
+      final keyless = await loadedStore();
+      expect(keyless.revocations, isEmpty);
+      await keyless.append(pendingOrigin(5));
+      await File('${store.keyFile.path}.away').rename(store.keyFile.path);
+
+      final restored = await loadedStore();
+      expect(restored.revocations.single.carrierId, revocation.carrierId);
+      expect(restored.entries, hasLength(2));
+    });
+
     test('a version 1 record without a MAC is not returned until it is adopted', () async {
       final store = await storeWithRevocation();
       await rewriteLedger(store, (json) {
