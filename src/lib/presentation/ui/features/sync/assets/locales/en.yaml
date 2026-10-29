@@ -235,6 +235,9 @@ sync:
     removed_from_group:
       title: "Removed from the sync group"
       description: "This device was removed from its sync group and no longer syncs. Pair it again to resume."
+    needs_repairing:
+      title: "Pair this device again"
+      description: "This device was restored from an older backup, so the group no longer recognises it. Pair it again to resume syncing."
     repair_banner:
       title: "Sync was upgraded"
       description: "Devices paired with the old sync must be paired again. Your data stays on every device."

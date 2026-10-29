@@ -247,6 +247,9 @@ sync:
     removed_from_group:
       title: "Rimosso dal gruppo di sincronizzazione"
       description: "Questo dispositivo è stato rimosso dal suo gruppo di sincronizzazione e non si sincronizza più. Abbinalo di nuovo per riprendere."
+    needs_repairing:
+      title: "Associa di nuovo questo dispositivo"
+      description: "Questo dispositivo è stato ripristinato da un backup precedente, quindi il gruppo non lo riconosce più. Associalo di nuovo per riprendere la sincronizzazione."
     repair_banner:
       title: "La sincronizzazione è stata aggiornata"
       description: "I dispositivi abbinati con la vecchia sincronizzazione devono essere abbinati di nuovo. I tuoi dati restano su ogni dispositivo."

@@ -237,6 +237,9 @@ sync:
     removed_from_group:
       title: "Verwijderd uit de synchronisatiegroep"
       description: "Dit apparaat is uit zijn synchronisatiegroep verwijderd en synchroniseert niet meer. Koppel het opnieuw om verder te gaan."
+    needs_repairing:
+      title: "Koppel dit apparaat opnieuw"
+      description: "Dit apparaat is hersteld vanuit een oudere back-up, dus de groep herkent het niet meer. Koppel het opnieuw om de synchronisatie te hervatten."
     repair_banner:
       title: "Synchronisatie is bijgewerkt"
       description: "Apparaten die met de oude synchronisatie zijn gekoppeld, moeten opnieuw worden gekoppeld. Je gegevens blijven op elk apparaat staan."

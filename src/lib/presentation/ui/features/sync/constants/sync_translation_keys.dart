@@ -197,6 +197,8 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String removeMemberAction = 'sync.members.remove_confirm.action';
   static const String removedFromGroupTitle = 'sync.members.removed_from_group.title';
   static const String removedFromGroupDescription = 'sync.members.removed_from_group.description';
+  static const String needsRepairingTitle = 'sync.members.needs_repairing.title';
+  static const String needsRepairingDescription = 'sync.members.needs_repairing.description';
   static const String repairBannerTitle = 'sync.members.repair_banner.title';
   static const String repairBannerDescription = 'sync.members.repair_banner.description';
   static const String repairBannerDismiss = 'sync.members.repair_banner.dismiss';

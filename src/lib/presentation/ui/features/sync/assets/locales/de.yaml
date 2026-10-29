@@ -242,6 +242,9 @@ sync:
     removed_from_group:
       title: "Aus der Synchronisierungsgruppe entfernt"
       description: "Dieses Gerät wurde aus seiner Synchronisierungsgruppe entfernt und synchronisiert nicht mehr. Koppele es erneut, um fortzufahren."
+    needs_repairing:
+      title: "Gerät erneut koppeln"
+      description: "Dieses Gerät wurde aus einer älteren Sicherung wiederhergestellt, daher erkennt die Gruppe es nicht mehr. Koppeln Sie es erneut, um die Synchronisierung fortzusetzen."
     repair_banner:
       title: "Synchronisierung wurde aktualisiert"
       description: "Geräte, die mit der alten Synchronisierung gekoppelt wurden, müssen neu gekoppelt werden. Deine Daten bleiben auf jedem Gerät erhalten."

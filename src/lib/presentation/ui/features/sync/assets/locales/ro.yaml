@@ -249,6 +249,9 @@ sync:
     removed_from_group:
       title: "Eliminat din grupul de sincronizare"
       description: "Acest dispozitiv a fost eliminat din grupul de sincronizare și nu se mai sincronizează. Asociază-l din nou pentru a relua."
+    needs_repairing:
+      title: "Asociază din nou acest dispozitiv"
+      description: "Acest dispozitiv a fost restaurat dintr-o copie de rezervă mai veche, așa că grupul nu îl mai recunoaște. Asociază-l din nou pentru a relua sincronizarea."
     repair_banner:
       title: "Sincronizarea a fost actualizată"
       description: "Dispozitivele asociate cu vechea sincronizare trebuie asociate din nou. Datele tale rămân pe fiecare dispozitiv."

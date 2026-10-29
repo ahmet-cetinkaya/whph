@@ -239,6 +239,9 @@ sync:
     removed_from_group:
       title: "Fjernet fra synkroniseringsgruppen"
       description: "Denne enheten ble fjernet fra synkroniseringsgruppen sin og synkroniserer ikke lenger. Par den på nytt for å fortsette."
+    needs_repairing:
+      title: "Par denne enheten på nytt"
+      description: "Denne enheten ble gjenopprettet fra en eldre sikkerhetskopi, så gruppen gjenkjenner den ikke lenger. Par den på nytt for å fortsette synkroniseringen."
     repair_banner:
       title: "Synkroniseringen er oppgradert"
       description: "Enheter som er paret med den gamle synkroniseringen, må pares på nytt. Dataene dine blir værende på hver enhet."

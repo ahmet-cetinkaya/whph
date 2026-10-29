@@ -5,6 +5,7 @@ import 'package:whph/core/application/features/settings/services/abstraction/i_s
 import 'package:whph/core/application/features/sync/queries/get_sync_upgrade_progress_query.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
+import 'package:whph/presentation/ui/features/sync/components/needs_repairing_card.dart';
 import 'package:whph/presentation/ui/features/sync/components/remove_member_dialog.dart';
 import 'package:whph/presentation/ui/features/sync/components/removed_from_group_card.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_repair_banner.dart';
@@ -101,6 +102,18 @@ void main() {
 
     expect(find.textContaining('Removed from the sync group'), findsOneWidget);
     expect(find.textContaining('no longer syncs'), findsOneWidget);
+
+    await tester.tap(find.text('Add new device'));
+
+    expect(paired, isTrue);
+  });
+
+  testWidgets('needs-repairing state explains the stale restore and offers pairing again', (tester) async {
+    var paired = false;
+    await pumpPage(tester, NeedsRepairingCard(onPair: () => paired = true));
+
+    expect(find.textContaining('Pair this device again'), findsOneWidget);
+    expect(find.textContaining('older backup'), findsOneWidget);
 
     await tester.tap(find.text('Add new device'));
 

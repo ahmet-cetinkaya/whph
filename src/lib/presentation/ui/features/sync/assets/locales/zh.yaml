@@ -205,6 +205,9 @@ sync:
     removed_from_group:
       title: "已从同步组中移除"
       description: "此设备已从其同步组中移除，不再同步。请重新配对以恢复。"
+    needs_repairing:
+      title: "请重新配对此设备"
+      description: "此设备是从较旧的备份恢复的，群组已无法识别它。请重新配对以恢复同步。"
     repair_banner:
       title: "同步已升级"
       description: "使用旧版同步配对的设备需要重新配对。你的数据会保留在每台设备上。"
