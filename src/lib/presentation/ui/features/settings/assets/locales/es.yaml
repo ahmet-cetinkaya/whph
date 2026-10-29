@@ -33,6 +33,7 @@ settings:
       la última versión de la aplicación.
     select_file: Seleccionar archivo
     strategy:
+      paired_note: "Este dispositivo se sincroniza con otros. Reemplazar los datos existentes no elimina elementos en todo el grupo: los elementos que faltan en el archivo permanecen en tus otros dispositivos y vuelven a este en la próxima sincronización."
       merge: Fusionar con datos existentes
       replace: Eliminar datos existentes y añadir nuevos
       title: Estrategia de importación
@@ -357,6 +358,7 @@ settings:
       title: Restablecer Base de Datos
       description: Eliminar todos los datos y restablecer la aplicación
       dialog:
+        paired_note: "Este dispositivo se sincroniza con otros. Restablecer también lo quita del grupo de sincronización, así que tendrás que emparejarlo de nuevo después."
         title: Restablecer Base de Datos
         warning:
           "Advertencia: Esta acción no se puede deshacer. Todos sus datos serán
@@ -482,6 +484,8 @@ settings:
   habit:
     title: Configuración de hábitos
     description: Personaliza el comportamiento y preferencias de seguimiento de hábitos
+    save_error: "Error al guardar la configuración de hábitos"
+    load_error: "Error al cargar la configuración de hábitos"
     three_state:
       title: Activar seguimiento de 3 estados
       description: Alterna entre los estados No hecho, Saltado y Completado.

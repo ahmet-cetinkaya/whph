@@ -33,6 +33,7 @@ settings:
       on asennettu.
     select_file: Valitse tiedosto
     strategy:
+      paired_note: "Tämä laite synkronoi muiden kanssa. Nykyisten tietojen korvaaminen ei poista kohteita koko ryhmästä: tiedostosta puuttuvat kohteet säilyvät muilla laitteillasi ja palaavat tälle laitteelle seuraavassa synkronoinnissa."
       merge: Yhdistä olemassa oleviin tietoihin
       replace: Poista olemassa olevat tiedot ja lisää uudet
       title: Tuo-strategia
@@ -335,6 +336,7 @@ settings:
       title: Nollaa tietokanta
       description: Poista kaikki tiedot ja nollaa sovellus
       dialog:
+        paired_note: "Tämä laite synkronoi muiden kanssa. Nollaus poistaa sen myös synkronointiryhmästä, joten sinun on muodostettava pari uudelleen sen jälkeen."
         title: Nollaa tietokanta
         warning:
           "Varoitus: Tätä toimenpidettä ei voi perua. Kaikki tietosi poistetaan
@@ -445,6 +447,8 @@ settings:
   habit:
     title: Tottumusasetukset
     description: Mukauta tottumusten seurantaa ja asetuksia
+    save_error: "Virhe tapa-asetusten tallennuksessa"
+    load_error: "Virhe tapa-asetusten latauksessa"
     three_state:
       title: Ota 3 tilan seuranta käyttöön
       description: Vaihda tilojen Tekemättä, Ohitettu ja Valmis välillä.

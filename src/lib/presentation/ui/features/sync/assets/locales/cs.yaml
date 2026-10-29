@@ -6,171 +6,7 @@ sync:
       sync_failed: Selhání synchronizace zařízení
     from_label: Od
     help:
-      content: '🔄 **Co je Sync?**
-
-
-        Sync udržuje vaše návyky, úkoly, poznámky a data aktualizované napříč zařízeními
-        (telefony, tablety, notebooky, desktopy) ve stejné Wi-Fi síti. Žádný cloud
-        nebo internet — data zůstávají soukromá a lokální.
-
-
-        Je jednoduché na použití: Nastavte to jednou a změny se synchronizují automaticky
-        nebo na požádání. Přepínejte mezi zařízeními plynule, např. začněte na telefonu
-        a dokončete na PC.
-
-
-        ## 🔗 **Režimy Sync**
-
-
-        Všechna zařízení podporují režimy Klienta nebo Serveru pro flexibilní synchronizaci.
-        Server vede (sdílí data), Klienti se připojují a vyměňují. Potřebujete nejméně
-        jeden Server.
-
-
-        - **Režim klienta:** Připojuje se k Serveru pro synchronizaci. Ideální pro
-        připojení k skupinám přes QR nebo manuální vstup.
-
-        - **Režim serveru:** Funguje jako uzel; zobrazuje QR nebo řetězec pro připojení
-        ostatních.
-
-
-        **Poznámky k platformám:**
-
-        - **Mobil:** Přepínejte přes ikonu Wi-Fi hotspotu. Server pro přenosné uzly.
-
-        - **Desktop (Výchozí: Server):** Přepínejte v nastavení Sync. Klient pro notebooky
-        synchronizující s hlavními PC.
-
-
-        **Příklady:** Mobil-k-mobilu (jeden Server), desktop-k-mobilu (obě cesty),
-        desktop-k-desktopu (jeden Server, jeden Klient).
-
-
-        Přepínejte režimy v nastavení Sync; aplikace si zapamatuje vaši volbu.
-
-
-        ## 🛠️ **Povolení Sync**
-
-
-        Zařízení musí sdílet Wi-Fi; udržujte WHPH otevřený.
-
-
-        ### **Nastavení QR Kódu**
-
-        1. Server: Spusťte režim Serveru v Sync — objeví se QR.
-
-        2. Klient: "Přidat zařízení" > Skenovat QR.
-
-        3. Automaticky se připojí a synchronizuje.
-
-
-        Podporuje všechny kombinace.
-
-
-        ### **Řetězec Připojení**
-
-        1. Server: Zkopírujte řetězec (např. "whph://IP:44040?...") ze Sync.
-
-        2. Klient: "Přidat zařízení" > Manuální > Vložit řetězec > Připojit.
-
-
-        Není potřeba kamera.
-
-
-        ### **Manuální Vstup**
-
-        1. Server: Zapište IP/port (výchozí 44040) z Informací o připojení.
-
-        2. Klient: "Přidat zařízení" > Manuální > Zadat IP, port, název > Test > Připojit.
-
-
-        **Desktopoví Klienti:** Nejprve přepněte do režimu Klienta, pak se připojte.
-        Automaticky synchronizuje; přepněte zpět kdykoli.
-
-
-        Povolte automatické opětovné připojení v nastavení pro spolehlivost.
-
-
-        ## 📋 **Správa Zařízení**
-
-
-        - **Zobrazit:** Vidíte zařízení, časy synchronizace, stav v nastavení Sync.
-
-        - **Manuální Sync:** Klepněte na tlačítko pro každé zařízení.
-
-        - **Odstranit:** Vyberte a odstraňte pro zastavení synchronizace.
-
-
-        ## 🔧 **Řešení problémů**
-
-
-        **Problémy s připojením:**
-
-        1. Stejná Wi-Fi? Žádné VPN.
-
-        2. Restartujte aplikaci.
-
-        3. Ověřte režim Serveru.
-
-        4. Testujte bez firewallu.
-
-
-        **Žádná zařízení?**
-
-        - Stabilní Wi-Fi, žádné proxy.
-
-        - Obnovte sken.
-
-        - Použijte manuální IP.
-
-
-        **Selhání Sync/Timeouts:**
-
-        1. Manuální sync.
-
-        2. Shodněte verze aplikací.
-
-        3. Počkejte na velká data.
-
-
-        **Firewall (Port 44040):**
-
-
-        Pokud připojení nefungují, firewall vašeho počítače může blokovat signál sync.
-        Otevřete port 44040, aby zařízení mohla lokálně komunikovat — je bezpečné
-        pro vaši domácí síť.
-
-
-        **Windows (GUI):**
-
-        1. Otevřete Defender Firewall > Pokročilé > Pravidla příchozích > Nové pravidlo.
-
-        2. Port > TCP > 44040 > Povolit > Všechny profily > Název "WHPH Sync" > Dokončit.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Tipy: Restartujte router, používejte soukromé sítě. Znovu spárujte při chybách
-        "nenalezeno".
-
-        '
+      content: "🔄 **Co je synchronizace?**\n\nSynchronizace udržuje vaše návyky, úkoly, poznámky a data aktuální na všech zařízeních ve stejné síti Wi-Fi. Bez cloudu a internetu: data zůstávají soukromá a místní.\n\n## 🛠️ **Zapnutí synchronizace**\n\n1. Nechte WHPH otevřené na obou zařízeních ve stejné síti Wi-Fi.\n2. Na jednom zařízení zvolte „Přidat zařízení“ a zobrazte QR kód.\n3. Naskenujte jej druhým zařízením a zkontrolujte, že obě obrazovky ukazují stejný kód.\n4. Změny se pak synchronizují automaticky.\n\n## 📋 **Správa zařízení**\n\n- **Zobrazit:** Zařízení, časy synchronizace a stav najdete v nastavení synchronizace.\n- **Ruční synchronizace:** Klepněte na tlačítko u zařízení.\n- **Odebrat:** Vyberte zařízení a odeberte ho, aby se přestalo synchronizovat.\n\n## 🔧 **Řešení potíží**\n\n1. Stejná síť Wi-Fi? Žádné VPN.\n2. Restartujte aplikaci.\n3. Zkuste to bez firewallu.\n\n**Žádná zařízení?**\n- Stabilní Wi-Fi, žádné proxy.\n- Obnovte vyhledávání."
       title: Nápověda ke synchronizaci zařízení
     last_sync_label: Poslední synchronizace
     no_devices_found: Žádná synchronizovaná zařízení
@@ -185,6 +21,7 @@ sync:
   error:
     scan: Selhání skenování
   errors:
+    preparing: "Synchronizace se připravuje. Zkuste to prosím za chvíli."
     connection_failed: "Připojení selhalo. Ujistěte se prosím:
 
 
@@ -213,7 +50,7 @@ sync:
     local_ip_error: Chyba lokální IP adresy
     device_already_paired: Zařízení již spárováno
     no_active_interfaces: Žádné aktivní síťové rozhraní
-    device_discovery_failed: Objevování zařízení selhalo
+    device_discovery_failed: "Nepodařilo se spustit objevování zařízení: {error}"
     no_server_configured:
       Žádný server není nakonfigurován. Nejprve přidejte synchronizační
       zařízení nebo použijte manuální připojení k nastavení serverového připojení.
@@ -244,7 +81,7 @@ sync:
     sync_completed: Synchronizace dokončena úspěšně
     sync_in_progress: Synchronizace probíhá...
     testing_connection: Testování připojení...
-    device_added_success: Zařízení úspěšně přidáno
+    device_added_success: "Zařízení {deviceName} bylo úspěšně přidáno do synchronizovaných zařízení"
   qr_code:
     close_button: Zavřít
     dialog_title: Naskenujte QR kód pro synchronizaci
@@ -263,14 +100,11 @@ sync:
   server:
     starting: Spouštění režimu serveru...
     active: Režim serveru aktivní - Zobrazte QR kód jiným zařízením
-    stopped: Režim serveru zastaven - Zařízení je nyní v režimu klienta
+    stopped: "Přijímání připojení z jiných zařízení bylo zastaveno"
     start_failed:
       Selhání spuštění režimu serveru - Zkontrolujte, zda je port 44040
       dostupný
-    start_tooltip: Spustit režim serveru
-    stop_tooltip: Zastavit režim serveru
     error: Chyba
-    device_became_server: Toto zařízení je nyní synchronizační server
     start_menu: Spustit server
     stop_menu: Zastavit server
     mode_title: Režim serveru
@@ -289,7 +123,7 @@ sync:
     port_required: Port je povinný
     invalid_port: Neplatné číslo portu
     connection_failed: Připojení selhalo
-    connection_error: Chyba připojení
+    connection_error: "Chyba připojení: {0}"
     connection_string_tab: Připojovací řetězec
     manual_entry_tab: Manuální zadání
     connection_string_required: Připojovací řetězec je povinný
@@ -297,13 +131,9 @@ sync:
     connection_string_label: Připojovací řetězec
     test_connection: Testovat připojení
     enter_server_details: Zadejte detaily serverového připojení manuálně
-    connection_timeout:
-      Připojení vypršelo. Zkontrolujte adresu serveru a zkuste to
-      znovu.
+    connection_timeout: "Časový limit připojení vypršel. Zkontrolujte adresu zařízení a zkuste to znovu."
     connection_test_successful: Test připojení úspěšný!
-    connection_test_timeout:
-      Test připojení vypršel. Zkontrolujte adresu serveru a
-      zkuste to znovu.
+    connection_test_timeout: "Časový limit testu připojení vypršel. Zkontrolujte adresu zařízení a zkuste to znovu."
     connection_test_failed_no_response: Test připojení selhal - žádná odpověď ze serveru
     connection_test_failed_generic: "Test připojení selhal: {0}"
     connection_string_instruction:
@@ -321,7 +151,7 @@ sync:
     alternative_methods_hint: Zkuste manuální připojení nebo QR kód
     scan_qr_code: Naskenujte QR kód
     refresh_scan: Obnovit sken
-    last_seen: Naposledy viděno
+    last_seen: "Naposledy viděno {time}"
     already_added: Již přidáno
   connect_info:
     dialog_title: Informace o připojení zařízení
@@ -347,20 +177,71 @@ sync:
     copy: Kopírovat
   desktop:
     mode_title: Režim synchronizace na desktopu
-    client_mode_start: Připojit se jako klient
-    client_mode_stop: Přepnout do režimu serveru
-    client_mode_description:
-      Připojte se k serveru jiného zařízení pro synchronizaci
-      dat
-    server_mode_description:
-      Umožněte jiným zařízením připojit se a synchronizovat
-      s tímto zařízením
-    sync_mode_start: Spustit režim klienta
-    sync_mode_stop: Zastavit režim klienta
-    sync_mode_start_menu: Spustit režim klienta
-    sync_mode_stop_menu: Zastavit režim klienta
-    client_mode_starting: Spouštění režimu klienta...
-    client_mode_started: Režim klienta spuštěn
-    client_mode_stopped: Přepnuto zpět do režimu serveru
+    sync_mode_start_menu: "Přestat přijímat připojení"
+    sync_mode_stop_menu: "Přijímat připojení"
+    client_mode_started: "Přijímání připojení zastaveno"
+    client_mode_stopped: "Přijímání připojení znovu zapnuto"
     sync_mode_toggle_error: Nepodařilo se přepnout režim synchronizace
   multi_interface_connection: Připojení přes více rozhraní
+  status:
+    not_reachable: "Zařízení není dostupné"
+    needs_repairing: "Vyžaduje nové spárování"
+    needs_update: "{device} potřebuje k synchronizaci novější verzi WHPH"
+    this_device_needs_update: "Pro synchronizaci se zařízením {device} aktualizujte WHPH v tomto zařízení, protože {device} používá novější verzi"
+    items_failed: "Některé položky se nepodařilo synchronizovat"
+    items_rejected: "Některé položky byly odmítnuty jako neplatné"
+    preparing: "Druhé zařízení připravuje data pro synchronizaci"
+    duplicated_identity: "Jiné zařízení používá stejnou synchronizační identitu"
+    storage_error: "Synchronizaci přerušila chyba úložiště"
+    items_cannot_be_applied: "Některé položky opakovaně selhaly a jsou prozatím přeskočeny"
+    repair_badge: "Nutné nové spárování"
+    repair_action: "Spárovat znovu"
+  pairing:
+    show_qr: "Zobrazit QR kód"
+    in_progress: "Probíhá párování…"
+    success: "Spárováno se zařízením {device}"
+    qr:
+      title: "Spárovat pomocí QR kódu"
+      description: "Naskenujte tento kód druhým zařízením."
+      expires_in: "Vyprší za {time}"
+      expired: "Platnost tohoto kódu vypršela."
+      used: "Tento kód už byl použit."
+      regenerate: "Zobrazit nový kód"
+      paired: "Zařízení spárováno"
+    code:
+      title: "Porovnejte kódy"
+      description: "Zkontrolujte, že {device} zobrazuje stejný kód."
+      match: "Kódy se shodují"
+      mismatch: "Kódy se liší"
+    group_switch:
+      title: "Přepnout skupinu synchronizace?"
+      description: "{device} je v jiné skupině synchronizace. Pokud budete pokračovat, toto zařízení opustí svou současnou skupinu a přestane se s jejími zařízeními synchronizovat."
+      confirm: "Přepnout skupinu"
+    errors:
+      code_expired_or_used: "Platnost kódu vypršela nebo byl již použit. Zobrazte nový kód a zkuste to znovu."
+      codes_differ: "Kódy se neshodovaly. Párování bylo zrušeno."
+      cancelled: "Párování bylo zrušeno."
+      unreachable: "Druhé zařízení není dostupné. Zkontrolujte, že jsou obě ve stejné síti."
+      invalid_invitation: "Toto není párovací kód WHPH."
+      group_switch_declined: "Rozhodli jste se skupinu synchronizace nepřepínat."
+      preparing: "Synchronizace se stále připravuje. Zkuste to za chvíli znovu."
+      refused: "Druhé zařízení párování odmítlo."
+      not_active: "Neprobíhá žádné párování."
+  members:
+    remove_confirm:
+      title: "Odebrat {device}?"
+      description: "Tím se {device} odebere z celé skupiny synchronizace, nejen z tohoto zařízení. Přestane se synchronizovat se všemi zařízeními ve skupině a klíče skupiny se vymění. Pro další synchronizaci ho spárujte znovu."
+      action: "Odebrat ze skupiny"
+    removed_from_group:
+      title: "Odebráno ze skupiny synchronizace"
+      description: "Toto zařízení bylo odebráno ze své skupiny synchronizace a již se nesynchronizuje. Pro obnovení ho spárujte znovu."
+    needs_repairing:
+      title: "Spárujte toto zařízení znovu"
+      description: "Toto zařízení bylo obnoveno ze starší zálohy, takže ho skupina již nepoznává. Spárujte ho znovu a synchronizace bude pokračovat."
+    repair_banner:
+      title: "Synchronizace byla aktualizována"
+      description: "Zařízení spárovaná se starou synchronizací je nutné spárovat znovu. Vaše data zůstávají na každém zařízení."
+      dismiss: "Zavřít"
+    upgrade_progress: "Příprava dat synchronizace… {percent} %"
+  demo:
+    reset_blocked: "Demo data nelze resetovat, dokud je toto zařízení spárované, protože by se reset synchronizoval do vašich dalších zařízení. Nejprve odeberte toto zařízení ze skupiny synchronizace."

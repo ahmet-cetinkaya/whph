@@ -72,7 +72,7 @@ class _HabitThreeStateSettingState extends State<HabitThreeStateSetting> {
         Logger.error('Failed to save habit 3-state setting: $error\n$stackTrace');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_translationService.translate('settings.habit.save_error')),
+            content: Text(_translationService.translate(SettingsTranslationKeys.habitSettingsSaveError)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

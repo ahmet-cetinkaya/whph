@@ -24,7 +24,9 @@ class CompleteHabitCommand implements IRequest<CompleteHabitCommandResponse> {
 
 class CompleteHabitCommandResponse {}
 
-class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitCommand, CompleteHabitCommandResponse> {
+class CompleteHabitCommandHandler
+    implements
+        IRequestHandler<CompleteHabitCommand, CompleteHabitCommandResponse> {
   final IHabitRepository _habitRepository;
   final IHabitRecordRepository _habitRecordRepository;
   final HabitRecordOperationsService _operationsService;
@@ -44,7 +46,8 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
         _habitEvents = habitEvents;
 
   @override
-  Future<CompleteHabitCommandResponse> call(CompleteHabitCommand request) async {
+  Future<CompleteHabitCommandResponse> call(
+      CompleteHabitCommand request) async {
     final dayRange = _dayRangeResolver(request.date);
     final startOfDay = dayRange.start;
     final endOfDay = dayRange.end;
@@ -59,7 +62,8 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
         );
       }
 
-      final habitRecords = await _habitRecordRepository.getListByHabitIdAndRangeDate(
+      final habitRecords =
+          await _habitRecordRepository.getListByHabitIdAndRangeDate(
         request.habitId,
         startOfDay,
         endOfDay,
@@ -77,12 +81,15 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
       }
 
       final dayRecords = habitRecords.items;
-      final completeRecords = dayRecords.where((record) => record.status == HabitRecordStatus.complete).toList();
+      final completeRecords = dayRecords
+          .where((record) => record.status == HabitRecordStatus.complete)
+          .toList();
       final dailyTarget = habit.getDailyTarget();
       final isMultiOccurrence = habit.hasGoal && dailyTarget > 1;
 
       if (isMultiOccurrence) {
-        await _clearNonCompleteRecords(request.habitId, startOfDay, endOfDay, dayRecords);
+        await _clearNonCompleteRecords(
+            request.habitId, startOfDay, endOfDay, dayRecords);
 
         if (completeRecords.length < dailyTarget) {
           await _addCompleteRecord(habit, request.habitId, request.date);
@@ -91,7 +98,8 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
       }
 
       if (completeRecords.isNotEmpty) {
-        await _keepOnlyFirstCompleteRecord(request.habitId, startOfDay, endOfDay, dayRecords, completeRecords.first);
+        await _keepOnlyFirstCompleteRecord(request.habitId, startOfDay,
+            endOfDay, dayRecords, completeRecords.first);
         return;
       }
 
@@ -103,7 +111,8 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
     return CompleteHabitCommandResponse();
   }
 
-  Future<void> _addCompleteRecord(Habit habit, String habitId, DateTime date) async {
+  Future<void> _addCompleteRecord(
+      Habit habit, String habitId, DateTime date) async {
     final occurredAt = DateTimeHelper.toUtcDateTime(date);
     final now = DateTime.now().toUtc();
 
@@ -112,6 +121,7 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
       occurredAt,
       HabitRecordStatus.complete,
       now,
+      deterministic: true, // D5c: single-occurrence habit (target == 1)
     );
 
     await _operationsService.addTimeRecordIfComplete(
@@ -122,25 +132,37 @@ class CompleteHabitCommandHandler implements IRequestHandler<CompleteHabitComman
     );
   }
 
-  Future<void> _clearNonCompleteRecords(
-      String habitId, DateTime startOfDay, DateTime endOfDay, List<HabitRecord> records) async {
-    final nonCompleteRecords = records.where((record) => record.status != HabitRecordStatus.complete).toList();
+  Future<void> _clearNonCompleteRecords(String habitId, DateTime startOfDay,
+      DateTime endOfDay, List<HabitRecord> records) async {
+    final nonCompleteRecords = records
+        .where((record) => record.status != HabitRecordStatus.complete)
+        .toList();
     if (nonCompleteRecords.isNotEmpty) {
-      await _operationsService.clearAllRecordsForDay(habitId, startOfDay, endOfDay, nonCompleteRecords);
+      await _operationsService.clearAllRecordsForDay(
+          habitId, startOfDay, endOfDay, nonCompleteRecords);
     }
   }
 
-  Future<void> _keepOnlyFirstCompleteRecord(String habitId, DateTime startOfDay, DateTime endOfDay,
-      List<HabitRecord> records, HabitRecord completeRecordToKeep) async {
-    final recordsToDelete = records.where((record) => record.id != completeRecordToKeep.id).toList();
+  Future<void> _keepOnlyFirstCompleteRecord(
+      String habitId,
+      DateTime startOfDay,
+      DateTime endOfDay,
+      List<HabitRecord> records,
+      HabitRecord completeRecordToKeep) async {
+    final recordsToDelete = records
+        .where((record) => record.id != completeRecordToKeep.id)
+        .toList();
     if (recordsToDelete.isNotEmpty) {
-      await _operationsService.clearAllRecordsForDay(habitId, startOfDay, endOfDay, recordsToDelete);
+      await _operationsService.clearAllRecordsForDay(
+          habitId, startOfDay, endOfDay, recordsToDelete);
     }
   }
 
-  Future<void> _clearRecords(String habitId, DateTime startOfDay, DateTime endOfDay, List<HabitRecord> records) async {
+  Future<void> _clearRecords(String habitId, DateTime startOfDay,
+      DateTime endOfDay, List<HabitRecord> records) async {
     if (records.isNotEmpty) {
-      await _operationsService.clearAllRecordsForDay(habitId, startOfDay, endOfDay, records);
+      await _operationsService.clearAllRecordsForDay(
+          habitId, startOfDay, endOfDay, records);
     }
   }
 }

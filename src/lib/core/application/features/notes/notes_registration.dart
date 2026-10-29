@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/notes/commands/add_note_tag_command.dart';
 import 'package:whph/core/application/features/notes/commands/delete_note_command.dart';
 import 'package:whph/core/application/features/notes/commands/normalize_note_orders_command.dart';
@@ -73,6 +74,7 @@ void registerNotesFeature(
       noteTagRepository: noteTagRepository,
       noteEvents: container.resolve<INoteEvents>(),
       transactions: container.resolve<IApplicationTransactionService>(),
+      syncCascadeService: container.resolve<ISyncCascadeService>(),
     ),
   );
 

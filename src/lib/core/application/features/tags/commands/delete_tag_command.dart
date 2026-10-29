@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_events.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
@@ -31,6 +32,7 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
   final IAppUsageTagRepository _appUsageTagRepository;
   final ITagEvents? _tagEvents;
   final IApplicationTransactionService _transactions;
+  final ISyncCascadeService _syncCascadeService;
 
   DeleteTagCommandHandler({
     required ITagRepository tagRepository,
@@ -41,6 +43,7 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
     required IAppUsageTagRepository appUsageTagRepository,
     ITagEvents? tagEvents,
     required IApplicationTransactionService transactions,
+    required ISyncCascadeService syncCascadeService,
   })  : _tagRepository = tagRepository,
         _tagTagRepository = tagTagRepository,
         _taskTagRepository = taskTagRepository,
@@ -48,7 +51,8 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
         _noteTagRepository = noteTagRepository,
         _appUsageTagRepository = appUsageTagRepository,
         _tagEvents = tagEvents,
-        _transactions = transactions;
+        _transactions = transactions,
+        _syncCascadeService = syncCascadeService;
 
   @override
   Future<DeleteTagCommandResponse> call(DeleteTagCommand request) async {
@@ -57,7 +61,8 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
       throw BusinessException('Tag not found', TagTranslationKeys.tagNotFoundError);
     }
 
-    await _transactions.run(() async {
+    await _syncCascadeService.withCause('tag_table', tag.id, () {
+      return _transactions.run(() async {
       await _deleteRelatedEntities(request.id);
       if (request.expectedRevision == null) {
         await _tagRepository.delete(tag);
@@ -65,6 +70,7 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
         throw TagRevisionConflictException(tag.id);
       }
       await ensureMutationAuthorized(request.authorizeCommit);
+      });
     });
     _tagEvents?.notifyTagDeleted(tag.id);
 

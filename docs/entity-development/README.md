@@ -57,7 +57,7 @@ Each layer is documented in detail:
 | 2     | [Persistence Layer](./02_PERSISTENCE_LAYER.md)                   | Drift tables, repositories, migrations     |
 | 3     | [Application Layer](./03_APPLICATION_LAYER.md)                   | CQRS commands/queries, handlers, DI        |
 | 4     | [Business Logic Integration](./04_BUSINESS_LOGIC_INTEGRATION.md) | Grouping dimensions, validation (optional) |
-| 5     | [Sync Integration](./05_SYNC_INTEGRATION.md)                     | Paginated sync configuration (recommended) |
+| 5     | [Sync Integration](./05_SYNC_INTEGRATION.md)                     | Sync table registration (required)        |
 | 6     | [UI Components](./06_UI_COMPONENTS.md)                           | Settings pages, locales (optional)         |
 
 After implementation, see

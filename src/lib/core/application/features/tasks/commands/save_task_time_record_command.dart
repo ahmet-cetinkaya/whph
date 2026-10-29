@@ -3,9 +3,10 @@ import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_time_record_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_events.dart';
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
-import 'package:acore/acore.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 
-class SaveTaskTimeRecordCommand implements IRequest<SaveTaskTimeRecordCommandResponse> {
+class SaveTaskTimeRecordCommand
+    implements IRequest<SaveTaskTimeRecordCommandResponse> {
   final String taskId;
   final int duration;
   final DateTime? targetDate;
@@ -26,48 +27,43 @@ class SaveTaskTimeRecordCommandResponse {
 }
 
 class SaveTaskTimeRecordCommandHandler
-    implements IRequestHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse> {
+    implements
+        IRequestHandler<SaveTaskTimeRecordCommand,
+            SaveTaskTimeRecordCommandResponse> {
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ITaskEvents? _taskEvents;
+  final IDeviceIdService _deviceIds;
 
   SaveTaskTimeRecordCommandHandler({
     required ITaskTimeRecordRepository taskTimeRecordRepository,
+    required IDeviceIdService deviceIds,
     ITaskEvents? taskEvents,
   })  : _taskTimeRecordRepository = taskTimeRecordRepository,
+        _deviceIds = deviceIds,
         _taskEvents = taskEvents;
 
   @override
-  Future<SaveTaskTimeRecordCommandResponse> call(SaveTaskTimeRecordCommand request) async {
+  Future<SaveTaskTimeRecordCommandResponse> call(
+      SaveTaskTimeRecordCommand request) async {
     final targetDate = request.targetDate ?? DateTime.now().toUtc();
-    final startOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
-    final endOfDay = startOfDay.add(const Duration(days: 1));
+    final (startOfDay, _) =
+        TaskTimeRecordService.createDayBoundaries(targetDate);
+    final deviceId = await _deviceIds.getDeviceId();
 
-    // Get existing records for the target date - use DateTime objects directly like habits do
-    final existingRecordsFilter = CustomWhereFilter(
-      'task_id = ? AND created_date >= ? AND created_date < ?',
-      [request.taskId, startOfDay, endOfDay],
+    // D12 day-level set-total: no soft deletes; the own bucket absorbs the
+    // delta against other devices' live buckets of the day and the own day's
+    // other hours are zeroed. Target 0 uses the same formula.
+    final record = await TaskTimeRecordService.setTotalDurationForDay(
+      repository: _taskTimeRecordRepository,
+      taskId: request.taskId,
+      dayStart: startOfDay,
+      targetHour: targetDate,
+      deviceId: deviceId,
+      totalDuration: request.duration,
     );
-    final existingRecords = await _taskTimeRecordRepository.getAll(customWhereFilter: existingRecordsFilter);
-
-    // Delete existing records for the day
-    for (final record in existingRecords) {
-      await _taskTimeRecordRepository.delete(record);
-    }
-
-    // Add new record if duration > 0
-    if (request.duration > 0) {
-      final record = await TaskTimeRecordService.setTotalDurationForTaskTimeRecord(
-        repository: _taskTimeRecordRepository,
-        taskId: request.taskId,
-        targetDate: targetDate,
-        totalDuration: request.duration,
-      );
-
-      _taskEvents?.notifyTaskTimeRecordUpdated(request.taskId);
-      return SaveTaskTimeRecordCommandResponse(id: record.id);
-    }
 
     _taskEvents?.notifyTaskTimeRecordUpdated(request.taskId);
-    return SaveTaskTimeRecordCommandResponse(id: KeyHelper.generateStringId());
+    return SaveTaskTimeRecordCommandResponse(
+        id: request.duration > 0 ? record.id : KeyHelper.generateStringId());
   }
 }

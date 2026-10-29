@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/notes/commands/save_note_command.dart';
 import 'package:whph/core/application/features/notes/constants/note_translation_keys.dart';
 import 'package:whph/core/application/features/notes/services/abstraction/i_note_repository.dart';
@@ -26,16 +27,19 @@ class DeleteNoteCommandHandler implements IRequestHandler<DeleteNoteCommand, Del
   final INoteTagRepository _noteTagRepository;
   final INoteEvents _noteEvents;
   final IApplicationTransactionService _transactions;
+  final ISyncCascadeService _syncCascadeService;
 
   DeleteNoteCommandHandler({
     required INoteRepository noteRepository,
     required INoteTagRepository noteTagRepository,
     required INoteEvents noteEvents,
     required IApplicationTransactionService transactions,
+    required ISyncCascadeService syncCascadeService,
   })  : _noteRepository = noteRepository,
         _noteTagRepository = noteTagRepository,
         _noteEvents = noteEvents,
-        _transactions = transactions;
+        _transactions = transactions,
+        _syncCascadeService = syncCascadeService;
 
   @override
   Future<DeleteNoteCommandResponse> call(DeleteNoteCommand request) async {
@@ -45,7 +49,8 @@ class DeleteNoteCommandHandler implements IRequestHandler<DeleteNoteCommand, Del
       throw BusinessException('Note not found', NoteTranslationKeys.noteNotFound);
     }
 
-    await _transactions.run(() async {
+    await _syncCascadeService.withCause('note_table', note.id, () {
+      return _transactions.run(() async {
       final noteTags = await _noteTagRepository.getByNoteId(request.id);
       for (final noteTag in noteTags) {
         await _noteTagRepository.delete(noteTag);
@@ -56,6 +61,7 @@ class DeleteNoteCommandHandler implements IRequestHandler<DeleteNoteCommand, Del
         throw NoteRevisionConflictException(note.id);
       }
       await ensureMutationAuthorized(request.authorizeCommit);
+      });
     });
     _noteEvents.notifyNoteDeleted(note.id);
 

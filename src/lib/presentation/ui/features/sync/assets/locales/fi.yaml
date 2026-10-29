@@ -6,173 +6,7 @@ sync:
       sync_failed: Laitteiden synkronointi epäonnistui
     from_label: Mistä
     help:
-      content: '🔄 **Mikä on Sync?**
-
-
-        Sync pitää tapasi, tehtäväsi, muistiinpanosi ja tietosi ajan tasalla eri laitteilla
-        (puhelimet, tabletit, kannettavat, työpöydät) samassa Wi-Fi-verkossa. Ei pilveä
-        tai internetiä — tiedot pysyvät yksityisinä ja paikallisina.
-
-
-        Se on helppo käyttää: Aseta se kerralla, ja muutokset synkronoituvat automaattisesti
-        tai pyynnöstä. Vaihda laitteita saumattomasti, kuten aloita puhelimella ja
-        lopeta PC:llä.
-
-
-        ## 🔗 **Synkronointitilat**
-
-
-        Kaikki laitteet tukevat Klientti- tai Server-tiloja joustavaan synkronointiin.
-        Server johtaa (jakaa tietoja), Klientit liittyvät ja vaihtavat. Tarvitset
-        ainakin yhden Serverin.
-
-
-        - **Klientti-tila:** Yhdistyy Serveriin synkronoimiseksi. Ihanteellinen ryhmien
-        liittymiseen QR:llä tai manuaalisella syötteellä.
-
-        - **Server-tila:** Toimii keskuspaikkana; näyttää QR:n tai merkkijonon muille
-        liittymään.
-
-
-        **Alustahuomautukset:**
-
-        - **Mobiili:** Vaihda Wi-Fi-hotspot-kuvakkeen kautta. Server kannettaville
-        keskuspaikoille.
-
-        - **Työpöytä (Oletus: Server):** Vaihda Sync-asetuksissa. Klientti kannettaville,
-        jotka synkronoivat pää-PC:ihin.
-
-
-        **Esimerkit:** Mobiili-mobiilille (yksi Server), työpöytä-mobiilille (kumpaankin
-        suuntaan), työpöytä-työpöydälle (yksi Server, yksi Klientti).
-
-
-        Vaihda tiloja Sync-asetuksissa; sovellus muistaa valintasi.
-
-
-        ## 🛠️ **Synkronoinnin Käynnistäminen**
-
-
-        Laitteiden täytyy jakaa Wi-Fi; pidä WHPH auki.
-
-
-        ### **QR-Koodin Asetus**
-
-        1. Server: Käynnistä Server-tila Syncissä — QR ilmestyy.
-
-        2. Klientti: "Lisää laite" > Skannaa QR.
-
-        3. Yhdistyy ja synkronoi automaattisesti.
-
-
-        Tukee kaikkia yhdistelmiä.
-
-
-        ### **Yhteyden Merkkijono**
-
-        1. Server: Kopioi merkkijono (esim. "whph://IP:44040?...") Syncistä.
-
-        2. Klientti: "Lisää laite" > Manuaalinen > Liitä merkkijono > Yhdistä.
-
-
-        Ei vaadi kameraa.
-
-
-        ### **Manuaalinen Syöttö**
-
-        1. Server: Merkitse IP/portti (oletus 44040) Yhteyden tiedoista.
-
-        2. Klientti: "Lisää laite" > Manuaalinen > Syötä IP, portti, nimi > Testaa
-        > Yhdistä.
-
-
-        **Työpöydän Klientit:** Vaihda Klientti-tilaan ensin, sitten yhdistä. Synkronoi
-        automaattisesti; vaihda takaisin milloin tahansa.
-
-
-        Ota käyttöön automaattinen uudelleenyhteys asetuksissa luotettavuuden vuoksi.
-
-
-        ## 📋 **Laitteiden Hallinta**
-
-
-        - **Näytä:** Näet laitteet, synkronointiajat, tilan Sync-asetuksissa.
-
-        - **Manuaalinen Sync:** Napauta nappia per laite.
-
-        - **Poista:** Valitse ja poista synkronoinnin lopettamiseksi.
-
-
-        ## 🔧 **Vianetsintä**
-
-
-        **Yhteysongelmat:**
-
-        1. Sama Wi-Fi? Ei VPN:ää.
-
-        2. Käynnistä sovellus uudelleen.
-
-        3. Vahvista Server-tila.
-
-        4. Testaa ilman palomuuria.
-
-
-        **Ei laitteita?**
-
-        - Vakaa Wi-Fi, ei proxyja.
-
-        - Päivitä skannaus.
-
-        - Käytä manuaalista IP:tä.
-
-
-        **Sync Epäonnistuu/Aikakatkot:**
-
-        1. Manuaalinen sync.
-
-        2. Vastaa sovelluksen versioita.
-
-        3. Odota suuria tietoja.
-
-
-        **Palomuuri (Portti 44040):**
-
-
-        Jos yhteydet eivät toimi, tietokoneesi palomuuri saattaa estää sync-signaalin.
-        Avaa portti 44040, jotta laitteet voivat kommunikoida paikallisesti — se on
-        turvallista kotiverkollesi.
-
-
-        **Windows (GUI):**
-
-        1. Avaa Defender Palomuuri > Edistynyt > Saapuvat säännöt > Uusi sääntö.
-
-        2. Portti > TCP > 44040 > Salli > Kaikki profiilit > Nimi "WHPH Sync" > Valmis.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Vinkkejä: Käynnistä reititin uudelleen, käytä yksityisiä verkkoja. Yhdistä
-        uudelleen "ei löytynyt" virheissä.
-
-        '
+      content: "🔄 **Mitä synkronointi on?**\n\nSynkronointi pitää tapasi, tehtäväsi, muistiinpanosi ja tietosi ajan tasalla laitteillasi, jotka ovat samassa Wi-Fi-verkossa. Ei pilveä tai internetiä: tiedot pysyvät yksityisinä ja paikallisina.\n\n## 🛠️ **Synkronoinnin käyttöönotto**\n\n1. Pidä WHPH auki molemmilla laitteilla samassa Wi-Fi-verkossa.\n2. Valitse yhdellä laitteella \"Lisää laite\" ja näytä QR-koodi.\n3. Skannaa se toisella laitteella ja tarkista, että molemmat näytöt näyttävät saman koodin.\n4. Muutokset synkronoituvat sen jälkeen automaattisesti.\n\n## 📋 **Laitteiden hallinta**\n\n- **Näytä:** Näet laitteet, synkronointiajat ja tilan synkronointiasetuksissa.\n- **Manuaalinen synkronointi:** Napauta laitteen painiketta.\n- **Poista:** Valitse laite ja poista se lopettaaksesi synkronoinnin.\n\n## 🔧 **Vianmääritys**\n\n1. Sama Wi-Fi? Ei VPN:ää.\n2. Käynnistä sovellus uudelleen.\n3. Kokeile ilman palomuuria.\n\n**Ei laitteita?**\n- Vakaa Wi-Fi, ei välityspalvelimia.\n- Päivitä haku."
       title: Laitteiden synkronointiapu
     last_sync_label: Viimeisin synkronointi
     no_devices_found: Ei synkronoituja laitteita
@@ -187,6 +21,7 @@ sync:
   error:
     scan: Skannaus epäonnistui
   errors:
+    preparing: "Synkronointia valmistellaan. Yritä hetken kuluttua uudelleen."
     connection_failed: "Yhteys epäonnistui. Varmista:
 
 
@@ -217,7 +52,7 @@ sync:
     local_ip_error: Paikallinen IP-virhe
     device_already_paired: Laite on jo paritettu
     no_active_interfaces: Ei aktiivisia verkkoliittymiä
-    device_discovery_failed: Laitteen löytäminen epäonnistui
+    device_discovery_failed: "Laitteiden löytämisen käynnistys epäonnistui: {error}"
     no_server_configured:
       Ei serveriä konfiguroitu. Lisää ensin synkronointilaite
       tai käytä manuaalista yhteyttä server-yhteyden asettamiseksi.
@@ -248,7 +83,7 @@ sync:
     sync_completed: Synkronointi valmistui onnistuneesti
     sync_in_progress: Synkronointi meneillään...
     testing_connection: Testaa yhteyttä...
-    device_added_success: Laite lisätty onnistuneesti
+    device_added_success: "{deviceName} lisättiin onnistuneesti synkronointilaitteisiin"
   qr_code:
     close_button: Sulje
     dialog_title: Skannaa QR-koodi synkronoimiseksi
@@ -267,14 +102,11 @@ sync:
   server:
     starting: Käynnistetään server-tilaa...
     active: Server-tila aktiivinen - Näytä QR-koodi muille laitteille
-    stopped: Server-tila pysäytetty - Laite on nyt asiakastilassa
+    stopped: "Yhteyksien vastaanotto muilta laitteilta lopetettu"
     start_failed:
       Server-tilan käynnistys epäonnistui - Tarkista, onko portti 44040
       käytettävissä
-    start_tooltip: Käynnistä Server-tila
-    stop_tooltip: Pysäytä Server-tila
     error: Virhe
-    device_became_server: Tämä laite on nyt synkronointipalvelin
     start_menu: Käynnistä palvelin
     stop_menu: Pysäytä palvelin
     mode_title: Palvelintila
@@ -293,7 +125,7 @@ sync:
     port_required: Portti on pakollinen
     invalid_port: Virheellinen porttinumero
     connection_failed: Yhteys epäonnistui
-    connection_error: Yhteysvirhe
+    connection_error: "Yhteysvirhe: {0}"
     connection_string_tab: Yhteysmerkkijono
     manual_entry_tab: Manuaalinen syöttö
     connection_string_required: Yhteysmerkkijono vaaditaan
@@ -301,11 +133,9 @@ sync:
     connection_string_label: Yhteysmerkkijono
     test_connection: Testaa yhteys
     enter_server_details: Syötä server-yhteyden tiedot manuaalisesti
-    connection_timeout: Yhteys aikakatkaistu. Tarkista server-osoite ja yritä uudelleen.
+    connection_timeout: "Yhteyden aikakatkaisu. Tarkista laitteen osoite ja yritä uudelleen."
     connection_test_successful: Yhteyden testi onnistui!
-    connection_test_timeout:
-      Yhteyden testin aikakatkaistu. Tarkista server-osoite
-      ja yritä uudelleen.
+    connection_test_timeout: "Yhteystestin aikakatkaisu. Tarkista laitteen osoite ja yritä uudelleen."
     connection_test_failed_no_response:
       Yhteyden testi epäonnistui - ei vastausta
       serveriltä
@@ -325,7 +155,7 @@ sync:
     alternative_methods_hint: Kokeile manuaalista yhteyttä tai QR-koodia
     scan_qr_code: Skannaa QR-koodi
     refresh_scan: Päivitä skannaus
-    last_seen: Viimeksi nähty
+    last_seen: "Viimeksi nähty {time}"
     already_added: Jo lisätty
   connect_info:
     dialog_title: Laitteen yhteys tiedot
@@ -351,18 +181,71 @@ sync:
     copy: Kopioi
   desktop:
     mode_title: Työpöydän synkronointitila
-    client_mode_start: Yhdistä asiakastilassa
-    client_mode_stop: Vaihda server-tilaan
-    client_mode_description: Yhdistä toisen laitteen serveriin tietojen synkronoimiseksi
-    server_mode_description:
-      Salli muiden laitteiden yhdistää ja synkronoida tämän
-      laitteen kanssa
-    sync_mode_start: Käynnistä asiakastila
-    sync_mode_stop: Lopeta asiakastila
-    sync_mode_start_menu: Käynnistä asiakastila
-    sync_mode_stop_menu: Lopeta asiakastila
-    client_mode_starting: Käynnistetään asiakastilaa...
-    client_mode_started: Asiakastila käynnistetty
-    client_mode_stopped: Palattu server-tilaan
+    sync_mode_start_menu: "Lopeta yhteyksien vastaanotto"
+    sync_mode_stop_menu: "Vastaanota yhteyksiä"
+    client_mode_started: "Yhteyksiä ei enää vastaanoteta"
+    client_mode_stopped: "Yhteyksiä vastaanotetaan taas"
     sync_mode_toggle_error: Synkronointitilan vaihto epäonnistui
   multi_interface_connection: Moniliitäntäyhteys
+  status:
+    not_reachable: "Laitetta ei tavoiteta"
+    needs_repairing: "Vaatii uudelleenparituksen"
+    needs_update: "{device} tarvitsee WHPH:n uudemman version synkronointia varten"
+    this_device_needs_update: "Päivitä WHPH tällä laitteella synkronoidaksesi laitteen {device} kanssa, jolla on uudempi versio"
+    items_failed: "Joitakin kohteita ei voitu synkronoida"
+    items_rejected: "Joitakin kohteita ei hyväksytty virheellisinä"
+    preparing: "Toinen laite valmistelee synkronointitietojaan"
+    duplicated_identity: "Toinen laite käyttää samaa synkronointitunnusta"
+    storage_error: "Tallennusvirhe keskeytti synkronoinnin"
+    items_cannot_be_applied: "Joitakin kohteita ei saatu toistuvasti käyttöön, ja ne ohitetaan toistaiseksi"
+    repair_badge: "Pariliitos uusittava"
+    repair_action: "Muodosta pari uudelleen"
+  pairing:
+    show_qr: "Näytä QR-koodi"
+    in_progress: "Pariliitos käynnissä…"
+    success: "Pariliitos muodostettu laitteeseen {device}"
+    qr:
+      title: "Muodosta pari QR-koodilla"
+      description: "Skannaa tämä koodi toisella laitteella."
+      expires_in: "Vanhenee: {time}"
+      expired: "Tämä koodi on vanhentunut."
+      used: "Tämä koodi on jo käytetty."
+      regenerate: "Näytä uusi koodi"
+      paired: "Laite pariutettu"
+    code:
+      title: "Vertaa koodeja"
+      description: "Varmista, että {device} näyttää saman koodin."
+      match: "Koodit täsmäävät"
+      mismatch: "Koodit eroavat"
+    group_switch:
+      title: "Vaihdetaanko synkronointiryhmää?"
+      description: "{device} kuuluu toiseen synkronointiryhmään. Jos jatkat, tämä laite poistuu nykyisestä ryhmästään eikä enää synkronoi sen laitteiden kanssa."
+      confirm: "Vaihda ryhmää"
+    errors:
+      code_expired_or_used: "Koodi on vanhentunut tai jo käytetty. Näytä uusi koodi ja yritä uudelleen."
+      codes_differ: "Koodit eivät täsmänneet. Pariliitos peruttiin."
+      cancelled: "Pariliitos peruttiin."
+      unreachable: "Toista laitetta ei tavoitettu. Tarkista, että molemmat ovat samassa verkossa."
+      invalid_invitation: "Tämä ei ole WHPH-pariliitoskoodi."
+      group_switch_declined: "Päätit olla vaihtamatta synkronointiryhmää."
+      preparing: "Synkronointia valmistellaan vielä. Yritä hetken kuluttua uudelleen."
+      refused: "Toinen laite hylkäsi pariliitoksen."
+      not_active: "Pariliitosta ei ole käynnissä."
+  members:
+    remove_confirm:
+      title: "Poistetaanko {device}?"
+      description: "Tämä poistaa laitteen {device} koko synkronointiryhmästä, ei vain tältä laitteelta. Se lopettaa synkronoinnin kaikkien ryhmän laitteiden kanssa ja ryhmän avaimet vaihdetaan. Muodosta pari uudelleen synkronoidaksesi myöhemmin."
+      action: "Poista ryhmästä"
+    removed_from_group:
+      title: "Poistettu synkronointiryhmästä"
+      description: "Tämä laite poistettiin synkronointiryhmästään, eikä se enää synkronoi. Muodosta pari uudelleen jatkaaksesi."
+    needs_repairing:
+      title: "Yhdistä tämä laite uudelleen"
+      description: "Tämä laite palautettiin vanhasta varmuuskopiosta, joten ryhmä ei enää tunnista sitä. Yhdistä se uudelleen jatkaaksesi synkronointia."
+    repair_banner:
+      title: "Synkronointi on päivitetty"
+      description: "Vanhalla synkronoinnilla pariutetut laitteet on pariutettava uudelleen. Tietosi pysyvät jokaisella laitteella."
+      dismiss: "Ohita"
+    upgrade_progress: "Valmistellaan synkronointitietoja… {percent} %"
+  demo:
+    reset_blocked: "Demotietoja ei voi nollata, kun tämä laite on pariutettu, koska nollaus synkronoitaisiin muille laitteillesi. Poista tämä laite ensin synkronointiryhmästä."

@@ -146,7 +146,6 @@ optimized for each platform's unique characteristics.
 - **QR Code Pairing**: Simple device pairing through QR code scanning
 - **Conflict Resolution**: Intelligent handling of data conflicts during
   synchronization
-- **Selective Sync**: Choose which data types to synchronize between devices
 
 #### Import/Export
 
@@ -230,7 +229,6 @@ optimized for each platform's unique characteristics.
 
 - Sync my data between devices so I can access information anywhere
 - Pair devices easily using QR codes so setup is straightforward
-- Control which data syncs so I can maintain privacy
 - Resolve conflicts automatically so I don't lose important information
 - Work offline and sync later so connectivity issues don't interrupt my workflow
 

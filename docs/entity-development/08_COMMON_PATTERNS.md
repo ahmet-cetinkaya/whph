@@ -234,13 +234,16 @@ abstract class IYourEntityRepository extends app.IRepository<YourEntity, String>
 ## 15. Sync Configuration Pattern
 
 ```dart
-_registerConfiguration(PaginatedSyncConfig<YourEntity>(
-  name: 'YourEntity',                              // Human-readable
-  repository: yourEntityRepository,                 // Repository instance
-  getPaginatedSyncDataFromDto: (dto) => dto.<field>SyncData,  // DTO field
-  entityType: 'YourEntity',                         // Type identifier
-));
+const SyncTablePolicy(
+  tableName: 'your_entity_table',
+  tblId: 14, // example: next free id below 100
+  rowLevel: false,
+  columns: {'title': 2},
+),
 ```
+
+Registered in `syncTablePolicies`; see
+[05_SYNC_INTEGRATION.md](./05_SYNC_INTEGRATION.md).
 
 ## 16. Translation Key Structure
 

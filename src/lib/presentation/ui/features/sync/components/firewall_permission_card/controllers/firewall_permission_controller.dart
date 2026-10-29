@@ -69,7 +69,7 @@ class FirewallPermissionController extends ChangeNotifier {
       _setupService = container.resolve<ISetupService>();
       Logger.info('[PERMISSION_CONTROLLER] Setup service initialized: ${_setupService.runtimeType}');
     } catch (e) {
-      Logger.warning('[PERMISSION_CONTROLLER] Setup service not available: $e');
+      Logger.warning('[PERMISSION_CONTROLLER] Setup service not available: ${e.runtimeType}');
     }
   }
 
@@ -140,7 +140,7 @@ class FirewallPermissionController extends ChangeNotifier {
 
       Logger.debug('[PERMISSION_CONTROLLER] Saved manual confirmation: $confirmed');
     } catch (e) {
-      Logger.error('[PERMISSION_CONTROLLER] Failed to save manual confirmation: $e');
+      Logger.error('[PERMISSION_CONTROLLER] Failed to save manual confirmation: ${e.runtimeType}');
       if (context.mounted) {
         OverlayNotificationHelper.showError(
           context: context,
@@ -195,7 +195,7 @@ class FirewallPermissionController extends ChangeNotifier {
       Logger.info(
           '[PERMISSION_CONTROLLER] Check completed: granted=$_isFirewallPermissionGranted, hideCard=$_shouldHideCard');
     } catch (e) {
-      Logger.error('[PERMISSION_CONTROLLER] Failed to check firewall permission: $e');
+      Logger.error('[PERMISSION_CONTROLLER] Failed to check firewall permission: ${e.runtimeType}');
       _isFirewallPermissionGranted = _isManuallyConfirmed;
       _isCheckingFirewallPermission = false;
       notifyListeners();
@@ -233,7 +233,7 @@ class FirewallPermissionController extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      Logger.error('[PERMISSION_CONTROLLER] Failed to add firewall rules: $e');
+      Logger.error('[PERMISSION_CONTROLLER] Failed to add firewall rules: ${e.runtimeType}');
 
       if (context.mounted) {
         OverlayNotificationHelper.showError(
@@ -257,7 +257,7 @@ class FirewallPermissionController extends ChangeNotifier {
       await _validateFirewallConfiguration();
       Logger.info('[PERMISSION_CONTROLLER] Permission verification completed');
     } catch (e) {
-      Logger.error('[PERMISSION_CONTROLLER] Permission verification failed: $e');
+      Logger.error('[PERMISSION_CONTROLLER] Permission verification failed: ${e.runtimeType}');
     } finally {
       _isVerifyingPermission = false;
       notifyListeners();

@@ -18,6 +18,12 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_
 import 'package:whph/presentation/mcp/models/mcp_tool_arguments.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_definition.dart';
 import 'package:whph/presentation/mcp/tools/timer_tools.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 class _Writer implements ITimerSessionDurationWriter {
   final List<TimerSessionDuration> writes = [];
@@ -35,7 +41,8 @@ class _Alarm implements ITimerSessionAlarmScheduler {
   Future<void> cancel(String alarmId) async {}
 
   @override
-  Future<void> schedule({required String alarmId, required DateTime scheduledAt}) async {}
+  Future<void> schedule(
+      {required String alarmId, required DateTime scheduledAt}) async {}
 }
 
 class _TaskEvents extends Fake implements ITaskEvents {
@@ -95,14 +102,16 @@ class _SettingsMediator extends _Mediator {
     final Object value = request;
     if (value is SaveSettingCommand) {
       saves.add(value);
-      return SaveSettingCommandResponse(id: value.key, createdDate: DateTime.utc(2026, 9, 8)) as R;
+      return SaveSettingCommandResponse(
+          id: value.key, createdDate: DateTime.utc(2026, 9, 8)) as R;
     }
     return super.send(request);
   }
 }
 
 class _ChangingRevisionMediator extends _Mediator {
-  _ChangingRevisionMediator(this.initialRevision, this.changedRevision) : super(const {});
+  _ChangingRevisionMediator(this.initialRevision, this.changedRevision)
+      : super(const {});
 
   final DateTime initialRevision;
   final DateTime changedRevision;
@@ -123,14 +132,18 @@ RequestHandlerExtra _extra() => RequestHandlerExtra(
       signal: BasicAbortController().signal,
       requestId: 'timer-tools-test',
       sendNotification: (notification, {relatedTask}) async {},
-      sendRequest: <T extends BaseResultData>(request, resultFactory, options) async => resultFactory(const {}),
+      sendRequest:
+          <T extends BaseResultData>(request, resultFactory, options) async =>
+              resultFactory(const {}),
     );
 
-McpToolDefinition _tool(List<McpToolDefinition> tools, String name) => tools.singleWhere((tool) => tool.name == name);
+McpToolDefinition _tool(List<McpToolDefinition> tools, String name) =>
+    tools.singleWhere((tool) => tool.name == name);
 
 void main() {
   test('publishes the complete canonical timer tool family', () {
-    final service = TimerSessionService(durationWriter: _Writer(), alarmScheduler: _Alarm());
+    final service = TimerSessionService(
+        durationWriter: _Writer(), alarmScheduler: _Alarm());
     final tools = buildTimerTools(
       timerSessionService: service,
       mediator: _Mediator(const {}),
@@ -152,9 +165,11 @@ void main() {
     });
   });
 
-  test('task start binds the canonical session and rechecks owner scope', () async {
+  test('task start binds the canonical session and rechecks owner scope',
+      () async {
     final revision = DateTime.utc(2026, 9, 8);
-    final service = TimerSessionService(durationWriter: _Writer(), alarmScheduler: _Alarm());
+    final service = TimerSessionService(
+        durationWriter: _Writer(), alarmScheduler: _Alarm());
     final checkedScopes = <Set<String>>[];
     final tools = buildTimerTools(
       timerSessionService: service,
@@ -167,7 +182,11 @@ void main() {
     );
 
     final result = await _tool(tools, 'whph_timers_start').handler(
-      McpToolArguments(const {'ownerType': 'task', 'ownerId': 'task-1', 'mode': 'stopwatch'}),
+      McpToolArguments(const {
+        'ownerType': 'task',
+        'ownerId': 'task-1',
+        'mode': 'stopwatch'
+      }),
       _extra(),
     );
 
@@ -176,31 +195,38 @@ void main() {
     expect(checkedScopes, contains(equals({'timers:write', 'tasks:write'})));
     expect(service.state('task:task-1')!.isRunning, isTrue);
     final conflictingMode = await _tool(tools, 'whph_timers_start').handler(
-      McpToolArguments(const {'ownerType': 'task', 'ownerId': 'task-1', 'mode': 'normal'}),
+      McpToolArguments(
+          const {'ownerType': 'task', 'ownerId': 'task-1', 'mode': 'normal'}),
       _extra(),
     );
-    expect(conflictingMode.structuredContent?['error'], containsPair('code', 'conflict'));
-    expect(service.state('task:task-1')!.settings.mode, TimerSessionMode.stopwatch);
+    expect(conflictingMode.structuredContent?['error'],
+        containsPair('code', 'conflict'));
+    expect(service.state('task:task-1')!.settings.mode,
+        TimerSessionMode.stopwatch);
     await service.stop('task:task-1');
   });
 
   test('set phase is explicit and idempotent', () async {
-    final service = TimerSessionService(durationWriter: _Writer(), alarmScheduler: _Alarm());
+    final service = TimerSessionService(
+        durationWriter: _Writer(), alarmScheduler: _Alarm());
     final tools = buildTimerTools(
       timerSessionService: service,
       mediator: _Mediator(const {}),
       authorize: (extra, scopes) => true,
       selectNextMarathonTask: (selectedTaskId) async => null,
     );
-    await _tool(tools, 'whph_timers_start')
-        .handler(McpToolArguments(const {'ownerType': 'marathon', 'mode': 'pomodoro'}), _extra());
+    await _tool(tools, 'whph_timers_start').handler(
+        McpToolArguments(const {'ownerType': 'marathon', 'mode': 'pomodoro'}),
+        _extra());
 
-    final work = await _tool(tools, 'whph_timers_set_phase')
-        .handler(McpToolArguments(const {'sessionId': 'marathon', 'phase': 'work'}), _extra());
-    final pause =
-        await _tool(tools, 'whph_timers_pause').handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra());
-    final breakResult = await _tool(tools, 'whph_timers_set_phase')
-        .handler(McpToolArguments(const {'sessionId': 'marathon', 'phase': 'break'}), _extra());
+    final work = await _tool(tools, 'whph_timers_set_phase').handler(
+        McpToolArguments(const {'sessionId': 'marathon', 'phase': 'work'}),
+        _extra());
+    final pause = await _tool(tools, 'whph_timers_pause')
+        .handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra());
+    final breakResult = await _tool(tools, 'whph_timers_set_phase').handler(
+        McpToolArguments(const {'sessionId': 'marathon', 'phase': 'break'}),
+        _extra());
 
     expect(work.structuredContent?['phase'], 'work');
     expect(pause.structuredContent?['phase'], 'work');
@@ -212,7 +238,9 @@ void main() {
     fakeAsync((async) {
       final writer = _Writer();
       final service = TimerSessionService(
-          durationWriter: writer, alarmScheduler: _Alarm(), now: () => DateTime(2026, 9, 8).add(async.elapsed));
+          durationWriter: writer,
+          alarmScheduler: _Alarm(),
+          now: () => DateTime(2026, 9, 8).add(async.elapsed));
       final checkedScopes = <Set<String>>[];
       final tools = buildTimerTools(
         timerSessionService: service,
@@ -223,31 +251,45 @@ void main() {
         },
         selectNextMarathonTask: (selectedTaskId) async => null,
       );
-      _tool(tools, 'whph_timers_start')
-          .handler(McpToolArguments(const {'ownerType': 'habit', 'ownerId': 'habit-1', 'mode': 'stopwatch'}), _extra());
+      _tool(tools, 'whph_timers_start').handler(
+          McpToolArguments(const {
+            'ownerType': 'habit',
+            'ownerId': 'habit-1',
+            'mode': 'stopwatch'
+          }),
+          _extra());
       async.flushMicrotasks();
       async.elapse(const Duration(seconds: 2));
-      _tool(tools, 'whph_timers_stop').handler(McpToolArguments(const {'sessionId': 'habit:habit-1'}), _extra());
+      _tool(tools, 'whph_timers_stop').handler(
+          McpToolArguments(const {'sessionId': 'habit:habit-1'}), _extra());
       async.flushMicrotasks();
 
       expect(checkedScopes, contains(equals({'timers:write', 'habits:write'})));
-      expect(writer.writes.map((write) => '${write.targetId}:${write.duration.inSeconds}'), ['habit-1:2']);
+      expect(
+          writer.writes
+              .map((write) => '${write.targetId}:${write.duration.inSeconds}'),
+          ['habit-1:2']);
     });
   });
 
-  test('stale marathon selection and missing dynamic permission fail closed', () async {
+  test('stale marathon selection and missing dynamic permission fail closed',
+      () async {
     final revision = DateTime.utc(2026, 9, 8);
-    final service = TimerSessionService(durationWriter: _Writer(), alarmScheduler: _Alarm());
+    final service = TimerSessionService(
+        durationWriter: _Writer(), alarmScheduler: _Alarm());
     var allowTaskWrites = false;
     final tools = buildTimerTools(
       timerSessionService: service,
       mediator: _Mediator({'task-1': revision}),
-      authorize: (extra, scopes) => allowTaskWrites || !scopes.contains('tasks:write'),
+      authorize: (extra, scopes) =>
+          allowTaskWrites || !scopes.contains('tasks:write'),
       selectNextMarathonTask: (selectedTaskId) async => null,
     );
-    final denied = await _tool(tools, 'whph_timers_start')
-        .handler(McpToolArguments(const {'ownerType': 'task', 'ownerId': 'task-1'}), _extra());
-    expect(denied.structuredContent?['error'], containsPair('code', 'permission_denied'));
+    final denied = await _tool(tools, 'whph_timers_start').handler(
+        McpToolArguments(const {'ownerType': 'task', 'ownerId': 'task-1'}),
+        _extra());
+    expect(denied.structuredContent?['error'],
+        containsPair('code', 'permission_denied'));
     expect(service.state('task:task-1'), isNull);
     allowTaskWrites = true;
 
@@ -263,17 +305,23 @@ void main() {
       ),
     );
     final stale = await _tool(tools, 'whph_marathon_select_task').handler(
-      McpToolArguments(
-          const {'sessionId': 'marathon', 'taskId': 'task-1', 'expectedTaskRevision': '2026-09-07T00:00:00.000Z'}),
+      McpToolArguments(const {
+        'sessionId': 'marathon',
+        'taskId': 'task-1',
+        'expectedTaskRevision': '2026-09-07T00:00:00.000Z'
+      }),
       _extra(),
     );
     expect(stale.structuredContent?['error'], containsPair('code', 'conflict'));
   });
 
-  test('marathon selection rechecks revision inside the serialized commit', () async {
+  test('marathon selection rechecks revision inside the serialized commit',
+      () async {
     final expected = DateTime.utc(2026, 9, 8, 12);
-    final mediator = _ChangingRevisionMediator(expected, expected.add(const Duration(seconds: 1)));
-    final service = TimerSessionService(durationWriter: _Writer(), alarmScheduler: _Alarm());
+    final mediator = _ChangingRevisionMediator(
+        expected, expected.add(const Duration(seconds: 1)));
+    final service = TimerSessionService(
+        durationWriter: _Writer(), alarmScheduler: _Alarm());
     service.create(
       sessionId: 'marathon',
       owner: const TimerSessionOwner.marathon(),
@@ -301,14 +349,17 @@ void main() {
       _extra(),
     );
 
-    expect(result.structuredContent?['error'], containsPair('code', 'conflict'));
+    expect(
+        result.structuredContent?['error'], containsPair('code', 'conflict'));
     expect(service.state('marathon')!.selectedTaskId, isNull);
     expect(mediator.reads, 2);
   });
 
-  test('updates only supplied allowlisted settings and normalizes output', () async {
+  test('updates only supplied allowlisted settings and normalizes output',
+      () async {
     final mediator = _SettingsMediator();
-    final service = TimerSessionService(durationWriter: _Writer(), alarmScheduler: _Alarm());
+    final service = TimerSessionService(
+        durationWriter: _Writer(), alarmScheduler: _Alarm());
     final tools = buildTimerTools(
       timerSessionService: service,
       mediator: mediator,
@@ -317,7 +368,11 @@ void main() {
     );
 
     final result = await _tool(tools, 'whph_timers_update_settings').handler(
-      McpToolArguments(const {'workMinutes': 30, 'tickingVolume': 65, 'defaultMode': 'normal'}),
+      McpToolArguments(const {
+        'workMinutes': 30,
+        'tickingVolume': 65,
+        'defaultMode': 'normal'
+      }),
       _extra(),
     );
 
@@ -326,7 +381,8 @@ void main() {
     expect(result.structuredContent, containsPair('breakMinutes', 5));
     expect(result.structuredContent, containsPair('tickingVolume', 65));
     expect(result.structuredContent, containsPair('defaultMode', 'normal'));
-    expect(mediator.saves.map((save) => save.key), ['WORK_TIME', 'TICKING_VOLUME', 'DEFAULT_TIMER_MODE']);
+    expect(mediator.saves.map((save) => save.key),
+        ['WORK_TIME', 'TICKING_VOLUME', 'DEFAULT_TIMER_MODE']);
   });
 
   test('repeat stop saves once and sanitizes a failed flush', () {
@@ -356,9 +412,11 @@ void main() {
       service.start('marathon');
       async.flushMicrotasks();
       async.elapse(const Duration(seconds: 3));
-      _tool(tools, 'whph_timers_stop').handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra());
+      _tool(tools, 'whph_timers_stop')
+          .handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra());
       async.flushMicrotasks();
-      _tool(tools, 'whph_timers_stop').handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra());
+      _tool(tools, 'whph_timers_stop')
+          .handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra());
       async.flushMicrotasks();
       expect(writer.writes.map((write) => write.duration.inSeconds), [3]);
 
@@ -367,8 +425,8 @@ void main() {
       async.elapse(const Duration(seconds: 2));
       writer.fail = true;
       Object? failure;
-      Future.sync(() =>
-              _tool(tools, 'whph_timers_stop').handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra()))
+      Future.sync(() => _tool(tools, 'whph_timers_stop').handler(
+              McpToolArguments(const {'sessionId': 'marathon'}), _extra()))
           .then<void>((result) => failure = result.structuredContent);
       async.flushMicrotasks();
       expect(failure.toString(), isNot(contains('sensitive database failure')));
@@ -380,7 +438,9 @@ void main() {
     fakeAsync((async) {
       final writer = _Writer();
       final service = TimerSessionService(
-          durationWriter: writer, alarmScheduler: _Alarm(), now: () => DateTime(2026, 9, 8).add(async.elapsed));
+          durationWriter: writer,
+          alarmScheduler: _Alarm(),
+          now: () => DateTime(2026, 9, 8).add(async.elapsed));
       service.create(
           sessionId: 'marathon',
           owner: const TimerSessionOwner.marathon(),
@@ -402,8 +462,8 @@ void main() {
         selectNextMarathonTask: (selectedTaskId) async => null,
       );
       Object? result;
-      Future.sync(() =>
-              _tool(tools, 'whph_timers_stop').handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra()))
+      Future.sync(() => _tool(tools, 'whph_timers_stop').handler(
+              McpToolArguments(const {'sessionId': 'marathon'}), _extra()))
           .then<void>((value) => result = value.structuredContent);
       async.flushMicrotasks();
 
@@ -414,17 +474,18 @@ void main() {
   });
 
   test('rejects malformed owners and unknown or mismatched sessions', () async {
-    final service = TimerSessionService(durationWriter: _Writer(), alarmScheduler: _Alarm());
+    final service = TimerSessionService(
+        durationWriter: _Writer(), alarmScheduler: _Alarm());
     final tools = buildTimerTools(
       timerSessionService: service,
       mediator: _Mediator(const {}),
       authorize: (extra, scopes) => true,
       selectNextMarathonTask: (selectedTaskId) async => null,
     );
-    final malformed =
-        await _tool(tools, 'whph_timers_start').handler(McpToolArguments(const {'ownerType': 'system'}), _extra());
-    final missing =
-        await _tool(tools, 'whph_timers_read').handler(McpToolArguments(const {'sessionId': 'task:missing'}), _extra());
+    final malformed = await _tool(tools, 'whph_timers_start')
+        .handler(McpToolArguments(const {'ownerType': 'system'}), _extra());
+    final missing = await _tool(tools, 'whph_timers_read').handler(
+        McpToolArguments(const {'sessionId': 'task:missing'}), _extra());
     service.create(
         sessionId: 'task:owner',
         owner: const TimerSessionOwner.habit('owner'),
@@ -434,19 +495,24 @@ void main() {
             breakDuration: Duration(minutes: 5),
             longBreakDuration: Duration(minutes: 15),
             sessionsBeforeLongBreak: 4));
-    final mismatch =
-        await _tool(tools, 'whph_timers_read').handler(McpToolArguments(const {'sessionId': 'task:owner'}), _extra());
+    final mismatch = await _tool(tools, 'whph_timers_read')
+        .handler(McpToolArguments(const {'sessionId': 'task:owner'}), _extra());
 
-    expect(malformed.structuredContent?['error'], containsPair('code', 'validation_error'));
-    expect(missing.structuredContent?['error'], containsPair('code', 'not_found'));
-    expect(mismatch.structuredContent?['error'], containsPair('code', 'not_found'));
+    expect(malformed.structuredContent?['error'],
+        containsPair('code', 'validation_error'));
+    expect(
+        missing.structuredContent?['error'], containsPair('code', 'not_found'));
+    expect(mismatch.structuredContent?['error'],
+        containsPair('code', 'not_found'));
   });
 
-  test('marathon advance validates and flushes the previous selection once', () async {
+  test('marathon advance validates and flushes the previous selection once',
+      () async {
     final revision = DateTime.utc(2026, 9, 8);
     final writer = _Writer();
     var now = DateTime(2026, 9, 8, 12);
-    final service = TimerSessionService(durationWriter: writer, alarmScheduler: _Alarm(), now: () => now);
+    final service = TimerSessionService(
+        durationWriter: writer, alarmScheduler: _Alarm(), now: () => now);
     service.create(
         sessionId: 'marathon',
         owner: const TimerSessionOwner.marathon(),
@@ -471,7 +537,10 @@ void main() {
     expect(result.isError, isFalse);
     expect(result.structuredContent?['selectedTaskId'], 'task-2');
     expect(service.state('marathon')!.selectedTaskId, 'task-2');
-    expect(writer.writes.map((write) => '${write.targetId}:${write.duration.inSeconds}'), ['task-1:3']);
+    expect(
+        writer.writes
+            .map((write) => '${write.targetId}:${write.duration.inSeconds}'),
+        ['task-1:3']);
     await service.stop('marathon');
   });
 
@@ -483,8 +552,12 @@ void main() {
     final repository = DriftTaskTimeRecordRepository.withDatabase(database);
     final events = _TaskEvents();
     final mediator = Mediator(Pipeline())
-      ..registerHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
-        () => AddTaskTimeRecordCommandHandler(taskTimeRecordRepository: repository, taskEvents: events),
+      ..registerHandler<AddTaskTimeRecordCommand,
+          AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
+        () => AddTaskTimeRecordCommandHandler(
+            taskTimeRecordRepository: repository,
+            deviceIds: TestDeviceIds(),
+            taskEvents: events),
       );
     var now = DateTime(2026, 9, 8, 12);
     final service = TimerSessionService(
@@ -511,8 +584,8 @@ void main() {
       await service.start('marathon');
       now = now.add(const Duration(seconds: 7));
 
-      final result =
-          await _tool(tools, 'whph_timers_stop').handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra());
+      final result = await _tool(tools, 'whph_timers_stop')
+          .handler(McpToolArguments(const {'sessionId': 'marathon'}), _extra());
 
       expect(result.isError, isFalse);
       expect(result.structuredContent?['savedDurationSeconds'], 7);

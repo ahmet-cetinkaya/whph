@@ -6,173 +6,7 @@ sync:
       sync_failed: Error al sincronizar dispositivos
     from_label: De
     help:
-      content: '🔄 **¿Qué es Sync?**
-
-
-        Sync mantiene sus hábitos, tareas, notas y datos actualizados en todos los
-        dispositivos (teléfonos, tablets, laptops, desktops) en la misma red Wi-Fi.
-        Sin cloud ni internet — los datos permanecen privados y locales.
-
-
-        Es simple de usar: Configúrelo una vez, y los cambios se sincronizan automáticamente
-        o bajo demanda. Cambie de dispositivos sin problemas, como empezar en su teléfono
-        y terminar en su PC.
-
-
-        ## 🔗 **Modos de Sync**
-
-
-        Todos los dispositivos soportan modos Cliente o Servidor para sincronización
-        flexible. El Servidor lidera (comparte datos), los Clientes se unen y intercambian.
-        Necesita al menos un Servidor.
-
-
-        - **Modo Cliente:** Se conecta a un Servidor para sincronizar. Ideal para
-        unirse a grupos vía QR o entrada manual.
-
-        - **Modo Servidor:** Actúa como hub; muestra QR o cadena para que otros se
-        conecten.
-
-
-        **Notas de Plataforma:**
-
-        - **Móvil:** Cambie vía icono de hotspot Wi-Fi. Servidor para hubs portátiles.
-
-        - **Desktop (Predeterminado: Servidor):** Cambie en ajustes de Sync. Cliente
-        para laptops sincronizando con PCs principales.
-
-
-        **Ejemplos:** Móvil-a-móvil (un Servidor), desktop-a-móvil (cualquiera de
-        las formas), desktop-a-desktop (un Servidor, un Cliente).
-
-
-        Cambie modos en ajustes de Sync; la app recuerda su elección.
-
-
-        ## 🛠️ **Habilitar Sync**
-
-
-        Los dispositivos deben compartir Wi-Fi; mantenga WHPH abierto.
-
-
-        ### **Configuración con Código QR**
-
-        1. Servidor: Inicie modo Servidor en Sync — aparece QR.
-
-        2. Cliente: "Agregar Dispositivo" > Escanear QR.
-
-        3. Se conecta y sincroniza automáticamente.
-
-
-        Soporta todas las combinaciones.
-
-
-        ### **Cadena de Conexión**
-
-        1. Servidor: Copie cadena (e.g., "whph://IP:44040?...") de Sync.
-
-        2. Cliente: "Agregar Dispositivo" > Manual > Pegar cadena > Conectar.
-
-
-        No requiere cámara.
-
-
-        ### **Entrada Manual**
-
-        1. Servidor: Note IP/puerto (predeterminado 44040) de Info de Conexión.
-
-        2. Cliente: "Agregar Dispositivo" > Manual > Ingresar IP, puerto, nombre >
-        Test > Conectar.
-
-
-        **Clientes de Desktop:** Cambie a modo Cliente primero, luego conecte. Se
-        sincroniza automáticamente; cambie de vuelta cuando quiera.
-
-
-        Habilite reconexión automática en ajustes para fiabilidad.
-
-
-        ## 📋 **Gestionar Dispositivos**
-
-
-        - **Ver:** Ve dispositivos, tiempos de sync, estado en ajustes de Sync.
-
-        - **Sync Manual:** Toque botón por dispositivo.
-
-        - **Eliminar:** Seleccione y elimine para detener sync.
-
-
-        ## 🔧 **Solución de Problemas**
-
-
-        **Problemas de Conexión:**
-
-        1. ¿Misma Wi-Fi? Sin VPNs.
-
-        2. Reiniciar app.
-
-        3. Verificar modo Servidor.
-
-        4. Test sin firewall.
-
-
-        **¿No Dispositivos?**
-
-        - Wi-Fi estable, sin proxies.
-
-        - Refrescar escaneo.
-
-        - Usar IP manual.
-
-
-        **Sync Falla/Timeouts:**
-
-        1. Sync manual.
-
-        2. Coincida versiones de app.
-
-        3. Esperar datos grandes.
-
-
-        **Firewall (Puerto 44040):**
-
-
-        Si las conexiones no funcionan, el firewall de su computadora podría bloquear
-        la señal de sync. Abra el puerto 44040 para permitir que los dispositivos
-        se comuniquen localmente — es seguro para su red doméstica.
-
-
-        **Windows (GUI):**
-
-        1. Abra Defender Firewall > Avanzado > Reglas de Entrada > Nueva Regla.
-
-        2. Puerto > TCP > 44040 > Permitir > Todos los perfiles > Nombre "WHPH Sync"
-        > Finalizar.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Consejos: Reiniciar router, usar redes privadas. Re-emparejar si errores "no
-        encontrado".
-
-        '
+      content: "🔄 **¿Qué es la sincronización?**\n\nLa sincronización mantiene tus hábitos, tareas, notas y datos actualizados en tus dispositivos conectados a la misma red Wi-Fi. Sin nube ni internet: los datos siguen siendo privados y locales.\n\n## 🛠️ **Activar la sincronización**\n\n1. Mantén WHPH abierto en ambos dispositivos, en la misma red Wi-Fi.\n2. En un dispositivo elige «Añadir dispositivo» y muestra el código QR.\n3. Escanéalo con el otro dispositivo y comprueba que ambas pantallas muestran el mismo código.\n4. Después los cambios se sincronizan automáticamente.\n\n## 📋 **Gestionar dispositivos**\n\n- **Ver:** Consulta dispositivos, horas de sincronización y estado en los ajustes de sincronización.\n- **Sincronización manual:** Pulsa el botón de cada dispositivo.\n- **Quitar:** Selecciona un dispositivo y quítalo para dejar de sincronizar.\n\n## 🔧 **Solución de problemas**\n\n1. ¿Misma red Wi-Fi? Sin VPN.\n2. Reinicia la aplicación.\n3. Prueba sin cortafuegos.\n\n**¿Sin dispositivos?**\n- Wi-Fi estable, sin proxy.\n- Actualiza la búsqueda."
       title: Ayuda de sincronización de dispositivos
     last_sync_label: Última sincronización
     no_devices_found: No hay dispositivos sincronizados
@@ -187,6 +21,7 @@ sync:
   error:
     scan: Error al escanear
   errors:
+    preparing: "La sincronización se está preparando. Inténtalo de nuevo en un momento."
     connection_failed: "Conexión fallida. Por favor asegúrese:
 
 
@@ -217,7 +52,7 @@ sync:
     local_ip_error: Error de IP local
     device_already_paired: Dispositivo ya emparejado
     no_active_interfaces: No hay interfaces de red activas
-    device_discovery_failed: Descubrimiento de dispositivos fallido
+    device_discovery_failed: "No se pudo iniciar el descubrimiento de dispositivos: {error}"
     no_server_configured:
       No hay servidor configurado. Agregue primero un dispositivo
       de sincronización o use conexión manual para configurar una conexión de servidor.
@@ -252,7 +87,7 @@ sync:
     sync_completed: Sincronización completada exitosamente
     sync_in_progress: Sincronizando...
     testing_connection: Probando conexión...
-    device_added_success: Dispositivo agregado exitosamente
+    device_added_success: "{deviceName} se agregó correctamente a los dispositivos de sincronización"
   qr_code:
     close_button: Cerrar
     dialog_title: Escanear código QR para sincronizar
@@ -271,14 +106,11 @@ sync:
   server:
     starting: Iniciando modo servidor...
     active: Modo servidor activo - Mostrar código QR a otros dispositivos
-    stopped: Modo servidor detenido - El dispositivo ahora está en modo cliente
+    stopped: "Se dejaron de aceptar conexiones de otros dispositivos"
     start_failed:
       Error al iniciar modo servidor - Verifique si el puerto 44040 está
       disponible
-    start_tooltip: Iniciar modo servidor
-    stop_tooltip: Detener modo servidor
     error: Error
-    device_became_server: Este dispositivo es ahora el servidor de sincronización
     start_menu: Iniciar servidor
     stop_menu: Detener servidor
     mode_title: Modo servidor
@@ -297,7 +129,7 @@ sync:
     port_required: El puerto es requerido
     invalid_port: Número de puerto inválido
     connection_failed: Conexión fallida
-    connection_error: Error de conexión
+    connection_error: "Error de conexión: {0}"
     connection_string_tab: Cadena de conexión
     manual_entry_tab: Entrada manual
     connection_string_required: Se requiere cadena de conexión
@@ -305,13 +137,9 @@ sync:
     connection_string_label: Cadena de conexión
     test_connection: Probar conexión
     enter_server_details: Ingrese detalles de conexión del servidor manualmente
-    connection_timeout:
-      Tiempo de espera de conexión agotado. Verifique la dirección
-      del servidor e inténtelo de nuevo.
+    connection_timeout: "Tiempo de conexión agotado. Comprueba la dirección del dispositivo e inténtalo de nuevo."
     connection_test_successful: ¡Prueba de conexión exitosa!
-    connection_test_timeout:
-      Tiempo de espera de prueba de conexión agotado. Verifique
-      la dirección del servidor e inténtelo de nuevo.
+    connection_test_timeout: "Tiempo de la prueba de conexión agotado. Comprueba la dirección del dispositivo e inténtalo de nuevo."
     connection_test_failed_no_response:
       Prueba de conexión fallida - no hay respuesta
       del servidor
@@ -331,7 +159,7 @@ sync:
     alternative_methods_hint: Pruebe conexión manual o código QR
     scan_qr_code: Escanear código QR
     refresh_scan: Actualizar escaneo
-    last_seen: Última vez visto
+    last_seen: "Visto por última vez a las {time}"
     already_added: Ya agregado
   connect_info:
     dialog_title: Información de conexión del dispositivo
@@ -357,20 +185,71 @@ sync:
     copy: Copiar
   desktop:
     mode_title: Modo de sincronización de escritorio
-    client_mode_start: Conectarse como cliente
-    client_mode_stop: Cambiar a modo servidor
-    client_mode_description:
-      Conéctese al servidor de otro dispositivo para sincronizar
-      datos
-    server_mode_description:
-      Permita que otros dispositivos se conecten y sincronicen
-      con este dispositivo
-    sync_mode_start: Iniciar modo cliente
-    sync_mode_stop: Detener modo cliente
-    sync_mode_start_menu: Iniciar modo cliente
-    sync_mode_stop_menu: Detener modo cliente
-    client_mode_starting: Iniciando modo cliente...
-    client_mode_started: Modo cliente iniciado
-    client_mode_stopped: Cambiado de vuelta al modo servidor
+    sync_mode_start_menu: "Dejar de aceptar conexiones"
+    sync_mode_stop_menu: "Aceptar conexiones"
+    client_mode_started: "Ya no se aceptan conexiones"
+    client_mode_stopped: "Se aceptan conexiones de nuevo"
     sync_mode_toggle_error: Error al cambiar el modo de sincronización
   multi_interface_connection: Conexión multi-interfaz
+  status:
+    not_reachable: "Dispositivo no accesible"
+    needs_repairing: "Requiere emparejar de nuevo"
+    needs_update: "{device} necesita una versión más reciente de WHPH para sincronizar"
+    this_device_needs_update: "Actualiza WHPH en este dispositivo para sincronizar con {device}, que usa una versión más reciente"
+    items_failed: "Algunos elementos no se pudieron sincronizar"
+    items_rejected: "Algunos elementos se rechazaron por no ser válidos"
+    preparing: "El otro dispositivo está preparando sus datos de sincronización"
+    duplicated_identity: "Otro dispositivo usa la misma identidad de sincronización"
+    storage_error: "Un error de almacenamiento interrumpió la sincronización"
+    items_cannot_be_applied: "Algunos elementos fallaron repetidamente y se omiten por ahora"
+    repair_badge: "Hay que emparejar"
+    repair_action: "Emparejar"
+  pairing:
+    show_qr: "Mostrar código QR"
+    in_progress: "Emparejando…"
+    success: "Emparejado con {device}"
+    qr:
+      title: "Emparejar con un código QR"
+      description: "Escanea este código con el otro dispositivo."
+      expires_in: "Caduca en {time}"
+      expired: "Este código ha caducado."
+      used: "Este código ya se usó."
+      regenerate: "Mostrar un código nuevo"
+      paired: "Dispositivo emparejado"
+    code:
+      title: "Comparar códigos"
+      description: "Comprueba que {device} muestra el mismo código."
+      match: "Los códigos coinciden"
+      mismatch: "Los códigos no coinciden"
+    group_switch:
+      title: "¿Cambiar de grupo de sincronización?"
+      description: "{device} está en otro grupo de sincronización. Si continúas, este dispositivo sale de su grupo actual y deja de sincronizarse con esos dispositivos."
+      confirm: "Cambiar de grupo"
+    errors:
+      code_expired_or_used: "El código caducó o ya se usó. Muestra un código nuevo e inténtalo de nuevo."
+      codes_differ: "Los códigos no coincidían. Se canceló el emparejamiento."
+      cancelled: "Se canceló el emparejamiento."
+      unreachable: "No se pudo acceder al otro dispositivo. Comprueba que ambos están en la misma red."
+      invalid_invitation: "Este no es un código de emparejamiento de WHPH."
+      group_switch_declined: "Decidiste no cambiar de grupo de sincronización."
+      preparing: "La sincronización aún se está preparando. Inténtalo de nuevo en breve."
+      refused: "El otro dispositivo rechazó el emparejamiento."
+      not_active: "No hay ningún emparejamiento en curso."
+  members:
+    remove_confirm:
+      title: "¿Quitar {device}?"
+      description: "Esto quita {device} de todo el grupo de sincronización, no solo de este dispositivo. Deja de sincronizarse con todos los dispositivos del grupo y se reemplazan las claves del grupo. Vuelve a emparejarlo para sincronizar más adelante."
+      action: "Quitar del grupo"
+    removed_from_group:
+      title: "Quitado del grupo de sincronización"
+      description: "Este dispositivo se quitó de su grupo de sincronización y ya no se sincroniza. Vuelve a emparejarlo para reanudar."
+    needs_repairing:
+      title: "Vuelve a emparejar este dispositivo"
+      description: "Este dispositivo se restauró desde una copia de seguridad antigua, por lo que el grupo ya no lo reconoce. Vuelve a emparejarlo para reanudar la sincronización."
+    repair_banner:
+      title: "La sincronización se actualizó"
+      description: "Los dispositivos emparejados con la sincronización anterior deben emparejarse de nuevo. Tus datos permanecen en cada dispositivo."
+      dismiss: "Descartar"
+    upgrade_progress: "Preparando datos de sincronización… {percent} %"
+  demo:
+    reset_blocked: "Los datos de demostración no se pueden restablecer mientras este dispositivo esté emparejado, porque el restablecimiento se sincronizaría con tus otros dispositivos. Quita primero este dispositivo del grupo de sincronización."

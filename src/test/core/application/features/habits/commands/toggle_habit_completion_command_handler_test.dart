@@ -17,6 +17,12 @@ import 'package:whph/core/application/features/habits/services/habit_day_state_r
 import 'package:whph/core/domain/features/habits/habit_time_record.dart';
 import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 // Fakes
 class FakeHabitRepository extends Fake implements IHabitRepository {
@@ -24,7 +30,8 @@ class FakeHabitRepository extends Fake implements IHabitRepository {
   void setHabit(Habit h) => _habit = h;
 
   @override
-  Future<Habit?> getById(String id, {bool includeDeleted = false}) async => _habit;
+  Future<Habit?> getById(String id, {bool includeDeleted = false}) async =>
+      _habit;
 }
 
 class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
@@ -35,10 +42,16 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
 
   @override
   Future<PaginatedList<HabitRecord>> getListByHabitIdAndRangeDate(
-      String habitId, DateTime startDate, DateTime endDate, int pageIndex, int pageSize) async {
+      String habitId,
+      DateTime startDate,
+      DateTime endDate,
+      int pageIndex,
+      int pageSize) async {
     final matchingRecords = records
         .where((record) =>
-            record.habitId == habitId && !record.occurredAt.isBefore(startDate) && !record.occurredAt.isAfter(endDate))
+            record.habitId == habitId &&
+            !record.occurredAt.isBefore(startDate) &&
+            !record.occurredAt.isAfter(endDate))
         .toList();
     return PaginatedList(
       items: matchingRecords,
@@ -60,13 +73,34 @@ class FakeHabitRecordRepository extends Fake implements IHabitRecordRepository {
     lastAddedRecord = record;
     records.add(record);
   }
+
+  @override
+  Future<void> upsertRevive(HabitRecord record) async {
+    lastAddedRecord = record;
+    records.add(record);
+  }
 }
 
-class FakeHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepository {
+class FakeHabitTimeRecordRepository extends Fake
+    implements IHabitTimeRecordRepository {
+  @override
+  Future<HabitTimeRecord?> getById(String id,
+      {bool includeDeleted = false}) async {
+    for (final record in records) {
+      if (record.id == id) return record;
+    }
+    return null;
+  }
+
+  @override
+  Future<void> upsertRevive(HabitTimeRecord record) async =>
+      records.add(record);
+
   final List<HabitTimeRecord> records = [];
 
   @override
-  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(String habitId, DateTime start, DateTime end) async {
+  Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(
+      String habitId, DateTime start, DateTime end) async {
     return records.where((record) => record.habitId == habitId).toList();
   }
 
@@ -123,6 +157,7 @@ void main() {
     final operationsService = HabitRecordOperationsService(
       habitRecordRepository: fakeHabitRecordRepository,
       habitTimeRecordRepository: fakeHabitTimeRecordRepository,
+      deviceIds: TestDeviceIds(),
     );
 
     handler = ToggleHabitCompletionCommandHandler(
@@ -154,7 +189,9 @@ void main() {
       ));
     });
 
-    test('no marker -> notDone marker -> no marker while preserving complete history', () async {
+    test(
+        'no marker -> notDone marker -> no marker while preserving complete history',
+        () async {
       // Given
       final preservedComplete = HabitRecord(
         id: 'historical-complete',
@@ -166,30 +203,40 @@ void main() {
       fakeHabitRecordRepository.records.add(preservedComplete);
 
       // When
-      await handler.call(ToggleHabitCompletionCommand(habitId: habitId, date: date));
+      await handler
+          .call(ToggleHabitCompletionCommand(habitId: habitId, date: date));
 
       // Then
-      expect(fakeHabitRecordRepository.records.where((record) => record.status == HabitRecordStatus.notDone),
+      expect(
+          fakeHabitRecordRepository.records
+              .where((record) => record.status == HabitRecordStatus.notDone),
           hasLength(1));
       expect(fakeHabitRecordRepository.records, contains(preservedComplete));
       expect(fakeHabitTimeRecordRepository.records, isEmpty);
 
       // When
-      await handler.call(ToggleHabitCompletionCommand(habitId: habitId, date: date));
+      await handler
+          .call(ToggleHabitCompletionCommand(habitId: habitId, date: date));
 
       // Then
-      expect(fakeHabitRecordRepository.records.where((record) => record.status == HabitRecordStatus.notDone), isEmpty);
+      expect(
+          fakeHabitRecordRepository.records
+              .where((record) => record.status == HabitRecordStatus.notDone),
+          isEmpty);
       expect(fakeHabitRecordRepository.records, contains(preservedComplete));
       expect(fakeHabitTimeRecordRepository.records, isEmpty);
     });
 
-    test('adds the intended marker without deleting the adjacent marker on a 23-hour local day', () async {
+    test(
+        'adds the intended marker without deleting the adjacent marker on a 23-hour local day',
+        () async {
       // Given
       final location = tz.getLocation('America/New_York');
       final targetDate = tz.TZDateTime(location, 2026, 3, 8, 12);
       dayRangeResolver = (date) => HabitDayStateResolver.utcRangeFor(
             date,
-            localDateTime: (year, month, day) => tz.TZDateTime(location, year, month, day),
+            localDateTime: (year, month, day) =>
+                tz.TZDateTime(location, year, month, day),
           );
       final dayRange = dayRangeResolver(targetDate);
       final adjacentMarker = HabitRecord(
@@ -202,16 +249,23 @@ void main() {
       fakeHabitRecordRepository.records.add(adjacentMarker);
 
       // When
-      await handler.call(ToggleHabitCompletionCommand(habitId: habitId, date: targetDate));
+      await handler.call(
+          ToggleHabitCompletionCommand(habitId: habitId, date: targetDate));
 
       // Then
-      expect(dayRange.end.difference(dayRange.start) + const Duration(microseconds: 1), const Duration(hours: 23));
+      expect(
+          dayRange.end.difference(dayRange.start) +
+              const Duration(microseconds: 1),
+          const Duration(hours: 23));
       final markers = fakeHabitRecordRepository.records.where(
         (record) => record.status == HabitRecordStatus.notDone,
       );
       expect(markers, hasLength(2));
       expect(markers, contains(adjacentMarker));
-      expect(markers.where((record) => tz.TZDateTime.from(record.occurredAt, location).day == 8), hasLength(1));
+      expect(
+          markers.where((record) =>
+              tz.TZDateTime.from(record.occurredAt, location).day == 8),
+          hasLength(1));
     });
   });
 
@@ -231,10 +285,12 @@ void main() {
       fakeHabitRepository.setHabit(singleHabit);
       // No records initially
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
-      expect(fakeHabitRecordRepository.lastAddedRecord?.status, HabitRecordStatus.complete);
+      expect(fakeHabitRecordRepository.lastAddedRecord?.status,
+          HabitRecordStatus.complete);
       expect(fakeHabitRecordRepository.records.length, 1);
     });
 
@@ -248,14 +304,17 @@ void main() {
           status: HabitRecordStatus.complete,
           createdDate: DateTime.now()));
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       // Should delete old and add new NotDone
       expect(fakeHabitRecordRepository.deleteCalled, true);
-      expect(fakeHabitRecordRepository.lastAddedRecord?.status, HabitRecordStatus.notDone);
+      expect(fakeHabitRecordRepository.lastAddedRecord?.status,
+          HabitRecordStatus.notDone);
       expect(fakeHabitRecordRepository.records.length, 1);
-      expect(fakeHabitRecordRepository.records.first.status, HabitRecordStatus.notDone);
+      expect(fakeHabitRecordRepository.records.first.status,
+          HabitRecordStatus.notDone);
     });
 
     test('Complete -> Skipped (3-state disabled)', () async {
@@ -268,7 +327,8 @@ void main() {
           status: HabitRecordStatus.complete,
           createdDate: DateTime.now()));
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       // Should delete old and add nothing (return to Unknown)
@@ -285,7 +345,8 @@ void main() {
           status: HabitRecordStatus.notDone,
           createdDate: DateTime.now()));
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       // Should delete old and add nothing
@@ -313,11 +374,13 @@ void main() {
       fakeHabitRepository.setHabit(multiHabit);
       // No records
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       expect(fakeHabitRecordRepository.records.length, 1);
-      expect(fakeHabitRecordRepository.lastAddedRecord?.status, HabitRecordStatus.complete);
+      expect(fakeHabitRecordRepository.lastAddedRecord?.status,
+          HabitRecordStatus.complete);
     });
 
     test('Increment: 1 -> 2 (Complete)', () async {
@@ -329,11 +392,13 @@ void main() {
           status: HabitRecordStatus.complete,
           createdDate: DateTime.now()));
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       expect(fakeHabitRecordRepository.records.length, 2);
-      expect(fakeHabitRecordRepository.lastAddedRecord?.status, HabitRecordStatus.complete);
+      expect(fakeHabitRecordRepository.lastAddedRecord?.status,
+          HabitRecordStatus.complete);
     });
 
     test('Target Met (2) -> NotDone (3-state enabled)', () async {
@@ -353,13 +418,15 @@ void main() {
           status: HabitRecordStatus.complete,
           createdDate: DateTime.now()));
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       // Should clear existing 2 records and add 1 NotDone record
       expect(fakeHabitRecordRepository.deleteCalled, true);
       expect(fakeHabitRecordRepository.records.length, 1);
-      expect(fakeHabitRecordRepository.records.first.status, HabitRecordStatus.notDone);
+      expect(fakeHabitRecordRepository.records.first.status,
+          HabitRecordStatus.notDone);
     });
 
     test('Target Met (2) -> Skipped/Reset (3-state disabled)', () async {
@@ -379,7 +446,8 @@ void main() {
           status: HabitRecordStatus.complete,
           createdDate: DateTime.now()));
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       // Should clear all records
@@ -396,7 +464,8 @@ void main() {
           status: HabitRecordStatus.notDone,
           createdDate: DateTime.now()));
 
-      final command = ToggleHabitCompletionCommand(habitId: habitId, date: date);
+      final command =
+          ToggleHabitCompletionCommand(habitId: habitId, date: date);
       await handler.call(command);
 
       // Should clear records

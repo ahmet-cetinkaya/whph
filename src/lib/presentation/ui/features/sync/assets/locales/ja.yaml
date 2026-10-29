@@ -6,160 +6,7 @@ sync:
       sync_failed: デバイスの同期に失敗しました
     from_label: 送信元
     help:
-      content: '🔄 **Sync とは何ですか？**
-
-
-        Sync は、習慣、タスク、ノート、データを Wi-Fi と同じネットワーク上のデバイス (電話、タブレット、ラップトップ、デスクトップ) で更新します。クラウドやインターネット不要
-        — データはプライベートでローカルに保たれます。
-
-
-        使いやすい: 一度設定すれば、変更は自動またはオンデマンドで同期します。デバイスをシームレスに切り替え、電話で開始して PC で完了するように。
-
-
-        ## 🔗 **Sync モード**
-
-
-        すべてのデバイスは柔軟な同期のためのクライアントまたはサーバーモードをサポートします。サーバーがリード (データ共有)、クライアントが参加して交換。少なくとも
-        1 つのサーバーが必要です。
-
-
-        - **クライアントモード:** サーバーに接続して同期。QR または手動入力でグループに参加するのに理想的。
-
-        - **サーバーモード:** ハブとして機能; 他のデバイスが接続するための QR または文字列を表示。
-
-
-        **プラットフォームノート:**
-
-        - **モバイル:** Wi-Fi ホットスポットアイコンで切り替え。ポータブルハブのためのサーバー。
-
-        - **デスクトップ (デフォルト: サーバー):** Sync 設定で切り替え。メイン PC に同期するラップトップのためのクライアント。
-
-
-        **例:** モバイル-モバイル (1 サーバー)、デスクトップ-モバイル (どちらでも)、デスクトップ-デスクトップ (1 サーバー、1 クライアント)。
-
-
-        Sync 設定でモードを切り替え; アプリは選択を記憶します。
-
-
-        ## 🛠️ **Sync の有効化**
-
-
-        デバイスは Wi-Fi を共有; WHPH を開いたままに。
-
-
-        ### **QR コードセットアップ**
-
-        1. サーバー: Sync でサーバーモードを開始 — QR が表示。
-
-        2. クライアント: "デバイス追加" > QR スキャン。
-
-        3. 自動接続と同期。
-
-
-        すべての組み合わせをサポート。
-
-
-        ### **接続文字列**
-
-        1. サーバー: Sync から文字列をコピー (例: "whph://IP:44040?...")。
-
-        2. クライアント: "デバイス追加" > 手動 > 文字列貼り付け > 接続。
-
-
-        カメラ不要。
-
-
-        ### **手動入力**
-
-        1. サーバー: 接続情報から IP/ポート (デフォルト 44040) をメモ。
-
-        2. クライアント: "デバイス追加" > 手動 > IP、ポート、名前入力 > テスト > 接続。
-
-
-        **デスクトップクライアント:** まずクライアントモードに切り替え、次に接続。自動同期; いつでも戻す。
-
-
-        信頼性のための設定で自動再接続を有効に。
-
-
-        ## 📋 **デバイス管理**
-
-
-        - **表示:** Sync 設定でデバイス、同期時間、状態を表示。
-
-        - **手動同期:** デバイスごとのボタンをタップ。
-
-        - **削除:** 選択して同期を停止。
-
-
-        ## 🔧 **トラブルシューティング**
-
-
-        **接続問題:**
-
-        1. 同じ Wi-Fi? VPN なし。
-
-        2. アプリ再起動。
-
-        3. サーバーモードを確認。
-
-        4. ファイアウォールなしでテスト。
-
-
-        **デバイスなし?**
-
-        - 安定した Wi-Fi、プロキシなし。
-
-        - スキャン更新。
-
-        - 手動 IP 使用。
-
-
-        **同期失敗/タイムアウト:**
-
-        1. 手動同期。
-
-        2. アプリバージョンを一致。
-
-        3. 大きなデータ待機。
-
-
-        **ファイアウォール (ポート 44040):**
-
-
-        接続が機能しない場合、コンピュータのファイアウォールが同期シグナルをブロックしている可能性があります。ポート 44040 を開いてデバイスがローカルで通信できるように
-        — ホームネットワークでは安全です。
-
-
-        **Windows (GUI):**
-
-        1. Defender Firewall 開く > 詳細設定 > 受信規則 > 新しい規則。
-
-        2. ポート > TCP > 44040 > 許可 > すべてのプロファイル > 名前 "WHPH Sync" > 完了。
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        ヒント: ルーター再起動、私有ネットワーク使用。"見つからない" エラーで再ペアリング。
-
-        '
+      content: "🔄 **同期とは？**\n\n同期は、同じWi-Fiにある端末間で、習慣、タスク、メモ、データを最新の状態に保ちます。クラウドもインターネットも不要で、データは非公開のままローカルに保たれます。\n\n## 🛠️ **同期を有効にする**\n\n1. 同じWi-Fiで両方の端末のWHPHを開いたままにします。\n2. 一方の端末で「デバイスを追加」を選び、QRコードを表示します。\n3. もう一方の端末でスキャンし、両方の画面に同じコードが表示されていることを確認します。\n4. 以降、変更は自動的に同期されます。\n\n## 📋 **デバイスの管理**\n\n- **表示:** 同期設定でデバイス、同期時刻、状態を確認できます。\n- **手動同期:** デバイスごとのボタンをタップします。\n- **削除:** デバイスを選んで削除すると同期を停止します。\n\n## 🔧 **トラブルシューティング**\n\n1. 同じWi-Fiですか？VPNは使わないでください。\n2. アプリを再起動します。\n3. ファイアウォールなしで試します。\n\n**デバイスが見つからない場合**\n- 安定したWi-Fiを使い、プロキシは使わないでください。\n- スキャンを更新します。"
       title: デバイス同期ヘルプ
     last_sync_label: 最後の同期
     no_devices_found: 同期されたデバイスがありません
@@ -174,6 +21,7 @@ sync:
   error:
     scan: スキャンに失敗しました
   errors:
+    preparing: "同期を準備しています。しばらくしてからもう一度お試しください。"
     connection_failed: "接続に失敗しました。以下を確認してください：
 
 
@@ -198,7 +46,7 @@ sync:
     local_ip_error: ローカルIPエラー
     device_already_paired: デバイスはすでにペアリングされています
     no_active_interfaces: アクティブなネットワークインターフェースがありません
-    device_discovery_failed: デバイス検出に失敗しました
+    device_discovery_failed: "デバイス検出を開始できませんでした: {error}"
     no_server_configured: サーバーが構成されていません。まず同期デバイスを追加するか、手動接続を使用してサーバー接続を設定してください。
     device_id_unavailable: デバイスIDが利用できません。同期を続行できません。
     local_ip_unavailable: ローカルIPアドレスが利用できません。ネットワーク接続を確認してください。
@@ -217,7 +65,7 @@ sync:
     sync_completed: 同期が正常に完了しました
     sync_in_progress: 同期中...
     testing_connection: 接続をテスト中...
-    device_added_success: デバイスが正常に追加されました
+    device_added_success: "{deviceName} を同期デバイスに追加しました"
   qr_code:
     close_button: 閉じる
     dialog_title: QRコードをスキャンして同期
@@ -232,12 +80,9 @@ sync:
   server:
     starting: サーバーモードを開始中...
     active: サーバーモードがアクティブ - 他のデバイスにQRコードを表示
-    stopped: サーバーモードが停止 - デバイスはクライアントモードになりました
+    stopped: "他のデバイスからの接続の受け付けを停止しました"
     start_failed: サーバーモードの開始に失敗 - ポート44040が利用可能か確認してください
-    start_tooltip: サーバーモードを開始
-    stop_tooltip: サーバーモードを停止
     error: エラー
-    device_became_server: このデバイスは同期サーバーになりました
     start_menu: サーバーを開始
     stop_menu: サーバーを停止
     mode_title: サーバーモード
@@ -256,7 +101,7 @@ sync:
     port_required: ポートが必要です
     invalid_port: ポート番号が無効です
     connection_failed: 接続に失敗しました
-    connection_error: 接続エラー
+    connection_error: "接続エラー: {0}"
     connection_string_tab: 接続文字列
     manual_entry_tab: 手動入力
     connection_string_required: 接続文字列が必要です
@@ -264,9 +109,9 @@ sync:
     connection_string_label: 接続文字列
     test_connection: 接続をテスト
     enter_server_details: サーバー接続の詳細を手動で入力
-    connection_timeout: 接続タイムアウト。サーバーアドレスを確認して再試行してください。
+    connection_timeout: "接続がタイムアウトしました。デバイスのアドレスを確認して、もう一度お試しください。"
     connection_test_successful: 接続テストが成功しました！
-    connection_test_timeout: 接続テストのタイムアウト。サーバーアドレスを確認して再試行してください。
+    connection_test_timeout: "接続テストがタイムアウトしました。デバイスのアドレスを確認して、もう一度お試しください。"
     connection_test_failed_no_response: 接続テストが失敗しました - サーバーからの応答なし
     connection_test_failed_generic: "接続テストが失敗しました: {0}"
     connection_string_instruction: 手動接続のためにサーバーデバイスから提供された接続文字列をここに貼り付けます。
@@ -282,7 +127,7 @@ sync:
     alternative_methods_hint: 手動接続またはQRコードを試してください
     scan_qr_code: QRコードをスキャン
     refresh_scan: スキャンを更新
-    last_seen: 最後に見られた
+    last_seen: "最終確認: {time}"
     already_added: すでに追加済み
   connect_info:
     dialog_title: デバイス接続情報
@@ -302,16 +147,71 @@ sync:
     copy: コピー
   desktop:
     mode_title: デスクトップ同期モード
-    client_mode_start: クライアントとして接続
-    client_mode_stop: サーバーモードに切り替え
-    client_mode_description: 他のデバイスのサーバーに接続してデータを同期
-    server_mode_description: 他のデバイスがこのデバイスに接続して同期できるようにする
-    sync_mode_start: クライアントモードを開始
-    sync_mode_stop: クライアントモードを停止
-    sync_mode_start_menu: クライアントモードを開始
-    sync_mode_stop_menu: クライアントモードを停止
-    client_mode_starting: クライアントモードを開始中...
-    client_mode_started: クライアントモードが開始されました
-    client_mode_stopped: サーバーモードに戻りました
+    sync_mode_start_menu: "接続の受け付けを停止"
+    sync_mode_stop_menu: "接続を受け付ける"
+    client_mode_started: "接続を受け付けていません"
+    client_mode_stopped: "接続の受け付けを再開しました"
     sync_mode_toggle_error: 同期モードの切り替えに失敗しました
   multi_interface_connection: マルチインターフェース接続
+  status:
+    not_reachable: "デバイスに接続できません"
+    needs_repairing: "再ペアリングが必要です"
+    needs_update: "{device} が同期するには WHPH の新しいバージョンが必要です"
+    this_device_needs_update: "このデバイスの WHPH を更新してください。{device} はより新しいバージョンを使用しているため、同期するには更新が必要です"
+    items_failed: "一部の項目を同期できませんでした"
+    items_rejected: "一部の項目は無効として拒否されました"
+    preparing: "相手のデバイスが同期データを準備中です"
+    duplicated_identity: "別のデバイスが同じ同期IDを使用しています"
+    storage_error: "ストレージエラーにより同期が中断されました"
+    items_cannot_be_applied: "一部の項目が繰り返し失敗したため、今回はスキップされます"
+    repair_badge: "再ペアリングが必要"
+    repair_action: "再ペアリング"
+  pairing:
+    show_qr: "QRコードを表示"
+    in_progress: "ペアリング中…"
+    success: "{device} とペアリングしました"
+    qr:
+      title: "QRコードでペアリング"
+      description: "このコードをもう一方のデバイスでスキャンしてください。"
+      expires_in: "有効期限まで {time}"
+      expired: "このコードの有効期限が切れました。"
+      used: "このコードはすでに使用されています。"
+      regenerate: "新しいコードを表示"
+      paired: "デバイスをペアリングしました"
+    code:
+      title: "コードを比較"
+      description: "{device} に同じコードが表示されていることを確認してください。"
+      match: "コードが一致"
+      mismatch: "コードが異なる"
+    group_switch:
+      title: "同期グループを切り替えますか？"
+      description: "{device} は別の同期グループに属しています。続行すると、このデバイスは現在のグループを離れ、そのグループのデバイスとは同期されなくなります。"
+      confirm: "グループを切り替える"
+    errors:
+      code_expired_or_used: "コードの有効期限が切れたか、すでに使用されています。新しいコードを表示してもう一度お試しください。"
+      codes_differ: "コードが一致しませんでした。ペアリングはキャンセルされました。"
+      cancelled: "ペアリングはキャンセルされました。"
+      unreachable: "相手のデバイスに接続できません。両方が同じネットワークにあることを確認してください。"
+      invalid_invitation: "これは WHPH のペアリングコードではありません。"
+      group_switch_declined: "同期グループの切り替えを行わないことを選択しました。"
+      preparing: "同期はまだ準備中です。しばらくしてからもう一度お試しください。"
+      refused: "相手のデバイスがペアリングを拒否しました。"
+      not_active: "進行中のペアリングはありません。"
+  members:
+    remove_confirm:
+      title: "{device} を削除しますか？"
+      description: "{device} はこのデバイスだけでなく同期グループ全体から削除されます。グループ内のすべてのデバイスとの同期が止まり、グループの鍵が入れ替えられます。後で同期するには再度ペアリングしてください。"
+      action: "グループから削除"
+    removed_from_group:
+      title: "同期グループから削除されました"
+      description: "このデバイスは同期グループから削除され、同期されなくなりました。再開するには再度ペアリングしてください。"
+    needs_repairing:
+      title: "このデバイスを再度ペアリングしてください"
+      description: "このデバイスは古いバックアップから復元されたため、グループがデバイスを認識できなくなりました。同期を再開するには、もう一度ペアリングしてください。"
+    repair_banner:
+      title: "同期がアップグレードされました"
+      description: "旧方式の同期でペアリングしたデバイスは、再度ペアリングが必要です。データは各デバイスに残ります。"
+      dismiss: "閉じる"
+    upgrade_progress: "同期データを準備中… {percent}%"
+  demo:
+    reset_blocked: "このデバイスがペアリングされている間はデモデータをリセットできません。リセットが他のデバイスに同期されてしまうためです。先にこのデバイスを同期グループから削除してください。"

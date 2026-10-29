@@ -1,21 +1,10 @@
 sync:
   desktop:
     mode_title: Tryb synchronizacji pulpitu
-    client_mode_start: Połącz jako klient
-    client_mode_stop: Przełącz na tryb serwera
-    client_mode_description:
-      Połącz się z serwerem innego urządzenia, aby zsynchronizować
-      dane
-    server_mode_description:
-      Pozwól innym urządzeniom na połączenie i synchronizację
-      z tym urządzeniem
-    sync_mode_start: Uruchom tryb klienta
-    sync_mode_stop: Zatrzymaj tryb klienta
-    sync_mode_start_menu: Uruchom tryb klienta
-    sync_mode_stop_menu: Zatrzymaj tryb klienta
-    client_mode_starting: Uruchamianie trybu klienta...
-    client_mode_started: Tryb klienta uruchomiony
-    client_mode_stopped: Przełączono z powrotem do trybu serwera
+    sync_mode_start_menu: "Przestań przyjmować połączenia"
+    sync_mode_stop_menu: "Przyjmuj połączenia"
+    client_mode_started: "Połączenia nie są już przyjmowane"
+    client_mode_stopped: "Połączenia są znów przyjmowane"
     sync_mode_toggle_error: Nie udało się przełączyć trybu synchronizacji
   devices:
     errors:
@@ -24,174 +13,7 @@ sync:
       sync_failed: Błąd podczas synchronizacji urządzeń
     from_label: Od
     help:
-      content: '🔄 **Co to jest Sync?**
-
-
-        Sync utrzymuje Twoje nawyki, zadania, notatki i dane zaktualizowane na wszystkich
-        urządzeniach (telefony, tablety, laptopy, komputery stacjonarne) w tej samej
-        sieci Wi-Fi. Bez chmury lub internetu — dane pozostają prywatne i lokalne.
-
-
-        Jest prosty w użyciu: skonfiguruj raz, a zmiany synchronizują się automatycznie
-        lub na żądanie. Przełączaj się między urządzeniami bezproblemowo, np. zacznij
-        na telefonie i dokończ na PC.
-
-
-        ## 🔗 **Tryby Sync**
-
-
-        Wszystkie urządzenia obsługują tryby klienta lub serwera dla elastycznej synchronizacji.
-        Serwer prowadzi (dzieli się danymi), klienci dołączają i wymieniają. Potrzebny
-        jest co najmniej jeden serwer.
-
-
-        - **Tryb klienta:** Łączy się z serwerem w celu synchronizacji. Idealny do
-        dołączania do grup za pomocą QR lub ręcznego wprowadzenia.
-
-        - **Tryb serwera:** Działa jako hub; pokazuje QR lub ciąg dla innych do połączenia.
-
-
-        **Uwagi dotyczące platform:**
-
-        - **Mobilne:** Przełączaj za pomocą ikony hotspotu Wi-Fi. Serwer dla przenośnych
-        hubów.
-
-        - **Pulpit (Domyślnie: Serwer):** Przełącz w ustawieniach Sync. Klient dla
-        laptopów synchronizujących z głównymi PC.
-
-
-        **Przykłady:** Mobilne do mobilnego (jeden serwer), pulpit do mobilnego (w
-        obie strony), pulpit do pulpitu (jeden serwer, jeden klient).
-
-
-        Przełączaj tryby w ustawieniach Sync; aplikacja pamięta Twój wybór.
-
-
-        ## 🛠️ **Włączanie Sync**
-
-
-        Urządzenia muszą dzielić Wi-Fi; utrzymuj WHPH otwartą.
-
-
-        ### **Konfiguracja z kodem QR**
-
-        1. Serwer: Uruchom tryb serwera w Sync — pojawi się QR.
-
-        2. Klient: „Dodaj urządzenie” > Skanuj QR.
-
-        3. Automatycznie łączy się i synchronizuje.
-
-
-        Obsługuje wszystkie kombinacje.
-
-
-        ### **Ciąg połączenia**
-
-        1. Serwer: Skopiuj ciąg (np. „whph://IP:44040?...”) z Sync.
-
-        2. Klient: „Dodaj urządzenie” > Ręczne > Wklej ciąg > Połącz.
-
-
-        Nie wymaga aparatu.
-
-
-        ### **Ręczne wprowadzenie**
-
-        1. Serwer: Zapisz IP/port (domyślnie 44040) z informacji o połączeniu.
-
-        2. Klient: „Dodaj urządzenie” > Ręczne > Wprowadź IP, port, nazwę > Test >
-        Połącz.
-
-
-        **Klienci pulpitu:** Najpierw przełącz na tryb klienta, potem połącz. Automatyczna
-        synchronizacja; przełącz powrotem w dowolnym momencie.
-
-
-        Włącz automatyczne ponowne połączenie w ustawieniach dla niezawodności.
-
-
-        ## 📋 **Zarządzanie urządzeniami**
-
-
-        - **Wyświetl:** Zobacz urządzenia, czasy synchronizacji, status w ustawieniach
-        Sync.
-
-        - **Ręczna synchronizacja:** Naciśnij przycisk dla każdego urządzenia.
-
-        - **Usuń:** Wybierz i usuń, aby zatrzymać synchronizację.
-
-
-        ## 🔧 **Rozwiązywanie problemów**
-
-
-        **Problemy z połączeniem:**
-
-        1. Ta sama Wi-Fi? Bez VPN.
-
-        2. Uruchom ponownie aplikację.
-
-        3. Sprawdź tryb serwera.
-
-        4. Testuj bez firewalla.
-
-
-        **Brak urządzeń?**
-
-        - Stabilne Wi-Fi, bez proxy.
-
-        - Odśwież skanowanie.
-
-        - Użyj ręcznego IP.
-
-
-        **Synchronizacja nie powiodła się/Timeout:**
-
-        1. Ręczna synchronizacja.
-
-        2. Dopasuj wersje aplikacji.
-
-        3. Poczekaj na duże dane.
-
-
-        **Firewall (Port 44040):**
-
-
-        Jeśli połączenia nie działają, zapora ogniowa Twojego komputera może blokować
-        sygnał synchronizacji. Otwórz port 44040, aby urządzenia mogły komunikować
-        się lokalnie — jest bezpieczny dla sieci domowej.
-
-
-        **Windows (GUI):**
-
-        1. Otwórz Defender Firewall > Zaawansowane > Reguły przychodzące > Nowa reguła.
-
-        2. Port > TCP > 44040 > Zezwól > Wszystkie profile > Nazwij „WHPH Sync” >
-        Zakończ.
-
-
-        **Windows (CMD Administrator):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Wskazówki: Uruchom ponownie router, używaj sieci prywatnych. Ponownie sparuj
-        w przypadku błędów „nie znaleziono”.
-
-        '
+      content: "🔄 **Czym jest synchronizacja?**\n\nSynchronizacja utrzymuje aktualność nawyków, zadań, notatek i danych na urządzeniach w tej samej sieci Wi-Fi. Bez chmury i internetu: dane pozostają prywatne i lokalne.\n\n## 🛠️ **Włączanie synchronizacji**\n\n1. Pozostaw WHPH otwarte na obu urządzeniach w tej samej sieci Wi-Fi.\n2. Na jednym urządzeniu wybierz „Dodaj urządzenie” i pokaż kod QR.\n3. Zeskanuj go drugim urządzeniem i sprawdź, czy oba ekrany pokazują ten sam kod.\n4. Zmiany będą potem synchronizowane automatycznie.\n\n## 📋 **Zarządzanie urządzeniami**\n\n- **Podgląd:** Urządzenia, czasy synchronizacji i stan zobaczysz w ustawieniach synchronizacji.\n- **Synchronizacja ręczna:** Dotknij przycisku przy urządzeniu.\n- **Usuń:** Wybierz urządzenie i usuń je, aby zatrzymać synchronizację.\n\n## 🔧 **Rozwiązywanie problemów**\n\n1. Ta sama sieć Wi-Fi? Bez VPN.\n2. Uruchom aplikację ponownie.\n3. Spróbuj bez zapory.\n\n**Brak urządzeń?**\n- Stabilne Wi-Fi, bez serwerów proxy.\n- Odśwież wyszukiwanie."
       title: Pomoc synchronizacji urządzeń
     last_sync_label: Ostatnia synchronizacja
     no_devices_found: Brak zsynchronizowanych urządzeń
@@ -206,6 +28,7 @@ sync:
   error:
     scan: Błąd skanowania
   errors:
+    preparing: "Synchronizacja jest przygotowywana. Spróbuj ponownie za chwilę."
     connection_failed: "Połączenie nie powiodło się. Upewnij się:
 
 
@@ -311,16 +134,13 @@ sync:
   server:
     starting: Uruchamianie trybu serwera...
     active: Tryb serwera aktywny - Pokaż kod QR innym urządzeniom
-    stopped: Tryb serwera zatrzymany - Urządzenie jest teraz w trybie klienta
+    stopped: "Przestano przyjmować połączenia z innych urządzeń"
     start_failed:
       Uruchomienie trybu serwera nie powiodło się - Sprawdź, czy port
       44040 jest dostępny
-    start_tooltip: Uruchom tryb serwera
-    stop_tooltip: Zatrzymaj tryb serwera
     start_menu: Uruchom tryb serwera
     stop_menu: Zatrzymaj tryb serwera
     error: Błąd
-    device_became_server: To urządzenie jest teraz serwerem synchronizacji
     mode_title: Tryb serwera
     mode_inactive: Serwer nieaktywny
   manual:
@@ -345,11 +165,9 @@ sync:
     connection_string_label: Ciąg połączenia
     test_connection: Testuj połączenie
     enter_server_details: Wprowadź szczegóły połączenia serwera ręcznie
-    connection_timeout: Limit czasu połączenia. Sprawdź adres serwera i spróbuj ponownie.
+    connection_timeout: "Przekroczono limit czasu połączenia. Sprawdź adres urządzenia i spróbuj ponownie."
     connection_test_successful: Test połączenia udany!
-    connection_test_timeout:
-      Limit czasu testu połączenia. Sprawdź adres serwera i
-      spróbuj ponownie.
+    connection_test_timeout: "Przekroczono limit czasu testu połączenia. Sprawdź adres urządzenia i spróbuj ponownie."
     connection_test_failed_no_response:
       Test połączenia nieudany - brak odpowiedzi
       z serwera
@@ -378,3 +196,65 @@ sync:
     last_seen: Ostatnio widziany o {time}
     already_added: Już dodany
   multi_interface_connection: Połączenie wielo-interfejsowe
+  status:
+    not_reachable: "Urządzenie jest niedostępne"
+    needs_repairing: "Wymaga ponownego sparowania"
+    needs_update: "{device} potrzebuje nowszej wersji WHPH, aby synchronizować"
+    this_device_needs_update: "Zaktualizuj WHPH na tym urządzeniu, aby synchronizować z {device}, które ma nowszą wersję"
+    items_failed: "Nie udało się zsynchronizować niektórych elementów"
+    items_rejected: "Niektóre elementy odrzucono jako nieprawidłowe"
+    preparing: "Drugie urządzenie przygotowuje dane synchronizacji"
+    duplicated_identity: "Inne urządzenie używa tej samej tożsamości synchronizacji"
+    storage_error: "Błąd pamięci masowej przerwał synchronizację"
+    items_cannot_be_applied: "Niektóre elementy wielokrotnie zawiodły i są na razie pomijane"
+    repair_badge: "Wymagane ponowne sparowanie"
+    repair_action: "Sparuj ponownie"
+  pairing:
+    show_qr: "Pokaż kod QR"
+    in_progress: "Trwa parowanie…"
+    success: "Sparowano z urządzeniem {device}"
+    qr:
+      title: "Sparuj za pomocą kodu QR"
+      description: "Zeskanuj ten kod drugim urządzeniem."
+      expires_in: "Wygasa za {time}"
+      expired: "Ten kod wygasł."
+      used: "Ten kod został już użyty."
+      regenerate: "Pokaż nowy kod"
+      paired: "Urządzenie sparowane"
+    code:
+      title: "Porównaj kody"
+      description: "Upewnij się, że {device} pokazuje ten sam kod."
+      match: "Kody są zgodne"
+      mismatch: "Kody się różnią"
+    group_switch:
+      title: "Zmienić grupę synchronizacji?"
+      description: "Urządzenie {device} należy do innej grupy synchronizacji. Jeśli kontynuujesz, to urządzenie opuści obecną grupę i przestanie synchronizować się z jej urządzeniami."
+      confirm: "Zmień grupę"
+    errors:
+      code_expired_or_used: "Kod wygasł lub został już użyty. Pokaż nowy kod i spróbuj ponownie."
+      codes_differ: "Kody nie były zgodne. Parowanie anulowano."
+      cancelled: "Parowanie anulowano."
+      unreachable: "Nie można połączyć się z drugim urządzeniem. Sprawdź, czy oba są w tej samej sieci."
+      invalid_invitation: "To nie jest kod parowania WHPH."
+      group_switch_declined: "Zdecydowano się nie zmieniać grupy synchronizacji."
+      preparing: "Synchronizacja jest jeszcze przygotowywana. Spróbuj ponownie za chwilę."
+      refused: "Drugie urządzenie odrzuciło parowanie."
+      not_active: "Nie trwa żadne parowanie."
+  members:
+    remove_confirm:
+      title: "Usunąć urządzenie {device}?"
+      description: "To usuwa urządzenie {device} z całej grupy synchronizacji, nie tylko z tego urządzenia. Przestaje ono synchronizować się ze wszystkimi urządzeniami w grupie, a klucze grupy zostają wymienione. Sparuj je ponownie, aby synchronizować później."
+      action: "Usuń z grupy"
+    removed_from_group:
+      title: "Usunięto z grupy synchronizacji"
+      description: "To urządzenie zostało usunięte ze swojej grupy synchronizacji i już się nie synchronizuje. Sparuj je ponownie, aby wznowić."
+    needs_repairing:
+      title: "Sparuj to urządzenie ponownie"
+      description: "To urządzenie zostało przywrócone ze starszej kopii zapasowej, więc grupa już go nie rozpoznaje. Sparuj je ponownie, aby wznowić synchronizację."
+    repair_banner:
+      title: "Synchronizacja została zaktualizowana"
+      description: "Urządzenia sparowane ze starą synchronizacją trzeba sparować ponownie. Twoje dane pozostają na każdym urządzeniu."
+      dismiss: "Odrzuć"
+    upgrade_progress: "Przygotowywanie danych synchronizacji… {percent}%"
+  demo:
+    reset_blocked: "Nie można zresetować danych demonstracyjnych, gdy to urządzenie jest sparowane, ponieważ reset zsynchronizowałby się z innymi urządzeniami. Najpierw usuń to urządzenie z grupy synchronizacji."

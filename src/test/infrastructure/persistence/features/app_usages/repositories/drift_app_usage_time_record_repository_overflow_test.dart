@@ -81,5 +81,32 @@ void main() {
 
       expect(durations['app-2'], 10800);
     });
+
+    test('getListByTopAppUsages sums device buckets of one hour before clamping', () async {
+      for (final id in ['app-3', 'app-4']) {
+        await appUsageRepository.add(AppUsage(id: id, name: 'bucket-$id', createdDate: DateTime.now()));
+      }
+      final hour = DateTime.utc(2026, 1, 1, 10);
+      // app-3: one hour with two device buckets whose sum is negative, so the
+      // hour clamps to 0. Clamping each row first would rank it at 3600.
+      final records = [
+        ('record-c-local', 'app-3', 3600),
+        ('record-c-remote', 'app-3', -7200),
+        ('record-d', 'app-4', 1800),
+      ];
+      for (final (id, appUsageId, duration) in records) {
+        await repository.add(AppUsageTimeRecord(
+          id: id,
+          appUsageId: appUsageId,
+          duration: duration,
+          usageDate: hour,
+          createdDate: DateTime.now(),
+        ));
+      }
+
+      final page = await appUsageRepository.getListByTopAppUsages(pageIndex: 0, pageSize: 10);
+
+      expect(page.items.map((item) => item.id).toList(), ['app-4', 'app-3']);
+    });
   });
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
 import 'package:whph/core/application/shared/models/websocket_request.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
@@ -26,7 +27,7 @@ class DeviceHandshakeService {
       try {
         await channel.ready;
       } catch (e) {
-        Logger.debug('WebSocket connection failed during handshake with $ipAddress:$port - $e');
+        Logger.debug('WebSocket connection failed during handshake with $ipAddress:$port - ${e.runtimeType}');
         return null;
       }
 
@@ -65,6 +66,9 @@ class DeviceHandshakeService {
                   port: port,
                   capabilities: capabilities,
                   serverInfo: serverInfo,
+                  memberId: data['memberId'] as String?,
+                  protocolVersion: data['protocolVersion'] as int?,
+                  appVersion: data['appVersion'] as String?,
                 );
 
                 Logger.info(
@@ -85,7 +89,7 @@ class DeviceHandshakeService {
               }
             }
           } catch (e) {
-            Logger.error('Failed to parse handshake response: $e');
+            Logger.error('Failed to parse handshake response: ${e.runtimeType}');
             if (!completer.isCompleted) {
               completer.complete(null);
             }
@@ -130,21 +134,21 @@ class DeviceHandshakeService {
 
       return result;
     } catch (e) {
-      Logger.error('Device handshake failed for $ipAddress:$port - $e');
+      Logger.error('Device handshake failed for $ipAddress:$port - ${e.runtimeType}');
       return null;
     } finally {
       // Clean up subscription
       try {
         await subscription?.cancel();
       } catch (e) {
-        Logger.debug('Warning: Failed to cancel subscription during cleanup: $e');
+        Logger.debug('Warning: Failed to cancel subscription during cleanup: ${e.runtimeType}');
       }
 
       // Clean up WebSocket
       try {
         await channel?.sink.close();
       } catch (e) {
-        Logger.debug('Warning: Failed to close WebSocket during cleanup: $e');
+        Logger.debug('Warning: Failed to close WebSocket during cleanup: ${e.runtimeType}');
       }
     }
   }
@@ -207,7 +211,7 @@ class ServerInfo {
   factory ServerInfo.fromJson(Map<String, dynamic> json) {
     return ServerInfo(
       isServerActive: json['isServerActive'] as bool? ?? false,
-      serverPort: json['serverPort'] as int? ?? 44040,
+      serverPort: json['serverPort'] as int? ?? syncLanPort,
       activeConnections: json['activeConnections'] as int? ?? 0,
     );
   }
@@ -236,6 +240,16 @@ class DeviceInfo {
   final DeviceCapabilities? capabilities;
   final ServerInfo? serverInfo;
 
+  /// Sync member id; `null` for a legacy responder.
+  final String? memberId;
+
+  /// Sync protocol version; `null` for a legacy responder (v0.24.3), which
+  /// predates the field.
+  final int? protocolVersion;
+
+  /// App version the device reports; legacy responders may omit it.
+  final String? appVersion;
+
   DeviceInfo({
     required this.deviceId,
     required this.deviceName,
@@ -246,7 +260,14 @@ class DeviceInfo {
     DateTime? discoveredAt,
     this.capabilities,
     this.serverInfo,
+    this.memberId,
+    this.protocolVersion,
+    this.appVersion,
   }) : discoveredAt = discoveredAt ?? DateTime.now();
+
+  /// A device without a protocol version runs the legacy sync: it is listed
+  /// as "needs update" and receives no user data (D10).
+  bool get needsUpdate => protocolVersion == null;
 
   /// Check if this device can act as a server
   bool get canActAsServer => capabilities?.canActAsServer ?? false;

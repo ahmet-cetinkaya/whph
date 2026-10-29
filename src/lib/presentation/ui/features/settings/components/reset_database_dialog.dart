@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:acore/acore.dart';
 import 'package:flutter/material.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
-import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/core/application/features/sync/services/reset_local_data_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/restart_screen.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_paired_notice.dart';
+import 'package:whph/presentation/ui/features/sync/utils/sync_result_texts.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
@@ -27,7 +29,7 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
 
     try {
       // Perform reset first
-      await AppDatabase.instance().resetDatabase();
+      await container.resolve<ResetLocalDataService>().reset();
 
       // Only navigate on success
       if (context.mounted) {
@@ -54,6 +56,9 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
 
     // Log the actual error for debugging
     Logger.error('Database reset failed: ${error.toString()}');
+
+    final refusalKey = SyncResultTexts.refusalKey(error);
+    if (refusalKey != null) return translationService.translate(refusalKey);
 
     if (error is FileSystemException) {
       if (error.osError?.errorCode == 13 || error.message.contains('Permission denied')) {
@@ -154,6 +159,8 @@ class _ResetDatabaseDialogState extends State<ResetDatabaseDialog> {
                 ),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: AppTheme.sizeLarge),
+              const SyncPairedNotice(translationKey: SettingsTranslationKeys.resetDatabaseDialogPairedNote),
               const SizedBox(height: AppTheme.sizeXLarge),
               _isResetting
                   ? Column(

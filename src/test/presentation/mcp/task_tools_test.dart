@@ -25,6 +25,12 @@ import 'package:whph/infrastructure/persistence/shared/services/drift_applicatio
 import 'package:whph/presentation/mcp/tools/task_tools.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_arguments.dart';
 import 'package:whph/presentation/mcp/mcp_tool_registry.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
+
+final class TestDeviceIds extends Fake implements IDeviceIdService {
+  @override
+  Future<String> getDeviceId() async => 'local-device';
+}
 
 void main() {
   late AppDatabase database;
@@ -43,30 +49,41 @@ void main() {
     final tags = DriftTagRepository.withDatabase(database);
     final events = _Events();
     mediator
-      ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse, SaveTaskCommandHandler>(
+      ..registerHandler<SaveTaskCommand, SaveTaskCommandResponse,
+          SaveTaskCommandHandler>(
         () => SaveTaskCommandHandler(
           taskService: tasks,
           taskTagRepository: taskTags,
           taskTimeRecordRepository: timeRecords,
           settingRepository: DriftSettingRepository.withDatabase(database),
+          deviceIds: TestDeviceIds(),
           taskEvents: events,
         ),
       )
-      ..registerHandler<GetTaskQuery, GetTaskQueryResponse, GetTaskQueryHandler>(
-        () => GetTaskQueryHandler(taskRepository: tasks, taskTimeRecordRepository: timeRecords),
+      ..registerHandler<GetTaskQuery, GetTaskQueryResponse,
+          GetTaskQueryHandler>(
+        () => GetTaskQueryHandler(
+            taskRepository: tasks, taskTimeRecordRepository: timeRecords),
       )
-      ..registerHandler<GetListTaskTagsQuery, GetListTaskTagsQueryResponse, GetListTaskTagsQueryHandler>(
-        () => GetListTaskTagsQueryHandler(tagRepository: tags, taskTagRepository: taskTags),
+      ..registerHandler<GetListTaskTagsQuery, GetListTaskTagsQueryResponse,
+          GetListTaskTagsQueryHandler>(
+        () => GetListTaskTagsQueryHandler(
+            tagRepository: tags, taskTagRepository: taskTags),
       )
-      ..registerHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
+      ..registerHandler<AddTaskTimeRecordCommand,
+          AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
         () => AddTaskTimeRecordCommandHandler(
           taskTimeRecordRepository: timeRecords,
+          deviceIds: TestDeviceIds(),
           taskEvents: events,
         ),
       )
-      ..registerHandler<GetTotalDurationByTaskIdQuery, GetTotalDurationByTaskIdQueryResponse,
+      ..registerHandler<
+          GetTotalDurationByTaskIdQuery,
+          GetTotalDurationByTaskIdQueryResponse,
           GetTotalDurationByTaskIdQueryHandler>(
-        () => GetTotalDurationByTaskIdQueryHandler(taskTimeRecordRepository: timeRecords),
+        () => GetTotalDurationByTaskIdQueryHandler(
+            taskTimeRecordRepository: timeRecords),
       );
     recurrence = _Recurrence();
     actions = McpTaskActions(
@@ -79,6 +96,7 @@ void main() {
       taskEvents: events,
       recurrenceService: recurrence,
       mediator: mediator,
+      deviceIds: TestDeviceIds(),
     );
   });
 
@@ -87,7 +105,8 @@ void main() {
     AppDatabase.resetInstance();
   });
 
-  test('catalog exposes every canonical task and time tool with closed schemas', () {
+  test('catalog exposes every canonical task and time tool with closed schemas',
+      () {
     final tools = buildTaskTools(
       mediator: Mediator(Pipeline()),
       actions: actions,
@@ -107,22 +126,31 @@ void main() {
       'whph_task_time_records_update',
       'whph_task_time_total',
     ]);
-    expect(tools.every((tool) => tool.inputSchema.additionalProperties == false), isTrue);
-    expect(tools.every((tool) => tool.outputSchema.additionalProperties == false), isTrue);
+    expect(
+        tools.every((tool) => tool.inputSchema.additionalProperties == false),
+        isTrue);
+    expect(
+        tools.every((tool) => tool.outputSchema.additionalProperties == false),
+        isTrue);
   });
 
-  test('public tools create, read, patch, complete, reopen, and delete in SQLite', () async {
+  test(
+      'public tools create, read, patch, complete, reopen, and delete in SQLite',
+      () async {
     final tools = buildTaskTools(
       mediator: mediator,
       actions: actions,
       authorizeBeforeCommit: (extra, scopes) async => true,
     );
-    Future<Map<String, dynamic>> call(String name, Map<String, dynamic> arguments) async {
-      final result = await tools.singleWhere((tool) => tool.name == name).handler(
-            McpToolArguments(arguments),
-            _extra(),
-          );
-      expect(result.isError, isFalse, reason: '$name: ${result.structuredContent}');
+    Future<Map<String, dynamic>> call(
+        String name, Map<String, dynamic> arguments) async {
+      final result =
+          await tools.singleWhere((tool) => tool.name == name).handler(
+                McpToolArguments(arguments),
+                _extra(),
+              );
+      expect(result.isError, isFalse,
+          reason: '$name: ${result.structuredContent}');
       return result.structuredContent!;
     }
 
@@ -150,7 +178,9 @@ void main() {
     expect(persistedPatch.plannedDateReminderCustomOffset, isNull);
     expect(persistedPatch.recurrenceType, RecurrenceType.none);
     expect(persistedPatch.recurrenceInterval, isNull);
-    final bypassCompletion = await tools.singleWhere((tool) => tool.name == 'whph_tasks_update').handler(
+    final bypassCompletion = await tools
+        .singleWhere((tool) => tool.name == 'whph_tasks_update')
+        .handler(
           McpToolArguments({
             'id': id,
             'expectedRevision': patched['revision'],
@@ -158,7 +188,8 @@ void main() {
           }),
           _extra(),
         );
-    expect(bypassCompletion.structuredContent?['error'], containsPair('code', 'validation_error'));
+    expect(bypassCompletion.structuredContent?['error'],
+        containsPair('code', 'validation_error'));
     await call('whph_task_time_records_add', {
       'taskId': id,
       'durationSeconds': 30,
@@ -166,7 +197,10 @@ void main() {
     });
     final records = await call('whph_task_time_records_list', {'taskId': id});
     expect(records['totalDurationSeconds'], 30);
-    expect((records['items'] as List).single['occurredAt'], '2026-09-09T00:00:00.000Z');
+    // D12/T16: list returns per-UTC-day aggregates {date, durationSeconds}.
+    expect(
+        (records['items'] as List).single['date'], '2026-09-09T00:00:00.000Z');
+    expect((records['items'] as List).single['durationSeconds'], 30);
     final total = await call('whph_task_time_total', {'taskId': id});
     expect(total['totalDurationSeconds'], 30);
     final timed = await call('whph_task_time_records_update', {
@@ -175,7 +209,8 @@ void main() {
       'totalDurationSeconds': 45,
       'expectedRevision': patched['revision'],
     });
-    final replacedRecords = await call('whph_task_time_records_list', {'taskId': id});
+    final replacedRecords =
+        await call('whph_task_time_records_list', {'taskId': id});
     expect(replacedRecords['totalDurationSeconds'], 45);
     expect((replacedRecords['items'] as List), hasLength(1));
     final completed = await call('whph_tasks_set_completion', {
@@ -196,11 +231,14 @@ void main() {
       'expectedRevision': repeated['revision'],
       'isCompleted': false,
     });
-    await call('whph_tasks_delete', {'id': id, 'expectedRevision': reopened['revision']});
+    await call('whph_tasks_delete',
+        {'id': id, 'expectedRevision': reopened['revision']});
     expect(await tasks.getById(id), isNull);
   });
 
-  test('update distinguishes omitted fields from explicit null and rejects stale revisions', () async {
+  test(
+      'update distinguishes omitted fields from explicit null and rejects stale revisions',
+      () async {
     final created = DateTime.utc(2026, 9, 8, 10);
     await tasks.add(Task(
       id: 'task-1',
@@ -212,7 +250,8 @@ void main() {
     final stored = (await tasks.getById('task-1'))!;
     final revision = stored.modifiedDate ?? stored.createdDate;
     final repositoryInput = stored.copyWith(title: 'Repository CAS');
-    final committedRevision = await tasks.updateIfRevision(repositoryInput, revision);
+    final committedRevision =
+        await tasks.updateIfRevision(repositoryInput, revision);
     expect(committedRevision, isNotNull);
     expect(repositoryInput.modifiedDate, stored.modifiedDate);
     final result = await actions.updateTask(
@@ -238,8 +277,11 @@ void main() {
     );
   });
 
-  test('parent cycle and revoked before-commit guard leave persisted task unchanged', () async {
-    await tasks.add(Task(id: 'parent', createdDate: DateTime.now().toUtc(), title: 'Parent'));
+  test(
+      'parent cycle and revoked before-commit guard leave persisted task unchanged',
+      () async {
+    await tasks.add(Task(
+        id: 'parent', createdDate: DateTime.now().toUtc(), title: 'Parent'));
     await tasks.add(Task(
       id: 'child',
       createdDate: DateTime.now().toUtc(),
@@ -282,11 +324,13 @@ void main() {
       taskRepository: tasks,
       taskStatusRepository: DriftTaskStatusRepository.withDatabase(database),
       taskTagRepository: _FailingTaskTagRepository(database),
-      taskTimeRecordRepository: DriftTaskTimeRecordRepository.withDatabase(database),
+      taskTimeRecordRepository:
+          DriftTaskTimeRecordRepository.withDatabase(database),
       taskEvents: _Events(),
       tagRepository: tagRepository,
       recurrenceService: recurrence,
       mediator: mediator,
+      deviceIds: TestDeviceIds(),
     );
 
     await expectLater(
@@ -305,29 +349,38 @@ void main() {
     expect(await tasks.getById('rollback-task'), isNull);
   });
 
-  test('public boundary rejects bad references/date and hides delete without scope', () async {
+  test(
+      'public boundary rejects bad references/date and hides delete without scope',
+      () async {
     final tools = buildTaskTools(
       mediator: mediator,
       actions: actions,
       authorizeBeforeCommit: (extra, scopes) async => true,
     );
-    Future<CallToolResult> invoke(String name, Map<String, dynamic> arguments) async =>
-        await tools.singleWhere((tool) => tool.name == name).handler(McpToolArguments(arguments), _extra());
+    Future<CallToolResult> invoke(
+            String name, Map<String, dynamic> arguments) async =>
+        await tools
+            .singleWhere((tool) => tool.name == name)
+            .handler(McpToolArguments(arguments), _extra());
 
-    final badStatus = await invoke('whph_tasks_create', const {'title': 'bad', 'statusId': 'missing'});
-    expect(badStatus.structuredContent?['error'], containsPair('code', 'validation_error'));
+    final badStatus = await invoke(
+        'whph_tasks_create', const {'title': 'bad', 'statusId': 'missing'});
+    expect(badStatus.structuredContent?['error'],
+        containsPair('code', 'validation_error'));
     final badTag = await invoke('whph_tasks_create', const {
       'title': 'bad',
       'tagIds': ['missing']
     });
-    expect(badTag.structuredContent?['error'], containsPair('code', 'validation_error'));
+    expect(badTag.structuredContent?['error'],
+        containsPair('code', 'validation_error'));
     final badDate = await invoke('whph_task_time_records_update', const {
       'taskId': 'missing',
       'date': '2026-02-30',
       'totalDurationSeconds': 10,
       'expectedRevision': '2026-09-08T10:00:00Z',
     });
-    expect(badDate.structuredContent?['error'], containsPair('code', 'validation_error'));
+    expect(badDate.structuredContent?['error'],
+        containsPair('code', 'validation_error'));
 
     final registry = McpToolRegistry(
       tools: tools,
@@ -335,7 +388,8 @@ void main() {
       runInvocation: (invocation) => invocation(),
     );
     expect(
-      registry.discover(const {'tasks:read', 'tags:read', 'timers:read'}).map((tool) => tool.name),
+      registry.discover(const {'tasks:read', 'tags:read', 'timers:read'}).map(
+          (tool) => tool.name),
       isNot(contains('whph_tasks_delete')),
     );
   });
@@ -367,11 +421,13 @@ final class _Recurrence implements ITaskRecurrenceService {
   @override
   bool canCreateNextInstance(Task task) => false;
   @override
-  DateTime calculateNextRecurrenceDate(Task task, DateTime currentDate) => currentDate;
+  DateTime calculateNextRecurrenceDate(Task task, DateTime currentDate) =>
+      currentDate;
   @override
   List<WeekDays>? getRecurrenceDays(Task task) => null;
   @override
-  Future<String?> handleCompletedRecurringTask(String taskId, Mediator mediator) async {
+  Future<String?> handleCompletedRecurringTask(
+      String taskId, Mediator mediator) async {
     completionCalls++;
     return null;
   }
@@ -384,5 +440,7 @@ RequestHandlerExtra _extra() => RequestHandlerExtra(
       signal: BasicAbortController().signal,
       requestId: 'task-tool-test',
       sendNotification: (notification, {relatedTask}) async {},
-      sendRequest: <T extends BaseResultData>(request, resultFactory, options) async => resultFactory(const {}),
+      sendRequest:
+          <T extends BaseResultData>(request, resultFactory, options) async =>
+              resultFactory(const {}),
     );

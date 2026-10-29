@@ -72,7 +72,7 @@ class _HabitReverseDayOrderSettingState extends State<HabitReverseDayOrderSettin
         Logger.error('Failed to save habit reverse day order setting: $error\n$stackTrace');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_translationService.translate('settings.habit.save_error')),
+            content: Text(_translationService.translate(SettingsTranslationKeys.habitSettingsSaveError)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

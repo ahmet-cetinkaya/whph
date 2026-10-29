@@ -7,6 +7,7 @@ import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_theme_service.dart';
 import 'package:whph/presentation/ui/features/settings/constants/settings_translation_keys.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_paired_notice.dart';
 import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 import 'package:mediatr/mediatr.dart';
@@ -267,6 +268,7 @@ class _ImportExportActionsDialogState extends State<_ImportExportActionsDialog> 
             onSelect: () => _handleStrategySelect(ImportStrategy.replace, context),
             isDisabled: _isProcessing,
           ),
+          const SyncPairedNotice(translationKey: SettingsTranslationKeys.importStrategyPairedNote),
           const SizedBox(height: AppTheme.sizeMedium),
           _ImportStrategyOption(
             icon: Icons.merge,

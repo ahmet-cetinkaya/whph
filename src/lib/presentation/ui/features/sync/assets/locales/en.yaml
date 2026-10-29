@@ -1,17 +1,10 @@
 sync:
   desktop:
     mode_title: Desktop Sync Mode
-    client_mode_start: Connect as Client
-    client_mode_stop: Switch to Server Mode
-    client_mode_description: Connect to another device's server to sync data
-    server_mode_description: Allow other devices to connect and sync with this device
-    sync_mode_start: Start Client Mode
-    sync_mode_stop: Stop Client Mode
-    sync_mode_start_menu: Start Client Mode
-    sync_mode_stop_menu: Stop Client Mode
-    client_mode_starting: Starting client mode...
-    client_mode_started: Client mode started
-    client_mode_stopped: Switched back to server mode
+    sync_mode_start_menu: "Stop accepting connections"
+    sync_mode_stop_menu: "Accept connections"
+    client_mode_started: "No longer accepting connections"
+    client_mode_stopped: "Accepting connections again"
     sync_mode_toggle_error: Failed to toggle sync mode
   devices:
     errors:
@@ -20,168 +13,7 @@ sync:
       sync_failed: Failed to sync devices
     from_label: From
     help:
-      content: '🔄 **What is Sync?**
-
-
-        Sync keeps your habits, tasks, notes, and data updated across devices (phones,
-        tablets, laptops, desktops) on the same Wi-Fi. No cloud or internet—data stays
-        private and local.
-
-
-        It''s simple to use: Set it up once, and changes sync automatically or on
-        demand. Switch devices seamlessly, like starting on your phone and finishing
-        on your PC.
-
-
-        ## 🔗 **Sync Modes**
-
-
-        All devices support Client or Server modes for flexible syncing. Server leads
-        (shares data), Clients join and exchange. Need at least one Server.
-
-
-        - **Client Mode:** Connects to a Server to sync. Ideal for joining groups
-        via QR or manual input.
-
-        - **Server Mode:** Acts as hub; shows QR or string for others to connect.
-
-
-        **Platform Notes:**
-
-        - **Mobile:** Toggle via Wi-Fi hotspot icon. Server for portable hubs.
-
-        - **Desktop (Default: Server):** Switch in Sync settings. Client for laptops
-        syncing to main PCs.
-
-
-        **Examples:** Mobile-to-mobile (one Server), desktop-to-mobile (either way),
-        desktop-to-desktop (one Server, one Client).
-
-
-        Switch modes in Sync settings; app remembers your choice.
-
-
-        ## 🛠️ **Enabling Sync**
-
-
-        Devices must share Wi-Fi; keep WHPH open.
-
-
-        ### **QR Code Setup**
-
-        1. Server: Start Server mode in Sync—QR appears.
-
-        2. Client: "Add Device" > Scan QR.
-
-        3. Auto-connects and syncs.
-
-
-        Supports all combinations.
-
-
-        ### **Connection String**
-
-        1. Server: Copy string (e.g., "whph://IP:44040?...") from Sync.
-
-        2. Client: "Add Device" > Manual > Paste string > Connect.
-
-
-        No camera required.
-
-
-        ### **Manual Entry**
-
-        1. Server: Note IP/port (default 44040) from Connection Info.
-
-        2. Client: "Add Device" > Manual > Enter IP, port, name > Test > Connect.
-
-
-        **Desktop Clients:** Switch to Client mode first, then connect. Auto-syncs;
-        switch back anytime.
-
-
-        Enable auto-reconnect in settings for reliability.
-
-
-        ## 📋 **Managing Devices**
-
-
-        - **View:** See devices, sync times, status in Sync settings.
-
-        - **Manual Sync:** Tap button per device.
-
-        - **Remove:** Select and remove to stop syncing.
-
-
-        ## 🔧 **Troubleshooting**
-
-
-        **Connection Issues:**
-
-        1. Same Wi-Fi? No VPNs.
-
-        2. Restart app.
-
-        3. Verify Server mode.
-
-        4. Test without firewall.
-
-
-        **No Devices?**
-
-        - Stable Wi-Fi, no proxies.
-
-        - Refresh scan.
-
-        - Use manual IP.
-
-
-        **Sync Fails/Timeouts:**
-
-        1. Manual sync.
-
-        2. Match app versions.
-
-        3. Wait for large data.
-
-
-        **Firewall (Port 44040):**
-
-
-        If connections aren''t working, your computer''s firewall might be blocking
-        the sync signal. Open port 44040 to let devices communicate locally—it''s
-        safe for your home network.
-
-
-        **Windows (GUI):**
-
-        1. Open Defender Firewall > Advanced > Inbound Rules > New Rule.
-
-        2. Port > TCP > 44040 > Allow > All profiles > Name "WHPH Sync" > Finish.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Tips: Restart router, use private networks. Re-pair if "not found" errors.
-
-        '
+      content: "🔄 **What is Sync?**\n\nSync keeps your habits, tasks, notes, and data updated across your devices on the same Wi-Fi. No cloud or internet: data stays private and local.\n\n## 🛠️ **Enabling Sync**\n\n1. Keep WHPH open on both devices, on the same Wi-Fi.\n2. On one device choose \"Add Device\" and show the QR code.\n3. Scan it with the other device and check that both screens show the same code.\n4. Changes then sync automatically.\n\n## 📋 **Managing Devices**\n\n- **View:** See devices, sync times, and status in Sync settings.\n- **Manual Sync:** Tap the button per device.\n- **Remove:** Select a device and remove it to stop syncing.\n\n## 🔧 **Troubleshooting**\n\n1. Same Wi-Fi? No VPNs.\n2. Restart the app.\n3. Test without a firewall.\n\n**No Devices?**\n- Stable Wi-Fi, no proxies.\n- Refresh the scan."
       title: Device Synchronization Help
     last_sync_label: Last Sync
     no_devices_found: No synced devices
@@ -196,6 +28,7 @@ sync:
   error:
     scan: Failed to scan
   errors:
+    preparing: "Sync is preparing. Please try again shortly."
     connection_failed: "Connection failed. Please ensure:
 
 
@@ -290,14 +123,11 @@ sync:
   server:
     starting: Starting server mode...
     active: Server mode active - Show QR code to other devices
-    stopped: Server mode stopped - Device is now in client mode
+    stopped: "Stopped accepting connections from other devices"
     start_failed: Failed to start server mode - Check if port 44040 is available
-    start_tooltip: Start Server Mode
-    stop_tooltip: Stop Server Mode
     start_menu: Start Server Mode
     stop_menu: Stop Server Mode
     error: Error
-    device_became_server: This device is now the sync server
     mode_title: Server Mode
     mode_inactive: Server Inactive
   manual:
@@ -322,13 +152,9 @@ sync:
     connection_string_label: Connection String
     test_connection: Test Connection
     enter_server_details: Enter server connection details manually
-    connection_timeout:
-      Connection timeout. Please check the server address and try
-      again.
+    connection_timeout: "Connection timeout. Please check the device address and try again."
     connection_test_successful: Connection test successful!
-    connection_test_timeout:
-      Connection test timeout. Please check the server address
-      and try again.
+    connection_test_timeout: "Connection test timeout. Please check the device address and try again."
     connection_test_failed_no_response:
       Connection test failed - no response from
       server
@@ -357,3 +183,65 @@ sync:
     last_seen: Last seen at {time}
     already_added: Already added
   multi_interface_connection: Multi-interface connection
+  status:
+    not_reachable: "Device not reachable"
+    needs_repairing: "Needs re-pairing"
+    needs_update: "{device} needs a newer version of WHPH to sync"
+    this_device_needs_update: "Update WHPH on this device to sync with {device}, which runs a newer version"
+    items_failed: "Some items could not be synced"
+    items_rejected: "Some items were rejected as invalid"
+    preparing: "The other device is preparing its sync data"
+    duplicated_identity: "Another device uses the same sync identity"
+    storage_error: "A storage error interrupted the sync"
+    items_cannot_be_applied: "Some items failed repeatedly and are skipped for now"
+    repair_badge: "Re-pair needed"
+    repair_action: "Re-pair"
+  pairing:
+    show_qr: "Show QR code"
+    in_progress: "Pairing in progress…"
+    success: "Paired with {device}"
+    qr:
+      title: "Pair with a QR code"
+      description: "Scan this code with the other device."
+      expires_in: "Expires in {time}"
+      expired: "This code has expired."
+      used: "This code was already used."
+      regenerate: "Show a new code"
+      paired: "Device paired"
+    code:
+      title: "Compare codes"
+      description: "Make sure {device} shows the same code."
+      match: "Codes match"
+      mismatch: "Codes differ"
+    group_switch:
+      title: "Switch sync group?"
+      description: "{device} is in a different sync group. If you continue, this device leaves its current group and no longer syncs with those devices."
+      confirm: "Switch group"
+    errors:
+      code_expired_or_used: "This code expired or was already used. Show a new code and try again."
+      codes_differ: "The codes did not match. Pairing was cancelled."
+      cancelled: "Pairing was cancelled."
+      unreachable: "The other device could not be reached. Check that both are on the same network."
+      invalid_invitation: "This is not a WHPH pairing code."
+      group_switch_declined: "You chose not to switch sync groups."
+      preparing: "Sync is still preparing. Please try again shortly."
+      refused: "The other device refused the pairing."
+      not_active: "No pairing is in progress."
+  members:
+    remove_confirm:
+      title: "Remove {device}?"
+      description: "This removes {device} from the whole sync group, not just from this device. It stops syncing with every device in the group and the group keys are replaced. Pair it again to sync later."
+      action: "Remove from group"
+    removed_from_group:
+      title: "Removed from the sync group"
+      description: "This device was removed from its sync group and no longer syncs. Pair it again to resume."
+    needs_repairing:
+      title: "Pair this device again"
+      description: "This device was restored from an older backup, so the group no longer recognises it. Pair it again to resume syncing."
+    repair_banner:
+      title: "Sync was upgraded"
+      description: "Devices paired with the old sync must be paired again. Your data stays on every device."
+      dismiss: "Dismiss"
+    upgrade_progress: "Preparing sync data… {percent}%"
+  demo:
+    reset_blocked: "Demo data cannot be reset while this device is paired, because the reset would sync to your other devices. Remove this device from the sync group first."

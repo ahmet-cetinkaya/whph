@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/app_usages/commands/add_app_usage_tag_rule_command.dart';
 import 'package:whph/core/application/features/app_usages/commands/delete_app_usage_command.dart';
 import 'package:whph/core/application/features/app_usages/commands/delete_app_usage_tag_rule_command.dart';
@@ -84,6 +85,7 @@ void registerAppUsagesFeature(
         appUsageTagRepository: appUsageTagRepository,
         appUsageTimeRecordRepository: appUsageTimeRecordRepository,
         appUsageEvents: container.resolve<IAppUsageEvents>(),
+        syncCascadeService: container.resolve<ISyncCascadeService>(),
       ),
     )
     ..registerHandler<AddAppUsageTagRuleCommand, AddAppUsageTagRuleCommandResponse, AddAppUsageTagRuleCommandHandler>(

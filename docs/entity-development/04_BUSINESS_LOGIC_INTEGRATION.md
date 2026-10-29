@@ -197,7 +197,7 @@ class SaveParentCommandHandler extends IRequestHandler<SaveParentCommand, Parent
 
 After business logic integration:
 
-→ [Phase 5: Sync Integration](./05_SYNC_INTEGRATION.md) (recommended)
+→ [Phase 5: Sync Integration](./05_SYNC_INTEGRATION.md) (required)
 
 → [Phase 6: UI Components](./06_UI_COMPONENTS.md) (optional)
 

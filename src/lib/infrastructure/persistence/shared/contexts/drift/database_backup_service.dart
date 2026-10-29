@@ -3,8 +3,22 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
 
-/// Service for managing database backup and restore operations
+/// Writes a consistent snapshot of the open database to a destination path,
+/// typically with `VACUUM INTO` on the live connection.
+typedef SnapshotWriter = Future<void> Function(String destinationPath);
+
+/// Sync device state kept outside every backup: the secret key file and the
+/// ledger (D7, FR-027). Backups hold the database only, and no backup may be
+/// written over these files.
+const List<String> syncFilesExcludedFromBackups = [keyFileName, ledgerFileName];
+
+/// Service for managing database backup and restore operations.
+///
+/// Backups are written through a [SnapshotWriter] (`VACUUM INTO`) instead of
+/// copying the database file, because in WAL mode recent commits may still
+/// live only in the `-wal` sidecar.
 class DatabaseBackupService {
   final Future<Directory> Function() _getApplicationDirectory;
   final String _databaseName;
@@ -20,13 +34,30 @@ class DatabaseBackupService {
 
   String get _dbFileName => kDebugMode ? 'debug_$_databaseName' : _databaseName;
 
+  /// Deletes the WAL and shared-memory sidecars of [dbFile]. Stale sidecars
+  /// left next to a file that is replaced or removed would otherwise be
+  /// replayed onto (or confuse) the next database at that path.
+  Future<void> _deleteSidecarFiles(File dbFile) async {
+    for (final suffix in const ['-wal', '-shm']) {
+      final sidecar = File('${dbFile.path}$suffix');
+      if (await sidecar.exists()) await sidecar.delete();
+    }
+  }
+
   /// Creates a backup of the database before migration.
   ///
   /// A migration rewrites user data in place with no other recovery path, so
   /// a failure to create this backup must abort the migration rather than be
   /// logged and ignored — proceeding without a recovery copy would leave the
   /// user with no way back if the migration itself turns out to be wrong.
-  Future<void> createBackupBeforeMigration(int from, int to) async {
+  ///
+  /// [writeSnapshot] must write from the open connection outside any
+  /// transaction; the snapshot keeps `user_version = from`.
+  Future<void> createBackupBeforeMigration(
+    int from,
+    int to, {
+    required SnapshotWriter writeSnapshot,
+  }) async {
     if (_isTestMode) return;
 
     final dbFolder = await _getApplicationDirectory();
@@ -44,13 +75,9 @@ class DatabaseBackupService {
     ));
 
     try {
-      await dbFile.copy(backupFile.path);
+      await createConsistentSnapshot(writeSnapshot: writeSnapshot, destination: backupFile);
     } catch (e, stackTrace) {
       throw StateError('Failed to create pre-migration backup (v$from to v$to): $e\n$stackTrace');
-    }
-
-    if (!await backupFile.exists() || await backupFile.length() != await dbFile.length()) {
-      throw StateError('Pre-migration backup for v$from to v$to did not verify: ${backupFile.path}');
     }
 
     Logger.info('Database backup created: ${backupFile.path}');
@@ -111,6 +138,7 @@ class DatabaseBackupService {
       if (await currentDbFile.exists()) {
         await currentDbFile.delete();
       }
+      await _deleteSidecarFiles(currentDbFile);
 
       await backupFile.copy(currentDbFile.path);
 
@@ -123,7 +151,7 @@ class DatabaseBackupService {
   }
 
   /// Creates a manual database backup
-  Future<File?> createDatabaseBackup() async {
+  Future<File?> createDatabaseBackup({required SnapshotWriter writeSnapshot}) async {
     if (_isTestMode) return null;
 
     try {
@@ -137,7 +165,7 @@ class DatabaseBackupService {
           'import_backup_$timestamp.db',
         ));
 
-        await dbFile.copy(backupFile.path);
+        await createConsistentSnapshot(writeSnapshot: writeSnapshot, destination: backupFile);
         Logger.info('Manual database backup created: ${backupFile.path}');
         return backupFile;
       }
@@ -149,19 +177,37 @@ class DatabaseBackupService {
     }
   }
 
+  /// Writes a verified SQLite snapshot through [writeSnapshot].
+  ///
+  /// Without [destination], the snapshot goes to `backups/restore/`. An
+  /// explicit [destination] must not exist yet (`VACUUM INTO` refuses a
+  /// non-empty target, and a failed attempt must not delete an unrelated file).
   Future<File> createConsistentSnapshot({
-    required Future<void> Function(String destinationPath) writeSnapshot,
+    required SnapshotWriter writeSnapshot,
+    File? destination,
   }) async {
-    final applicationDirectory = await _getApplicationDirectory();
-    final snapshotDirectory = Directory(
-      p.join(applicationDirectory.path, 'backups', 'restore'),
-    );
-    await snapshotDirectory.create(recursive: true);
+    final File snapshot;
+    if (destination != null) {
+      if (syncFilesExcludedFromBackups.contains(p.basename(destination.path))) {
+        throw StateError('Snapshot destination is a protected sync file: ${p.basename(destination.path)}');
+      }
+      if (await destination.exists()) {
+        throw StateError('Snapshot destination already exists: ${destination.path}');
+      }
+      await destination.parent.create(recursive: true);
+      snapshot = destination;
+    } else {
+      final applicationDirectory = await _getApplicationDirectory();
+      final snapshotDirectory = Directory(
+        p.join(applicationDirectory.path, 'backups', 'restore'),
+      );
+      await snapshotDirectory.create(recursive: true);
 
-    final timestamp = DateTime.now().microsecondsSinceEpoch;
-    final snapshot = File(
-      p.join(snapshotDirectory.path, 'restore_$timestamp.db'),
-    );
+      final timestamp = DateTime.now().microsecondsSinceEpoch;
+      snapshot = File(
+        p.join(snapshotDirectory.path, 'restore_$timestamp.db'),
+      );
+    }
     try {
       await writeSnapshot(snapshot.path);
       await _verifySqliteSnapshot(snapshot);
@@ -188,11 +234,17 @@ class DatabaseBackupService {
   }
 
   /// Resets the database by closing and deleting the database file
+  /// together with its `-wal`/`-shm` sidecars.
+  ///
+  /// [preResetBackup] is a backup the caller already took (U5 writes it before
+  /// it deletes the key file); without it one is taken here.
   Future<void> resetDatabase({
+    required SnapshotWriter writeSnapshot,
     required Future<void> Function() closeDatabase,
     required void Function() resetInstance,
+    File? preResetBackup,
   }) async {
-    final backupFile = await createPreResetBackup();
+    final backupFile = preResetBackup ?? await createPreResetBackup(writeSnapshot: writeSnapshot);
 
     await closeDatabase();
     resetInstance();
@@ -203,12 +255,14 @@ class DatabaseBackupService {
 
       if (await dbFile.exists()) {
         await dbFile.delete();
+        await _deleteSidecarFiles(dbFile);
         Logger.info('Database deleted successfully');
 
         if (backupFile != null) {
           Logger.info('Pre-reset backup created: ${backupFile.path}');
         }
       } else {
+        await _deleteSidecarFiles(dbFile);
         Logger.info('Database file does not exist - treating as fresh reset');
       }
     } catch (e) {
@@ -218,6 +272,7 @@ class DatabaseBackupService {
         try {
           final dbFolder = await _getApplicationDirectory();
           final dbFile = File(p.join(dbFolder.path, _dbFileName));
+          await _deleteSidecarFiles(dbFile);
           await backupFile.copy(dbFile.path);
           Logger.info('Database restored from pre-reset backup due to deletion failure');
         } catch (restoreError) {
@@ -230,7 +285,7 @@ class DatabaseBackupService {
   }
 
   /// Creates an automatic backup before database reset
-  Future<File?> createPreResetBackup() async {
+  Future<File?> createPreResetBackup({required SnapshotWriter writeSnapshot}) async {
     try {
       final dbFolder = await _getApplicationDirectory();
       final dbFile = File(p.join(dbFolder.path, _dbFileName));
@@ -249,7 +304,7 @@ class DatabaseBackupService {
       final backupFileName = 'pre_reset_${timestamp}_$_databaseName';
       final backupFile = File(p.join(backupFolder.path, backupFileName));
 
-      await dbFile.copy(backupFile.path);
+      await createConsistentSnapshot(writeSnapshot: writeSnapshot, destination: backupFile);
 
       await _cleanupOldPreResetBackups(backupFolder);
 
@@ -322,6 +377,7 @@ class DatabaseBackupService {
       final dbFolder = await _getApplicationDirectory();
       final dbFile = File(p.join(dbFolder.path, _dbFileName));
 
+      await _deleteSidecarFiles(dbFile);
       await backupFile.copy(dbFile.path);
 
       Logger.info('Database restored from pre-reset backup: ${backupFile.path}');

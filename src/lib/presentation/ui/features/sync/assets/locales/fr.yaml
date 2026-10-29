@@ -6,177 +6,7 @@ sync:
       sync_failed: Échec de la synchronisation des appareils
     from_label: De
     help:
-      content: '🔄 **Qu''est-ce que la synchronisation ?**
-
-
-        La synchronisation maintient vos habitudes, tâches, notes et données à jour
-        entre les appareils (téléphones, tablettes, ordinateurs portables, bureaux)
-        sur le même Wi-Fi. Pas de cloud ni d''internet — les données restent privées
-        et locales.
-
-
-        C''est simple à utiliser : configurez-la une fois, et les changements se synchronisent
-        automatiquement ou à la demande. Passez d''un appareil à l''autre sans effort,
-        comme commencer sur votre téléphone et terminer sur votre PC.
-
-
-        ## 🔗 **Modes de synchronisation**
-
-
-        Tous les appareils supportent les modes Client ou Serveur pour une synchronisation
-        flexible. Le Serveur dirige (partage les données), les Clients rejoignent
-        et échangent. Au moins un Serveur est nécessaire.
-
-
-        - **Mode Client :** Se connecte à un Serveur pour synchroniser. Idéal pour
-        rejoindre des groupes via QR ou saisie manuelle.
-
-        - **Mode Serveur :** Agit comme un hub ; affiche un QR ou une chaîne pour
-        que les autres se connectent.
-
-
-        **Notes sur les plateformes :**
-
-        - **Mobile :** Basculez via l''icône hotspot Wi-Fi. Serveur pour les hubs
-        portables.
-
-        - **Bureau (Par défaut : Serveur) :** Changez dans les paramètres de synchronisation.
-        Client pour les ordinateurs portables synchronisant vers les PC principaux.
-
-
-        **Exemples :** Mobile vers mobile (un Serveur), bureau vers mobile (dans les
-        deux sens), bureau vers bureau (un Serveur, un Client).
-
-
-        Changez les modes dans les paramètres de synchronisation ; l''application
-        se souvient de votre choix.
-
-
-        ## 🛠️ **Activer la synchronisation**
-
-
-        Les appareils doivent partager le Wi-Fi ; gardez WHPH ouvert.
-
-
-        ### **Configuration par code QR**
-
-        1. Serveur : Démarrez le mode Serveur dans Synchronisation — le QR apparaît.
-
-        2. Client : "Ajouter un appareil" > Scanner le QR.
-
-        3. Se connecte automatiquement et synchronise.
-
-
-        Supporte toutes les combinaisons.
-
-
-        ### **Chaîne de connexion**
-
-        1. Serveur : Copiez la chaîne (ex. "whph://IP:44040?...") depuis Synchronisation.
-
-        2. Client : "Ajouter un appareil" > Manuel > Coller la chaîne > Se connecter.
-
-
-        Aucune caméra requise.
-
-
-        ### **Saisie manuelle**
-
-        1. Serveur : Notez l''IP/port (par défaut 44040) depuis les Infos de connexion.
-
-        2. Client : "Ajouter un appareil" > Manuel > Entrez IP, port, nom > Tester
-        > Se connecter.
-
-
-        **Clients Bureau :** Passez d''abord en mode Client, puis connectez-vous.
-        Synchronise automatiquement ; repassez quand vous voulez.
-
-
-        Activez la reconnexion automatique dans les paramètres pour plus de fiabilité.
-
-
-        ## 📋 **Gérer les appareils**
-
-
-        - **Afficher :** Voyez les appareils, les heures de synchronisation, le statut
-        dans les paramètres de synchronisation.
-
-        - **Synchronisation manuelle :** Appuyez sur le bouton par appareil.
-
-        - **Supprimer :** Sélectionnez et supprimez pour arrêter la synchronisation.
-
-
-        ## 🔧 **Dépannage**
-
-
-        **Problèmes de connexion :**
-
-        1. Même Wi-Fi ? Pas de VPN.
-
-        2. Redémarrez l''application.
-
-        3. Vérifiez le mode Serveur.
-
-        4. Testez sans pare-feu.
-
-
-        **Aucun appareil ?**
-
-        - Wi-Fi stable, pas de proxies.
-
-        - Actualisez le scan.
-
-        - Utilisez l''IP manuelle.
-
-
-        **Échecs de synchronisation/Délais :**
-
-        1. Synchronisation manuelle.
-
-        2. Vérifiez les versions de l''application.
-
-        3. Attendez pour les grandes quantités de données.
-
-
-        **Pare-feu (Port 44040) :**
-
-
-        Si les connexions ne fonctionnent pas, le pare-feu de votre ordinateur pourrait
-        bloquer le signal de synchronisation. Ouvrez le port 44040 pour permettre
-        aux appareils de communiquer localement — c''est sûr pour votre réseau domestique.
-
-
-        **Windows (Interface graphique) :**
-
-        1. Ouvrez Defender Firewall > Avancé > Règles entrantes > Nouvelle règle.
-
-        2. Port > TCP > 44040 > Autoriser > Tous les profils > Nommez "WHPH Sync"
-        > Terminer.
-
-
-        **Windows (CMD Admin) :**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW) :**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Conseils : Redémarrez le routeur, utilisez des réseaux privés. Re-pairez en
-        cas d''erreurs "non trouvé".
-
-        '
+      content: "🔄 **Qu'est-ce que la synchronisation ?**\n\nLa synchronisation garde vos habitudes, tâches, notes et données à jour sur vos appareils connectés au même Wi-Fi. Pas de cloud ni d'internet : les données restent privées et locales.\n\n## 🛠️ **Activer la synchronisation**\n\n1. Gardez WHPH ouvert sur les deux appareils, sur le même Wi-Fi.\n2. Sur un appareil, choisissez « Ajouter un appareil » et affichez le code QR.\n3. Scannez-le avec l'autre appareil et vérifiez que les deux écrans affichent le même code.\n4. Les modifications se synchronisent ensuite automatiquement.\n\n## 📋 **Gérer les appareils**\n\n- **Afficher :** Consultez les appareils, les heures de synchronisation et l'état dans les paramètres de synchronisation.\n- **Synchronisation manuelle :** Appuyez sur le bouton de l'appareil.\n- **Supprimer :** Sélectionnez un appareil et supprimez-le pour arrêter la synchronisation.\n\n## 🔧 **Dépannage**\n\n1. Même Wi-Fi ? Pas de VPN.\n2. Redémarrez l'application.\n3. Testez sans pare-feu.\n\n**Aucun appareil ?**\n- Wi-Fi stable, pas de proxy.\n- Actualisez la recherche."
       title: Aide à la synchronisation des appareils
     last_sync_label: Dernière synchronisation
     no_devices_found: Aucun appareil synchronisé
@@ -191,6 +21,7 @@ sync:
   error:
     scan: Échec du scan
   errors:
+    preparing: "La synchronisation se prépare. Réessayez dans un instant."
     connection_failed: "Connexion échouée. Veuillez vous assurer :
 
 
@@ -222,7 +53,7 @@ sync:
     local_ip_error: Erreur d'IP locale
     device_already_paired: Appareil déjà appairé
     no_active_interfaces: Aucune interface réseau active
-    device_discovery_failed: Échec de la découverte des appareils
+    device_discovery_failed: "Échec du démarrage de la découverte des appareils : {error}"
     no_server_configured:
       Aucun serveur configuré. Ajoutez d'abord un appareil de
       synchronisation ou utilisez une connexion manuelle pour configurer une connexion
@@ -264,7 +95,7 @@ sync:
     sync_completed: Synchronisation terminée avec succès
     sync_in_progress: Synchronisation en cours...
     testing_connection: Test de connexion...
-    device_added_success: Appareil ajouté avec succès
+    device_added_success: "{deviceName} a été ajouté avec succès aux appareils de synchronisation"
   qr_code:
     close_button: Fermer
     dialog_title: Scanner le code QR pour synchroniser
@@ -283,14 +114,11 @@ sync:
   server:
     starting: Démarrage du mode serveur...
     active: Mode serveur actif - Afficher le code QR aux autres appareils
-    stopped: Mode serveur arrêté - L'appareil est maintenant en mode client
+    stopped: "L'acceptation des connexions d'autres appareils est arrêtée"
     start_failed:
       Échec du démarrage du mode serveur - Vérifiez si le port 44040 est
       disponible
-    start_tooltip: Démarrer le mode serveur
-    stop_tooltip: Arrêter le mode serveur
     error: Erreur
-    device_became_server: Cet appareil est maintenant le serveur de synchronisation
     start_menu: Démarrer le serveur
     stop_menu: Arrêter le serveur
     mode_title: Mode serveur
@@ -309,7 +137,7 @@ sync:
     port_required: Le port est requis
     invalid_port: Numéro de port invalide
     connection_failed: Connexion échouée
-    connection_error: Erreur de connexion
+    connection_error: "Erreur de connexion : {0}"
     connection_string_tab: Chaîne de connexion
     manual_entry_tab: Saisie manuelle
     connection_string_required: Chaîne de connexion requise
@@ -317,13 +145,9 @@ sync:
     connection_string_label: Chaîne de connexion
     test_connection: Tester la connexion
     enter_server_details: Saisir manuellement les détails de connexion du serveur
-    connection_timeout:
-      Délai d'attente de connexion écoulé. Vérifiez l'adresse du
-      serveur et réessayez.
+    connection_timeout: "Délai de connexion dépassé. Vérifiez l'adresse de l'appareil et réessayez."
     connection_test_successful: Test de connexion réussi !
-    connection_test_timeout:
-      Délai d'attente du test de connexion écoulé. Vérifiez
-      l'adresse du serveur et réessayez.
+    connection_test_timeout: "Délai du test de connexion dépassé. Vérifiez l'adresse de l'appareil et réessayez."
     connection_test_failed_no_response:
       Test de connexion échoué - aucune réponse
       du serveur
@@ -345,7 +169,7 @@ sync:
     alternative_methods_hint: Essayez la connexion manuelle ou le code QR
     scan_qr_code: Scanner le code QR
     refresh_scan: Actualiser le scan
-    last_seen: Vu pour la dernière fois
+    last_seen: "Vu pour la dernière fois à {time}"
     already_added: Déjà ajouté
   connect_info:
     dialog_title: Informations de connexion de l'appareil
@@ -371,20 +195,71 @@ sync:
     copy: Copier
   desktop:
     mode_title: Mode de synchronisation de bureau
-    client_mode_start: Se connecter en tant que client
-    client_mode_stop: Passer en mode serveur
-    client_mode_description:
-      Connectez-vous au serveur d'un autre appareil pour synchroniser
-      les données
-    server_mode_description:
-      Permettez à d'autres appareils de se connecter et de
-      synchroniser avec cet appareil
-    sync_mode_start: Démarrer le mode client
-    sync_mode_stop: Arrêter le mode client
-    sync_mode_start_menu: Démarrer le mode client
-    sync_mode_stop_menu: Arrêter le mode client
-    client_mode_starting: Démarrage du mode client...
-    client_mode_started: Mode client démarré
-    client_mode_stopped: Revenu au mode serveur
+    sync_mode_start_menu: "Arrêter d'accepter les connexions"
+    sync_mode_stop_menu: "Accepter les connexions"
+    client_mode_started: "N'accepte plus les connexions"
+    client_mode_stopped: "Accepte de nouveau les connexions"
     sync_mode_toggle_error: Impossible de basculer le mode de synchronisation
   multi_interface_connection: Connexion multi-interface
+  status:
+    not_reachable: "Appareil inaccessible"
+    needs_repairing: "Nécessite un nouvel appairage"
+    needs_update: "{device} a besoin d'une version plus récente de WHPH pour synchroniser"
+    this_device_needs_update: "Mettez à jour WHPH sur cet appareil pour synchroniser avec {device}, qui utilise une version plus récente"
+    items_failed: "Certains éléments n'ont pas pu être synchronisés"
+    items_rejected: "Certains éléments ont été rejetés comme invalides"
+    preparing: "L'autre appareil prépare ses données de synchronisation"
+    duplicated_identity: "Un autre appareil utilise la même identité de synchronisation"
+    storage_error: "Une erreur de stockage a interrompu la synchronisation"
+    items_cannot_be_applied: "Certains éléments ont échoué à plusieurs reprises et sont ignorés pour l'instant"
+    repair_badge: "Nouvel appairage requis"
+    repair_action: "Appairer à nouveau"
+  pairing:
+    show_qr: "Afficher le code QR"
+    in_progress: "Appairage en cours…"
+    success: "Appairé avec {device}"
+    qr:
+      title: "Appairer avec un code QR"
+      description: "Scannez ce code avec l'autre appareil."
+      expires_in: "Expire dans {time}"
+      expired: "Ce code a expiré."
+      used: "Ce code a déjà été utilisé."
+      regenerate: "Afficher un nouveau code"
+      paired: "Appareil appairé"
+    code:
+      title: "Comparer les codes"
+      description: "Vérifiez que {device} affiche le même code."
+      match: "Les codes correspondent"
+      mismatch: "Les codes diffèrent"
+    group_switch:
+      title: "Changer de groupe de synchronisation ?"
+      description: "{device} est dans un autre groupe de synchronisation. Si vous continuez, cet appareil quitte son groupe actuel et ne se synchronise plus avec ses appareils."
+      confirm: "Changer de groupe"
+    errors:
+      code_expired_or_used: "Ce code a expiré ou a déjà été utilisé. Affichez un nouveau code et réessayez."
+      codes_differ: "Les codes ne correspondaient pas. L'appairage a été annulé."
+      cancelled: "L'appairage a été annulé."
+      unreachable: "Impossible de joindre l'autre appareil. Vérifiez que les deux sont sur le même réseau."
+      invalid_invitation: "Ce n'est pas un code d'appairage WHPH."
+      group_switch_declined: "Vous avez choisi de ne pas changer de groupe de synchronisation."
+      preparing: "La synchronisation est encore en préparation. Réessayez dans un instant."
+      refused: "L'autre appareil a refusé l'appairage."
+      not_active: "Aucun appairage n'est en cours."
+  members:
+    remove_confirm:
+      title: "Retirer {device} ?"
+      description: "Cela retire {device} de tout le groupe de synchronisation, pas seulement de cet appareil. Il ne se synchronise plus avec aucun appareil du groupe et les clés du groupe sont remplacées. Appairez-le à nouveau pour synchroniser plus tard."
+      action: "Retirer du groupe"
+    removed_from_group:
+      title: "Retiré du groupe de synchronisation"
+      description: "Cet appareil a été retiré de son groupe de synchronisation et ne se synchronise plus. Appairez-le à nouveau pour reprendre."
+    needs_repairing:
+      title: "Réassociez cet appareil"
+      description: "Cet appareil a été restauré à partir d'une ancienne sauvegarde, donc le groupe ne le reconnaît plus. Associez-le à nouveau pour reprendre la synchronisation."
+    repair_banner:
+      title: "La synchronisation a été mise à niveau"
+      description: "Les appareils appairés avec l'ancienne synchronisation doivent être appairés à nouveau. Vos données restent sur chaque appareil."
+      dismiss: "Ignorer"
+    upgrade_progress: "Préparation des données de synchronisation… {percent} %"
+  demo:
+    reset_blocked: "Les données de démonstration ne peuvent pas être réinitialisées tant que cet appareil est appairé, car la réinitialisation serait synchronisée vers vos autres appareils. Retirez d'abord cet appareil du groupe de synchronisation."

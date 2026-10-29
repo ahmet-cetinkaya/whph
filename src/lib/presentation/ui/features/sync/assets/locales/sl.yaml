@@ -1,21 +1,10 @@
 sync:
   desktop:
     mode_title: Način sinhronizacije namizja
-    client_mode_start: Povežite se kot klient
-    client_mode_stop: Preklopi na način strežnika
-    client_mode_description:
-      Povežite se s strežnikom druge naprave za sinhronizacijo
-      podatkov
-    server_mode_description:
-      Dovoli drugim napravam, da se povežejo in sinhronizirajo
-      s to napravo
-    sync_mode_start: Začni način klienta
-    sync_mode_stop: Ustavi način klienta
-    sync_mode_start_menu: Začni način klienta
-    sync_mode_stop_menu: Ustavi način klienta
-    client_mode_starting: Začenjanje načina klienta...
-    client_mode_started: Način klienta zagnan
-    client_mode_stopped: Preklopljeno nazaj na način strežnika
+    sync_mode_start_menu: "Ustavi sprejemanje povezav"
+    sync_mode_stop_menu: "Sprejemaj povezave"
+    client_mode_started: "Povezav ne sprejema več"
+    client_mode_stopped: "Povezave spet sprejema"
     sync_mode_toggle_error: Preklop načina sinhronizacije ni uspel
   devices:
     errors:
@@ -24,172 +13,7 @@ sync:
       sync_failed: Napaka pri sinhronizaciji naprav
     from_label: Od
     help:
-      content: '🔄 **Kaj je Sync?**
-
-
-        Sync ohranja vaše navade, naloge, beležke in podatke posodobljene na vseh
-        napravah (telefoni, tablice, prenosniki, namizja) v isti Wi-Fi mreži. Brez
-        oblaka ali interneta — podatki ostanejo zasebni in lokalni.
-
-
-        Enostaven za uporabo: Nastavite enkrat, spremembe pa se sinhronizirajo samodejno
-        ali na zahtevo. Preklapljajte med napravami brezhibno, kot da začnete na telefonu
-        in končate na PC-ju.
-
-
-        ## 🔗 **Načini sinhronizacije**
-
-
-        Vse naprave podpirajo načina klienta ali strežnika za fleksibilno sinhronizacijo.
-        Strežnik vodi (deli podatke), klienti se pridružijo in izmenjajo. Potrebujete
-        vsaj en strežnik.
-
-
-        - **Način klienta:** Se poveže s strežnikom za sinhronizacijo. Idealno za
-        pridružitev skupinam prek QR ali ročnega vnosa.
-
-        - **Način strežnika:** Deluje kot središče; prikazuje QR ali niz za povezavo
-        drugih.
-
-
-        **Opombe za platforme:**
-
-        - **Mobilno:** Preklapljajte prek ikone Wi-Fi hotspot. Strežnik za prenosna
-        središča.
-
-        - **Namizno (privzeto: Strežnik):** Preklapljajte v nastavitvah Sync. Klient
-        za prenosnike, ki se sinhronizirajo z glavnimi računalniki.
-
-
-        **Primeri:** Mobilno-na-mobilno (en strežnik), namizno-na-mobilno (v obe smeri),
-        namizno-na-namizno (en strežnik, en klient).
-
-
-        Preklapljajte načine v nastavitvah Sync; aplikacija si zapomni vašo izbiro.
-
-
-        ## 🛠️ **Omogočanje Sync**
-
-
-        Naprave morajo deliti Wi-Fi; držite WHPH odprto.
-
-
-        ### **Nastavitev s QR kodo**
-
-        1. Strežnik: Začnite način strežnika v Sync — pojavi se QR.
-
-        2. Klient: „Dodaj napravo” > Skeniraj QR.
-
-        3. Samodejno se poveže in sinhronizira.
-
-
-        Podpira vse kombinacije.
-
-
-        ### **Povezovalni niz**
-
-        1. Strežnik: Kopirajte niz (npr. „whph://IP:44040?...”) iz Sync.
-
-        2. Klient: „Dodaj napravo” > Ročno > Prilepi niz > Poveži.
-
-
-        Ne potrebujete kamere.
-
-
-        ### **Ročni vnos**
-
-        1. Strežnik: Zabeležite IP/port (privzeto 44040) iz informacij o povezavi.
-
-        2. Klient: „Dodaj napravo” > Ročno > Vnesite IP, port, ime > Test > Poveži.
-
-
-        **Namizni klienti:** Najprej preklopite na način klienta, nato se povežite.
-        Samodejna sinhronizacija; preklopite nazaj kadarkoli.
-
-
-        Omogočite samodejno ponovno povezavo v nastavitvah za zanesljivost.
-
-
-        ## 📋 **Upravljanje naprav**
-
-
-        - **Ogled:** Poglejte naprave, čase sinhronizacije, status v nastavitvah Sync.
-
-        - **Ročna sinhronizacija:** Pritisnite gumb na napravo.
-
-        - **Odstrani:** Izberite in odstranite, da ustavite sinhronizacijo.
-
-
-        ## 🔧 **Odpravljanje težav**
-
-
-        **Težave s povezavo:**
-
-        1. Ista Wi-Fi? Brez VPN-ov.
-
-        2. Ponovno zaženite aplikacijo.
-
-        3. Preverite način strežnika.
-
-        4. Testirajte brez požarnega zidu.
-
-
-        **Ni naprav?**
-
-        - Stabilna Wi-Fi, brez proxyjev.
-
-        - Osvežite skeniranje.
-
-        - Uporabite ročni IP.
-
-
-        **Sinhronizacija spodleti/Časovne omejitve:**
-
-        1. Ročna sinhronizacija.
-
-        2. Ujemanje različic aplikacije.
-
-        3. Počakajte na velike podatke.
-
-
-        **Požarni zid (Vrata 44040):**
-
-
-        Če povezave ne delujejo, lahko požarni zid vašega računalnika blokira signal
-        sinhronizacije. Odprite vrata 44040, da dovolite lokalno komunikacijo med
-        napravami — varno je za vašo domačo mrežo.
-
-
-        **Windows (GUI):**
-
-        1. Odprite Defender požarni zid > Napredno > Vhodna pravila > Novo pravilo.
-
-        2. Vrata > TCP > 44040 > Dovoli > Vsi profili > Poimenujte „WHPH Sync” > Končaj.
-
-
-        **Windows (Upravitelj CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Nasveti: Ponovno zaženite usmerjevalnik, uporabite zasebne mreže. Ponovno
-        sparite pri napakah „ni najdeno”.
-
-        '
+      content: "🔄 **Kaj je sinhronizacija?**\n\nSinhronizacija ohranja vaše navade, naloge, zapiske in podatke posodobljene na napravah v istem omrežju Wi-Fi. Brez oblaka ali interneta: podatki ostanejo zasebni in lokalni.\n\n## 🛠️ **Vklop sinhronizacije**\n\n1. Pustite WHPH odprt na obeh napravah v istem omrežju Wi-Fi.\n2. Na eni napravi izberite »Dodaj napravo« in prikažite kodo QR.\n3. Skenirajte jo z drugo napravo in preverite, ali sta na obeh zaslonih enaki kodi.\n4. Spremembe se nato samodejno sinhronizirajo.\n\n## 📋 **Upravljanje naprav**\n\n- **Ogled:** Naprave, čase sinhronizacije in stanje najdete v nastavitvah sinhronizacije.\n- **Ročna sinhronizacija:** Tapnite gumb ob napravi.\n- **Odstrani:** Izberite napravo in jo odstranite, da ustavite sinhronizacijo.\n\n## 🔧 **Odpravljanje težav**\n\n1. Isto omrežje Wi-Fi? Brez VPN.\n2. Znova zaženite aplikacijo.\n3. Preizkusite brez požarnega zidu.\n\n**Ni naprav?**\n- Stabilen Wi-Fi, brez posrednika.\n- Osvežite iskanje."
       title: Pomoč sinhronizaciji naprav
     last_sync_label: Zadnja sinhronizacija
     no_devices_found: Ni sinhroniziranih naprav
@@ -204,6 +28,7 @@ sync:
   error:
     scan: Napaka pri skeniranju
   errors:
+    preparing: "Sinhronizacija se pripravlja. Poskusite znova čez trenutek."
     connection_failed: "Povezava ni uspela. Preverite:
 
 
@@ -306,16 +131,13 @@ sync:
   server:
     starting: Začenjanje načina strežnika...
     active: Način strežnika aktiven - Pokaži QR kodo drugim napravam
-    stopped: Način strežnika ustavljen - Naprava je zdaj v načinu klienta
+    stopped: "Sprejemanje povezav z drugih naprav je ustavljeno"
     start_failed:
       Začenjanje načina strežnika ni uspelo - Preveri, ali je vrata 44040
       na voljo
-    start_tooltip: Začni način strežnika
-    stop_tooltip: Ustavi način strežnika
     start_menu: Začni način strežnika
     stop_menu: Ustavi način strežnika
     error: Napaka
-    device_became_server: Ta naprava je zdaj strežnik sinhronizacije
     mode_title: Način strežnika
     mode_inactive: Strežnik ni aktiven
   manual:
@@ -340,13 +162,9 @@ sync:
     connection_string_label: Povezovalni niz
     test_connection: Testiraj povezavo
     enter_server_details: Ročno vnesite podrobnosti povezave strežnika
-    connection_timeout:
-      Časovna omejitev povezave. Preverite naslov strežnika in poskusite
-      znova.
+    connection_timeout: "Časovna omejitev povezave je potekla. Preverite naslov naprave in poskusite znova."
     connection_test_successful: Test povezave uspešen!
-    connection_test_timeout:
-      Časovna omejitev testa povezave. Preverite naslov strežnika
-      in poskusite znova.
+    connection_test_timeout: "Časovna omejitev preizkusa povezave je potekla. Preverite naslov naprave in poskusite znova."
     connection_test_failed_no_response: Test povezave ni uspel - ni odgovora strežnika
     connection_test_failed_generic: "Test povezave ni uspel: {0}"
     connection_string_instruction:
@@ -373,3 +191,65 @@ sync:
     last_seen: Zadnjič viden ob {time}
     already_added: Že dodano
   multi_interface_connection: Večvmesniška povezava
+  status:
+    not_reachable: "Naprava ni dosegljiva"
+    needs_repairing: "Potrebno je novo seznanjanje"
+    needs_update: "{device} potrebuje novejšo različico WHPH za sinhronizacijo"
+    this_device_needs_update: "Posodobite WHPH v tej napravi za sinhronizacijo z napravo {device}, ki uporablja novejšo različico"
+    items_failed: "Nekaterih elementov ni bilo mogoče sinhronizirati"
+    items_rejected: "Nekateri elementi so bili zavrnjeni kot neveljavni"
+    preparing: "Druga naprava pripravlja podatke za sinhronizacijo"
+    duplicated_identity: "Druga naprava uporablja isto sinhronizacijsko identiteto"
+    storage_error: "Napaka pri shranjevanju je prekinila sinhronizacijo"
+    items_cannot_be_applied: "Nekateri elementi so večkrat spodleteli in so zaenkrat preskočeni"
+    repair_badge: "Potrebno ponovno seznanjanje"
+    repair_action: "Ponovno seznani"
+  pairing:
+    show_qr: "Prikaži kodo QR"
+    in_progress: "Seznanjanje poteka…"
+    success: "Seznanjeno z napravo {device}"
+    qr:
+      title: "Seznani s kodo QR"
+      description: "Skenirajte to kodo z drugo napravo."
+      expires_in: "Poteče čez {time}"
+      expired: "Ta koda je potekla."
+      used: "Ta koda je že bila uporabljena."
+      regenerate: "Prikaži novo kodo"
+      paired: "Naprava seznanjena"
+    code:
+      title: "Primerjaj kodi"
+      description: "Preverite, ali naprava {device} prikazuje isto kodo."
+      match: "Kodi se ujemata"
+      mismatch: "Kodi se razlikujeta"
+    group_switch:
+      title: "Zamenjati skupino za sinhronizacijo?"
+      description: "Naprava {device} je v drugi skupini za sinhronizacijo. Če nadaljujete, ta naprava zapusti trenutno skupino in se ne sinhronizira več z njenimi napravami."
+      confirm: "Zamenjaj skupino"
+    errors:
+      code_expired_or_used: "Koda je potekla ali je bila že uporabljena. Prikažite novo kodo in poskusite znova."
+      codes_differ: "Kodi se nista ujemali. Seznanjanje je bilo preklicano."
+      cancelled: "Seznanjanje je bilo preklicano."
+      unreachable: "Druge naprave ni mogoče doseči. Preverite, ali sta obe v istem omrežju."
+      invalid_invitation: "To ni koda za seznanjanje WHPH."
+      group_switch_declined: "Odločili ste se, da skupine za sinhronizacijo ne zamenjate."
+      preparing: "Sinhronizacija se še pripravlja. Poskusite znova čez trenutek."
+      refused: "Druga naprava je zavrnila seznanjanje."
+      not_active: "Nobeno seznanjanje ni v teku."
+  members:
+    remove_confirm:
+      title: "Odstraniti napravo {device}?"
+      description: "To odstrani napravo {device} iz celotne skupine za sinhronizacijo, ne samo s te naprave. Ne sinhronizira se več z nobeno napravo v skupini, ključi skupine pa se zamenjajo. Znova jo seznanite, če želite pozneje sinhronizirati."
+      action: "Odstrani iz skupine"
+    removed_from_group:
+      title: "Odstranjeno iz skupine za sinhronizacijo"
+      description: "Ta naprava je bila odstranjena iz skupine za sinhronizacijo in se ne sinhronizira več. Znova jo seznanite, če želite nadaljevati."
+    needs_repairing:
+      title: "Napravo znova seznanite"
+      description: "Ta naprava je bila obnovljena iz starejše varnostne kopije, zato je skupina ne prepozna več. Znova jo seznanite, da se sinhronizacija nadaljuje."
+    repair_banner:
+      title: "Sinhronizacija je bila nadgrajena"
+      description: "Naprave, seznanjene s staro sinhronizacijo, je treba znova seznaniti. Vaši podatki ostanejo na vsaki napravi."
+      dismiss: "Opusti"
+    upgrade_progress: "Priprava podatkov za sinhronizacijo… {percent} %"
+  demo:
+    reset_blocked: "Demo podatkov ni mogoče ponastaviti, dokler je ta naprava seznanjena, ker bi se ponastavitev sinhronizirala na vaše druge naprave. Najprej odstranite to napravo iz skupine za sinhronizacijo."

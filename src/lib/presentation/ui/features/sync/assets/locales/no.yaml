@@ -1,19 +1,10 @@
 sync:
   desktop:
     mode_title: Desktop Synkroniseringsmodus
-    client_mode_start: Koble som klient
-    client_mode_stop: Bytt til servermodus
-    client_mode_description: Koble til en annen enhets server for å synkronisere data
-    server_mode_description:
-      Tillat andre enheter å koble til og synkronisere med
-      denne enheten
-    sync_mode_start: Start klientmodus
-    sync_mode_stop: Stopp klientmodus
-    sync_mode_start_menu: Start klientmodus
-    sync_mode_stop_menu: Stopp klientmodus
-    client_mode_starting: Starter klientmodus...
-    client_mode_started: Klientmodus startet
-    client_mode_stopped: Byttet tilbake til servermodus
+    sync_mode_start_menu: "Slutt å ta imot tilkoblinger"
+    sync_mode_stop_menu: "Ta imot tilkoblinger"
+    client_mode_started: "Tar ikke lenger imot tilkoblinger"
+    client_mode_stopped: "Tar imot tilkoblinger igjen"
     sync_mode_toggle_error: Klarte ikke å bytte synkroniseringsmodus
   devices:
     errors:
@@ -22,172 +13,7 @@ sync:
       sync_failed: Feil ved synkronisering av enheter
     from_label: Fra
     help:
-      content: '🔄 **Hva er Sync?**
-
-
-        Sync holder vanene, oppgavene, notatene og dataene dine oppdatert på tvers
-        av enheter (telefoner, nettbrett, bærbare datamaskiner, stasjonære) på samme
-        Wi-Fi. Ingen sky eller internett — data forblir private og lokale.
-
-
-        Det er enkelt å bruke: Sett det opp én gang, og endringer synkroniseres automatisk
-        eller på forespørsel. Bytt enheter sømløst, som å starte på telefonen og fullføre
-        på PC-en.
-
-
-        ## 🔗 **Synkroniseringsmoduser**
-
-
-        Alle enheter støtter klient- eller servermodus for fleksibel synkronisering.
-        Serveren leder (deler data), klientene blir med og utveksler. Du trenger minst
-        én server.
-
-
-        - **Klientmodus:** Kobler til en server for å synkronisere. Ideell for å bli
-        med i grupper via QR eller manuell inntasting.
-
-        - **Servermodus:** Fungerer som nav; viser QR eller streng for andre å koble
-        til.
-
-
-        **Plattformnotater:**
-
-        - **Mobil:** Bytt via Wi-Fi-hotspot-ikonet. Server for bærbare nav.
-
-        - **Skrivebord (Standard: Server):** Bytt i synkroniseringsinnstillinger.
-        Klient for bærbare som synkroniserer til hoved-PC-er.
-
-
-        **Eksempler:** Mobil-til-mobil (én server), skrivebord-til-mobil (begge veier),
-        skrivebord-til-skrivebord (én server, én klient).
-
-
-        Bytt moduser i synkroniseringsinnstillingene; appen husker valget ditt.
-
-
-        ## 🛠️ **Aktivere Sync**
-
-
-        Enhetene må dele Wi-Fi; hold WHPH åpen.
-
-
-        ### **QR-kodeoppsett**
-
-        1. Server: Start servermodus i Sync — QR vises.
-
-        2. Klient: "Legg til enhet" > Skann QR.
-
-        3. Kobler til og synkroniserer automatisk.
-
-
-        Støtter alle kombinasjoner.
-
-
-        ### **Tilkoblingsstreng**
-
-        1. Server: Kopier strengen (f.eks. "whph://IP:44040?...") fra Sync.
-
-        2. Klient: "Legg til enhet" > Manuell > Lim inn streng > Koble til.
-
-
-        Krever ikke kamera.
-
-
-        ### **Manuell inntasting**
-
-        1. Server: Noter IP/port (standard 44040) fra tilkoblingsinfo.
-
-        2. Klient: "Legg til enhet" > Manuell > Skriv inn IP, port, navn > Test >
-        Koble til.
-
-
-        **Skrivebordsklienter:** Bytt til klientmodus først, deretter koble til. Synkroniserer
-        automatisk; bytt tilbake når som helst.
-
-
-        Aktiver automatisk gjenkobling i innstillingene for pålitelighet.
-
-
-        ## 📋 **Håndtere enheter**
-
-
-        - **Vis:** Se enheter, synkroniseringstider, status i synkroniseringsinnstillingene.
-
-        - **Manuell synkronisering:** Trykk knapp per enhet.
-
-        - **Fjern:** Velg og fjern for å stoppe synkronisering.
-
-
-        ## 🔧 **Feilsøking**
-
-
-        **Tilkoblingsproblemer:**
-
-        1. Samme Wi-Fi? Ingen VPN-er.
-
-        2. Start appen på nytt.
-
-        3. Bekreft servermodus.
-
-        4. Test uten brannmur.
-
-
-        **Ingen enheter?**
-
-        - Stabil Wi-Fi, ingen proxyer.
-
-        - Oppdater skanning.
-
-        - Bruk manuell IP.
-
-
-        **Synkronisering mislykkes/timeout:**
-
-        1. Manuell synkronisering.
-
-        2. Matcher app-versjoner.
-
-        3. Vent på store data.
-
-
-        **Brannmur (Port 44040):**
-
-
-        Hvis tilkoblinger ikke fungerer, kan brannmuren på datamaskinen blokkere synkroniseringssignalet.
-        Åpne port 44040 for å la enhetene kommunisere lokalt — det er trygt for hjemmenettverket
-        ditt.
-
-
-        **Windows (GUI):**
-
-        1. Åpne Defender-brannmur > Avansert > Inngående regler > Ny regel.
-
-        2. Port > TCP > 44040 > Tillat > Alle profiler > Navngi "WHPH Sync" > Fullfør.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        Tips: Start ruteren på nytt, bruk private nettverk. Par på nytt ved "ikke
-        funnet"-feil.
-
-        '
+      content: "🔄 **Hva er synkronisering?**\n\nSynkronisering holder vanene, oppgavene, notatene og dataene dine oppdatert på enhetene dine på samme Wi-Fi. Ingen sky eller internett: dataene forblir private og lokale.\n\n## 🛠️ **Slå på synkronisering**\n\n1. Hold WHPH åpen på begge enhetene, på samme Wi-Fi.\n2. Velg «Legg til enhet» på den ene enheten og vis QR-koden.\n3. Skann den med den andre enheten og sjekk at begge skjermene viser samme kode.\n4. Endringer synkroniseres deretter automatisk.\n\n## 📋 **Administrer enheter**\n\n- **Vis:** Se enheter, synkroniseringstidspunkter og status i synkroniseringsinnstillingene.\n- **Manuell synkronisering:** Trykk på knappen ved enheten.\n- **Fjern:** Velg en enhet og fjern den for å stoppe synkroniseringen.\n\n## 🔧 **Feilsøking**\n\n1. Samme Wi-Fi? Ingen VPN.\n2. Start appen på nytt.\n3. Test uten brannmur.\n\n**Ingen enheter?**\n- Stabilt Wi-Fi, ingen proxy.\n- Oppdater søket."
       title: Hjelp til enhetssynkronisering
     last_sync_label: Siste synkronisering
     no_devices_found: Ingen synkroniserte enheter
@@ -202,6 +28,7 @@ sync:
   error:
     scan: Skanning mislyktes
   errors:
+    preparing: "Synkroniseringen forberedes. Prøv igjen om litt."
     connection_failed: "Tilkobling mislyktes. Sørg for:
 
 
@@ -300,14 +127,11 @@ sync:
   server:
     starting: Starter server-modus...
     active: Server-modus aktiv - Vis QR-kode til andre enheter
-    stopped: Server-modus stoppet - Enheten er nå i klient-modus
+    stopped: "Slutter å ta imot tilkoblinger fra andre enheter"
     start_failed: Mislyktes å starte server-modus - Sjekk om port 44040 er tilgjengelig
-    start_tooltip: Start server-modus
-    stop_tooltip: Stop server-modus
     start_menu: Start server-modus
     stop_menu: Stop server-modus
     error: Feil
-    device_became_server: Denne enheten er nå synkroniserings-serveren
     mode_title: Servermodus
     mode_inactive: Server inaktiv
   manual:
@@ -332,11 +156,9 @@ sync:
     connection_string_label: Tilkoblingsstreng
     test_connection: Test tilkobling
     enter_server_details: Skriv inn servertilkoblingsdetaljer manuelt
-    connection_timeout: Tilkoblingstimeout. Sjekk serveradressen og prøv igjen.
+    connection_timeout: "Tidsavbrudd for tilkoblingen. Sjekk enhetens adresse og prøv igjen."
     connection_test_successful: Tilkoblingstest vellykket!
-    connection_test_timeout:
-      Tilkoblingstest timeout. Sjekk serveradressen og prøv
-      igjen.
+    connection_test_timeout: "Tidsavbrudd for tilkoblingstesten. Sjekk enhetens adresse og prøv igjen."
     connection_test_failed_no_response:
       Tilkoblingstest mislyktes - ingen svar fra
       server
@@ -365,3 +187,65 @@ sync:
     last_seen: Sist sett kl. {time}
     already_added: Allerede lagt til
   multi_interface_connection: Multi-interface tilkobling
+  status:
+    not_reachable: "Enheten kan ikke nås"
+    needs_repairing: "Må pares på nytt"
+    needs_update: "{device} trenger en nyere versjon av WHPH for å synkronisere"
+    this_device_needs_update: "Oppdater WHPH på denne enheten for å synkronisere med {device}, som kjører en nyere versjon"
+    items_failed: "Noen elementer kunne ikke synkroniseres"
+    items_rejected: "Noen elementer ble avvist som ugyldige"
+    preparing: "Den andre enheten forbereder synkroniseringsdataene sine"
+    duplicated_identity: "En annen enhet bruker samme synkroniseringsidentitet"
+    storage_error: "En lagringsfeil avbrøt synkroniseringen"
+    items_cannot_be_applied: "Noen elementer feilet gjentatte ganger og hoppes over foreløpig"
+    repair_badge: "Ny paring kreves"
+    repair_action: "Par på nytt"
+  pairing:
+    show_qr: "Vis QR-kode"
+    in_progress: "Paring pågår…"
+    success: "Paret med {device}"
+    qr:
+      title: "Par med en QR-kode"
+      description: "Skann denne koden med den andre enheten."
+      expires_in: "Utløper om {time}"
+      expired: "Denne koden har utløpt."
+      used: "Denne koden er allerede brukt."
+      regenerate: "Vis en ny kode"
+      paired: "Enhet paret"
+    code:
+      title: "Sammenlign kodene"
+      description: "Kontroller at {device} viser samme kode."
+      match: "Kodene stemmer"
+      mismatch: "Kodene er forskjellige"
+    group_switch:
+      title: "Bytte synkroniseringsgruppe?"
+      description: "{device} er i en annen synkroniseringsgruppe. Hvis du fortsetter, forlater denne enheten sin nåværende gruppe og synkroniserer ikke lenger med de enhetene."
+      confirm: "Bytt gruppe"
+    errors:
+      code_expired_or_used: "Koden har utløpt eller er allerede brukt. Vis en ny kode og prøv igjen."
+      codes_differ: "Kodene stemte ikke overens. Parringen ble avbrutt."
+      cancelled: "Parringen ble avbrutt."
+      unreachable: "Den andre enheten kunne ikke nås. Kontroller at begge er på samme nettverk."
+      invalid_invitation: "Dette er ikke en WHPH-parringskode."
+      group_switch_declined: "Du valgte å ikke bytte synkroniseringsgruppe."
+      preparing: "Synkroniseringen klargjøres fortsatt. Prøv igjen om litt."
+      refused: "Den andre enheten avviste parringen."
+      not_active: "Ingen paring pågår."
+  members:
+    remove_confirm:
+      title: "Fjerne {device}?"
+      description: "Dette fjerner {device} fra hele synkroniseringsgruppen, ikke bare fra denne enheten. Den slutter å synkronisere med alle enheter i gruppen, og gruppenøklene byttes ut. Par den på nytt for å synkronisere senere."
+      action: "Fjern fra gruppen"
+    removed_from_group:
+      title: "Fjernet fra synkroniseringsgruppen"
+      description: "Denne enheten ble fjernet fra synkroniseringsgruppen sin og synkroniserer ikke lenger. Par den på nytt for å fortsette."
+    needs_repairing:
+      title: "Par denne enheten på nytt"
+      description: "Denne enheten ble gjenopprettet fra en eldre sikkerhetskopi, så gruppen gjenkjenner den ikke lenger. Par den på nytt for å fortsette synkroniseringen."
+    repair_banner:
+      title: "Synkroniseringen er oppgradert"
+      description: "Enheter som er paret med den gamle synkroniseringen, må pares på nytt. Dataene dine blir værende på hver enhet."
+      dismiss: "Lukk"
+    upgrade_progress: "Forbereder synkroniseringsdata… {percent} %"
+  demo:
+    reset_blocked: "Demodata kan ikke tilbakestilles mens denne enheten er paret, fordi tilbakestillingen ville synkroniseres til de andre enhetene dine. Fjern først denne enheten fra synkroniseringsgruppen."

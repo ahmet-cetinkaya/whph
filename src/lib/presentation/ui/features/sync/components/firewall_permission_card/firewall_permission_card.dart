@@ -1,3 +1,4 @@
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -111,7 +112,7 @@ class _FirewallPermissionCardState extends State<FirewallPermissionCard> {
                 _translationService.translate(SettingsTranslationKeys.firewallPermissionDialogInfoText),
             additionalDialogContent: _buildAdditionalDialogContent(isWindows: isWindows, isLinux: isLinux),
             showInstructionsAlertBox: false,
-            actionButtonText: _translationService.translate('shared.buttons.done'),
+            actionButtonText: _translationService.translate(SharedTranslationKeys.doneButton),
             onAutomaticAction: isWindows ? _onAutomaticFirewallRuleAddition : null,
             automaticActionButtonText:
                 isWindows ? _translationService.translate(SettingsTranslationKeys.firewallAddRuleButtonText) : null,
