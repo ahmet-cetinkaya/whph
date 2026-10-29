@@ -23,6 +23,7 @@ import 'package:whph/presentation/ui/features/sync/constants/sync_translation_ke
 import 'package:whph/presentation/ui/features/sync/components/sync_connect_info_button.dart';
 import 'package:whph/presentation/ui/features/sync/components/firewall_permission_card/firewall_permission_card.dart';
 import 'package:whph/presentation/ui/features/sync/components/remove_member_dialog.dart';
+import 'package:whph/presentation/ui/features/sync/components/needs_repairing_card.dart';
 import 'package:whph/presentation/ui/features/sync/components/removed_from_group_card.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_device_list_item/sync_device_list_item.dart';
 import 'package:whph/presentation/ui/features/sync/components/sync_pairing_status_listener.dart';
@@ -280,6 +281,14 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
                   child: RemovedFromGroupCard(onPair: _showAddDevicePage),
+                ),
+              ),
+
+            if (_groupState == SyncGroupState.needsRepairing)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
+                  child: NeedsRepairingCard(onPair: _showAddDevicePage),
                 ),
               ),
 

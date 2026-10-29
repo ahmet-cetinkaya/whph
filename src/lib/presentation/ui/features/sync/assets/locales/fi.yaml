@@ -239,6 +239,9 @@ sync:
     removed_from_group:
       title: "Poistettu synkronointiryhmästä"
       description: "Tämä laite poistettiin synkronointiryhmästään, eikä se enää synkronoi. Muodosta pari uudelleen jatkaaksesi."
+    needs_repairing:
+      title: "Yhdistä tämä laite uudelleen"
+      description: "Tämä laite palautettiin vanhasta varmuuskopiosta, joten ryhmä ei enää tunnista sitä. Yhdistä se uudelleen jatkaaksesi synkronointia."
     repair_banner:
       title: "Synkronointi on päivitetty"
       description: "Vanhalla synkronoinnilla pariutetut laitteet on pariutettava uudelleen. Tietosi pysyvät jokaisella laitteella."

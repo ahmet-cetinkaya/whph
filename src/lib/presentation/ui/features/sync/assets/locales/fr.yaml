@@ -253,6 +253,9 @@ sync:
     removed_from_group:
       title: "Retiré du groupe de synchronisation"
       description: "Cet appareil a été retiré de son groupe de synchronisation et ne se synchronise plus. Appairez-le à nouveau pour reprendre."
+    needs_repairing:
+      title: "Réassociez cet appareil"
+      description: "Cet appareil a été restauré à partir d'une ancienne sauvegarde, donc le groupe ne le reconnaît plus. Associez-le à nouveau pour reprendre la synchronisation."
     repair_banner:
       title: "La synchronisation a été mise à niveau"
       description: "Les appareils appairés avec l'ancienne synchronisation doivent être appairés à nouveau. Vos données restent sur chaque appareil."

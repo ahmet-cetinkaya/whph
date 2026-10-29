@@ -243,6 +243,9 @@ sync:
     removed_from_group:
       title: "Quitado del grupo de sincronización"
       description: "Este dispositivo se quitó de su grupo de sincronización y ya no se sincroniza. Vuelve a emparejarlo para reanudar."
+    needs_repairing:
+      title: "Vuelve a emparejar este dispositivo"
+      description: "Este dispositivo se restauró desde una copia de seguridad antigua, por lo que el grupo ya no lo reconoce. Vuelve a emparejarlo para reanudar la sincronización."
     repair_banner:
       title: "La sincronización se actualizó"
       description: "Los dispositivos emparejados con la sincronización anterior deben emparejarse de nuevo. Tus datos permanecen en cada dispositivo."

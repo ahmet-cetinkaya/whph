@@ -243,6 +243,9 @@ sync:
     removed_from_group:
       title: "Odstranjeno iz skupine za sinhronizacijo"
       description: "Ta naprava je bila odstranjena iz skupine za sinhronizacijo in se ne sinhronizira več. Znova jo seznanite, če želite nadaljevati."
+    needs_repairing:
+      title: "Napravo znova seznanite"
+      description: "Ta naprava je bila obnovljena iz starejše varnostne kopije, zato je skupina ne prepozna več. Znova jo seznanite, da se sinhronizacija nadaljuje."
     repair_banner:
       title: "Sinhronizacija je bila nadgrajena"
       description: "Naprave, seznanjene s staro sinhronizacijo, je treba znova seznaniti. Vaši podatki ostanejo na vsaki napravi."

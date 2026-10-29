@@ -235,6 +235,9 @@ sync:
     removed_from_group:
       title: "Odebráno ze skupiny synchronizace"
       description: "Toto zařízení bylo odebráno ze své skupiny synchronizace a již se nesynchronizuje. Pro obnovení ho spárujte znovu."
+    needs_repairing:
+      title: "Spárujte toto zařízení znovu"
+      description: "Toto zařízení bylo obnoveno ze starší zálohy, takže ho skupina již nepoznává. Spárujte ho znovu a synchronizace bude pokračovat."
     repair_banner:
       title: "Synchronizace byla aktualizována"
       description: "Zařízení spárovaná se starou synchronizací je nutné spárovat znovu. Vaše data zůstávají na každém zařízení."

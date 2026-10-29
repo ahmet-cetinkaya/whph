@@ -207,6 +207,9 @@ sync:
     removed_from_group:
       title: "동기화 그룹에서 제거됨"
       description: "이 기기는 동기화 그룹에서 제거되어 더 이상 동기화되지 않습니다. 다시 사용하려면 다시 페어링하세요."
+    needs_repairing:
+      title: "이 기기를 다시 페어링하세요"
+      description: "이 기기는 이전 백업에서 복원되어 그룹이 더 이상 인식하지 못합니다. 동기화를 다시 시작하려면 다시 페어링하세요."
     repair_banner:
       title: "동기화가 업그레이드되었습니다"
       description: "이전 동기화로 페어링한 기기는 다시 페어링해야 합니다. 데이터는 각 기기에 그대로 남습니다."

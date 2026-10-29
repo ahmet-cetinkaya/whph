@@ -241,6 +241,9 @@ sync:
     removed_from_group:
       title: "Eşitleme grubundan kaldırıldı"
       description: "Bu cihaz eşitleme grubundan kaldırıldı ve artık eşitlenmiyor. Devam etmek için yeniden eşleştirin."
+    needs_repairing:
+      title: "Bu cihazı yeniden eşleştirin"
+      description: "Bu cihaz eski bir yedekten geri yüklendi, bu yüzden grup artık onu tanımıyor. Senkronizasyonu sürdürmek için yeniden eşleştirin."
     repair_banner:
       title: "Eşitleme yükseltildi"
       description: "Eski eşitleme ile eşleştirilen cihazlar yeniden eşleştirilmelidir. Verileriniz her cihazda kalır."

@@ -248,6 +248,9 @@ sync:
     removed_from_group:
       title: "Usunięto z grupy synchronizacji"
       description: "To urządzenie zostało usunięte ze swojej grupy synchronizacji i już się nie synchronizuje. Sparuj je ponownie, aby wznowić."
+    needs_repairing:
+      title: "Sparuj to urządzenie ponownie"
+      description: "To urządzenie zostało przywrócone ze starszej kopii zapasowej, więc grupa już go nie rozpoznaje. Sparuj je ponownie, aby wznowić synchronizację."
     repair_banner:
       title: "Synchronizacja została zaktualizowana"
       description: "Urządzenia sparowane ze starą synchronizacją trzeba sparować ponownie. Twoje dane pozostają na każdym urządzeniu."
