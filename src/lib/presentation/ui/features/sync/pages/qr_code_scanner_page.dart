@@ -8,6 +8,17 @@ import 'package:whph/presentation/ui/features/sync/constants/sync_translation_ke
 class QRCodeScannerPage extends StatefulWidget {
   static const String route = '/sync/qr-scanner';
 
+  /// Opens the scanner and returns the scanned text, or null when it is closed without a scan.
+  ///
+  /// Not `Navigator.pushNamed<String>`: the app's route factory builds `PageRouteBuilder<dynamic>`,
+  /// which cannot be cast to `Route<String?>`, so the page never opened.
+  static Future<String?> scan(BuildContext context) => Navigator.of(context).push<String>(
+        MaterialPageRoute<String>(
+          settings: const RouteSettings(name: route),
+          builder: (_) => const QRCodeScannerPage(),
+        ),
+      );
+
   const QRCodeScannerPage({super.key});
 
   @override

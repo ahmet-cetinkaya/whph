@@ -54,7 +54,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   Future<void> _openQRScanner() async {
     HapticFeedback.selectionClick();
 
-    final scannedText = await Navigator.pushNamed<String>(context, QRCodeScannerPage.route);
+    final scannedText = await QRCodeScannerPage.scan(context);
     if (scannedText == null || !mounted) return;
 
     final status = await SyncPairingFlow(container.resolve<Mediator>()).pairFromQr(context, scannedText);
