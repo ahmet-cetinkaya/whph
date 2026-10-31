@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:whph/core/domain/shared/utils/logger.dart';
+import 'package:whph/core/domain/shared/utils/network_utils.dart';
 import 'package:whph/infrastructure/shared/features/sync/lan_sync_server.dart';
 import 'package:whph/infrastructure/shared/features/sync/web_socket_sync_transport.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
@@ -32,6 +33,7 @@ class LanSyncClient {
   /// [WebSocketException] or [TimeoutException] when the peer is not reachable
   /// or refuses the connection.
   Future<ISyncTransport> connect(String host, {int port = lanSyncPort, bool forPairing = false}) async {
+    if (!NetworkUtils.isPrivateIP(host)) throw SocketException('Refusing a non-local sync address: $host');
     final subprotocol = forPairing ? lanPairingSubprotocol : lanSyncSubprotocol;
     final socket = await WebSocket.connect(
       'ws://$host:$port',

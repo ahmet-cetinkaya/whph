@@ -233,6 +233,20 @@ void main() {
     test('a malformed scanned text is rejected before any connection', () {
       expect(() => PairingInvitation.decode('not a pairing code'), throwsFormatException);
     });
+
+    test('a code naming an address outside the local network is rejected', () {
+      for (final address in ['203.0.113.5', 'example.com']) {
+        final remote = PairingInvitation(
+          memberId: 'member',
+          addresses: [address],
+          port: 44040,
+          fingerprint: List<int>.filled(32, 1),
+          token: List<int>.filled(16, 2),
+          expiresAt: DateTime.utc(2030),
+        );
+        expect(() => PairingInvitation.decode(remote.encode()), throwsFormatException, reason: address);
+      }
+    });
   });
 
   group('pairing with a code both users compare (FR-024)', () {

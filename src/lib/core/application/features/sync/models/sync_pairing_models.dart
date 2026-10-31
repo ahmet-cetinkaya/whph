@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:whph/core/domain/shared/utils/network_utils.dart';
 
 /// TCP port of the LAN sync server (D7). The transport layer binds it.
 const int syncLanPort = 44040;
@@ -41,7 +42,7 @@ class PairingInvitation {
   }
 
   /// Parses [text] from a scanned QR code. Throws a [FormatException] when it
-  /// is not a well-formed invitation.
+  /// is not a well-formed invitation or names an address outside the local network.
   static PairingInvitation decode(String text) {
     if (!text.startsWith(_invitationPrefix)) throw const FormatException('not a pairing invitation');
     final json = jsonDecode(utf8.decode(base64Url.decode(text.substring(_invitationPrefix.length))));
@@ -52,6 +53,8 @@ class PairingInvitation {
     if (addresses.isEmpty || memberId.isEmpty || port < 1 || port > 65535) {
       throw const FormatException('invalid invitation fields');
     }
+    // A pasted code is untrusted input: it must never point the device outside the local network.
+    if (!addresses.every(NetworkUtils.isPrivateIP)) throw const FormatException('invitation address is not local');
     return PairingInvitation(
       memberId: memberId,
       addresses: addresses,
