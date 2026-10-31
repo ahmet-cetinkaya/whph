@@ -32,6 +32,24 @@ void main() {
     await temp.delete(recursive: true);
   });
 
+  group('upgrade after an origin switch', () {
+    test('a group-switch join starts the upgrade job once', () async {
+      final upgrade = CountingUpgradeService();
+      final a = await open('a');
+      final b = await open('b');
+      final c = await SecurityDevice.open('c', temp, upgradeService: upgrade);
+      opened.add(c);
+      final d = await open('d');
+      await pairDevices(a, b);
+      await pairDevices(c, d);
+      expect(upgrade.runCount, 0);
+
+      await pairDevices(a, c, confirmGroupSwitch: true);
+
+      expect(upgrade.runCount, 1);
+    });
+  });
+
   group('group rules (acc 5)', () {
     test('first pairing of two groupless devices creates exactly one group id',
         () async {

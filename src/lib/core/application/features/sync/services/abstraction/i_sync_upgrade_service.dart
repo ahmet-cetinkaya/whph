@@ -1,3 +1,5 @@
+import 'package:whph/core/domain/shared/utils/logger.dart';
+
 /// D17 phases of the resumable post-open upgrade, in execution order.
 enum SyncUpgradePhase { dedupe, bootstrap, reauthor, done }
 
@@ -18,4 +20,14 @@ abstract class ISyncUpgradeService {
 
   /// Runs the job until phase `done`. Concurrent calls share one run.
   Future<void> run();
+}
+
+extension SyncUpgradeBackgroundRun on ISyncUpgradeService {
+  /// Starts [ISyncUpgradeService.run] without waiting: sync and pairing stay gated until `done`,
+  /// so a trigger (origin switch, stuck phase) must not block its caller. Failures are logged.
+  void runInBackground() {
+    run().catchError((Object error, StackTrace stackTrace) {
+      Logger.error('Sync upgrade job failed: $error', component: 'SyncUpgrade', error: error, stackTrace: stackTrace);
+    });
+  }
 }

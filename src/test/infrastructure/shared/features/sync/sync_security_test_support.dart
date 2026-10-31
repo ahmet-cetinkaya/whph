@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_peer_state_store.dart';
 import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
@@ -12,6 +13,21 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 import '../../../persistence/sync/drift_sync_test_support.dart';
 
 const _originHexLength = 32;
+
+/// An upgrade service that only counts [run] calls; its phase is [phase].
+class CountingUpgradeService implements ISyncUpgradeService {
+  final SyncUpgradePhase phase;
+  int runCount = 0;
+
+  CountingUpgradeService({this.phase = SyncUpgradePhase.done});
+
+  @override
+  Future<SyncUpgradeProgress> getProgress() async =>
+      SyncUpgradeProgress(phase: phase);
+
+  @override
+  Future<void> run() async => runCount++;
+}
 
 /// One device: Drift database + key files + membership service.
 class SecurityDevice {
@@ -26,7 +42,7 @@ class SecurityDevice {
       this.service, this.root);
 
   static Future<SecurityDevice> open(String name, Directory parent,
-      {bool createIdentity = true}) async {
+      {bool createIdentity = true, ISyncUpgradeService? upgradeService}) async {
     final root = await parent.createTemp('$name-');
     final originHex = name.codeUnits
         .map((c) => c.toRadixString(16).padLeft(2, '0'))
@@ -42,7 +58,8 @@ class SecurityDevice {
     final service = SyncMembershipService(
         keyStore: keyStore,
         changeStore: database.store,
-        peerStateStore: peerStates);
+        peerStateStore: peerStates,
+        upgradeService: upgradeService);
     if (createIdentity) await service.createFreshIdentity(name: name);
     return SecurityDevice._(
         name, database, keyStore, peerStates, service, root);

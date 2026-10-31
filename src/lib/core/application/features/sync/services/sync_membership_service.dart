@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_change_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_key_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_state_store.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
 /// A pairing, membership or identity step was refused (D7); nothing was
@@ -117,6 +118,7 @@ class SyncMembershipService {
   final ISyncChangeStore _changeStore;
   final ISyncPeerStateStore _peerStateStore;
   final SyncIdSource _ids;
+  final ISyncUpgradeService? _upgradeService;
   final int Function() _nowMs;
 
   Membership? _membership;
@@ -127,11 +129,13 @@ class SyncMembershipService {
     required ISyncKeyStore keyStore,
     required ISyncChangeStore changeStore,
     required ISyncPeerStateStore peerStateStore,
+    ISyncUpgradeService? upgradeService,
     SyncIdSource? ids,
     int Function()? nowMs,
   })  : _keyStore = keyStore,
         _changeStore = changeStore,
         _peerStateStore = peerStateStore,
+        _upgradeService = upgradeService,
         _ids = ids ?? SyncIdSource(),
         _nowMs = nowMs ?? (() => DateTime.now().millisecondsSinceEpoch);
 
@@ -163,7 +167,9 @@ class SyncMembershipService {
         _membership = restored;
         _needsRepairing = content.needsRepairing;
         await _refresh();
-        if ((await _keyStore.adoptLegacyRevocations(_isGenuineLegacyRevocation)).adopted > 0) await _refresh();
+        if ((await _keyStore.adoptLegacyRevocations(_isGenuineLegacyRevocation))
+                .adopted >
+            0) await _refresh();
         return true;
       });
 
@@ -175,7 +181,8 @@ class SyncMembershipService {
     if (groupId == null) return false;
     try {
       final record = decodeRevocationRecord(retained.recordBytes);
-      return membership.memberByEd25519(record.revokerPub) != null && await record.verify(groupId);
+      return membership.memberByEd25519(record.revokerPub) != null &&
+          await record.verify(groupId);
     } on Object {
       return false;
     }
@@ -259,6 +266,9 @@ class SyncMembershipService {
     if (membership.hasGroup && reason != OriginSwitchReason.groupSwitch)
       await _registerOrigin(newOrigin);
     await _keyStore.commit(newOrigin);
+    // The store only schedules the re-author/adopt phase; sync stays gated until it ran, and the
+    // only other trigger is the next app start.
+    if (report.reauthorScheduled) _upgradeService?.runInBackground();
     return report;
   }
 
@@ -430,10 +440,12 @@ class SyncMembershipService {
 
   /// Changes the name the group shows for [memberId]: a new member entry with
   /// the same keys, which the group learns like any member row.
-  Future<void> renameMember(String memberId, String name) => _exclusive(() async {
+  Future<void> renameMember(String memberId, String name) =>
+      _exclusive(() async {
         final trimmed = name.trim();
         if (trimmed.isEmpty || trimmed.length > maxMemberNameLength) {
-          throw const SyncMembershipException('the member name is empty or too long');
+          throw const SyncMembershipException(
+              'the member name is empty or too long');
         }
         final entry = membership.memberById(memberId) ??
             (throw SyncMembershipException('unknown member $memberId'));

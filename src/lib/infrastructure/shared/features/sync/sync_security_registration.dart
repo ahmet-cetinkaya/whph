@@ -4,6 +4,7 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_change_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_key_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_state_store.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/reset_local_data_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_ledger_mark_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
@@ -39,6 +40,7 @@ void registerSyncSecurity(IContainer container,
       keyStore: c.resolve<ISyncKeyStore>(),
       changeStore: c.resolve<ISyncChangeStore>(),
       peerStateStore: c.resolve<ISyncPeerStateStore>(),
+      upgradeService: c.resolve<ISyncUpgradeService>(),
     ),
   );
   container.registerSingleton<SyncLedgerMarkService>(
