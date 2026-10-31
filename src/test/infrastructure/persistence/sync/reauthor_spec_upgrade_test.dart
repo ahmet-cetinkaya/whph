@@ -16,6 +16,7 @@ import 'drift_sync_test_support.dart';
 const int _noteCount = 1300;
 const int _sentMark = 100;
 const String _newOrigin = 'origin-new';
+const String _secondOrigin = 'origin-second';
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -87,6 +88,44 @@ void main() {
         await device.count(
             'SELECT COUNT(*) FROM sync_clock WHERE origin_id = ${spec.newOriginId} AND manifest_id IS NOT NULL'),
         0);
+    expect(
+        (await device
+                .rows('SELECT reauthor_spec, upgrade_phase FROM sync_state'))
+            .single,
+        {'reauthor_spec': null, 'upgrade_phase': 'done'});
+  });
+
+  test(
+      'a spec rewritten between chunks by a second origin switch is processed, not overwritten',
+      () async {
+    await device.db.transaction(() async {
+      for (var i = 0; i < _noteCount; i++) {
+        await device.insertNote('n$i', 't$i');
+      }
+    });
+    await device.sql(
+        'INSERT INTO sync_intern (kind, value) VALUES ($internKindOrigin, ?), ($internKindOrigin, ?)',
+        [_newOrigin, _secondOrigin]);
+    final first = ReauthorSpec.adopt(
+        oldOriginId: await originId(device.origin),
+        newOriginId: await originId(_newOrigin),
+        sentMark: 0);
+    await device.sql(
+        "UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL",
+        [first.encode()]);
+    await SyncUpgradeJob(device.db).runChunks(stopAfterChunks: 1);
+
+    final second = ReauthorSpec.adopt(
+        oldOriginId: await originId(_newOrigin),
+        newOriginId: await originId(_secondOrigin),
+        sentMark: 0);
+    await device.sql(
+        "UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL",
+        [second.encode()]);
+    await SyncUpgradeJob(device.db).runChunks();
+
+    expect(await clocksOn(_newOrigin), 0);
+    expect(await clocksOn(_secondOrigin), greaterThan(0));
     expect(
         (await device
                 .rows('SELECT reauthor_spec, upgrade_phase FROM sync_state'))

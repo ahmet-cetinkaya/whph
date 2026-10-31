@@ -512,22 +512,26 @@ FROM cells ORDER BY key''', [
       await _setPhase(SyncUpgradePhase.done, null);
       return;
     }
-    final spec = ReauthorSpec.decode(specText);
-    var cursor = int.tryParse(state['upgrade_cursor'] as String? ?? '') ?? 0;
     while (_hasChunkBudget(stopAfterChunks)) {
-      final moved = await _inChunk<List<int>>(
-          SyncUpgradePhase.reauthor,
-          'reauthor@$cursor',
-          (keys) => keys.length,
-          () => _reauthorChunk(spec, cursor));
+      final moved = await _inChunk<List<int>>(SyncUpgradePhase.reauthor,
+          'reauthor', (keys) => keys.length, _reauthorChunk);
       if (moved.isEmpty) return;
-      cursor = moved.last;
     }
   }
 
   /// One chunk transaction. Returns the moved clock keys; an empty list
-  /// means no row matches any more and the phase is finished.
-  Future<List<int>> _reauthorChunk(ReauthorSpec spec, int cursor) async {
+  /// means no row matches any more and the phase is finished. The spec and
+  /// cursor are read inside the transaction so a second origin switch that
+  /// rewrote them mid-run is never overwritten with stale values.
+  Future<List<int>> _reauthorChunk() async {
+    final state = await _state();
+    final specText = state['reauthor_spec'] as String?;
+    if (specText == null) {
+      await _setPhase(SyncUpgradePhase.done, null);
+      return const [];
+    }
+    final spec = ReauthorSpec.decode(specText);
+    final cursor = int.tryParse(state['upgrade_cursor'] as String? ?? '') ?? 0;
     final (predicate, predicateArgs) = spec.predicate;
     final keys = [
       for (final row in await _select(
@@ -542,7 +546,7 @@ FROM cells ORDER BY key''', [
       await _setPhase(SyncUpgradePhase.done, null);
       return keys;
     }
-    final firstSeq = (await _state())['next_seq'] as int;
+    final firstSeq = state['next_seq'] as int;
     for (var start = 0;
         start < keys.length;
         start += _reauthorRowsPerStatement) {
@@ -550,9 +554,8 @@ FROM cells ORDER BY key''', [
       await _moveToNewOrigin(spec, keys.sublist(start, end), firstSeq + start);
     }
     await _db.customStatement(
-        'UPDATE sync_state SET next_seq = next_seq + ? WHERE id = ?',
-        [keys.length, _stateId]);
-    await _setCursor('${keys.last}');
+        'UPDATE sync_state SET next_seq = next_seq + ?, upgrade_cursor = ? WHERE id = ?',
+        [keys.length, '${keys.last}', _stateId]);
     return keys;
   }
 

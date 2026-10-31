@@ -1,4 +1,5 @@
 import 'package:whph/core/application/features/sync/models/sync_result_category.dart';
+import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_session_host.dart';
 import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
@@ -48,7 +49,12 @@ class DriftSyncSessionHost implements ISyncSessionHost {
   @override
   Future<SessionResult> respond(ISyncTransport transport, String source) async {
     final result = await AsyncSyncSession(device, transport, initiator: false, hooks: hooks).run();
-    await _recordPeerSuccess(result);
+    try {
+      await _recordPeerSuccess(result);
+    } catch (error, stackTrace) {
+      // The session already completed; a status-store failure must not fail it.
+      Logger.error('Could not record the peer status after a completed session', error: error, stackTrace: stackTrace);
+    }
     return result;
   }
 
