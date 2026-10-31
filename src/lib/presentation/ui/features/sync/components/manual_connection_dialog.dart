@@ -185,8 +185,11 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
     return null;
   }
 
+  /// Chat apps wrap long codes, so line breaks and spaces are not part of the code.
+  String _withoutWhitespace(String text) => text.replaceAll(RegExp(r'\s'), '');
+
   String? _validatePairingCode(String? value) {
-    final code = value?.trim() ?? '';
+    final code = _withoutWhitespace(value ?? '');
     if (code.isEmpty) return _translationService.translate(SyncTranslationKeys.pairingCodeRequired);
 
     try {
@@ -200,7 +203,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
   Future<void> _submitPairingCode() async {
     if (!_pairingCodeFormKey.currentState!.validate()) return;
 
-    final pairingCode = _pairingCodeController.text.trim();
+    final pairingCode = _withoutWhitespace(_pairingCodeController.text);
     Navigator.of(context).pop(true);
     await widget.onPairWithCode(pairingCode);
   }
@@ -227,6 +230,8 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
                 border: const OutlineInputBorder(),
               ),
               maxLines: _pairingCodeLines,
+              autocorrect: false,
+              enableSuggestions: false,
               validator: _validatePairingCode,
             ),
           ],

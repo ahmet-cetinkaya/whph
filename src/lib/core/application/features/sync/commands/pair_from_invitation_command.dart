@@ -27,6 +27,10 @@ class PairFromInvitationCommandHandler implements IRequestHandler<PairFromInvita
         errorCode: SyncPairingErrorCode.invalidInvitation,
       );
     }
-    return _pairingService.pairFromInvitation(invitation);
+    try {
+      return await _pairingService.pairFromInvitation(invitation);
+    } on SyncPairingException catch (refusal) {
+      return SyncPairingStatus(phase: SyncPairingPhase.failed, role: SyncPairingRole.joiner, errorCode: refusal.code);
+    }
   }
 }
