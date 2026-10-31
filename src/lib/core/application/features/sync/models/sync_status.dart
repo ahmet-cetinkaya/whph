@@ -13,6 +13,9 @@ class SyncStatus {
   final DateTime? lastSyncTime;
   final bool isManual;
 
+  /// Share of the current session that is done, 0..1; `null` while it is not known.
+  final double? progress;
+
   const SyncStatus({
     required this.state,
     this.currentDeviceId,
@@ -20,6 +23,7 @@ class SyncStatus {
     this.errorParams,
     this.lastSyncTime,
     this.isManual = false,
+    this.progress,
   });
 
   SyncStatus copyWith({
@@ -29,6 +33,7 @@ class SyncStatus {
     Map<String, String>? errorParams,
     DateTime? lastSyncTime,
     bool? isManual,
+    double? progress,
   }) {
     return SyncStatus(
       state: state ?? this.state,
@@ -37,6 +42,7 @@ class SyncStatus {
       errorParams: errorParams ?? this.errorParams,
       lastSyncTime: lastSyncTime ?? this.lastSyncTime,
       isManual: isManual ?? this.isManual,
+      progress: progress ?? this.progress,
     );
   }
 
@@ -47,7 +53,7 @@ class SyncStatus {
 
   @override
   String toString() {
-    return 'SyncStatus(state: $state, currentDeviceId: $currentDeviceId, errorMessage: $errorMessage, errorParams: $errorParams, lastSyncTime: $lastSyncTime, isManual: $isManual)';
+    return 'SyncStatus(state: $state, currentDeviceId: $currentDeviceId, errorMessage: $errorMessage, errorParams: $errorParams, lastSyncTime: $lastSyncTime, isManual: $isManual, progress: $progress)';
   }
 
   @override
@@ -58,7 +64,8 @@ class SyncStatus {
         other.currentDeviceId == currentDeviceId &&
         other.errorMessage == errorMessage &&
         other.lastSyncTime == lastSyncTime &&
-        other.isManual == isManual;
+        other.isManual == isManual &&
+        other.progress == progress;
   }
 
   @override
@@ -68,5 +75,6 @@ class SyncStatus {
         errorMessage,
         lastSyncTime,
         isManual,
+        progress,
       );
 }

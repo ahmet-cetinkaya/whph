@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/commands/cancel_pairing_command.dart';
 import 'package:whph/core/application/features/sync/commands/create_pairing_invitation_command.dart';
@@ -39,8 +42,8 @@ void main() {
     harness.on<CancelPairingCommand, void>((_) {});
   });
 
-  Future<void> pumpQrView(WidgetTester tester) async {
-    await pumpPage(tester, PairingQrView(now: () => now));
+  Future<void> pumpQrView(WidgetTester tester, {VoidCallback? onPaired}) async {
+    await pumpPage(tester, PairingQrView(now: () => now, onPaired: onPaired));
     await tester.pump();
   }
 
@@ -120,11 +123,67 @@ void main() {
     expect(find.text('Device paired'), findsOneWidget);
   });
 
+  testWidgets('tells the page once when the pairing completed', (tester) async {
+    var pairedCalls = 0;
+    await pumpQrView(tester, onPaired: () => pairedCalls++);
+    status = const SyncPairingStatus(phase: SyncPairingPhase.completed, role: SyncPairingRole.inviter);
+
+    await advance(tester, const Duration(seconds: 1));
+    await advance(tester, const Duration(seconds: 1));
+
+    expect(pairedCalls, 1);
+  });
+
   testWidgets('stops showing the invitation when the view closes', (tester) async {
     await pumpQrView(tester);
 
     await tester.pumpWidget(const MaterialApp(home: SizedBox()));
 
     expect(harness.sentCount<CancelPairingCommand>(), 1);
+  });
+
+  group('copy pairing code', () {
+    const copyLabel = 'Copy pairing code';
+
+    testWidgets('copies the qr text and confirms while showing', (tester) async {
+      String? clipboardText;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            clipboardText = (call.arguments as Map)['text'] as String?;
+          }
+          return null;
+        },
+      );
+      addTearDown(() => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, null));
+      await pumpQrView(tester);
+
+      await tester.tap(find.text(copyLabel));
+      await tester.pump();
+
+      expect(clipboardText, 'whph-pair:1:test');
+      expect(find.text('Pairing code copied to clipboard'), findsOneWidget);
+    });
+
+    testWidgets('is absent while loading', (tester) async {
+      harness.on<CreatePairingInvitationCommand, CreatePairingInvitationCommandResponse>(
+        (_) => Completer<CreatePairingInvitationCommandResponse>().future,
+      );
+
+      await pumpQrView(tester);
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.text(copyLabel), findsNothing);
+    });
+
+    testWidgets('is absent once the code expired', (tester) async {
+      await pumpQrView(tester);
+
+      await advance(tester, invitationLifetime + const Duration(seconds: 1));
+
+      expect(find.text(copyLabel), findsNothing);
+    });
   });
 }

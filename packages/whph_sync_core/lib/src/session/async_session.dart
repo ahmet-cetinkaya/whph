@@ -33,15 +33,29 @@ import 'async_session_device.dart';
 import 'session.dart' show SessionHooks;
 import 'transport.dart';
 
+/// Reports how many sequence numbers of the session were processed out of how
+/// many it is going to send and receive. It is called only once the vector
+/// exchange has told the session what there is to transfer, so [total] is
+/// always above zero.
+typedef SessionProgressCallback = void Function(int processed, int total);
+
 /// One side of one sync session (see the library documentation).
 final class AsyncSyncSession {
-  AsyncSyncSession(this.device, this._transport, {required this.initiator, this.expectedPeer, required this.hooks});
+  AsyncSyncSession(
+    this.device,
+    this._transport, {
+    required this.initiator,
+    this.expectedPeer,
+    required this.hooks,
+    this.onProgress,
+  });
 
   final AsyncSessionDevice device;
   final ISyncTransport _transport;
   final bool initiator;
   final String? expectedPeer;
   final SessionHooks hooks;
+  final SessionProgressCallback? onProgress;
   final SessionStats stats = SessionStats();
 
   SecureChannel? _channel;
@@ -55,6 +69,8 @@ final class AsyncSyncSession {
   final Completer<VectorExchange> _peerVxReady = Completer();
   Map<String, int> _peerVector = const {};
   Map<String, int>? _snapshot;
+  int _progressTotal = 0;
+  int _progressProcessed = 0;
   bool _registryReceived = false;
   bool _handoverReceived = false;
 
@@ -353,12 +369,35 @@ final class AsyncSyncSession {
     // The send bound (FR-014), taken before any of the peer's batches is
     // applied so nothing received in this session is echoed back.
     _snapshot = await _store.vector();
+    _progressTotal = _seqsToSend(_snapshot!) + _seqsToReceive(_snapshot!);
+    _reportProgress();
     final peerCursor = _peerVector[(await _store.localOrigin()).hex] ?? 0;
     if (peerCursor > await _store.nextSeq() - 1) {
       await _send(channel, ErrorMessage(SyncErrorCategory.preparing));
       throw SessionAbort(SessionFailure.restoreDetected, peerCursor: peerCursor);
     }
     _peerVxReady.complete(vx);
+  }
+
+  int _seqsToSend(Map<String, int> own) => _surplus(own, _peerVector);
+
+  int _seqsToReceive(Map<String, int> own) => _surplus(_peerVector, own);
+
+  /// How many sequence numbers [ahead] has beyond [behind], over all origins.
+  int _surplus(Map<String, int> ahead, Map<String, int> behind) =>
+      ahead.entries.fold(0, (sum, e) => sum + math.max(0, e.value - (behind[e.key] ?? 0)));
+
+  /// Counts the sequence numbers [ranges] cover as processed. A refetch can
+  /// resend more than the exchange announced, so the count stops at the total.
+  void _advanceProgress(Iterable<List<SeqRange>> ranges) {
+    if (_progressTotal == 0) return;
+    final covered = ranges.expand((list) => list).fold(0, (sum, range) => sum + range.to - range.from);
+    _progressProcessed = math.min(_progressTotal, _progressProcessed + covered);
+    _reportProgress();
+  }
+
+  void _reportProgress() {
+    if (_progressTotal > 0) onProgress?.call(_progressProcessed, _progressTotal);
   }
 
   // --- Writer ------------------------------------------------------------------------
@@ -763,6 +802,7 @@ final class AsyncSyncSession {
         ..batchesSent += 1
         ..envelopesSent += outgoing.envelopes.length;
       hooks.afterBatchSent?.call(batch.batchId);
+      _advanceProgress(batch.ranges.values);
     }
     return true;
   }
@@ -843,6 +883,7 @@ final class AsyncSyncSession {
       return touched;
     });
     stats.batchesApplied++;
+    _advanceProgress(batch.ranges.values);
     if (securityTouched) await _onSecurityChange();
     await _send(channel, BatchAck(batch.batchId));
   }

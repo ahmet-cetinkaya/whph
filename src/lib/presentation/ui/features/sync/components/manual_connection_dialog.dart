@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
-import 'package:whph/presentation/ui/features/sync/models/sync_connection_string.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -13,11 +13,13 @@ import 'package:whph/main.dart';
 /// Dialog for manual connection to a WHPH server as client
 class ManualConnectionDialog extends StatefulWidget {
   final Function(DeviceInfo deviceInfo) onConnect;
+  final Future<void> Function(String pairingCode) onPairWithCode;
   final VoidCallback? onCancel;
 
   const ManualConnectionDialog({
     super.key,
     required this.onConnect,
+    required this.onPairWithCode,
     this.onCancel,
   });
 
@@ -26,9 +28,12 @@ class ManualConnectionDialog extends StatefulWidget {
 }
 
 class _ManualConnectionDialogState extends State<ManualConnectionDialog> with SingleTickerProviderStateMixin {
-  final _connectionStringFormKey = GlobalKey<FormState>();
+  static const int _pairingCodeTabIndex = 0;
+  static const int _pairingCodeLines = 4;
+
+  final _pairingCodeFormKey = GlobalKey<FormState>();
   final _manualEntryFormKey = GlobalKey<FormState>();
-  final _connectionStringController = TextEditingController();
+  final _pairingCodeController = TextEditingController();
   final _ipController = TextEditingController();
   final _portController = TextEditingController(text: '44040');
 
@@ -58,7 +63,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
   @override
   void dispose() {
     _tabController.dispose();
-    _connectionStringController.dispose();
+    _pairingCodeController.dispose();
     _ipController.dispose();
     _portController.dispose();
     super.dispose();
@@ -85,7 +90,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
         ),
         actions: [
           TextButton(
-            onPressed: _isConnecting ? null : _attemptConnection,
+            onPressed: _isConnecting ? null : _onConnectPressed,
             child: _isConnecting
                 ? const SizedBox(
                     width: 16,
@@ -107,7 +112,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
               items: [
                 CustomTabItem(
                   icon: Icons.link,
-                  label: _translationService.translate(SyncTranslationKeys.connectionStringTab),
+                  label: _translationService.translate(SyncTranslationKeys.pairingCodeTab),
                 ),
                 CustomTabItem(
                   icon: Icons.settings_input_antenna,
@@ -127,7 +132,7 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
             child: TabBarView(
               controller: _tabController,
               children: [
-                _buildConnectionStringTab(),
+                _buildPairingCodeTab(),
                 _buildManualEntryTab(),
               ],
             ),
@@ -135,6 +140,14 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
         ],
       ),
     );
+  }
+
+  void _onConnectPressed() {
+    if (_selectedTabIndex == _pairingCodeTabIndex) {
+      _submitPairingCode();
+    } else {
+      _attemptConnection();
+    }
   }
 
   String? _validateIPAddress(String? value) {
@@ -172,116 +185,50 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
     return null;
   }
 
-  String? _validateConnectionString(String? value) {
-    if (value == null || value.isEmpty) {
-      return _translationService.translate(SyncTranslationKeys.connectionStringRequired);
-    }
+  String? _validatePairingCode(String? value) {
+    final code = value?.trim() ?? '';
+    if (code.isEmpty) return _translationService.translate(SyncTranslationKeys.pairingCodeRequired);
 
-    final connectionString = SyncConnectionString.fromString(value);
-    if (connectionString == null || !connectionString.isValid) {
-      return _translationService.translate(SyncTranslationKeys.invalidConnectionString);
+    try {
+      PairingInvitation.decode(code);
+    } catch (_) {
+      return _translationService.translate(SyncTranslationKeys.invalidPairingCode);
     }
-
     return null;
   }
 
-  void _parseConnectionString(String value) {
-    if (value.isEmpty) return;
+  Future<void> _submitPairingCode() async {
+    if (!_pairingCodeFormKey.currentState!.validate()) return;
 
-    final connectionString = SyncConnectionString.fromString(value);
-    if (connectionString != null && connectionString.isValid) {
-      // Parse IP and port from connection string and populate fields
-      setState(() {
-        _ipController.text = connectionString.ipAddress;
-        _portController.text = connectionString.port.toString();
-      });
-    }
+    final pairingCode = _pairingCodeController.text.trim();
+    Navigator.of(context).pop(true);
+    await widget.onPairWithCode(pairingCode);
   }
 
-  Widget _buildConnectionStringTab() {
+  Widget _buildPairingCodeTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.sizeMedium),
       child: Form(
-        key: _connectionStringFormKey,
+        key: _pairingCodeFormKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              _translationService.translate(SyncTranslationKeys.manualConnectionStringInstruction),
+              _translationService.translate(SyncTranslationKeys.pairingCodeInstruction),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-
             const SizedBox(height: AppTheme.sizeMedium),
-
             TextFormField(
-              controller: _connectionStringController,
+              controller: _pairingCodeController,
               decoration: InputDecoration(
-                labelText: _translationService.translate(SyncTranslationKeys.connectionStringLabel),
-                hintText: 'whph://192.168.1.100:44040?name=Server&id=uuid',
-                prefixIcon: const Icon(Icons.link),
+                labelText: _translationService.translate(SyncTranslationKeys.pairingCodeLabel),
+                hintText: _translationService.translate(SyncTranslationKeys.pairingCodeHint),
+                prefixIcon: const Icon(Icons.vpn_key),
                 border: const OutlineInputBorder(),
               ),
-              maxLines: 3,
-              validator: _validateConnectionString,
-              onChanged: _parseConnectionString,
-              enabled: !_isConnecting,
+              maxLines: _pairingCodeLines,
+              validator: _validatePairingCode,
             ),
-
-            const SizedBox(height: AppTheme.sizeMedium),
-
-            // Test Connection Button
-            ElevatedButton.icon(
-              onPressed: _isConnecting ? null : _testConnectionString,
-              icon: const Icon(Icons.wifi_find, size: 16),
-              label: Text(_translationService.translate(SyncTranslationKeys.testConnection)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                foregroundColor: Theme.of(context).colorScheme.onSecondary,
-              ),
-            ),
-
-            const SizedBox(height: AppTheme.sizeSmall),
-
-            if (_errorMessage != null) ...[
-              Container(
-                padding: const EdgeInsets.all(AppTheme.sizeSmall),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.errorContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Theme.of(context).colorScheme.onErrorContainer,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        _errorMessage!,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onErrorContainer,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppTheme.sizeSmall),
-            ],
-
-            if (_isConnecting) ...[
-              const SizedBox(height: AppTheme.sizeMedium),
-              const LinearProgressIndicator(),
-              const SizedBox(height: AppTheme.sizeSmall),
-              Text(
-                _translationService.translate(SyncTranslationKeys.connectingToDevice),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
           ],
         ),
       ),
@@ -299,6 +246,11 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
             Text(
               _translationService.translate(SyncTranslationKeys.enterServerDetails),
               style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: AppTheme.sizeSmall),
+            Text(
+              _translationService.translate(SyncTranslationKeys.manualEntryQrHint),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
 
             const SizedBox(height: AppTheme.sizeMedium),
@@ -399,28 +351,10 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
   }
 
   Future<void> _attemptConnection() async {
-    String ipAddress;
-    int port;
+    if (!_manualEntryFormKey.currentState!.validate()) return;
 
-    // Validate based on the active tab
-    if (_tabController.index == 0) {
-      // Connection string tab
-      if (!_connectionStringFormKey.currentState!.validate()) return;
-
-      final connectionString = SyncConnectionString.fromString(_connectionStringController.text);
-      if (connectionString == null) return;
-
-      ipAddress = connectionString.ipAddress;
-      port = connectionString.port;
-    } else {
-      // Manual entry tab
-      if (!_manualEntryFormKey.currentState!.validate()) {
-        return;
-      }
-
-      ipAddress = _ipController.text.trim();
-      port = int.parse(_portController.text.trim());
-    }
+    final ipAddress = _ipController.text.trim();
+    final port = int.parse(_portController.text.trim());
 
     setState(() {
       _isConnecting = true;
@@ -470,15 +404,6 @@ class _ManualConnectionDialogState extends State<ManualConnectionDialog> with Si
         });
       }
     }
-  }
-
-  Future<void> _testConnectionString() async {
-    if (!_connectionStringFormKey.currentState!.validate()) return;
-
-    final connectionString = SyncConnectionString.fromString(_connectionStringController.text);
-    if (connectionString == null) return;
-
-    await _testConnection(connectionString.ipAddress, connectionString.port);
   }
 
   Future<void> _testManualConnection() async {

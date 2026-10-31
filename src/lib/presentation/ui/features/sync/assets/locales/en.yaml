@@ -10,7 +10,6 @@ sync:
     errors:
       loading: Failed to load sync devices
       removing: Failed to remove sync device
-      sync_failed: Failed to sync devices
     from_label: From
     help:
       content: "🔄 **What is Sync?**\n\nSync keeps your habits, tasks, notes, and data updated across your devices on the same Wi-Fi. No cloud or internet: data stays private and local.\n\n## 🛠️ **Enabling Sync**\n\n1. Keep WHPH open on both devices, on the same Wi-Fi.\n2. On one device choose \"Add Device\" and show the QR code.\n3. Scan it with the other device and check that both screens show the same code.\n4. Changes then sync automatically.\n\n## 📋 **Managing Devices**\n\n- **View:** See devices, sync times, and status in Sync settings.\n- **Manual Sync:** Tap the button per device.\n- **Remove:** Select a device and remove it to stop syncing.\n\n## 🔧 **Troubleshooting**\n\n1. Same Wi-Fi? No VPNs.\n2. Restart the app.\n3. Test without a firewall.\n\n**No Devices?**\n- Stable Wi-Fi, no proxies.\n- Refresh the scan."
@@ -25,6 +24,8 @@ sync:
     remove_device: Remove Device
     last_sync_succeeded: Last sync succeeded
     last_sync_failed: Last sync failed
+    syncing: "Syncing…"
+    syncing_percent: "Syncing… {percent}%"
   error:
     scan: Failed to scan
   errors:
@@ -90,11 +91,6 @@ sync:
     description:
       Other devices can scan this QR code to connect and sync with this
       device.
-    connection_string_title: Connection String
-    connection_string_description:
-      Alternatively, you can share this connection string
-      to connect devices manually.
-    connection_string_copied: Connection string copied to clipboard
   connect_info:
     dialog_title: Device Connection Information
     menu_title: Connection Info
@@ -102,21 +98,6 @@ sync:
     qr_description:
       Other devices can scan this QR code to connect and sync with this
       device.
-    connection_string_title: Connection String
-    connection_string_description:
-      Alternatively, you can share this connection string
-      to connect devices manually.
-    connection_string_copied: Connection string copied to clipboard
-    unknown_ip: Unknown IP
-    error_loading_connection_info: Error loading connection info
-    retry: Retry
-    manual_connection_tab: Manual Connection
-    server_details_title: Server Details
-    server_details_description:
-      Use these server details to connect manually from
-      another device.
-    connection_string_title_alt: Connection String
-    copy: Copy
   scanner:
     title: Scan QR Code
     instruction: Position QR code within the frame
@@ -145,11 +126,14 @@ sync:
     invalid_port: Port must be between 1 and 65535
     connection_failed: Failed to connect to device
     connection_error: "Connection error: {0}"
-    connection_string_tab: Connection String
+    pairing_code_tab: "Pairing Code"
     manual_entry_tab: Manual Entry
-    connection_string_required: Connection string is required
-    invalid_connection_string: Invalid connection string format
-    connection_string_label: Connection String
+    pairing_code_required: "Pairing code is required"
+    invalid_pairing_code: "This is not a valid pairing code"
+    pairing_code_label: "Pairing code"
+    pairing_code_hint: "Paste the code copied from the other device"
+    pairing_code_instruction: "Paste the pairing code that the other device shows under its QR code."
+    manual_entry_qr_hint: "The other device must be showing its QR code."
     test_connection: Test Connection
     enter_server_details: Enter server connection details manually
     connection_timeout: "Connection timeout. Please check the device address and try again."
@@ -159,9 +143,6 @@ sync:
       Connection test failed - no response from
       server
     connection_test_failed_generic: "Connection test failed: {0}"
-    connection_string_instruction:
-      Paste the connection string provided by the server
-      device here to connect manually.
   add:
     device: Add Device
     device_tooltip: Add new device
@@ -185,6 +166,7 @@ sync:
   multi_interface_connection: Multi-interface connection
   status:
     not_reachable: "Device not reachable"
+    not_reachable_hint: "Turn on Server Mode on the other device, or start the sync from that device."
     needs_repairing: "Needs re-pairing"
     needs_update: "{device} needs a newer version of WHPH to sync"
     this_device_needs_update: "Update WHPH on this device to sync with {device}, which runs a newer version"
@@ -208,6 +190,8 @@ sync:
       used: "This code was already used."
       regenerate: "Show a new code"
       paired: "Device paired"
+      copy_code: "Copy pairing code"
+      code_copied: "Pairing code copied to clipboard"
     code:
       title: "Compare codes"
       description: "Make sure {device} shows the same code."

@@ -6,7 +6,6 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/utils/sync_error_handler.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
-import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 /// Mixin that runs a manual sync with every paired device from the sync
 /// devices page and keeps the outcome per device.
@@ -34,11 +33,6 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
     if (currentSyncStatus.isSyncing) return;
 
     _showSyncStatus(const SyncStatus(state: SyncState.syncing, isManual: true));
-    OverlayNotificationHelper.showLoading(
-      context: context,
-      message: translationService.translate(SyncTranslationKeys.syncInProgress),
-      duration: const Duration(seconds: 30),
-    );
 
     SyncNowCommandResponse? response;
     try {
@@ -48,12 +42,13 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
     }
     if (!mounted) return;
 
-    OverlayNotificationHelper.hideNotification();
     final succeeded = response != null && !response.hasErrors && response.isComplete;
     if (response != null) _recordPeerResults(response);
     _showSyncStatus(SyncStatus(state: succeeded ? SyncState.completed : SyncState.error, isManual: true));
-    _showOutcome(succeeded);
-    if (succeeded) await onRefresh();
+    // A failed run raises no toast: each device card already shows its own reason.
+    if (succeeded) _showSuccessToast();
+    // A failed run changes the reason each card shows, so the list reloads either way.
+    await onRefresh();
   }
 
   void _recordPeerResults(SyncNowCommandResponse response) {
@@ -73,19 +68,11 @@ mixin SyncStatusMixin<T extends StatefulWidget> on State<T> {
     syncButtonAnimationController.reset();
   }
 
-  void _showOutcome(bool succeeded) {
-    if (succeeded) {
-      SyncErrorHandler.showSyncSuccess(
-        context: context,
-        translationService: translationService,
-        messageKey: SyncTranslationKeys.syncCompleted,
-      );
-      return;
-    }
-    SyncErrorHandler.showSyncError(
+  void _showSuccessToast() {
+    SyncErrorHandler.showSyncSuccess(
       context: context,
       translationService: translationService,
-      errorKey: SyncTranslationKeys.syncDevicesError,
+      messageKey: SyncTranslationKeys.syncCompleted,
     );
   }
 }

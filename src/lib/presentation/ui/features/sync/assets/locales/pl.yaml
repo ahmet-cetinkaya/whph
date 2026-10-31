@@ -10,7 +10,6 @@ sync:
     errors:
       loading: Błąd podczas ładowania urządzeń synchronizacji
       removing: Błąd podczas usuwania urządzenia synchronizacji
-      sync_failed: Błąd podczas synchronizacji urządzeń
     from_label: Od
     help:
       content: "🔄 **Czym jest synchronizacja?**\n\nSynchronizacja utrzymuje aktualność nawyków, zadań, notatek i danych na urządzeniach w tej samej sieci Wi-Fi. Bez chmury i internetu: dane pozostają prywatne i lokalne.\n\n## 🛠️ **Włączanie synchronizacji**\n\n1. Pozostaw WHPH otwarte na obu urządzeniach w tej samej sieci Wi-Fi.\n2. Na jednym urządzeniu wybierz „Dodaj urządzenie” i pokaż kod QR.\n3. Zeskanuj go drugim urządzeniem i sprawdź, czy oba ekrany pokazują ten sam kod.\n4. Zmiany będą potem synchronizowane automatycznie.\n\n## 📋 **Zarządzanie urządzeniami**\n\n- **Podgląd:** Urządzenia, czasy synchronizacji i stan zobaczysz w ustawieniach synchronizacji.\n- **Synchronizacja ręczna:** Dotknij przycisku przy urządzeniu.\n- **Usuń:** Wybierz urządzenie i usuń je, aby zatrzymać synchronizację.\n\n## 🔧 **Rozwiązywanie problemów**\n\n1. Ta sama sieć Wi-Fi? Bez VPN.\n2. Uruchom aplikację ponownie.\n3. Spróbuj bez zapory.\n\n**Brak urządzeń?**\n- Stabilne Wi-Fi, bez serwerów proxy.\n- Odśwież wyszukiwanie."
@@ -25,6 +24,8 @@ sync:
     remove_device: Usuń urządzenie
     last_sync_succeeded: Ostatnia synchronizacja powiodła się
     last_sync_failed: Ostatnia synchronizacja nie powiodła się
+    syncing: "Synchronizacja…"
+    syncing_percent: "Synchronizacja… {percent}%"
   error:
     scan: Błąd skanowania
   errors:
@@ -101,11 +102,6 @@ sync:
     description:
       Inne urządzenia mogą zeskanować ten kod QR, aby połączyć się i zsynchronizować
       z tym urządzeniem.
-    connection_string_title: Ciąg połączenia
-    connection_string_description:
-      Alternatywnie możesz udostępnić ten ciąg połączenia,
-      aby ręcznie połączyć urządzenia.
-    connection_string_copied: Ciąg połączenia skopiowany do schowka
   connect_info:
     dialog_title: Informacje o połączeniu urządzenia
     menu_title: Informacje o połączeniu
@@ -113,21 +109,6 @@ sync:
     qr_description:
       Inne urządzenia mogą zeskanować ten kod QR, aby połączyć się i
       zsynchronizować z tym urządzeniem.
-    connection_string_title: Ciąg połączenia
-    connection_string_description:
-      Alternatywnie możesz udostępnić ten ciąg połączenia,
-      aby ręcznie połączyć urządzenia.
-    connection_string_copied: Ciąg połączenia skopiowany do schowka
-    unknown_ip: Nieznany IP
-    error_loading_connection_info: Błąd podczas ładowania informacji o połączeniu
-    retry: Spróbuj ponownie
-    manual_connection_tab: Ręczne połączenie
-    server_details_title: Szczegóły serwera
-    server_details_description:
-      Użyj tych szczegółów serwera, aby ręcznie połączyć
-      się z innego urządzenia.
-    connection_string_title_alt: Ciąg połączenia
-    copy: Kopiuj
   scanner:
     title: Skanuj kod QR
     instruction: Umieść kod QR w ramce
@@ -158,11 +139,14 @@ sync:
     invalid_port: Port musi być między 1 a 65535
     connection_failed: Nie udało się połączyć z urządzeniem
     connection_error: "Błąd połączenia: {0}"
-    connection_string_tab: Ciąg połączenia
+    pairing_code_tab: "Kod parowania"
     manual_entry_tab: Ręczne wprowadzanie
-    connection_string_required: Wymagany ciąg połączenia
-    invalid_connection_string: Nieprawidłowy format ciągu połączenia
-    connection_string_label: Ciąg połączenia
+    pairing_code_required: "Kod parowania jest wymagany"
+    invalid_pairing_code: "To nie jest prawidłowy kod parowania"
+    pairing_code_label: "Kod parowania"
+    pairing_code_hint: "Wklej kod skopiowany z drugiego urządzenia"
+    pairing_code_instruction: "Wklej kod parowania wyświetlany przez drugie urządzenie pod jego kodem QR."
+    manual_entry_qr_hint: "Drugie urządzenie musi wyświetlać swój kod QR."
     test_connection: Testuj połączenie
     enter_server_details: Wprowadź szczegóły połączenia serwera ręcznie
     connection_timeout: "Przekroczono limit czasu połączenia. Sprawdź adres urządzenia i spróbuj ponownie."
@@ -172,9 +156,6 @@ sync:
       Test połączenia nieudany - brak odpowiedzi
       z serwera
     connection_test_failed_generic: "Test połączenia nieudany: {0}"
-    connection_string_instruction:
-      Wklej tutaj ciąg połączenia dostarczony przez urządzenie
-      serwera, aby połączyć ręcznie.
   add:
     device: Dodaj urządzenie
     device_tooltip: Dodaj nowe urządzenie
@@ -198,6 +179,7 @@ sync:
   multi_interface_connection: Połączenie wielo-interfejsowe
   status:
     not_reachable: "Urządzenie jest niedostępne"
+    not_reachable_hint: "Włącz tryb serwera na drugim urządzeniu lub rozpocznij synchronizację z tamtego urządzenia."
     needs_repairing: "Wymaga ponownego sparowania"
     needs_update: "{device} potrzebuje nowszej wersji WHPH, aby synchronizować"
     this_device_needs_update: "Zaktualizuj WHPH na tym urządzeniu, aby synchronizować z {device}, które ma nowszą wersję"
@@ -221,6 +203,8 @@ sync:
       used: "Ten kod został już użyty."
       regenerate: "Pokaż nowy kod"
       paired: "Urządzenie sparowane"
+      copy_code: "Kopiuj kod parowania"
+      code_copied: "Kod parowania skopiowany do schowka"
     code:
       title: "Porównaj kody"
       description: "Upewnij się, że {device} pokazuje ten sam kod."

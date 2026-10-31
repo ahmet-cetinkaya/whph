@@ -3,7 +3,6 @@ sync:
     errors:
       loading: Selhání načtení synchronizačních zařízení
       removing: Selhání odstranění synchronizačního zařízení
-      sync_failed: Selhání synchronizace zařízení
     from_label: Od
     help:
       content: "🔄 **Co je synchronizace?**\n\nSynchronizace udržuje vaše návyky, úkoly, poznámky a data aktuální na všech zařízeních ve stejné síti Wi-Fi. Bez cloudu a internetu: data zůstávají soukromá a místní.\n\n## 🛠️ **Zapnutí synchronizace**\n\n1. Nechte WHPH otevřené na obou zařízeních ve stejné síti Wi-Fi.\n2. Na jednom zařízení zvolte „Přidat zařízení“ a zobrazte QR kód.\n3. Naskenujte jej druhým zařízením a zkontrolujte, že obě obrazovky ukazují stejný kód.\n4. Změny se pak synchronizují automaticky.\n\n## 📋 **Správa zařízení**\n\n- **Zobrazit:** Zařízení, časy synchronizace a stav najdete v nastavení synchronizace.\n- **Ruční synchronizace:** Klepněte na tlačítko u zařízení.\n- **Odebrat:** Vyberte zařízení a odeberte ho, aby se přestalo synchronizovat.\n\n## 🔧 **Řešení potíží**\n\n1. Stejná síť Wi-Fi? Žádné VPN.\n2. Restartujte aplikaci.\n3. Zkuste to bez firewallu.\n\n**Žádná zařízení?**\n- Stabilní Wi-Fi, žádné proxy.\n- Obnovte vyhledávání."
@@ -18,6 +17,8 @@ sync:
     remove_device: Odebrat zařízení
     last_sync_succeeded: Poslední synchronizace proběhla úspěšně
     last_sync_failed: Poslední synchronizace selhala
+    syncing: "Synchronizace…"
+    syncing_percent: "Synchronizace… {percent} %"
   error:
     scan: Selhání skenování
   errors:
@@ -89,11 +90,6 @@ sync:
     description:
       Jiná zařízení mohou naskenovat tento QR kód pro připojení a synchronizaci
       s tímto zařízením.
-    connection_string_title: Připojovací řetězec
-    connection_string_description:
-      Alternativně můžete sdílet tento připojovací řetězec
-      pro manuální připojení zařízení.
-    connection_string_copied: Připojovací řetězec zkopírován do schránky
   scanner:
     title: Naskenujte QR kód
     instruction: Umístěte QR kód do rámečku
@@ -124,11 +120,14 @@ sync:
     invalid_port: Neplatné číslo portu
     connection_failed: Připojení selhalo
     connection_error: "Chyba připojení: {0}"
-    connection_string_tab: Připojovací řetězec
+    pairing_code_tab: "Párovací kód"
     manual_entry_tab: Manuální zadání
-    connection_string_required: Připojovací řetězec je povinný
-    invalid_connection_string: Neplatný formát připojovacího řetězce
-    connection_string_label: Připojovací řetězec
+    pairing_code_required: "Párovací kód je povinný"
+    invalid_pairing_code: "Toto není platný párovací kód"
+    pairing_code_label: "Párovací kód"
+    pairing_code_hint: "Vložte kód zkopírovaný z druhého zařízení"
+    pairing_code_instruction: "Vložte párovací kód, který druhé zařízení zobrazuje pod svým QR kódem."
+    manual_entry_qr_hint: "Druhé zařízení musí zobrazovat svůj QR kód."
     test_connection: Testovat připojení
     enter_server_details: Zadejte detaily serverového připojení manuálně
     connection_timeout: "Časový limit připojení vypršel. Zkontrolujte adresu zařízení a zkuste to znovu."
@@ -136,9 +135,6 @@ sync:
     connection_test_timeout: "Časový limit testu připojení vypršel. Zkontrolujte adresu zařízení a zkuste to znovu."
     connection_test_failed_no_response: Test připojení selhal - žádná odpověď ze serveru
     connection_test_failed_generic: "Test připojení selhal: {0}"
-    connection_string_instruction:
-      Sem vložte připojovací řetězec poskytnutý serverovým
-      zařízením pro manuální připojení.
   add:
     device: Přidat zařízení
     device_tooltip: Přidat nové zařízení
@@ -160,21 +156,6 @@ sync:
     qr_description:
       Jiná zařízení mohou naskenovat tento QR kód pro připojení a synchronizaci
       s tímto zařízením.
-    connection_string_title: Připojovací řetězec
-    connection_string_description:
-      Alternativně můžete sdílet tento připojovací řetězec
-      pro manuální připojení zařízení.
-    connection_string_copied: Připojovací řetězec zkopírován do schránky
-    server_details_description:
-      Použijte tyto detaily serveru pro manuální připojení
-      z jiného zařízení.
-    unknown_ip: Neznámá IP
-    error_loading_connection_info: Chyba při načítání informací o připojení
-    retry: Znovu
-    manual_connection_tab: Manuální připojení
-    server_details_title: Detaily serveru
-    connection_string_title_alt: Připojovací řetězec
-    copy: Kopírovat
   desktop:
     mode_title: Režim synchronizace na desktopu
     sync_mode_start_menu: "Přestat přijímat připojení"
@@ -185,6 +166,7 @@ sync:
   multi_interface_connection: Připojení přes více rozhraní
   status:
     not_reachable: "Zařízení není dostupné"
+    not_reachable_hint: "Zapněte na druhém zařízení režim serveru nebo spusťte synchronizaci z tohoto zařízení."
     needs_repairing: "Vyžaduje nové spárování"
     needs_update: "{device} potřebuje k synchronizaci novější verzi WHPH"
     this_device_needs_update: "Pro synchronizaci se zařízením {device} aktualizujte WHPH v tomto zařízení, protože {device} používá novější verzi"
@@ -208,6 +190,8 @@ sync:
       used: "Tento kód už byl použit."
       regenerate: "Zobrazit nový kód"
       paired: "Zařízení spárováno"
+      copy_code: "Kopírovat párovací kód"
+      code_copied: "Párovací kód zkopírován do schránky"
     code:
       title: "Porovnejte kódy"
       description: "Zkontrolujte, že {device} zobrazuje stejný kód."

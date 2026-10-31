@@ -34,6 +34,8 @@ void main() {
     SyncResultCategory.storageError: 'A storage error interrupted the sync',
   };
 
+  const notReachableHint = 'Turn on Server Mode on the other device, or start the sync from that device.';
+
   group('last sync and category', () {
     testWidgets('a device that never synced says so and shows no category', (tester) async {
       await pumpItem(tester, const SyncMemberSummary(memberId: 'm1', name: 'Pixel'));
@@ -93,6 +95,24 @@ void main() {
           find.text('Update WHPH on this device to sync with New laptop, which runs a newer version'), findsOneWidget);
     });
 
+    testWidgets('not reachable: adds a hint to turn on Server Mode or sync from the other device', (tester) async {
+      await pumpItem(
+        tester,
+        const SyncMemberSummary(memberId: 'm1', name: 'Pixel', lastResult: SyncResultCategory.notReachable),
+      );
+
+      expect(find.text('Device not reachable'), findsOneWidget);
+      expect(find.text(notReachableHint), findsOneWidget);
+    });
+
+    testWidgets('no other category shows the not-reachable hint', (tester) async {
+      for (final category in SyncResultCategory.values.where((it) => it != SyncResultCategory.notReachable)) {
+        await pumpItem(tester, SyncMemberSummary(memberId: 'm1', name: 'Pixel', lastResult: category));
+
+        expect(find.text(notReachableHint), findsNothing, reason: category.code);
+      }
+    });
+
     testWidgets('warns about items that repeatedly cannot be applied', (tester) async {
       await pumpItem(tester, const SyncMemberSummary(memberId: 'm1', name: 'Pixel', itemsCannotBeApplied: true));
 
@@ -117,6 +137,55 @@ void main() {
         expect(harness.translations.hasText(SyncResultTexts.pairingErrorKey(code)), isTrue, reason: code);
       }
       expect(SyncResultTexts.pairingErrorKey('unknown'), SyncResultTexts.pairingErrorKey(SyncPairingErrorCode.refused));
+    });
+  });
+
+  group('sync progress', () {
+    const member = SyncMemberSummary(memberId: 'm1', name: 'Pixel');
+    final barFinder = find.byKey(const ValueKey('device-sync-progress-bar'));
+
+    Future<void> pumpSyncing(WidgetTester tester, {bool isBeingSynced = true, double? progress}) => pumpPage(
+          tester,
+          SyncDeviceListItemWidget(
+            member: member,
+            onRemove: (_) {},
+            isBeingSynced: isBeingSynced,
+            syncProgress: progress,
+          ),
+        );
+
+    testWidgets('the syncing device shows the percent and a determinate bar', (tester) async {
+      await pumpSyncing(tester, progress: 0.426);
+
+      expect(find.text('Syncing… 43%'), findsOneWidget);
+      expect(tester.widget<LinearProgressIndicator>(barFinder).value, 0.426);
+    });
+
+    testWidgets('without a known total the bar is indeterminate and has no number', (tester) async {
+      await pumpSyncing(tester);
+
+      expect(find.text('Syncing…'), findsOneWidget);
+      expect(tester.widget<LinearProgressIndicator>(barFinder).value, isNull);
+    });
+
+    testWidgets('a device that is not being synced shows neither text nor bar', (tester) async {
+      await pumpSyncing(tester, isBeingSynced: false, progress: 0.5);
+
+      expect(barFinder, findsNothing);
+      expect(find.textContaining('Syncing…'), findsNothing);
+    });
+  });
+
+  group('last error', () {
+    testWidgets('a failed sync shows its reason and a successful one clears it', (tester) async {
+      const failed = SyncMemberSummary(memberId: 'm1', name: 'Pixel', lastResult: SyncResultCategory.notReachable);
+      const succeeded = SyncMemberSummary(memberId: 'm1', name: 'Pixel');
+
+      await pumpPage(tester, SyncDeviceListItemWidget(member: failed, onRemove: (_) {}));
+      expect(find.text('Device not reachable'), findsOneWidget);
+
+      await pumpPage(tester, SyncDeviceListItemWidget(member: succeeded, onRemove: (_) {}));
+      expect(find.text('Device not reachable'), findsNothing);
     });
   });
 

@@ -8,6 +8,7 @@ import 'package:whph/core/application/features/sync/models/sync_member_summary.d
 import 'package:whph/core/application/features/sync/queries/get_is_paired_query.dart';
 import 'package:whph/core/application/features/sync/queries/get_list_sync_members_query.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
@@ -67,6 +68,11 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   SyncStatus _currentSyncStatus = const SyncStatus(state: SyncState.idle);
   late AnimationController _syncButtonAnimationController;
 
+  // Which peer a running session is with and how far it is, from the sync engine.
+  final SyncProgressTracker _progressTracker = container.resolve<SyncProgressTracker>();
+  StreamSubscription<SyncStatus>? _progressSubscription;
+  late SyncStatus _peerSyncStatus = _progressTracker.current;
+
   // Mixin service accessors
   @override
   Mediator get mediator => _mediator;
@@ -96,7 +102,15 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
     _initializeServices();
     _initializeAnimationControllers();
     _loadPreferences();
+    _progressSubscription = _progressTracker.changes.listen(_onPeerSyncStatusChanged);
     refresh();
+  }
+
+  void _onPeerSyncStatusChanged(SyncStatus status) {
+    if (!mounted) return;
+    final wasSyncing = _peerSyncStatus.isSyncing;
+    setState(() => _peerSyncStatus = status);
+    if (wasSyncing && !status.isSyncing) refresh();
   }
 
   void _initializeServices() {
@@ -125,6 +139,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
   @override
   void dispose() {
+    _progressSubscription?.cancel();
     _syncButtonAnimationController.dispose();
     super.dispose();
   }
@@ -178,15 +193,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   bool get _shouldShowRepairBanner =>
       !_isRepairBannerDismissed && (_members?.any((member) => member.isLegacy) ?? false);
 
-  Future<void> _sync() async {
-    // Only allow sync in client mode
-    if (isServerMode) {
-      Logger.warning('Sync cannot be initiated in server mode');
-      return;
-    }
-
-    await runManualSync();
-  }
+  Future<void> _sync() => runManualSync();
 
   Future<void> _removeDevice(String memberId) async {
     final member = _members?.firstWhere((candidate) => candidate.memberId == memberId);
@@ -248,73 +255,77 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
             refresh();
           },
           child: CustomScrollView(
-          slivers: [
-            // Firewall permission card (desktop only)
-            SliverToBoxAdapter(
-              child: FirewallPermissionCard(
-                onPermissionChanged: _onFirewallPermissionChanged,
-              ),
-            ),
-
-            // Server Mode Toggle (Android only)
-            if (Platform.isAndroid) ...[
+            slivers: [
+              // Firewall permission card (desktop only)
               SliverToBoxAdapter(
-                child: ServerModeToggle(
-                  isServerMode: isServerMode,
-                  onToggle: toggleServerMode,
-                  title: _translationService.translate(SyncTranslationKeys.serverModeTitle),
-                  subtitle: isServerMode
-                      ? _translationService.translate(SyncTranslationKeys.serverModeActive)
-                      : _translationService.translate(SyncTranslationKeys.serverModeInactive),
+                child: FirewallPermissionCard(
+                  onPermissionChanged: _onFirewallPermissionChanged,
                 ),
               ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: AppTheme.sizeLarge),
-              ),
+
+              // Server mode card (Android only); starting the server stays in the kebab menu while it is off.
+              if (Platform.isAndroid && isServerMode) ...[
+                SliverToBoxAdapter(
+                  child: ServerModeToggle(
+                    isServerMode: isServerMode,
+                    onToggle: toggleServerMode,
+                    title: _translationService.translate(SyncTranslationKeys.serverModeTitle),
+                    subtitle: isServerMode
+                        ? _translationService.translate(SyncTranslationKeys.serverModeActive)
+                        : _translationService.translate(SyncTranslationKeys.serverModeInactive),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppTheme.sizeLarge),
+                ),
+              ],
+
+              const SliverToBoxAdapter(child: SyncUpgradeProgressBanner()),
+
+              SliverToBoxAdapter(child: SyncGroupStateCard(groupState: _groupState, onPair: _showAddDevicePage)),
+
+              if (_shouldShowRepairBanner)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
+                    child: SyncRepairBanner(onPair: _showAddDevicePage, onDismiss: _dismissRepairBanner),
+                  ),
+                ),
+
+              // Device List
+              if (_members == null || _members!.isEmpty)
+                SliverFillRemaining(
+                  child: SyncDevicesEmptyState(
+                    message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
+                    addDeviceLabel: _translationService.translate(SyncTranslationKeys.addDeviceTooltip),
+                    showAddButton: !isServerMode,
+                    onAddDevice: _showAddDevicePage,
+                  ),
+                )
+              else
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final member = _members![index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
+                        child: SyncDeviceListItemWidget(
+                          key: ValueKey(member.memberId),
+                          member: member,
+                          onRemove: _removeDevice,
+                          onRepair: _repairDevice,
+                          lastSyncResult: lastSyncResultOf(member.memberId),
+                          isBeingSynced:
+                              _peerSyncStatus.isSyncing && _peerSyncStatus.currentDeviceId == member.memberId,
+                          syncProgress:
+                              _peerSyncStatus.currentDeviceId == member.memberId ? _peerSyncStatus.progress : null,
+                        ),
+                      );
+                    },
+                    childCount: _members!.length,
+                  ),
+                ),
             ],
-
-            const SliverToBoxAdapter(child: SyncUpgradeProgressBanner()),
-
-            SliverToBoxAdapter(child: SyncGroupStateCard(groupState: _groupState, onPair: _showAddDevicePage)),
-
-            if (_shouldShowRepairBanner)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: AppTheme.sizeMedium),
-                  child: SyncRepairBanner(onPair: _showAddDevicePage, onDismiss: _dismissRepairBanner),
-                ),
-              ),
-
-            // Device List
-            if (_members == null || _members!.isEmpty)
-              SliverFillRemaining(
-                child: SyncDevicesEmptyState(
-                  message: _translationService.translate(SyncTranslationKeys.noDevicesFound),
-                  addDeviceLabel: _translationService.translate(SyncTranslationKeys.addDeviceTooltip),
-                  showAddButton: !isServerMode,
-                  onAddDevice: _showAddDevicePage,
-                ),
-              )
-            else
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final member = _members![index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                      child: SyncDeviceListItemWidget(
-                        key: ValueKey(member.memberId),
-                        member: member,
-                        onRemove: _removeDevice,
-                        onRepair: _repairDevice,
-                        lastSyncResult: lastSyncResultOf(member.memberId),
-                      ),
-                    );
-                  },
-                  childCount: _members!.length,
-                ),
-              ),
-          ],
           ),
         ),
       ),
@@ -323,8 +334,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
   List<Widget> _buildAppBarActions() {
     return [
-      // Sync button - behavior depends on mode
-      if (!isServerMode && (_members?.isNotEmpty ?? false))
+      // Sync button: a server-mode device can also start a session, it just dials the peer instead of waiting
+      if (_members?.isNotEmpty ?? false)
         IconButton(
           onPressed: _currentSyncStatus.isSyncing ? null : _sync,
           icon: _currentSyncStatus.isSyncing
@@ -356,7 +367,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
         ),
 
       // Connection Info Button - show only when in server mode
-      if (isServerMode) SyncConnectInfoButton(),
+      if (isServerMode) SyncConnectInfoButton(onPaired: refresh),
 
       // Kebab menu
       KebabMenu(

@@ -3,7 +3,6 @@ sync:
     errors:
       loading: 동기화 기기 로드에 실패했습니다
       removing: 동기화 기기 제거에 실패했습니다
-      sync_failed: 기기 동기화에 실패했습니다
     from_label: 보낸 곳
     help:
       content: "🔄 **동기화란?**\n\n동기화는 같은 Wi-Fi에 있는 기기들에서 습관, 작업, 노트, 데이터를 최신 상태로 유지합니다. 클라우드나 인터넷 없이 데이터는 비공개로 로컬에 보관됩니다.\n\n## 🛠️ **동기화 켜기**\n\n1. 같은 Wi-Fi에서 두 기기 모두 WHPH를 열어 두세요.\n2. 한 기기에서 '기기 추가'를 선택하고 QR 코드를 표시하세요.\n3. 다른 기기로 스캔한 뒤 두 화면에 같은 코드가 표시되는지 확인하세요.\n4. 이후 변경 사항이 자동으로 동기화됩니다.\n\n## 📋 **기기 관리**\n\n- **보기:** 동기화 설정에서 기기, 동기화 시간, 상태를 확인합니다.\n- **수동 동기화:** 기기별 버튼을 누릅니다.\n- **제거:** 기기를 선택해 제거하면 동기화가 중지됩니다.\n\n## 🔧 **문제 해결**\n\n1. 같은 Wi-Fi인가요? VPN은 끄세요.\n2. 앱을 다시 시작하세요.\n3. 방화벽 없이 테스트하세요.\n\n**기기가 없나요?**\n- 안정적인 Wi-Fi를 사용하고 프록시는 쓰지 마세요.\n- 검색을 새로고침하세요."
@@ -18,6 +17,8 @@ sync:
     remove_device: 기기 제거
     last_sync_succeeded: 마지막 동기화 성공
     last_sync_failed: 마지막 동기화 실패
+    syncing: "동기화 중…"
+    syncing_percent: "동기화 중… {percent}%"
   error:
     scan: 스캔에 실패했습니다
   errors:
@@ -73,9 +74,6 @@ sync:
     dialog_title: QR 코드를 스캔하여 동기화
     title: QR 코드
     description: 다른 기기는 이 QR 코드를 스캔하여 이 기기에 연결하고 동기화할 수 있습니다.
-    connection_string_title: 연결 문자열
-    connection_string_description: 또는 기기를 수동으로 연결하기 위해 이 연결 문자열을 공유할 수 있습니다.
-    connection_string_copied: 연결 문자열이 클립보드에 복사되었습니다
   scanner:
     title: QR 코드 스캔
     instruction: QR 코드를 프레임 안에 위치시키세요
@@ -104,11 +102,14 @@ sync:
     invalid_port: 포트 번호가 잘못되었습니다
     connection_failed: 연결에 실패했습니다
     connection_error: "연결 오류: {0}"
-    connection_string_tab: 연결 문자열
+    pairing_code_tab: "페어링 코드"
     manual_entry_tab: 수동 입력
-    connection_string_required: 연결 문자열이 필요합니다
-    invalid_connection_string: 잘못된 연결 문자열 형식입니다
-    connection_string_label: 연결 문자열
+    pairing_code_required: "페어링 코드를 입력하세요"
+    invalid_pairing_code: "올바른 페어링 코드가 아닙니다"
+    pairing_code_label: "페어링 코드"
+    pairing_code_hint: "다른 기기에서 복사한 코드를 붙여넣으세요"
+    pairing_code_instruction: "다른 기기의 QR 코드 아래에 표시된 페어링 코드를 붙여넣으세요."
+    manual_entry_qr_hint: "다른 기기에서 QR 코드를 표시하고 있어야 합니다."
     test_connection: 연결 테스트
     enter_server_details: 서버 연결 세부 정보를 수동으로 입력하세요
     connection_timeout: "연결 시간이 초과되었습니다. 기기 주소를 확인하고 다시 시도하세요."
@@ -116,7 +117,6 @@ sync:
     connection_test_timeout: "연결 테스트 시간이 초과되었습니다. 기기 주소를 확인하고 다시 시도하세요."
     connection_test_failed_no_response: 연결 테스트 실패 - 서버로부터 응답 없음
     connection_test_failed_generic: "연결 테스트 실패: {0}"
-    connection_string_instruction: 수동 연결을 위해 서버 기기에서 제공된 연결 문자열을 여기에 붙여넣으세요.
   add:
     device: 기기 추가
     device_tooltip: 새 기기 추가
@@ -136,17 +136,6 @@ sync:
     menu_title: 연결 정보
     qr_title: QR 코드
     qr_description: 다른 기기는 이 QR 코드를 스캔하여 이 기기에 연결하고 동기화할 수 있습니다.
-    connection_string_title: 연결 문자열
-    connection_string_description: 또는 기기를 수동으로 연결하기 위해 이 연결 문자열을 공유할 수 있습니다.
-    connection_string_copied: 연결 문자열이 클립보드에 복사되었습니다
-    server_details_description: 다른 기기에서 수동으로 연결하기 위해 이 서버 세부 정보를 사용하세요.
-    unknown_ip: 알 수 없는 IP
-    error_loading_connection_info: 연결 정보 로드 오류
-    retry: 다시 시도
-    manual_connection_tab: 수동 연결
-    server_details_title: 서버 세부 정보
-    connection_string_title_alt: 연결 문자열
-    copy: 복사
   desktop:
     mode_title: 데스크톱 동기화 모드
     sync_mode_start_menu: "연결 수락 중지"
@@ -157,6 +146,7 @@ sync:
   multi_interface_connection: 다중 인터페이스 연결
   status:
     not_reachable: "기기에 연결할 수 없습니다"
+    not_reachable_hint: "다른 기기에서 서버 모드를 켜거나 해당 기기에서 동기화를 시작하세요."
     needs_repairing: "다시 페어링해야 합니다"
     needs_update: "{device}에서 동기화하려면 더 새로운 WHPH 버전이 필요합니다"
     this_device_needs_update: "{device}이(가) 더 최신 버전을 사용 중이므로 동기화하려면 이 기기의 WHPH를 업데이트하세요"
@@ -180,6 +170,8 @@ sync:
       used: "이 코드는 이미 사용되었습니다."
       regenerate: "새 코드 표시"
       paired: "기기가 페어링되었습니다"
+      copy_code: "페어링 코드 복사"
+      code_copied: "페어링 코드를 클립보드에 복사했습니다"
     code:
       title: "코드 비교"
       description: "{device}에 같은 코드가 표시되는지 확인하세요."

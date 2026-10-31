@@ -16,6 +16,8 @@ class SyncMemberStatus extends StatelessWidget {
 
   const SyncMemberStatus({super.key, required this.member, this.onRepair});
 
+  static const double _hintIndent = 18; // status icon (14) + gap (4)
+
   bool get _needsRepairing => member.isLegacy || member.lastResult == SyncResultCategory.needsRepairing;
 
   @override
@@ -32,6 +34,7 @@ class SyncMemberStatus extends StatelessWidget {
             icon: Icons.warning_amber,
             text: SyncResultTexts.categoryText(translationService, category, member.name),
           ),
+        if (category == SyncResultCategory.notReachable) _buildNotReachableHint(context, translationService),
         if (member.itemsCannotBeApplied)
           _StatusLine(
             icon: Icons.error_outline,
@@ -39,6 +42,17 @@ class SyncMemberStatus extends StatelessWidget {
             color: Theme.of(context).colorScheme.error,
           ),
       ],
+    );
+  }
+
+  /// Aligned under the status line text, past its icon and gap.
+  Widget _buildNotReachableHint(BuildContext context, ITranslationService translationService) {
+    return Padding(
+      padding: const EdgeInsets.only(left: _hintIndent, top: 2),
+      child: Text(
+        translationService.translate(SyncTranslationKeys.syncStatusNotReachableHint),
+        style: AppTheme.bodySmall.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      ),
     );
   }
 

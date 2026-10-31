@@ -10,7 +10,6 @@ sync:
     errors:
       loading: Eroare la încărcarea dispozitivelor de sincronizare
       removing: Eroare la eliminarea dispozitivului de sincronizare
-      sync_failed: Eroare la sincronizarea dispozitivelor
     from_label: De la
     help:
       content: "🔄 **Ce este sincronizarea?**\n\nSincronizarea păstrează obiceiurile, sarcinile, notițele și datele actualizate pe dispozitivele din aceeași rețea Wi-Fi. Fără cloud sau internet: datele rămân private și locale.\n\n## 🛠️ **Activarea sincronizării**\n\n1. Ține WHPH deschis pe ambele dispozitive, în aceeași rețea Wi-Fi.\n2. Pe un dispozitiv alege „Adaugă dispozitiv” și afișează codul QR.\n3. Scanează-l cu celălalt dispozitiv și verifică dacă ambele ecrane arată același cod.\n4. Modificările se sincronizează apoi automat.\n\n## 📋 **Gestionarea dispozitivelor**\n\n- **Vezi:** Vezi dispozitivele, orele de sincronizare și starea în setările de sincronizare.\n- **Sincronizare manuală:** Atinge butonul de lângă dispozitiv.\n- **Elimină:** Selectează un dispozitiv și elimină-l pentru a opri sincronizarea.\n\n## 🔧 **Depanare**\n\n1. Aceeași rețea Wi-Fi? Fără VPN.\n2. Repornește aplicația.\n3. Testează fără firewall.\n\n**Niciun dispozitiv?**\n- Wi-Fi stabil, fără proxy.\n- Reîmprospătează căutarea."
@@ -25,6 +24,8 @@ sync:
     remove_device: Eliminare dispozitiv
     last_sync_succeeded: Ultima sincronizare a reușit
     last_sync_failed: Ultima sincronizare a eșuat
+    syncing: "Se sincronizează…"
+    syncing_percent: "Se sincronizează… {percent}%"
   error:
     scan: Eroare la scanare
   errors:
@@ -104,11 +105,6 @@ sync:
     description:
       Alte dispozitive pot scana acest cod QR pentru a se conecta și sincroniza
       cu acest dispozitiv.
-    connection_string_title: Șir de conexiune
-    connection_string_description:
-      Alternativ, puteți partaja acest șir de conexiune
-      pentru a conecta dispozitivele manual.
-    connection_string_copied: Șirul de conexiune a fost copiat în clipboard
   connect_info:
     dialog_title: Informații conexiune dispozitiv
     menu_title: Informații conexiune
@@ -116,21 +112,6 @@ sync:
     qr_description:
       Alte dispozitive pot scana acest cod QR pentru a se conecta și
       sincroniza cu acest dispozitiv.
-    connection_string_title: Șir de conexiune
-    connection_string_description:
-      Alternativ, puteți partaja acest șir de conexiune
-      pentru a conecta dispozitivele manual.
-    connection_string_copied: Șirul de conexiune a fost copiat în clipboard
-    unknown_ip: IP necunoscut
-    error_loading_connection_info: Eroare la încărcarea informațiilor de conexiune
-    retry: Reîncercați
-    manual_connection_tab: Conexiune manuală
-    server_details_title: Detalii server
-    server_details_description:
-      Utilizați aceste detalii server pentru a vă conecta
-      manual de pe un alt dispozitiv.
-    connection_string_title_alt: Șir de conexiune
-    copy: Copiați
   scanner:
     title: Scanați codul QR
     instruction: Poziționați codul QR în cadru
@@ -159,11 +140,14 @@ sync:
     invalid_port: Portul trebuie să fie între 1 și 65535
     connection_failed: Eșec la conectarea la dispozitiv
     connection_error: "Eroare de conexiune: {0}"
-    connection_string_tab: Șir de conexiune
+    pairing_code_tab: "Cod de asociere"
     manual_entry_tab: Introducere manuală
-    connection_string_required: Șirul de conexiune este obligatoriu
-    invalid_connection_string: Format șir de conexiune invalid
-    connection_string_label: Șir de conexiune
+    pairing_code_required: "Codul de asociere este obligatoriu"
+    invalid_pairing_code: "Acesta nu este un cod de asociere valid"
+    pairing_code_label: "Cod de asociere"
+    pairing_code_hint: "Lipiți codul copiat de pe celălalt dispozitiv"
+    pairing_code_instruction: "Lipiți codul de asociere pe care celălalt dispozitiv îl afișează sub codul QR."
+    manual_entry_qr_hint: "Celălalt dispozitiv trebuie să își afișeze codul QR."
     test_connection: Testați conexiunea
     enter_server_details: Introduceți detaliile conexiunii serverului manual
     connection_timeout: "Timpul de conectare a expirat. Verifică adresa dispozitivului și încearcă din nou."
@@ -173,9 +157,6 @@ sync:
       Test conexiune eșuat - fără răspuns de la
       server
     connection_test_failed_generic: "Test conexiune eșuat: {0}"
-    connection_string_instruction:
-      Lipește aici șirul de conexiune furnizat de dispozitivul
-      server pentru conexiune manuală.
   add:
     device: Adăugați dispozitiv
     device_tooltip: Adăugați un nou dispozitiv
@@ -199,6 +180,7 @@ sync:
   multi_interface_connection: Conexiune multi-interfață
   status:
     not_reachable: "Dispozitivul nu poate fi contactat"
+    not_reachable_hint: "Activați modul server pe celălalt dispozitiv sau porniți sincronizarea de pe acel dispozitiv."
     needs_repairing: "Necesită asociere din nou"
     needs_update: "{device} are nevoie de o versiune mai nouă a WHPH pentru a sincroniza"
     this_device_needs_update: "Actualizați WHPH pe acest dispozitiv pentru a sincroniza cu {device}, care rulează o versiune mai nouă"
@@ -222,6 +204,8 @@ sync:
       used: "Acest cod a fost deja folosit."
       regenerate: "Afișează un cod nou"
       paired: "Dispozitiv asociat"
+      copy_code: "Copiază codul de asociere"
+      code_copied: "Codul de asociere a fost copiat în clipboard"
     code:
       title: "Compară codurile"
       description: "Verifică dacă {device} afișează același cod."

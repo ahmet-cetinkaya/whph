@@ -10,7 +10,6 @@ sync:
     errors:
       loading: Napaka pri nalaganju naprav za sinhronizacijo
       removing: Napaka pri odstranjevanju naprave za sinhronizacijo
-      sync_failed: Napaka pri sinhronizaciji naprav
     from_label: Od
     help:
       content: "🔄 **Kaj je sinhronizacija?**\n\nSinhronizacija ohranja vaše navade, naloge, zapiske in podatke posodobljene na napravah v istem omrežju Wi-Fi. Brez oblaka ali interneta: podatki ostanejo zasebni in lokalni.\n\n## 🛠️ **Vklop sinhronizacije**\n\n1. Pustite WHPH odprt na obeh napravah v istem omrežju Wi-Fi.\n2. Na eni napravi izberite »Dodaj napravo« in prikažite kodo QR.\n3. Skenirajte jo z drugo napravo in preverite, ali sta na obeh zaslonih enaki kodi.\n4. Spremembe se nato samodejno sinhronizirajo.\n\n## 📋 **Upravljanje naprav**\n\n- **Ogled:** Naprave, čase sinhronizacije in stanje najdete v nastavitvah sinhronizacije.\n- **Ročna sinhronizacija:** Tapnite gumb ob napravi.\n- **Odstrani:** Izberite napravo in jo odstranite, da ustavite sinhronizacijo.\n\n## 🔧 **Odpravljanje težav**\n\n1. Isto omrežje Wi-Fi? Brez VPN.\n2. Znova zaženite aplikacijo.\n3. Preizkusite brez požarnega zidu.\n\n**Ni naprav?**\n- Stabilen Wi-Fi, brez posrednika.\n- Osvežite iskanje."
@@ -25,6 +24,8 @@ sync:
     remove_device: Odstrani napravo
     last_sync_succeeded: Zadnja sinhronizacija je uspela
     last_sync_failed: Zadnja sinhronizacija ni uspela
+    syncing: "Sinhroniziranje…"
+    syncing_percent: "Sinhroniziranje… {percent} %"
   error:
     scan: Napaka pri skeniranju
   errors:
@@ -98,11 +99,6 @@ sync:
     description:
       Druge naprave lahko skenirajo to QR kodo, da se povežejo in sinhronizirajo
       s to napravo.
-    connection_string_title: Povezovalni niz
-    connection_string_description:
-      Alternativno lahko delite ta povezovalni niz za
-      ročno povezavo naprav.
-    connection_string_copied: Povezovalni niz kopiran v odložišče
   connect_info:
     dialog_title: Informacije o povezavi naprave
     menu_title: Informacije o povezavi
@@ -110,21 +106,6 @@ sync:
     qr_description:
       Druge naprave lahko skenirajo to QR kodo, da se povežejo in sinhronizirajo
       s to napravo.
-    connection_string_title: Povezovalni niz
-    connection_string_description:
-      Alternativno lahko delite ta povezovalni niz za
-      ročno povezavo naprav.
-    connection_string_copied: Povezovalni niz kopiran v odložišče
-    unknown_ip: Neznan IP
-    error_loading_connection_info: Napaka pri nalaganju informacij o povezavi
-    retry: Poskusi znova
-    manual_connection_tab: Ročna povezava
-    server_details_title: Podrobnosti strežnika
-    server_details_description:
-      Uporabite te podrobnosti strežnika za ročno povezavo
-      z druge naprave.
-    connection_string_title_alt: Povezovalni niz
-    copy: Kopiraj
   scanner:
     title: Skeniraj QR kodo
     instruction: Postavi QR kodo znotraj okvirja
@@ -155,11 +136,14 @@ sync:
     invalid_port: Vrata morajo biti med 1 in 65535
     connection_failed: Ni uspelo povezave z napravo
     connection_error: "Napaka povezave: {0}"
-    connection_string_tab: Povezovalni niz
+    pairing_code_tab: "Koda za seznanitev"
     manual_entry_tab: Ročni vnos
-    connection_string_required: Povezovalni niz je obvezen
-    invalid_connection_string: Neveljaven format povezovalnega niza
-    connection_string_label: Povezovalni niz
+    pairing_code_required: "Koda za seznanitev je obvezna"
+    invalid_pairing_code: "To ni veljavna koda za seznanitev"
+    pairing_code_label: "Koda za seznanitev"
+    pairing_code_hint: "Prilepite kodo, kopirano iz druge naprave"
+    pairing_code_instruction: "Prilepite kodo za seznanitev, ki jo druga naprava prikazuje pod svojo kodo QR."
+    manual_entry_qr_hint: "Druga naprava mora prikazovati svojo kodo QR."
     test_connection: Testiraj povezavo
     enter_server_details: Ročno vnesite podrobnosti povezave strežnika
     connection_timeout: "Časovna omejitev povezave je potekla. Preverite naslov naprave in poskusite znova."
@@ -167,9 +151,6 @@ sync:
     connection_test_timeout: "Časovna omejitev preizkusa povezave je potekla. Preverite naslov naprave in poskusite znova."
     connection_test_failed_no_response: Test povezave ni uspel - ni odgovora strežnika
     connection_test_failed_generic: "Test povezave ni uspel: {0}"
-    connection_string_instruction:
-      Sem prilepite povezovalni niz, ki ga je zagotovila
-      strežniška naprava, za ročno povezavo.
   add:
     device: Dodaj napravo
     device_tooltip: Dodaj novo napravo
@@ -193,6 +174,7 @@ sync:
   multi_interface_connection: Večvmesniška povezava
   status:
     not_reachable: "Naprava ni dosegljiva"
+    not_reachable_hint: "Vklopite strežniški način na drugi napravi ali zaženite sinhronizacijo iz te naprave."
     needs_repairing: "Potrebno je novo seznanjanje"
     needs_update: "{device} potrebuje novejšo različico WHPH za sinhronizacijo"
     this_device_needs_update: "Posodobite WHPH v tej napravi za sinhronizacijo z napravo {device}, ki uporablja novejšo različico"
@@ -216,6 +198,8 @@ sync:
       used: "Ta koda je že bila uporabljena."
       regenerate: "Prikaži novo kodo"
       paired: "Naprava seznanjena"
+      copy_code: "Kopiraj kodo za seznanitev"
+      code_copied: "Koda za seznanitev je kopirana v odložišče"
     code:
       title: "Primerjaj kodi"
       description: "Preverite, ali naprava {device} prikazuje isto kodo."

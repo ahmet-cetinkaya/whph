@@ -19,6 +19,48 @@ Future<List<SyncDevice>> _pairedDevices(int count, {SyncEngineConfig? config}) a
 }
 
 void main() {
+  test('progress runs from 0 to the announced total, in order, on both sides', () async {
+    final devices = await _pairedDevices(2, config: testConfig(maxBatchChanges: 5));
+    for (var i = 0; i < 30; i++) {
+      createRow(devices[i % 2], 'r$i', 'title $i');
+    }
+    final initiatorSteps = <(int, int)>[];
+    final responderSteps = <(int, int)>[];
+    final (initiatorTransport, responderTransport) = InMemoryTransport.pair();
+
+    final results = await Future.wait([
+      InMemoryAsyncSessionDevice(devices[0]).initiate(initiatorTransport,
+          peerMemberId: devices[1].memberId, onProgress: (p, t) => initiatorSteps.add((p, t))),
+      InMemoryAsyncSessionDevice(devices[1])
+          .respond(responderTransport, onProgress: (p, t) => responderSteps.add((p, t))),
+    ]);
+
+    expect(results.every((result) => result.isComplete), isTrue, reason: '$results');
+    for (final steps in [initiatorSteps, responderSteps]) {
+      expect(steps.first.$1, 0);
+      expect(steps.map((step) => step.$2).toSet(), hasLength(1));
+      expect(steps.last.$1, steps.last.$2);
+      final processed = steps.map((step) => step.$1).toList();
+      expect(processed, [...processed]..sort());
+    }
+  });
+
+  test('no progress is reported once both sides are in sync', () async {
+    final devices = await _pairedDevices(2);
+    final first = InMemoryAsyncSessionDevice(devices[0]);
+    final second = InMemoryAsyncSessionDevice(devices[1]);
+    await InMemoryAsyncSessionDevice.syncPair(first, second);
+    var calls = 0;
+    final (initiatorTransport, responderTransport) = InMemoryTransport.pair();
+
+    await Future.wait([
+      first.initiate(initiatorTransport, peerMemberId: devices[1].memberId, onProgress: (_, __) => calls++),
+      second.respond(responderTransport),
+    ]);
+
+    expect(calls, 0);
+  });
+
   test('async and sync engines converge to the same content and vector', () async {
     final config = testConfig(maxBatchChanges: 20);
     final sync = await _pairedDevices(2, config: config);

@@ -3,7 +3,6 @@ sync:
     errors:
       loading: 加载同步设备失败
       removing: 删除同步设备失败
-      sync_failed: 同步设备失败
     from_label: 从
     help:
       content: "🔄 **什么是同步？**\n\n同步可让同一 Wi-Fi 下的各台设备上的习惯、任务、笔记和数据保持最新。无需云端或互联网：数据保持私密并留在本地。\n\n## 🛠️ **启用同步**\n\n1. 在同一 Wi-Fi 下，让两台设备都保持打开 WHPH。\n2. 在一台设备上选择“添加设备”并显示二维码。\n3. 用另一台设备扫描，并确认两个屏幕显示相同的代码。\n4. 之后更改会自动同步。\n\n## 📋 **管理设备**\n\n- **查看：** 在同步设置中查看设备、同步时间和状态。\n- **手动同步：** 点击对应设备的按钮。\n- **移除：** 选择设备并移除即可停止同步。\n\n## 🔧 **故障排除**\n\n1. 是否在同一 Wi-Fi？请关闭 VPN。\n2. 重启应用。\n3. 关闭防火墙后再试。\n\n**没有设备？**\n- 使用稳定的 Wi-Fi，不要使用代理。\n- 刷新扫描。"
@@ -18,6 +17,8 @@ sync:
     remove_device: 移除设备
     last_sync_succeeded: 上次同步成功
     last_sync_failed: 上次同步失败
+    syncing: "正在同步…"
+    syncing_percent: "正在同步… {percent}%"
   error:
     scan: 扫描失败
   errors:
@@ -71,9 +72,6 @@ sync:
     dialog_title: 扫描 QR 码以同步
     title: QR 码
     description: 其他设备可以扫描此 QR 码连接并与此设备同步。
-    connection_string_title: 连接字符串
-    connection_string_description: 或者，您可以分享此连接字符串手动连接设备。
-    connection_string_copied: 连接字符串已复制到剪贴板
   scanner:
     title: 扫描 QR 码
     instruction: 将 QR 码置于框架内
@@ -102,11 +100,14 @@ sync:
     invalid_port: 无效的端口号
     connection_failed: 连接失败
     connection_error: "连接错误：{0}"
-    connection_string_tab: 连接字符串
+    pairing_code_tab: "配对码"
     manual_entry_tab: 手动输入
-    connection_string_required: 需要连接字符串
-    invalid_connection_string: 无效的连接字符串格式
-    connection_string_label: 连接字符串
+    pairing_code_required: "请输入配对码"
+    invalid_pairing_code: "这不是有效的配对码"
+    pairing_code_label: "配对码"
+    pairing_code_hint: "粘贴从另一台设备复制的配对码"
+    pairing_code_instruction: "粘贴另一台设备在其二维码下方显示的配对码。"
+    manual_entry_qr_hint: "另一台设备必须正在显示其二维码。"
     test_connection: 测试连接
     enter_server_details: 手动输入服务器连接详细信息
     connection_timeout: "连接超时。请检查设备地址后重试。"
@@ -114,7 +115,6 @@ sync:
     connection_test_timeout: "连接测试超时。请检查设备地址后重试。"
     connection_test_failed_no_response: 连接测试失败 - 服务器无响应
     connection_test_failed_generic: "连接测试失败: {0}"
-    connection_string_instruction: 将服务器设备提供的连接字符串粘贴此处进行手动连接。
   add:
     device: 添加设备
     device_tooltip: 添加新设备
@@ -134,17 +134,6 @@ sync:
     menu_title: 连接信息
     qr_title: QR 码
     qr_description: 其他设备可以扫描此 QR 码连接并与此设备同步。
-    connection_string_title: 连接字符串
-    connection_string_description: 或者，您可以分享此连接字符串手动连接设备。
-    connection_string_copied: 连接字符串已复制到剪贴板
-    server_details_description: 使用这些服务器详细信息从其他设备手动连接。
-    unknown_ip: 未知 IP
-    error_loading_connection_info: 加载连接信息时出错
-    retry: 重试
-    manual_connection_tab: 手动连接
-    server_details_title: 服务器详细信息
-    connection_string_title_alt: 连接字符串
-    copy: 复制
   desktop:
     mode_title: 桌面同步模式
     sync_mode_start_menu: "停止接受连接"
@@ -155,6 +144,7 @@ sync:
   multi_interface_connection: 多接口连接
   status:
     not_reachable: "无法连接到设备"
+    not_reachable_hint: "请在另一台设备上开启服务器模式，或从该设备发起同步。"
     needs_repairing: "需要重新配对"
     needs_update: "{device} 需要更新版本的 WHPH 才能同步"
     this_device_needs_update: "请更新此设备上的 WHPH 以与 {device} 同步，该设备使用的是更新版本"
@@ -178,6 +168,8 @@ sync:
       used: "此二维码已被使用。"
       regenerate: "显示新二维码"
       paired: "设备已配对"
+      copy_code: "复制配对码"
+      code_copied: "配对码已复制到剪贴板"
     code:
       title: "比对验证码"
       description: "请确认 {device} 显示相同的验证码。"

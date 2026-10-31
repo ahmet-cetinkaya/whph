@@ -3,7 +3,6 @@ sync:
     errors:
       loading: Synkronointilaitteiden lataus epäonnistui
       removing: Synkronointilaitteen poisto epäonnistui
-      sync_failed: Laitteiden synkronointi epäonnistui
     from_label: Mistä
     help:
       content: "🔄 **Mitä synkronointi on?**\n\nSynkronointi pitää tapasi, tehtäväsi, muistiinpanosi ja tietosi ajan tasalla laitteillasi, jotka ovat samassa Wi-Fi-verkossa. Ei pilveä tai internetiä: tiedot pysyvät yksityisinä ja paikallisina.\n\n## 🛠️ **Synkronoinnin käyttöönotto**\n\n1. Pidä WHPH auki molemmilla laitteilla samassa Wi-Fi-verkossa.\n2. Valitse yhdellä laitteella \"Lisää laite\" ja näytä QR-koodi.\n3. Skannaa se toisella laitteella ja tarkista, että molemmat näytöt näyttävät saman koodin.\n4. Muutokset synkronoituvat sen jälkeen automaattisesti.\n\n## 📋 **Laitteiden hallinta**\n\n- **Näytä:** Näet laitteet, synkronointiajat ja tilan synkronointiasetuksissa.\n- **Manuaalinen synkronointi:** Napauta laitteen painiketta.\n- **Poista:** Valitse laite ja poista se lopettaaksesi synkronoinnin.\n\n## 🔧 **Vianmääritys**\n\n1. Sama Wi-Fi? Ei VPN:ää.\n2. Käynnistä sovellus uudelleen.\n3. Kokeile ilman palomuuria.\n\n**Ei laitteita?**\n- Vakaa Wi-Fi, ei välityspalvelimia.\n- Päivitä haku."
@@ -18,6 +17,8 @@ sync:
     remove_device: Poista laite
     last_sync_succeeded: Viimeisin synkronointi onnistui
     last_sync_failed: Viimeisin synkronointi epäonnistui
+    syncing: "Synkronoidaan…"
+    syncing_percent: "Synkronoidaan… {percent} %"
   error:
     scan: Skannaus epäonnistui
   errors:
@@ -91,11 +92,6 @@ sync:
     description:
       Muut laitteet voivat skannata tämän QR-koodin yhdistääkseen ja synkronoidakseen
       tämän laitteen kanssa.
-    connection_string_title: Yhteysmerkkijono
-    connection_string_description:
-      Vaihtoehtoisesti voit jakaa tämän yhteysmerkkijonon
-      manuaaliseen laiteluonnisteluun.
-    connection_string_copied: Yhteysmerkkijono kopioitu leikepöydälle
   scanner:
     title: Skannaa QR-koodi
     instruction: Sijoita QR-koodi kehykseen
@@ -126,11 +122,14 @@ sync:
     invalid_port: Virheellinen porttinumero
     connection_failed: Yhteys epäonnistui
     connection_error: "Yhteysvirhe: {0}"
-    connection_string_tab: Yhteysmerkkijono
+    pairing_code_tab: "Pariliitoskoodi"
     manual_entry_tab: Manuaalinen syöttö
-    connection_string_required: Yhteysmerkkijono vaaditaan
-    invalid_connection_string: Virheellinen yhteysmerkkijono muoto
-    connection_string_label: Yhteysmerkkijono
+    pairing_code_required: "Pariliitoskoodi vaaditaan"
+    invalid_pairing_code: "Tämä ei ole kelvollinen pariliitoskoodi"
+    pairing_code_label: "Pariliitoskoodi"
+    pairing_code_hint: "Liitä toiselta laitteelta kopioitu koodi"
+    pairing_code_instruction: "Liitä pariliitoskoodi, jonka toinen laite näyttää QR-koodinsa alla."
+    manual_entry_qr_hint: "Toisen laitteen on näytettävä QR-koodinsa."
     test_connection: Testaa yhteys
     enter_server_details: Syötä server-yhteyden tiedot manuaalisesti
     connection_timeout: "Yhteyden aikakatkaisu. Tarkista laitteen osoite ja yritä uudelleen."
@@ -140,9 +139,6 @@ sync:
       Yhteyden testi epäonnistui - ei vastausta
       serveriltä
     connection_test_failed_generic: "Yhteyden testi epäonnistui: {0}"
-    connection_string_instruction:
-      Liitä tähän server-laitteen tarjoama yhteysmerkkijono
-      manuaaliseen yhdistämiseen.
   add:
     device: Lisää laite
     device_tooltip: Lisää uusi laite
@@ -164,21 +160,6 @@ sync:
     qr_description:
       Muut laitteet voivat skannata tämän QR-koodin yhdistääkseen ja
       synkronoidakseen tämän laitteen kanssa.
-    connection_string_title: Yhteysmerkkijono
-    connection_string_description:
-      Vaihtoehtoisesti voit jakaa tämän yhteysmerkkijonon
-      manuaaliseen laiteluonnisteluun.
-    connection_string_copied: Yhteysmerkkijono kopioitu leikepöydälle
-    server_details_description:
-      Käytä näitä server-tietoja manuaaliseen yhdistämiseen
-      muusta laitteesta.
-    unknown_ip: Tuntematon IP
-    error_loading_connection_info: Virhe yhteyden tietojen latauksessa
-    retry: Yritä uudelleen
-    manual_connection_tab: Manuaalinen yhteys
-    server_details_title: Server-tiedot
-    connection_string_title_alt: Yhteysmerkkijono
-    copy: Kopioi
   desktop:
     mode_title: Työpöydän synkronointitila
     sync_mode_start_menu: "Lopeta yhteyksien vastaanotto"
@@ -189,6 +170,7 @@ sync:
   multi_interface_connection: Moniliitäntäyhteys
   status:
     not_reachable: "Laitetta ei tavoiteta"
+    not_reachable_hint: "Ota palvelintila käyttöön toisessa laitteessa tai aloita synkronointi siitä laitteesta."
     needs_repairing: "Vaatii uudelleenparituksen"
     needs_update: "{device} tarvitsee WHPH:n uudemman version synkronointia varten"
     this_device_needs_update: "Päivitä WHPH tällä laitteella synkronoidaksesi laitteen {device} kanssa, jolla on uudempi versio"
@@ -212,6 +194,8 @@ sync:
       used: "Tämä koodi on jo käytetty."
       regenerate: "Näytä uusi koodi"
       paired: "Laite pariutettu"
+      copy_code: "Kopioi pariliitoskoodi"
+      code_copied: "Pariliitoskoodi kopioitu leikepöydälle"
     code:
       title: "Vertaa koodeja"
       description: "Varmista, että {device} näyttää saman koodin."

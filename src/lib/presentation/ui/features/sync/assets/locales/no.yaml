@@ -10,7 +10,6 @@ sync:
     errors:
       loading: Feil ved lasting av synkroniseringsenheter
       removing: Feil ved fjerning av synkroniseringsenhet
-      sync_failed: Feil ved synkronisering av enheter
     from_label: Fra
     help:
       content: "🔄 **Hva er synkronisering?**\n\nSynkronisering holder vanene, oppgavene, notatene og dataene dine oppdatert på enhetene dine på samme Wi-Fi. Ingen sky eller internett: dataene forblir private og lokale.\n\n## 🛠️ **Slå på synkronisering**\n\n1. Hold WHPH åpen på begge enhetene, på samme Wi-Fi.\n2. Velg «Legg til enhet» på den ene enheten og vis QR-koden.\n3. Skann den med den andre enheten og sjekk at begge skjermene viser samme kode.\n4. Endringer synkroniseres deretter automatisk.\n\n## 📋 **Administrer enheter**\n\n- **Vis:** Se enheter, synkroniseringstidspunkter og status i synkroniseringsinnstillingene.\n- **Manuell synkronisering:** Trykk på knappen ved enheten.\n- **Fjern:** Velg en enhet og fjern den for å stoppe synkroniseringen.\n\n## 🔧 **Feilsøking**\n\n1. Samme Wi-Fi? Ingen VPN.\n2. Start appen på nytt.\n3. Test uten brannmur.\n\n**Ingen enheter?**\n- Stabilt Wi-Fi, ingen proxy.\n- Oppdater søket."
@@ -25,6 +24,8 @@ sync:
     remove_device: Fjern enhet
     last_sync_succeeded: Siste synkronisering vellykket
     last_sync_failed: Siste synkronisering mislyktes
+    syncing: "Synkroniserer…"
+    syncing_percent: "Synkroniserer… {percent} %"
   error:
     scan: Skanning mislyktes
   errors:
@@ -94,11 +95,6 @@ sync:
     description:
       Andre enheter kan skanne denne QR-koden for å koble til og synkronisere
       med denne enheten.
-    connection_string_title: Tilkoblingsstreng
-    connection_string_description:
-      Alternativt, kan du dele denne tilkoblingsstrengen
-      for å koble enheter manuelt.
-    connection_string_copied: Tilkoblingsstreng kopiert til utklippstavlen
   connect_info:
     dialog_title: Enhets tilkoblingsinformasjon
     menu_title: Tilkoblingsinfo
@@ -106,21 +102,6 @@ sync:
     qr_description:
       Andre enheter kan skanne denne QR-koden for å koble til og synkronisere
       med denne enheten.
-    connection_string_title: Tilkoblingsstreng
-    connection_string_description:
-      Alternativt, kan du dele denne tilkoblingsstrengen
-      for å koble enheter manuelt.
-    connection_string_copied: Tilkoblingsstreng kopiert til utklippstavlen
-    unknown_ip: Ukjent IP
-    error_loading_connection_info: Feil ved lasting av tilkoblingsinfo
-    retry: Prøv igjen
-    manual_connection_tab: Manuell tilkobling
-    server_details_title: Serverdetaljer
-    server_details_description:
-      Bruk disse serverdetaljene for å koble manuelt fra
-      en annen enhet.
-    connection_string_title_alt: Tilkoblingsstreng
-    copy: Kopier
   scanner:
     title: Skann QR-kode
     instruction: Plasser QR-koden innenfor rammen
@@ -149,11 +130,14 @@ sync:
     invalid_port: Port må være mellom 1 og 65535
     connection_failed: Mislyktes å koble til enhet
     connection_error: "Tilkoblingsfeil: {0}"
-    connection_string_tab: Tilkoblingsstreng
+    pairing_code_tab: "Paringskode"
     manual_entry_tab: Manuell inntasting
-    connection_string_required: Tilkoblingsstreng kreves
-    invalid_connection_string: Ugyldig tilkoblingsstrengformat
-    connection_string_label: Tilkoblingsstreng
+    pairing_code_required: "Paringskode er påkrevd"
+    invalid_pairing_code: "Dette er ikke en gyldig paringskode"
+    pairing_code_label: "Paringskode"
+    pairing_code_hint: "Lim inn koden som er kopiert fra den andre enheten"
+    pairing_code_instruction: "Lim inn paringskoden som den andre enheten viser under QR-koden sin."
+    manual_entry_qr_hint: "Den andre enheten må vise QR-koden sin."
     test_connection: Test tilkobling
     enter_server_details: Skriv inn servertilkoblingsdetaljer manuelt
     connection_timeout: "Tidsavbrudd for tilkoblingen. Sjekk enhetens adresse og prøv igjen."
@@ -163,9 +147,6 @@ sync:
       Tilkoblingstest mislyktes - ingen svar fra
       server
     connection_test_failed_generic: "Tilkoblingstest mislyktes: {0}"
-    connection_string_instruction:
-      Lim inn tilkoblingsstrengen levert av serverenheten
-      her for manuell tilkobling.
   add:
     device: Legg til enhet
     device_tooltip: Legg til ny enhet
@@ -189,6 +170,7 @@ sync:
   multi_interface_connection: Multi-interface tilkobling
   status:
     not_reachable: "Enheten kan ikke nås"
+    not_reachable_hint: "Slå på servermodus på den andre enheten, eller start synkroniseringen fra den enheten."
     needs_repairing: "Må pares på nytt"
     needs_update: "{device} trenger en nyere versjon av WHPH for å synkronisere"
     this_device_needs_update: "Oppdater WHPH på denne enheten for å synkronisere med {device}, som kjører en nyere versjon"
@@ -212,6 +194,8 @@ sync:
       used: "Denne koden er allerede brukt."
       regenerate: "Vis en ny kode"
       paired: "Enhet paret"
+      copy_code: "Kopier paringskode"
+      code_copied: "Paringskode kopiert til utklippstavlen"
     code:
       title: "Sammenlign kodene"
       description: "Kontroller at {device} viser samme kode."

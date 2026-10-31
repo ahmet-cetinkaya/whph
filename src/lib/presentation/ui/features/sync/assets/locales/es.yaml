@@ -3,7 +3,6 @@ sync:
     errors:
       loading: Error al cargar dispositivos de sincronización
       removing: Error al eliminar dispositivo de sincronización
-      sync_failed: Error al sincronizar dispositivos
     from_label: De
     help:
       content: "🔄 **¿Qué es la sincronización?**\n\nLa sincronización mantiene tus hábitos, tareas, notas y datos actualizados en tus dispositivos conectados a la misma red Wi-Fi. Sin nube ni internet: los datos siguen siendo privados y locales.\n\n## 🛠️ **Activar la sincronización**\n\n1. Mantén WHPH abierto en ambos dispositivos, en la misma red Wi-Fi.\n2. En un dispositivo elige «Añadir dispositivo» y muestra el código QR.\n3. Escanéalo con el otro dispositivo y comprueba que ambas pantallas muestran el mismo código.\n4. Después los cambios se sincronizan automáticamente.\n\n## 📋 **Gestionar dispositivos**\n\n- **Ver:** Consulta dispositivos, horas de sincronización y estado en los ajustes de sincronización.\n- **Sincronización manual:** Pulsa el botón de cada dispositivo.\n- **Quitar:** Selecciona un dispositivo y quítalo para dejar de sincronizar.\n\n## 🔧 **Solución de problemas**\n\n1. ¿Misma red Wi-Fi? Sin VPN.\n2. Reinicia la aplicación.\n3. Prueba sin cortafuegos.\n\n**¿Sin dispositivos?**\n- Wi-Fi estable, sin proxy.\n- Actualiza la búsqueda."
@@ -18,6 +17,8 @@ sync:
     remove_device: Eliminar dispositivo
     last_sync_succeeded: Última sincronización correcta
     last_sync_failed: Error en la última sincronización
+    syncing: "Sincronizando…"
+    syncing_percent: "Sincronizando… {percent} %"
   error:
     scan: Error al escanear
   errors:
@@ -95,11 +96,6 @@ sync:
     description:
       Otros dispositivos pueden escanear este código QR para conectarse
       y sincronizar con este dispositivo.
-    connection_string_title: Cadena de conexión
-    connection_string_description:
-      Alternativamente, puede compartir esta cadena de
-      conexión para conectar dispositivos manualmente.
-    connection_string_copied: Cadena de conexión copiada al portapapeles
   scanner:
     title: Escanear código QR
     instruction: Posicione el código QR dentro del marco
@@ -130,11 +126,14 @@ sync:
     invalid_port: Número de puerto inválido
     connection_failed: Conexión fallida
     connection_error: "Error de conexión: {0}"
-    connection_string_tab: Cadena de conexión
+    pairing_code_tab: "Código de emparejamiento"
     manual_entry_tab: Entrada manual
-    connection_string_required: Se requiere cadena de conexión
-    invalid_connection_string: Formato de cadena de conexión inválido
-    connection_string_label: Cadena de conexión
+    pairing_code_required: "El código de emparejamiento es obligatorio"
+    invalid_pairing_code: "Este no es un código de emparejamiento válido"
+    pairing_code_label: "Código de emparejamiento"
+    pairing_code_hint: "Pega el código copiado del otro dispositivo"
+    pairing_code_instruction: "Pega el código de emparejamiento que el otro dispositivo muestra bajo su código QR."
+    manual_entry_qr_hint: "El otro dispositivo debe estar mostrando su código QR."
     test_connection: Probar conexión
     enter_server_details: Ingrese detalles de conexión del servidor manualmente
     connection_timeout: "Tiempo de conexión agotado. Comprueba la dirección del dispositivo e inténtalo de nuevo."
@@ -144,9 +143,6 @@ sync:
       Prueba de conexión fallida - no hay respuesta
       del servidor
     connection_test_failed_generic: "Prueba de conexión fallida: {0}"
-    connection_string_instruction:
-      Pegue aquí la cadena de conexión proporcionada
-      por el dispositivo servidor para conectar manualmente.
   add:
     device: Agregar dispositivo
     device_tooltip: Agregar nuevo dispositivo
@@ -168,21 +164,6 @@ sync:
     qr_description:
       Otros dispositivos pueden escanear este código QR para conectarse
       y sincronizar con este dispositivo.
-    connection_string_title: Cadena de conexión
-    connection_string_description:
-      Alternativamente, puede compartir esta cadena de
-      conexión para conectar dispositivos manualmente.
-    connection_string_copied: Cadena de conexión copiada al portapapeles
-    server_details_description:
-      Use estos detalles del servidor para conectarse manualmente
-      desde otro dispositivo.
-    unknown_ip: IP desconocida
-    error_loading_connection_info: Error al cargar información de conexión
-    retry: Reintentar
-    manual_connection_tab: Conexión manual
-    server_details_title: Detalles del servidor
-    connection_string_title_alt: Cadena de conexión
-    copy: Copiar
   desktop:
     mode_title: Modo de sincronización de escritorio
     sync_mode_start_menu: "Dejar de aceptar conexiones"
@@ -193,6 +174,7 @@ sync:
   multi_interface_connection: Conexión multi-interfaz
   status:
     not_reachable: "Dispositivo no accesible"
+    not_reachable_hint: "Activa el modo servidor en el otro dispositivo o inicia la sincronización desde ese dispositivo."
     needs_repairing: "Requiere emparejar de nuevo"
     needs_update: "{device} necesita una versión más reciente de WHPH para sincronizar"
     this_device_needs_update: "Actualiza WHPH en este dispositivo para sincronizar con {device}, que usa una versión más reciente"
@@ -216,6 +198,8 @@ sync:
       used: "Este código ya se usó."
       regenerate: "Mostrar un código nuevo"
       paired: "Dispositivo emparejado"
+      copy_code: "Copiar código de emparejamiento"
+      code_copied: "Código de emparejamiento copiado al portapapeles"
     code:
       title: "Comparar códigos"
       description: "Comprueba que {device} muestra el mismo código."

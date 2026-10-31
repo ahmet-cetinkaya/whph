@@ -11,6 +11,9 @@ import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_s
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
+/// Height of the thin per-device sync progress bar.
+const double _progressBarHeight = 3;
+
 /// Widget that displays a sync group member with its last sync time and status.
 class SyncDeviceListItemWidget extends StatefulWidget {
   final SyncMemberSummary member;
@@ -19,6 +22,9 @@ class SyncDeviceListItemWidget extends StatefulWidget {
   /// Starts pairing again; offered for a device that needs re-pairing.
   final void Function(String)? onRepair;
   final bool isBeingSynced;
+
+  /// Share of the running session that is done, 0..1; null while it is not known.
+  final double? syncProgress;
 
   /// Outcome of this device's most recent sync attempt in the current app
   /// session; null when it has not been synced since the app started.
@@ -30,6 +36,7 @@ class SyncDeviceListItemWidget extends StatefulWidget {
     required this.onRemove,
     this.onRepair,
     this.isBeingSynced = false,
+    this.syncProgress,
     this.lastSyncResult,
   });
 
@@ -132,6 +139,7 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                           ..._buildLastSyncResultIndicator(),
                         ],
                       ),
+                      if (isSyncing) _buildSyncProgress(),
                       SyncMemberStatus(
                         member: widget.member,
                         onRepair: widget.onRepair == null ? null : () => widget.onRepair!(widget.member.memberId),
@@ -163,6 +171,32 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// "Syncing… N%" with a thin bar; the bar is indeterminate while the share is unknown.
+  Widget _buildSyncProgress() {
+    final progress = widget.syncProgress;
+    final label = progress == null
+        ? _translationService.translate(SyncTranslationKeys.deviceSyncing)
+        : _translationService.translate(
+            SyncTranslationKeys.deviceSyncingPercent,
+            namedArgs: {'percent': (progress * 100).round().toString()},
+          );
+    return Padding(
+      padding: const EdgeInsets.only(top: AppTheme.sizeXSmall),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: AppTheme.bodySmall.copyWith(color: Theme.of(context).colorScheme.primary)),
+          const SizedBox(height: AppTheme.sizeXSmall),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(_progressBarHeight),
+            child: LinearProgressIndicator(
+                key: const ValueKey('device-sync-progress-bar'), value: progress, minHeight: _progressBarHeight),
+          ),
+        ],
       ),
     );
   }

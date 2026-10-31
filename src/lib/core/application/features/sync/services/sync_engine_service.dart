@@ -7,6 +7,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_session_host.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
 import 'package:whph/core/application/features/sync/services/sync_result_classifier.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
@@ -26,6 +27,7 @@ class SyncEngineService implements ISyncRunner {
   final ISyncUpgradeService _upgradeService;
   final AsyncSessionDevice _device;
   final int _port;
+  final SyncProgressTracker? _progress;
   final DateTime Function() _now;
   Future<void> _queue = Future.value();
 
@@ -38,6 +40,7 @@ class SyncEngineService implements ISyncRunner {
     required ISyncUpgradeService upgradeService,
     required AsyncSessionDevice device,
     required int port,
+    SyncProgressTracker? progress,
     DateTime Function()? now,
   })  : _membershipService = membershipService,
         _statusStore = statusStore,
@@ -47,6 +50,7 @@ class SyncEngineService implements ISyncRunner {
         _upgradeService = upgradeService,
         _device = device,
         _port = port,
+        _progress = progress,
         _now = now ?? DateTime.now;
 
   /// FR-017: some item of [memberId] failed to apply in 3 consecutive sessions.
@@ -70,7 +74,11 @@ class SyncEngineService implements ISyncRunner {
 
   /// The peers to sync with, or `null` when no sync may run now.
   Future<List<String>?> _peerIds() async {
-    if (!(await _upgradeService.getProgress()).isDone) return null;
+    if (!(await _upgradeService.getProgress()).isDone) {
+      // Self-heal a phase left pending (e.g. scheduled by an origin switch) instead of skipping forever.
+      _upgradeService.runInBackground();
+      return null;
+    }
     if (!_membershipService.hasIdentity || !await _membershipService.isPaired()) return null;
     final view = await _membershipService.currentView();
     return [
@@ -80,6 +88,15 @@ class SyncEngineService implements ISyncRunner {
   }
 
   Future<SyncPeerReport> _syncPeer(String memberId) async {
+    _progress?.begin(memberId);
+    try {
+      return await _syncPeerSession(memberId);
+    } finally {
+      _progress?.end(memberId);
+    }
+  }
+
+  Future<SyncPeerReport> _syncPeerSession(String memberId) async {
     final before = (await _statusStore.read(memberId))?.lastResult;
     await _statusStore.setResult(memberId, null);
     final result = await _runSession(memberId);

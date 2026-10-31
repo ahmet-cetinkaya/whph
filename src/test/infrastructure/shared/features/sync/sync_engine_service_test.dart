@@ -10,7 +10,11 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/models/sync_result_category.dart';
+import 'package:whph/core/application/features/sync/models/sync_status.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
+import 'package:whph/infrastructure/shared/features/sync/drift_sync_session_host.dart';
 import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
 import 'package:whph/infrastructure/shared/utils/owner_only_file_utils.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
@@ -41,6 +45,63 @@ void main() {
     final b = await openPaired('B', inviter: a, hooks: remoteHooks);
     return EngineFixture.create(a, b);
   }
+
+  test('an unfinished upgrade skips the round and is started again', () async {
+    final a = await openPaired('A');
+    final b = await openPaired('B', inviter: a);
+    final upgrade = CountingUpgradeService(phase: SyncUpgradePhase.reauthor);
+    final fixture = await EngineFixture.create(a, b, upgradeService: upgrade);
+
+    final report = await fixture.engine.syncAll();
+
+    expect(report.skipped, isTrue);
+    expect(upgrade.runCount, 1);
+  });
+
+  group('sync progress', () {
+    test('a session reports its peer, a rising share up to 100% and then goes idle', () async {
+      final a = await openPaired('A');
+      final b = await openPaired('B', inviter: a);
+      await a.security.database.insertNote('from-a', 'out-1');
+      await b.security.database.insertNote('from-b', 'in-1');
+      final tracker = SyncProgressTracker();
+      final host = DriftSyncSessionHost(
+        device: a.device,
+        platform: 'test',
+        appVersion: '0',
+        progress: tracker,
+      );
+      final fixture = await EngineFixture.create(a, b, host: host, progress: tracker);
+      final statuses = <SyncStatus>[];
+      final subscription = tracker.changes.listen(statuses.add);
+
+      final report = await fixture.syncOnce();
+      await subscription.cancel();
+
+      expect(report.result, isA<SessionComplete>(), reason: '${report.result}');
+      expect(statuses.first.currentDeviceId, b.memberId);
+      expect(statuses.first.progress, isNull);
+      final shares = [
+        for (final status in statuses)
+          if (status.progress != null) status.progress!
+      ];
+      expect(shares, isNotEmpty);
+      expect(shares, [...shares]..sort());
+      expect(shares.last, 1.0);
+      expect(statuses.last.isIdle, isTrue);
+    });
+
+    test('a session that cannot start still ends idle', () async {
+      final fixture = await pairFixture();
+      final tracker = SyncProgressTracker();
+      final unreachable = await EngineFixture.create(fixture.local, fixture.remote, progress: tracker);
+      unreachable.connector.reachable = false;
+
+      await unreachable.syncOnce();
+
+      expect(tracker.current.isIdle, isTrue);
+    });
+  });
 
   group('FR-016: every failure shows its category and keeps the last success', () {
     late EngineFixture fixture;

@@ -3,7 +3,6 @@ sync:
     errors:
       loading: Échec du chargement des appareils de synchronisation
       removing: Échec de la suppression de l'appareil de synchronisation
-      sync_failed: Échec de la synchronisation des appareils
     from_label: De
     help:
       content: "🔄 **Qu'est-ce que la synchronisation ?**\n\nLa synchronisation garde vos habitudes, tâches, notes et données à jour sur vos appareils connectés au même Wi-Fi. Pas de cloud ni d'internet : les données restent privées et locales.\n\n## 🛠️ **Activer la synchronisation**\n\n1. Gardez WHPH ouvert sur les deux appareils, sur le même Wi-Fi.\n2. Sur un appareil, choisissez « Ajouter un appareil » et affichez le code QR.\n3. Scannez-le avec l'autre appareil et vérifiez que les deux écrans affichent le même code.\n4. Les modifications se synchronisent ensuite automatiquement.\n\n## 📋 **Gérer les appareils**\n\n- **Afficher :** Consultez les appareils, les heures de synchronisation et l'état dans les paramètres de synchronisation.\n- **Synchronisation manuelle :** Appuyez sur le bouton de l'appareil.\n- **Supprimer :** Sélectionnez un appareil et supprimez-le pour arrêter la synchronisation.\n\n## 🔧 **Dépannage**\n\n1. Même Wi-Fi ? Pas de VPN.\n2. Redémarrez l'application.\n3. Testez sans pare-feu.\n\n**Aucun appareil ?**\n- Wi-Fi stable, pas de proxy.\n- Actualisez la recherche."
@@ -18,6 +17,8 @@ sync:
     remove_device: Supprimer l'appareil
     last_sync_succeeded: Dernière synchronisation réussie
     last_sync_failed: Échec de la dernière synchronisation
+    syncing: "Synchronisation…"
+    syncing_percent: "Synchronisation… {percent} %"
   error:
     scan: Échec du scan
   errors:
@@ -103,11 +104,6 @@ sync:
     description:
       Les autres appareils peuvent scanner ce code QR pour se connecter
       et synchroniser avec cet appareil.
-    connection_string_title: Chaîne de connexion
-    connection_string_description:
-      Alternativement, vous pouvez partager cette chaîne
-      de connexion pour connecter les appareils manuellement.
-    connection_string_copied: Chaîne de connexion copiée dans le presse-papiers
   scanner:
     title: Scanner le code QR
     instruction: Positionnez le code QR dans le cadre
@@ -138,11 +134,14 @@ sync:
     invalid_port: Numéro de port invalide
     connection_failed: Connexion échouée
     connection_error: "Erreur de connexion : {0}"
-    connection_string_tab: Chaîne de connexion
+    pairing_code_tab: "Code d'appairage"
     manual_entry_tab: Saisie manuelle
-    connection_string_required: Chaîne de connexion requise
-    invalid_connection_string: Format de chaîne de connexion invalide
-    connection_string_label: Chaîne de connexion
+    pairing_code_required: "Le code d'appairage est requis"
+    invalid_pairing_code: "Ce code d'appairage n'est pas valide"
+    pairing_code_label: "Code d'appairage"
+    pairing_code_hint: "Collez le code copié depuis l'autre appareil"
+    pairing_code_instruction: "Collez le code d'appairage que l'autre appareil affiche sous son code QR."
+    manual_entry_qr_hint: "L'autre appareil doit afficher son code QR."
     test_connection: Tester la connexion
     enter_server_details: Saisir manuellement les détails de connexion du serveur
     connection_timeout: "Délai de connexion dépassé. Vérifiez l'adresse de l'appareil et réessayez."
@@ -152,9 +151,6 @@ sync:
       Test de connexion échoué - aucune réponse
       du serveur
     connection_test_failed_generic: "Test de connexion échoué : {0}"
-    connection_string_instruction:
-      Collez ici la chaîne de connexion fournie par l'appareil
-      serveur pour une connexion manuelle.
   add:
     device: Ajouter un appareil
     device_tooltip: Ajouter un nouvel appareil
@@ -178,21 +174,6 @@ sync:
     qr_description:
       Les autres appareils peuvent scanner ce code QR pour se connecter
       et synchroniser avec cet appareil.
-    connection_string_title: Chaîne de connexion
-    connection_string_description:
-      Alternativement, vous pouvez partager cette chaîne
-      de connexion pour connecter les appareils manuellement.
-    connection_string_copied: Chaîne de connexion copiée dans le presse-papiers
-    server_details_description:
-      Utilisez ces détails de serveur pour vous connecter
-      manuellement depuis un autre appareil.
-    unknown_ip: IP inconnue
-    error_loading_connection_info: Erreur lors du chargement des informations de connexion
-    retry: Réessayer
-    manual_connection_tab: Connexion manuelle
-    server_details_title: Détails du serveur
-    connection_string_title_alt: Chaîne de connexion
-    copy: Copier
   desktop:
     mode_title: Mode de synchronisation de bureau
     sync_mode_start_menu: "Arrêter d'accepter les connexions"
@@ -203,6 +184,7 @@ sync:
   multi_interface_connection: Connexion multi-interface
   status:
     not_reachable: "Appareil inaccessible"
+    not_reachable_hint: "Activez le mode serveur sur l'autre appareil ou lancez la synchronisation depuis cet appareil."
     needs_repairing: "Nécessite un nouvel appairage"
     needs_update: "{device} a besoin d'une version plus récente de WHPH pour synchroniser"
     this_device_needs_update: "Mettez à jour WHPH sur cet appareil pour synchroniser avec {device}, qui utilise une version plus récente"
@@ -226,6 +208,8 @@ sync:
       used: "Ce code a déjà été utilisé."
       regenerate: "Afficher un nouveau code"
       paired: "Appareil appairé"
+      copy_code: "Copier le code d'appairage"
+      code_copied: "Code d'appairage copié dans le presse-papiers"
     code:
       title: "Comparer les codes"
       description: "Vérifiez que {device} affiche le même code."

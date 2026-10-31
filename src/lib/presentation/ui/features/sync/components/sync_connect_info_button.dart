@@ -6,15 +6,19 @@ import 'package:whph/main.dart';
 class SyncConnectInfoButton extends StatelessWidget {
   final _themeService = container.resolve<IThemeService>();
 
-  SyncConnectInfoButton({super.key});
+  /// Refreshes what the page behind the dialog shows once a device paired or the dialog closed.
+  final VoidCallback? onPaired;
+
+  SyncConnectInfoButton({super.key, this.onPaired});
 
   /// Static method to show connection info modal from anywhere
-  static Future<void> showConnectInfoModal(BuildContext context) async {
-    await SyncConnectInfoDialog.show(context);
+  static Future<void> showConnectInfoModal(BuildContext context, {VoidCallback? onPaired}) async {
+    await SyncConnectInfoDialog.show(context, onPaired: onPaired);
+    onPaired?.call();
   }
 
   void _showConnectInfoModal(BuildContext context) {
-    SyncConnectInfoButton.showConnectInfoModal(context);
+    SyncConnectInfoButton.showConnectInfoModal(context, onPaired: onPaired);
   }
 
   @override

@@ -3,7 +3,6 @@ sync:
     errors:
       loading: Fout bij laden van sync-apparaten
       removing: Fout bij verwijderen van sync-apparaat
-      sync_failed: Fout bij synchroniseren van apparaten
     from_label: Van
     help:
       content: "🔄 **Wat is synchroniseren?**\n\nSynchroniseren houdt je gewoontes, taken, notities en gegevens up-to-date op je apparaten op hetzelfde wifi-netwerk. Geen cloud of internet: je gegevens blijven privé en lokaal.\n\n## 🛠️ **Synchronisatie inschakelen**\n\n1. Houd WHPH open op beide apparaten, op hetzelfde wifi-netwerk.\n2. Kies op één apparaat 'Apparaat toevoegen' en toon de QR-code.\n3. Scan de code met het andere apparaat en controleer of beide schermen dezelfde code tonen.\n4. Wijzigingen worden daarna automatisch gesynchroniseerd.\n\n## 📋 **Apparaten beheren**\n\n- **Bekijken:** Zie apparaten, synchronisatietijden en status in de synchronisatie-instellingen.\n- **Handmatig synchroniseren:** Tik op de knop bij het apparaat.\n- **Verwijderen:** Selecteer een apparaat en verwijder het om te stoppen met synchroniseren.\n\n## 🔧 **Probleemoplossing**\n\n1. Hetzelfde wifi-netwerk? Geen VPN.\n2. Start de app opnieuw.\n3. Test zonder firewall.\n\n**Geen apparaten?**\n- Stabiel wifi, geen proxy's.\n- Vernieuw het zoeken."
@@ -18,6 +17,8 @@ sync:
     remove_device: Apparaat verwijderen
     last_sync_succeeded: Laatste synchronisatie geslaagd
     last_sync_failed: Laatste synchronisatie mislukt
+    syncing: "Synchroniseren…"
+    syncing_percent: "Synchroniseren… {percent}%"
   error:
     scan: Scan mislukt
   errors:
@@ -89,11 +90,6 @@ sync:
     description:
       Andere apparaten kunnen deze QR-code scannen om te verbinden en te
       synchroniseren met dit apparaat.
-    connection_string_title: Verbindingsreeks
-    connection_string_description:
-      Alternatief kunt u deze verbindingsreeks delen
-      om apparaten handmatig te verbinden.
-    connection_string_copied: Verbindingsreeks gekopieerd naar klembord
   scanner:
     title: Scan QR-code
     instruction: Plaats QR-code binnen het frame
@@ -124,11 +120,14 @@ sync:
     invalid_port: Ongeldig poortnummer
     connection_failed: Verbinding mislukt
     connection_error: "Verbindingsfout: {0}"
-    connection_string_tab: Verbindingsreeks
+    pairing_code_tab: "Koppelcode"
     manual_entry_tab: Handmatige invoer
-    connection_string_required: Verbindingsreeks vereist
-    invalid_connection_string: Ongeldig verbindingsreeksformaat
-    connection_string_label: Verbindingsreeks
+    pairing_code_required: "Koppelcode is vereist"
+    invalid_pairing_code: "Dit is geen geldige koppelcode"
+    pairing_code_label: "Koppelcode"
+    pairing_code_hint: "Plak de code die van het andere apparaat is gekopieerd"
+    pairing_code_instruction: "Plak de koppelcode die het andere apparaat onder zijn QR-code toont."
+    manual_entry_qr_hint: "Het andere apparaat moet zijn QR-code tonen."
     test_connection: Test verbinding
     enter_server_details: Voer serververbindingdetails handmatig in
     connection_timeout: "Time-out van de verbinding. Controleer het adres van het apparaat en probeer het opnieuw."
@@ -138,9 +137,6 @@ sync:
       Verbindingstest mislukt - geen reactie van
       server
     connection_test_failed_generic: "Verbindingstest mislukt: {0}"
-    connection_string_instruction:
-      Plak hier de verbindingsreeks die is verstrekt
-      door het serverapparaat om handmatig te verbinden.
   add:
     device: Apparaat toevoegen
     device_tooltip: Nieuw apparaat toevoegen
@@ -162,21 +158,6 @@ sync:
     qr_description:
       Andere apparaten kunnen deze QR-code scannen om te verbinden en
       te synchroniseren met dit apparaat.
-    connection_string_title: Verbindingsreeks
-    connection_string_description:
-      Alternatief kunt u deze verbindingsreeks delen
-      om apparaten handmatig te verbinden.
-    connection_string_copied: Verbindingsreeks gekopieerd naar klembord
-    server_details_description:
-      Gebruik deze serverdetails om handmatig te verbinden
-      vanaf een ander apparaat.
-    unknown_ip: Onbekende IP
-    error_loading_connection_info: Fout bij laden van verbindingsinfo
-    retry: Opnieuw proberen
-    manual_connection_tab: Handmatige verbinding
-    server_details_title: Serverdetails
-    connection_string_title_alt: Verbindingsreeks
-    copy: Kopiëren
   desktop:
     mode_title: Desktop Sync Modus
     sync_mode_start_menu: "Stop met verbindingen accepteren"
@@ -187,6 +168,7 @@ sync:
   multi_interface_connection: Multi-interface verbinding
   status:
     not_reachable: "Apparaat niet bereikbaar"
+    not_reachable_hint: "Schakel de servermodus in op het andere apparaat of start de synchronisatie vanaf dat apparaat."
     needs_repairing: "Opnieuw koppelen vereist"
     needs_update: "{device} heeft een nieuwere versie van WHPH nodig om te synchroniseren"
     this_device_needs_update: "Werk WHPH op dit apparaat bij om te synchroniseren met {device}, dat een nieuwere versie gebruikt"
@@ -210,6 +192,8 @@ sync:
       used: "Deze code is al gebruikt."
       regenerate: "Nieuwe code tonen"
       paired: "Apparaat gekoppeld"
+      copy_code: "Koppelcode kopiëren"
+      code_copied: "Koppelcode naar het klembord gekopieerd"
     code:
       title: "Codes vergelijken"
       description: "Controleer of {device} dezelfde code toont."

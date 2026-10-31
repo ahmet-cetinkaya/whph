@@ -5,6 +5,7 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_change_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_key_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_runtime.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_session_host.dart';
 import 'package:whph/core/application/features/sync/services/sync_ledger_mark_service.dart';
@@ -24,6 +25,7 @@ import 'package:whph/infrastructure/shared/features/sync/lan_sync_peer_connector
 import 'package:whph/infrastructure/shared/features/sync/lan_sync_server.dart';
 import 'package:whph/infrastructure/shared/features/sync/legacy_sync_responder.dart';
 import 'package:whph/infrastructure/shared/features/sync/pairing_rate_limiter.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
 import 'package:whph/presentation/ui/shared/utils/device_info_helper.dart';
 
 /// Registers the LAN transport, the session engine over the Drift store and
@@ -53,6 +55,8 @@ void registerSyncTransport(IContainer container) {
       platform: Platform.operatingSystem,
       appVersion: AppInfo.version,
       onPair: c.resolve<SyncPairingService>().respond,
+      statusStore: c.resolve<ISyncPeerStatusStore>(),
+      progress: c.resolve<SyncProgressTracker>(),
     ),
   );
   container.registerSingleton<LanSyncServer>(

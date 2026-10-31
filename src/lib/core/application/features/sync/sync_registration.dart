@@ -24,6 +24,7 @@ import 'package:whph/core/application/features/sync/services/sync_engine_service
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 import 'package:whph/core/application/features/sync/services/sync_pairing_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
 import 'package:whph/core/application/features/sync/services/sync_scheduler.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/sync/commands/start_sync_command.dart';
@@ -131,6 +132,7 @@ void _registerSyncEngineServices(IContainer container) {
       platform: Platform.operatingSystem,
     ),
   );
+  container.registerSingleton<SyncProgressTracker>((_) => SyncProgressTracker());
   container.registerSingleton<SyncEngineService>(
     (c) => SyncEngineService(
       membershipService: c.resolve<SyncMembershipService>(),
@@ -141,6 +143,7 @@ void _registerSyncEngineServices(IContainer container) {
       upgradeService: c.resolve<ISyncUpgradeService>(),
       device: c.resolve<AsyncSessionDevice>(),
       port: syncLanPort,
+      progress: c.resolve<SyncProgressTracker>(),
     ),
   );
   container.registerSingleton<SyncScheduler>((c) => SyncScheduler(c.resolve<SyncEngineService>()));

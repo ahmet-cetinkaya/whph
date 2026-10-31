@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:whph/core/application/features/sync/commands/cancel_pairing_command.dart';
@@ -14,6 +15,7 @@ import 'package:whph/presentation/ui/features/sync/constants/sync_translation_ke
 import 'package:whph/presentation/ui/features/sync/utils/sync_result_texts.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
+import 'package:whph/presentation/ui/shared/utils/overlay_notification_helper.dart';
 
 enum PairingQrState { loading, showing, expired, used, paired, failed }
 
@@ -24,6 +26,7 @@ class PairingQrController extends ChangeNotifier {
 
   final Mediator _mediator;
   final DateTime Function() _now;
+  final VoidCallback? _onPaired;
 
   Timer? _ticker;
   DateTime? _expiresAt;
@@ -35,9 +38,10 @@ class PairingQrController extends ChangeNotifier {
   bool isPairingInProgress = false;
   String? errorCode;
 
-  PairingQrController({required Mediator mediator, DateTime Function()? now})
+  PairingQrController({required Mediator mediator, DateTime Function()? now, VoidCallback? onPaired})
       : _mediator = mediator,
-        _now = now ?? DateTime.now;
+        _now = now ?? DateTime.now,
+        _onPaired = onPaired;
 
   /// Shows a new invitation; the previous one stops working.
   Future<void> generate() async {
@@ -97,6 +101,7 @@ class PairingQrController extends ChangeNotifier {
     state = finalState;
     isPairingInProgress = false;
     notifyListeners();
+    if (finalState == PairingQrState.paired) _onPaired?.call();
   }
 
   @override
@@ -116,7 +121,10 @@ class PairingQrView extends StatefulWidget {
   final Mediator? mediator;
   final DateTime Function()? now;
 
-  const PairingQrView({super.key, this.mediator, this.now});
+  /// Called once the invitation led to a paired device.
+  final VoidCallback? onPaired;
+
+  const PairingQrView({super.key, this.mediator, this.now, this.onPaired});
 
   @override
   State<PairingQrView> createState() => _PairingQrViewState();
@@ -131,7 +139,8 @@ class _PairingQrViewState extends State<PairingQrView> {
   @override
   void initState() {
     super.initState();
-    _controller = PairingQrController(mediator: widget.mediator ?? container.resolve<Mediator>(), now: widget.now);
+    _controller = PairingQrController(
+        mediator: widget.mediator ?? container.resolve<Mediator>(), now: widget.now, onPaired: widget.onPaired);
     _controller.generate();
   }
 
@@ -153,21 +162,26 @@ class _PairingQrViewState extends State<PairingQrView> {
       listenable: _controller,
       builder: (context, _) => SingleChildScrollView(
         padding: const EdgeInsets.all(AppTheme.sizeMedium),
-        child: Column(
-          children: [
-            Text(
-              _translationService.translate(SyncTranslationKeys.pairingQrTitle),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: AppTheme.sizeSmall),
-            Text(
-              _translationService.translate(SyncTranslationKeys.pairingQrDescription),
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppTheme.sizeLarge),
-            _buildBody(context),
-          ],
+        // A scroll view gives its child loose width, so without the full-width box the column hugs the left edge.
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            children: [
+              Text(
+                _translationService.translate(SyncTranslationKeys.pairingQrTitle),
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppTheme.sizeSmall),
+              Text(
+                _translationService.translate(SyncTranslationKeys.pairingQrDescription),
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppTheme.sizeLarge),
+              _buildBody(context),
+            ],
+          ),
         ),
       ),
     );
@@ -189,6 +203,15 @@ class _PairingQrViewState extends State<PairingQrView> {
     };
   }
 
+  Future<void> _copyPairingCode() async {
+    await Clipboard.setData(ClipboardData(text: _controller.qrText!));
+    if (!mounted) return;
+    OverlayNotificationHelper.showSuccess(
+      context: context,
+      message: _translationService.translate(SyncTranslationKeys.pairingQrCodeCopied),
+    );
+  }
+
   Widget _buildQr(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
@@ -205,6 +228,12 @@ class _PairingQrViewState extends State<PairingQrView> {
               : _countdownText(),
           key: const ValueKey('pairing-qr-status'),
           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: AppTheme.sizeMedium),
+        TextButton.icon(
+          onPressed: _copyPairingCode,
+          icon: const Icon(Icons.copy),
+          label: Text(_translationService.translate(SyncTranslationKeys.pairingQrCopyCode)),
         ),
       ],
     );

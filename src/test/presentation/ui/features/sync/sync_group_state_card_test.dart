@@ -7,9 +7,8 @@ import 'package:whph/presentation/ui/features/sync/components/sync_group_state_c
 import 'support/sync_test_support.dart';
 
 void main() {
-  late SyncTestHarness harness;
-
-  setUp(() => harness = SyncTestHarness());
+  // Constructing the harness registers the services the card's page needs.
+  setUp(SyncTestHarness.new);
 
   Future<void> pumpFor(WidgetTester tester, SyncGroupState state) =>
       pumpPage(tester, SyncGroupStateCard(groupState: state, onPair: () {}));

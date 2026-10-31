@@ -9,6 +9,7 @@ import 'package:whph/core/application/features/sync/services/abstraction/i_sync_
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_session_host.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_engine_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_peer_status_store.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
@@ -89,7 +90,7 @@ class EngineFixture {
   EngineFixture._(this.local, this.remote, this.statusStore);
 
   static Future<EngineFixture> create(DriftEngineDevice local, DriftEngineDevice remote,
-      {ISyncSessionHost? host}) async {
+      {ISyncSessionHost? host, SyncProgressTracker? progress, ISyncUpgradeService? upgradeService}) async {
     final fixture = EngineFixture._(local, remote, DriftSyncPeerStatusStore(local.security.database.db));
     fixture.connector.responder = remote.respond;
     fixture.engine = SyncEngineService(
@@ -98,9 +99,10 @@ class EngineFixture {
       peerStateStore: local.security.peerStates,
       connector: fixture.connector,
       host: host ?? local.host,
-      upgradeService: DoneUpgradeService(),
+      upgradeService: upgradeService ?? DoneUpgradeService(),
       device: local.device,
       port: _loopbackPort,
+      progress: progress,
       now: fixture.clock.call,
     );
     await local.security.peerStates.saveAddresses(remote.memberId, [loopbackAddress]);

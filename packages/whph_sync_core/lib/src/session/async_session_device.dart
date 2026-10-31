@@ -217,12 +217,19 @@ final class InMemoryAsyncSessionDevice implements AsyncSessionDevice {
     ISyncTransport transport, {
     required String peerMemberId,
     SessionHooks hooks = const SessionHooks(),
+    SessionProgressCallback? onProgress,
   }) =>
-      AsyncSyncSession(this, transport, initiator: true, expectedPeer: peerMemberId, hooks: hooks).run();
+      AsyncSyncSession(this, transport,
+              initiator: true, expectedPeer: peerMemberId, hooks: hooks, onProgress: onProgress)
+          .run();
 
   /// Serves an incoming session.
-  Future<SessionResult> respond(ISyncTransport transport, {SessionHooks hooks = const SessionHooks()}) =>
-      AsyncSyncSession(this, transport, initiator: false, hooks: hooks).run();
+  Future<SessionResult> respond(
+    ISyncTransport transport, {
+    SessionHooks hooks = const SessionHooks(),
+    SessionProgressCallback? onProgress,
+  }) =>
+      AsyncSyncSession(this, transport, initiator: false, hooks: hooks, onProgress: onProgress).run();
 
   /// [SyncDevice.syncPair] through the async engine: one session between [a]
   /// (initiator) and [b], retried once without faults after a detected
