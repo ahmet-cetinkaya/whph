@@ -166,7 +166,7 @@ sync:
   multi_interface_connection: Připojení přes více rozhraní
   status:
     not_reachable: "Zařízení není dostupné"
-    not_reachable_hint: "Zapněte na druhém zařízení režim serveru nebo spusťte synchronizaci z tohoto zařízení."
+    not_reachable_hint: "Zapněte na druhém zařízení režim serveru nebo spusťte synchronizaci z něj."
     needs_repairing: "Vyžaduje nové spárování"
     needs_update: "{device} potřebuje k synchronizaci novější verzi WHPH"
     this_device_needs_update: "Pro synchronizaci se zařízením {device} aktualizujte WHPH v tomto zařízení, protože {device} používá novější verzi"
@@ -227,6 +227,6 @@ sync:
       description: "Zařízení spárovaná se starou synchronizací je nutné spárovat znovu. Vaše data zůstávají na každém zařízení."
       dismiss: "Zavřít"
     upgrade_progress: "Příprava dat synchronizace… {percent} %"
-    upgrade_stalled: "Příprava dat synchronizace trvá déle, než se čekalo. Bude se opakovat."
+    upgrade_stalled: "Příprava dat synchronizace trvá déle, než se čekalo. Pokusy budou pokračovat."
   demo:
     reset_blocked: "Demo data nelze resetovat, dokud je toto zařízení spárované, protože by se reset synchronizoval do vašich dalších zařízení. Nejprve odeberte toto zařízení ze skupiny synchronizace."

@@ -26,13 +26,17 @@ class _PairingRun {
   final Completer<bool> groupDecision = Completer<bool>();
   bool cancelled = false;
 
+  /// True while the user decides on the code; the run then ends through the
+  /// normal failure path, which tells the peer before closing the transport.
+  bool awaitingCodeDecision = false;
+
   _PairingRun(this.role);
 
   void cancel() {
     cancelled = true;
     if (!codeDecision.isCompleted) codeDecision.complete(false);
     if (!groupDecision.isCompleted) groupDecision.complete(false);
-    unawaited(transport?.close());
+    if (!awaitingCodeDecision) unawaited(transport?.close());
   }
 }
 
@@ -404,7 +408,9 @@ class SyncPairingService {
       _failWhenAborted(sas);
     }
     _emit(SyncPairingStatus(phase: SyncPairingPhase.comparingCodes, role: run.role, code: sas.code()));
+    run.awaitingCodeDecision = true;
     final accepted = await _awaitDecision(run.codeDecision);
+    run.awaitingCodeDecision = false;
     if (!accepted) {
       await _tellPeerQuietly(() => _sendAll(channel, sas.reject()));
       throw const SyncPairingException(SyncPairingErrorCode.cancelled);

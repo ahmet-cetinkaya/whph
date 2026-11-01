@@ -174,7 +174,7 @@ sync:
   multi_interface_connection: Večvmesniška povezava
   status:
     not_reachable: "Naprava ni dosegljiva"
-    not_reachable_hint: "Vklopite strežniški način na drugi napravi ali zaženite sinhronizacijo iz te naprave."
+    not_reachable_hint: "Vklopite strežniški način na drugi napravi ali zaženite sinhronizacijo iz tiste naprave."
     needs_repairing: "Potrebno je novo seznanjanje"
     needs_update: "{device} potrebuje novejšo različico WHPH za sinhronizacijo"
     this_device_needs_update: "Posodobite WHPH v tej napravi za sinhronizacijo z napravo {device}, ki uporablja novejšo različico"

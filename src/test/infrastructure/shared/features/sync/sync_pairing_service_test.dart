@@ -284,6 +284,22 @@ void main() {
       expect(await joiner.device.service.isPaired(), isFalse);
     });
 
+    test('rejecting the code on one screen ends the other with codesDiffer and pairs nothing', () async {
+      final (inviter, joiner) = await twoSides();
+      await inviter.service.createInvitation();
+      await joiner.service.startPairingWithAddress(loopbackAddress);
+      await _eventually(() => inviter.service.status.phase == SyncPairingPhase.comparingCodes);
+
+      final inviterDone = inviter.service.confirmCode();
+      joiner.service.cancel();
+
+      final inviterStatus = await inviterDone;
+      expect(inviterStatus.phase, SyncPairingPhase.failed);
+      expect(inviterStatus.errorCode, SyncPairingErrorCode.codesDiffer);
+      expect(await inviter.device.service.isPaired(), isFalse);
+      expect(await joiner.device.service.isPaired(), isFalse);
+    });
+
     test('a device that shows no invitation does not accept code pairing', () async {
       final (_, joiner) = await twoSides();
 
