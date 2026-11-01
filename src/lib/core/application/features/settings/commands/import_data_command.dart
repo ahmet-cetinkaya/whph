@@ -39,12 +39,12 @@ import 'package:whph/core/domain/features/app_usages/app_usage_time_record.dart'
 import 'package:whph/core/domain/features/app_usages/app_usage_tag_rule.dart';
 import 'package:whph/core/domain/features/app_usages/app_usage_ignore_rule.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/core/domain/features/notes/note.dart';
 import 'package:whph/core/domain/features/notes/note_tag.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_import_data_migration_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_compression_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
@@ -98,6 +98,10 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
   final ICompressionService compressionService;
   final Mediator mediator;
 
+  /// Runs a replace-import as `local_reset` (D14, U4). Without it (sync not
+  /// wired) the import truncates and inserts in one plain transaction.
+  final SyncMembershipService? syncMembership;
+
   late final List<ImportConfig> _importConfigs;
 
   ImportDataCommandHandler({
@@ -122,6 +126,7 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
     required this.noteTagRepository,
     required this.migrationService,
     required this.compressionService,
+    this.syncMembership,
     required this.mediator,
   }) {
     final importedHabitTimeRecords = habitTimeRecordRepository;
@@ -203,11 +208,6 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         name: 'settings',
         repository: settingRepository,
         fromJson: (json) => JsonMapper.deserialize<Setting>(jsonEncode(json))!,
-      ),
-      ImportConfig<SyncDevice>(
-        name: 'syncDevices',
-        repository: syncDeviceRepository,
-        fromJson: (json) => JsonMapper.deserialize<SyncDevice>(jsonEncode(json))!,
       ),
       ImportConfig<AppUsageIgnoreRule>(
         name: 'appUsageIgnoreRules',
@@ -491,38 +491,22 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
         // If older, we proceed (fall through)
       }
 
-      // Execute import operations in a transaction
-      final dbInstance = AppDatabase.instance();
-      await dbInstance.transaction(() async {
-        if (request.strategy == ImportStrategy.replace) {
-          if (kDebugMode) {
-            print('Clearing all existing data (replace strategy)');
-          }
-          await _clearAllData();
-        }
-
-        // Import data sequentially using configs
-        int totalImported = 0;
-        for (final config in _importConfigs) {
-          if (data[config.name] != null) {
-            final items = (data[config.name] as List).cast<Map<String, dynamic>>();
+      Future<void> importRows() => _importAllRows(data, request.strategy);
+      final syncMembership = this.syncMembership;
+      if (request.strategy == ImportStrategy.replace && syncMembership != null) {
+        // U4: truncate and import in one `local_reset` transaction.
+        await syncMembership.localReset(clearUserData: _clearAllData, importRows: importRows);
+      } else {
+        await AppDatabase.instance().transaction(() async {
+          if (request.strategy == ImportStrategy.replace) {
             if (kDebugMode) {
-              print('Importing ${items.length} items for ${config.name}');
+              print('Clearing all existing data (replace strategy)');
             }
-            await _importDataWithConfig(items, config, request.strategy);
-            totalImported += items.length;
+            await _clearAllData();
           }
-        }
-
-        await _normalizeImportedOrders(data);
-
-        if (kDebugMode) {
-          print('Import completed successfully: $totalImported total items imported');
-        }
-
-        // Validate data integrity after import
-        await _validatePostImportIntegrity();
-      });
+          await importRows();
+        });
+      }
 
       // Clean up backup on success (optional)
       if (preImportBackup != null && preImportBackup.existsSync()) {
@@ -550,6 +534,30 @@ class ImportDataCommandHandler implements IRequestHandler<ImportDataCommand, Imp
       // Transaction will automatically rollback
       rethrow;
     }
+  }
+
+  Future<void> _importAllRows(Map<String, dynamic> data, ImportStrategy strategy) async {
+    // Import data sequentially using configs
+    int totalImported = 0;
+    for (final config in _importConfigs) {
+      if (data[config.name] != null) {
+        final items = (data[config.name] as List).cast<Map<String, dynamic>>();
+        if (kDebugMode) {
+          print('Importing ${items.length} items for ${config.name}');
+        }
+        await _importDataWithConfig(items, config, strategy);
+        totalImported += items.length;
+      }
+    }
+
+    await _normalizeImportedOrders(data);
+
+    if (kDebugMode) {
+      print('Import completed successfully: $totalImported total items imported');
+    }
+
+    // Validate data integrity after import
+    await _validatePostImportIntegrity();
   }
 
   Future<void> _clearAllData() async {

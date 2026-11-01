@@ -5,21 +5,12 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mcp_dart/mcp_dart.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_access_service.dart';
-import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_operation_service.dart';
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_server_service.dart';
 import 'package:whph/core/application/features/settings/models/public_setting.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_settings_effects.dart';
 import 'package:whph/core/application/features/settings/services/settings_actions.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_network_interface_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
-import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
-import 'package:whph/core/application/features/sync/services/sync_actions.dart';
-import 'package:whph/core/domain/features/sync/sync_device.dart';
 import 'package:whph/infrastructure/persistence/features/settings/repositories/drift_settings_repository.dart';
-import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_device_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/infrastructure/persistence/shared/services/drift_application_transaction_service.dart';
 import 'package:whph/infrastructure/shared/features/mcp/mcp_operation_service.dart';
@@ -28,7 +19,6 @@ import 'package:whph/main.mapper.g.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_arguments.dart';
 import 'package:whph/presentation/mcp/models/mcp_tool_definition.dart';
 import 'package:whph/presentation/mcp/tools/settings_tools.dart';
-import 'package:whph/presentation/mcp/tools/sync_tools.dart';
 
 part 'mcp_settings_sync_test_fixtures.dart';
 
@@ -38,20 +28,16 @@ void main() {
   late Directory temporaryDirectory;
   late AppDatabase database;
   late DriftSettingRepository settingsRepository;
-  late DriftSyncDeviceRepository syncRepository;
   late TestEffects effects;
   late TestRequestContext requestContext;
-  late TestSyncService syncService;
 
   setUp(() async {
     AppDatabase.isTestMode = true;
     temporaryDirectory = await Directory.systemTemp.createTemp('whph-mcp-settings-sync-');
     database = AppDatabase(NativeDatabase(File('${temporaryDirectory.path}/test.sqlite')));
     settingsRepository = DriftSettingRepository.withDatabase(database);
-    syncRepository = DriftSyncDeviceRepository.withDatabase(database);
     effects = TestEffects();
     requestContext = TestRequestContext();
-    syncService = TestSyncService();
   });
 
   tearDown(() async {
@@ -166,82 +152,5 @@ void main() {
     );
     expect(await settingsRepository.getByKey('NOTIFICATIONS_ENABLED'), isNull);
     expect(effects.changes, isEmpty);
-  });
-
-  test('sync start and stop use the configured ISyncService instance', () async {
-    final tools =
-        syncTools(database, syncRepository, syncService, requestContext, operationService(temporaryDirectory));
-
-    await tools
-        .singleWhere((tool) => tool.name == 'whph_sync_start')
-        .handler(McpToolArguments(const {}), requestExtra());
-    await tools
-        .singleWhere((tool) => tool.name == 'whph_sync_stop')
-        .handler(McpToolArguments(const {}), requestExtra());
-
-    expect(syncService.startCount, 1);
-    expect(syncService.stopCount, 1);
-  });
-
-  test('sync update rejects a stale revision without overwriting SQLite', () async {
-    final device = SyncDevice(
-      id: 'device-1',
-      createdDate: DateTime.utc(2026, 1, 1),
-      fromIp: '127.0.0.1',
-      toIp: '192.168.1.2',
-      fromDeviceId: 'peer',
-      toDeviceId: 'local',
-      name: 'Original',
-    );
-    await syncRepository.add(device);
-    final persisted = await syncRepository.getById(device.id);
-    final firstRevision = persisted!.modifiedDate ?? persisted.createdDate;
-    final tools =
-        syncTools(database, syncRepository, syncService, requestContext, operationService(temporaryDirectory));
-    final update = tools.singleWhere((tool) => tool.name == 'whph_sync_devices_update');
-    final first = await update.handler(
-      McpToolArguments({
-        'id': 'device-1',
-        'expectedRevision': firstRevision.toIso8601String(),
-        'name': 'First update',
-      }),
-      requestExtra(),
-    );
-    final stale = await update.handler(
-      McpToolArguments({
-        'id': 'device-1',
-        'expectedRevision': firstRevision.toIso8601String(),
-        'name': 'Stale update',
-      }),
-      requestExtra(),
-    );
-
-    await verifySyncMutations(first, stale, tools, syncRepository, syncService);
-  });
-
-  test('local approval rejects without pairing and approved pairing executes once', () async {
-    final server = await startHandshakeServer();
-    addTearDown(server.close);
-    final access = TestAccessService();
-    final operations = operationService(temporaryDirectory, access);
-    final tools = syncTools(database, syncRepository, syncService, requestContext, operations);
-    final prepare = tools.singleWhere((tool) => tool.name == 'whph_sync_pair_prepare');
-    final peer = {
-      'peer': {'deviceId': 'peer-device', 'name': 'Test peer', 'ipAddress': '127.0.0.1', 'port': server.port}
-    };
-    final rejectedRequest = await prepare.handler(McpToolArguments(peer), requestExtra());
-    await operations.reject(rejectedRequest.structuredContent!['operationId'] as String);
-    expect((await syncRepository.getList(0, 20)).items, isEmpty);
-    await verifyRevokedPairing(prepare, operations, access, syncRepository, peer);
-
-    final approvedRequest = await prepare.handler(McpToolArguments(peer), requestExtra());
-    syncService.shouldFailRun = true;
-    final approved = await operations.approve(approvedRequest.structuredContent!['operationId'] as String);
-    await expectLater(() => operations.approve(approved.id), throwsStateError);
-
-    expect(approved.status, McpOperationStatus.succeeded);
-    expect(approved.result?.value, containsPair('status', 'paired_sync_failed'));
-    expect((await syncRepository.getList(0, 20)).items.single.fromDeviceId, 'peer-device');
-    expect(syncService.runCount, 1);
   });
 }

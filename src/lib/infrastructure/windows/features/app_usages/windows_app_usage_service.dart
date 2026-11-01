@@ -4,7 +4,8 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/windows/constants/windows_app_constants.dart';
 
 class WindowsAppUsageService extends BaseDesktopAppUsageService {
-  static final MethodChannel _channel = MethodChannel(WindowsAppConstants.channels.appUsage);
+  static final MethodChannel _channel =
+      MethodChannel(WindowsAppConstants.channels.appUsage);
 
   WindowsAppUsageService(
     super.appUsageRepository,
@@ -12,6 +13,7 @@ class WindowsAppUsageService extends BaseDesktopAppUsageService {
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
     super.appUsageFilterService,
+    super.deviceIds,
   );
 
   @override

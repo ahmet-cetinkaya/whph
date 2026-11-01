@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_trigger_generator.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:mcp_dart/mcp_dart.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/notes/commands/delete_note_command.dart';
@@ -48,9 +50,14 @@ void main() {
   late List<McpToolDefinition> notes;
   late List<McpToolDefinition> tags;
 
-  setUp(() {
+  setUp(() async {
     AppDatabase.isTestMode = true;
     database = AppDatabase(NativeDatabase.memory());
+    await database.customSelect('SELECT 1').getSingle();
+    for (final seed in syncInternSeedStatements(
+        nodeValue: 'mcp-test-node', originValue: 'mcp-test-origin')) {
+      await database.customStatement(seed);
+    }
     final noteRepository = DriftNoteRepository.withDatabase(database);
     final noteTagRepository = DriftNoteTagRepository.withDatabase(database);
     tagRepository = DriftTagRepository.withDatabase(database);
@@ -75,6 +82,7 @@ void main() {
           appUsageTagRepository: DriftAppUsageTagRepository.withDatabase(database),
           tagEvents: tagEvents,
           transactions: transactions,
+          syncCascadeService: _NoopSyncCascadeService(),
         ),
       )
       ..registerHandler<SetTagRelationshipsCommand, SetTagRelationshipsCommandResponse,
@@ -119,6 +127,7 @@ void main() {
           noteTagRepository: noteTagRepository,
           noteEvents: noteEvents,
           transactions: transactions,
+        syncCascadeService: _NoopSyncCascadeService(),
         ),
       )
       ..registerHandler<GetNoteQuery, GetNoteQueryResponse, GetNoteQueryHandler>(
@@ -471,4 +480,13 @@ final class _RequestContext implements IMcpRequestContext {
 
   @override
   Future<McpAuthenticatedGrant?> currentGrant({Set<String> requiredScopes = const {}}) async => null;
+}
+
+
+class _NoopSyncCascadeService implements ISyncCascadeService {
+  @override
+  Future<T> withCause<T>(
+      String causeTable, String causePk, Future<T> Function() operation) {
+    return operation();
+  }
 }

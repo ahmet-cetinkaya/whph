@@ -1,18 +1,18 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_runtime.dart';
 
 class StopSyncCommand implements IRequest<StopSyncCommandResponse> {}
 
 class StopSyncCommandResponse {}
 
 class StopSyncCommandHandler implements IRequestHandler<StopSyncCommand, StopSyncCommandResponse> {
-  final ISyncService _syncService;
+  final ISyncRuntime _runtime;
 
-  StopSyncCommandHandler(this._syncService);
+  StopSyncCommandHandler(this._runtime);
 
   @override
-  Future<StopSyncCommandResponse> call(StopSyncCommand request) {
-    _syncService.stopSync();
-    return Future.value(StopSyncCommandResponse());
+  Future<StopSyncCommandResponse> call(StopSyncCommand request) async {
+    await _runtime.stop();
+    return StopSyncCommandResponse();
   }
 }

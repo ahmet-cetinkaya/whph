@@ -5,11 +5,11 @@ import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
 import 'package:whph/core/application/features/mcp/services/abstraction/i_mcp_access_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_application_directory_service.dart';
+import 'package:whph/infrastructure/shared/utils/owner_only_file_utils.dart';
 
 const _documentVersion = 1;
 const _maximumDocumentBytes = 1024 * 1024;
-const _ownerDirectoryMode = '700';
-const _ownerFileMode = '600';
+const _accessSubject = 'MCP access';
 
 class McpAccessStore {
   final IApplicationDirectoryService _applicationDirectoryService;
@@ -23,8 +23,8 @@ class McpAccessStore {
       final paths = await _resolvePaths();
       if (!await paths.file.exists()) return _defaultState(paths.directory);
       await _rejectLink(paths.file.path, 'access document');
-      await _validateOwnerOnly(paths.directory.path, _ownerDirectoryMode);
-      await _validateOwnerOnly(paths.file.path, _ownerFileMode);
+      await _validateOwnerOnly(paths.directory.path, ownerDirectoryMode);
+      await _validateOwnerOnly(paths.file.path, ownerFileMode);
       final bytes = await paths.file.readAsBytes();
       if (bytes.length > _maximumDocumentBytes) {
         throw const FormatException('Access document is too large');
@@ -59,7 +59,7 @@ class McpAccessStore {
       temporaryFile = File('${paths.file.path}.$pid.$timestamp.tmp');
       await _rejectLink(temporaryFile.path, 'temporary access document');
       await temporaryFile.writeAsString(_encodeState(state), flush: true);
-      await _setOwnerOnly(temporaryFile.path, _ownerFileMode);
+      await _setOwnerOnly(temporaryFile.path, ownerFileMode);
       await temporaryFile.rename(paths.file.path);
       temporaryFile = null;
     } on McpAccessStorageException {
@@ -89,29 +89,23 @@ class McpAccessStore {
     await _rejectLink(directory.path, 'access directory');
     await directory.create(recursive: true);
     await _rejectLink(directory.path, 'access directory');
-    await _setOwnerOnly(directory.path, _ownerDirectoryMode);
+    await _setOwnerOnly(directory.path, ownerDirectoryMode);
   }
 
-  Future<void> _rejectLink(String path, String description) async {
-    final type = await FileSystemEntity.type(path, followLinks: false);
-    if (type == FileSystemEntityType.link) {
-      throw McpAccessStorageException('MCP $description must not be a symbolic link');
-    }
-  }
+  Future<void> _rejectLink(String path, String description) =>
+      _asStorageError(() => rejectSymbolicLink(path, 'MCP $description'));
 
-  Future<void> _setOwnerOnly(String path, String mode) async {
-    if (Platform.isWindows) return;
-    final result = await Process.run('chmod', [mode, path]);
-    if (result.exitCode != 0) {
-      throw const McpAccessStorageException('MCP access permissions could not be secured');
-    }
-  }
+  Future<void> _setOwnerOnly(String path, String mode) =>
+      _asStorageError(() => setOwnerOnlyMode(path, mode, _accessSubject));
 
-  Future<void> _validateOwnerOnly(String path, String expectedMode) async {
-    if (Platform.isWindows) return;
-    final permissions = (await FileStat.stat(path)).mode & 0x1ff;
-    if (permissions != int.parse(expectedMode, radix: 8)) {
-      throw const McpAccessStorageException('MCP access permissions are not owner-only');
+  Future<void> _validateOwnerOnly(String path, String expectedMode) =>
+      _asStorageError(() => requireOwnerOnlyMode(path, expectedMode, _accessSubject));
+
+  Future<void> _asStorageError(Future<void> Function() operation) async {
+    try {
+      await operation();
+    } on OwnerOnlyFileException catch (error) {
+      throw McpAccessStorageException(error.message);
     }
   }
 

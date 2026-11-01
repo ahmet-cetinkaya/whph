@@ -85,7 +85,7 @@ class ConcurrentConnectionService implements IConcurrentConnectionService {
 
       return successful;
     } catch (e) {
-      Logger.error('Error during connectivity testing: $e');
+      Logger.error('Error during connectivity testing: ${e.runtimeType}');
       return [];
     }
   }

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:whph/core/application/features/demo/services/abstraction/i_demo_data_service.dart';
 import 'package:whph/core/application/features/demo/models/demo_data/demo_data.dart';
+import 'package:whph/core/application/features/demo/models/demo_reset_blocked_exception.dart';
+import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/domain/shared/constants/demo_config.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
@@ -41,7 +43,11 @@ class DemoDataService implements IDemoDataService {
   final IAppUsageRepository _appUsageRepository;
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final IAppUsageTagRepository _appUsageTagRepository;
+  final SyncMembershipService? _syncMembership;
 
+  /// [syncMembership] gates the destructive operations on a paired device
+  /// (U6) and runs them as `local_reset` (D14). Without it (sync not wired)
+  /// they truncate and repopulate directly.
   DemoDataService({
     required ISettingRepository settingRepository,
     required ITagRepository tagRepository,
@@ -56,7 +62,9 @@ class DemoDataService implements IDemoDataService {
     required IAppUsageRepository appUsageRepository,
     required IAppUsageTimeRecordRepository appUsageTimeRecordRepository,
     required IAppUsageTagRepository appUsageTagRepository,
-  })  : _settingRepository = settingRepository,
+    SyncMembershipService? syncMembership,
+  })  : _syncMembership = syncMembership,
+        _settingRepository = settingRepository,
         _tagRepository = tagRepository,
         _taskRepository = taskRepository,
         _taskTagRepository = taskTagRepository,
@@ -82,20 +90,40 @@ class DemoDataService implements IDemoDataService {
     }
 
     Logger.info('DemoDataService: Initializing demo data...');
-    // Clear entire database first to ensure clean state
-    await _clearEntireDatabase();
-    await populateDemoData();
-    await _markDemoDataAsInitialized();
+    await _replaceAllDataWithDemoData();
     Logger.info('DemoDataService: Demo data initialization completed');
   }
 
   @override
   Future<void> resetDemoData() async {
     Logger.info('DemoDataService: Resetting demo data...');
-    await _clearEntireDatabase();
-    await populateDemoData();
-    await _markDemoDataAsInitialized();
+    await _replaceAllDataWithDemoData();
     Logger.info('DemoDataService: Demo data reset completed');
+  }
+
+  /// Clears the database first to ensure a clean state, then populates it.
+  Future<void> _replaceAllDataWithDemoData() => _runDestructively(
+        clearUserData: _clearEntireDatabase,
+        importRows: () async {
+          await populateDemoData();
+          await _markDemoDataAsInitialized();
+        },
+      );
+
+  /// Refuses on a paired device (U6); otherwise runs `local_reset` (D14) when
+  /// sync is wired.
+  Future<void> _runDestructively({
+    required Future<void> Function() clearUserData,
+    Future<void> Function()? importRows,
+  }) async {
+    final syncMembership = _syncMembership;
+    if (syncMembership == null) {
+      await clearUserData();
+      await importRows?.call();
+      return;
+    }
+    if (await syncMembership.isPaired()) throw const DemoResetBlockedException();
+    await syncMembership.localReset(clearUserData: clearUserData, importRows: importRows);
   }
 
   @override
@@ -112,7 +140,7 @@ class DemoDataService implements IDemoDataService {
   @override
   Future<void> clearDemoData() async {
     Logger.info('DemoDataService: Clearing demo data...');
-    await _clearEntireDatabase();
+    await _runDestructively(clearUserData: _clearEntireDatabase);
   }
 
   /// Clears the entire database (all tables)

@@ -1,4 +1,5 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_tag_repository.dart';
 import 'package:whph/core/application/features/app_usages/services/abstraction/i_app_usage_time_record_repository.dart';
@@ -25,16 +26,19 @@ class DeleteAppUsageCommandHandler implements IRequestHandler<DeleteAppUsageComm
   final IAppUsageTagRepository _appUsageTagRepository;
   final IAppUsageTimeRecordRepository _appUsageTimeRecordRepository;
   final IAppUsageEvents? _appUsageEvents;
+  final ISyncCascadeService _syncCascadeService;
 
   DeleteAppUsageCommandHandler({
     required IAppUsageRepository appUsageRepository,
     required IAppUsageTagRepository appUsageTagRepository,
     required IAppUsageTimeRecordRepository appUsageTimeRecordRepository,
     IAppUsageEvents? appUsageEvents,
+    required ISyncCascadeService syncCascadeService,
   })  : _appUsageRepository = appUsageRepository,
         _appUsageTagRepository = appUsageTagRepository,
         _appUsageTimeRecordRepository = appUsageTimeRecordRepository,
-        _appUsageEvents = appUsageEvents;
+        _appUsageEvents = appUsageEvents,
+        _syncCascadeService = syncCascadeService;
 
   @override
   Future<DeleteAppUsageCommandResponse> call(DeleteAppUsageCommand request) async {
@@ -43,11 +47,12 @@ class DeleteAppUsageCommandHandler implements IRequestHandler<DeleteAppUsageComm
       throw BusinessException('App usage not found', AppUsageTranslationKeys.appUsageNotFoundError);
     }
 
-    // Cascade delete: Delete all related entities first
-    await _deleteRelatedEntities(request.id);
-
-    // Delete the app usage itself
-    await _appUsageRepository.delete(appUsage);
+    // Cascade delete: Delete all related entities first, stamped with the
+    // root app usage as their tombstone cause (D5b).
+    await _syncCascadeService.withCause('app_usage_table', appUsage.id, () async {
+      await _deleteRelatedEntities(request.id);
+      await _appUsageRepository.delete(appUsage);
+    });
     _appUsageEvents?.notifyAppUsageDeleted(appUsage.id);
 
     return DeleteAppUsageCommandResponse(

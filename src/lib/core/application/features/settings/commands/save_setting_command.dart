@@ -1,7 +1,7 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/settings/constants/settings_translation_keys.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/settings/setting.dart';
 
@@ -31,10 +31,12 @@ class SaveSettingCommandResponse {
   });
 }
 
-class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, SaveSettingCommandResponse> {
+class SaveSettingCommandHandler
+    implements IRequestHandler<SaveSettingCommand, SaveSettingCommandResponse> {
   final ISettingRepository _settingRepository;
 
-  SaveSettingCommandHandler({required ISettingRepository settingRepository}) : _settingRepository = settingRepository;
+  SaveSettingCommandHandler({required ISettingRepository settingRepository})
+      : _settingRepository = settingRepository;
 
   @override
   Future<SaveSettingCommandResponse> call(SaveSettingCommand request) async {
@@ -43,13 +45,14 @@ class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, S
     if (request.id != null) {
       setting = await _settingRepository.getById(request.id!);
       if (setting == null) {
-        throw BusinessException('Setting not found', SettingsTranslationKeys.settingNotFoundError);
+        throw BusinessException(
+            'Setting not found', SettingsTranslationKeys.settingNotFoundError);
       }
 
       await _update(setting, request);
     } else {
       setting = await _settingRepository.getByKey(request.key);
-      if (setting != null) {
+      if (setting != null && setting.deletedDate == null) {
         setting = await _update(setting, request);
       } else {
         setting = await _add(setting, request);
@@ -64,14 +67,16 @@ class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, S
   }
 
   Future<Setting> _add(Setting? setting, SaveSettingCommand request) async {
+    // D5: setting identity is the key, so a re-created key revives its row
+    // (delete -> recreate leaves one live row with the new value).
     setting = Setting(
-      id: KeyHelper.generateStringId(),
+      id: syncIdentityId(identityKindSetting, [request.key]),
       createdDate: DateTime.now().toUtc(),
       key: request.key,
       value: request.value,
       valueType: request.valueType,
     );
-    await _settingRepository.add(setting);
+    await _settingRepository.upsertRevive(setting);
     return setting;
   }
 

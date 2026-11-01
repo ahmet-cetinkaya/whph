@@ -242,39 +242,43 @@ analytics.
 
 ### Sync Module
 
-**Overview**: Data synchronization across devices and backups.
+**Overview**: Encrypted device-to-device sync over the local network, plus
+backups. Full design: [SYNC.md](SYNC.md).
 
 **Folder Structure**:
 
+- `packages/whph_sync_core/`: Pure-Dart engine (HLC, merge, manifests, Noise,
+  envelopes, epochs, revocation, session state machine).
 - `core/application/features/sync/`: Commands, constants, models, queries,
-  services.
-- `core/domain/features/sync/`: Domain.
-- `infrastructure/android/features/sync/`,
-  `infrastructure/desktop/features/sync/`, etc.: Platform sync.
-- `infrastructure/persistence/features/sync/`: Sync state.
+  services (pairing, scheduler, session orchestration).
+- `infrastructure/persistence/shared/contexts/drift/sync/`: Table policy and
+  trigger installation.
+- `infrastructure/persistence/features/sync/`: Sync state, change store, and
+  the upgrade job.
+- `infrastructure/shared/features/sync/`: Key file and ledger storage.
 
 **Key Functionalities**:
 
-- Two-way sync with cloud (e.g., Firebase).
-- Conflict resolution.
+- Per-cell conflict-free merge; no cloud and no account.
+- Pairing by QR code or LAN scan with a confirmation code.
+- Revocation, key rotation, restore detection.
 - Backup/restore.
 
 **Dependencies**:
 
-- `acore/lib/async/` for async operations.
-- All feature modules for data syncing.
+- `packages/whph_sync_core`, `cryptography` (pure Dart).
+- All synced feature tables, registered in `syncTablePolicies`.
 
 **Usage Instructions**:
 
-- Trigger: `syncService.startSync();`.
-- Handle conflicts: Implement `SyncModel` resolvers.
-- Reference:
-  [`sync_service.dart`](core/application/features/sync/services/sync_service.dart).
+- Add a synced table: [SYNC.md](SYNC.md#how-to-add-a-synced-table) and
+  [entity-development/05_SYNC_INTEGRATION.md](entity-development/05_SYNC_INTEGRATION.md).
+- MCP sync tools: [MCP.md](MCP.md#sync-tools-and-time-record-aggregates).
 
 **Best Practices**:
 
-- Offline-first: Queue changes.
-- `feat(sync): add end-to-end encryption`.
+- Offline-first: every edit is captured locally and merged on the next session.
+- Never write synced tables with `apply_mode` set outside the sync layer.
 
 ### Tags Module
 

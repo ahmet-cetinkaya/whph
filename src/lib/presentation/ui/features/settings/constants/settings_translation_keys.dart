@@ -129,6 +129,8 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
   // Habit Settings
   static const String habitSettingsTitle = 'settings.habit.title';
   static const String habitSettingsDescription = 'settings.habit.description';
+  static const String habitSettingsSaveError = 'settings.habit.save_error';
+  static const String habitSettingsLoadError = 'settings.habit.load_error';
   static const String habitThreeStateTitle = 'settings.habit.three_state.title';
   static const String habitThreeStateDescription = 'settings.habit.three_state.description';
   static const String habitReverseDayOrderTitle = 'settings.habit.reverse_day_order.title';
@@ -360,4 +362,8 @@ class SettingsTranslationKeys extends application.SettingsTranslationKeys {
       'settings.advanced.reset_database.restart_screen.mobile_message';
   static const String resetDatabaseRestartNowButton =
       'settings.advanced.reset_database.restart_screen.restart_now_button';
+
+  // Paired-device notes (U4, U5)
+  static const String importStrategyPairedNote = 'settings.import.strategy.paired_note';
+  static const String resetDatabaseDialogPairedNote = 'settings.advanced.reset_database.dialog.paired_note';
 }

@@ -9,7 +9,6 @@ import 'package:whph/core/application/features/habits/services/i_habit_time_reco
 import 'package:whph/core/application/features/habits/services/i_habit_repository.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_device_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_repository.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_repository.dart';
@@ -58,7 +57,6 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
   final ITaskTagRepository taskTagRepository;
   final ITaskTimeRecordRepository taskTimeRecordRepository;
   final ISettingRepository settingRepository;
-  final ISyncDeviceRepository syncDeviceRepository;
   final IAppUsageIgnoreRuleRepository appUsageIgnoreRuleRepository;
   final INoteRepository noteRepository;
   final INoteTagRepository noteTagRepository;
@@ -80,7 +78,6 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
     required this.taskTagRepository,
     required this.taskTimeRecordRepository,
     required this.settingRepository,
-    required this.syncDeviceRepository,
     required this.appUsageIgnoreRuleRepository,
     required this.noteRepository,
     required this.noteTagRepository,
@@ -105,7 +102,6 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
       final taskTags = await taskTagRepository.getAll();
       final taskTimeRecords = await taskTimeRecordRepository.getAll();
       final settings = await settingRepository.getAll();
-      final syncDevices = await syncDeviceRepository.getAll();
       final appUsageIgnoreRules = await appUsageIgnoreRuleRepository.getAll();
       final notes = await noteRepository.getAll();
       final noteTags = await noteTagRepository.getAll();
@@ -131,7 +127,6 @@ class ExportDataCommandHandler implements IRequestHandler<ExportDataCommand, Exp
         'taskTags': taskTags,
         'taskTimeRecords': taskTimeRecords,
         'settings': settings,
-        'syncDevices': syncDevices,
         'appUsageIgnoreRules': appUsageIgnoreRules,
         'notes': notes,
         'noteTags': noteTags,

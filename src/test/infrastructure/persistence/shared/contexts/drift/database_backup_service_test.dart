@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/database_backup_service.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+
+import 'wal_test_support.dart';
 
 void main() {
   late Directory tempDir;
@@ -24,25 +28,40 @@ void main() {
       databaseName: 'app.db',
     );
 
-    await service.createBackupBeforeMigration(35, 36);
+    await service.createBackupBeforeMigration(
+      35,
+      36,
+      writeSnapshot: (_) async => fail('no snapshot should be written without a database file'),
+    );
 
     expect(await tempDir.list().toList(), isEmpty);
   });
 
-  test('creates a verified backup copy when a database file exists', () async {
+  test('creates a verified backup snapshot when a database file exists', () async {
     final dbFile = File('${tempDir.path}/$dbFileName');
-    await dbFile.writeAsBytes(List.generate(256, (i) => i % 256));
+    final database = AppDatabase.withExecutor(NativeDatabase(dbFile));
+    addTearDown(() async {
+      await database.close();
+      AppDatabase.resetInstance();
+    });
+    await database.customStatement('CREATE TABLE backup_probe (value INTEGER NOT NULL)');
+    await database.customStatement('INSERT INTO backup_probe VALUES (42)');
 
     final service = DatabaseBackupService(
       getApplicationDirectory: () async => tempDir,
       databaseName: 'app.db',
     );
 
-    await service.createBackupBeforeMigration(35, 36);
+    await service.createBackupBeforeMigration(
+      35,
+      36,
+      writeSnapshot: (path) => database.customStatement(vacuumIntoStatement(path)),
+    );
 
     final backups = await tempDir.list().where((entity) => entity.path.contains('backup_v35_to_v36')).toList();
     expect(backups, hasLength(1));
-    expect(await File(backups.single.path).length(), await dbFile.length());
+    final rows = await queryStandalone(File(backups.single.path), 'SELECT value FROM backup_probe');
+    expect(rows.single['value'], 42);
   });
 
   test('throws instead of silently continuing when the backup copy fails', () async {
@@ -62,7 +81,11 @@ void main() {
     );
 
     await expectLater(
-      () => service.createBackupBeforeMigration(35, 36),
+      () => service.createBackupBeforeMigration(
+        35,
+        36,
+        writeSnapshot: (path) => File(path).writeAsBytes([1, 2, 3]),
+      ),
       throwsA(isA<StateError>()),
       reason: 'a backup failure must abort the migration, not be logged and silently ignored',
     );

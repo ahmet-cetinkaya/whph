@@ -303,7 +303,7 @@ After application layer is complete:
 → [Phase 4: Business Logic Integration](./04_BUSINESS_LOGIC_INTEGRATION.md)
 (optional)
 
-→ [Phase 5: Sync Integration](./05_SYNC_INTEGRATION.md) (recommended)
+→ [Phase 5: Sync Integration](./05_SYNC_INTEGRATION.md) (required)
 
 ---
 

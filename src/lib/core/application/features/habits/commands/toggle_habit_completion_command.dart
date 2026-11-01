@@ -15,7 +15,8 @@ import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 
-class ToggleHabitCompletionCommand implements IRequest<ToggleHabitCompletionCommandResponse> {
+class ToggleHabitCompletionCommand
+    implements IRequest<ToggleHabitCompletionCommandResponse> {
   final String habitId;
   final DateTime date;
   final bool useIncrementalBehavior;
@@ -30,7 +31,9 @@ class ToggleHabitCompletionCommand implements IRequest<ToggleHabitCompletionComm
 class ToggleHabitCompletionCommandResponse {}
 
 class ToggleHabitCompletionCommandHandler
-    implements IRequestHandler<ToggleHabitCompletionCommand, ToggleHabitCompletionCommandResponse> {
+    implements
+        IRequestHandler<ToggleHabitCompletionCommand,
+            ToggleHabitCompletionCommandResponse> {
   final IHabitRepository _habitRepository;
   final IHabitRecordRepository _habitRecordRepository;
   final ISettingRepository _settingsRepository;
@@ -53,7 +56,8 @@ class ToggleHabitCompletionCommandHandler
         _habitEvents = habitEvents;
 
   @override
-  Future<ToggleHabitCompletionCommandResponse> call(ToggleHabitCompletionCommand request) async {
+  Future<ToggleHabitCompletionCommandResponse> call(
+      ToggleHabitCompletionCommand request) async {
     final habit = await _habitRepository.getById(request.habitId);
     if (habit == null) {
       throw BusinessException(
@@ -67,7 +71,8 @@ class ToggleHabitCompletionCommandHandler
     final startOfDay = dayRange.start;
     final endOfDay = dayRange.end;
 
-    final habitRecords = await _habitRecordRepository.getListByHabitIdAndRangeDate(
+    final habitRecords =
+        await _habitRecordRepository.getListByHabitIdAndRangeDate(
       request.habitId,
       startOfDay,
       endOfDay,
@@ -87,7 +92,8 @@ class ToggleHabitCompletionCommandHandler
 
     final dailyCompletionCount = habitRecords.items
         .where((record) => DateTimeHelper.isSameDay(
-            DateTimeHelper.toLocalDateTime(record.occurredAt), DateTimeHelper.toLocalDateTime(request.date)))
+            DateTimeHelper.toLocalDateTime(record.occurredAt),
+            DateTimeHelper.toLocalDateTime(request.date)))
         .length;
 
     final hasCustomGoals = habit.hasGoal;
@@ -96,15 +102,17 @@ class ToggleHabitCompletionCommandHandler
     HabitRecordStatus nextStatus = HabitRecordStatus.complete;
     bool isMultiOccurrence = hasCustomGoals && dailyTarget > 1;
 
-    final setting = await _settingsRepository.getByKey(SettingKeys.habitThreeStateEnabled);
-    final isThreeStateEnabled = setting != null && setting.getValue<bool>() == true;
+    final setting =
+        await _settingsRepository.getByKey(SettingKeys.habitThreeStateEnabled);
+    final isThreeStateEnabled =
+        setting != null && setting.getValue<bool>() == true;
 
     if (isMultiOccurrence) {
       // Check if explicitly marked as Not Done for this specific day
       final isCurrentlyNotDone = habitRecords.items.any((r) =>
           r.status == HabitRecordStatus.notDone &&
-          DateTimeHelper.isSameDay(
-              DateTimeHelper.toLocalDateTime(r.occurredAt), DateTimeHelper.toLocalDateTime(request.date)));
+          DateTimeHelper.isSameDay(DateTimeHelper.toLocalDateTime(r.occurredAt),
+              DateTimeHelper.toLocalDateTime(request.date)));
 
       if (isCurrentlyNotDone) {
         nextStatus = HabitRecordStatus.skipped;
@@ -112,13 +120,16 @@ class ToggleHabitCompletionCommandHandler
         nextStatus = HabitRecordStatus.complete;
       } else {
         // Target met. If 3-state enabled: Not Done, otherwise: Reset (Skipped)
-        nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.skipped;
+        nextStatus = isThreeStateEnabled
+            ? HabitRecordStatus.notDone
+            : HabitRecordStatus.skipped;
       }
     } else {
       // Single occurrence: 3-state cycle when enabled
       final existingRecord = habitRecords.items
           .where((record) => DateTimeHelper.isSameDay(
-              DateTimeHelper.toLocalDateTime(record.occurredAt), DateTimeHelper.toLocalDateTime(request.date)))
+              DateTimeHelper.toLocalDateTime(record.occurredAt),
+              DateTimeHelper.toLocalDateTime(request.date)))
           .firstOrNull;
 
       final currentStatus = existingRecord?.status ?? HabitRecordStatus.skipped;
@@ -128,7 +139,9 @@ class ToggleHabitCompletionCommandHandler
           nextStatus = HabitRecordStatus.complete;
           break;
         case HabitRecordStatus.complete:
-          nextStatus = isThreeStateEnabled ? HabitRecordStatus.notDone : HabitRecordStatus.skipped;
+          nextStatus = isThreeStateEnabled
+              ? HabitRecordStatus.notDone
+              : HabitRecordStatus.skipped;
           break;
         case HabitRecordStatus.notDone:
           nextStatus = HabitRecordStatus.skipped;
@@ -151,6 +164,7 @@ class ToggleHabitCompletionCommandHandler
             occurredAt,
             nextStatus,
             now,
+            deterministic: true, // D5c: single-occurrence arm
           );
 
           await _operationsService.addTimeRecordIfComplete(
@@ -166,7 +180,7 @@ class ToggleHabitCompletionCommandHandler
             request.habitId,
             occurredAt,
             HabitRecordStatus.complete,
-            now,
+            now, // D5c: multi-occurrence (target > 1) -> random ids
           );
 
           await _operationsService.addTimeRecordIfComplete(
@@ -176,18 +190,18 @@ class ToggleHabitCompletionCommandHandler
             HabitRecordStatus.complete,
           );
         } else if (nextStatus == HabitRecordStatus.notDone) {
-          await _operationsService.clearAllRecordsForDay(
-              request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
+          await _operationsService.clearAllRecordsForDay(request.habitId,
+              startOfDay, endOfDay, habitRecords.items.toList());
 
           await _operationsService.addHabitRecord(
             request.habitId,
             occurredAt,
             HabitRecordStatus.notDone,
-            now,
+            now, // D5c: multi-occurrence (target > 1) -> random ids
           );
         } else {
-          await _operationsService.clearAllRecordsForDay(
-              request.habitId, startOfDay, endOfDay, habitRecords.items.toList());
+          await _operationsService.clearAllRecordsForDay(request.habitId,
+              startOfDay, endOfDay, habitRecords.items.toList());
         }
       }
     });

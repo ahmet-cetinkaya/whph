@@ -35,6 +35,7 @@ settings:
       neueste Version der App installiert haben.
     select_file: Datei auswählen
     strategy:
+      paired_note: "Dieses Gerät synchronisiert mit anderen. Das Ersetzen vorhandener Daten löscht keine Elemente in der ganzen Gruppe: Elemente, die in der Datei fehlen, bleiben auf deinen anderen Geräten und kehren bei der nächsten Synchronisierung auf dieses Gerät zurück."
       merge: Mit vorhandenen Daten zusammenführen
       replace: Vorhandene Daten löschen und neue hinzufügen
       title: Import-Strategie
@@ -358,6 +359,7 @@ settings:
       title: Datenbank zurücksetzen
       description: Alle Daten löschen und Anwendung zurücksetzen
       dialog:
+        paired_note: "Dieses Gerät synchronisiert mit anderen. Das Zurücksetzen entfernt es auch aus der Synchronisierungsgruppe, daher musst du es danach erneut koppeln."
         title: Datenbank zurücksetzen
         warning:
           "Warnung: Diese Aktion kann nicht rückgängig gemacht werden. Alle
@@ -480,6 +482,8 @@ settings:
   habit:
     title: Gewohnheiteneinstellungen
     description: Gewohnheitsverhalten und Einstellungen anpassen
+    save_error: "Fehler beim Speichern der Gewohnheitseinstellungen"
+    load_error: "Fehler beim Laden der Gewohnheitseinstellungen"
     three_state:
       title: 3-Status-Tracking aktivieren
       description:

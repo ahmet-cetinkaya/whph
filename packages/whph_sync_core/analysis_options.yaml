@@ -1,0 +1,6 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    # Mirrors src/: single-line control structures without braces are allowed.
+    curly_braces_in_flow_control_structures: false

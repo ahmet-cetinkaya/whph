@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:acore/acore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_key_store.dart';
+import 'package:whph/core/application/features/sync/services/reset_local_data_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/settings/components/reset_database_settings.dart';
@@ -71,10 +75,15 @@ class MockAppDatabase extends Mock implements AppDatabase {
   bool resetCalled = false;
 
   @override
-  Future<void> resetDatabase() async {
+  Future<void> resetDatabase({File? preResetBackup}) async {
     resetCalled = true;
     return Future.value();
   }
+}
+
+class FakeSyncKeyStore extends Fake implements ISyncKeyStore {
+  @override
+  Future<void> deleteAll() async {}
 }
 
 void main() {
@@ -93,6 +102,11 @@ void main() {
 
     // Register mocks
     fakeContainer.register<ITranslationService>(mockTranslationService);
+    fakeContainer.register<ResetLocalDataService>(ResetLocalDataService(
+      keyStore: FakeSyncKeyStore(),
+      createPreResetBackup: () async => null,
+      resetDatabase: (backup) => mockAppDatabase.resetDatabase(preResetBackup: backup),
+    ));
   });
 
   tearDown(() {

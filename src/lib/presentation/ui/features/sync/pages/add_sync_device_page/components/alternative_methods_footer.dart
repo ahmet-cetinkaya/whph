@@ -13,11 +13,13 @@ import 'package:acore/acore.dart' show PlatformUtils;
 class AlternativeMethodsFooter extends StatelessWidget {
   final VoidCallback onQRScan;
   final Future<void> Function(DiscoveredDevice device) onManualConnect;
+  final Future<void> Function(String pairingCode) onPairWithCode;
 
   const AlternativeMethodsFooter({
     super.key,
     required this.onQRScan,
     required this.onManualConnect,
+    required this.onPairWithCode,
   });
 
   @override
@@ -80,6 +82,7 @@ class AlternativeMethodsFooter extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: () => ManualConnectionButton.showManualConnectionDialog(
                   context,
+                  onPairWithCode: onPairWithCode,
                   onConnect: (DeviceInfo deviceInfo) async {
                     try {
                       // Create a DiscoveredDevice from the device info retrieved from handshake

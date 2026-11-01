@@ -47,6 +47,8 @@ dependencies:
   # Core Packages
   acore:
     path: ../packages/acore-flutter
+  whph_sync_core:
+    path: ../packages/whph_sync_core
   # Data
   drift: ^2.21.0
   nanoid2: ^2.0.1

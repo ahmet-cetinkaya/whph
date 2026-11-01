@@ -1,0 +1,26 @@
+{
+  "frames": [
+    {
+      "request": {
+        "type": "device_info",
+        "data": {
+          "timestamp": "2026-10-24T23:22:51.255558"
+        }
+      },
+      "expectedResponse": {
+        "type": "device_info_response",
+        "data": {
+          "success": true,
+          "deviceId": "fixture-host-member",
+          "deviceName": "Fixture Host",
+          "appName": "WHPH",
+          "platform": "linux",
+          "memberId": "fixture-host-member",
+          "protocolVersion": 3,
+          "appVersion": "0.25.0",
+          "timestamp": "2026-01-01T00:00:00.000Z"
+        }
+      }
+    }
+  ]
+}

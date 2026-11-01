@@ -3,7 +3,6 @@ import 'package:whph/core/application/features/sync/constants/sync_translation_k
 class SyncTranslationKeys extends application.SyncTranslationKeys {
   // Messages
   static const String testingConnection = 'sync.messages.testing_connection';
-  static const String syncInProgress = 'sync.messages.sync_in_progress';
   static const String syncCompleted = 'sync.messages.sync_completed';
   static const String deviceAlreadyPaired = 'sync.messages.device_already_paired';
   static const String deviceAddedSuccess = 'sync.messages.device_added_success';
@@ -28,19 +27,12 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String qrDialogCloseButton = 'sync.qr_code.close_button';
   static const String qrCodeTitle = 'sync.qr_code.title';
   static const String qrCodeDescription = 'sync.qr_code.description';
-  static const String connectionStringTitle = 'sync.qr_code.connection_string_title';
-  static const String connectionStringDescription = 'sync.qr_code.connection_string_description';
-  static const String connectionStringCopied = 'sync.qr_code.connection_string_copied';
 
   // Connect Info Dialog
   static const String connectInfoDialogTitle = 'sync.connect_info.dialog_title';
   static const String connectInfoMenuTitle = 'sync.connect_info.menu_title';
   static const String connectInfoQrTitle = 'sync.connect_info.qr_title';
   static const String connectInfoQrDescription = 'sync.connect_info.qr_description';
-  static const String connectInfoConnectionStringTitle = 'sync.connect_info.connection_string_title';
-  static const String connectInfoConnectionStringDescription = 'sync.connect_info.connection_string_description';
-  static const String connectInfoConnectionStringCopied = 'sync.connect_info.connection_string_copied';
-  static const String connectInfoServerDetailsDescription = 'sync.connect_info.server_details_description';
 
   // QR Scanner
   static const String scannerTitle = 'sync.scanner.title';
@@ -51,12 +43,9 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String serverModeActive = 'sync.server.active';
   static const String serverModeStopped = 'sync.server.stopped';
   static const String serverModeStartFailed = 'sync.server.start_failed';
-  static const String serverModeStartTooltip = 'sync.server.start_tooltip';
-  static const String serverModeStopTooltip = 'sync.server.stop_tooltip';
   static const String serverModeStartMenu = 'sync.server.start_menu';
   static const String serverModeStopMenu = 'sync.server.stop_menu';
   static const String serverModeError = 'sync.server.error';
-  static const String deviceBecameServer = 'sync.server.device_became_server';
 
   // Sync Devices Page
   static const String pageTitle = 'sync.devices.title';
@@ -64,10 +53,10 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String noDevicesFound = 'sync.devices.no_devices_found';
   static const String loadDevicesError = 'sync.devices.errors.loading';
   static const String removeDeviceError = 'sync.devices.errors.removing';
-  static const String syncDevicesError = 'sync.devices.errors.sync_failed';
   static const String unnamedDevice = 'sync.devices.unnamed_device';
   static const String fromLabel = 'sync.devices.from_label';
   static const String toLabel = 'sync.devices.to_label';
+  static const String syncInProgress = 'sync.messages.sync_in_progress';
   static const String lastSyncLabel = 'sync.devices.last_sync_label';
   static const String helpTitle = 'sync.devices.help.title';
   static const String helpContent = 'sync.devices.help.content';
@@ -105,15 +94,8 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
 
   // Desktop Sync Mode
   static const String desktopSyncMode = 'sync.desktop.mode_title';
-  static const String desktopClientModeStart = 'sync.desktop.client_mode_start';
-  static const String desktopClientModeStop = 'sync.desktop.client_mode_stop';
-  static const String desktopClientModeDescription = 'sync.desktop.client_mode_description';
-  static const String desktopServerModeDescription = 'sync.desktop.server_mode_description';
-  static const String desktopSyncModeStart = 'sync.desktop.sync_mode_start';
-  static const String desktopSyncModeStop = 'sync.desktop.sync_mode_stop';
   static const String desktopSyncModeStartMenu = 'sync.desktop.sync_mode_start_menu';
   static const String desktopSyncModeStopMenu = 'sync.desktop.sync_mode_stop_menu';
-  static const String desktopClientModeStarting = 'sync.desktop.client_mode_starting';
   static const String desktopClientModeStarted = 'sync.desktop.client_mode_started';
   static const String desktopClientModeStopped = 'sync.desktop.client_mode_stopped';
   static const String desktopSyncModeToggleError = 'sync.desktop.sync_mode_toggle_error';
@@ -123,22 +105,18 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String deviceDiscoveryFailedError = 'sync.errors.device_discovery_failed';
 
   // Manual Connection Dialog
-  static const String connectionStringTab = 'sync.manual.connection_string_tab';
+  static const String pairingCodeTab = 'sync.manual.pairing_code_tab';
+  static const String pairingCodeRequired = 'sync.manual.pairing_code_required';
+  static const String invalidPairingCode = 'sync.manual.invalid_pairing_code';
+  static const String pairingCodeLabel = 'sync.manual.pairing_code_label';
+  static const String pairingCodeHint = 'sync.manual.pairing_code_hint';
+  static const String pairingCodeInstruction = 'sync.manual.pairing_code_instruction';
+  static const String manualEntryQrHint = 'sync.manual.manual_entry_qr_hint';
   static const String manualEntryTab = 'sync.manual.manual_entry_tab';
-  static const String connectionStringRequired = 'sync.manual.connection_string_required';
-  static const String invalidConnectionString = 'sync.manual.invalid_connection_string';
-  static const String connectionStringLabel = 'sync.manual.connection_string_label';
   static const String testConnection = 'sync.manual.test_connection';
   static const String enterServerDetails = 'sync.manual.enter_server_details';
 
   // Sync Connect Info Dialog
-  static const String unknownIp = 'sync.connect_info.unknown_ip';
-  static const String errorLoadingConnectionInfo = 'sync.connect_info.error_loading_connection_info';
-  static const String retry = 'sync.connect_info.retry';
-  static const String manualConnectionTab = 'sync.connect_info.manual_connection_tab';
-  static const String serverDetailsTitle = 'sync.connect_info.server_details_title';
-  static const String connectionStringTitleAlt = 'sync.connect_info.connection_string_title_alt';
-  static const String copy = 'sync.connect_info.copy';
 
   // Additional connection test messages
   static const String connectionTimeout = 'sync.manual.connection_timeout';
@@ -151,7 +129,6 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String multiInterfaceConnection = 'sync.multi_interface_connection';
 
   // Manual connection string instruction
-  static const String manualConnectionStringInstruction = 'sync.manual.connection_string_instruction';
 
   // Missing keys
   static const String serverModeTitle = 'sync.server.mode_title';
@@ -162,4 +139,62 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   // Per-device last sync result indicator
   static const String lastSyncSucceeded = 'sync.devices.last_sync_succeeded';
   static const String lastSyncFailed = 'sync.devices.last_sync_failed';
+  static const String deviceSyncing = 'sync.devices.syncing';
+  static const String deviceSyncingPercent = 'sync.devices.syncing_percent';
+
+  // Pairing, status and removal UI (T24)
+  static const String syncStatusNotReachable = 'sync.status.not_reachable';
+  static const String syncStatusNotReachableHint = 'sync.status.not_reachable_hint';
+  static const String syncStatusNeedsRepairing = 'sync.status.needs_repairing';
+  static const String syncStatusNeedsUpdate = 'sync.status.needs_update';
+  static const String syncStatusThisDeviceNeedsUpdate = 'sync.status.this_device_needs_update';
+  static const String syncStatusItemsFailed = 'sync.status.items_failed';
+  static const String syncStatusItemsRejected = 'sync.status.items_rejected';
+  static const String syncStatusPeerPreparing = 'sync.status.preparing';
+  static const String syncStatusDuplicatedIdentity = 'sync.status.duplicated_identity';
+  static const String syncStatusStorageError = 'sync.status.storage_error';
+  static const String syncStatusItemsCannotBeApplied = 'sync.status.items_cannot_be_applied';
+  static const String syncStatusRepairBadge = 'sync.status.repair_badge';
+  static const String syncStatusRepairAction = 'sync.status.repair_action';
+  static const String pairingShowQr = 'sync.pairing.show_qr';
+  static const String pairingInProgress = 'sync.pairing.in_progress';
+  static const String pairingSuccess = 'sync.pairing.success';
+  static const String pairingQrTitle = 'sync.pairing.qr.title';
+  static const String pairingQrDescription = 'sync.pairing.qr.description';
+  static const String pairingQrExpiresIn = 'sync.pairing.qr.expires_in';
+  static const String pairingQrExpired = 'sync.pairing.qr.expired';
+  static const String pairingQrUsed = 'sync.pairing.qr.used';
+  static const String pairingQrRegenerate = 'sync.pairing.qr.regenerate';
+  static const String pairingQrPaired = 'sync.pairing.qr.paired';
+  static const String pairingQrCopyCode = 'sync.pairing.qr.copy_code';
+  static const String pairingQrCodeCopied = 'sync.pairing.qr.code_copied';
+  static const String pairingCodeTitle = 'sync.pairing.code.title';
+  static const String pairingCodeDescription = 'sync.pairing.code.description';
+  static const String pairingCodeMatch = 'sync.pairing.code.match';
+  static const String pairingCodeMismatch = 'sync.pairing.code.mismatch';
+  static const String pairingGroupSwitchTitle = 'sync.pairing.group_switch.title';
+  static const String pairingGroupSwitchDescription = 'sync.pairing.group_switch.description';
+  static const String pairingGroupSwitchConfirm = 'sync.pairing.group_switch.confirm';
+  static const String pairingErrorCodeExpiredOrUsed = 'sync.pairing.errors.code_expired_or_used';
+  static const String pairingErrorCodesDiffer = 'sync.pairing.errors.codes_differ';
+  static const String pairingErrorCancelled = 'sync.pairing.errors.cancelled';
+  static const String pairingErrorUnreachable = 'sync.pairing.errors.unreachable';
+  static const String pairingErrorInvalidInvitation = 'sync.pairing.errors.invalid_invitation';
+  static const String pairingErrorGroupSwitchDeclined = 'sync.pairing.errors.group_switch_declined';
+  static const String pairingErrorPreparing = 'sync.pairing.errors.preparing';
+  static const String pairingErrorRefused = 'sync.pairing.errors.refused';
+  static const String pairingErrorNotActive = 'sync.pairing.errors.not_active';
+  static const String removeMemberTitle = 'sync.members.remove_confirm.title';
+  static const String removeMemberDescription = 'sync.members.remove_confirm.description';
+  static const String removeMemberAction = 'sync.members.remove_confirm.action';
+  static const String removedFromGroupTitle = 'sync.members.removed_from_group.title';
+  static const String removedFromGroupDescription = 'sync.members.removed_from_group.description';
+  static const String needsRepairingTitle = 'sync.members.needs_repairing.title';
+  static const String needsRepairingDescription = 'sync.members.needs_repairing.description';
+  static const String repairBannerTitle = 'sync.members.repair_banner.title';
+  static const String repairBannerDescription = 'sync.members.repair_banner.description';
+  static const String repairBannerDismiss = 'sync.members.repair_banner.dismiss';
+  static const String upgradeProgress = 'sync.members.upgrade_progress';
+  static const String upgradeStalled = 'sync.members.upgrade_stalled';
+  static const String demoResetBlocked = 'sync.demo.reset_blocked';
 }

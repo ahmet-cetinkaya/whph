@@ -18,12 +18,16 @@ class TaskTimeRecordTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, String, TaskTimeRecordTable>
+class DriftTaskTimeRecordRepository
+    extends DriftBaseRepository<TaskTimeRecord, String, TaskTimeRecordTable>
     implements ITaskTimeRecordRepository {
-  DriftTaskTimeRecordRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTimeRecordTable);
+  DriftTaskTimeRecordRepository()
+      : super(
+            AppDatabase.instance(), AppDatabase.instance().taskTimeRecordTable);
 
   // Constructor for testing with custom database
-  DriftTaskTimeRecordRepository.withDatabase(AppDatabase db) : super(db, db.taskTimeRecordTable);
+  DriftTaskTimeRecordRepository.withDatabase(AppDatabase db)
+      : super(db, db.taskTimeRecordTable);
 
   @override
   Future<void> add(TaskTimeRecord item) async {
@@ -55,12 +59,16 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
   }) async {
     final query = database.customSelect(
       '''
-      SELECT COALESCE(TOTAL(duration), 0) as total_duration
-      FROM task_time_record_table
-      WHERE task_id = ?
-        AND deleted_date IS NULL
-        ${startDate != null ? 'AND created_date >= ?' : ''}
-        ${endDate != null ? 'AND created_date < ?' : ''}
+      SELECT COALESCE(TOTAL(clamped), 0) as total_duration
+      FROM (
+        SELECT MAX(TOTAL(duration), 0) as clamped
+        FROM task_time_record_table
+        WHERE task_id = ?
+          AND deleted_date IS NULL
+          ${startDate != null ? 'AND created_date >= ?' : ''}
+          ${endDate != null ? 'AND created_date < ?' : ''}
+        GROUP BY (CAST(created_date AS INTEGER) / 86400)
+      )
       ''',
       variables: [
         Variable<String>(taskId),
@@ -85,12 +93,16 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     final placeholders = taskIds.map((_) => '?').join(',');
     final query = database.customSelect(
       '''
-      SELECT task_id, COALESCE(TOTAL(duration), 0) as total_duration
-      FROM task_time_record_table
-      WHERE task_id IN ($placeholders)
-        AND deleted_date IS NULL
-        ${startDate != null ? 'AND created_date >= ?' : ''}
-        ${endDate != null ? 'AND created_date < ?' : ''}
+      SELECT task_id, COALESCE(TOTAL(clamped), 0) as total_duration
+      FROM (
+        SELECT task_id, MAX(TOTAL(duration), 0) as clamped
+        FROM task_time_record_table
+        WHERE task_id IN ($placeholders)
+          AND deleted_date IS NULL
+          ${startDate != null ? 'AND created_date >= ?' : ''}
+          ${endDate != null ? 'AND created_date < ?' : ''}
+        GROUP BY task_id, (CAST(created_date AS INTEGER) / 86400)
+      )
       GROUP BY task_id
       ''',
       variables: [
@@ -104,7 +116,8 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
     final results = await query.get();
     final map = {
       for (final result in results)
-        result.read<String>('task_id'): parseDurationAggregate(result.data['total_duration'])
+        result.read<String>('task_id'):
+            parseDurationAggregate(result.data['total_duration'])
     };
 
     // Ensure all taskIds have an entry, even if they have no time records
@@ -117,6 +130,8 @@ class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, 
 
   @override
   Future<List<TaskTimeRecord>> getByTaskId(String taskId) async {
-    return (database.select(table)..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())).get();
+    return (database.select(table)
+          ..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull()))
+        .get();
   }
 }

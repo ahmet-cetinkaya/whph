@@ -1,4 +1,5 @@
 class AppUsageTranslationKeys {
+  static const String unknownDeviceLabel = 'app_usages.details.device.unknown';
   static const String tagAlreadyExistsError = 'app_usages.errors.tag_already_exists';
   static const String appUsageNotFoundError = 'app_usages.errors.app_usage_not_found';
   static const String appUsageTagNotFoundError = 'app_usages.errors.app_usage_tag_not_found';

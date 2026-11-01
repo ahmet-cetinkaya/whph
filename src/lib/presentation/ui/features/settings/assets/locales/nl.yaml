@@ -35,6 +35,7 @@ settings:
       app hebt geïnstalleerd.
     select_file: Selecteer bestand
     strategy:
+      paired_note: "Dit apparaat synchroniseert met andere. Bestaande gegevens vervangen verwijdert geen items in de hele groep: items die in het bestand ontbreken, blijven op je andere apparaten en keren bij de volgende synchronisatie terug naar dit apparaat."
       merge: Samenvoegen met bestaande data
       replace: Bestaande data verwijderen en nieuwe toevoegen
       title: Importstrategie
@@ -347,6 +348,7 @@ settings:
       title: Database Resetten
       description: Verwijder alle data en reset de applicatie
       dialog:
+        paired_note: "Dit apparaat synchroniseert met andere. Resetten verwijdert het ook uit de synchronisatiegroep, dus je moet het daarna opnieuw koppelen."
         title: Database Resetten
         warning:
           "Waarschuwing: Deze actie kan niet ongedaan worden gemaakt. Al uw
@@ -463,6 +465,8 @@ settings:
   habit:
     title: Gewoonte-instellingen
     description: Gewoontegedrag en voorkeuren aanpassen
+    save_error: "Fout bij het opslaan van gewoonte-instellingen"
+    load_error: "Fout bij het laden van gewoonte-instellingen"
     three_state:
       title: 3-status tracking inschakelen
       description: Wissel tussen de statussen Niet gedaan, Overgeslagen en Voltooid.
