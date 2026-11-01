@@ -5,8 +5,10 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/models/sync_result_category.dart';
+import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
 import 'drift_session_test_support.dart';
@@ -119,5 +121,44 @@ void main() {
     ]).timeout(_sessionDeadline);
 
     expect(results.last.isComplete, isTrue, reason: '${results.last}');
+  });
+
+  test('the responder reports the progress of the peer that syncs into it and clears it at the end', () async {
+    await seedNoteMarkers(initiator.security, 5);
+    final tracker = SyncProgressTracker();
+    final statuses = <SyncStatus>[];
+    tracker.changes.listen(statuses.add);
+    final answering = DriftEngineDevice.over(responder.security, progress: tracker);
+    final (initiatorEnd, responderEnd) = InMemoryTransport.pair();
+
+    await Future.wait([
+      initiator.initiate(initiatorEnd, responder.memberId),
+      answering.respond(responderEnd),
+    ]).timeout(_sessionDeadline);
+    await pumpEventQueue();
+
+    expect(statuses.where((status) => status.progress != null), isNotEmpty);
+    expect(
+        statuses.where((status) => status.state == SyncState.syncing).every((status) {
+          return status.currentDeviceId == initiator.memberId;
+        }),
+        isTrue);
+    expect(tracker.current.state, SyncState.idle);
+  });
+
+  test('the responder clears the progress of the peer when the session fails', () async {
+    final tracker = SyncProgressTracker();
+    final preparing = DriftEngineDevice.over(responder.security,
+        upgradeService: CountingUpgradeService(phase: SyncUpgradePhase.reauthor), progress: tracker);
+    tracker.begin(initiator.memberId);
+    final (initiatorEnd, responderEnd) = InMemoryTransport.pair();
+
+    final results = await Future.wait([
+      initiator.initiate(initiatorEnd, responder.memberId),
+      preparing.respond(responderEnd),
+    ]).timeout(_sessionDeadline);
+
+    expect(results.last, isA<SessionFailed>());
+    expect(tracker.current.state, SyncState.idle);
   });
 }

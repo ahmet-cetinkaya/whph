@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_ledger_mark_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
 import 'package:whph/core/application/features/sync/services/sync_startup_check_service.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_change_store.dart';
 import 'package:whph/infrastructure/shared/features/sync/drift_async_session_device.dart';
@@ -34,7 +35,8 @@ class DriftEngineDevice {
       SessionHooks hooks = const SessionHooks(),
       DriftAsyncSyncStore? store,
       ISyncPeerStatusStore? statusStore,
-      ISyncUpgradeService? upgradeService}) {
+      ISyncUpgradeService? upgradeService,
+      SyncProgressTracker? progress}) {
     final marks = SyncLedgerMarkService(keyStore: security.keyStore, changeStore: security.database.store);
     final startupCheck = SyncStartupCheckService(
         membershipService: security.service,
@@ -53,7 +55,12 @@ class DriftEngineDevice {
       upgradeService: upgradeService,
     );
     final host = DriftSyncSessionHost(
-        device: device, platform: _testPlatform, appVersion: _testAppVersion, hooks: hooks, statusStore: statusStore);
+        device: device,
+        platform: _testPlatform,
+        appVersion: _testAppVersion,
+        hooks: hooks,
+        statusStore: statusStore,
+        progress: progress);
     return DriftEngineDevice._(security, device, host);
   }
 

@@ -23,7 +23,7 @@ class DriftSyncSessionHost implements ISyncSessionHost {
   final ISyncPeerStatusStore? statusStore;
   final DateTime Function() now;
 
-  /// Told how far the sessions this device starts have come.
+  /// Told how far the sessions of this device have come, those it starts and those it answers.
   final SyncProgressTracker? progress;
 
   const DriftSyncSessionHost({
@@ -48,14 +48,35 @@ class DriftSyncSessionHost implements ISyncSessionHost {
 
   @override
   Future<SessionResult> respond(ISyncTransport transport, String source) async {
-    final result = await AsyncSyncSession(device, transport, initiator: false, hooks: hooks).run();
+    // The peer is only known after the handshake, so the progress callback asks the session for it.
+    late final AsyncSyncSession session;
+    session = AsyncSyncSession(
+      device,
+      transport,
+      initiator: false,
+      hooks: hooks,
+      onProgress: (processed, total) {
+        final peerMemberId = session.peerMemberId;
+        if (peerMemberId != null) progress?.report(peerMemberId, processed, total);
+      },
+    );
+    try {
+      final result = await session.run();
+      await _recordPeerSuccessSafely(result);
+      return result;
+    } finally {
+      final peerMemberId = session.peerMemberId;
+      if (peerMemberId != null) progress?.end(peerMemberId);
+    }
+  }
+
+  Future<void> _recordPeerSuccessSafely(SessionResult result) async {
     try {
       await _recordPeerSuccess(result);
     } catch (error, stackTrace) {
       // The session already completed; a status-store failure must not fail it.
       Logger.error('Could not record the peer status after a completed session', error: error, stackTrace: stackTrace);
     }
-    return result;
   }
 
   Future<void> _recordPeerSuccess(SessionResult result) async {

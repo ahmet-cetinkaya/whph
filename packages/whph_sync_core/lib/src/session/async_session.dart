@@ -60,6 +60,9 @@ final class AsyncSyncSession {
 
   SecureChannel? _channel;
   String? _peerId;
+
+  /// The member id of the peer; known once the handshake has told it.
+  String? get peerMemberId => _peerId;
   Uint8List? _peerEd;
   Object? _failure;
   final Completer<void> _failed = Completer();
