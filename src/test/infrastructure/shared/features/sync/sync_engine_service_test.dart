@@ -340,6 +340,50 @@ BEGIN SELECT RAISE(ABORT, 'poison'); END''');
     expect(report.category, isNull, reason: '${report.result}');
     expect(await noteTitles(fixture.remote), containsAll({'edited offline', 'written offline 2'}));
   });
+
+  group('reverse sync: a note edited on the joiner (phone) reaches the inviter (desktop)', () {
+    const originalTitle = 'shared note';
+    const joinerEditTitle = 'edited on the phone';
+    const inviterEditTitle = 'edited on the desktop';
+
+    /// The inviter is [EngineFixture.local]'s counterpart: [initiatorIsJoiner]
+    /// picks which side opens the session.
+    Future<(EngineFixture, DriftEngineDevice, DriftEngineDevice)> syncedPair({required bool initiatorIsJoiner}) async {
+      final inviter = await openPaired('inviter');
+      final joiner = await openPaired('joiner', inviter: inviter);
+      final fixture =
+          initiatorIsJoiner ? await EngineFixture.create(joiner, inviter) : await EngineFixture.create(inviter, joiner);
+      await inviter.security.database.insertNote('note-1', originalTitle);
+      expect((await fixture.syncOnce()).category, isNull);
+      expect(await noteTitles(joiner), contains(originalTitle));
+      return (fixture, inviter, joiner);
+    }
+
+    for (final initiatorIsJoiner in [true, false]) {
+      final initiator = initiatorIsJoiner ? 'joiner' : 'inviter';
+
+      test('the $initiator initiates and the inviter database shows the joiner edit', () async {
+        final (fixture, inviter, joiner) = await syncedPair(initiatorIsJoiner: initiatorIsJoiner);
+        await joiner.security.database.setTitle('note-1', joinerEditTitle);
+
+        final report = await fixture.syncOnce();
+
+        expect(report.category, isNull, reason: '${report.result}');
+        expect(await noteTitles(inviter), contains(joinerEditTitle));
+        expect(await noteTitles(inviter), isNot(contains(originalTitle)));
+      });
+
+      test('the $initiator initiates and the joiner database shows the inviter edit', () async {
+        final (fixture, inviter, joiner) = await syncedPair(initiatorIsJoiner: initiatorIsJoiner);
+        await inviter.security.database.setTitle('note-1', inviterEditTitle);
+
+        final report = await fixture.syncOnce();
+
+        expect(report.category, isNull, reason: '${report.result}');
+        expect(await noteTitles(joiner), contains(inviterEditTitle));
+      });
+    }
+  });
 }
 
 /// [device] with a key store whose writes of a raised sent mark fail while
