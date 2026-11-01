@@ -227,5 +227,6 @@ sync:
       description: "Devices paired with the old sync must be paired again. Your data stays on every device."
       dismiss: "Dismiss"
     upgrade_progress: "Preparing sync data… {percent}%"
+    upgrade_stalled: "Preparing sync data is taking longer than expected. It will keep retrying."
   demo:
     reset_blocked: "Demo data cannot be reset while this device is paired, because the reset would sync to your other devices. Remove this device from the sync group first."

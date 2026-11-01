@@ -235,5 +235,6 @@ sync:
       description: "Naprave, seznanjene s staro sinhronizacijo, je treba znova seznaniti. Vaši podatki ostanejo na vsaki napravi."
       dismiss: "Opusti"
     upgrade_progress: "Priprava podatkov za sinhronizacijo… {percent} %"
+    upgrade_stalled: "Priprava podatkov za sinhronizacijo traja dlje od pričakovanega. Poskusi se bodo ponavljali."
   demo:
     reset_blocked: "Demo podatkov ni mogoče ponastaviti, dokler je ta naprava seznanjena, ker bi se ponastavitev sinhronizirala na vaše druge naprave. Najprej odstranite to napravo iz skupine za sinhronizacijo."

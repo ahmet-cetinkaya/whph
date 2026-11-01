@@ -225,5 +225,6 @@ sync:
       description: "Enheder, der er parret med den gamle synkronisering, skal parres igen. Dine data forbliver på hver enhed."
       dismiss: "Afvis"
     upgrade_progress: "Forbereder synkroniseringsdata… {percent} %"
+    upgrade_stalled: "Forberedelsen af synkroniseringsdata tager længere end forventet. Den bliver ved med at prøve igen."
   demo:
     reset_blocked: "Demodata kan ikke nulstilles, mens denne enhed er parret, fordi nulstillingen ville blive synkroniseret til dine andre enheder. Fjern først denne enhed fra synkroniseringsgruppen."

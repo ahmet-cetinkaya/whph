@@ -1,5 +1,6 @@
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_change_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_key_store.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_ledger_mark_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_startup_check_service.dart';
@@ -26,6 +27,7 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
   final ISyncChangeStore _changeStore;
   final SyncLedgerMarkService _marks;
   final SyncStartupCheckService _startupCheck;
+  final ISyncUpgradeService? _upgradeService;
   final int Function() _nowMs;
   final Map<String, PeerState> _peers = {};
 
@@ -36,6 +38,7 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
     required this.store,
     required SyncLedgerMarkService marks,
     required SyncStartupCheckService startupCheck,
+    ISyncUpgradeService? upgradeService,
     this.config = const SyncEngineConfig(),
     int Function()? nowMs,
   })  : _membershipService = membershipService,
@@ -43,6 +46,7 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
         _changeStore = changeStore,
         _marks = marks,
         _startupCheck = startupCheck,
+        _upgradeService = upgradeService,
         _nowMs = nowMs ?? (() => DateTime.now().millisecondsSinceEpoch);
 
   @override
@@ -61,8 +65,7 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
   int now() => _nowMs();
 
   @override
-  PeerState peerState(String memberId) =>
-      _peers.putIfAbsent(memberId, () => PeerState(memberId));
+  PeerState peerState(String memberId) => _peers.putIfAbsent(memberId, () => PeerState(memberId));
 
   @override
   Future<bool> flushWrittenWatermark() async {
@@ -75,15 +78,12 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
   Future<bool> _watermarkBehind() async {
     final state = await _changeStore.readLocalState();
     final entry = _keyStore.entryOf(OriginId.fromHex(state.localOrigin));
-    return _keyStore.isReadable &&
-        entry != null &&
-        state.nextSeq > entry.nextSeqHigh;
+    return _keyStore.isReadable && entry != null && state.nextSeq > entry.nextSeqHigh;
   }
 
   @override
   Future<void> recordGrant(EpochGrant grant) async {
-    await _changeStore.writeSecurityCell(
-        epochGrantCellKey(grant), encodeEpochGrant(grant));
+    await _changeStore.writeSecurityCell(epochGrantCellKey(grant), encodeEpochGrant(grant));
   }
 
   @override
@@ -110,8 +110,7 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
     }
     return LedgerRevocation(
       recordBytes: value.value,
-      revokerEntryBytes:
-          membership.memberByEd25519(record.revokerPub)?.encode(),
+      revokerEntryBytes: membership.memberByEd25519(record.revokerPub)?.encode(),
       carrierOrigin: change.origin,
       carrierSeq: change.originSeq,
     );
@@ -129,5 +128,16 @@ class DriftAsyncSessionDevice implements AsyncSessionDevice {
   Future<void> switchOriginAfterPeerCursor(int peerCursor) async {
     final localOrigin = await _changeStore.localOrigin();
     await _startupCheck.switchIfPeerCursorAhead({localOrigin: peerCursor});
+  }
+
+  @override
+  Future<bool> isPreparing() async {
+    final upgradeService = _upgradeService;
+    if (upgradeService == null) return false;
+    final progress = await upgradeService.getProgress();
+    if (progress.isDone) return false;
+    // Self-heal a phase left pending, as the engine does before it skips its own sync.
+    upgradeService.runInBackground();
+    return true;
   }
 }

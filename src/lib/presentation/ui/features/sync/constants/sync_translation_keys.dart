@@ -195,5 +195,6 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String repairBannerDescription = 'sync.members.repair_banner.description';
   static const String repairBannerDismiss = 'sync.members.repair_banner.dismiss';
   static const String upgradeProgress = 'sync.members.upgrade_progress';
+  static const String upgradeStalled = 'sync.members.upgrade_stalled';
   static const String demoResetBlocked = 'sync.demo.reset_blocked';
 }

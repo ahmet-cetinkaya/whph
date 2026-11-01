@@ -245,5 +245,6 @@ sync:
       description: "Les appareils appairés avec l'ancienne synchronisation doivent être appairés à nouveau. Vos données restent sur chaque appareil."
       dismiss: "Ignorer"
     upgrade_progress: "Préparation des données de synchronisation… {percent} %"
+    upgrade_stalled: "La préparation des données de synchronisation prend plus de temps que prévu. Les essais continuent."
   demo:
     reset_blocked: "Les données de démonstration ne peuvent pas être réinitialisées tant que cet appareil est appairé, car la réinitialisation serait synchronisée vers vos autres appareils. Retirez d'abord cet appareil du groupe de synchronisation."

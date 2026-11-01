@@ -234,5 +234,6 @@ sync:
       description: "Geräte, die mit der alten Synchronisierung gekoppelt wurden, müssen neu gekoppelt werden. Deine Daten bleiben auf jedem Gerät erhalten."
       dismiss: "Schließen"
     upgrade_progress: "Synchronisierungsdaten werden vorbereitet… {percent} %"
+    upgrade_stalled: "Das Vorbereiten der Synchronisierungsdaten dauert länger als erwartet. Es wird weiter versucht."
   demo:
     reset_blocked: "Demodaten können nicht zurückgesetzt werden, solange dieses Gerät gekoppelt ist, weil das Zurücksetzen auf deine anderen Geräte synchronisiert würde. Entferne dieses Gerät zuerst aus der Synchronisierungsgruppe."

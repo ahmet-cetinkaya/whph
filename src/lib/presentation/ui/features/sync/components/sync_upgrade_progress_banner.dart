@@ -20,6 +20,9 @@ int syncUpgradePercent(SyncUpgradePhase phase) => switch (phase) {
       SyncUpgradePhase.done => 100,
     };
 
+/// Polls without any movement after which the preparation counts as stuck.
+const int syncUpgradeStalledPollCount = 5;
+
 /// "Preparing sync data… N%" while the upgrade job runs; nothing once it is done.
 class SyncUpgradeProgressBanner extends StatefulWidget {
   static const Duration defaultPollInterval = Duration(seconds: 2);
@@ -38,6 +41,7 @@ class _SyncUpgradeProgressBannerState extends State<SyncUpgradeProgressBanner> {
   late final Mediator _mediator = widget.mediator ?? container.resolve<Mediator>();
   Timer? _poller;
   SyncUpgradeProgress? _progress;
+  int _unchangedPollCount = 0;
 
   @override
   void initState() {
@@ -59,11 +63,17 @@ class _SyncUpgradeProgressBannerState extends State<SyncUpgradeProgressBanner> {
       );
       if (!mounted) return;
       if (progress.isDone) _poller?.cancel();
-      setState(() => _progress = progress);
+      setState(() {
+        _unchangedPollCount = _isSamePosition(_progress, progress) ? _unchangedPollCount + 1 : 0;
+        _progress = progress;
+      });
     } catch (error) {
       Logger.error('SyncUpgradeProgressBanner: reading the upgrade progress failed: ${error.runtimeType}');
     }
   }
+
+  bool _isSamePosition(SyncUpgradeProgress? before, SyncUpgradeProgress after) =>
+      before != null && before.phase == after.phase && before.cursor == after.cursor;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +92,13 @@ class _SyncUpgradeProgressBannerState extends State<SyncUpgradeProgressBanner> {
           ),
           const SizedBox(height: AppTheme.sizeSmall),
           LinearProgressIndicator(value: percent / 100),
+          if (_unchangedPollCount >= syncUpgradeStalledPollCount) ...[
+            const SizedBox(height: AppTheme.sizeSmall),
+            Text(
+              _translationService.translate(SyncTranslationKeys.upgradeStalled),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+            ),
+          ],
         ],
       ),
     );

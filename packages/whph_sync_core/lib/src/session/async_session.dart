@@ -228,6 +228,12 @@ final class AsyncSyncSession {
           mustUpdate: DeviceRef(answer.memberId, answer.deviceName),
         );
       }
+      if (await device.isPreparing()) {
+        // The upgrade job may still be moving rows to a new origin: serve nothing until it is done.
+        await channel.send(ErrorMessage(SyncErrorCategory.preparing));
+        await channel.close();
+        return SessionFailed(stats, _peerId, SessionFailure.preparing);
+      }
     }
     if (peerHello.memberId != peer.memberId) throw const MalformedMessageException('Hello member id mismatch');
     device.peerState(peer.memberId)
@@ -392,7 +398,9 @@ final class AsyncSyncSession {
   void _advanceProgress(Iterable<List<SeqRange>> ranges) {
     if (_progressTotal == 0) return;
     final covered = ranges.expand((list) => list).fold(0, (sum, range) => sum + range.to - range.from);
-    _progressProcessed = math.min(_progressTotal, _progressProcessed + covered);
+    final advanced = math.min(_progressTotal, _progressProcessed + covered);
+    if (advanced == _progressProcessed) return;
+    _progressProcessed = advanced;
     _reportProgress();
   }
 

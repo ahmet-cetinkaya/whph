@@ -21,6 +21,7 @@ void main() {
       SessionFailure.refusedByPeer: SyncResultCategory.needsRepairing,
       SessionFailure.needsUpdate: SyncResultCategory.needsUpdate,
       SessionFailure.peerPreparing: SyncResultCategory.preparing,
+      SessionFailure.preparing: SyncResultCategory.preparing,
       SessionFailure.restoreDetected: SyncResultCategory.preparing,
       SessionFailure.protocolError: SyncResultCategory.rejectedItems,
       SessionFailure.securityError: SyncResultCategory.rejectedItems,

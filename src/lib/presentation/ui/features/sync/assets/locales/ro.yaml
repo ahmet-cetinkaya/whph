@@ -241,5 +241,6 @@ sync:
       description: "Dispozitivele asociate cu vechea sincronizare trebuie asociate din nou. Datele tale rămân pe fiecare dispozitiv."
       dismiss: "Ignoră"
     upgrade_progress: "Se pregătesc datele de sincronizare… {percent}%"
+    upgrade_stalled: "Pregătirea datelor de sincronizare durează mai mult decât se aștepta. Încercările continuă."
   demo:
     reset_blocked: "Datele demo nu pot fi resetate cât timp acest dispozitiv este asociat, deoarece resetarea s-ar sincroniza pe celelalte dispozitive. Elimină mai întâi acest dispozitiv din grupul de sincronizare."

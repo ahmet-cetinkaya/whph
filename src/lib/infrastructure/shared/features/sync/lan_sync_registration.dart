@@ -4,6 +4,7 @@ import 'package:acore/acore.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_change_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_key_store.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_runtime.dart';
@@ -46,6 +47,7 @@ void registerSyncTransport(IContainer container) {
       store: c.resolve<DriftAsyncSyncStore>(),
       marks: c.resolve<SyncLedgerMarkService>(),
       startupCheck: c.resolve<SyncStartupCheckService>(),
+      upgradeService: c.resolve<ISyncUpgradeService>(),
     ),
   );
   container.registerSingleton<AsyncSessionDevice>((c) => c.resolve<DriftAsyncSessionDevice>());

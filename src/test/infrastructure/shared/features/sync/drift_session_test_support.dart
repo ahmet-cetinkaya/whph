@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_ledger_mark_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_startup_check_service.dart';
 import 'package:whph/infrastructure/persistence/features/sync/repositories/drift_sync_change_store.dart';
@@ -32,7 +33,8 @@ class DriftEngineDevice {
       {int Function()? nowMs,
       SessionHooks hooks = const SessionHooks(),
       DriftAsyncSyncStore? store,
-      ISyncPeerStatusStore? statusStore}) {
+      ISyncPeerStatusStore? statusStore,
+      ISyncUpgradeService? upgradeService}) {
     final marks = SyncLedgerMarkService(keyStore: security.keyStore, changeStore: security.database.store);
     final startupCheck = SyncStartupCheckService(
         membershipService: security.service,
@@ -48,6 +50,7 @@ class DriftEngineDevice {
       startupCheck: startupCheck,
       config: SyncEngineConfig(delay: (_) async {}),
       nowMs: nowMs,
+      upgradeService: upgradeService,
     );
     final host = DriftSyncSessionHost(
         device: device, platform: _testPlatform, appVersion: _testAppVersion, hooks: hooks, statusStore: statusStore);

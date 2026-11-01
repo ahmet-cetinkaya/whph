@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:whph/core/application/features/sync/models/sync_result_category.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_status_store.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph_sync_core/whph_sync_core.dart';
 
 import 'drift_session_test_support.dart';
@@ -91,5 +92,32 @@ void main() {
     await completeSession();
 
     expect(statusStore.results[initiator.memberId], SyncResultCategory.needsRepairing);
+  });
+
+  test('an incoming session is refused as preparing while the upgrade is pending and the job is restarted', () async {
+    final upgrade = CountingUpgradeService(phase: SyncUpgradePhase.reauthor);
+    final preparing = DriftEngineDevice.over(responder.security, upgradeService: upgrade);
+    final (initiatorEnd, responderEnd) = InMemoryTransport.pair();
+
+    final results = await Future.wait([
+      initiator.initiate(initiatorEnd, responder.memberId),
+      preparing.respond(responderEnd),
+    ]).timeout(_sessionDeadline);
+
+    expect((results.first as SessionFailed).category, SessionFailure.peerPreparing);
+    expect((results.last as SessionFailed).category, SessionFailure.preparing);
+    expect(upgrade.runCount, 1);
+  });
+
+  test('an incoming session is served once the upgrade is done', () async {
+    final done = DriftEngineDevice.over(responder.security, upgradeService: CountingUpgradeService());
+    final (initiatorEnd, responderEnd) = InMemoryTransport.pair();
+
+    final results = await Future.wait([
+      initiator.initiate(initiatorEnd, responder.memberId),
+      done.respond(responderEnd),
+    ]).timeout(_sessionDeadline);
+
+    expect(results.last.isComplete, isTrue, reason: '${results.last}');
   });
 }

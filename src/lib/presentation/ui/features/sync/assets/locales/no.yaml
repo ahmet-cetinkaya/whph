@@ -231,5 +231,6 @@ sync:
       description: "Enheter som er paret med den gamle synkroniseringen, må pares på nytt. Dataene dine blir værende på hver enhet."
       dismiss: "Lukk"
     upgrade_progress: "Forbereder synkroniseringsdata… {percent} %"
+    upgrade_stalled: "Forberedelsen av synkroniseringsdata tar lengre tid enn forventet. Den prøver igjen."
   demo:
     reset_blocked: "Demodata kan ikke tilbakestilles mens denne enheten er paret, fordi tilbakestillingen ville synkroniseres til de andre enhetene dine. Fjern først denne enheten fra synkroniseringsgruppen."

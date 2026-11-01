@@ -71,7 +71,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   // Which peer a running session is with and how far it is, from the sync engine.
   final SyncProgressTracker _progressTracker = container.resolve<SyncProgressTracker>();
   StreamSubscription<SyncStatus>? _progressSubscription;
-  late SyncStatus _peerSyncStatus = _progressTracker.current;
+  late final ValueNotifier<SyncStatus> _peerSyncStatus = ValueNotifier(_progressTracker.current);
 
   // Mixin service accessors
   @override
@@ -108,9 +108,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
 
   void _onPeerSyncStatusChanged(SyncStatus status) {
     if (!mounted) return;
-    final wasSyncing = _peerSyncStatus.isSyncing;
-    setState(() => _peerSyncStatus = status);
-    if (wasSyncing && !status.isSyncing) refresh();
+    final previous = _peerSyncStatus.value;
+    if (previous == status) return;
+    _peerSyncStatus.value = status;
+    if (previous.isSyncing && !status.isSyncing) refresh();
   }
 
   void _initializeServices() {
@@ -140,6 +141,7 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
   @override
   void dispose() {
     _progressSubscription?.cancel();
+    _peerSyncStatus.dispose();
     _syncButtonAnimationController.dispose();
     super.dispose();
   }
@@ -309,16 +311,17 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                       final member = _members![index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: AppTheme.sizeSmall),
-                        child: SyncDeviceListItemWidget(
-                          key: ValueKey(member.memberId),
-                          member: member,
-                          onRemove: _removeDevice,
-                          onRepair: _repairDevice,
-                          lastSyncResult: lastSyncResultOf(member.memberId),
-                          isBeingSynced:
-                              _peerSyncStatus.isSyncing && _peerSyncStatus.currentDeviceId == member.memberId,
-                          syncProgress:
-                              _peerSyncStatus.currentDeviceId == member.memberId ? _peerSyncStatus.progress : null,
+                        child: ValueListenableBuilder<SyncStatus>(
+                          valueListenable: _peerSyncStatus,
+                          builder: (context, peerStatus, _) => SyncDeviceListItemWidget(
+                            key: ValueKey(member.memberId),
+                            member: member,
+                            onRemove: _removeDevice,
+                            onRepair: _repairDevice,
+                            lastSyncResult: lastSyncResultOf(member.memberId),
+                            isBeingSynced: peerStatus.isSyncing && peerStatus.currentDeviceId == member.memberId,
+                            syncProgress: peerStatus.currentDeviceId == member.memberId ? peerStatus.progress : null,
+                          ),
                         ),
                       );
                     },

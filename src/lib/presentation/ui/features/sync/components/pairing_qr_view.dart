@@ -31,6 +31,7 @@ class PairingQrController extends ChangeNotifier {
   Timer? _ticker;
   DateTime? _expiresAt;
   bool _isDisposed = false;
+  bool _hasCopiedPairingCode = false;
 
   PairingQrState state = PairingQrState.loading;
   String? qrText;
@@ -96,8 +97,25 @@ class PairingQrController extends ChangeNotifier {
     _finish(failureCode == SyncPairingErrorCode.codeExpiredOrUsed ? PairingQrState.used : PairingQrState.failed);
   }
 
+  /// Puts the pairing code on the clipboard; [clearCopiedPairingCode] takes it off again.
+  Future<void> copyPairingCode() async {
+    await Clipboard.setData(ClipboardData(text: qrText!));
+    _hasCopiedPairingCode = true;
+  }
+
+  /// Empties the clipboard, but only when it still holds the code this controller copied.
+  Future<void> clearCopiedPairingCode() async {
+    if (!_hasCopiedPairingCode) return;
+    _hasCopiedPairingCode = false;
+    final clipboardText = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
+    if (clipboardText == qrText) await Clipboard.setData(const ClipboardData(text: ''));
+  }
+
   void _finish(PairingQrState finalState) {
     _ticker?.cancel();
+    if (finalState == PairingQrState.paired || finalState == PairingQrState.expired) {
+      unawaited(clearCopiedPairingCode());
+    }
     state = finalState;
     isPairingInProgress = false;
     notifyListeners();
@@ -108,6 +126,7 @@ class PairingQrController extends ChangeNotifier {
   void dispose() {
     _isDisposed = true;
     _ticker?.cancel();
+    unawaited(clearCopiedPairingCode());
     if (state == PairingQrState.showing) {
       unawaited(_mediator.send<CancelPairingCommand, void>(CancelPairingCommand()));
     }
@@ -204,7 +223,7 @@ class _PairingQrViewState extends State<PairingQrView> {
   }
 
   Future<void> _copyPairingCode() async {
-    await Clipboard.setData(ClipboardData(text: _controller.qrText!));
+    await _controller.copyPairingCode();
     if (!mounted) return;
     OverlayNotificationHelper.showSuccess(
       context: context,

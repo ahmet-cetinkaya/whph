@@ -42,6 +42,7 @@ void main() {
       expect(steps.last.$1, steps.last.$2);
       final processed = steps.map((step) => step.$1).toList();
       expect(processed, [...processed]..sort());
+      expect(processed.toSet(), hasLength(processed.length), reason: 'a repeated value is not progress');
     }
   });
 

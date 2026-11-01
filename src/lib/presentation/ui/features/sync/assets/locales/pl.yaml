@@ -240,5 +240,6 @@ sync:
       description: "Urządzenia sparowane ze starą synchronizacją trzeba sparować ponownie. Twoje dane pozostają na każdym urządzeniu."
       dismiss: "Odrzuć"
     upgrade_progress: "Przygotowywanie danych synchronizacji… {percent}%"
+    upgrade_stalled: "Przygotowanie danych synchronizacji trwa dłużej, niż oczekiwano. Próby będą ponawiane."
   demo:
     reset_blocked: "Nie można zresetować danych demonstracyjnych, gdy to urządzenie jest sparowane, ponieważ reset zsynchronizowałby się z innymi urządzeniami. Najpierw usuń to urządzenie z grupy synchronizacji."

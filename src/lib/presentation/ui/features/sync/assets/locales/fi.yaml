@@ -231,5 +231,6 @@ sync:
       description: "Vanhalla synkronoinnilla pariutetut laitteet on pariutettava uudelleen. Tietosi pysyvät jokaisella laitteella."
       dismiss: "Ohita"
     upgrade_progress: "Valmistellaan synkronointitietoja… {percent} %"
+    upgrade_stalled: "Synkronointitietojen valmistelu kestää odotettua kauemmin. Yritys jatkuu."
   demo:
     reset_blocked: "Demotietoja ei voi nollata, kun tämä laite on pariutettu, koska nollaus synkronoitaisiin muille laitteillesi. Poista tämä laite ensin synkronointiryhmästä."

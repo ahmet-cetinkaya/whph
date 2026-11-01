@@ -15,7 +15,8 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 
 import 'drift_session_test_support.dart';
 
-const String loopbackAddress = 'loopback';
+// A private address: pairing codes naming anything else are refused; the loopback connector ignores the value.
+const String loopbackAddress = '192.168.0.2';
 const int _loopbackPort = 1;
 
 /// Connects to a responder in the same process, or fails like a peer that is

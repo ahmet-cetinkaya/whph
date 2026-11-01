@@ -239,5 +239,6 @@ sync:
       description: "I dispositivi abbinati con la vecchia sincronizzazione devono essere abbinati di nuovo. I tuoi dati restano su ogni dispositivo."
       dismiss: "Ignora"
     upgrade_progress: "Preparazione dei dati di sincronizzazione… {percent}%"
+    upgrade_stalled: "La preparazione dei dati di sincronizzazione richiede più tempo del previsto. Si continuerà a riprovare."
   demo:
     reset_blocked: "I dati demo non possono essere reimpostati finché questo dispositivo è abbinato, perché la reimpostazione verrebbe sincronizzata sugli altri dispositivi. Rimuovi prima questo dispositivo dal gruppo di sincronizzazione."

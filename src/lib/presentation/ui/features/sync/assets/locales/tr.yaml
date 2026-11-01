@@ -233,5 +233,6 @@ sync:
       description: "Eski eşitleme ile eşleştirilen cihazlar yeniden eşleştirilmelidir. Verileriniz her cihazda kalır."
       dismiss: "Kapat"
     upgrade_progress: "Eşitleme verileri hazırlanıyor… %{percent}"
+    upgrade_stalled: "Eşitleme verilerinin hazırlanması beklenenden uzun sürüyor. Yeniden denenmeye devam edilecek."
   demo:
     reset_blocked: "Bu cihaz eşleştirilmişken demo verileri sıfırlanamaz, çünkü sıfırlama diğer cihazlarınıza eşitlenirdi. Önce bu cihazı eşitleme grubundan kaldırın."

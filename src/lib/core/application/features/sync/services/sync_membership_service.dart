@@ -256,12 +256,18 @@ class SyncMembershipService {
     final newOrigin = _ids.origin();
     await _keyStore.append(OriginEntry(
         origin: newOrigin, state: OriginEntryState.pending, reason: reason));
-    final report = await _changeStore.switchOrigin(
-      reason,
-      newOrigin: newOrigin.hex,
-      sentMark: sentMark,
-      hlcFloor: _keyStore.hlcFloor,
-    );
+    final SyncOriginSwitchReport report;
+    try {
+      report = await _changeStore.switchOrigin(
+        reason,
+        newOrigin: newOrigin.hex,
+        sentMark: sentMark,
+        hlcFloor: _keyStore.hlcFloor,
+      );
+    } on Object {
+      await _keyStore.drop(newOrigin);
+      rethrow;
+    }
     if (report.needsRepairing) _needsRepairing = true;
     if (membership.hasGroup && reason != OriginSwitchReason.groupSwitch)
       await _registerOrigin(newOrigin);

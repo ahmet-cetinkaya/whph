@@ -186,4 +186,78 @@ void main() {
       expect(find.text(copyLabel), findsNothing);
     });
   });
+
+  group('clipboard clearing', () {
+    String? clipboardText;
+
+    void fakeClipboard() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') clipboardText = (call.arguments as Map)['text'] as String?;
+          if (call.method == 'Clipboard.getData') return <String, dynamic>{'text': clipboardText};
+          return null;
+        },
+      );
+      addTearDown(() => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, null));
+    }
+
+    Future<void> copyCode(WidgetTester tester) async {
+      await pumpQrView(tester);
+      await tester.tap(find.text('Copy pairing code'));
+      await tester.pump();
+    }
+
+    setUp(() {
+      clipboardText = null;
+      fakeClipboard();
+    });
+
+    testWidgets('clears the copied code when the view closes', (tester) async {
+      await copyCode(tester);
+
+      await tester.pumpWidget(const MaterialApp(home: SizedBox()));
+      await tester.pump();
+
+      expect(clipboardText, '');
+    });
+
+    testWidgets('clears the copied code once paired', (tester) async {
+      await copyCode(tester);
+      status = const SyncPairingStatus(phase: SyncPairingPhase.completed, role: SyncPairingRole.inviter);
+
+      await advance(tester, const Duration(seconds: 1));
+
+      expect(clipboardText, '');
+    });
+
+    testWidgets('clears the copied code once expired', (tester) async {
+      await copyCode(tester);
+
+      await advance(tester, invitationLifetime + const Duration(seconds: 1));
+
+      expect(clipboardText, '');
+    });
+
+    testWidgets('leaves the clipboard alone when the view copied nothing', (tester) async {
+      clipboardText = 'something else';
+      await pumpQrView(tester);
+
+      await tester.pumpWidget(const MaterialApp(home: SizedBox()));
+      await tester.pump();
+
+      expect(clipboardText, 'something else');
+    });
+
+    testWidgets('leaves the clipboard alone when it holds something else by then', (tester) async {
+      await copyCode(tester);
+      clipboardText = 'something else';
+
+      await tester.pumpWidget(const MaterialApp(home: SizedBox()));
+      await tester.pump();
+
+      expect(clipboardText, 'something else');
+    });
+  });
 }

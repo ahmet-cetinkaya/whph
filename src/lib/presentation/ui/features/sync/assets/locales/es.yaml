@@ -235,5 +235,6 @@ sync:
       description: "Los dispositivos emparejados con la sincronización anterior deben emparejarse de nuevo. Tus datos permanecen en cada dispositivo."
       dismiss: "Descartar"
     upgrade_progress: "Preparando datos de sincronización… {percent} %"
+    upgrade_stalled: "La preparación de los datos de sincronización tarda más de lo esperado. Se seguirá reintentando."
   demo:
     reset_blocked: "Los datos de demostración no se pueden restablecer mientras este dispositivo esté emparejado, porque el restablecimiento se sincronizaría con tus otros dispositivos. Quita primero este dispositivo del grupo de sincronización."

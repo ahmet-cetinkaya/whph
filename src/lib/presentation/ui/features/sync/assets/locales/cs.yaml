@@ -227,5 +227,6 @@ sync:
       description: "Zařízení spárovaná se starou synchronizací je nutné spárovat znovu. Vaše data zůstávají na každém zařízení."
       dismiss: "Zavřít"
     upgrade_progress: "Příprava dat synchronizace… {percent} %"
+    upgrade_stalled: "Příprava dat synchronizace trvá déle, než se čekalo. Bude se opakovat."
   demo:
     reset_blocked: "Demo data nelze resetovat, dokud je toto zařízení spárované, protože by se reset synchronizoval do vašich dalších zařízení. Nejprve odeberte toto zařízení ze skupiny synchronizace."

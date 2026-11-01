@@ -58,6 +58,9 @@ abstract interface class AsyncSessionDevice {
 
   /// D15: this DB is behind what a peer holds of its origin.
   Future<void> switchOriginAfterPeerCursor(int peerCursor);
+
+  /// Whether a local job (the post-open upgrade) must finish before this device serves an incoming session.
+  Future<bool> isPreparing();
 }
 
 /// [SyncStore] seen through the async port; every call completes immediately.
@@ -211,6 +214,9 @@ final class InMemoryAsyncSessionDevice implements AsyncSessionDevice {
 
   @override
   Future<void> switchOriginAfterPeerCursor(int peerCursor) => device.switchOriginAfterPeerCursor(peerCursor);
+
+  @override
+  Future<bool> isPreparing() async => false;
 
   /// Runs a session as initiator towards [peerMemberId].
   Future<SessionResult> initiate(

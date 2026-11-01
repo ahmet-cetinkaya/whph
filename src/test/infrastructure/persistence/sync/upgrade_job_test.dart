@@ -236,8 +236,23 @@ void main() {
         (await SyncUpgradeJob(db).getProgress()).phase, SyncUpgradePhase.done);
     expect(await SyncUpgradeJob(db).runChunks(), isTrue);
   });
+
+  test('run picks up a phase scheduled after the in-flight run last read done', () async {
+    final db = await openUpgraded();
+    final job = SyncUpgradeJob(db);
+    await job.run();
+    expect((await job.getProgress()).isDone, isTrue);
+
+    final running = job.run();
+    // Queued behind the first state read of the run, so the run still sees `done` and ends.
+    await db.customStatement("UPDATE sync_state SET upgrade_phase = 'bootstrap', upgrade_cursor = NULL");
+    await running;
+
+    expect((await job.getProgress()).isDone, isTrue);
+  });
 }
 
 int _tblId(String tableName) => syncTablePolicies
     .firstWhere((policy) => policy.tableName == tableName)
     .tblId;
+

@@ -235,5 +235,6 @@ sync:
       description: "Enheter som parats ihop med den gamla synkroniseringen måste paras ihop igen. Dina data finns kvar på varje enhet."
       dismiss: "Stäng"
     upgrade_progress: "Förbereder synkroniseringsdata… {percent} %"
+    upgrade_stalled: "Förberedelsen av synkroniseringsdata tar längre tid än väntat. Den fortsätter försöka igen."
   demo:
     reset_blocked: "Demodata kan inte återställas medan den här enheten är ihopparad, eftersom återställningen skulle synkroniseras till dina andra enheter. Ta först bort den här enheten från synkroniseringsgruppen."

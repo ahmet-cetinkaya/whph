@@ -9,6 +9,11 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 
 import '../../../../../infrastructure/shared/features/sync/sync_security_test_support.dart';
 
+class _FailingUpgradeService extends CountingUpgradeService {
+  @override
+  Future<void> run() async => throw StateError('upgrade failed');
+}
+
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
@@ -21,8 +26,7 @@ void main() {
     return device;
   }
 
-  setUp(() async =>
-      temp = await Directory.systemTemp.createTemp('t20-membership-'));
+  setUp(() async => temp = await Directory.systemTemp.createTemp('t20-membership-'));
 
   tearDown(() async {
     for (final device in opened) {
@@ -48,11 +52,49 @@ void main() {
 
       expect(upgrade.runCount, 1);
     });
+
+    test('a restore switch starts the upgrade job', () async {
+      final upgrade = CountingUpgradeService();
+      final device = await SecurityDevice.open('a', temp, upgradeService: upgrade);
+      opened.add(device);
+
+      await device.service.switchOrigin(OriginSwitchReason.restore);
+
+      expect(upgrade.runCount, 1);
+    });
+
+    test('recovering a lost key file starts the upgrade job', () async {
+      final upgrade = CountingUpgradeService();
+      final device = await SecurityDevice.open('a', temp, upgradeService: upgrade);
+      opened.add(device);
+
+      await device.service.recoverFromLostKeyFile(name: 'a');
+
+      expect(upgrade.runCount, 1);
+    });
+
+    test('a failing upgrade run does not fail the origin switch', () async {
+      final device = await SecurityDevice.open('a', temp, upgradeService: _FailingUpgradeService());
+      opened.add(device);
+
+      final report = await device.service.switchOrigin(OriginSwitchReason.restore);
+
+      expect(report.reauthorScheduled, isTrue);
+    });
+
+    test('a switch the store refuses leaves no pending ledger entry', () async {
+      final device = await open('a');
+      final entriesBefore = device.keyStore.entries.length;
+
+      await expectLater(device.service.switchOrigin(OriginSwitchReason.initial), throwsArgumentError);
+
+      expect(device.keyStore.entries, hasLength(entriesBefore));
+      expect(device.keyStore.entries.where((entry) => entry.state == OriginEntryState.pending), isEmpty);
+    });
   });
 
   group('group rules (acc 5)', () {
-    test('first pairing of two groupless devices creates exactly one group id',
-        () async {
+    test('first pairing of two groupless devices creates exactly one group id', () async {
       final a = await open('a');
       final b = await open('b');
       expect(a.membership.groupId, isNull);
@@ -61,18 +103,14 @@ void main() {
 
       expect(a.membership.groupId, isNotNull);
       expect(b.membership.groupId, a.membership.groupId);
-      expect(
-          await a.database.count(
-              "SELECT COUNT(DISTINCT group_id) FROM sync_state WHERE group_id IS NOT NULL"),
-          1);
+      expect(await a.database.count("SELECT COUNT(DISTINCT group_id) FROM sync_state WHERE group_id IS NOT NULL"), 1);
       expect(
         (await a.service.currentView()).activeMembers.map((m) => m.memberId),
         unorderedEquals([a.memberId, b.memberId]),
       );
     });
 
-    test('a groupless device joins the inviter group without confirmation',
-        () async {
+    test('a groupless device joins the inviter group without confirmation', () async {
       final a = await open('a');
       final b = await open('b');
       final c = await open('c');
@@ -85,9 +123,7 @@ void main() {
       expect(c.membership.groupId, group);
     });
 
-    test(
-        'joining while in a multi-member group needs confirmation; cancel changes nothing',
-        () async {
+    test('joining while in a multi-member group needs confirmation; cancel changes nothing', () async {
       final a = await open('a');
       final b = await open('b');
       final c = await open('c');
@@ -100,8 +136,7 @@ void main() {
 
       expect(c.service.requiresGroupSwitchConfirmation(groupA), isTrue);
       await expectLater(pairDevices(a, c), throwsMembership());
-      final handover = await a.service
-          .prepareHandover(c.membership.identity.entry(addedBy: a.memberId));
+      final handover = await a.service.prepareHandover(c.membership.identity.entry(addedBy: a.memberId));
       await expectLater(c.service.acceptHandover(handover), throwsMembership());
       handover.destroy();
 
@@ -112,9 +147,7 @@ void main() {
   });
 
   group('removal (acc 3, 4)', () {
-    test(
-        'revocation carries cutoffs for every origin of the removed member and a new epoch',
-        () async {
+    test('revocation carries cutoffs for every origin of the removed member and a new epoch', () async {
       final a = await open('a');
       final b = await open('b');
       final c = await open('c');
@@ -134,12 +167,10 @@ void main() {
       expect(record.cutoffs.keys, contains(cOrigin));
       expect(record.cutoffs[cOrigin], vector[cOrigin.hex]);
       expect(a.membership.keyring.highest, isNot(epochBefore));
-      expect(
-          b.membership.isRevokedEd(c.membership.identity.ed25519Pub), isTrue);
+      expect(b.membership.isRevokedEd(c.membership.identity.ed25519Pub), isTrue);
       expect(await handshakeRefused(c, b), isTrue);
       expect(c.membership.keyring.keyFor(a.membership.keyring.highest!), isNull,
-          reason:
-              'changes after removal use an epoch the removed member lacks');
+          reason: 'changes after removal use an epoch the removed member lacks');
     });
 
     test('a member with two origins gets a cutoff for both', () async {
@@ -164,16 +195,13 @@ void main() {
       expect(record.cutoffs[second], vector[second.hex]);
       final revocations = a.membership.directoryRevocations!;
       final removedKey = b.membership.identity.ed25519Pub;
-      expect(revocations.cutoffOf(removedKey, first), vector[first.hex],
-          reason: 'seqs up to the cutoff are accepted');
+      expect(revocations.cutoffOf(removedKey, first), vector[first.hex], reason: 'seqs up to the cutoff are accepted');
       expect(revocations.cutoffOf(removedKey, second), vector[second.hex]);
     });
   });
 
   group('missing key file (acc 6)', () {
-    test(
-        'a new member id and origin; the old origin is sealed and never reused',
-        () async {
+    test('a new member id and origin; the old origin is sealed and never reused', () async {
       final a = await open('a');
       final b = await open('b');
       await pairDevices(a, b);
@@ -187,26 +215,21 @@ void main() {
 
       expect(b.memberId, isNot(oldMember));
       expect(await b.database.store.localOrigin(), isNot(oldOrigin));
-      Future<Iterable<String>> noteTables(String origin) async => (await b
-              .database.store
-              .readChanges(origin, afterSeq: 0, upToSeq: 1 << 30, limit: 1000))
-          .cells
-          .map((cell) => cell.key.table);
+      Future<Iterable<String>> noteTables(String origin) async =>
+          (await b.database.store.readChanges(origin, afterSeq: 0, upToSeq: 1 << 30, limit: 1000))
+              .cells
+              .map((cell) => cell.key.table);
       expect(await noteTables(oldOrigin), isNot(contains('note_table')),
           reason: 'never-sent cells left the sealed origin');
-      expect(await noteTables(await b.database.store.localOrigin()),
-          contains('note_table'),
+      expect(await noteTables(await b.database.store.localOrigin()), contains('note_table'),
           reason: 'never-sent cells were adopted by the new origin');
-      expect(
-          (await b.service.currentView()).state, SyncGroupState.needsRepairing);
+      expect((await b.service.currentView()).state, SyncGroupState.needsRepairing);
       expect(b.keyStore.entries.map((e) => e.origin.hex), contains(oldOrigin));
     });
   });
 
   group('needs re-pairing (acc 10)', () {
-    test(
-        'a key of no member marks the member; another member key corrects addresses',
-        () async {
+    test('a key of no member marks the member; another member key corrects addresses', () async {
       final a = await open('a');
       final b = await open('b');
       final c = await open('c');
@@ -215,10 +238,8 @@ void main() {
       await pairDevices(a, c);
       await syncDevices(a, b);
       await syncDevices(a, c);
-      await a.peerStates.moveAddress('10.0.0.2:1',
-          fromMemberId: 'seed', toMemberId: b.memberId);
-      await a.peerStates.moveAddress('10.0.0.3:1',
-          fromMemberId: 'seed', toMemberId: c.memberId);
+      await a.peerStates.moveAddress('10.0.0.2:1', fromMemberId: 'seed', toMemberId: b.memberId);
+      await a.peerStates.moveAddress('10.0.0.3:1', fromMemberId: 'seed', toMemberId: c.memberId);
 
       final unknown = await a.service.checkOutboundStaticKey(
         expectedMemberId: b.memberId,
@@ -226,8 +247,7 @@ void main() {
         address: '10.0.0.2:1',
       );
       expect(unknown, OutboundKeyVerdict.needsRepairing);
-      expect(
-          (await a.service.currentView()).peersNeedingRepairing, {b.memberId});
+      expect((await a.service.currentView()).peersNeedingRepairing, {b.memberId});
 
       final other = await a.service.checkOutboundStaticKey(
         expectedMemberId: c.memberId,
@@ -235,11 +255,8 @@ void main() {
         address: '10.0.0.3:1',
       );
       expect(other, OutboundKeyVerdict.addressBelongsToOtherMember);
-      expect(
-          (await a.service.currentView()).peersNeedingRepairing, {b.memberId},
-          reason: 'c is unchanged');
-      expect(await a.peerStates.addressesOf(b.memberId),
-          unorderedEquals(['10.0.0.2:1', '10.0.0.3:1']));
+      expect((await a.service.currentView()).peersNeedingRepairing, {b.memberId}, reason: 'c is unchanged');
+      expect(await a.peerStates.addressesOf(b.memberId), unorderedEquals(['10.0.0.2:1', '10.0.0.3:1']));
       expect(await a.peerStates.addressesOf(c.memberId), isEmpty);
     });
   });

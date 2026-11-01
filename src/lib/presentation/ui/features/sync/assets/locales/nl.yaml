@@ -229,5 +229,6 @@ sync:
       description: "Apparaten die met de oude synchronisatie zijn gekoppeld, moeten opnieuw worden gekoppeld. Je gegevens blijven op elk apparaat staan."
       dismiss: "Sluiten"
     upgrade_progress: "Synchronisatiegegevens voorbereiden… {percent}%"
+    upgrade_stalled: "Het voorbereiden van de synchronisatiegegevens duurt langer dan verwacht. Er wordt opnieuw geprobeerd."
   demo:
     reset_blocked: "Demogegevens kunnen niet worden gereset zolang dit apparaat is gekoppeld, omdat de reset naar je andere apparaten zou worden gesynchroniseerd. Verwijder dit apparaat eerst uit de synchronisatiegroep."

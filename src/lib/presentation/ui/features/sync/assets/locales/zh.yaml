@@ -205,5 +205,6 @@ sync:
       description: "使用旧版同步配对的设备需要重新配对。你的数据会保留在每台设备上。"
       dismiss: "忽略"
     upgrade_progress: "正在准备同步数据… {percent}%"
+    upgrade_stalled: "同步数据的准备耗时比预期更长，将继续重试。"
   demo:
     reset_blocked: "此设备处于配对状态时无法重置演示数据，因为重置会同步到你的其他设备。请先将此设备从同步组中移除。"

@@ -14,6 +14,7 @@ import 'package:whph/core/application/features/sync/models/sync_status.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
 import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
+import 'package:whph/infrastructure/persistence/features/sync/services/sync_upgrade_job.dart';
 import 'package:whph/infrastructure/shared/features/sync/drift_sync_session_host.dart';
 import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
 import 'package:whph/infrastructure/shared/utils/owner_only_file_utils.dart';
@@ -22,6 +23,19 @@ import 'package:whph_sync_core/whph_sync_core.dart';
 import 'drift_session_test_support.dart';
 import 'sync_app_test_support.dart';
 import 'sync_security_test_support.dart';
+
+/// Reads the phase from the real [job] but only counts the runs the app would start.
+class _DeferredRunUpgradeService implements ISyncUpgradeService {
+  final SyncUpgradeJob job;
+
+  _DeferredRunUpgradeService(this.job);
+
+  @override
+  Future<SyncUpgradeProgress> getProgress() => job.getProgress();
+
+  @override
+  Future<void> run() async {}
+}
 
 const int _flagAfterSessions = 3;
 const String _poisonTitle = 'poison';
@@ -56,6 +70,25 @@ void main() {
 
     expect(report.skipped, isTrue);
     expect(upgrade.runCount, 1);
+  });
+
+  test('a group switch leaves sync skipped until the real upgrade job has finished', () async {
+    final a = await openPaired('A');
+    final switcher = await SecurityDevice.open('C', scratch);
+    addTearDown(switcher.close);
+    final job = SyncUpgradeJob(switcher.database.db);
+    final deferredRun = _DeferredRunUpgradeService(job);
+    final c = DriftEngineDevice.over(switcher, upgradeService: deferredRun);
+    await openPaired('D', inviter: c);
+    await pairDevices(a.security, c.security, confirmGroupSwitch: true);
+    final fixture = await EngineFixture.create(c, a, upgradeService: deferredRun);
+
+    expect((await job.getProgress()).isDone, isFalse);
+    expect((await fixture.engine.syncAll()).skipped, isTrue);
+
+    await job.run();
+
+    expect((await fixture.engine.syncAll()).skipped, isFalse);
   });
 
   group('sync progress', () {

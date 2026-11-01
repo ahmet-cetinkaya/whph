@@ -61,8 +61,15 @@ class SyncUpgradeJob implements ISyncUpgradeService {
   }
 
   @override
-  Future<void> run() =>
-      _running ??= runChunks().then((_) {}).whenComplete(() => _running = null);
+  Future<void> run() => _running ??= _runUntilDone().whenComplete(() => _running = null);
+
+  /// A switch can schedule a new phase after [runChunks] last read `done` but before [_running] is cleared;
+  /// the loop picks that phase up instead of letting the caller join a finished run.
+  Future<void> _runUntilDone() async {
+    do {
+      await runChunks();
+    } while (!(await getProgress()).isDone);
+  }
 
   /// Runs until `done`, or until [stopAfterChunks] chunk transactions have
   /// committed (a kill between chunks, for tests). Returns whether it is done.

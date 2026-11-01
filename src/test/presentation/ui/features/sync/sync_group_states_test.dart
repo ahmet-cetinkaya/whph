@@ -46,6 +46,17 @@ void main() {
       expect(find.text('Preparing sync data… 0%'), findsOneWidget);
     });
 
+    testWidgets('tells that preparing will be retried once the phase stops moving', (tester) async {
+      await pumpProgress(tester, SyncUpgradePhase.bootstrap);
+      expect(find.textContaining('keep retrying'), findsNothing);
+
+      for (var poll = 0; poll < syncUpgradeStalledPollCount; poll++) {
+        await tester.pump(SyncUpgradeProgressBanner.defaultPollInterval);
+      }
+
+      expect(find.textContaining('keep retrying'), findsOneWidget);
+    });
+
     testWidgets('shows nothing once the upgrade is done', (tester) async {
       await pumpProgress(tester, SyncUpgradePhase.done);
 

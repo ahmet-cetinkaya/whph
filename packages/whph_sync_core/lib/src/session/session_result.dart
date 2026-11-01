@@ -44,6 +44,9 @@ enum SessionFailure {
   /// The peer is preparing (upgrade job, origin switch) and asked to retry.
   peerPreparing,
 
+  /// This device is preparing (upgrade job) and refused an incoming session.
+  preparing,
+
   /// The peer aborted with an error category.
   peerError,
 
