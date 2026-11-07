@@ -397,7 +397,8 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
               value: 'toggle_client',
               child: Row(
                 children: [
-                  Icon(desktopSyncMode == DesktopSyncMode.client ? Icons.stop : Icons.wifi_tethering,
+                  // Client mode is not accepting connections, so the item offers to start accepting.
+                  Icon(desktopSyncMode == DesktopSyncMode.client ? Icons.wifi_tethering : Icons.stop,
                       color: Theme.of(context).colorScheme.primary),
                   const SizedBox(width: 8),
                   Text(desktopSyncMode == DesktopSyncMode.client
