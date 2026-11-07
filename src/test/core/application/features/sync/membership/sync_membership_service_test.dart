@@ -173,6 +173,25 @@ void main() {
           reason: 'changes after removal use an epoch the removed member lacks');
     });
 
+    test('a removed device is refused with its old identity and pairs again with a fresh one', () async {
+      final a = await open('a');
+      final c = await open('c');
+      await pairDevices(a, c);
+      await a.service.removeMember(c.memberId);
+      await expectLater(pairDevices(a, c), throwsA(isA<SyncMembershipException>()));
+
+      final removedMember = c.memberId;
+      await c.keyStore.keyFile.delete();
+      await c.service.recoverFromLostKeyFile(name: 'c');
+      expect(await SyncUpgradeJob(c.database.db).runChunks(), isTrue);
+      expect(c.memberId, isNot(removedMember));
+      await pairDevices(a, c);
+      await c.database.insertNote('c1', 'after re-pairing');
+      await syncDevices(a, c);
+
+      expect(await a.database.count('SELECT COUNT(*) FROM note_table'), 1);
+    });
+
     test('a member with two origins gets a cutoff for both', () async {
       final a = await open('a');
       final b = await open('b');
