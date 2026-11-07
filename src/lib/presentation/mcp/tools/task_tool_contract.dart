@@ -209,14 +209,15 @@ final _taskOutput = _closed({
   'plannedReminder': _reminderSchema,
   'deadlineReminder': _reminderSchema,
   'recurrence': _recurrenceSchema,
-  'timeRecords': JsonSchema.array(items: _timeRecordSchema)
+  'timeRecords': JsonSchema.array(items: _timeDayTotalSchema)
 });
 final _importOutput = _closed(
     {'successCount': JsonSchema.integer(), 'failureCount': JsonSchema.integer(), 'errors': _strings},
     ['successCount', 'failureCount', 'errors']);
-final _timeRecordSchema =
-    _closed({'id': JsonSchema.string(), 'occurredAt': _instant, 'durationSeconds': JsonSchema.integer()});
+// D12: time records are exposed as one aggregate per UTC day, not as individual records.
+final _timeDayTotalSchema =
+    _closed({'date': _instant, 'durationSeconds': JsonSchema.integer()}, ['date', 'durationSeconds']);
 final _timeListOutput = _closed(
-    {'items': JsonSchema.array(items: _timeRecordSchema), 'totalDurationSeconds': JsonSchema.integer()},
+    {'items': JsonSchema.array(items: _timeDayTotalSchema), 'totalDurationSeconds': JsonSchema.integer()},
     ['items', 'totalDurationSeconds']);
 final _timeTotalOutput = _closed({'totalDurationSeconds': JsonSchema.integer()}, ['totalDurationSeconds']);
