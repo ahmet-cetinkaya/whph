@@ -207,6 +207,11 @@ sync:
       title: "Zamenjati skupino za sinhronizacijo?"
       description: "Naprava {device} je v drugi skupini za sinhronizacijo. Če nadaljujete, ta naprava zapusti trenutno skupino in se ne sinhronizira več z njenimi napravami."
       confirm: "Zamenjaj skupino"
+    removed_device:
+      title: "Ponastavim identiteto sinhronizacije?"
+      description: "Ta naprava je bila odstranjena iz svoje skupine za sinhronizacijo. S ponastavitvijo dobi novo identiteto sinhronizacije. Vaši podatki ostanejo v tej napravi, druge naprave pa jo bodo videle kot novo napravo. Nato skenirajte novo kodo, da jo znova seznanite."
+      confirm: "Ponastavi identiteto"
+      renewed: "Identiteta sinhronizacije je ponastavljena. Skenirajte novo kodo za ponovno seznanitev; stare kode ni več mogoče uporabiti."
     errors:
       code_expired_or_used: "Koda je potekla ali je bila že uporabljena. Prikažite novo kodo in poskusite znova."
       codes_differ: "Kodi se nista ujemali. Seznanjanje je bilo preklicano."
@@ -217,6 +222,7 @@ sync:
       preparing: "Sinhronizacija se še pripravlja. Poskusite znova čez trenutek."
       refused: "Druga naprava je zavrnila seznanjanje."
       not_active: "Nobeno seznanjanje ni v teku."
+      removed_device: "Ta naprava je bila odstranjena iz skupine. Preden jo je mogoče znova seznaniti, mora ponastaviti svojo identiteto sinhronizacije."
   members:
     remove_confirm:
       title: "Odstraniti napravo {device}?"

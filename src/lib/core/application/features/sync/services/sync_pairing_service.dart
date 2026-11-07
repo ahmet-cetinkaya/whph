@@ -506,6 +506,7 @@ class SyncPairingService {
   String _errorCodeOf(Object error, _PairingRun run) => switch (error) {
         SyncPairingException(:final code) => code,
         _ when run.cancelled => SyncPairingErrorCode.cancelled,
+        RemovedDeviceException() => SyncPairingErrorCode.removedDevice,
         SyncMembershipException() => SyncPairingErrorCode.refused,
         TimeoutException() || TransportClosedException() => SyncPairingErrorCode.unreachable,
         _ => SyncPairingErrorCode.refused,

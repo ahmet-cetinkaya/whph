@@ -182,6 +182,11 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
   static const String pairingErrorPreparing = 'sync.pairing.errors.preparing';
   static const String pairingErrorRefused = 'sync.pairing.errors.refused';
   static const String pairingErrorNotActive = 'sync.pairing.errors.not_active';
+  static const String pairingErrorRemovedDevice = 'sync.pairing.errors.removed_device';
+  static const String pairingRemovedDeviceTitle = 'sync.pairing.removed_device.title';
+  static const String pairingRemovedDeviceDescription = 'sync.pairing.removed_device.description';
+  static const String pairingRemovedDeviceConfirm = 'sync.pairing.removed_device.confirm';
+  static const String pairingRemovedDeviceRenewed = 'sync.pairing.removed_device.renewed';
   static const String removeMemberTitle = 'sync.members.remove_confirm.title';
   static const String removeMemberDescription = 'sync.members.remove_confirm.description';
   static const String removeMemberAction = 'sync.members.remove_confirm.action';

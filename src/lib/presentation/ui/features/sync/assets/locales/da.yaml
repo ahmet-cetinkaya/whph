@@ -197,6 +197,11 @@ sync:
       title: "Skift synkroniseringsgruppe?"
       description: "{device} er i en anden synkroniseringsgruppe. Hvis du fortsætter, forlader denne enhed sin nuværende gruppe og synkroniserer ikke længere med de enheder."
       confirm: "Skift gruppe"
+    removed_device:
+      title: "Nulstil synkroniseringsidentitet?"
+      description: "Denne enhed blev fjernet fra sin synkroniseringsgruppe. Nulstilling giver den en ny synkroniseringsidentitet. Dine data bliver på denne enhed, og de andre enheder ser den som en ny enhed. Scan derefter en ny kode for at parre igen."
+      confirm: "Nulstil identitet"
+      renewed: "Synkroniseringsidentiteten er nulstillet. Scan en ny kode for at parre igen; den gamle kode kan ikke bruges mere."
     errors:
       code_expired_or_used: "Koden er udløbet eller allerede brugt. Vis en ny kode, og prøv igen."
       codes_differ: "Koderne var ikke ens. Parringen blev annulleret."
@@ -207,6 +212,7 @@ sync:
       preparing: "Synkroniseringen forberedes stadig. Prøv igen om lidt."
       refused: "Den anden enhed afviste parringen."
       not_active: "Der er ingen parring i gang."
+      removed_device: "Denne enhed blev fjernet fra gruppen. Den skal nulstille sin synkroniseringsidentitet, før den kan parres igen."
   members:
     remove_confirm:
       title: "Fjern {device}?"

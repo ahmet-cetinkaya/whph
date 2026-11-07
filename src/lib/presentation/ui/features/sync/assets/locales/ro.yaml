@@ -213,6 +213,11 @@ sync:
       title: "Schimbi grupul de sincronizare?"
       description: "{device} se află într-un alt grup de sincronizare. Dacă continui, acest dispozitiv părăsește grupul curent și nu se mai sincronizează cu dispozitivele lui."
       confirm: "Schimbă grupul"
+    removed_device:
+      title: "Resetezi identitatea de sincronizare?"
+      description: "Acest dispozitiv a fost eliminat din grupul său de sincronizare. Resetarea îi atribuie o nouă identitate de sincronizare. Datele tale rămân pe acest dispozitiv, iar celelalte dispozitive îl vor vedea ca pe un dispozitiv nou. Apoi scanează un cod nou pentru a-l asocia din nou."
+      confirm: "Resetează identitatea"
+      renewed: "Identitatea de sincronizare a fost resetată. Scanează un cod nou pentru a asocia din nou; codul vechi nu mai poate fi folosit."
     errors:
       code_expired_or_used: "Codul a expirat sau a fost deja folosit. Afișează un cod nou și încearcă din nou."
       codes_differ: "Codurile nu s-au potrivit. Asocierea a fost anulată."
@@ -223,6 +228,7 @@ sync:
       preparing: "Sincronizarea se pregătește încă. Încearcă din nou în scurt timp."
       refused: "Celălalt dispozitiv a refuzat asocierea."
       not_active: "Nicio asociere nu este în curs."
+      removed_device: "Acest dispozitiv a fost eliminat din grup. Trebuie să își reseteze identitatea de sincronizare înainte de a putea fi asociat din nou."
   members:
     remove_confirm:
       title: "Elimini {device}?"

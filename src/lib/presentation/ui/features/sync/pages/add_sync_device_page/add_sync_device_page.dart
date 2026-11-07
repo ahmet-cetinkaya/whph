@@ -79,8 +79,8 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   /// Reports how the pairing ended and closes this page when it paired.
   Future<void> _finishPairing(SyncPairingStatus status) async {
     if (!mounted) return;
-    SyncPairingFlow.showOutcome(context, status);
-    if (status.phase != SyncPairingPhase.completed) return;
+    await SyncPairingFlow.showOutcome(context, status);
+    if (!mounted || status.phase != SyncPairingPhase.completed) return;
 
     widget.onDeviceAdded?.call();
     Navigator.pop(context, true);

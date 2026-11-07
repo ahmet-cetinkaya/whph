@@ -212,6 +212,11 @@ sync:
       title: "Zmienić grupę synchronizacji?"
       description: "Urządzenie {device} należy do innej grupy synchronizacji. Jeśli kontynuujesz, to urządzenie opuści obecną grupę i przestanie synchronizować się z jej urządzeniami."
       confirm: "Zmień grupę"
+    removed_device:
+      title: "Zresetować tożsamość synchronizacji?"
+      description: "To urządzenie zostało usunięte ze swojej grupy synchronizacji. Reset nadaje mu nową tożsamość synchronizacji. Twoje dane pozostają na tym urządzeniu, a pozostałe urządzenia zobaczą je jako nowe. Następnie zeskanuj nowy kod, aby sparować je ponownie."
+      confirm: "Zresetuj tożsamość"
+      renewed: "Tożsamość synchronizacji została zresetowana. Zeskanuj nowy kod, aby sparować ponownie; stary kod nie może być już użyty."
     errors:
       code_expired_or_used: "Kod wygasł lub został już użyty. Pokaż nowy kod i spróbuj ponownie."
       codes_differ: "Kody nie były zgodne. Parowanie anulowano."
@@ -222,6 +227,7 @@ sync:
       preparing: "Synchronizacja jest jeszcze przygotowywana. Spróbuj ponownie za chwilę."
       refused: "Drugie urządzenie odrzuciło parowanie."
       not_active: "Nie trwa żadne parowanie."
+      removed_device: "To urządzenie zostało usunięte z grupy. Aby mogło się ponownie sparować, musi zresetować swoją tożsamość synchronizacji."
   members:
     remove_confirm:
       title: "Usunąć urządzenie {device}?"

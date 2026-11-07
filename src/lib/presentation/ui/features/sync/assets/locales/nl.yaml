@@ -201,6 +201,11 @@ sync:
       title: "Synchronisatiegroep wisselen?"
       description: "{device} zit in een andere synchronisatiegroep. Als je doorgaat, verlaat dit apparaat zijn huidige groep en synchroniseert het niet meer met die apparaten."
       confirm: "Groep wisselen"
+    removed_device:
+      title: "Synchronisatie-identiteit resetten?"
+      description: "Dit apparaat is uit zijn synchronisatiegroep verwijderd. Door te resetten krijgt het een nieuwe synchronisatie-identiteit. Je gegevens blijven op dit apparaat en de andere apparaten zien het als een nieuw apparaat. Scan daarna een nieuwe code om opnieuw te koppelen."
+      confirm: "Identiteit resetten"
+      renewed: "Synchronisatie-identiteit gereset. Scan een nieuwe code om opnieuw te koppelen; de oude code kan niet meer worden gebruikt."
     errors:
       code_expired_or_used: "Deze code is verlopen of al gebruikt. Toon een nieuwe code en probeer het opnieuw."
       codes_differ: "De codes kwamen niet overeen. Het koppelen is geannuleerd."
@@ -211,6 +216,7 @@ sync:
       preparing: "De synchronisatie wordt nog voorbereid. Probeer het zo meteen opnieuw."
       refused: "Het andere apparaat heeft het koppelen geweigerd."
       not_active: "Er is geen koppeling bezig."
+      removed_device: "Dit apparaat is uit de groep verwijderd. Het moet zijn synchronisatie-identiteit resetten voordat het opnieuw kan koppelen."
   members:
     remove_confirm:
       title: "{device} verwijderen?"

@@ -6,6 +6,7 @@ import 'package:whph/core/application/features/sync/commands/confirm_pairing_cod
 import 'package:whph/core/application/features/sync/commands/create_pairing_invitation_command.dart';
 import 'package:whph/core/application/features/sync/commands/pair_from_invitation_command.dart';
 import 'package:whph/core/application/features/sync/commands/remove_sync_member_command.dart';
+import 'package:whph/core/application/features/sync/commands/renew_sync_identity_command.dart';
 import 'package:whph/core/application/features/sync/commands/rename_sync_member_command.dart';
 import 'package:whph/core/application/features/sync/commands/start_pairing_with_address_command.dart';
 import 'package:whph/core/application/features/sync/commands/sync_now_command.dart';
@@ -100,6 +101,9 @@ void registerSyncFeature(
     )
     ..registerHandler<RemoveSyncMemberCommand, void, RemoveSyncMemberCommandHandler>(
       () => RemoveSyncMemberCommandHandler(container.resolve<SyncMembershipService>(), syncDeviceRepository),
+    )
+    ..registerHandler<RenewSyncIdentityCommand, void, RenewSyncIdentityCommandHandler>(
+      () => RenewSyncIdentityCommandHandler(container.resolve<SyncMembershipService>()),
     )
     ..registerHandler<RenameSyncMemberCommand, void, RenameSyncMemberCommandHandler>(
       () => RenameSyncMemberCommandHandler(container.resolve<SyncMembershipService>()),

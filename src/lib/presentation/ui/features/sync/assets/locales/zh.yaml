@@ -177,6 +177,11 @@ sync:
       title: "切换同步组？"
       description: "{device} 属于另一个同步组。继续的话，此设备将离开当前同步组，不再与该组的设备同步。"
       confirm: "切换同步组"
+    removed_device:
+      title: "重置同步身份？"
+      description: "此设备已从其同步群组中移除。重置后，它会获得新的同步身份。你的数据会保留在此设备上，其他设备会将其视为新设备。之后请扫描新的二维码重新配对。"
+      confirm: "重置身份"
+      renewed: "同步身份已重置。请扫描新的二维码重新配对；旧二维码已无法使用。"
     errors:
       code_expired_or_used: "此二维码已过期或已被使用。请显示新的二维码后重试。"
       codes_differ: "验证码不一致，配对已取消。"
@@ -187,6 +192,7 @@ sync:
       preparing: "同步仍在准备中，请稍后再试。"
       refused: "对方设备拒绝了配对。"
       not_active: "当前没有正在进行的配对。"
+      removed_device: "此设备已从群组中移除。必须先重置其同步身份，才能再次配对。"
   members:
     remove_confirm:
       title: "移除 {device}？"

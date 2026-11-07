@@ -199,6 +199,11 @@ sync:
       title: "Switch sync group?"
       description: "{device} is in a different sync group. If you continue, this device leaves its current group and no longer syncs with those devices."
       confirm: "Switch group"
+    removed_device:
+      title: "Reset sync identity?"
+      description: "This device was removed from its sync group. Resetting gives it a new sync identity. Your data stays on this device, and the other devices will see it as a new device. Afterwards, scan a new code to pair again."
+      confirm: "Reset identity"
+      renewed: "Sync identity reset. Scan a new code to pair again; the old code can no longer be used."
     errors:
       code_expired_or_used: "This code expired or was already used. Show a new code and try again."
       codes_differ: "The codes did not match. Pairing was cancelled."
@@ -209,6 +214,7 @@ sync:
       preparing: "Sync is still preparing. Please try again shortly."
       refused: "The other device refused the pairing."
       not_active: "No pairing is in progress."
+      removed_device: "This device was removed from the group. It must reset its sync identity before it can pair again."
   members:
     remove_confirm:
       title: "Remove {device}?"

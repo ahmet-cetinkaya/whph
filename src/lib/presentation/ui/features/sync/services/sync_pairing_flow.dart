@@ -4,12 +4,14 @@ import 'package:whph/core/application/features/sync/commands/cancel_pairing_comm
 import 'package:whph/core/application/features/sync/commands/confirm_group_switch_command.dart';
 import 'package:whph/core/application/features/sync/commands/confirm_pairing_code_command.dart';
 import 'package:whph/core/application/features/sync/commands/pair_from_invitation_command.dart';
+import 'package:whph/core/application/features/sync/commands/renew_sync_identity_command.dart';
 import 'package:whph/core/application/features/sync/commands/start_pairing_with_address_command.dart';
 import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
 import 'package:whph/core/application/features/sync/models/sync_result_category.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/sync/components/group_switch_dialog.dart';
 import 'package:whph/presentation/ui/features/sync/components/pairing_code_dialog.dart';
+import 'package:whph/presentation/ui/features/sync/components/removed_device_reset_dialog.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/utils/sync_result_texts.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -92,7 +94,7 @@ class SyncPairingFlow {
 
   /// Tells the user how a finished pairing ended; does nothing for a pairing
   /// that is still going on.
-  static void showOutcome(BuildContext context, SyncPairingStatus status) {
+  static Future<void> showOutcome(BuildContext context, SyncPairingStatus status) async {
     if (!status.isTerminal) return;
     final translationService = container.resolve<ITranslationService>();
     if (status.phase == SyncPairingPhase.completed) {
@@ -105,9 +107,27 @@ class SyncPairingFlow {
       );
       return;
     }
+    // The reset dialog explains the failure itself; a persistent error toast
+    // would also swallow the success hint shown after the reset.
+    if (status.role == SyncPairingRole.joiner && status.errorCode == SyncPairingErrorCode.removedDevice) {
+      await _offerIdentityReset(context);
+      return;
+    }
     OverlayNotificationHelper.showError(
       context: context,
       message: SyncResultTexts.pairingErrorText(translationService, status.errorCode),
+    );
+  }
+
+  /// The group removed this device: a new identity is the only way to pair
+  /// again, and the old code is single-use, so the user must scan a new one.
+  static Future<void> _offerIdentityReset(BuildContext context) async {
+    if (!await RemovedDeviceResetDialog.show(context)) return;
+    await container.resolve<Mediator>().send<RenewSyncIdentityCommand, void>(RenewSyncIdentityCommand());
+    if (!context.mounted) return;
+    OverlayNotificationHelper.showSuccess(
+      context: context,
+      message: container.resolve<ITranslationService>().translate(SyncTranslationKeys.pairingRemovedDeviceRenewed),
     );
   }
 }

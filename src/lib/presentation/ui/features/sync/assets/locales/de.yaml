@@ -206,6 +206,11 @@ sync:
       title: "Synchronisierungsgruppe wechseln?"
       description: "{device} gehört zu einer anderen Synchronisierungsgruppe. Wenn du fortfährst, verlässt dieses Gerät seine aktuelle Gruppe und synchronisiert nicht mehr mit deren Geräten."
       confirm: "Gruppe wechseln"
+    removed_device:
+      title: "Synchronisierungsidentität zurücksetzen?"
+      description: "Dieses Gerät wurde aus seiner Synchronisierungsgruppe entfernt. Durch das Zurücksetzen erhält es eine neue Synchronisierungsidentität. Deine Daten bleiben auf diesem Gerät, und die anderen Geräte sehen es als neues Gerät. Scanne danach einen neuen Code, um dich erneut zu koppeln."
+      confirm: "Identität zurücksetzen"
+      renewed: "Synchronisierungsidentität zurückgesetzt. Scanne einen neuen Code, um dich erneut zu koppeln; der alte Code kann nicht mehr verwendet werden."
     errors:
       code_expired_or_used: "Dieser Code ist abgelaufen oder wurde bereits verwendet. Zeige einen neuen Code an und versuche es erneut."
       codes_differ: "Die Codes stimmten nicht überein. Die Kopplung wurde abgebrochen."
@@ -216,6 +221,7 @@ sync:
       preparing: "Die Synchronisierung wird noch vorbereitet. Bitte versuche es gleich noch einmal."
       refused: "Das andere Gerät hat die Kopplung abgelehnt."
       not_active: "Es läuft keine Kopplung."
+      removed_device: "Dieses Gerät wurde aus der Gruppe entfernt. Es muss seine Synchronisierungsidentität zurücksetzen, bevor es sich erneut koppeln kann."
   members:
     remove_confirm:
       title: "{device} entfernen?"

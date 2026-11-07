@@ -234,6 +234,33 @@ void main() {
       expect(() => PairingInvitation.decode('not a pairing code'), throwsFormatException);
     });
 
+    test('a removed device is told it was removed and pairs again after renewing its identity', () async {
+      final (inviter, joiner) = await twoSides();
+      var status = await joiner.service.pairFromInvitation(
+        PairingInvitation.decode((await inviter.service.createInvitation()).encode()),
+      );
+      expect(status.phase, SyncPairingPhase.completed, reason: '${status.errorCode}');
+      final removedMember = joiner.device.memberId;
+      await inviter.device.service.removeMember(removedMember);
+
+      status = await joiner.service.pairFromInvitation(
+        PairingInvitation.decode((await inviter.service.createInvitation()).encode()),
+      );
+
+      expect(status.phase, SyncPairingPhase.failed);
+      expect(status.errorCode, SyncPairingErrorCode.removedDevice);
+      expect(inviter.service.status.errorCode, SyncPairingErrorCode.removedDevice);
+
+      await joiner.device.service.renewIdentity();
+      status = await joiner.service.pairFromInvitation(
+        PairingInvitation.decode((await inviter.service.createInvitation()).encode()),
+      );
+
+      expect(status.phase, SyncPairingPhase.completed, reason: '${status.errorCode}');
+      expect(joiner.device.memberId, isNot(removedMember));
+      expect(inviter.device.membership.members.keys, contains(joiner.device.memberId));
+    });
+
     test('a code naming an address outside the local network is rejected', () {
       for (final address in ['203.0.113.5', 'example.com']) {
         final remote = PairingInvitation(

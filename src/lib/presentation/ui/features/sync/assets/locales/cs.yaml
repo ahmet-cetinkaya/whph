@@ -199,6 +199,11 @@ sync:
       title: "Přepnout skupinu synchronizace?"
       description: "{device} je v jiné skupině synchronizace. Pokud budete pokračovat, toto zařízení opustí svou současnou skupinu a přestane se s jejími zařízeními synchronizovat."
       confirm: "Přepnout skupinu"
+    removed_device:
+      title: "Resetovat synchronizační identitu?"
+      description: "Toto zařízení bylo odebráno ze synchronizační skupiny. Resetem získá novou synchronizační identitu. Vaše data zůstanou v tomto zařízení a ostatní zařízení ho uvidí jako nové zařízení. Poté naskenujte nový kód a spárujte ho znovu."
+      confirm: "Resetovat identitu"
+      renewed: "Synchronizační identita byla resetována. Pro nové spárování naskenujte nový kód; starý kód již nelze použít."
     errors:
       code_expired_or_used: "Platnost kódu vypršela nebo byl již použit. Zobrazte nový kód a zkuste to znovu."
       codes_differ: "Kódy se neshodovaly. Párování bylo zrušeno."
@@ -209,6 +214,7 @@ sync:
       preparing: "Synchronizace se stále připravuje. Zkuste to za chvíli znovu."
       refused: "Druhé zařízení párování odmítlo."
       not_active: "Neprobíhá žádné párování."
+      removed_device: "Toto zařízení bylo odebráno ze skupiny. Než se bude moci znovu spárovat, musí resetovat svou synchronizační identitu."
   members:
     remove_confirm:
       title: "Odebrat {device}?"

@@ -207,6 +207,11 @@ sync:
       title: "Byta synkroniseringsgrupp?"
       description: "{device} finns i en annan synkroniseringsgrupp. Om du fortsätter lämnar den här enheten sin nuvarande grupp och synkroniserar inte längre med dess enheter."
       confirm: "Byt grupp"
+    removed_device:
+      title: "Återställa synkroniseringsidentiteten?"
+      description: "Den här enheten togs bort från sin synkroniseringsgrupp. Återställningen ger den en ny synkroniseringsidentitet. Dina data finns kvar på enheten, och de andra enheterna ser den som en ny enhet. Skanna sedan en ny kod för att para ihop igen."
+      confirm: "Återställ identitet"
+      renewed: "Synkroniseringsidentiteten är återställd. Skanna en ny kod för att para ihop igen; den gamla koden kan inte användas längre."
     errors:
       code_expired_or_used: "Koden har gått ut eller redan använts. Visa en ny kod och försök igen."
       codes_differ: "Koderna stämde inte överens. Ihopparningen avbröts."
@@ -217,6 +222,7 @@ sync:
       preparing: "Synkroniseringen förbereds fortfarande. Försök igen om en stund."
       refused: "Den andra enheten avvisade ihopparningen."
       not_active: "Ingen ihopparning pågår."
+      removed_device: "Den här enheten togs bort från gruppen. Den måste återställa sin synkroniseringsidentitet innan den kan paras ihop igen."
   members:
     remove_confirm:
       title: "Ta bort {device}?"

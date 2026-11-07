@@ -211,6 +211,11 @@ sync:
       title: "Cambiare gruppo di sincronizzazione?"
       description: "{device} si trova in un altro gruppo di sincronizzazione. Se continui, questo dispositivo lascia il gruppo attuale e non si sincronizza più con i suoi dispositivi."
       confirm: "Cambia gruppo"
+    removed_device:
+      title: "Reimpostare l'identità di sincronizzazione?"
+      description: "Questo dispositivo è stato rimosso dal suo gruppo di sincronizzazione. La reimpostazione gli assegna una nuova identità di sincronizzazione. I tuoi dati restano su questo dispositivo e gli altri dispositivi lo vedranno come un nuovo dispositivo. Poi scansiona un nuovo codice per associarlo di nuovo."
+      confirm: "Reimposta identità"
+      renewed: "Identità di sincronizzazione reimpostata. Scansiona un nuovo codice per associare di nuovo; il vecchio codice non può più essere usato."
     errors:
       code_expired_or_used: "Il codice è scaduto o già usato. Mostra un nuovo codice e riprova."
       codes_differ: "I codici non corrispondevano. L'abbinamento è stato annullato."
@@ -221,6 +226,7 @@ sync:
       preparing: "La sincronizzazione è ancora in preparazione. Riprova tra poco."
       refused: "L'altro dispositivo ha rifiutato l'abbinamento."
       not_active: "Nessun abbinamento in corso."
+      removed_device: "Questo dispositivo è stato rimosso dal gruppo. Deve reimpostare la sua identità di sincronizzazione prima di poter essere associato di nuovo."
   members:
     remove_confirm:
       title: "Rimuovere {device}?"

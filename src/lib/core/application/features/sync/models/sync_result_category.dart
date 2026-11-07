@@ -41,5 +41,8 @@ abstract final class SyncPairingErrorCode {
   static const String groupSwitchDeclined = 'pairing_group_switch_declined';
   static const String preparing = 'pairing_preparing';
   static const String refused = 'pairing_refused';
+
+  /// The device was removed from the group; its old identity can never pair again.
+  static const String removedDevice = 'pairing_removed_device';
   static const String noActivePairing = 'pairing_not_active';
 }

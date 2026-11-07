@@ -203,6 +203,11 @@ sync:
       title: "Vaihdetaanko synkronointiryhmää?"
       description: "{device} kuuluu toiseen synkronointiryhmään. Jos jatkat, tämä laite poistuu nykyisestä ryhmästään eikä enää synkronoi sen laitteiden kanssa."
       confirm: "Vaihda ryhmää"
+    removed_device:
+      title: "Nollataanko synkronointitunnus?"
+      description: "Tämä laite poistettiin synkronointiryhmästään. Nollaus antaa sille uuden synkronointitunnuksen. Tietosi säilyvät tässä laitteessa, ja muut laitteet näkevät sen uutena laitteena. Skannaa sen jälkeen uusi koodi muodostaaksesi parin uudelleen."
+      confirm: "Nollaa tunnus"
+      renewed: "Synkronointitunnus nollattu. Skannaa uusi koodi muodostaaksesi parin uudelleen; vanhaa koodia ei voi enää käyttää."
     errors:
       code_expired_or_used: "Koodi on vanhentunut tai jo käytetty. Näytä uusi koodi ja yritä uudelleen."
       codes_differ: "Koodit eivät täsmänneet. Pariliitos peruttiin."
@@ -213,6 +218,7 @@ sync:
       preparing: "Synkronointia valmistellaan vielä. Yritä hetken kuluttua uudelleen."
       refused: "Toinen laite hylkäsi pariliitoksen."
       not_active: "Pariliitosta ei ole käynnissä."
+      removed_device: "Tämä laite poistettiin ryhmästä. Sen on nollattava synkronointitunnuksensa, ennen kuin se voi muodostaa parin uudelleen."
   members:
     remove_confirm:
       title: "Poistetaanko {device}?"

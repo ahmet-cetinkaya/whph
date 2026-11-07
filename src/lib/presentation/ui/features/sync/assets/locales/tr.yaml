@@ -205,6 +205,11 @@ sync:
       title: "Eşitleme grubu değiştirilsin mi?"
       description: "{device} farklı bir eşitleme grubunda. Devam ederseniz bu cihaz mevcut grubundan ayrılır ve o gruptaki cihazlarla artık eşitlenmez."
       confirm: "Grubu değiştir"
+    removed_device:
+      title: "Senkronizasyon kimliği sıfırlansın mı?"
+      description: "Bu cihaz senkronizasyon grubundan çıkarıldı. Sıfırlama, cihaza yeni bir senkronizasyon kimliği verir. Verilerin bu cihazda kalır, diğer cihazlar onu yeni bir cihaz olarak görür. Ardından yeniden eşleşmek için yeni bir kod tara."
+      confirm: "Kimliği sıfırla"
+      renewed: "Senkronizasyon kimliği sıfırlandı. Yeniden eşleşmek için yeni bir kod tara; eski kod artık kullanılamaz."
     errors:
       code_expired_or_used: "Kodun süresi doldu veya zaten kullanıldı. Yeni bir kod gösterip tekrar deneyin."
       codes_differ: "Kodlar eşleşmedi. Eşleştirme iptal edildi."
@@ -215,6 +220,7 @@ sync:
       preparing: "Eşitleme hâlâ hazırlanıyor. Lütfen kısa süre sonra tekrar deneyin."
       refused: "Diğer cihaz eşleştirmeyi reddetti."
       not_active: "Devam eden bir eşleştirme yok."
+      removed_device: "Bu cihaz gruptan çıkarıldı. Yeniden eşleşebilmesi için senkronizasyon kimliğini sıfırlaması gerekir."
   members:
     remove_confirm:
       title: "{device} kaldırılsın mı?"

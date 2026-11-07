@@ -16,6 +16,13 @@ class SyncMembershipException implements Exception {
   String toString() => 'SyncMembershipException: $message';
 }
 
+/// The joiner's identity was removed from the group, so it must pair again
+/// with a fresh identity.
+class RemovedDeviceException extends SyncMembershipException {
+  const RemovedDeviceException()
+      : super('a removed device must pair again with a fresh identity');
+}
+
 /// What a joiner receives from the inviter at the end of a successful pairing
 /// (D7 "Pairing hands the joiner the current epoch key(s)"). Holds secrets:
 /// call [destroy] once the joiner has stored it.
@@ -243,6 +250,12 @@ class SyncMembershipService {
         return report;
       });
 
+  /// A device removed from its group keeps a revoked identity that no member
+  /// accepts again. This gives it a new identity and origin under its own
+  /// name, keeping its data, so it can be paired as a new member.
+  Future<SyncOriginSwitchReport> renewIdentity() =>
+      recoverFromLostKeyFile(name: membership.identity.name);
+
   // -- origin switch ----------------------------------------------------------------------
 
   /// `switch_origin(reason)` (D6b steps 1-3). [sentMark] is the old origin's
@@ -352,10 +365,8 @@ class SyncMembershipService {
         if (m.removed)
           throw const SyncMembershipException(
               'the inviter was removed from its group');
-        if (m.isRevokedEd(joiner.ed25519Pub)) {
-          throw const SyncMembershipException(
-              'a removed device must pair again with a fresh identity');
-        }
+        if (m.isRevokedEd(joiner.ed25519Pub))
+          throw const RemovedDeviceException();
         if (!m.hasGroup) await _createGroup();
         await _writeSecurity(memberCellKey(joiner.memberId), joiner.encode());
         for (final epoch in m.keyring.epochs) {

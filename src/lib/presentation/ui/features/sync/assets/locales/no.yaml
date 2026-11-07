@@ -203,6 +203,11 @@ sync:
       title: "Bytte synkroniseringsgruppe?"
       description: "{device} er i en annen synkroniseringsgruppe. Hvis du fortsetter, forlater denne enheten sin nåværende gruppe og synkroniserer ikke lenger med de enhetene."
       confirm: "Bytt gruppe"
+    removed_device:
+      title: "Tilbakestille synkroniseringsidentiteten?"
+      description: "Denne enheten ble fjernet fra synkroniseringsgruppen sin. Tilbakestilling gir den en ny synkroniseringsidentitet. Dataene dine blir på denne enheten, og de andre enhetene ser den som en ny enhet. Skann deretter en ny kode for å pare på nytt."
+      confirm: "Tilbakestill identitet"
+      renewed: "Synkroniseringsidentiteten er tilbakestilt. Skann en ny kode for å pare på nytt; den gamle koden kan ikke brukes lenger."
     errors:
       code_expired_or_used: "Koden har utløpt eller er allerede brukt. Vis en ny kode og prøv igjen."
       codes_differ: "Kodene stemte ikke overens. Parringen ble avbrutt."
@@ -213,6 +218,7 @@ sync:
       preparing: "Synkroniseringen klargjøres fortsatt. Prøv igjen om litt."
       refused: "Den andre enheten avviste parringen."
       not_active: "Ingen paring pågår."
+      removed_device: "Denne enheten ble fjernet fra gruppen. Den må tilbakestille synkroniseringsidentiteten sin før den kan pares på nytt."
   members:
     remove_confirm:
       title: "Fjerne {device}?"

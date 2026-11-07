@@ -30,6 +30,7 @@ abstract final class SyncResultTexts {
         SyncPairingErrorCode.groupSwitchDeclined => SyncTranslationKeys.pairingErrorGroupSwitchDeclined,
         SyncPairingErrorCode.preparing => SyncTranslationKeys.pairingErrorPreparing,
         SyncPairingErrorCode.noActivePairing => SyncTranslationKeys.pairingErrorNotActive,
+        SyncPairingErrorCode.removedDevice => SyncTranslationKeys.pairingErrorRemovedDevice,
         _ => SyncTranslationKeys.pairingErrorRefused,
       };
 
