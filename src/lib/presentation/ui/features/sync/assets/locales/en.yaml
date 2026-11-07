@@ -1,8 +1,6 @@
 sync:
   desktop:
     mode_title: Desktop Sync Mode
-    sync_mode_start_menu: "Stop accepting connections"
-    sync_mode_stop_menu: "Accept connections"
     client_mode_started: "No longer accepting connections"
     client_mode_stopped: "Accepting connections again"
     sync_mode_toggle_error: Failed to toggle sync mode

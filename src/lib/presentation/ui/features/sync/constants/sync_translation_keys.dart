@@ -94,8 +94,6 @@ class SyncTranslationKeys extends application.SyncTranslationKeys {
 
   // Desktop Sync Mode
   static const String desktopSyncMode = 'sync.desktop.mode_title';
-  static const String desktopSyncModeStartMenu = 'sync.desktop.sync_mode_start_menu';
-  static const String desktopSyncModeStopMenu = 'sync.desktop.sync_mode_stop_menu';
   static const String desktopClientModeStarted = 'sync.desktop.client_mode_started';
   static const String desktopClientModeStopped = 'sync.desktop.client_mode_stopped';
   static const String desktopSyncModeToggleError = 'sync.desktop.sync_mode_toggle_error';

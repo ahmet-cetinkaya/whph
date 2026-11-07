@@ -401,9 +401,10 @@ class _SyncDevicesPageState extends State<SyncDevicesPage>
                   Icon(desktopSyncMode == DesktopSyncMode.client ? Icons.wifi_tethering : Icons.stop,
                       color: Theme.of(context).colorScheme.primary),
                   const SizedBox(width: 8),
+                  // Same wording as Android and as the not-reachable hint, which names Server Mode.
                   Text(desktopSyncMode == DesktopSyncMode.client
-                      ? _translationService.translate(SyncTranslationKeys.desktopSyncModeStopMenu)
-                      : _translationService.translate(SyncTranslationKeys.desktopSyncModeStartMenu)),
+                      ? _translationService.translate(SyncTranslationKeys.serverModeStartMenu)
+                      : _translationService.translate(SyncTranslationKeys.serverModeStopMenu)),
                 ],
               ),
             ),

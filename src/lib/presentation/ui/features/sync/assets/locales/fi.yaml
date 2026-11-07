@@ -162,8 +162,6 @@ sync:
       synkronoidakseen tämän laitteen kanssa.
   desktop:
     mode_title: Työpöydän synkronointitila
-    sync_mode_start_menu: "Lopeta yhteyksien vastaanotto"
-    sync_mode_stop_menu: "Vastaanota yhteyksiä"
     client_mode_started: "Yhteyksiä ei enää vastaanoteta"
     client_mode_stopped: "Yhteyksiä vastaanotetaan taas"
     sync_mode_toggle_error: Synkronointitilan vaihto epäonnistui

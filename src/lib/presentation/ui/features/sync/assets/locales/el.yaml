@@ -164,8 +164,6 @@ sync:
       συνδεθούν και να συγχρονίσουν με αυτή τη συσκευή.
   desktop:
     mode_title: Λειτουργία Συγχρονισμού Desktop
-    sync_mode_start_menu: "Διακοπή αποδοχής συνδέσεων"
-    sync_mode_stop_menu: "Αποδοχή συνδέσεων"
     client_mode_started: "Η αποδοχή συνδέσεων σταμάτησε"
     client_mode_stopped: "Η αποδοχή συνδέσεων ξεκίνησε ξανά"
     sync_mode_toggle_error: Αποτυχία εναλλαγής λειτουργίας συγχρονισμού

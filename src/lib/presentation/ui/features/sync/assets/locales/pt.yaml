@@ -167,8 +167,6 @@ sync:
       e sincronizar com este dispositivo.
   desktop:
     mode_title: Modo de sincronização de desktop
-    sync_mode_start_menu: "Parar de aceitar ligações"
-    sync_mode_stop_menu: "Aceitar ligações"
     client_mode_started: "Já não aceita ligações"
     client_mode_stopped: "Voltou a aceitar ligações"
     sync_mode_toggle_error: Falha ao alternar modo de sincronização

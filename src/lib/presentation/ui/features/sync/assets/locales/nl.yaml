@@ -160,8 +160,6 @@ sync:
       te synchroniseren met dit apparaat.
   desktop:
     mode_title: Desktop Sync Modus
-    sync_mode_start_menu: "Stop met verbindingen accepteren"
-    sync_mode_stop_menu: "Verbindingen accepteren"
     client_mode_started: "Accepteert geen verbindingen meer"
     client_mode_stopped: "Accepteert weer verbindingen"
     sync_mode_toggle_error: Kan synchrone modus niet omschakelen

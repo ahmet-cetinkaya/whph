@@ -164,8 +164,6 @@ sync:
       olabilir.
   desktop:
     mode_title: Masaüstü Senkronizasyon Modu
-    sync_mode_start_menu: "Bağlantı kabul etmeyi durdur"
-    sync_mode_stop_menu: "Bağlantıları kabul et"
     client_mode_started: "Artık bağlantı kabul edilmiyor"
     client_mode_stopped: "Bağlantılar yeniden kabul ediliyor"
     sync_mode_toggle_error: Senkronizasyon modu değiştirilemedi

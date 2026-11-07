@@ -138,8 +138,6 @@ sync:
     qr_description: 다른 기기는 이 QR 코드를 스캔하여 이 기기에 연결하고 동기화할 수 있습니다.
   desktop:
     mode_title: 데스크톱 동기화 모드
-    sync_mode_start_menu: "연결 수락 중지"
-    sync_mode_stop_menu: "연결 수락"
     client_mode_started: "연결을 수락하지 않음"
     client_mode_stopped: "연결 수락을 다시 시작했습니다"
     sync_mode_toggle_error: 동기화 모드 전환 실패

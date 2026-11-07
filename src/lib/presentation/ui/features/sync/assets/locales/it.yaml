@@ -170,8 +170,6 @@ sync:
       e sincronizzare con questo dispositivo.
   desktop:
     mode_title: Modalità sincronizzazione desktop
-    sync_mode_start_menu: "Smetti di accettare connessioni"
-    sync_mode_stop_menu: "Accetta connessioni"
     client_mode_started: "Non accetta più connessioni"
     client_mode_stopped: "Accetta di nuovo connessioni"
     sync_mode_toggle_error: Impossibile cambiare modalità di sincronizzazione

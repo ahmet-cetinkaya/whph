@@ -176,8 +176,6 @@ sync:
       et synchroniser avec cet appareil.
   desktop:
     mode_title: Mode de synchronisation de bureau
-    sync_mode_start_menu: "Arrêter d'accepter les connexions"
-    sync_mode_stop_menu: "Accepter les connexions"
     client_mode_started: "N'accepte plus les connexions"
     client_mode_stopped: "Accepte de nouveau les connexions"
     sync_mode_toggle_error: Impossible de basculer le mode de synchronisation

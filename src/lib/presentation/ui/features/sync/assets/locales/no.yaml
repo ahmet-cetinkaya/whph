@@ -1,8 +1,6 @@
 sync:
   desktop:
     mode_title: Desktop Synkroniseringsmodus
-    sync_mode_start_menu: "Slutt å ta imot tilkoblinger"
-    sync_mode_stop_menu: "Ta imot tilkoblinger"
     client_mode_started: "Tar ikke lenger imot tilkoblinger"
     client_mode_stopped: "Tar imot tilkoblinger igjen"
     sync_mode_toggle_error: Klarte ikke å bytte synkroniseringsmodus

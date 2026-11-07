@@ -1,8 +1,6 @@
 sync:
   desktop:
     mode_title: Desktop Synkroniseringsläge
-    sync_mode_start_menu: "Sluta ta emot anslutningar"
-    sync_mode_stop_menu: "Ta emot anslutningar"
     client_mode_started: "Tar inte emot anslutningar"
     client_mode_stopped: "Tar emot anslutningar igen"
     sync_mode_toggle_error: Kunde inte växla synkroniseringsläge

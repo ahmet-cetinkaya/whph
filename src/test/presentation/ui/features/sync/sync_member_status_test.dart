@@ -168,6 +168,17 @@ void main() {
       expect(tester.widget<LinearProgressIndicator>(barFinder).value, isNull);
     });
 
+    testWidgets('the previous failure is hidden while a sync is running and back after it', (tester) async {
+      const failed = SyncMemberSummary(memberId: 'm1', name: 'Pixel', lastResult: SyncResultCategory.notReachable);
+
+      for (final isBeingSynced in [true, false]) {
+        await pumpPage(
+            tester, SyncDeviceListItemWidget(member: failed, onRemove: (_) {}, isBeingSynced: isBeingSynced));
+
+        expect(find.text('Device not reachable'), isBeingSynced ? findsNothing : findsOneWidget);
+      }
+    });
+
     testWidgets('a device that is not being synced shows neither text nor bar', (tester) async {
       await pumpSyncing(tester, isBeingSynced: false, progress: 0.5);
 

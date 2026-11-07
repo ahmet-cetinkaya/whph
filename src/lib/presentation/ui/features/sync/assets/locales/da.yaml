@@ -156,8 +156,6 @@ sync:
       med denne enhed.
   desktop:
     mode_title: Desktop Synkroniseringsmode
-    sync_mode_start_menu: "Stop med at modtage forbindelser"
-    sync_mode_stop_menu: "Modtag forbindelser"
     client_mode_started: "Modtager ikke længere forbindelser"
     client_mode_stopped: "Modtager forbindelser igen"
     sync_mode_toggle_error: Kunne ikke skifte synkroniseringstilstand

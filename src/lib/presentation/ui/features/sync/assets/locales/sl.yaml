@@ -1,8 +1,6 @@
 sync:
   desktop:
     mode_title: Način sinhronizacije namizja
-    sync_mode_start_menu: "Ustavi sprejemanje povezav"
-    sync_mode_stop_menu: "Sprejemaj povezave"
     client_mode_started: "Povezav ne sprejema več"
     client_mode_stopped: "Povezave spet sprejema"
     sync_mode_toggle_error: Preklop načina sinhronizacije ni uspel

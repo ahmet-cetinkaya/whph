@@ -140,10 +140,12 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                         ],
                       ),
                       if (isSyncing) _buildSyncProgress(),
-                      SyncMemberStatus(
-                        member: widget.member,
-                        onRepair: widget.onRepair == null ? null : () => widget.onRepair!(widget.member.memberId),
-                      ),
+                      // The last result is about the previous attempt; it would contradict the running sync.
+                      if (!isSyncing)
+                        SyncMemberStatus(
+                          member: widget.member,
+                          onRepair: widget.onRepair == null ? null : () => widget.onRepair!(widget.member.memberId),
+                        ),
                     ],
                   ),
                 ),

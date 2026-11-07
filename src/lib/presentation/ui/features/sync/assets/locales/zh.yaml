@@ -136,8 +136,6 @@ sync:
     qr_description: 其他设备可以扫描此 QR 码连接并与此设备同步。
   desktop:
     mode_title: 桌面同步模式
-    sync_mode_start_menu: "停止接受连接"
-    sync_mode_stop_menu: "接受连接"
     client_mode_started: "不再接受连接"
     client_mode_stopped: "已重新接受连接"
     sync_mode_toggle_error: 切换同步模式失败

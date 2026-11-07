@@ -158,8 +158,6 @@ sync:
       s tímto zařízením.
   desktop:
     mode_title: Režim synchronizace na desktopu
-    sync_mode_start_menu: "Přestat přijímat připojení"
-    sync_mode_stop_menu: "Přijímat připojení"
     client_mode_started: "Přijímání připojení zastaveno"
     client_mode_stopped: "Přijímání připojení znovu zapnuto"
     sync_mode_toggle_error: Nepodařilo se přepnout režim synchronizace

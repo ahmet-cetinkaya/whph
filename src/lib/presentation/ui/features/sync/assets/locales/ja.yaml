@@ -136,8 +136,6 @@ sync:
     qr_description: 他のデバイスはこのQRコードをスキャンして、このデバイスに接続して同期できます。
   desktop:
     mode_title: デスクトップ同期モード
-    sync_mode_start_menu: "接続の受け付けを停止"
-    sync_mode_stop_menu: "接続を受け付ける"
     client_mode_started: "接続を受け付けていません"
     client_mode_stopped: "接続の受け付けを再開しました"
     sync_mode_toggle_error: 同期モードの切り替えに失敗しました

@@ -1,8 +1,6 @@
 sync:
   desktop:
     mode_title: Tryb synchronizacji pulpitu
-    sync_mode_start_menu: "Przestań przyjmować połączenia"
-    sync_mode_stop_menu: "Przyjmuj połączenia"
     client_mode_started: "Połączenia nie są już przyjmowane"
     client_mode_stopped: "Połączenia są znów przyjmowane"
     sync_mode_toggle_error: Nie udało się przełączyć trybu synchronizacji

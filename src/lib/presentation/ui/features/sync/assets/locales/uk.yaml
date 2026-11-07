@@ -1,8 +1,6 @@
 sync:
   desktop:
     mode_title: Режим синхронізації робочого столу
-    sync_mode_start_menu: "Припинити прийом підключень"
-    sync_mode_stop_menu: "Приймати підключення"
     client_mode_started: "Підключення більше не приймаються"
     client_mode_stopped: "Прийом підключень знову увімкнено"
     sync_mode_toggle_error: Не вдалося перемкнути режим синхронізації

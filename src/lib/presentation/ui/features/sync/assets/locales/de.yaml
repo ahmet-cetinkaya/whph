@@ -165,8 +165,6 @@ sync:
       und mit diesem Gerät zu synchronisieren.
   desktop:
     mode_title: Desktop-Synchronisierungsmodus
-    sync_mode_start_menu: "Keine Verbindungen mehr annehmen"
-    sync_mode_stop_menu: "Verbindungen annehmen"
     client_mode_started: "Nimmt keine Verbindungen mehr an"
     client_mode_stopped: "Nimmt wieder Verbindungen an"
     sync_mode_toggle_error: Sync-Modus konnte nicht umgeschaltet werden

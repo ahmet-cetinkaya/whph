@@ -1,8 +1,6 @@
 sync:
   desktop:
     mode_title: Mod sincronizare desktop
-    sync_mode_start_menu: "Nu mai accepta conexiuni"
-    sync_mode_stop_menu: "Acceptă conexiuni"
     client_mode_started: "Nu mai acceptă conexiuni"
     client_mode_stopped: "Acceptă din nou conexiuni"
     sync_mode_toggle_error: Eșec la comutarea modului de sincronizare
