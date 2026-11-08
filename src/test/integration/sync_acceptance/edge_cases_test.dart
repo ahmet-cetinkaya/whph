@@ -32,6 +32,10 @@ import 'support2/services.dart';
 const Duration _pause = Duration(milliseconds: 5);
 const int _backlogNotes = 1500;
 const int _backlogBatch = 100;
+
+/// Four sessions move 1500 notes through the real change store; that takes ~20 s
+/// on a fast machine and more on a CI runner, so it cannot use the 30 s default.
+const Timeout _backlogTimeout = Timeout(Duration(minutes: 3));
 const int _fullDatabaseNotes = 300;
 const int _slackPages = 3;
 const int _unlimitedPages = 1073741823;
@@ -142,7 +146,8 @@ void main() {
     expect(await sameContent(lab.devices), isTrue);
   });
 
-  test('EC-04 large backlog across sessions: $_backlogNotes items arrive once each after cut sessions', () async {
+  test('EC-04 large backlog across sessions: $_backlogNotes items arrive once each after cut sessions',
+      timeout: _backlogTimeout, () async {
     final lab = await _threeDevices(['A', 'B'], config: _smallBatches(_backlogBatch));
     final [a, b] = lab.devices;
     await a.db.sql('''
