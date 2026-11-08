@@ -1,6 +1,6 @@
 import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_tags_repository.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/habits/habit_tag.dart';
 import 'package:whph/core/application/features/habits/constants/habit_translation_keys.dart';
@@ -23,7 +23,8 @@ class AddHabitTagCommandResponse {
   });
 }
 
-class AddHabitTagCommandHandler implements IRequestHandler<AddHabitTagCommand, AddHabitTagCommandResponse> {
+class AddHabitTagCommandHandler
+    implements IRequestHandler<AddHabitTagCommand, AddHabitTagCommandResponse> {
   final IHabitTagsRepository _habitTagRepository;
 
   AddHabitTagCommandHandler({required IHabitTagsRepository habitTagRepository})
@@ -31,17 +32,20 @@ class AddHabitTagCommandHandler implements IRequestHandler<AddHabitTagCommand, A
 
   @override
   Future<AddHabitTagCommandResponse> call(AddHabitTagCommand request) async {
-    if (await _habitTagRepository.anyByHabitIdAndTagId(request.habitId, request.tagId)) {
-      throw BusinessException('Habit tag already exists', HabitTranslationKeys.habitTagAlreadyExistsError);
+    if (await _habitTagRepository.anyByHabitIdAndTagId(
+        request.habitId, request.tagId)) {
+      throw BusinessException('Habit tag already exists',
+          HabitTranslationKeys.habitTagAlreadyExistsError);
     }
 
     final habitTag = HabitTag(
-      id: KeyHelper.generateStringId(),
+      id: syncIdentityId(
+          identityKindHabitTag, [request.habitId, request.tagId]),
       createdDate: DateTime.now().toUtc(),
       habitId: request.habitId,
       tagId: request.tagId,
     );
-    await _habitTagRepository.add(habitTag);
+    await _habitTagRepository.upsertRevive(habitTag);
 
     return AddHabitTagCommandResponse(
       id: habitTag.id,

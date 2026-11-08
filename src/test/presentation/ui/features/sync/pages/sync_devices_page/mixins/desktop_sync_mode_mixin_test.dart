@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/features/sync/models/desktop_sync_mode.dart';
-import 'package:whph/infrastructure/desktop/features/sync/desktop_sync_service.dart';
+import 'package:whph/infrastructure/desktop/features/sync/desktop_lan_sync_adapter.dart';
 import 'package:whph/presentation/ui/features/sync/pages/sync_devices_page/mixins/desktop_sync_mode_mixin.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 
@@ -32,13 +32,13 @@ class FakeSettingRepository extends Fake implements ISettingRepository {
   }
 }
 
-class MockDesktopSyncService extends Mock implements DesktopSyncService {
+class MockDesktopLanSyncAdapter extends Mock implements DesktopLanSyncAdapter {
   @override
-  Future<void> switchToMode(DesktopSyncMode? mode) {
+  Future<bool> applyMode(DesktopSyncMode? mode) {
     return super.noSuchMethod(
-      Invocation.method(#switchToMode, [mode]),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future<void>.value(),
+      Invocation.method(#applyMode, [mode]),
+      returnValue: Future<bool>.value(true),
+      returnValueForMissingStub: Future<bool>.value(true),
     );
   }
 }
@@ -48,14 +48,14 @@ class TestDesktopSyncModeWidget extends StatefulWidget {
   final Mediator mediator;
   final ITranslationService translationService;
   final ISettingRepository settingRepository;
-  final DesktopSyncService desktopSyncService;
+  final DesktopLanSyncAdapter desktopLanSyncAdapter;
 
   const TestDesktopSyncModeWidget({
     super.key,
     required this.mediator,
     required this.translationService,
     required this.settingRepository,
-    required this.desktopSyncService,
+    required this.desktopLanSyncAdapter,
   });
 
   @override
@@ -70,7 +70,7 @@ class TestDesktopSyncModeWidgetState extends State<TestDesktopSyncModeWidget> wi
   @override
   ISettingRepository get settingRepository => widget.settingRepository;
   @override
-  DesktopSyncService? get desktopSyncService => widget.desktopSyncService;
+  DesktopLanSyncAdapter? get desktopLanSyncAdapter => widget.desktopLanSyncAdapter;
 
   bool _mockIsServerMode = false;
   @override
@@ -88,14 +88,14 @@ void main() {
   late MockMediator mockMediator;
   late FakeTranslationService fakeTranslationService;
   late FakeSettingRepository fakeSettingRepository;
-  late MockDesktopSyncService mockDesktopSyncService;
+  late MockDesktopLanSyncAdapter mockDesktopLanSyncAdapter;
 
   setUp(() {
     mockMediator = MockMediator();
     fakeTranslationService = FakeTranslationService();
     fakeSettingRepository = FakeSettingRepository();
     fakeSettingRepository.setReturn(null); // Ensure it returns null
-    mockDesktopSyncService = MockDesktopSyncService();
+    mockDesktopLanSyncAdapter = MockDesktopLanSyncAdapter();
   });
 
   // Helper to pump widget
@@ -105,7 +105,7 @@ void main() {
         mediator: mockMediator,
         translationService: fakeTranslationService,
         settingRepository: fakeSettingRepository,
-        desktopSyncService: mockDesktopSyncService,
+        desktopLanSyncAdapter: mockDesktopLanSyncAdapter,
       ),
     ));
   }
@@ -115,7 +115,7 @@ void main() {
   // However, assuming we are running tests on a platform that might be considered desktop or we can try to rely on logic.
   // Actually, 'acore' package usually handles this. If this test runs on linux, isDesktop should be true.
 
-  testWidgets('loadDesktopSyncModePreference requests server mode when no setting exists', (WidgetTester tester) async {
+  testWidgets('loadDesktopSyncModePreference applies server mode when no setting exists', (WidgetTester tester) async {
     // Arrange
     fakeSettingRepository.setReturn(null); // Ensure null is returned
 
@@ -131,7 +131,7 @@ void main() {
 
     // Assert
     // We expect it to default to server mode
-    verify(mockDesktopSyncService.switchToMode(DesktopSyncMode.server)).called(1);
+    verify(mockDesktopLanSyncAdapter.applyMode(DesktopSyncMode.server)).called(1);
     expect(state.desktopSyncMode, DesktopSyncMode.server);
     expect(state.isServerMode, true);
   });

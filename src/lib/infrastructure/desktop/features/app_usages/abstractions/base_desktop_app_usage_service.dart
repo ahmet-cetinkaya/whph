@@ -16,18 +16,23 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
     super.appUsageTagRuleRepository,
     super.appUsageTagRepository,
     super.appUsageFilterService,
+    super.deviceIds,
   );
 
   @protected
   Future<String?> getActiveWindow();
 
   @override
-  Future<void> startTracking({ApplicationMutationGuard? authorizeCommit}) async {
+  Future<void> startTracking(
+      {ApplicationMutationGuard? authorizeCommit}) async {
     await ensureMutationAuthorized(authorizeCommit);
     _intervalTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      String? currentWindow = await getActiveWindow(); // <windowTitle>,<windowProcess>,<duration>
+      String? currentWindow =
+          await getActiveWindow(); // <windowTitle>,<windowProcess>,<duration>
 
-      if (currentWindow == null || currentWindow.trim().isEmpty || currentWindow == ',') {
+      if (currentWindow == null ||
+          currentWindow.trim().isEmpty ||
+          currentWindow == ',') {
         _consecutiveFailures++;
         if (_consecutiveFailures > 10 && isTrackingActiveWindowWorking.value) {
           isTrackingActiveWindowWorking.value = false;
@@ -42,17 +47,20 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
 
       if (currentWindow != _activeDesktopWindowOutput) {
         if (_activeDesktopWindowOutput.isNotEmpty) {
-          List<String> activeWindowOutputSections = _activeDesktopWindowOutput.split(',');
+          List<String> activeWindowOutputSections =
+              _activeDesktopWindowOutput.split(',');
           String windowTitle = activeWindowOutputSections[0];
           String windowProcess = activeWindowOutputSections[1];
 
           const unknownProcessName = 'unknown';
-          String appName = windowProcess.isNotEmpty && windowProcess != unknownProcessName
-              ? windowProcess
-              : _extractAppNameFromTitle(windowTitle);
+          String appName =
+              windowProcess.isNotEmpty && windowProcess != unknownProcessName
+                  ? windowProcess
+                  : _extractAppNameFromTitle(windowTitle);
 
           await saveTimeRecord(appName, _activeDesktopWindowTime);
-          Logger.debug('Saving time record for $appName: $_activeDesktopWindowTime seconds');
+          Logger.debug(
+              'Saving time record for $appName: $_activeDesktopWindowTime seconds');
         }
 
         _activeDesktopWindowOutput = currentWindow;
@@ -64,7 +72,16 @@ abstract class BaseDesktopAppUsageService extends BaseAppUsageService {
   }
 
   String _extractAppNameFromTitle(String windowTitle) {
-    final commonSeparators = [' - ', ' | ', ' :: ', ' • ', ' › ', ' » ', ' — ', ' – '];
+    final commonSeparators = [
+      ' - ',
+      ' | ',
+      ' :: ',
+      ' • ',
+      ' › ',
+      ' » ',
+      ' — ',
+      ' – '
+    ];
     for (var separator in commonSeparators) {
       if (windowTitle.contains(separator)) {
         var parts = windowTitle.split(separator);

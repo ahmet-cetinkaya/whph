@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_cascade_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:whph/core/application/features/tasks/commands/delete_task_command.dart';
@@ -27,6 +28,7 @@ void main() {
       taskRepository: mockTaskRepository,
       taskTagRepository: mockTaskTagRepository,
       taskTimeRecordRepository: mockTaskTimeRecordRepository,
+      syncCascadeService: _NoopSyncCascadeService(),
     );
   });
 
@@ -536,4 +538,13 @@ void main() {
       });
     });
   });
+}
+
+
+class _NoopSyncCascadeService implements ISyncCascadeService {
+  @override
+  Future<T> withCause<T>(
+      String causeTable, String causePk, Future<T> Function() operation) {
+    return operation();
+  }
 }

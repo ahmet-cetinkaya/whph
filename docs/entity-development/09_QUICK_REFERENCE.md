@@ -52,7 +52,7 @@ reference during implementation.
 
 ## Sync Integration ✓ (Recommended)
 
-- [ ] Field added to `PaginatedSyncDataDto`
+- [ ] Table registered in `syncTablePolicies` (see 05_SYNC_INTEGRATION.md)
 - [ ] `toJson()` updated in DTO
 - [ ] `fromJson()` updated in DTO
 - [ ] Registered in `SyncConfigurationService`

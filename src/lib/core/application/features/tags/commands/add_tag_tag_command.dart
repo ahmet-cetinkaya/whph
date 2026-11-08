@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/tags/services/abstraction/i_tag_tag_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tags/tag_tag.dart';
@@ -38,12 +38,12 @@ class AddTagTagCommandHandler implements IRequestHandler<AddTagTagCommand, AddTa
     }
 
     final tagTag = TagTag(
-      id: KeyHelper.generateStringId(),
+      id: syncIdentityId(identityKindTagTag, [request.primaryTagId, request.secondaryTagId]),
       createdDate: DateTime.now().toUtc(),
       primaryTagId: request.primaryTagId,
       secondaryTagId: request.secondaryTagId,
     );
-    await _tagTagRepository.add(tagTag);
+    await _tagTagRepository.upsertRevive(tagTag);
 
     return AddTagTagCommandResponse(
       id: tagTag.id,

@@ -46,7 +46,7 @@ class NetworkInterfaceService implements INetworkInterfaceService {
       final interfaces = await getActiveNetworkInterfaces();
       return interfaces.map((interface) => interface.ipAddress).toList();
     } catch (e) {
-      Logger.error('Failed to get local IP addresses: $e');
+      Logger.error('Failed to get local IP addresses: ${e.runtimeType}');
       return [];
     }
   }
@@ -63,7 +63,7 @@ class NetworkInterfaceService implements INetworkInterfaceService {
           await _addMobileNetworkInterfaces(networkInterfaces);
         }
       } catch (e) {
-        Logger.debug('PlatformUtils not available (likely test environment): $e');
+        Logger.debug('PlatformUtils not available (likely test environment): ${e.runtimeType}');
       }
 
       final windowsMetadata = await _getWindowsInterfaceMetadata();
@@ -79,7 +79,7 @@ class NetworkInterfaceService implements INetworkInterfaceService {
           'Found ${sortedInterfaces.length} network interfaces: ${sortedInterfaces.map((i) => '${i.name}(${i.ipAddress})').join(', ')}');
       return sortedInterfaces;
     } catch (e, st) {
-      Logger.error('[$_activeInterfacesErrorId] Failed to get active network interfaces: $e\n$st');
+      Logger.error('[$_activeInterfacesErrorId] Failed to get active network interfaces: ${e.runtimeType}\n$st');
       return [];
     }
   }
@@ -148,7 +148,7 @@ class NetworkInterfaceService implements INetworkInterfaceService {
         Logger.debug('Connected to WiFi network: $wifiName');
       }
     } catch (e) {
-      Logger.debug('Mobile network info not available: $e');
+      Logger.debug('Mobile network info not available: ${e.runtimeType}');
     }
   }
 
@@ -173,7 +173,7 @@ class NetworkInterfaceService implements INetworkInterfaceService {
         }
       }
     } catch (e, st) {
-      Logger.error('[$_desktopInterfacesErrorId] Desktop network interface detection failed: $e\n$st');
+      Logger.error('[$_desktopInterfacesErrorId] Desktop network interface detection failed: ${e.runtimeType}\n$st');
     }
   }
 
@@ -355,10 +355,10 @@ $metric = Get-NetIPInterface -AddressFamily IPv4 | Select-Object InterfaceAlias,
 
       return _parseWindowsInterfaceMetadata(output);
     } on TimeoutException catch (e) {
-      Logger.error('[$_windowsMetadataErrorId] Windows interface metadata query timed out: $e');
+      Logger.error('[$_windowsMetadataErrorId] Windows interface metadata query timed out: ${e.runtimeType}');
       return null;
     } catch (e, st) {
-      Logger.error('[$_windowsMetadataErrorId] Windows interface metadata query failed: $e\n$st');
+      Logger.error('[$_windowsMetadataErrorId] Windows interface metadata query failed: ${e.runtimeType}\n$st');
       return null;
     }
   }
@@ -384,7 +384,7 @@ $metric = Get-NetIPInterface -AddressFamily IPv4 | Select-Object InterfaceAlias,
     try {
       parsed = jsonDecode(jsonOutput);
     } catch (e, st) {
-      Logger.error('[$_windowsMetadataParseErrorId] Failed to parse Windows interface metadata JSON: $e\n$st');
+      Logger.error('[$_windowsMetadataParseErrorId] Failed to parse Windows interface metadata JSON: ${e.runtimeType}\n$st');
       return {};
     }
 

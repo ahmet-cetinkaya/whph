@@ -17,6 +17,7 @@ pkill -9 whph 2>/dev/null || true
 # Parse arguments
 SKIP_FLUTTER=false
 SKIP_CPP=false
+SKIP_PACKAGES=false
 
 for arg in "$@"; do
 	case $arg in
@@ -25,6 +26,9 @@ for arg in "$@"; do
 		;;
 	--skip-cpp | --skip-native)
 		SKIP_CPP=true
+		;;
+	--skip-packages)
+		SKIP_PACKAGES=true
 		;;
 	esac
 done
@@ -106,6 +110,30 @@ if [ "$SKIP_CPP" = false ]; then
 				exit 1
 			fi
 		done
+	fi
+fi
+
+# 3. Run pure-Dart package tests (sim-soak is excluded; run it explicitly)
+if [ "$SKIP_PACKAGES" = false ]; then
+	if command -v fvm &>/dev/null; then
+		DART_CMD=(fvm dart)
+	elif command -v dart &>/dev/null; then
+		DART_CMD=(dart)
+	else
+		DART_CMD=()
+	fi
+
+	if [ ${#DART_CMD[@]} -eq 0 ]; then
+		acore_log_warning "Dart/FVM command not found, skipping whph_sync_core tests."
+	else
+		acore_log_section "Running whph_sync_core tests"
+		cd "$PROJECT_ROOT/packages/whph_sync_core"
+		"${DART_CMD[@]}" test --exclude-tags sim-soak || {
+			acore_log_error "whph_sync_core tests failed"
+			exit 1
+		}
+		acore_log_success "whph_sync_core tests passed"
+		cd "$PROJECT_ROOT"
 	fi
 fi
 

@@ -10,6 +10,7 @@ import 'package:whph/core/application/shared/services/mcp_restore_barrier.dart';
 import 'package:whph/infrastructure/persistence/features/notes/repositories/drift_note_repository.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/database_backup_service.dart';
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_context.dart';
+import 'package:whph/infrastructure/persistence/shared/contexts/drift/sqlite_connection_setup.dart';
 
 void main() {
   late Directory temporaryDirectory;
@@ -20,7 +21,10 @@ void main() {
     temporaryDirectory = await Directory.systemTemp.createTemp('whph_restore_barrier_');
     barrier = McpRestoreBarrier();
     database = AppDatabase.withExecutor(
-      NativeDatabase(File(p.join(temporaryDirectory.path, 'source.sqlite'))),
+      NativeDatabase(
+        File(p.join(temporaryDirectory.path, 'source.sqlite')),
+        setup: configureSqliteConnection,
+      ),
       restoreBarrier: barrier,
     );
     await database.customStatement('CREATE TABLE IF NOT EXISTS barrier_probe (value INTEGER NOT NULL)');

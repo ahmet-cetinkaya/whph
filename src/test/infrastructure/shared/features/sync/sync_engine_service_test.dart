@@ -1,0 +1,412 @@
+// T23 acceptance 2, 3, 4 and 7: the sync engine of the application layer over
+// real Drift devices, key files and sessions. Each failure shows its category
+// and leaves the last successful sync time alone (FR-016); a malformed item is
+// rejected (FR-015); the same item failing in 3 consecutive sessions raises
+// the flag (FR-017); edits made while the peer was away go out in the next
+// successful session (FR-008, PB-4).
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:whph/core/application/features/sync/models/sync_result_category.dart';
+import 'package:whph/core/application/features/sync/models/sync_status.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_upgrade_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_membership_service.dart';
+import 'package:whph/core/application/features/sync/services/sync_progress_tracker.dart';
+import 'package:whph/infrastructure/persistence/features/sync/services/sync_upgrade_job.dart';
+import 'package:whph/infrastructure/shared/features/sync/drift_sync_session_host.dart';
+import 'package:whph/infrastructure/shared/features/sync/file_sync_key_store.dart';
+import 'package:whph/infrastructure/shared/utils/owner_only_file_utils.dart';
+import 'package:whph_sync_core/whph_sync_core.dart';
+
+import 'drift_session_test_support.dart';
+import 'sync_app_test_support.dart';
+import 'sync_security_test_support.dart';
+
+/// Reads the phase from the real [job] but only counts the runs the app would start.
+class _DeferredRunUpgradeService implements ISyncUpgradeService {
+  final SyncUpgradeJob job;
+
+  _DeferredRunUpgradeService(this.job);
+
+  @override
+  Future<SyncUpgradeProgress> getProgress() => job.getProgress();
+
+  @override
+  Future<void> run() async {}
+}
+
+const int _flagAfterSessions = 3;
+const String _poisonTitle = 'poison';
+
+void main() {
+  late Directory scratch;
+
+  setUp(() async => scratch = await Directory.systemTemp.createTemp('sync-engine-'));
+  tearDown(() => scratch.delete(recursive: true));
+
+  Future<DriftEngineDevice> openPaired(String name, {DriftEngineDevice? inviter, SessionHooks? hooks}) async {
+    final device = await DriftEngineDevice.open(name, scratch, hooks: hooks ?? const SessionHooks());
+    addTearDown(device.close);
+    if (inviter != null) await pairDevices(inviter.security, device.security);
+    return device;
+  }
+
+  /// A and B paired, A the local side; [remoteHooks] act on what B sends.
+  Future<EngineFixture> pairFixture({SessionHooks? remoteHooks}) async {
+    final a = await openPaired('A');
+    final b = await openPaired('B', inviter: a, hooks: remoteHooks);
+    return EngineFixture.create(a, b);
+  }
+
+  test('an unfinished upgrade skips the round and is started again', () async {
+    final a = await openPaired('A');
+    final b = await openPaired('B', inviter: a);
+    final upgrade = CountingUpgradeService(phase: SyncUpgradePhase.reauthor);
+    final fixture = await EngineFixture.create(a, b, upgradeService: upgrade);
+
+    final report = await fixture.engine.syncAll();
+
+    expect(report.skipped, isTrue);
+    expect(upgrade.runCount, 1);
+  });
+
+  test('a group switch leaves sync skipped until the real upgrade job has finished', () async {
+    final a = await openPaired('A');
+    final switcher = await SecurityDevice.open('C', scratch);
+    addTearDown(switcher.close);
+    final job = SyncUpgradeJob(switcher.database.db);
+    final deferredRun = _DeferredRunUpgradeService(job);
+    final c = DriftEngineDevice.over(switcher, upgradeService: deferredRun);
+    await openPaired('D', inviter: c);
+    await pairDevices(a.security, c.security, confirmGroupSwitch: true);
+    final fixture = await EngineFixture.create(c, a, upgradeService: deferredRun);
+
+    expect((await job.getProgress()).isDone, isFalse);
+    expect((await fixture.engine.syncAll()).skipped, isTrue);
+
+    await job.run();
+
+    expect((await fixture.engine.syncAll()).skipped, isFalse);
+  });
+
+  group('sync progress', () {
+    test('a session reports its peer, a rising share up to 100% and then goes idle', () async {
+      final a = await openPaired('A');
+      final b = await openPaired('B', inviter: a);
+      await a.security.database.insertNote('from-a', 'out-1');
+      await b.security.database.insertNote('from-b', 'in-1');
+      final tracker = SyncProgressTracker();
+      final host = DriftSyncSessionHost(
+        device: a.device,
+        platform: 'test',
+        appVersion: '0',
+        progress: tracker,
+      );
+      final fixture = await EngineFixture.create(a, b, host: host, progress: tracker);
+      final statuses = <SyncStatus>[];
+      final subscription = tracker.changes.listen(statuses.add);
+
+      final report = await fixture.syncOnce();
+      await subscription.cancel();
+
+      expect(report.result, isA<SessionComplete>(), reason: '${report.result}');
+      expect(statuses.first.currentDeviceId, b.memberId);
+      expect(statuses.first.progress, isNull);
+      final shares = [
+        for (final status in statuses)
+          if (status.progress != null) status.progress!
+      ];
+      expect(shares, isNotEmpty);
+      expect(shares, [...shares]..sort());
+      expect(shares.last, 1.0);
+      expect(statuses.last.isIdle, isTrue);
+    });
+
+    test('a session that cannot start still ends idle', () async {
+      final fixture = await pairFixture();
+      final tracker = SyncProgressTracker();
+      final unreachable = await EngineFixture.create(fixture.local, fixture.remote, progress: tracker);
+      unreachable.connector.reachable = false;
+
+      await unreachable.syncOnce();
+
+      expect(tracker.current.isIdle, isTrue);
+    });
+  });
+
+  group('FR-016: every failure shows its category and keeps the last success', () {
+    late EngineFixture fixture;
+    late DateTime firstSuccess;
+
+    setUp(() async {
+      fixture = await pairFixture();
+      final report = await fixture.syncOnce();
+      expect(report.result, isA<SessionComplete>(), reason: '${report.result}');
+      expect(report.category, isNull);
+      firstSuccess = (await fixture.lastSuccess())!;
+    });
+
+    test('unreachable peer: not reachable', () async {
+      fixture.connector.reachable = false;
+
+      final report = await fixture.syncOnce();
+
+      expect(report.category, SyncResultCategory.notReachable);
+      expect(await fixture.lastResult(), SyncResultCategory.notReachable);
+      expect(await fixture.lastSuccess(), firstSuccess);
+    });
+
+    test('auth refused (the peer removed this device): needs re-pairing', () async {
+      await fixture.remote.security.service.removeMember(fixture.local.memberId);
+
+      final report = await fixture.syncOnce();
+
+      expect(report.category, SyncResultCategory.needsRepairing, reason: '${report.result}');
+      expect(await fixture.lastSuccess(), firstSuccess);
+    });
+
+    test('update_required: needs update', () async {
+      final scripted = await EngineFixture.create(
+        fixture.local,
+        fixture.remote,
+        host: ScriptedHost(SessionFailed(SessionStats(), fixture.remote.memberId, SessionFailure.needsUpdate)),
+      );
+
+      final report = await scripted.syncOnce();
+
+      expect(report.category, SyncResultCategory.needsUpdate);
+      expect(await scripted.lastSuccess(), firstSuccess);
+    });
+
+    test('partial session: some items failed, last success unchanged', () async {
+      final scripted = await EngineFixture.create(
+        fixture.local,
+        fixture.remote,
+        host: ScriptedHost(SessionPartial(SessionStats(), fixture.remote.memberId, {PartialReason.itemsFailed})),
+      );
+
+      final report = await scripted.syncOnce();
+
+      expect(report.category, SyncResultCategory.someItemsFailed);
+      expect(await scripted.lastSuccess(), firstSuccess);
+    });
+
+    test('a peer that is busy leaves the status as it was', () async {
+      fixture.connector.reachable = false;
+      await fixture.syncOnce();
+      final busy = await EngineFixture.create(
+        fixture.local,
+        fixture.remote,
+        host: ScriptedHost(SessionFailed(SessionStats(), fixture.remote.memberId, SessionFailure.busy)),
+      );
+
+      await busy.syncOnce();
+
+      expect(await busy.lastResult(), SyncResultCategory.notReachable);
+    });
+  });
+
+  test('FR-016: a sent-mark write failure ends storage error; incoming changes still apply', () async {
+    final a = await DriftEngineDevice.open('A', scratch);
+    addTearDown(a.close);
+    final b = await openPaired('B', inviter: a);
+    var failWrites = false;
+    final failing = await _withSentMarkFailure(a.security, () => failWrites);
+    final deviceA = DriftEngineDevice.over(failing);
+    final fixture = await EngineFixture.create(deviceA, b);
+    expect((await fixture.syncOnce()).result, isA<SessionComplete>());
+    final firstSuccess = (await fixture.lastSuccess())!;
+    await a.security.database.insertNote('from-a', 'out-1');
+    await b.security.database.insertNote('from-b', 'in-1');
+    failWrites = true;
+
+    final report = await fixture.syncOnce();
+
+    expect(report.category, SyncResultCategory.storageError, reason: '${report.result}');
+    expect(await noteTitles(deviceA), contains('in-1'));
+    expect(await noteTitles(b), isNot(contains('out-1')));
+    expect(await fixture.lastSuccess(), firstSuccess);
+
+    failWrites = false;
+    final retry = await fixture.syncOnce();
+    expect(retry.category, isNull);
+    expect(await noteTitles(b), contains('out-1'));
+  });
+
+  group('FR-015: a peer item that is malformed is rejected', () {
+    ChangeBatchMessage tamper(ChangeBatchMessage batch, ChangeEnvelope Function(ChangeEnvelope) alter) =>
+        ChangeBatchMessage(
+          batchId: batch.batchId,
+          ranges: batch.ranges,
+          manifests: batch.manifests,
+          envelopes: [for (final e in batch.envelopes) e.pk == 'victim' && e.col == 'title' ? alter(e) : e],
+        );
+
+    ChangeEnvelope withCiphertext(ChangeEnvelope e, Uint8List ciphertext) => ChangeEnvelope(
+          tbl: e.tbl,
+          pk: e.pk,
+          col: e.col,
+          hlc: e.hlc,
+          node: e.node,
+          origin: e.origin,
+          originSeq: e.originSeq,
+          cause: e.cause,
+          epoch: e.epoch,
+          nonce: e.nonce,
+          ciphertext: ciphertext,
+          keyWrap: e.keyWrap,
+          protocolVersion: e.protocolVersion,
+        );
+
+    Future<void> expectRejectedAndUnchanged(EngineFixture fixture) async {
+      await fixture.remote.security.database.insertNote('victim', 'tampered');
+      await fixture.remote.security.database.insertNote('fine', 'kept');
+
+      final report = await fixture.syncOnce();
+
+      expect(report.category, SyncResultCategory.rejectedItems,
+          reason: '${report.result} ${fixture.connector.responderOutcomes}');
+      final titles = await noteTitles(fixture.local);
+      expect(titles, contains('kept'));
+      expect(titles, isNot(contains('tampered')), reason: 'the rejected item changed nothing');
+      expect(await fixture.lastResult(), SyncResultCategory.rejectedItems);
+    }
+
+    test('malformed: an altered ciphertext', () async {
+      final fixture = await pairFixture(
+        remoteHooks: SessionHooks(
+          outgoingBatch: (batch) => tamper(batch, (e) => withCiphertext(e, Uint8List.fromList(e.ciphertext)..[0] ^= 1)),
+        ),
+      );
+
+      await expectRejectedAndUnchanged(fixture);
+    });
+
+    test('oversized: a ciphertext at the size limit that does not open', () async {
+      final fixture = await pairFixture(
+        remoteHooks: SessionHooks(
+          outgoingBatch: (batch) =>
+              tamper(batch, (e) => withCiphertext(e, Uint8List(SyncLimits.maxEnvelopeCiphertextBytes))),
+        ),
+      );
+
+      await expectRejectedAndUnchanged(fixture);
+    });
+  });
+
+  test('FR-017: the flag rises after exactly 3 consecutive failing sessions for one item', () async {
+    final fixture = await pairFixture();
+    await fixture.local.security.database.sql('''
+CREATE TRIGGER poison_insert BEFORE INSERT ON note_table WHEN NEW.title = '$_poisonTitle'
+BEGIN SELECT RAISE(ABORT, 'poison'); END''');
+    await fixture.local.security.database.sql('''
+CREATE TRIGGER poison_update BEFORE UPDATE ON note_table WHEN NEW.title = '$_poisonTitle'
+BEGIN SELECT RAISE(ABORT, 'poison'); END''');
+    await fixture.remote.security.database.insertNote('stuck', _poisonTitle);
+    final flags = <bool>[];
+
+    for (var session = 1; session <= _flagAfterSessions; session++) {
+      final report = await fixture.syncOnce();
+      expect(report.category, SyncResultCategory.someItemsFailed, reason: 'session $session: ${report.result}');
+      flags.add(report.itemsCannotBeApplied);
+    }
+
+    expect(flags, [false, false, true], reason: 'not after 1 or 2 sessions, after the 3rd');
+    expect(await noteTitles(fixture.local), isNot(contains(_poisonTitle)));
+
+    await fixture.local.security.database.sql('DROP TRIGGER poison_insert');
+    await fixture.local.security.database.sql('DROP TRIGGER poison_update');
+    final healed = await fixture.syncOnce();
+    expect(healed.itemsCannotBeApplied, isFalse);
+    expect(await noteTitles(fixture.local), contains(_poisonTitle));
+  });
+
+  test('FR-008, PB-4: edits made while the peer was away go out in the next successful session', () async {
+    final fixture = await pairFixture();
+    expect((await fixture.syncOnce()).category, isNull);
+    fixture.connector.reachable = false;
+    await fixture.local.security.database.insertNote('offline-1', 'written offline 1');
+    await fixture.local.security.database.setTitle('offline-1', 'edited offline');
+    await fixture.local.security.database.insertNote('offline-2', 'written offline 2');
+
+    expect((await fixture.syncOnce()).category, SyncResultCategory.notReachable);
+    expect(await noteTitles(fixture.remote), isNot(contains('edited offline')));
+
+    fixture.connector.reachable = true;
+    final report = await fixture.syncOnce();
+
+    expect(report.category, isNull, reason: '${report.result}');
+    expect(await noteTitles(fixture.remote), containsAll({'edited offline', 'written offline 2'}));
+  });
+
+  group('reverse sync: a note edited on the joiner (phone) reaches the inviter (desktop)', () {
+    const originalTitle = 'shared note';
+    const joinerEditTitle = 'edited on the phone';
+    const inviterEditTitle = 'edited on the desktop';
+
+    /// The inviter is [EngineFixture.local]'s counterpart: [initiatorIsJoiner]
+    /// picks which side opens the session.
+    Future<(EngineFixture, DriftEngineDevice, DriftEngineDevice)> syncedPair({required bool initiatorIsJoiner}) async {
+      final inviter = await openPaired('inviter');
+      final joiner = await openPaired('joiner', inviter: inviter);
+      final fixture =
+          initiatorIsJoiner ? await EngineFixture.create(joiner, inviter) : await EngineFixture.create(inviter, joiner);
+      await inviter.security.database.insertNote('note-1', originalTitle);
+      expect((await fixture.syncOnce()).category, isNull);
+      expect(await noteTitles(joiner), contains(originalTitle));
+      return (fixture, inviter, joiner);
+    }
+
+    for (final initiatorIsJoiner in [true, false]) {
+      final initiator = initiatorIsJoiner ? 'joiner' : 'inviter';
+
+      test('the $initiator initiates and the inviter database shows the joiner edit', () async {
+        final (fixture, inviter, joiner) = await syncedPair(initiatorIsJoiner: initiatorIsJoiner);
+        await joiner.security.database.setTitle('note-1', joinerEditTitle);
+
+        final report = await fixture.syncOnce();
+
+        expect(report.category, isNull, reason: '${report.result}');
+        expect(await noteTitles(inviter), contains(joinerEditTitle));
+        expect(await noteTitles(inviter), isNot(contains(originalTitle)));
+      });
+
+      test('the $initiator initiates and the joiner database shows the inviter edit', () async {
+        final (fixture, inviter, joiner) = await syncedPair(initiatorIsJoiner: initiatorIsJoiner);
+        await inviter.security.database.setTitle('note-1', inviterEditTitle);
+
+        final report = await fixture.syncOnce();
+
+        expect(report.category, isNull, reason: '${report.result}');
+        expect(await noteTitles(joiner), contains(inviterEditTitle));
+      });
+    }
+  });
+}
+
+/// [device] with a key store whose writes of a raised sent mark fail while
+/// [shouldFail] is true; every other write goes through.
+Future<SecurityDevice> _withSentMarkFailure(SecurityDevice device, bool Function() shouldFail) async {
+  late FileSyncKeyStore keyStore;
+  keyStore = FileSyncKeyStore(
+    keyDirectory: Directory('${device.root.path}/data'),
+    ledgerDirectory: Directory('${device.root.path}/state'),
+    writer: OwnerOnlyAtomicWriter(beforeRename: (temporaryPath) async {
+      if (shouldFail() && _raisesSentMark(temporaryPath, keyStore)) throw StateError('simulated ledger failure');
+    }),
+  );
+  device.keyStore = keyStore;
+  device.service =
+      SyncMembershipService(keyStore: keyStore, changeStore: device.database.store, peerStateStore: device.peerStates);
+  await device.service.loadKeyFile();
+  return device;
+}
+
+bool _raisesSentMark(String temporaryPath, FileSyncKeyStore ledger) {
+  final document = jsonDecode(File(temporaryPath).readAsStringSync()) as Map<String, dynamic>;
+  final origins = document['origins'];
+  if (origins is! List || ledger.entries.isEmpty) return false;
+  return (origins.last as Map<String, dynamic>)['max_sent_seq'] as int > ledger.entries.last.maxSentSeq;
+}

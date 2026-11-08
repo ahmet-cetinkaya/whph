@@ -1,0 +1,34 @@
+tags:
+  sim-smoke:
+    timeout: 30m
+  sim-soak:
+    timeout: none
+  # S4 crypto benchmark: skipped in the default run; `fvm dart test -P spike-bench test/spike/`.
+  spike-bench:
+    skip: "S4 benchmark; run with -P spike-bench"
+    timeout: 30m
+
+  # Non-gating diagnostic (full rollback, U11 accepted residual risk): skipped in the default run and
+  # excluded from the gating tags; run with `fvm dart test -P sim-diagnostic test/simulation/`.
+  sim-diagnostic:
+    skip: "non-gating diagnostic; run with -P sim-diagnostic"
+    timeout: 30m
+
+  # Expected to fail until F5 is fixed (relay omits a superseded change; plan T12, U11/F5).
+  # Skipped in the default run; run with `fvm dart test -P f5-pending test/session/`.
+  f5-pending:
+    skip: "F5 open: expected to fail until the F5 fix lands (own task after U11 review)"
+
+presets:
+  f5-pending:
+    tags:
+      f5-pending:
+        skip: false
+  spike-bench:
+    tags:
+      spike-bench:
+        skip: false
+  sim-diagnostic:
+    tags:
+      sim-diagnostic:
+        skip: false

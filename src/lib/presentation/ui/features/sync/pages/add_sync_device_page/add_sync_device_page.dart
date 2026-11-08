@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mediatr/mediatr.dart';
+import 'package:whph/core/application/features/sync/models/sync_pairing_models.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/core/application/features/sync/services/device_handshake_service.dart';
 import 'package:whph/main.dart';
 import 'package:whph/presentation/ui/features/sync/components/manual_connection_button.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_connect_info_dialog.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/components/alternative_methods_footer.dart';
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/components/discovered_device_card.dart';
@@ -10,6 +14,7 @@ import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/co
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/controllers/add_sync_device_controller.dart';
 import 'package:whph/presentation/ui/features/sync/pages/add_sync_device_page/models/discovered_device.dart';
 import 'package:whph/presentation/ui/features/sync/pages/qr_code_scanner_page.dart';
+import 'package:whph/presentation/ui/features/sync/services/sync_pairing_flow.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
@@ -50,38 +55,35 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
   Future<void> _openQRScanner() async {
     HapticFeedback.selectionClick();
 
-    final result = await Navigator.pushNamed(
-      context,
-      QRCodeScannerPage.route,
-    );
+    final scannedText = await QRCodeScannerPage.scan(context);
+    if (scannedText == null || !mounted) return;
 
-    if (result != null && mounted) {
-      widget.onDeviceAdded?.call();
+    final status = await SyncPairingFlow(container.resolve<Mediator>()).pairFromQr(context, scannedText);
+    await _finishPairing(status);
+  }
 
-      // Small delay to ensure callback processing completes
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      if (mounted) {
-        Navigator.pop(context, true);
-      }
-    }
+  Future<void> _pairWithCode(String pairingCode) async {
+    final status = await SyncPairingFlow(container.resolve<Mediator>()).pairFromQr(context, pairingCode);
+    await _finishPairing(status);
   }
 
   Future<void> _handleDeviceConnect(DiscoveredDevice device) async {
-    await _controller.connectToDevice(device, context);
+    final status = await _controller.connectToDevice(device, context);
+    await _finishPairing(status);
+  }
 
-    if (mounted) {
-      // Notify parent that device was added successfully
-      widget.onDeviceAdded?.call();
+  bool get _isServerRunning => container.resolve<ISyncServerControl>().isRunning;
 
-      // Small delay to ensure callback processing completes
-      await Future.delayed(const Duration(milliseconds: 100));
+  Future<void> _showQrCode() => SyncConnectInfoDialog.show(context);
 
-      // Close the add device page and return to sync devices page immediately
-      if (mounted) {
-        Navigator.pop(context, true);
-      }
-    }
+  /// Reports how the pairing ended and closes this page when it paired.
+  Future<void> _finishPairing(SyncPairingStatus status) async {
+    if (!mounted) return;
+    await SyncPairingFlow.showOutcome(context, status);
+    if (!mounted || status.phase != SyncPairingPhase.completed) return;
+
+    widget.onDeviceAdded?.call();
+    Navigator.pop(context, true);
   }
 
   @override
@@ -103,6 +105,16 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
       elevation: 0,
       title: Text(_translationService.translate(SyncTranslationKeys.addSyncDevice)),
       actions: [
+        // Shows this device's pairing QR code for the other device to scan
+        if (_isServerRunning)
+          IconButton(
+            onPressed: _showQrCode,
+            icon: Icon(
+              Icons.qr_code,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            tooltip: _translationService.translate(SyncTranslationKeys.pairingShowQr),
+          ),
         // QR Code Scanner Button (mobile only)
         if (!PlatformUtils.isDesktop)
           IconButton(
@@ -115,6 +127,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
           ),
         // Manual Connection Button
         ManualConnectionButton(
+          onPairWithCode: _pairWithCode,
           onConnect: (DeviceInfo deviceInfo) async {
             try {
               // Create a DiscoveredDevice from the device info retrieved from handshake
@@ -264,6 +277,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
         AlternativeMethodsFooter(
           onQRScan: _openQRScanner,
           onManualConnect: _handleDeviceConnect,
+          onPairWithCode: _pairWithCode,
         ),
       ],
     );
@@ -307,6 +321,7 @@ class _AddSyncDevicePageState extends State<AddSyncDevicePage> {
           AlternativeMethodsFooter(
             onQRScan: _openQRScanner,
             onManualConnect: _handleDeviceConnect,
+            onPairWithCode: _pairWithCode,
           ),
       ],
     );

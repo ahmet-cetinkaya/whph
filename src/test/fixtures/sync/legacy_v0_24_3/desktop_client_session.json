@@ -1,0 +1,86 @@
+{
+  "frames": [
+    {
+      "request": {
+        "type": "client_connect",
+        "data": {
+          "clientId": "legacy-device-1",
+          "clientName": "Legacy Desktop",
+          "platform": "desktop",
+          "requestedServices": [
+            "sync"
+          ],
+          "clientCapabilities": [
+            "paginated_sync"
+          ],
+          "timestamp": "2026-10-24T23:22:51.258023"
+        }
+      },
+      "expectedResponse": {
+        "type": "client_connected",
+        "data": {
+          "success": true,
+          "serverId": "fixture-host-member",
+          "serverName": "Fixture Host",
+          "supportedOperations": [],
+          "timestamp": "2026-01-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "request": {
+        "type": "paginated_sync_start",
+        "data": {
+          "clientId": "legacy-device-1",
+          "serverId": "stub",
+          "timestamp": "2026-10-24T23:22:51.261849"
+        }
+      },
+      "expectedResponse": {
+        "type": "paginated_sync_started",
+        "data": {
+          "success": true,
+          "serverId": "fixture-host-member",
+          "timestamp": "2026-01-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "request": {
+        "type": "paginated_sync_request",
+        "data": {
+          "entityType": "tasks",
+          "pageIndex": 0,
+          "pageSize": 50,
+          "clientId": "legacy-device-1"
+        }
+      },
+      "expectedResponse": {
+        "type": "paginated_sync",
+        "data": {
+          "success": true,
+          "server_type": "lan_server",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "paginatedSyncDataDto": {
+            "appVersion": "0.25.0",
+            "syncDevice": {
+              "id": "",
+              "createdDate": "2026-01-01T00:00:00.000Z",
+              "fromIp": "",
+              "toIp": "",
+              "fromDeviceId": "fixture-host-member",
+              "toDeviceId": ""
+            },
+            "isDebugMode": false,
+            "entityType": "tasks",
+            "pageIndex": 0,
+            "pageSize": 0,
+            "totalPages": 0,
+            "totalItems": 0,
+            "isLastPage": true
+          }
+        }
+      }
+    }
+  ]
+}

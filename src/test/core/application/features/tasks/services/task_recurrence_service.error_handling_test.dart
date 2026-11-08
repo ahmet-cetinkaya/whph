@@ -22,7 +22,8 @@ void main() {
     });
 
     group('handleCompletedRecurringTask Error Scenarios', () {
-      test('should return null when GetTaskQuery throws an exception', () async {
+      test('should return null when GetTaskQuery throws an exception',
+          () async {
         // Arrange
         const taskId = 'task-1';
         const errorMessage = 'Task not found';
@@ -31,7 +32,8 @@ void main() {
         );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
         // Assert
         expect(result, isNull);
@@ -46,7 +48,8 @@ void main() {
         );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
         // Assert
         expect(result, isNull);
@@ -78,7 +81,8 @@ void main() {
         );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
         // Assert
         expect(result, isNull);
@@ -110,7 +114,8 @@ void main() {
         );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
         // Assert
         expect(result, isNull);
@@ -125,7 +130,8 @@ void main() {
           title: 'Recurrence Limit Reached Task',
           completedAt: DateTime.now().toUtc(),
           recurrenceType: RecurrenceType.daily,
-          recurrenceCount: 0, // Count is 0, so no more instances should be created
+          recurrenceCount:
+              0, // Count is 0, so no more instances should be created
           parentTaskId: null,
         );
         mockMediator.addResponse<GetTaskQuery, GetTaskQueryResponse>(
@@ -144,7 +150,8 @@ void main() {
         );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
         // Assert
         expect(result, isNull);
@@ -178,7 +185,8 @@ void main() {
           ),
         );
 
-        mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+        mockMediator
+            .addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => throw Exception('Database connection failed'),
         );
 
@@ -215,7 +223,8 @@ void main() {
           ),
         );
 
-        mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+        mockMediator
+            .addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => GetListTaskTagsQueryResponse(
             items: [],
             totalItemCount: 0,
@@ -230,13 +239,15 @@ void main() {
         );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
         // Assert
         expect(result, isNull);
       });
 
-      test('should handle exception during entire recurrence creation process', () async {
+      test('should handle exception during entire recurrence creation process',
+          () async {
         // Arrange
         const taskId = 'task-1';
         mockMediator.addResponse<GetTaskQuery, GetTaskQueryResponse>(
@@ -252,7 +263,9 @@ void main() {
     });
 
     group('Task Creation Failure Scenarios', () {
-      test('should return null when task creation fails due to validation errors', () async {
+      test(
+          'should return null when task creation fails due to validation errors',
+          () async {
         // Arrange
         const taskId = 'task-1';
         final task = Task(
@@ -278,7 +291,8 @@ void main() {
           ),
         );
 
-        mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+        mockMediator
+            .addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => GetListTaskTagsQueryResponse(
             items: [],
             totalItemCount: 0,
@@ -293,13 +307,15 @@ void main() {
         );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
         // Assert
         expect(result, isNull);
       });
 
-      test('should handle scenario where recurrence end date is reached', () async {
+      test('should handle scenario where recurrence end date is reached',
+          () async {
         // Arrange
         const taskId = 'task-1';
         final now = DateTime.now().toUtc();
@@ -309,7 +325,8 @@ void main() {
           title: 'Task with End Date',
           completedAt: now,
           recurrenceType: RecurrenceType.daily,
-          recurrenceEndDate: now.subtract(const Duration(days: 1)), // End date already passed
+          recurrenceEndDate:
+              now.subtract(const Duration(days: 1)), // End date already passed
           parentTaskId: null,
         );
 
@@ -329,13 +346,15 @@ void main() {
         );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
         // Assert
         expect(result, isNull);
       });
 
-      test('should handle scenario where recurrence count reaches zero', () async {
+      test('should handle scenario where recurrence count reaches zero',
+          () async {
         // Arrange
         const taskId = 'task-1';
         final now = DateTime.now().toUtc();
@@ -345,7 +364,8 @@ void main() {
           title: 'Task with Count Limit',
           completedAt: now,
           recurrenceType: RecurrenceType.daily,
-          recurrenceCount: 1, // Only one occurrence allowed, and this is the last one
+          recurrenceCount:
+              1, // Only one occurrence allowed, and this is the last one
           parentTaskId: null,
         );
 
@@ -364,7 +384,8 @@ void main() {
           ),
         );
 
-        mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+        mockMediator
+            .addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => GetListTaskTagsQueryResponse(
             items: [],
             totalItemCount: 0,
@@ -383,7 +404,8 @@ void main() {
         );
 
         // Create the first recurrence instance
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
         expect(result, isNotNull); // Should create the next instance
 
         // Now try to create another instance with the new task that has recurrenceCount = 0
@@ -403,13 +425,15 @@ void main() {
           ),
         );
 
-        final result2 = await service.handleCompletedRecurringTask('new-task-id', mockMediator);
+        final result2 = await service.handleCompletedRecurringTask(
+            'new-task-id', mockMediator);
         expect(result2, isNull); // Should not create another instance
       });
-      test('should return existing recurrence ID when duplicate instance found in repository', () async {
+      test(
+          'should return existing recurrence ID when duplicate instance found in repository',
+          () async {
         // Arrange
         const taskId = 'task-1';
-        const existingRecurrenceId = 'existing-task-id';
         final task = Task(
           id: taskId,
           createdDate: DateTime.now().toUtc(),
@@ -434,7 +458,8 @@ void main() {
           ),
         );
 
-        mockMediator.addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
+        mockMediator
+            .addResponse<GetListTaskTagsQuery, GetListTaskTagsQueryResponse>(
           (query) => GetListTaskTagsQueryResponse(
             items: [],
             totalItemCount: 0,
@@ -443,28 +468,24 @@ void main() {
           ),
         );
 
-        // Mock Repository to return duplicate
-        mockRepo.getListHandler = (page, size,
-            {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
-          return PaginatedList(
-            items: [
-              Task(
-                id: existingRecurrenceId,
+        // D5: the duplicate check is now a deterministic-id getById lookup.
+        // The occurrence id derives from root + calculated next day, so the
+        // mock answers for any id other than the source task itself.
+        mockRepo.getByIdHandler = (id) => id == taskId
+            ? null
+            : Task(
+                id: id,
                 title: 'Existing Task',
                 createdDate: DateTime.now(),
-              )
-            ],
-            totalItemCount: 1,
-            pageIndex: 0,
-            pageSize: 1,
-          );
-        };
+              );
 
         // Act
-        final result = await service.handleCompletedRecurringTask(taskId, mockMediator);
+        final result =
+            await service.handleCompletedRecurringTask(taskId, mockMediator);
 
-        // Assert
-        expect(result, existingRecurrenceId);
+        // Assert: the deterministic occurrence id (found in the repository).
+        expect(result, isNotNull);
+        expect(result, isNot(taskId));
         // SaveTaskCommand should NOT be called (implied by no handler registered and no crash)
       });
     });
@@ -473,28 +494,42 @@ void main() {
 
 class MockTaskRepository extends Fake implements ITaskRepository {
   Future<PaginatedList<Task>> Function(int, int,
-      {bool includeDeleted, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder})? getListHandler;
+      {bool includeDeleted,
+      CustomWhereFilter? customWhereFilter,
+      List<CustomOrder>? customOrder})? getListHandler;
+  Task? Function(String id)? getByIdHandler;
 
   @override
   Future<PaginatedList<Task>> getList(int pageIndex, int pageSize,
-      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
+      {bool includeDeleted = false,
+      CustomWhereFilter? customWhereFilter,
+      List<CustomOrder>? customOrder}) async {
     if (getListHandler != null) {
       return getListHandler!(pageIndex, pageSize,
-          includeDeleted: includeDeleted, customWhereFilter: customWhereFilter, customOrder: customOrder);
+          includeDeleted: includeDeleted,
+          customWhereFilter: customWhereFilter,
+          customOrder: customOrder);
     }
-    return PaginatedList(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 0);
+    return PaginatedList(
+        items: [], totalItemCount: 0, pageIndex: 0, pageSize: 0);
   }
+
+  @override
+  Future<Task?> getById(Object id, {bool includeDeleted = false}) async =>
+      getByIdHandler?.call(id.toString());
 }
 
 // Mock classes for testing
 class MockMediator implements Mediator {
   final Map<Type, Function> _handlers = {};
 
-  void addHandler<TRequest, TResponse>(TResponse Function(TRequest request) handler) {
+  void addHandler<TRequest, TResponse>(
+      TResponse Function(TRequest request) handler) {
     _handlers[TRequest] = handler;
   }
 
-  void addResponse<TRequest, TResponse>(TResponse Function(TRequest request) responseBuilder) {
+  void addResponse<TRequest, TResponse>(
+      TResponse Function(TRequest request) responseBuilder) {
     _handlers[TRequest] = responseBuilder;
   }
 
@@ -539,17 +574,22 @@ class TestLogger implements ILogger {
   const TestLogger();
 
   @override
-  void debug(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+  void debug(String message,
+      [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void info(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+  void info(String message,
+      [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void warning(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+  void warning(String message,
+      [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void error(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+  void error(String message,
+      [Object? error, StackTrace? stackTrace, String? component]) {}
 
   @override
-  void fatal(String message, [Object? error, StackTrace? stackTrace, String? component]) {}
+  void fatal(String message,
+      [Object? error, StackTrace? stackTrace, String? component]) {}
 }

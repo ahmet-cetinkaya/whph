@@ -33,6 +33,7 @@ settings:
       dell'app installata.
     select_file: Seleziona file
     strategy:
+      paired_note: "Questo dispositivo si sincronizza con altri. Sostituire i dati esistenti non elimina elementi in tutto il gruppo: gli elementi mancanti nel file restano sugli altri dispositivi e tornano su questo alla prossima sincronizzazione."
       merge: Unisci con dati esistenti
       replace: Elimina dati esistenti e aggiungi nuovi
       title: Strategia importazione
@@ -345,6 +346,7 @@ settings:
       title: Reimposta Database
       description: Elimina tutti i dati e reimposta l'applicazione
       dialog:
+        paired_note: "Questo dispositivo si sincronizza con altri. Il ripristino lo rimuove anche dal gruppo di sincronizzazione, quindi dovrai abbinarlo di nuovo in seguito."
         title: Reimposta Database
         warning:
           "Attenzione: Questa azione non può essere annullata. Tutti i tuoi
@@ -469,6 +471,8 @@ settings:
     description:
       Personalizza il comportamento e le preferenze di tracciamento delle
       abitudini
+    save_error: "Errore nel salvataggio delle impostazioni delle abitudini"
+    load_error: "Errore nel caricamento delle impostazioni delle abitudini"
     three_state:
       title: Attiva tracciamento a 3 stati
       description: Alterna tra gli stati Non fatto, Saltato e Completato.

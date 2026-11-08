@@ -83,7 +83,7 @@ runs:
         # Run tests with coverage if enabled
         if [[ "${{ inputs.enable-code-coverage }}" == "true" ]]; then
           echo "Running tests with coverage..."
-          ${{ inputs.flutter-command }} test --coverage --coverage-path=coverage/lcov.info \
+          ${{ inputs.flutter-command }} test --exclude-tags perf-sync --coverage --coverage-path=coverage/lcov.info \
             --reporter=expanded > test-results/unit-tests.log 2>&1 || {
             echo "❌ Unit/Widget tests failed"
             cat test-results/unit-tests.log
@@ -91,7 +91,7 @@ runs:
           }
         else
           echo "Running tests without coverage..."
-          ${{ inputs.flutter-command }} test --reporter=expanded \
+          ${{ inputs.flutter-command }} test --exclude-tags perf-sync --reporter=expanded \
             > test-results/unit-tests.log 2>&1 || {
             echo "❌ Unit/Widget tests failed"
             cat test-results/unit-tests.log
@@ -113,7 +113,7 @@ runs:
         for test_dir in ${{ inputs.test-directories }}; do
           if [[ -d "$test_dir" ]]; then
             echo "Running tests in: $test_dir"
-            ${{ inputs.flutter-command }} test "$test_dir" \
+            ${{ inputs.flutter-command }} test --exclude-tags perf-sync "$test_dir" \
               --reporter=expanded > "test-results/$(basename $test_dir)-tests.log" 2>&1 || {
               echo "❌ Tests in $test_dir failed"
               cat "test-results/$(basename $test_dir)-tests.log"

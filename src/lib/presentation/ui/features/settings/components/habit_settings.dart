@@ -44,7 +44,7 @@ class _HabitSettingsState extends State<HabitSettings> {
       setLoading: (isLoading) => setState(() {
         _isLoading = isLoading;
       }),
-      errorMessage: _translationService.translate('settings.habit.load_error'),
+      errorMessage: _translationService.translate(SettingsTranslationKeys.habitSettingsLoadError),
       operation: () async {
         try {
           final setting = await _mediator.send<GetSettingQuery, Setting?>(

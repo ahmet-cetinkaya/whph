@@ -9,18 +9,21 @@ import 'package:acore/acore.dart';
 
 class ManualConnectionButton extends StatelessWidget {
   final Function(DeviceInfo deviceInfo) onConnect;
+  final Future<void> Function(String pairingCode) onPairWithCode;
   final _themeService = container.resolve<IThemeService>();
   final _translationService = container.resolve<ITranslationService>();
 
   ManualConnectionButton({
     super.key,
     required this.onConnect,
+    required this.onPairWithCode,
   });
 
   /// Static method to show manual connection dialog from anywhere
   static void showManualConnectionDialog(
     BuildContext context, {
     required Function(DeviceInfo deviceInfo) onConnect,
+    required Future<void> Function(String pairingCode) onPairWithCode,
     VoidCallback? onCancel,
   }) async {
     final result = await ResponsiveDialogHelper.showResponsiveDialog<bool>(
@@ -28,6 +31,7 @@ class ManualConnectionButton extends StatelessWidget {
       size: DialogSize.large,
       child: ManualConnectionDialog(
         onConnect: onConnect,
+        onPairWithCode: onPairWithCode,
         onCancel: onCancel,
       ),
     );
@@ -42,6 +46,7 @@ class ManualConnectionButton extends StatelessWidget {
     ManualConnectionButton.showManualConnectionDialog(
       context,
       onConnect: onConnect,
+      onPairWithCode: onPairWithCode,
     );
   }
 

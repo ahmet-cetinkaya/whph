@@ -31,6 +31,7 @@ settings:
       versionen av appen.
     select_file: Välj fil
     strategy:
+      paired_note: "Den här enheten synkroniserar med andra. Att ersätta befintliga data tar inte bort objekt i hela gruppen: objekt som saknas i filen finns kvar på dina andra enheter och kommer tillbaka till den här vid nästa synkronisering."
       merge: Slå samman med befintliga data
       replace: Radera befintliga data och lägg till nya
       title: Importstrategi
@@ -338,6 +339,7 @@ settings:
       title: Återställ Databas
       description: Ta bort all data och återställ applikationen
       dialog:
+        paired_note: "Den här enheten synkroniserar med andra. Återställning tar också bort den från synkroniseringsgruppen, så du måste para ihop den igen efteråt."
         title: Återställ Databas
         warning:
           "Varning: Denna åtgärd kan inte ångras. Alla dina data kommer att
@@ -448,6 +450,8 @@ settings:
   habit:
     title: Vanainställningar
     description: Anpassa vanebeteende och inställningar
+    save_error: "Fel vid sparande av vaneinställningar"
+    load_error: "Fel vid inläsning av vaneinställningar"
     three_state:
       title: Aktivera 3-tillståndsspårning
       description: Växla mellan tillstånden Ej klar, Överhoppad och Klar.

@@ -30,6 +30,7 @@ settings:
       the app installed.
     select_file: Select file
     strategy:
+      paired_note: "This device syncs with others. Replacing existing data does not delete items group-wide: items missing from the file stay on your other devices and return to this device at the next sync."
       merge: Merge with Existing Data
       replace: Delete Existing Data and Add New
       title: Import Strategy
@@ -328,6 +329,7 @@ settings:
       title: Reset Database
       description: Delete all data and reset the application
       dialog:
+        paired_note: "This device syncs with others. Resetting also removes it from the sync group, so you must pair it again afterwards."
         title: Reset Database
         warning:
           "Warning: This action cannot be undone. All your data will be permanently

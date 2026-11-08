@@ -2,19 +2,29 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:acore/acore.dart' show DateTimeHelper;
+import 'package:whph/core/application/features/sync/models/sync_member_summary.dart';
 import 'package:whph/core/application/features/sync/models/sync_status.dart';
-import 'package:whph/core/application/features/sync/queries/get_list_syncs_query.dart';
 import 'package:whph/main.dart';
+import 'package:whph/presentation/ui/features/sync/components/sync_member_status.dart';
 import 'package:whph/presentation/ui/shared/constants/app_theme.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_translation_service.dart';
 import 'package:whph/presentation/ui/features/sync/constants/sync_translation_keys.dart';
 import 'package:whph/presentation/ui/shared/components/styled_icon.dart';
 
-/// Widget that displays a sync device list item with device info and sync status.
+/// Height of the thin per-device sync progress bar.
+const double _progressBarHeight = 3;
+
+/// Widget that displays a sync group member with its last sync time and status.
 class SyncDeviceListItemWidget extends StatefulWidget {
-  final SyncDeviceListItem item;
+  final SyncMemberSummary member;
   final void Function(String) onRemove;
+
+  /// Starts pairing again; offered for a device that needs re-pairing.
+  final void Function(String)? onRepair;
   final bool isBeingSynced;
+
+  /// Share of the running session that is done, 0..1; null while it is not known.
+  final double? syncProgress;
 
   /// Outcome of this device's most recent sync attempt in the current app
   /// session; null when it has not been synced since the app started.
@@ -22,9 +32,11 @@ class SyncDeviceListItemWidget extends StatefulWidget {
 
   const SyncDeviceListItemWidget({
     super.key,
-    required this.item,
+    required this.member,
     required this.onRemove,
+    this.onRepair,
     this.isBeingSynced = false,
+    this.syncProgress,
     this.lastSyncResult,
   });
 
@@ -66,25 +78,16 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
   }
 
   String _getDeviceName() {
-    if (widget.item.name != null) {
-      final name = widget.item.name!;
-      // Try to extract the partner name if it's in "Local ↔ Remote" format
-      if (name.contains(' ↔ ')) {
-        // We usually want to show the OTHER device's name
-        // But we don't know which one is "other" without context.
-        // Assuming the format is "Remote ↔ Local" or similar.
-        // For now, let's just return the full name but formatted nicely
-        return name.replaceAll(' ↔ ', ' ⇌ ');
-      }
-      return name;
-    }
-    return _translationService.translate(SyncTranslationKeys.unnamedDevice);
+    final name = widget.member.name;
+    if (name.isEmpty) return _translationService.translate(SyncTranslationKeys.unnamedDevice);
+    return name;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isSyncing = widget.isBeingSynced;
+    final lastSync = widget.member.lastSuccessfulSync;
 
     return Card(
       elevation: 0,
@@ -101,15 +104,11 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Device Icon
                 StyledIcon(
-                  Icons.devices, // Default icon since platform is not available in SyncDeviceListItem
+                  Icons.devices,
                   isActive: isSyncing,
                 ),
-
                 const SizedBox(width: AppTheme.sizeMedium),
-
-                // Device Info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,28 +118,6 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                         style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.wifi,
-                            size: 12,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              '${widget.item.fromIP} ↔ ${widget.item.toIP}',
-                              style: AppTheme.bodySmall.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                                fontFamily: 'monospace',
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
                       ),
                       const SizedBox(height: 2),
                       Row(
@@ -152,9 +129,8 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            widget.item.lastSyncDate != null
-                                ? DateTimeHelper.formatDateTimeMedium(widget.item.lastSyncDate,
-                                    locale: Localizations.localeOf(context))
+                            lastSync != null
+                                ? DateTimeHelper.formatDateTimeMedium(lastSync, locale: Localizations.localeOf(context))
                                 : _translationService.translate(SyncTranslationKeys.neverSynced),
                             style: AppTheme.bodySmall.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
@@ -163,13 +139,17 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                           ..._buildLastSyncResultIndicator(),
                         ],
                       ),
+                      if (isSyncing) _buildSyncProgress(),
+                      // The last result is about the previous attempt; it would contradict the running sync.
+                      if (!isSyncing)
+                        SyncMemberStatus(
+                          member: widget.member,
+                          onRepair: widget.onRepair == null ? null : () => widget.onRepair!(widget.member.memberId),
+                        ),
                     ],
                   ),
                 ),
-
                 const SizedBox(width: AppTheme.sizeSmall),
-
-                // Actions
                 if (isSyncing)
                   AnimatedBuilder(
                     animation: _rotationController,
@@ -186,13 +166,39 @@ class _SyncDeviceListItemWidgetState extends State<SyncDeviceListItemWidget> wit
                 else
                   IconButton(
                     icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
-                    onPressed: () => widget.onRemove(widget.item.id),
+                    onPressed: () => widget.onRemove(widget.member.memberId),
                     tooltip: _translationService.translate(SyncTranslationKeys.removeDevice),
                   ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// "Syncing… N%" with a thin bar; the bar is indeterminate while the share is unknown.
+  Widget _buildSyncProgress() {
+    final progress = widget.syncProgress;
+    final label = progress == null
+        ? _translationService.translate(SyncTranslationKeys.deviceSyncing)
+        : _translationService.translate(
+            SyncTranslationKeys.deviceSyncingPercent,
+            namedArgs: {'percent': (progress * 100).round().toString()},
+          );
+    return Padding(
+      padding: const EdgeInsets.only(top: AppTheme.sizeXSmall),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: AppTheme.bodySmall.copyWith(color: Theme.of(context).colorScheme.primary)),
+          const SizedBox(height: AppTheme.sizeXSmall),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(_progressBarHeight),
+            child: LinearProgressIndicator(
+                key: const ValueKey('device-sync-progress-bar'), value: progress, minHeight: _progressBarHeight),
+          ),
+        ],
       ),
     );
   }

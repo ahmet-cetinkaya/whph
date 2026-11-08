@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 and lower: same exclusion as data_extraction_rules.xml. -->
+<full-backup-content>
+  <exclude domain="file" path="whph/sync_keys.json" />
+  <exclude domain="file" path="debug_whph/sync_keys.json" />
+</full-backup-content>

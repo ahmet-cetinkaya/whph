@@ -35,6 +35,7 @@ settings:
       versiune a aplicației.
     select_file: Selectați fișierul
     strategy:
+      paired_note: "Acest dispozitiv se sincronizează cu altele. Înlocuirea datelor existente nu șterge elemente din tot grupul: elementele lipsă din fișier rămân pe celelalte dispozitive și revin pe acesta la următoarea sincronizare."
       merge: Fuzionați cu Datele Existente
       replace: Ștergeți Datele Existente și Adăugați Noile
       title: Strategie de Import
@@ -349,6 +350,7 @@ settings:
       title: Resetează Baza de Date
       description: Șterge toate datele și resetează aplicația
       dialog:
+        paired_note: "Acest dispozitiv se sincronizează cu altele. Resetarea îl elimină și din grupul de sincronizare, deci va trebui să îl asociezi din nou după aceea."
         title: Resetează Baza de Date
         warning:
           "Avertisment: Această acțiune nu poate fi anulată. Toate datele dvs.
@@ -464,6 +466,8 @@ settings:
   habit:
     title: Setări obiceiuri
     description: Personalizați comportamentul și preferințele de urmărire a obiceiurilor
+    save_error: "Eroare la salvarea setărilor pentru obiceiuri"
+    load_error: "Eroare la încărcarea setărilor pentru obiceiuri"
     three_state:
       title: Activați urmărirea cu 3 stări
       description: Comutați între stările Nefinalizat, Sărit și Finalizat.

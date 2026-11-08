@@ -1,3 +1,4 @@
+import 'package:whph/presentation/ui/shared/constants/shared_translation_keys.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -555,7 +556,7 @@ class AndroidReminderService implements IReminderService {
 
       final arguments = payloadData['arguments'];
       if (arguments is! Map<String, dynamic>) return null;
-      if (arguments['taskId'] != null) return _translateText('shared.buttons.done', payload);
+      if (arguments['taskId'] != null) return _translateText(SharedTranslationKeys.doneButton, payload);
       if (arguments['habitId'] == null) return null;
 
       final actionKey = arguments['habitType'] == HabitType.bad.name

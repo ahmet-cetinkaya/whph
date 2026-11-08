@@ -1,24 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:whph/core/application/shared/services/abstraction/i_setup_service.dart';
-import 'package:whph/core/application/features/sync/models/paginated_sync_data.dart';
-import 'package:whph/core/application/features/sync/models/sync_status.dart';
+import 'package:whph/core/application/features/sync/commands/start_sync_command.dart';
+import 'package:whph/core/application/features/sync/commands/sync_now_command.dart';
+import 'package:whph/core/application/features/sync/services/abstraction/i_sync_peer_connector.dart';
 import 'package:whph/core/domain/shared/constants/app_info.dart';
 import 'package:whph/infrastructure/shared/features/window/abstractions/i_window_manager.dart';
-import 'package:whph/presentation/api/api.dart';
 import 'package:whph/infrastructure/shared/services/desktop_startup_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_startup_settings_service.dart';
 import 'package:whph/presentation/ui/shared/services/abstraction/i_system_tray_service.dart';
 import 'package:whph/core/application/shared/services/abstraction/i_single_instance_service.dart';
-import 'package:whph/infrastructure/android/features/sync/android_sync_service.dart';
-import 'package:whph/infrastructure/android/features/sync/android_server_sync_service.dart';
-import 'package:whph/core/application/features/sync/services/abstraction/i_sync_service.dart';
 import 'package:whph/core/application/features/settings/services/abstraction/i_setting_repository.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:acore/acore.dart';
 import 'package:mediatr/mediatr.dart';
 import 'package:whph/infrastructure/linux/constants/linux_app_constants.dart';
-import 'package:whph/core/application/shared/services/abstraction/i_restore_barrier.dart';
 
 class PlatformInitializationService {
   static Future<void> initializeDesktop(IContainer container) async {
@@ -33,11 +29,8 @@ class PlatformInitializationService {
     await _configureStartupSettings(container);
     await _handleStartupVisibility(container);
 
-    startWebSocketServer();
-
     try {
-      final syncService = container.resolve<ISyncService>();
-      syncService.startSync();
+      await container.resolve<Mediator>().send<StartSyncCommand, void>(StartSyncCommand());
     } catch (e, stackTrace) {
       Logger.error('PlatformInitializationService: Failed to start Desktop sync service: $e');
       Logger.error('StackTrace: $stackTrace');
@@ -52,12 +45,7 @@ class PlatformInitializationService {
 
     if (Platform.isAndroid) {
       final mediator = container.resolve<Mediator>();
-      final androidSyncService = AndroidSyncService(
-        mediator,
-        restoreBarrier: container.resolve<IRestoreBarrier>(),
-      );
-      await androidSyncService.startSync();
-
+      await mediator.send<StartSyncCommand, void>(StartSyncCommand());
       await _initializeAndroidServerMode(container);
     }
 
@@ -94,32 +82,12 @@ class PlatformInitializationService {
           Logger.info('Triggering manual sync from IPC command');
           await singleInstanceService.broadcastMessage('Initializing remote sync...');
 
-          StreamSubscription<SyncStatus>? statusSub;
-          StreamSubscription<SyncProgress>? progressSub;
           try {
-            final syncService = container.resolve<ISyncService>();
-
-            statusSub = syncService.syncStatusStream.listen((status) {
-              singleInstanceService.broadcastMessage('[Status] ${status.state.name}').catchError((e) {
-                Logger.error('Failed to broadcast status: $e');
-                return false;
-              });
-            });
-
-            progressSub = syncService.progressStream.listen((progress) {
-              final percentage = '${progress.progressPercentage.toStringAsFixed(0)}%';
-              final msg = '${progress.operation} ${progress.currentEntity}'.trim();
-              if (msg.isNotEmpty || percentage != '0%') {
-                singleInstanceService.broadcastMessage('[Progress] $msg $percentage'.trim()).catchError((e) {
-                  Logger.error('Failed to broadcast progress: $e');
-                  return false;
-                });
-              }
-            });
-
-            await syncService.runSync(isManual: true);
-
-            await singleInstanceService.broadcastMessage('Sync operation completed.');
+            final response = await container
+                .resolve<Mediator>()
+                .send<SyncNowCommand, SyncNowCommandResponse>(SyncNowCommand());
+            final outcome = response.isComplete && !response.hasErrors ? 'completed' : 'finished with errors';
+            await singleInstanceService.broadcastMessage('Sync operation $outcome.');
           } catch (e) {
             Logger.error('Failed to run sync from IPC: $e');
             try {
@@ -128,28 +96,6 @@ class PlatformInitializationService {
               Logger.error('Failed to broadcast error message: $broadcastError');
             }
           } finally {
-            final errors = <Exception>[];
-
-            if (statusSub != null) {
-              try {
-                await statusSub.cancel();
-              } catch (e) {
-                errors.add(Exception('Failed to cancel status subscription: $e'));
-              }
-            }
-
-            if (progressSub != null) {
-              try {
-                await progressSub.cancel();
-              } catch (e) {
-                errors.add(Exception('Failed to cancel progress subscription: $e'));
-              }
-            }
-
-            if (errors.isNotEmpty) {
-              Logger.error('Errors during stream cleanup: ${errors.map((e) => e.toString()).join(', ')}');
-            }
-
             try {
               await singleInstanceService.broadcastMessage('DONE');
             } catch (e) {
@@ -201,8 +147,7 @@ class PlatformInitializationService {
 
       if (!isServerModeEnabled) return;
 
-      final serverSyncService = container.resolve<AndroidServerSyncService>();
-      final success = await serverSyncService.startAsServer();
+      final success = await container.resolve<ISyncServerControl>().start();
 
       if (success) {
         Logger.info('PlatformInitializationService: Android server mode started successfully for background sync');

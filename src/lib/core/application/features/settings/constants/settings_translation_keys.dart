@@ -26,4 +26,8 @@ class SettingsTranslationKeys {
   static const String timerAlarmSound = 'settings.sound.timer_alarm';
   static const String enableSoundError = 'settings.sound.enable_error';
   static const String disableSoundError = 'settings.sound.disable_error';
+
+  // Paired-device notes (U4, U5)
+  static const String importStrategyPairedNote = 'settings.import.strategy.paired_note';
+  static const String resetDatabaseDialogPairedNote = 'settings.advanced.reset_database.dialog.paired_note';
 }

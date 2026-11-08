@@ -26,7 +26,6 @@ class MainActivity : FlutterActivity() {
       "alarm" to me.ahmetcetinkaya.whph.handlers.ExactAlarmHandler(context),
       "notification" to me.ahmetcetinkaya.whph.handlers.NotificationMethodHandler(context),
       "workManager" to me.ahmetcetinkaya.whph.handlers.WorkManagerHandler(context),
-      "sync" to me.ahmetcetinkaya.whph.handlers.SyncWorkManagerHandler(context),
       "share" to me.ahmetcetinkaya.whph.handlers.ShareIntentHandler(context),
       "boot" to me.ahmetcetinkaya.whph.handlers.BootCompletedHandler(context),
       "usage" to me.ahmetcetinkaya.whph.handlers.AppUsageStatsMethodHandler(context),
@@ -39,15 +38,20 @@ class MainActivity : FlutterActivity() {
   // Broadcast receivers
   private val receivers by lazy {
     mapOf(
-      "sync" to me.ahmetcetinkaya.whph.receivers.SyncTriggerReceiver(),
       "task" to me.ahmetcetinkaya.whph.receivers.TaskCompletionReceiver(),
       "habit" to me.ahmetcetinkaya.whph.receivers.HabitCompletionReceiver(),
     )
   }
 
+  // Installs from before the sync rewrite still have the 30-minute job enqueued; nothing handles it now.
+  private fun cancelLegacySyncWork() {
+    androidx.work.WorkManager.getInstance(context).cancelUniqueWork(Constants.WorkManager.SYNC_WORK_NAME)
+  }
+
   override fun onCreate(savedInstanceState: android.os.Bundle?) {
     val startIntent = intent
     super.onCreate(savedInstanceState)
+    cancelLegacySyncWork()
 
     intentProcessor =
       me.ahmetcetinkaya.whph.intent.IntentProcessor(
@@ -77,7 +81,6 @@ class MainActivity : FlutterActivity() {
     super.configureFlutterEngine(flutterEngine)
 
     // Update Flutter engine in receivers
-    me.ahmetcetinkaya.whph.receivers.SyncTriggerReceiver.setFlutterEngine(flutterEngine)
     me.ahmetcetinkaya.whph.receivers.TaskCompletionReceiver.setFlutterEngine(flutterEngine)
     me.ahmetcetinkaya.whph.receivers.HabitCompletionReceiver.setFlutterEngine(flutterEngine)
 
@@ -108,7 +111,6 @@ class MainActivity : FlutterActivity() {
   override fun onDestroy() {
     unregisterReceivers()
     // Clear static FlutterEngine references to prevent memory leaks
-    me.ahmetcetinkaya.whph.receivers.SyncTriggerReceiver.setFlutterEngine(null)
     me.ahmetcetinkaya.whph.receivers.TaskCompletionReceiver.setFlutterEngine(null)
     me.ahmetcetinkaya.whph.receivers.HabitCompletionReceiver.setFlutterEngine(null)
     // Stop pending collection checks to prevent Handler leaks
@@ -424,37 +426,6 @@ class MainActivity : FlutterActivity() {
       }
     }
 
-    // Sync
-    MethodChannel(m, Constants.Channels.SYNC).setMethodCallHandler { call, result ->
-      val h =
-        handlers["sync"] as? me.ahmetcetinkaya.whph.handlers.SyncWorkManagerHandler
-          ?: run {
-            result.error("INTERNAL_ERROR", "SyncWorkManagerHandler not found", null)
-            return@setMethodCallHandler
-          }
-      when (call.method) {
-        "startPeriodicSyncWork" -> {
-          result.success(h.startPeriodicSyncWork(call.argument<Int>("intervalMinutes")?.toLong()))
-        }
-
-        "stopPeriodicSyncWork" -> {
-          result.success(h.stopPeriodicSyncWork())
-        }
-
-        "isSyncWorkScheduled" -> {
-          result.success(h.isSyncWorkScheduled())
-        }
-
-        "checkPendingSync" -> {
-          result.success(h.checkPendingSync())
-        }
-
-        else -> {
-          result.notImplemented()
-        }
-      }
-    }
-
     // Share
     MethodChannel(m, Constants.Channels.SHARE).setMethodCallHandler { call, result ->
       val h =
@@ -483,8 +454,6 @@ class MainActivity : FlutterActivity() {
   private fun registerReceivers() {
     val hasTiramisu = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU
     listOf(
-        me.ahmetcetinkaya.whph.receivers.SyncTriggerReceiver.createIntentFilter() to
-          receivers["sync"]!!,
         me.ahmetcetinkaya.whph.receivers.TaskCompletionReceiver.createIntentFilter() to
           receivers["task"]!!,
         me.ahmetcetinkaya.whph.receivers.HabitCompletionReceiver.createIntentFilter() to

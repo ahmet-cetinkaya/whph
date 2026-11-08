@@ -1,5 +1,5 @@
 import 'package:mediatr/mediatr.dart';
-import 'package:whph/core/application/shared/utils/key_helper.dart';
+import 'package:whph/core/application/shared/utils/sync_identity.dart';
 import 'package:whph/core/application/features/tasks/services/abstraction/i_task_tag_repository.dart';
 import 'package:acore/acore.dart';
 import 'package:whph/core/domain/features/tasks/task_tag.dart';
@@ -35,12 +35,12 @@ class AddTaskTagCommandHandler implements IRequestHandler<AddTaskTagCommand, Add
     }
 
     final taskTag = TaskTag(
-      id: KeyHelper.generateStringId(),
+      id: syncIdentityId(identityKindTaskTag, [request.taskId, request.tagId]),
       createdDate: DateTime.now().toUtc(),
       taskId: request.taskId,
       tagId: request.tagId,
     );
-    await _taskTagRepository.add(taskTag);
+    await _taskTagRepository.upsertRevive(taskTag);
 
     return AddTaskTagCommandResponse(
       id: taskTag.id,

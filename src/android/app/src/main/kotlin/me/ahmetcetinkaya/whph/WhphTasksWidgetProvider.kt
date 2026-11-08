@@ -39,14 +39,6 @@ class WhphTasksWidgetProvider : AppWidgetProvider() {
         if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
           val appWidgetManager = AppWidgetManager.getInstance(context)
           updateAppWidget(context, appWidgetManager, appWidgetId)
-
-          // Trigger a sync to get fresh data
-          try {
-            val syncIntent = Intent("me.ahmetcetinkaya.whph.SYNC_TRIGGER")
-            context.sendBroadcast(syncIntent)
-          } catch (e: Exception) {
-            Log.e(TAG, "Error sending sync trigger", e)
-          }
         }
       }
     }

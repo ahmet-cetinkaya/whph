@@ -21,11 +21,15 @@ class TaskTagTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTagTable> implements ITaskTagRepository {
-  DriftTaskTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTagTable);
+class DriftTaskTagRepository
+    extends DriftBaseRepository<TaskTag, String, TaskTagTable>
+    implements ITaskTagRepository {
+  DriftTaskTagRepository()
+      : super(AppDatabase.instance(), AppDatabase.instance().taskTagTable);
 
   // Constructor for testing with custom database
-  DriftTaskTagRepository.withDatabase(AppDatabase db) : super(db, db.taskTagTable);
+  DriftTaskTagRepository.withDatabase(AppDatabase db)
+      : super(db, db.taskTagTable);
 
   @override
   Expression<String> getPrimaryKey(TaskTagTable t) {
@@ -48,7 +52,10 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
   @override
   Future<bool> anyByTaskIdAndTagId(String taskId, String tagId) async {
     final query = database.select(table)
-      ..where((t) => t.taskId.equals(taskId) & t.tagId.equals(tagId) & t.deletedDate.isNull());
+      ..where((t) =>
+          t.taskId.equals(taskId) &
+          t.tagId.equals(tagId) &
+          t.deletedDate.isNull());
     final result = await query.get();
 
     return result.isNotEmpty;
@@ -64,7 +71,9 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
 
   @override
   Future<List<TaskTag>> getByTagId(String tagId) async {
-    return (database.select(table)..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull())).get();
+    return (database.select(table)
+          ..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull()))
+        .get();
   }
 
   @override
@@ -83,13 +92,16 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
           t.name as tag_name,
           t.color as tag_color,
           COALESCE((
-            SELECT TOTAL(tr.duration)
-            FROM task_tag_table tt
-            JOIN task_time_record_table tr ON tr.task_id = tt.task_id
-            WHERE tt.tag_id = t.id
-            AND tt.deleted_date IS NULL
-            AND tr.created_date BETWEEN ? AND ?
-            AND tr.deleted_date IS NULL
+            SELECT TOTAL(clamped) FROM (
+              SELECT MAX(TOTAL(tr.duration), 0) as clamped
+              FROM task_tag_table tt
+              JOIN task_time_record_table tr ON tr.task_id = tt.task_id
+              WHERE tt.tag_id = t.id
+              AND tt.deleted_date IS NULL
+              AND tr.created_date BETWEEN ? AND ?
+              AND tr.deleted_date IS NULL
+              GROUP BY tr.task_id, (CAST(tr.created_date AS INTEGER) / 86400)
+            )
           ), 0) as total_duration
         FROM tag_table t
         WHERE t.deleted_date IS NULL
@@ -105,7 +117,8 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
       variables: [
         Variable<DateTime>(startDate),
         Variable<DateTime>(endDate),
-        if (filterByTags != null && filterByTags.isNotEmpty) ...filterByTags.map((id) => Variable<String>(id)),
+        if (filterByTags != null && filterByTags.isNotEmpty)
+          ...filterByTags.map((id) => Variable<String>(id)),
         if (limit != null) Variable<int>(limit),
       ],
       readsFrom: {
@@ -128,7 +141,8 @@ class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTa
   }
 
   @override
-  Future<void> updateTagOrders(String taskId, Map<String, int> tagOrders) async {
+  Future<void> updateTagOrders(
+      String taskId, Map<String, int> tagOrders) async {
     await database.batch((batch) {
       for (final entry in tagOrders.entries) {
         batch.customStatement(

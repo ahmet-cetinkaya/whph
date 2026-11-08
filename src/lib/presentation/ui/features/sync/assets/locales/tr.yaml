@@ -3,177 +3,9 @@ sync:
     errors:
       loading: Senkronizasyon cihazları yüklenirken hata oluştu
       removing: Senkronizasyon cihazı silinirken hata oluştu
-      sync_failed: Cihazlar senkronize edilirken hata oluştu
     from_label: Kimden
     help:
-      content: '🔄 **Sync Nedir?**
-
-
-        Sync, alışkanlıklarınızı, görevlerinizi, notlarınızı ve verilerinizi aynı
-        Wi-Fi üzerinden cihazlar (telefonlar, tabletler, dizüstüler, masaüstler) arasında
-        güncel tutar. Bulut veya internet yok—veri özel ve yerel kalır.
-
-
-        Kullanımı basit: Bir kez kurun, değişiklikler otomatik veya isteğe bağlı olarak
-        senkronize olur. Cihazlar arasında sorunsuz geçiş yapın, telefonunuzda başlayıp
-        PC''nizde bitirin gibi.
-
-
-        ## 🔗 **Sync Modları**
-
-
-        Tüm cihazlar esnek senkronizasyon için İstemci veya Sunucu modlarını destekler.
-        Sunucu liderlik eder (veri paylaşır), İstemciler katılır ve değiş tokuş eder.
-        En az bir Sunucuya ihtiyaç var.
-
-
-        - **İstemci Modu:** Senkronize olmak için Sunucuya bağlanır. QR veya manuel
-        giriş ile gruplara katılmak için ideal.
-
-        - **Sunucu Modu:** Hub olarak davranır; başkalarının bağlanması için QR veya
-        dize gösterir.
-
-
-        **Platform Notları:**
-
-        - **Mobil:** Wi-Fi hotspot simgesi ile değiştirin. Taşınabilir hub''lar için
-        Sunucu.
-
-        - **Masaüstü (Varsayılan: Sunucu):** Sync ayarlarında değiştirin. Ana PC''lere
-        senkronize eden dizüstüler için İstemci.
-
-
-        **Örnekler:** Mobil-mobil (bir Sunucu), masaüstü-mobil (her iki şekilde),
-        masaüstü-masaüstü (bir Sunucu, bir İstemci).
-
-
-        Sync ayarlarında modları değiştirin; uygulama tercihinizi hatırlar.
-
-
-        ## 🛠️ **Sync''i Etkinleştirme**
-
-
-        Cihazlar Wi-Fi paylaşmalı; WHPH''yi açık tutun.
-
-
-        ### **QR Kod Kurulumu**
-
-        1. Sunucu: Sync''te Sunucu modunu başlatın—QR görünür.
-
-        2. İstemci: "Cihaz Ekle" > QR Tara.
-
-        3. Otomatik bağlanır ve senkronize olur.
-
-
-        Tüm kombinasyonları destekler.
-
-
-        ### **Bağlantı Dizesi**
-
-        1. Sunucu: Sync''ten dizeyi kopyalayın (ör. "whph://IP:44040?...").
-
-        2. İstemci: "Cihaz Ekle" > Manuel > Diziyi Yapıştır > Bağlan.
-
-
-        Kamera gerekmez.
-
-
-        ### **Manuel Giriş**
-
-        1. Sunucu: Bağlantı Bilgisi''nden IP/port''u not edin (varsayılan 44040).
-
-        2. İstemci: "Cihaz Ekle" > Manuel > IP, port, isim girin > Test > Bağlan.
-
-
-        **Masaüstü İstemciler:** Önce İstemci moduna geçin, sonra bağlanın. Otomatik
-        senkronize olur; istediğiniz zaman geri dönün.
-
-
-        Güvenilirlik için ayarlar''da otomatik yeniden bağlanmayı etkinleştirin.
-
-
-        ## 📋 **Cihazları Yönetme**
-
-
-        - **Görüntüle:** Sync ayarlarında cihazları, senkronizasyon zamanlarını, durumu
-        görün.
-
-        - **Manuel Sync:** Cihaz başına butona dokunun.
-
-        - **Kaldır:** Senkronizasyonu durdurmak için seçin ve kaldırın.
-
-
-        ## 🔧 **Sorun Giderme**
-
-
-        **Bağlantı Sorunları:**
-
-        1. Aynı Wi-Fi? VPN yok.
-
-        2. Uygulamayı yeniden başlatın.
-
-        3. Sunucu modunu doğrulayın.
-
-        4. Firewall olmadan test edin.
-
-
-        **Cihaz Yok?**
-
-        - Kararlı Wi-Fi, proxy yok.
-
-        - Tarama yenileyin.
-
-        - Manuel IP kullanın.
-
-
-        **Sync Başarısız/Zaman Aşımı:**
-
-        1. Manuel sync.
-
-        2. Uygulama sürümlerini eşleştirin.
-
-        3. Büyük veriler için bekleyin.
-
-
-        **Firewall (Port 44040):**
-
-
-        Bağlantılar çalışmıyorsa, bilgisayarınızın firewall''ı senkronizasyon sinyalini
-        engelliyor olabilir. Cihazların yerel olarak iletişim kurması için port 44040''ı
-        açın—ev ağınız için güvenlidir.
-
-
-        **Windows (GUI):**
-
-        1. Defender Firewall > Gelişmiş > Gelen Kurallar > Yeni Kural.
-
-        2. Port > TCP > 44040 > İzin Ver > Tüm profiller > "WHPH Sync" adlandır >
-        Bitir.
-
-
-        **Windows (Admin CMD):**
-
-        ```
-
-        netsh advfirewall firewall add rule name="WHPH Sync" dir=in action=allow protocol=TCP
-        localport=44040
-
-        ```
-
-
-        **Linux (UFW):**
-
-        ```
-
-        sudo ufw allow 44040/tcp && sudo ufw reload
-
-        ```
-
-
-        İpuçları: Yönlendiriciyi yeniden başlatın, özel ağlar kullanın. "bulunamadı"
-        hatalarında yeniden eşleştirin.
-
-        '
+      content: "🔄 **Senkronizasyon nedir?**\n\nSenkronizasyon, alışkanlıklarınızı, görevlerinizi, notlarınızı ve verilerinizi aynı Wi-Fi ağındaki cihazlarınızda güncel tutar. Bulut ya da internet yok: veriler özel ve yerel kalır.\n\n## 🛠️ **Senkronizasyonu etkinleştirme**\n\n1. WHPH'yi her iki cihazda da aynı Wi-Fi ağında açık tutun.\n2. Bir cihazda \"Cihaz Ekle\"yi seçip QR kodunu gösterin.\n3. Diğer cihazla tarayın ve her iki ekranda aynı kodun göründüğünü kontrol edin.\n4. Değişiklikler daha sonra otomatik olarak senkronize edilir.\n\n## 📋 **Cihazları yönetme**\n\n- **Görüntüle:** Cihazları, senkronizasyon zamanlarını ve durumu senkronizasyon ayarlarında görün.\n- **Manuel senkronizasyon:** Cihazın yanındaki düğmeye dokunun.\n- **Kaldır:** Bir cihazı seçip kaldırarak senkronizasyonu durdurun.\n\n## 🔧 **Sorun giderme**\n\n1. Aynı Wi-Fi ağı mı? VPN yok.\n2. Uygulamayı yeniden başlatın.\n3. Güvenlik duvarı olmadan deneyin.\n\n**Cihaz yok mu?**\n- Kararlı Wi-Fi, proxy yok.\n- Aramayı yenileyin."
       title: Cihaz Senkronizasyonu Yardımı
     last_sync_label: Son Senkronizasyon
     no_devices_found: Senkronize edilmiş cihaz yok
@@ -185,9 +17,12 @@ sync:
     remove_device: Cihazı Kaldır
     last_sync_succeeded: Son senkronizasyon başarılı
     last_sync_failed: Son senkronizasyon başarısız
+    syncing: "Senkronize ediliyor…"
+    syncing_percent: "Senkronize ediliyor… %{percent}"
   error:
     scan: Tarama hatası
   errors:
+    preparing: "Senkronizasyon hazırlanıyor. Lütfen kısa süre sonra tekrar deneyin."
     connection_failed: "Bağlantı başarısız. Lütfen şunu sağlayın:
 
 
@@ -218,7 +53,7 @@ sync:
     local_ip_error: Yerel IP hatası
     device_already_paired: Cihaz zaten eşleştirilmiş
     no_active_interfaces: Aktif ağ arabirimi yok
-    device_discovery_failed: Cihaz keşfi başarısız
+    device_discovery_failed: "Cihaz keşfi başlatılamadı: {error}"
     no_server_configured:
       Yapılandırılmış sunucu yok. Lütfen önce bir senkronizasyon
       cihazı ekleyin veya manuel bağlantıyı kullanarak sunucu bağlantısını kurun.
@@ -251,7 +86,7 @@ sync:
     sync_completed: Senkronizasyon başarıyla tamamlandı
     sync_in_progress: Senkronizasyon devam ediyor...
     testing_connection: Bağlantı test ediliyor...
-    device_added_success: Cihaz başarıyla eklendi
+    device_added_success: "{deviceName} eşitleme cihazlarına başarıyla eklendi"
   qr_code:
     close_button: Kapat
     dialog_title: Senkronize etmek için QR kodunu tarayın
@@ -259,25 +94,17 @@ sync:
     description:
       Diğer cihazlar bu QR kodunu tarayarak bu cihaza bağlanıp senkronize
       olabilir.
-    connection_string_title: Bağlantı Dizesi
-    connection_string_description:
-      Alternatif olarak, cihazları manuel olarak bağlamak
-      için bu bağlantı dizesini paylaşabilirsiniz.
-    connection_string_copied: Bağlantı dizesi panoya kopyalandı
   scanner:
     title: QR Kodu Tarayın
     instruction: QR kodunu çerçeve içine yerleştirin
   server:
     starting: Sunucu modu başlatılıyor...
     active: Sunucu modu aktif - Diğer cihazlara QR kodu göster
-    stopped: Sunucu modu durduruldu - Cihaz şimdi istemci modunda
+    stopped: "Diğer cihazlardan bağlantı kabul etme durduruldu"
     start_failed:
       Sunucu modu başlatılamadı - Port 44040'ın mevcut olup olmadığını
       kontrol edin
-    start_tooltip: Sunucu Modunu Başlat
-    stop_tooltip: Sunucu Modunu Durdur
     error: Hata
-    device_became_server: Bu cihaz şimdi senkronizasyon sunucusu
     start_menu: Sunucuyu Başlat
     stop_menu: Sunucuyu Durdur
     mode_title: Sunucu Modu
@@ -296,28 +123,24 @@ sync:
     port_required: Port gerekli
     invalid_port: Geçersiz port numarası
     connection_failed: Bağlantı başarısız
-    connection_error: Bağlantı hatası
-    connection_string_tab: Bağlantı Dizesi
+    connection_error: "Bağlantı hatası: {0}"
+    pairing_code_tab: "Eşleştirme Kodu"
     manual_entry_tab: Manuel Giriş
-    connection_string_required: Bağlantı dizesi gerekli
-    invalid_connection_string: Geçersiz bağlantı dizesi formatı
-    connection_string_label: Bağlantı Dizesi
+    pairing_code_required: "Eşleştirme kodu gerekli"
+    invalid_pairing_code: "Bu geçerli bir eşleştirme kodu değil"
+    pairing_code_label: "Eşleştirme kodu"
+    pairing_code_hint: "Diğer cihazdan kopyaladığınız kodu yapıştırın"
+    pairing_code_instruction: "Diğer cihazın QR kodunun altında gösterdiği eşleştirme kodunu yapıştırın."
+    manual_entry_qr_hint: "Diğer cihazın QR kodunu göstermesi gerekir."
     test_connection: Bağlantıyı Test Et
     enter_server_details: Sunucu bağlantı detaylarını manuel olarak girin
-    connection_timeout:
-      Bağlantı zaman aşımı. Lütfen sunucu adresini kontrol edin
-      ve tekrar deneyin.
+    connection_timeout: "Bağlantı zaman aşımına uğradı. Cihaz adresini kontrol edip tekrar deneyin."
     connection_test_successful: Bağlantı testi başarılı!
-    connection_test_timeout:
-      Bağlantı testi zaman aşımı. Lütfen sunucu adresini kontrol
-      edin ve tekrar deneyin.
+    connection_test_timeout: "Bağlantı testi zaman aşımına uğradı. Cihaz adresini kontrol edip tekrar deneyin."
     connection_test_failed_no_response:
       Bağlantı testi başarısız - sunucudan yanıt
       yok
     connection_test_failed_generic: "Bağlantı testi başarısız: {0}"
-    connection_string_instruction:
-      Manuel bağlantı için sunucu cihaz tarafından sağlanan
-      bağlantı dizesini buraya yapıştırın.
   add:
     device: Cihaz Ekle
     device_tooltip: Yeni cihaz ekle
@@ -330,7 +153,7 @@ sync:
     alternative_methods_hint: Manuel bağlantı veya QR kodu deneyin
     scan_qr_code: QR Kodu Tarayın
     refresh_scan: Tarama Yenile
-    last_seen: Son görülme
+    last_seen: "Son görülme: {time}"
     already_added: Zaten eklendi
   connect_info:
     dialog_title: Cihaz Bağlantı Bilgileri
@@ -339,37 +162,81 @@ sync:
     qr_description:
       Diğer cihazlar bu QR kodunu tarayarak bu cihaza bağlanıp senkronize
       olabilir.
-    connection_string_title: Bağlantı Dizesi
-    connection_string_description:
-      Alternatif olarak, cihazları manuel olarak bağlamak
-      için bu bağlantı dizesini paylaşabilirsiniz.
-    connection_string_copied: Bağlantı dizesi panoya kopyalandı
-    server_details_description:
-      Başka bir cihazdan manuel bağlantı için bu sunucu
-      detaylarını kullanın.
-    unknown_ip: Bilinmeyen IP
-    error_loading_connection_info: Bağlantı bilgisi yüklenirken hata
-    retry: Tekrar Dene
-    manual_connection_tab: Manuel Bağlantı
-    server_details_title: Sunucu Detayları
-    connection_string_title_alt: Bağlantı Dizesi
-    copy: Kopyala
   desktop:
     mode_title: Masaüstü Senkronizasyon Modu
-    client_mode_start: İstemci Olarak Bağlan
-    client_mode_stop: Sunucu Moduna Geç
-    client_mode_description:
-      Veri senkronize etmek için başka bir cihazın sunucusuna
-      bağlanın
-    server_mode_description:
-      Diğer cihazların bu cihaza bağlanıp senkronize etmesine
-      izin verin
-    sync_mode_start: İstemci Modunu Başlat
-    sync_mode_stop: İstemci Modunu Durdur
-    sync_mode_start_menu: İstemci Modunu Başlat
-    sync_mode_stop_menu: İstemci Modunu Durdur
-    client_mode_starting: İstemci modu başlatılıyor...
-    client_mode_started: İstemci modu başlatıldı
-    client_mode_stopped: Sunucu moduna geri dönüldü
+    client_mode_started: "Artık bağlantı kabul edilmiyor"
+    client_mode_stopped: "Bağlantılar yeniden kabul ediliyor"
     sync_mode_toggle_error: Senkronizasyon modu değiştirilemedi
   multi_interface_connection: Çoklu arabirim bağlantısı
+  status:
+    not_reachable: "Cihaza ulaşılamıyor"
+    not_reachable_hint: "Diğer cihazda Sunucu Modu'nu açın veya eşitlemeyi o cihazdan başlatın."
+    needs_repairing: "Yeniden eşleştirme gerekiyor"
+    needs_update: "{device} cihazının eşitleme yapabilmesi için WHPH'nin daha yeni bir sürümü gerekiyor"
+    this_device_needs_update: "{device} daha yeni bir sürüm kullandığı için eşitlemek üzere bu cihazdaki WHPH'yi güncelleyin"
+    items_failed: "Bazı öğeler eşitlenemedi"
+    items_rejected: "Bazı öğeler geçersiz olduğu için reddedildi"
+    preparing: "Diğer cihaz eşitleme verilerini hazırlıyor"
+    duplicated_identity: "Başka bir cihaz aynı eşitleme kimliğini kullanıyor"
+    storage_error: "Bir depolama hatası eşitlemeyi kesintiye uğrattı"
+    items_cannot_be_applied: "Bazı öğeler defalarca başarısız oldu ve şimdilik atlanıyor"
+    repair_badge: "Yeniden eşleştirme şart"
+    repair_action: "Yeniden eşleştir"
+  pairing:
+    show_qr: "QR kodunu göster"
+    in_progress: "Eşleştirme sürüyor…"
+    success: "{device} ile eşleştirildi"
+    qr:
+      title: "QR kodu ile eşleştir"
+      description: "Bu kodu diğer cihazla tarayın."
+      expires_in: "{time} içinde sona erer"
+      expired: "Bu kodun süresi doldu."
+      used: "Bu kod zaten kullanıldı."
+      regenerate: "Yeni kod göster"
+      paired: "Cihaz eşleştirildi"
+      copy_code: "Eşleştirme kodunu kopyala"
+      code_copied: "Eşleştirme kodu panoya kopyalandı"
+    code:
+      title: "Kodları karşılaştır"
+      description: "{device} cihazında aynı kodun göründüğünden emin olun."
+      match: "Kodlar eşleşiyor"
+      mismatch: "Kodlar farklı"
+    group_switch:
+      title: "Eşitleme grubu değiştirilsin mi?"
+      description: "{device} farklı bir eşitleme grubunda. Devam ederseniz bu cihaz mevcut grubundan ayrılır ve o gruptaki cihazlarla artık eşitlenmez."
+      confirm: "Grubu değiştir"
+    removed_device:
+      title: "Senkronizasyon kimliği sıfırlansın mı?"
+      description: "Bu cihaz senkronizasyon grubundan çıkarıldı. Sıfırlama, cihaza yeni bir senkronizasyon kimliği verir. Verilerin bu cihazda kalır, diğer cihazlar onu yeni bir cihaz olarak görür. Ardından yeniden eşleşmek için yeni bir kod tara."
+      confirm: "Kimliği sıfırla"
+      renewed: "Senkronizasyon kimliği sıfırlandı. Yeniden eşleşmek için yeni bir kod tara; eski kod artık kullanılamaz."
+    errors:
+      code_expired_or_used: "Kodun süresi doldu veya zaten kullanıldı. Yeni bir kod gösterip tekrar deneyin."
+      codes_differ: "Kodlar eşleşmedi. Eşleştirme iptal edildi."
+      cancelled: "Eşleştirme iptal edildi."
+      unreachable: "Diğer cihaza ulaşılamadı. İkisinin de aynı ağda olduğundan emin olun."
+      invalid_invitation: "Bu bir WHPH eşleştirme kodu değil."
+      group_switch_declined: "Eşitleme grubunu değiştirmemeyi seçtiniz."
+      preparing: "Eşitleme hâlâ hazırlanıyor. Lütfen kısa süre sonra tekrar deneyin."
+      refused: "Diğer cihaz eşleştirmeyi reddetti."
+      not_active: "Devam eden bir eşleştirme yok."
+      removed_device: "Bu cihaz gruptan çıkarıldı. Yeniden eşleşebilmesi için senkronizasyon kimliğini sıfırlaması gerekir."
+  members:
+    remove_confirm:
+      title: "{device} kaldırılsın mı?"
+      description: "Bu işlem {device} cihazını yalnızca bu cihazdan değil, tüm eşitleme grubundan kaldırır. Gruptaki hiçbir cihazla eşitlenmez ve grup anahtarları değiştirilir. Daha sonra eşitlemek için yeniden eşleştirin."
+      action: "Gruptan kaldır"
+    removed_from_group:
+      title: "Eşitleme grubundan kaldırıldı"
+      description: "Bu cihaz eşitleme grubundan kaldırıldı ve artık eşitlenmiyor. Devam etmek için yeniden eşleştirin."
+    needs_repairing:
+      title: "Bu cihazı yeniden eşleştirin"
+      description: "Bu cihaz eski bir yedekten geri yüklendi, bu yüzden grup artık onu tanımıyor. Senkronizasyonu sürdürmek için yeniden eşleştirin."
+    repair_banner:
+      title: "Eşitleme yükseltildi"
+      description: "Eski eşitleme ile eşleştirilen cihazlar yeniden eşleştirilmelidir. Verileriniz her cihazda kalır."
+      dismiss: "Kapat"
+    upgrade_progress: "Eşitleme verileri hazırlanıyor… %{percent}"
+    upgrade_stalled: "Eşitleme verilerinin hazırlanması beklenenden uzun sürüyor. Yeniden denenmeye devam edilecek."
+  demo:
+    reset_blocked: "Bu cihaz eşleştirilmişken demo verileri sıfırlanamaz, çünkü sıfırlama diğer cihazlarınıza eşitlenirdi. Önce bu cihazı eşitleme grubundan kaldırın."
