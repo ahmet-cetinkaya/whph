@@ -126,11 +126,11 @@ final class OriginManifest {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is OriginManifest &&
-      other.fromSeq == fromSeq &&
-      other.toSeq == toSeq &&
-      other.origin == origin &&
-      other.hashes.length == hashes.length &&
-      bytesEqual(other.sig, sig);
+          other.fromSeq == fromSeq &&
+          other.toSeq == toSeq &&
+          other.origin == origin &&
+          other.hashes.length == hashes.length &&
+          bytesEqual(other.sig, sig);
 
   @override
   int get hashCode => Object.hash(origin, fromSeq, toSeq);

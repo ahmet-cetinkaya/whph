@@ -11,7 +11,8 @@ LedgerRevocation _revocation({
   int originFill = 7,
   int seq = 9,
 }) =>
-    LedgerRevocation(recordBytes: record, revokerEntryBytes: entry, carrierOrigin: _origin(originFill), carrierSeq: seq);
+    LedgerRevocation(
+        recordBytes: record, revokerEntryBytes: entry, carrierOrigin: _origin(originFill), carrierSeq: seq);
 
 void main() {
   final key = deriveLedgerMacKey(List.filled(32, 1));
