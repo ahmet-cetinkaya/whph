@@ -32,13 +32,11 @@ abstract class BaseAppUsageService implements IAppUsageService {
   final IDeviceIdService _deviceIds;
 
   @override
-  final ValueNotifier<bool> isTrackingActiveWindowWorking =
-      ValueNotifier<bool>(true);
+  final ValueNotifier<bool> isTrackingActiveWindowWorking = ValueNotifier<bool>(true);
 
   // Protected getter for subclasses
   @protected
-  IAppUsageTimeRecordRepository get appUsageTimeRecordRepository =>
-      _appUsageTimeRecordRepository;
+  IAppUsageTimeRecordRepository get appUsageTimeRecordRepository => _appUsageTimeRecordRepository;
 
   static final List<Color> _chartColors = [
     AppTheme.chartColor1,
@@ -83,15 +81,12 @@ abstract class BaseAppUsageService implements IAppUsageService {
 
   @override
   @protected
-  Future<void> saveTimeRecord(String appName, int duration,
-      {bool overwrite = false, DateTime? customDateTime}) async {
-    final bool shouldExcludeApp =
-        await _appUsageFilterService.shouldExcludeApp(appName);
+  Future<void> saveTimeRecord(String appName, int duration, {bool overwrite = false, DateTime? customDateTime}) async {
+    final bool shouldExcludeApp = await _appUsageFilterService.shouldExcludeApp(appName);
     if (shouldExcludeApp) return;
 
     final recordDateTime = customDateTime ?? DateTime.now().toUtc();
-    final appUsage =
-        await _getOrCreateAppUsage(appName, createdDate: recordDateTime);
+    final appUsage = await _getOrCreateAppUsage(appName, createdDate: recordDateTime);
     await _applyTagRules(appUsage);
 
     // D12: this device's bucket for the hour, found by its deterministic id.
@@ -105,12 +100,11 @@ abstract class BaseAppUsageService implements IAppUsageService {
       deviceId: deviceId,
     );
 
-    final recordHourStart = DateTime(recordDateTime.year, recordDateTime.month,
-        recordDateTime.day, recordDateTime.hour);
+    final recordHourStart =
+        DateTime(recordDateTime.year, recordDateTime.month, recordDateTime.day, recordDateTime.hour);
     final recordHourEnd = recordHourStart.add(const Duration(hours: 1));
 
-    AppUsageTimeRecord? timeRecord =
-        await _appUsageTimeRecordRepository.getFirst(
+    AppUsageTimeRecord? timeRecord = await _appUsageTimeRecordRepository.getFirst(
       CustomWhereFilter(
         'id = ? AND usage_date >= ? AND usage_date < ? AND deleted_date IS NULL',
         [recordId, recordHourStart, recordHourEnd],
@@ -118,8 +112,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
     );
 
     if (timeRecord != null) {
-      timeRecord.duration =
-          overwrite ? duration : timeRecord.duration + duration;
+      timeRecord.duration = overwrite ? duration : timeRecord.duration + duration;
       await _appUsageTimeRecordRepository.update(timeRecord);
     } else {
       final newRecord = AppUsageTimeRecord(
@@ -168,8 +161,7 @@ abstract class BaseAppUsageService implements IAppUsageService {
     }
   }
 
-  Future<AppUsage> _getOrCreateAppUsage(String appName,
-      {DateTime? createdDate}) async {
+  Future<AppUsage> _getOrCreateAppUsage(String appName, {DateTime? createdDate}) async {
     var appUsage = await _appUsageRepository.getFirst(
       CustomWhereFilter(
         'name = ? AND deleted_date IS NULL',
@@ -184,11 +176,9 @@ abstract class BaseAppUsageService implements IAppUsageService {
       appUsage = AppUsage(
         id: KeyHelper.generateStringId(),
         name: appName,
-        color:
-            _chartColors[Random().nextInt(_chartColors.length)].toHexString(),
+        color: _chartColors[Random().nextInt(_chartColors.length)].toHexString(),
         deviceName: deviceName,
-        createdDate:
-            DateTimeHelper.toUtcDateTime(createdDate ?? DateTime.now()),
+        createdDate: DateTimeHelper.toUtcDateTime(createdDate ?? DateTime.now()),
       );
       await _appUsageRepository.add(appUsage);
     }

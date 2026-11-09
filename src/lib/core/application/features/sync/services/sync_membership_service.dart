@@ -19,8 +19,7 @@ class SyncMembershipException implements Exception {
 /// The joiner's identity was removed from the group, so it must pair again
 /// with a fresh identity.
 class RemovedDeviceException extends SyncMembershipException {
-  const RemovedDeviceException()
-      : super('a removed device must pair again with a fresh identity');
+  const RemovedDeviceException() : super('a removed device must pair again with a fresh identity');
 }
 
 /// What a joiner receives from the inviter at the end of a successful pairing
@@ -148,8 +147,7 @@ class SyncMembershipService {
 
   /// The in-memory membership. Throws until [loadKeyFile] or
   /// [createFreshIdentity] ran.
-  Membership get membership =>
-      _membership ?? (throw StateError('identity not loaded'));
+  Membership get membership => _membership ?? (throw StateError('identity not loaded'));
 
   bool get hasIdentity => _membership != null;
 
@@ -174,9 +172,7 @@ class SyncMembershipService {
         _membership = restored;
         _needsRepairing = content.needsRepairing;
         await _refresh();
-        if ((await _keyStore.adoptLegacyRevocations(_isGenuineLegacyRevocation))
-                .adopted >
-            0) await _refresh();
+        if ((await _keyStore.adoptLegacyRevocations(_isGenuineLegacyRevocation)).adopted > 0) await _refresh();
         return true;
       });
 
@@ -188,8 +184,7 @@ class SyncMembershipService {
     if (groupId == null) return false;
     try {
       final record = decodeRevocationRecord(retained.recordBytes);
-      return membership.memberByEd25519(record.revokerPub) != null &&
-          await record.verify(groupId);
+      return membership.memberByEd25519(record.revokerPub) != null && await record.verify(groupId);
     } on Object {
       return false;
     }
@@ -197,15 +192,11 @@ class SyncMembershipService {
 
   /// First run: a new identity, no group, the DB's current local origin as the
   /// first committed ledger origin. [name] is the device name members see.
-  Future<void> createFreshIdentity({required String name}) =>
-      _exclusive(() async {
+  Future<void> createFreshIdentity({required String name}) => _exclusive(() async {
         final identity = await DeviceIdentity.generate(_ids, name: name);
         final origin = await _initialOrigin();
         await _keyStore.append(
-          OriginEntry(
-              origin: origin,
-              state: OriginEntryState.committed,
-              reason: OriginSwitchReason.initial),
+          OriginEntry(origin: origin, state: OriginEntryState.committed, reason: OriginSwitchReason.initial),
         );
         _membership = _newMembership(identity);
         _needsRepairing = false;
@@ -227,13 +218,9 @@ class SyncMembershipService {
   /// and a new origin; never-sent cells are adopted under the new origin (the
   /// old origin is sealed and never reused); the device shows "needs
   /// re-pairing" until it is paired again.
-  Future<SyncOriginSwitchReport> recoverFromLostKeyFile(
-          {required String name}) =>
-      _exclusive(() async {
+  Future<SyncOriginSwitchReport> recoverFromLostKeyFile({required String name}) => _exclusive(() async {
         final localOrigin = OriginId.fromHex(await _changeStore.localOrigin());
-        final sentMark = _keyStore.isReadable
-            ? _keyStore.entryOf(localOrigin)?.maxSentSeq
-            : null;
+        final sentMark = _keyStore.isReadable ? _keyStore.entryOf(localOrigin)?.maxSentSeq : null;
         final identity = await DeviceIdentity.generate(_ids, name: name);
         final current = _membership;
         if (current == null) {
@@ -244,8 +231,7 @@ class SyncMembershipService {
         await _clearLedgerGroupState();
         _needsRepairing = true;
         await _changeStore.bindIdentity(memberId: identity.memberId);
-        final report =
-            await _switchOrigin(OriginSwitchReason.keyLost, sentMark: sentMark);
+        final report = await _switchOrigin(OriginSwitchReason.keyLost, sentMark: sentMark);
         await _persistKeyFile();
         return report;
       });
@@ -253,22 +239,18 @@ class SyncMembershipService {
   /// A device removed from its group keeps a revoked identity that no member
   /// accepts again. This gives it a new identity and origin under its own
   /// name, keeping its data, so it can be paired as a new member.
-  Future<SyncOriginSwitchReport> renewIdentity() =>
-      recoverFromLostKeyFile(name: membership.identity.name);
+  Future<SyncOriginSwitchReport> renewIdentity() => recoverFromLostKeyFile(name: membership.identity.name);
 
   // -- origin switch ----------------------------------------------------------------------
 
   /// `switch_origin(reason)` (D6b steps 1-3). [sentMark] is the old origin's
   /// `max_sent_seq` (`null` = unknown).
-  Future<SyncOriginSwitchReport> switchOrigin(OriginSwitchReason reason,
-          {int? sentMark}) =>
+  Future<SyncOriginSwitchReport> switchOrigin(OriginSwitchReason reason, {int? sentMark}) =>
       _exclusive(() => _switchOrigin(reason, sentMark: sentMark));
 
-  Future<SyncOriginSwitchReport> _switchOrigin(OriginSwitchReason reason,
-      {int? sentMark}) async {
+  Future<SyncOriginSwitchReport> _switchOrigin(OriginSwitchReason reason, {int? sentMark}) async {
     final newOrigin = _ids.origin();
-    await _keyStore.append(OriginEntry(
-        origin: newOrigin, state: OriginEntryState.pending, reason: reason));
+    await _keyStore.append(OriginEntry(origin: newOrigin, state: OriginEntryState.pending, reason: reason));
     final SyncOriginSwitchReport report;
     try {
       report = await _changeStore.switchOrigin(
@@ -282,8 +264,7 @@ class SyncMembershipService {
       rethrow;
     }
     if (report.needsRepairing) _needsRepairing = true;
-    if (membership.hasGroup && reason != OriginSwitchReason.groupSwitch)
-      await _registerOrigin(newOrigin);
+    if (membership.hasGroup && reason != OriginSwitchReason.groupSwitch) await _registerOrigin(newOrigin);
     await _keyStore.commit(newOrigin);
     // The store only schedules the re-author/adopt phase; sync stays gated until it ran, and the
     // only other trigger is the next app start.
@@ -301,10 +282,8 @@ class SyncMembershipService {
   }) =>
       _exclusive(() async {
         final newOrigin = _ids.origin();
-        await _keyStore.append(OriginEntry(
-            origin: newOrigin,
-            state: OriginEntryState.pending,
-            reason: OriginSwitchReason.localReset));
+        await _keyStore.append(
+            OriginEntry(origin: newOrigin, state: OriginEntryState.pending, reason: OriginSwitchReason.localReset));
         final SyncOriginSwitchReport report;
         try {
           report = await _changeStore.localReset(
@@ -325,8 +304,7 @@ class SyncMembershipService {
   /// A restored DB carries the identity of its backup time (D14 rule 4), while
   /// the key file is current.
   Future<void> bindIdentityToDatabase() =>
-      _exclusive(() => _changeStore.bindIdentity(
-          memberId: membership.memberId, groupId: membership.groupId?.hex));
+      _exclusive(() => _changeStore.bindIdentity(memberId: membership.memberId, groupId: membership.groupId?.hex));
 
   /// Crash recovery of a switch that committed in the DB but not in the
   /// ledger (D6b, D14 rule 3): the own origin gets its registration if the
@@ -340,8 +318,7 @@ class SyncMembershipService {
       });
 
   /// U6: whether this device is paired. `false` without an identity.
-  Future<bool> isPaired() async =>
-      hasIdentity && (await currentView()).isPaired;
+  Future<bool> isPaired() async => hasIdentity && (await currentView()).isPaired;
 
   // -- pairing -----------------------------------------------------------------------------
 
@@ -352,35 +329,26 @@ class SyncMembershipService {
     final m = membership;
     final ownGroup = m.groupId;
     if (ownGroup == null || ownGroup == inviterGroup) return false;
-    return !m.removed &&
-        m.activeMembers.any((member) => member.memberId != m.memberId);
+    return !m.removed && m.activeMembers.any((member) => member.memberId != m.memberId);
   }
 
   /// Inviter side, at the moment pairing succeeded: creates the group on the
   /// first pairing, records [joiner] as a member with grants for every held
   /// epoch, and returns what the joiner needs.
-  Future<PairingHandover> prepareHandover(MemberEntry joiner) =>
-      _exclusive(() async {
+  Future<PairingHandover> prepareHandover(MemberEntry joiner) => _exclusive(() async {
         final m = membership;
-        if (m.removed)
-          throw const SyncMembershipException(
-              'the inviter was removed from its group');
-        if (m.isRevokedEd(joiner.ed25519Pub))
-          throw const RemovedDeviceException();
+        if (m.removed) throw const SyncMembershipException('the inviter was removed from its group');
+        if (m.isRevokedEd(joiner.ed25519Pub)) throw const RemovedDeviceException();
         if (!m.hasGroup) await _createGroup();
         await _writeSecurity(memberCellKey(joiner.memberId), joiner.encode());
         for (final epoch in m.keyring.epochs) {
           final grant = EpochGrant(epoch, joiner.ed25519Pub);
-          await _writeSecurity(
-              epochGrantCellKey(grant), encodeEpochGrant(grant));
+          await _writeSecurity(epochGrantCellKey(grant), encodeEpochGrant(grant));
         }
         await _refresh();
         return PairingHandover(
           groupId: m.groupId!,
-          epochKeys: {
-            for (final e in m.keyring.epochs)
-              e: Uint8List.fromList(m.keyring.keyFor(e)!)
-          },
+          epochKeys: {for (final e in m.keyring.epochs) e: Uint8List.fromList(m.keyring.keyFor(e)!)},
           anchors: m.anchors,
           revokedAnchorIds: m.revokedAnchorIds,
           revocations: _keyStore.revocations,
@@ -389,8 +357,7 @@ class SyncMembershipService {
 
   /// Inviter side: stores the origin registration the joiner returned after
   /// [acceptHandover]; the rest of the group learns it transitively.
-  Future<void> completePairing(OriginRegistration joinerRegistration) =>
-      _exclusive(() async {
+  Future<void> completePairing(OriginRegistration joinerRegistration) => _exclusive(() async {
         await _changeStore.mergeRegistrations([joinerRegistration]);
         await _refresh();
       });
@@ -399,16 +366,13 @@ class SyncMembershipService {
   /// with other members needs [confirmGroupSwitch] and runs
   /// `switch_origin(group_switch)` (NB-1). Returns this device's new origin
   /// registration for the inviter.
-  Future<OriginRegistration> acceptHandover(PairingHandover handover,
-          {bool confirmGroupSwitch = false}) =>
+  Future<OriginRegistration> acceptHandover(PairingHandover handover, {bool confirmGroupSwitch = false}) =>
       _exclusive(() async {
         final m = membership;
         final ownGroup = m.groupId;
         if (ownGroup != null && ownGroup != handover.groupId) {
-          if (requiresGroupSwitchConfirmation(handover.groupId) &&
-              !confirmGroupSwitch) {
-            throw const SyncMembershipException(
-                'joining leaves the current group; confirmation required');
+          if (requiresGroupSwitchConfirmation(handover.groupId) && !confirmGroupSwitch) {
+            throw const SyncMembershipException('joining leaves the current group; confirmation required');
           }
           await _leaveForGroupSwitch();
         }
@@ -420,11 +384,9 @@ class SyncMembershipService {
           revokedAnchors: handover.revokedAnchorIds,
         );
         _needsRepairing = false;
-        await _changeStore.bindIdentity(
-            memberId: m.memberId, groupId: handover.groupId.hex);
+        await _changeStore.bindIdentity(memberId: m.memberId, groupId: handover.groupId.hex);
         await _persistKeyFile();
-        final registration = await _registerOrigin(
-            OriginId.fromHex(await _changeStore.localOrigin()));
+        final registration = await _registerOrigin(OriginId.fromHex(await _changeStore.localOrigin()));
         await _refresh();
         return registration;
       });
@@ -445,8 +407,7 @@ class SyncMembershipService {
     _needsRepairing = false;
     await _persistKeyFile();
     await _changeStore.bindIdentity(memberId: m.memberId, groupId: groupId.hex);
-    await _writeSecurity(memberCellKey(m.memberId),
-        m.identity.entry(addedBy: m.memberId).encode());
+    await _writeSecurity(memberCellKey(m.memberId), m.identity.entry(addedBy: m.memberId).encode());
     final grant = EpochGrant(epoch, m.identity.ed25519Pub);
     await _writeSecurity(epochGrantCellKey(grant), encodeEpochGrant(grant));
     await _registerOrigin(OriginId.fromHex(await _changeStore.localOrigin()));
@@ -457,15 +418,12 @@ class SyncMembershipService {
 
   /// Changes the name the group shows for [memberId]: a new member entry with
   /// the same keys, which the group learns like any member row.
-  Future<void> renameMember(String memberId, String name) =>
-      _exclusive(() async {
+  Future<void> renameMember(String memberId, String name) => _exclusive(() async {
         final trimmed = name.trim();
         if (trimmed.isEmpty || trimmed.length > maxMemberNameLength) {
-          throw const SyncMembershipException(
-              'the member name is empty or too long');
+          throw const SyncMembershipException('the member name is empty or too long');
         }
-        final entry = membership.memberById(memberId) ??
-            (throw SyncMembershipException('unknown member $memberId'));
+        final entry = membership.memberById(memberId) ?? (throw SyncMembershipException('unknown member $memberId'));
         final renamed = MemberEntry(
           memberId: entry.memberId,
           x25519Pub: entry.x25519Pub,
@@ -484,15 +442,10 @@ class SyncMembershipService {
   Future<void> removeMember(String memberId) => _exclusive(() async {
         final m = membership;
         final groupId = m.groupId ?? (throw StateError('not in a group'));
-        if (memberId == m.memberId)
-          throw ArgumentError('use leave/reset to remove this device');
-        final entry = m.memberById(memberId) ??
-            (throw ArgumentError.value(memberId, 'memberId', 'unknown member'));
+        if (memberId == m.memberId) throw ArgumentError('use leave/reset to remove this device');
+        final entry = m.memberById(memberId) ?? (throw ArgumentError.value(memberId, 'memberId', 'unknown member'));
         final vector = await _changeStore.readVector();
-        final cutoffs = {
-          for (final origin in m.registry!.originsOf(entry.ed25519Pub))
-            origin: vector[origin.hex] ?? 0
-        };
+        final cutoffs = {for (final origin in m.registry!.originsOf(entry.ed25519Pub)) origin: vector[origin.hex] ?? 0};
         final record = await RevocationRecord.sign(
           groupId: groupId,
           revokedPub: entry.ed25519Pub,
@@ -512,14 +465,10 @@ class SyncMembershipService {
         final groupId = m.groupId;
         final revocations = m.directoryRevocations;
         final registry = m.registry;
-        if (groupId == null ||
-            m.removed ||
-            revocations == null ||
-            registry == null) return false;
+        if (groupId == null || m.removed || revocations == null || registry == null) return false;
         final vector = await _changeStore.readVector();
         var wrote = false;
-        final extension = revocations.selfExtension(
-            registry, (origin) => vector[origin.hex] ?? 0);
+        final extension = revocations.selfExtension(registry, (origin) => vector[origin.hex] ?? 0);
         for (final entry in extension.entries) {
           final record = await RevocationRecord.sign(
             groupId: groupId,
@@ -560,8 +509,7 @@ class SyncMembershipService {
   Future<EpochId> _createEpoch() async {
     final keyring = membership.keyring;
     final counterFloor = _keyStore.epochCounterHigh;
-    final next =
-        keyring.nextEpoch(membership.memberId, counterFloor: counterFloor);
+    final next = keyring.nextEpoch(membership.memberId, counterFloor: counterFloor);
     await _keyStore.persistEpochCounterHigh(next.counter);
     return keyring.rotate(membership.memberId, counterFloor: counterFloor);
   }
@@ -571,21 +519,17 @@ class SyncMembershipService {
   Future<void> _commitOwnRevocation(RevocationRecord record) async {
     final recordBytes = encodeRevocationRecord(record);
     final carrierOrigin = OriginId.fromHex(await _changeStore.localOrigin());
-    final carrierSeq =
-        ((await _changeStore.readVector())[carrierOrigin.hex] ?? 0) + 1;
+    final carrierSeq = ((await _changeStore.readVector())[carrierOrigin.hex] ?? 0) + 1;
     await _keyStore.persistRevocations([
       LedgerRevocation(
         recordBytes: recordBytes,
-        revokerEntryBytes:
-            membership.memberByEd25519(record.revokerPub)?.encode(),
+        revokerEntryBytes: membership.memberByEd25519(record.revokerPub)?.encode(),
         carrierOrigin: carrierOrigin,
         carrierSeq: carrierSeq,
       ),
     ]);
-    final written = await _changeStore.writeSecurityCell(
-        revocationCellKey(record), recordBytes);
-    if (written.origin != carrierOrigin.hex ||
-        written.originSeq != carrierSeq) {
+    final written = await _changeStore.writeSecurityCell(revocationCellKey(record), recordBytes);
+    if (written.origin != carrierOrigin.hex || written.originSeq != carrierSeq) {
       throw StateError('a local write interleaved with a revocation commit');
     }
   }
@@ -609,17 +553,14 @@ class SyncMembershipService {
           await _peerStateStore.clearNeedsRepairing(expectedMemberId);
           return OutboundKeyVerdict.matches;
         }
-        if (membership.isExcluded(owner.ed25519Pub))
-          return OutboundKeyVerdict.revokedMember;
-        await _peerStateStore.moveAddress(address,
-            fromMemberId: expectedMemberId, toMemberId: owner.memberId);
+        if (membership.isExcluded(owner.ed25519Pub)) return OutboundKeyVerdict.revokedMember;
+        await _peerStateStore.moveAddress(address, fromMemberId: expectedMemberId, toMemberId: owner.memberId);
         return OutboundKeyVerdict.addressBelongsToOtherMember;
       });
 
   /// A session to [memberId] was refused after the address answered: the
   /// member no longer accepts this device, so it needs re-pairing (FR-016).
-  Future<void> markPeerRefused(String memberId) =>
-      _exclusive(() => _peerStateStore.markNeedsRepairing(memberId));
+  Future<void> markPeerRefused(String memberId) => _exclusive(() => _peerStateStore.markNeedsRepairing(memberId));
 
   MemberEntry? _memberByX25519(List<int> x25519Pub) {
     for (final member in membership.members.values) {
@@ -679,8 +620,7 @@ class SyncMembershipService {
     );
     projection.groupId = membership.groupId;
     final cells = await _changeStore.readSecurityCells();
-    projection.applyBatch(ChangeBatch(
-        origin: _ids.origin().hex, fromSeq: 0, toSeq: 0, cells: cells));
+    projection.applyBatch(ChangeBatch(origin: _ids.origin().hex, fromSeq: 0, toSeq: 0, cells: cells));
     for (final registration in await _changeStore.readRegistrations()) {
       projection.addRegistration(registration);
     }
@@ -694,13 +634,10 @@ class SyncMembershipService {
     return registration;
   }
 
-  Future<void> _writeSecurity(CellKey key, Uint8List record) =>
-      _changeStore.writeSecurityCell(key, record);
+  Future<void> _writeSecurity(CellKey key, Uint8List record) => _changeStore.writeSecurityCell(key, record);
 
   Future<void> _persistKeyFile() => _keyStore.writeKeyFile(
-        SyncKeyFileContent(
-            snapshot: membership.snapshotKeyFile(),
-            needsRepairing: _needsRepairing),
+        SyncKeyFileContent(snapshot: membership.snapshotKeyFile(), needsRepairing: _needsRepairing),
       );
 
   Future<void> _clearLedgerGroupState() async {

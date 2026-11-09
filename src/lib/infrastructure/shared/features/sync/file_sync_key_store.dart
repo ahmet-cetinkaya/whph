@@ -183,8 +183,8 @@ class FileSyncKeyStore implements ISyncKeyStore {
       }
     });
     if (dropped.isNotEmpty) {
-      Logger.warning(
-          'Dropped ${dropped.length} unverifiable legacy ledger revocation record(s)', component: _component);
+      Logger.warning('Dropped ${dropped.length} unverifiable legacy ledger revocation record(s)',
+          component: _component);
     }
     return (adopted: genuine.length, dropped: dropped.length);
   }
@@ -207,8 +207,7 @@ class FileSyncKeyStore implements ISyncKeyStore {
         await deleteWithTemporaryFiles(ledgerFile);
       });
 
-  Future<void> _mutate(void Function(_LedgerState state) change, {bool startFresh = false}) =>
-      _serialized(() async {
+  Future<void> _mutate(void Function(_LedgerState state) change, {bool startFresh = false}) => _serialized(() async {
         final current = _ledger;
         if (current == null && !startFresh) throw const SyncLedgerWriteException('sync ledger missing');
         final next = (current ?? _LedgerState.empty()).copy();
@@ -286,8 +285,7 @@ class _LedgerState {
 
   factory _LedgerState.empty() => _LedgerState([], 0, {}, {}, {});
 
-  _LedgerState copy() =>
-      _LedgerState(
+  _LedgerState copy() => _LedgerState(
         List.of(entries),
         epochCounterHigh,
         Map.of(revocations),

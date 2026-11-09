@@ -1,7 +1,6 @@
 import 'package:acore/acore.dart' as acore;
 
-abstract class IRepository<T extends acore.BaseEntity<TId>, TId>
-    extends acore.IRepository<T, TId> {
+abstract class IRepository<T extends acore.BaseEntity<TId>, TId> extends acore.IRepository<T, TId> {
   Future<void> hardDeleteSoftDeleted(DateTime beforeDate);
   Future<void> truncate();
 

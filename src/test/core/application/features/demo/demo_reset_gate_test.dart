@@ -39,16 +39,15 @@ void main() {
     return device;
   }
 
-  Future<int> tombstones(SecurityDevice device) => device.database.count(
-      'SELECT (SELECT COUNT(*) FROM sync_clock WHERE tomb_value IS NOT NULL) '
-      '+ (SELECT COUNT(*) FROM tag_table WHERE deleted_date IS NOT NULL) '
-      '+ (SELECT COUNT(*) FROM note_table WHERE deleted_date IS NOT NULL)');
+  Future<int> tombstones(SecurityDevice device) =>
+      device.database.count('SELECT (SELECT COUNT(*) FROM sync_clock WHERE tomb_value IS NOT NULL) '
+          '+ (SELECT COUNT(*) FROM tag_table WHERE deleted_date IS NOT NULL) '
+          '+ (SELECT COUNT(*) FROM note_table WHERE deleted_date IS NOT NULL)');
 
   Future<void> expectDemoOperationsBlocked(SecurityDevice device) async {
     await device.database.insertNote('mine', 'my own note');
     final before = await device.database.content();
-    final clockBefore =
-        await device.database.count('SELECT COUNT(*) FROM sync_clock');
+    final clockBefore = await device.database.count('SELECT COUNT(*) FROM sync_clock');
     final demo = device.demoService();
 
     for (final operation in <Future<void> Function()>[
@@ -60,8 +59,7 @@ void main() {
     }
 
     expect(await device.database.content(), before);
-    expect(await device.database.count('SELECT COUNT(*) FROM sync_clock'),
-        clockBefore);
+    expect(await device.database.count('SELECT COUNT(*) FROM sync_clock'), clockBefore);
   }
 
   test('paired: all three operations throw and the DB is unchanged', () async {
@@ -84,12 +82,10 @@ void main() {
     expect((await query(GetIsPairedQuery())).isPaired, isTrue);
   });
 
-  test('unpaired: reset proceeds under a new origin with 0 tombstones',
-      () async {
+  test('unpaired: reset proceeds under a new origin with 0 tombstones', () async {
     final a = await openDevice('a');
     await a.database.insertNote('mine', 'my own note');
-    await a.database.sql(
-        "INSERT INTO tag_table (id, created_date, name, type) VALUES ('t1', 1, 'old tag', 0)");
+    await a.database.sql("INSERT INTO tag_table (id, created_date, name, type) VALUES ('t1', 1, 'old tag', 0)");
     final origin = await a.currentOrigin();
     expect(await a.service.isPaired(), isFalse);
 
@@ -97,12 +93,8 @@ void main() {
 
     expect(await a.currentOrigin(), isNot(origin));
     expect(await a.hasNote('mine'), isFalse);
-    expect(await a.database.count('SELECT COUNT(*) FROM tag_table'),
-        greaterThan(0));
-    expect(
-        await a.database
-            .count("SELECT COUNT(*) FROM tag_table WHERE id = 't1'"),
-        0);
+    expect(await a.database.count('SELECT COUNT(*) FROM tag_table'), greaterThan(0));
+    expect(await a.database.count("SELECT COUNT(*) FROM tag_table WHERE id = 't1'"), 0);
     expect(await tombstones(a), 0);
     expect(a.keyStore.latest!.reason, OriginSwitchReason.localReset);
     expect(a.keyStore.latest!.state, OriginEntryState.committed);
@@ -128,8 +120,7 @@ void main() {
     await exchange([b, c]);
     await pull(b, a);
     await a.service.refresh();
-    expect(
-        (await a.service.currentView()).state, SyncGroupState.removedFromGroup);
+    expect((await a.service.currentView()).state, SyncGroupState.removedFromGroup);
     expect(await a.service.isPaired(), isFalse);
 
     await a.demoService().resetDemoData();
@@ -143,9 +134,7 @@ void main() {
     await pairDevices(a, b);
     await a.keyStore.keyFile.delete();
     await a.restart();
-    expect(
-        await a.startup.run(deviceName: 'a', databaseCreatedThisLaunch: false),
-        SyncStartupAction.keyLost);
+    expect(await a.startup.run(deviceName: 'a', databaseCreatedThisLaunch: false), SyncStartupAction.keyLost);
     expect(await SyncUpgradeJob(a.database.db).runChunks(), isTrue,
         reason: 'the re-author job of the key loss finished');
     expect(await a.service.isPaired(), isFalse);

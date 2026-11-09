@@ -22,16 +22,11 @@ const _config = SimConfig(devices: 5, ops: 10000);
 const _perturbedSteps = [3957, 3970];
 
 void main() {
-  test(
-      'seed $_seed outcome depends on the schedule (violations reported, never asserted)',
-      () async {
+  test('seed $_seed outcome depends on the schedule (violations reported, never asserted)', () async {
     for (final step in _perturbedSteps) {
       final tuning = EngineSimTuning(perturbAtStep: step);
-      final result =
-          await EngineSimulation(_seed, _config, 'engine', tuning: tuning)
-              .run();
-      print(
-          '[sim-diagnostic] schedule seed=$_seed perturbAtStep=$step violations=${result.violations.length}');
+      final result = await EngineSimulation(_seed, _config, 'engine', tuning: tuning).run();
+      print('[sim-diagnostic] schedule seed=$_seed perturbAtStep=$step violations=${result.violations.length}');
     }
   });
 }

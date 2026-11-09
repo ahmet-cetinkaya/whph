@@ -4,8 +4,7 @@ import 'package:whph/core/domain/shared/utils/logger.dart';
 import 'package:whph/infrastructure/linux/constants/linux_app_constants.dart';
 
 class LinuxAppUsageService extends BaseDesktopAppUsageService {
-  static final MethodChannel _channel =
-      MethodChannel(LinuxAppConstants.channels.appUsage);
+  static final MethodChannel _channel = MethodChannel(LinuxAppConstants.channels.appUsage);
 
   LinuxAppUsageService(
     super.appUsageRepository,

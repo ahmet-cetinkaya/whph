@@ -22,12 +22,10 @@ class NotificationHabitRepository extends Fake implements IHabitRepository {
   void addHabit(Habit habit) => _habits[habit.id] = habit;
 
   @override
-  Future<Habit?> getById(String id, {bool includeDeleted = false}) async =>
-      _habits[id];
+  Future<Habit?> getById(String id, {bool includeDeleted = false}) async => _habits[id];
 }
 
-class NotificationHabitRecordRepository extends Fake
-    implements IHabitRecordRepository {
+class NotificationHabitRecordRepository extends Fake implements IHabitRecordRepository {
   final List<HabitRecord> records = [];
 
   @override
@@ -43,9 +41,7 @@ class NotificationHabitRecordRepository extends Fake
   ) async {
     final matchingRecords = records
         .where((record) =>
-            record.habitId == habitId &&
-            !record.occurredAt.isBefore(startDate) &&
-            !record.occurredAt.isAfter(endDate))
+            record.habitId == habitId && !record.occurredAt.isBefore(startDate) && !record.occurredAt.isAfter(endDate))
         .toList();
     return PaginatedList(
       items: matchingRecords,
@@ -64,8 +60,7 @@ class NotificationHabitRecordRepository extends Fake
   }
 }
 
-class NotificationHabitTimeRecordRepository extends Fake
-    implements IHabitTimeRecordRepository {
+class NotificationHabitTimeRecordRepository extends Fake implements IHabitTimeRecordRepository {
   @override
   Future<List<HabitTimeRecord>> getByHabitIdAndDateRange(
     String habitId,
@@ -98,7 +93,6 @@ class NotificationHabitMediator extends Mediator {
       final command = (request as Object) as CompleteHabitCommand;
       return await _handler(command) as R;
     }
-    throw UnsupportedError(
-        'Unsupported notification test command: ${request.runtimeType}');
+    throw UnsupportedError('Unsupported notification test command: ${request.runtimeType}');
   }
 }

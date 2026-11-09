@@ -3,6 +3,5 @@
 /// outermost (root) cause.
 abstract class ISyncCascadeService {
   /// Runs [operation] with `cascade_cause` set to (`causeTable`, `causePk`).
-  Future<T> withCause<T>(
-      String causeTable, String causePk, Future<T> Function() operation);
+  Future<T> withCause<T>(String causeTable, String causePk, Future<T> Function() operation);
 }

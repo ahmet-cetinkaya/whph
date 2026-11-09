@@ -83,9 +83,8 @@ class PlatformInitializationService {
           await singleInstanceService.broadcastMessage('Initializing remote sync...');
 
           try {
-            final response = await container
-                .resolve<Mediator>()
-                .send<SyncNowCommand, SyncNowCommandResponse>(SyncNowCommand());
+            final response =
+                await container.resolve<Mediator>().send<SyncNowCommand, SyncNowCommandResponse>(SyncNowCommand());
             final outcome = response.isComplete && !response.hasErrors ? 'completed' : 'finished with errors';
             await singleInstanceService.broadcastMessage('Sync operation $outcome.');
           } catch (e) {

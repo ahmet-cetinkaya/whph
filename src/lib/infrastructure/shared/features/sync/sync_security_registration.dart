@@ -21,8 +21,7 @@ import 'package:whph/infrastructure/shared/features/sync/sync_ledger_location.da
 ///
 /// [ledgerDirectory] replaces the per-target state directory; only tests that
 /// must not touch the user's real ledger set it.
-void registerSyncSecurity(IContainer container,
-    {required Directory dataDirectory, Directory? ledgerDirectory}) {
+void registerSyncSecurity(IContainer container, {required Directory dataDirectory, Directory? ledgerDirectory}) {
   final ledger = ledgerDirectory ??
       resolveSyncLedgerLocation(
         target: detectSyncPackagingTarget(Platform.environment),
@@ -30,11 +29,9 @@ void registerSyncSecurity(IContainer container,
         environment: Platform.environment,
       ).directory;
   container.registerSingleton<ISyncKeyStore>(
-    (_) =>
-        FileSyncKeyStore(keyDirectory: dataDirectory, ledgerDirectory: ledger),
+    (_) => FileSyncKeyStore(keyDirectory: dataDirectory, ledgerDirectory: ledger),
   );
-  container.registerSingleton<ISyncPeerStateStore>(
-      (_) => DriftSyncPeerStateStore(AppDatabase.instance(container)));
+  container.registerSingleton<ISyncPeerStateStore>((_) => DriftSyncPeerStateStore(AppDatabase.instance(container)));
   container.registerSingleton<SyncMembershipService>(
     (c) => SyncMembershipService(
       keyStore: c.resolve<ISyncKeyStore>(),
@@ -60,10 +57,8 @@ void registerSyncSecurity(IContainer container,
   container.registerSingleton<ResetLocalDataService>(
     (c) => ResetLocalDataService(
       keyStore: c.resolve<ISyncKeyStore>(),
-      createPreResetBackup: () =>
-          AppDatabase.instance(c).createPreResetBackup(),
-      resetDatabase: (backup) =>
-          AppDatabase.instance(c).resetDatabase(preResetBackup: backup),
+      createPreResetBackup: () => AppDatabase.instance(c).createPreResetBackup(),
+      resetDatabase: (backup) => AppDatabase.instance(c).resetDatabase(preResetBackup: backup),
     ),
   );
 }

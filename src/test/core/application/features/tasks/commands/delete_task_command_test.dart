@@ -540,11 +540,9 @@ void main() {
   });
 }
 
-
 class _NoopSyncCascadeService implements ISyncCascadeService {
   @override
-  Future<T> withCause<T>(
-      String causeTable, String causePk, Future<T> Function() operation) {
+  Future<T> withCause<T>(String causeTable, String causePk, Future<T> Function() operation) {
     return operation();
   }
 }

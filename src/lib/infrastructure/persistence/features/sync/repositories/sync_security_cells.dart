@@ -32,8 +32,7 @@ class SecurityCellSpec {
   final String pkColumn;
 
   /// Validates [bytes] against [pk] and returns the Drift row.
-  final Map<String, Object?> Function(String pk, Uint8List bytes, int clock)
-      toRow;
+  final Map<String, Object?> Function(String pk, Uint8List bytes, int clock) toRow;
 
   /// The record bytes of a stored row.
   final Uint8List Function(Map<String, Object?> row) fromRow;
@@ -49,12 +48,10 @@ class SecurityCellSpec {
 }
 
 /// Lowercase hex form used by the security tables for keys and signatures.
-String hexEncode(List<int> bytes) =>
-    bytes.map((b) => b.toRadixString(_hexRadix).padLeft(2, '0')).join();
+String hexEncode(List<int> bytes) => bytes.map((b) => b.toRadixString(_hexRadix).padLeft(2, '0')).join();
 
 Uint8List hexDecode(String hex) => Uint8List.fromList([
-      for (var i = 0; i < hex.length; i += 2)
-        int.parse(hex.substring(i, i + 2), radix: _hexRadix),
+      for (var i = 0; i < hex.length; i += 2) int.parse(hex.substring(i, i + 2), radix: _hexRadix),
     ]);
 
 int _wallSeconds(int clock) => (clock >> _hlcCounterBits) ~/ _msPerSecond;
@@ -94,8 +91,7 @@ Map<String, Object?> _revocationRow(String pk, Uint8List bytes, int clock) {
     'revoker_pub': hexEncode(record.revokerPub),
     'origin_id': pk,
     'origin_seq': _revocationOriginSeq,
-    'cutoffs': jsonEncode(
-        {for (final e in record.cutoffs.entries) e.key.hex: e.value}),
+    'cutoffs': jsonEncode({for (final e in record.cutoffs.entries) e.key.hex: e.value}),
     'sig': hexEncode(record.sig),
     'hlc': clock,
   };

@@ -49,28 +49,23 @@ void main() {
 
       final local = await diagnosticsOf(a).collect(includeContentHash: true);
       final peer = await diagnosticsOf(b).collect(includeContentHash: true);
-      final report = await diagnosticsOf(a).logSessionEnd(
-          includeContentHash: true, peerTableHashes: peer.tableHashes);
+      final report = await diagnosticsOf(a).logSessionEnd(includeContentHash: true, peerTableHashes: peer.tableHashes);
 
       expect(local.tableHashes, peer.tableHashes);
       expect(report.divergentTables, isEmpty);
       expect(logLines.where((l) => l.contains('divergence')), isEmpty);
     });
 
-    test('an injected divergence logs the table category, never values',
-        () async {
+    test('an injected divergence logs the table category, never values', () async {
       await a.insertNote('n1', 'one');
       await syncAllDevices([a, b]);
-      await b.sql(
-          "UPDATE $_noteTable SET title = '$_secretTitle' WHERE id = 'n1'");
+      await b.sql("UPDATE $_noteTable SET title = '$_secretTitle' WHERE id = 'n1'");
 
       final peer = await diagnosticsOf(b).collect(includeContentHash: true);
-      final report = await diagnosticsOf(a).logSessionEnd(
-          includeContentHash: true, peerTableHashes: peer.tableHashes);
+      final report = await diagnosticsOf(a).logSessionEnd(includeContentHash: true, peerTableHashes: peer.tableHashes);
 
       expect(report.divergentTables, [_noteTable]);
-      expect(
-          logLines, contains('sync content divergence: category=$_noteTable'));
+      expect(logLines, contains('sync content divergence: category=$_noteTable'));
       expect(logLines.join('\n'), isNot(contains(_secretTitle)));
       expect(logLines.join('\n'), isNot(contains('one')));
     });
@@ -87,8 +82,7 @@ void main() {
       await pullChanges(b, c, onlyOrigins: {'origin-b'});
       final after = await diagnosticsOf(c).collect(includeContentHash: true);
 
-      expect(after.tableHashes![_noteTable],
-          isNot(before.tableHashes![_noteTable]));
+      expect(after.tableHashes![_noteTable], isNot(before.tableHashes![_noteTable]));
     });
   });
 
@@ -96,18 +90,12 @@ void main() {
     Future<void> insertManifest(int manifestId) => a.sql(
         "INSERT INTO sync_origin_batch (manifest_id, origin_id, from_seq, to_seq, hashes, sig) VALUES ($manifestId, 'origin-a', 0, 1, x'00', 'sig')");
 
-    test('deletes only manifests no clock row or held cell references',
-        () async {
+    test('deletes only manifests no clock row or held cell references', () async {
       await a.insertNote('n1', 'one');
-      await a.sql(
-          'UPDATE sync_clock SET manifest_id = $_referencedByClock WHERE origin_seq = 1');
+      await a.sql('UPDATE sync_clock SET manifest_id = $_referencedByClock WHERE origin_seq = 1');
       await a.sql(
           "INSERT INTO sync_held_cell (tbl, pk, col, kind, value, hlc, node, origin_id, origin_seq, manifest_id) VALUES ('$_noteTable', 'x', 'title', 'unknown', NULL, 1, 'n', 'origin-z', 1, $_referencedByHeldCell)");
-      for (final id in [
-        _referencedByClock,
-        _referencedByHeldCell,
-        _unreferenced
-      ]) {
+      for (final id in [_referencedByClock, _referencedByHeldCell, _unreferenced]) {
         await insertManifest(id);
       }
 
@@ -115,9 +103,7 @@ void main() {
 
       expect(deleted, 1);
       expect(
-          (await a.rows(
-                  'SELECT manifest_id FROM sync_origin_batch ORDER BY manifest_id'))
-              .map((r) => r['manifest_id']),
+          (await a.rows('SELECT manifest_id FROM sync_origin_batch ORDER BY manifest_id')).map((r) => r['manifest_id']),
           [_referencedByClock, _referencedByHeldCell]);
     });
   });

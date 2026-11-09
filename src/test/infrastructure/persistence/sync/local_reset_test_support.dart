@@ -54,8 +54,7 @@ class _JsonCompressionService implements ICompressionService {
   Future<String> extractFromWhphFile(Uint8List whphData) async => json;
 
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      throw UnimplementedError(invocation.memberName.toString());
+  dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError(invocation.memberName.toString());
 }
 
 class _NoMigration implements IImportDataMigrationService {
@@ -66,9 +65,7 @@ class _NoMigration implements IImportDataMigrationService {
   List<String> getAvailableMigrationVersions() => const [];
 
   @override
-  Future<Map<String, dynamic>> migrateData(
-          Map<String, dynamic> data, String sourceVersion) async =>
-      data;
+  Future<Map<String, dynamic>> migrateData(Map<String, dynamic> data, String sourceVersion) async => data;
 }
 
 /// The export document of a note list, as `ExportDataCommand` writes it.
@@ -76,11 +73,8 @@ String exportOfNotes(Map<String, String> titlesById) => jsonEncode({
       'appInfo': {'version': AppInfo.version},
       'notes': [
         for (final entry in titlesById.entries)
-          jsonDecode(JsonMapper.serialize(Note(
-              id: entry.key,
-              createdDate: DateTime.utc(2026),
-              title: entry.value,
-              order: entry.key)))
+          jsonDecode(JsonMapper.serialize(
+              Note(id: entry.key, createdDate: DateTime.utc(2026), title: entry.value, order: entry.key)))
       ],
     });
 
@@ -88,33 +82,26 @@ extension LocalResetServices on SecurityDevice {
   AppDatabase get appDatabase => database.db;
 
   /// Pass [membershipWired] false for a handler without sync (plain path).
-  ImportDataCommandHandler importHandler(String exportJson,
-      {bool membershipWired = true}) {
+  ImportDataCommandHandler importHandler(String exportJson, {bool membershipWired = true}) {
     final db = appDatabase;
     final noteRepository = DriftNoteRepository.withDatabase(db);
     final habitRepository = DriftHabitRepository.withDatabase(db);
     final taskRepository = DriftTaskRepository.withDatabase(db);
     final mediator = Mediator(Pipeline())
-      ..registerHandler<NormalizeHabitOrdersCommand,
-              NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
+      ..registerHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
           () => NormalizeHabitOrdersCommandHandler(habitRepository))
-      ..registerHandler<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse,
-              NormalizeTaskOrdersCommandHandler>(
+      ..registerHandler<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse, NormalizeTaskOrdersCommandHandler>(
           () => NormalizeTaskOrdersCommandHandler(taskRepository))
-      ..registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse,
-              NormalizeNoteOrdersCommandHandler>(
+      ..registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
           () => NormalizeNoteOrdersCommandHandler(noteRepository));
     return ImportDataCommandHandler(
       appUsageRepository: DriftAppUsageRepository.withDatabase(db),
       appUsageTagRepository: DriftAppUsageTagRepository.withDatabase(db),
-      appUsageTimeRecordRepository:
-          DriftAppUsageTimeRecordRepository.withDatabase(db),
-      appUsageTagRuleRepository:
-          DriftAppUsageTagRuleRepository.withDatabase(db),
+      appUsageTimeRecordRepository: DriftAppUsageTimeRecordRepository.withDatabase(db),
+      appUsageTagRuleRepository: DriftAppUsageTagRuleRepository.withDatabase(db),
       habitRepository: habitRepository,
       habitRecordRepository: DriftHabitRecordRepository.withDatabase(db),
-      habitTimeRecordRepository:
-          DriftHabitTimeRecordRepository.withDatabase(db),
+      habitTimeRecordRepository: DriftHabitTimeRecordRepository.withDatabase(db),
       habitTagRepository: DriftHabitTagRepository.withDatabase(db),
       tagRepository: DriftTagRepository.withDatabase(db),
       tagTagRepository: DriftTagTagRepository.withDatabase(db),
@@ -124,8 +111,7 @@ extension LocalResetServices on SecurityDevice {
       taskTimeRecordRepository: DriftTaskTimeRecordRepository.withDatabase(db),
       settingRepository: DriftSettingRepository.withDatabase(db),
       syncDeviceRepository: DriftSyncDeviceRepository.withDatabase(db),
-      appUsageIgnoreRuleRepository:
-          DriftAppUsageIgnoreRuleRepository.withDatabase(db),
+      appUsageIgnoreRuleRepository: DriftAppUsageIgnoreRuleRepository.withDatabase(db),
       noteRepository: noteRepository,
       noteTagRepository: DriftNoteTagRepository.withDatabase(db),
       migrationService: _NoMigration(),
@@ -137,8 +123,7 @@ extension LocalResetServices on SecurityDevice {
 
   Future<void> replaceImport(String exportJson) {
     AppDatabase.setInstanceForTesting(appDatabase);
-    return importHandler(exportJson)(
-        ImportDataCommand(Uint8List(0), ImportStrategy.replace));
+    return importHandler(exportJson)(ImportDataCommand(Uint8List(0), ImportStrategy.replace));
   }
 
   DemoDataService demoService() {
@@ -155,8 +140,7 @@ extension LocalResetServices on SecurityDevice {
       noteRepository: DriftNoteRepository.withDatabase(db),
       noteTagRepository: DriftNoteTagRepository.withDatabase(db),
       appUsageRepository: DriftAppUsageRepository.withDatabase(db),
-      appUsageTimeRecordRepository:
-          DriftAppUsageTimeRecordRepository.withDatabase(db),
+      appUsageTimeRecordRepository: DriftAppUsageTimeRecordRepository.withDatabase(db),
       appUsageTagRepository: DriftAppUsageTagRepository.withDatabase(db),
       syncMembership: service,
     );

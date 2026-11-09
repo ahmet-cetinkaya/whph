@@ -384,7 +384,8 @@ $metric = Get-NetIPInterface -AddressFamily IPv4 | Select-Object InterfaceAlias,
     try {
       parsed = jsonDecode(jsonOutput);
     } catch (e, st) {
-      Logger.error('[$_windowsMetadataParseErrorId] Failed to parse Windows interface metadata JSON: ${e.runtimeType}\n$st');
+      Logger.error(
+          '[$_windowsMetadataParseErrorId] Failed to parse Windows interface metadata JSON: ${e.runtimeType}\n$st');
       return {};
     }
 

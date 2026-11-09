@@ -26,20 +26,16 @@ void main() {
   late SecurityDevice a;
   late SecurityDevice b;
 
-  File databaseFile() =>
-      File('${applicationDirectory.path}/$_databaseFileName');
+  File databaseFile() => File('${applicationDirectory.path}/$_databaseFileName');
 
   ResetLocalDataService resetService() => ResetLocalDataService(
         keyStore: a.keyStore,
         createPreResetBackup: () => a.appDatabase.createPreResetBackup(),
-        resetDatabase: (backup) =>
-            a.appDatabase.resetDatabase(preResetBackup: backup),
+        resetDatabase: (backup) => a.appDatabase.resetDatabase(preResetBackup: backup),
       );
 
   Future<SyncStartupAction> start({required bool databaseCreatedThisLaunch}) =>
-      a.startup.run(
-          deviceName: 'a',
-          databaseCreatedThisLaunch: databaseCreatedThisLaunch);
+      a.startup.run(deviceName: 'a', databaseCreatedThisLaunch: databaseCreatedThisLaunch);
 
   setUp(() async {
     scratch = await Directory.systemTemp.createTemp('t21_reset_');
@@ -68,8 +64,7 @@ void main() {
     await scratch.delete(recursive: true);
   });
 
-  test('reset removes key file, ledger, DB and sidecars and leaves the group',
-      () async {
+  test('reset removes key file, ledger, DB and sidecars and leaves the group', () async {
     final formerMember = a.memberId;
     final formerPublicKey = a.membership.identity.x25519Pub;
     expect(await a.service.isPaired(), isTrue);
@@ -82,59 +77,45 @@ void main() {
     expect(databaseFile().existsSync(), isFalse);
     expect(File('${databaseFile().path}-wal').existsSync(), isFalse);
     expect(File('${databaseFile().path}-shm').existsSync(), isFalse);
-    expect(
-        Directory('${applicationDirectory.path}/backups/pre_reset')
-            .listSync()
-            .whereType<File>(),
-        isNotEmpty,
+    expect(Directory('${applicationDirectory.path}/backups/pre_reset').listSync().whereType<File>(), isNotEmpty,
         reason: 'the pre-reset backup is written first');
 
     await a.openDatabaseFile(databaseFile().path);
-    expect(await start(databaseCreatedThisLaunch: true),
-        SyncStartupAction.freshIdentity);
+    expect(await start(databaseCreatedThisLaunch: true), SyncStartupAction.freshIdentity);
 
     expect(a.memberId, isNot(formerMember));
     expect(a.membership.groupId, isNull);
     expect(await a.database.count('SELECT COUNT(*) FROM sync_member_table'), 0);
     expect((await a.service.currentView()).state, SyncGroupState.ungrouped);
     expect(await a.service.isPaired(), isFalse);
-    expect(await handshakeRefused(a, b), isTrue,
-        reason: 'the former peer refuses the new static key');
+    expect(await handshakeRefused(a, b), isTrue, reason: 'the former peer refuses the new static key');
 
     final verdict = await b.service.checkOutboundStaticKey(
-        expectedMemberId: formerMember,
-        address: _peerAddress,
-        observedX25519: a.membership.identity.x25519Pub);
+        expectedMemberId: formerMember, address: _peerAddress, observedX25519: a.membership.identity.x25519Pub);
     expect(verdict, OutboundKeyVerdict.needsRepairing);
-    expect((await b.service.currentView()).peersNeedingRepairing,
-        contains(formerMember));
+    expect((await b.service.currentView()).peersNeedingRepairing, contains(formerMember));
     expect(a.membership.identity.x25519Pub, isNot(formerPublicKey));
   });
 
-  test('interrupted reset: key file gone, DB kept -> new identity, data kept',
-      () async {
+  test('interrupted reset: key file gone, DB kept -> new identity, data kept', () async {
     final formerMember = a.memberId;
     await a.keyStore.deleteAll();
     await a.restart();
 
-    expect(await start(databaseCreatedThisLaunch: false),
-        SyncStartupAction.keyLost);
+    expect(await start(databaseCreatedThisLaunch: false), SyncStartupAction.keyLost);
 
     expect(a.memberId, isNot(formerMember));
-    expect(
-        (await a.service.currentView()).state, SyncGroupState.needsRepairing);
+    expect((await a.service.currentView()).state, SyncGroupState.needsRepairing);
     expect(await a.hasNote('n1'), isTrue);
   });
 
-  test('interrupted reset: DB gone, key file kept -> fresh unpaired identity',
-      () async {
+  test('interrupted reset: DB gone, key file kept -> fresh unpaired identity', () async {
     final formerMember = a.memberId;
     await a.database.close();
     await databaseFile().delete();
     await a.openDatabaseFile(databaseFile().path);
 
-    expect(await start(databaseCreatedThisLaunch: true),
-        SyncStartupAction.freshIdentity);
+    expect(await start(databaseCreatedThisLaunch: true), SyncStartupAction.freshIdentity);
 
     expect(a.memberId, isNot(formerMember));
     expect(await a.service.isPaired(), isFalse);
@@ -151,8 +132,7 @@ void main() {
 
     await a.replaceDatabase(backupFile.path, workingPath: databaseFile().path);
 
-    expect(await start(databaseCreatedThisLaunch: false),
-        SyncStartupAction.keyLost);
+    expect(await start(databaseCreatedThisLaunch: false), SyncStartupAction.keyLost);
     expect(a.memberId, isNot(newMember));
     expect(await a.hasNote('n1'), isTrue);
   });

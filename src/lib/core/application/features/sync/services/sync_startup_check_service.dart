@@ -59,8 +59,7 @@ class SyncStartupCheckService {
       await _membershipService.createFreshIdentity(name: deviceName);
       return SyncStartupAction.freshIdentity;
     }
-    if (!keyFileLoaded ||
-        state.memberId != _membershipService.membership.memberId) {
+    if (!keyFileLoaded || state.memberId != _membershipService.membership.memberId) {
       await _membershipService.recoverFromLostKeyFile(name: deviceName);
       return SyncStartupAction.keyLost;
     }
@@ -73,14 +72,12 @@ class SyncStartupCheckService {
   /// cursor as the `max_sent_seq` lower bound and returns the report; the
   /// caller aborts before sending anything and retries the session. Returns
   /// `null` when the peer cursor does not exceed what the DB holds.
-  Future<SyncOriginSwitchReport?> switchIfPeerCursorAhead(
-      Map<String, int> peerVector) async {
+  Future<SyncOriginSwitchReport?> switchIfPeerCursorAhead(Map<String, int> peerVector) async {
     final state = await _changeStore.readLocalState();
     final peerCursor = peerVector[state.localOrigin] ?? 0;
     if (peerCursor <= state.nextSeq - 1) return null;
     final mark = _markOf(state.localOrigin) ?? 0;
-    return _membershipService.switchOrigin(OriginSwitchReason.restore,
-        sentMark: math.max(mark, peerCursor));
+    return _membershipService.switchOrigin(OriginSwitchReason.restore, sentMark: math.max(mark, peerCursor));
   }
 
   /// Rule 3: a `pending` ledger entry is committed when the DB adopted its
@@ -111,17 +108,13 @@ class SyncStartupCheckService {
         state.nextSeq < writtenHigh;
     if (!databaseIsBehind) return SyncStartupAction.normal;
     await _membershipService.bindIdentityToDatabase();
-    await _membershipService.switchOrigin(OriginSwitchReason.restore,
-        sentMark: mark);
+    await _membershipService.switchOrigin(OriginSwitchReason.restore, sentMark: mark);
     await _membershipService.refresh();
     return SyncStartupAction.restore;
   }
 
-  int? _markOf(String origin) => _keyStore.isReadable
-      ? _keyStore.entryOf(OriginId.fromHex(origin))?.maxSentSeq
-      : null;
+  int? _markOf(String origin) => _keyStore.isReadable ? _keyStore.entryOf(OriginId.fromHex(origin))?.maxSentSeq : null;
 
-  int _writtenHighOf(String origin) => _keyStore.isReadable
-      ? _keyStore.entryOf(OriginId.fromHex(origin))?.nextSeqHigh ?? 0
-      : 0;
+  int _writtenHighOf(String origin) =>
+      _keyStore.isReadable ? _keyStore.entryOf(OriginId.fromHex(origin))?.nextSeqHigh ?? 0 : 0;
 }

@@ -57,17 +57,17 @@ List<String> _addressesOf(McpToolArguments arguments) {
 }
 
 Map<String, dynamic> _memberJson(SyncMemberSummary member, List<String> addresses) => {
-  'id': member.memberId,
-  'name': member.name,
-  if (member.platform != null) 'platform': member.platform,
-  'addresses': addresses,
-  'status': member.lastResult?.code ?? 'ok',
-  'itemsCannotBeApplied': member.itemsCannotBeApplied,
-  'needsRepairing': member.isLegacy,
-  'isThisDevice': member.isThisDevice,
-  if (member.lastSuccessfulSync != null) 'lastSuccessfulSync': member.lastSuccessfulSync!.toUtc().toIso8601String(),
-  'revision': _revisionOf(member.name, addresses),
-};
+      'id': member.memberId,
+      'name': member.name,
+      if (member.platform != null) 'platform': member.platform,
+      'addresses': addresses,
+      'status': member.lastResult?.code ?? 'ok',
+      'itemsCannotBeApplied': member.itemsCannotBeApplied,
+      'needsRepairing': member.isLegacy,
+      'isThisDevice': member.isThisDevice,
+      if (member.lastSuccessfulSync != null) 'lastSuccessfulSync': member.lastSuccessfulSync!.toUtc().toIso8601String(),
+      'revision': _revisionOf(member.name, addresses),
+    };
 
 Future<void> _requireAuthorized(IMcpRequestContext context, RequestHandlerExtra extra, Set<String> scopes) async {
   extra.signal.throwIfAborted();
@@ -81,7 +81,7 @@ Future<void> _requireAuthorized(IMcpRequestContext context, RequestHandlerExtra 
 }
 
 CallToolResult _validation(String field, String message) => McpToolResult.failure(
-  McpToolError(code: McpToolErrorCode.validationError, message: message, details: {'field': field}),
-);
+      McpToolError(code: McpToolErrorCode.validationError, message: message, details: {'field': field}),
+    );
 CallToolResult _failure(McpToolErrorCode code, String message) =>
     McpToolResult.failure(McpToolError(code: code, message: message));

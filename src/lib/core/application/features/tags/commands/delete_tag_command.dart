@@ -63,13 +63,13 @@ class DeleteTagCommandHandler implements IRequestHandler<DeleteTagCommand, Delet
 
     await _syncCascadeService.withCause('tag_table', tag.id, () {
       return _transactions.run(() async {
-      await _deleteRelatedEntities(request.id);
-      if (request.expectedRevision == null) {
-        await _tagRepository.delete(tag);
-      } else if (!await _tagRepository.deleteIfRevision(tag.id, request.expectedRevision!)) {
-        throw TagRevisionConflictException(tag.id);
-      }
-      await ensureMutationAuthorized(request.authorizeCommit);
+        await _deleteRelatedEntities(request.id);
+        if (request.expectedRevision == null) {
+          await _tagRepository.delete(tag);
+        } else if (!await _tagRepository.deleteIfRevision(tag.id, request.expectedRevision!)) {
+          throw TagRevisionConflictException(tag.id);
+        }
+        await ensureMutationAuthorized(request.authorizeCommit);
       });
     });
     _tagEvents?.notifyTagDeleted(tag.id);

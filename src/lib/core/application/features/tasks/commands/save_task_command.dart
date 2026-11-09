@@ -85,15 +85,9 @@ class SaveTaskCommand implements IRequest<SaveTaskCommandResponse> {
     this.recurrenceConfiguration,
   })  : plannedDate = TaskDateTimeNormalizer.normalize(plannedDate),
         deadlineDate = TaskDateTimeNormalizer.normalize(deadlineDate),
-        completedAt = completedAt != null
-            ? DateTimeHelper.toUtcDateTime(completedAt)
-            : null,
-        recurrenceStartDate = recurrenceStartDate != null
-            ? DateTimeHelper.toUtcDateTime(recurrenceStartDate)
-            : null,
-        recurrenceEndDate = recurrenceEndDate != null
-            ? DateTimeHelper.toUtcDateTime(recurrenceEndDate)
-            : null;
+        completedAt = completedAt != null ? DateTimeHelper.toUtcDateTime(completedAt) : null,
+        recurrenceStartDate = recurrenceStartDate != null ? DateTimeHelper.toUtcDateTime(recurrenceStartDate) : null,
+        recurrenceEndDate = recurrenceEndDate != null ? DateTimeHelper.toUtcDateTime(recurrenceEndDate) : null;
 }
 
 class SaveTaskCommandResponse {
@@ -108,8 +102,7 @@ class SaveTaskCommandResponse {
   });
 }
 
-class SaveTaskCommandHandler
-    implements IRequestHandler<SaveTaskCommand, SaveTaskCommandResponse> {
+class SaveTaskCommandHandler implements IRequestHandler<SaveTaskCommand, SaveTaskCommandResponse> {
   final ITaskRepository _taskRepository;
   final ITaskTagRepository _taskTagRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
@@ -135,8 +128,7 @@ class SaveTaskCommandHandler
   /// Returns null if user has disabled default estimated time.
   Future<int?> _getDefaultEstimatedTime() async {
     try {
-      final setting = await _settingRepository
-          .getByKey(SettingKeys.taskDefaultEstimatedTime);
+      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultEstimatedTime);
       if (setting == null) {
         return TaskConstants.defaultEstimatedTime;
       }
@@ -165,8 +157,7 @@ class SaveTaskCommandHandler
   Future<(ReminderTime, int?)> _getDefaultPlannedDateReminder() async {
     String? value;
     try {
-      final setting = await _settingRepository
-          .getByKey(SettingKeys.taskDefaultPlannedDateReminder);
+      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminder);
       if (setting == null) return (TaskConstants.defaultReminderTime, null);
 
       value = setting.getValue<String>();
@@ -221,8 +212,7 @@ class SaveTaskCommandHandler
   /// Gets the default planned date reminder custom offset
   Future<int?> _getDefaultPlannedDateReminderCustomOffset() async {
     try {
-      final setting = await _settingRepository
-          .getByKey(SettingKeys.taskDefaultPlannedDateReminderCustomOffset);
+      final setting = await _settingRepository.getByKey(SettingKeys.taskDefaultPlannedDateReminderCustomOffset);
       if (setting == null) return null;
 
       final value = setting.getValue<int?>();
@@ -254,9 +244,7 @@ class SaveTaskCommandHandler
     final isCreating = request.id == null;
     final plannedDate = request.plannedDate;
     final deadlineDate = request.deadlineDate;
-    if (plannedDate != null &&
-        deadlineDate != null &&
-        deadlineDate.isBefore(plannedDate)) {
+    if (plannedDate != null && deadlineDate != null && deadlineDate.isBefore(plannedDate)) {
       throw BusinessException(
         'Deadline date must be at or after planned date',
         TaskTranslationKeys.invalidDateRangeError,
@@ -268,8 +256,7 @@ class SaveTaskCommandHandler
     if (request.id != null) {
       task = await _taskRepository.getById(request.id!);
       if (task == null) {
-        throw BusinessException("Task with id ${request.id} not found",
-            TaskTranslationKeys.taskNotFoundError);
+        throw BusinessException("Task with id ${request.id} not found", TaskTranslationKeys.taskNotFoundError);
       }
 
       task.title = request.title;
@@ -280,24 +267,19 @@ class SaveTaskCommandHandler
       task.plannedDate = request.plannedDate;
 
       task.deadlineDate = request.deadlineDate;
-      task.estimatedTime =
-          request.estimatedTime != null && request.estimatedTime! > 0
-              ? request.estimatedTime
-              : null;
+      task.estimatedTime = request.estimatedTime != null && request.estimatedTime! > 0 ? request.estimatedTime : null;
 
       task.completedAt = request.completedAt;
 
       // Status⇔completion sync
       if (request.statusId != null) {
         task.statusId = request.statusId;
-        if (TaskStatusConstants.isDoneStatusId(request.statusId) &&
-            task.completedAt == null) {
+        if (TaskStatusConstants.isDoneStatusId(request.statusId) && task.completedAt == null) {
           task.completedAt = DateTime.now().toUtc();
         } else if (!TaskStatusConstants.isDoneStatusId(request.statusId)) {
           task.completedAt = null;
         }
-      } else if (request.completedAt != null &&
-          !TaskStatusConstants.isDoneStatusId(task.statusId)) {
+      } else if (request.completedAt != null && !TaskStatusConstants.isDoneStatusId(task.statusId)) {
         task.statusId = TaskStatusConstants.doneId;
       } else if (request.completedAt == null &&
           task.statusId != null &&
@@ -309,13 +291,11 @@ class SaveTaskCommandHandler
 
       if (request.plannedDateReminderTime != null) {
         task.plannedDateReminderTime = request.plannedDateReminderTime!;
-        task.plannedDateReminderCustomOffset =
-            request.plannedDateReminderCustomOffset;
+        task.plannedDateReminderCustomOffset = request.plannedDateReminderCustomOffset;
       } else if (isPlannedDateChanged) {
         if (task.plannedDate != null) {
           // Apply default reminder when date changes
-          final (defaultReminder, customOffset) =
-              await _getDefaultPlannedDateReminder();
+          final (defaultReminder, customOffset) = await _getDefaultPlannedDateReminder();
           task.plannedDateReminderTime = defaultReminder;
           task.plannedDateReminderCustomOffset = customOffset;
         } else {
@@ -326,8 +306,7 @@ class SaveTaskCommandHandler
 
       if (request.deadlineDateReminderTime != null) {
         task.deadlineDateReminderTime = request.deadlineDateReminderTime!;
-        task.deadlineDateReminderCustomOffset =
-            request.deadlineDateReminderCustomOffset;
+        task.deadlineDateReminderCustomOffset = request.deadlineDateReminderCustomOffset;
       }
 
       if (request.recurrenceType != null) {
@@ -367,26 +346,20 @@ class SaveTaskCommandHandler
           "parent_task_id ${request.parentTaskId != null ? '= ?' : 'IS NULL'} AND deleted_date IS NULL",
           request.parentTaskId != null ? [request.parentTaskId!] : [],
         ),
-        customOrder: [
-          CustomOrder(field: "order", direction: SortDirection.desc)
-        ],
+        customOrder: [CustomOrder(field: "order", direction: SortDirection.desc)],
       );
 
-      final lastOrder =
-          lastTasks.items.isNotEmpty ? lastTasks.items.first.order : null;
-      final newOrder = request.order ??
-          OrderRank.neighborRank(beforeOrder: lastOrder, afterOrder: null);
+      final lastOrder = lastTasks.items.isNotEmpty ? lastTasks.items.first.order : null;
+      final newOrder = request.order ?? OrderRank.neighborRank(beforeOrder: lastOrder, afterOrder: null);
 
       // Resolve default reminder for new task
       ReminderTime plannedDateReminderTime;
-      int? plannedDateReminderCustomOffset =
-          request.plannedDateReminderCustomOffset;
+      int? plannedDateReminderCustomOffset = request.plannedDateReminderCustomOffset;
 
       if (request.plannedDateReminderTime != null) {
         plannedDateReminderTime = request.plannedDateReminderTime!;
       } else if (request.plannedDate != null) {
-        final (defaultReminder, customOffset) =
-            await _getDefaultPlannedDateReminder();
+        final (defaultReminder, customOffset) = await _getDefaultPlannedDateReminder();
         plannedDateReminderTime = defaultReminder;
         plannedDateReminderCustomOffset = customOffset;
       } else {
@@ -406,17 +379,13 @@ class SaveTaskCommandHandler
               : (request.estimatedTime! > 0 ? request.estimatedTime : null),
           completedAt: request.completedAt,
           statusId: request.statusId ??
-              (request.completedAt != null
-                  ? TaskStatusConstants.doneId
-                  : TaskStatusConstants.todoId),
+              (request.completedAt != null ? TaskStatusConstants.doneId : TaskStatusConstants.todoId),
           parentTaskId: request.parentTaskId,
           order: newOrder,
           plannedDateReminderTime: plannedDateReminderTime,
           plannedDateReminderCustomOffset: plannedDateReminderCustomOffset,
-          deadlineDateReminderTime:
-              request.deadlineDateReminderTime ?? ReminderTime.none,
-          deadlineDateReminderCustomOffset:
-              request.deadlineDateReminderCustomOffset,
+          deadlineDateReminderTime: request.deadlineDateReminderTime ?? ReminderTime.none,
+          deadlineDateReminderCustomOffset: request.deadlineDateReminderCustomOffset,
           recurrenceType: request.recurrenceType ?? RecurrenceType.none,
           recurrenceInterval: request.recurrenceInterval,
           recurrenceStartDate: request.recurrenceStartDate,
@@ -434,14 +403,11 @@ class SaveTaskCommandHandler
 
     // Auto-add time record when completing a task with estimated time but no existing time records
     final bool isTaskCompleted = task.completedAt != null;
-    if (isTaskCompleted &&
-        task.estimatedTime != null &&
-        task.estimatedTime! > 0) {
+    if (isTaskCompleted && task.estimatedTime != null && task.estimatedTime! > 0) {
       final existingTimeRecords = await _taskTimeRecordRepository.getList(
         0,
         1,
-        customWhereFilter: CustomWhereFilter(
-            'task_id = ? AND deleted_date IS NULL', [task.id]),
+        customWhereFilter: CustomWhereFilter('task_id = ? AND deleted_date IS NULL', [task.id]),
       );
 
       if (existingTimeRecords.items.isEmpty) {

@@ -289,8 +289,8 @@ final class SyncSession {
   }
 
   /// Awaits [future] unless the session fails first.
-  Future<T> _guard<T>(Future<T> future) =>
-      Future.any([future, _failed.future.then<T>((_) => throw _failure ?? const SessionAbort(SessionFailure.internal))]);
+  Future<T> _guard<T>(Future<T> future) => Future.any(
+      [future, _failed.future.then<T>((_) => throw _failure ?? const SessionAbort(SessionFailure.internal))]);
 
   Future<void> _send(SecureChannel channel, SyncMessage message) => _guard(channel.send(message));
 
@@ -327,7 +327,8 @@ final class SyncSession {
       case BatchAck(:final batchId):
         _onAck(batchId);
       case ErrorMessage(:final category):
-        throw SessionAbort(category == SyncErrorCategory.preparing ? SessionFailure.peerPreparing : SessionFailure.peerError);
+        throw SessionAbort(
+            category == SyncErrorCategory.preparing ? SessionFailure.peerPreparing : SessionFailure.peerError);
       default:
         throw MalformedMessageException('unexpected ${message.type.name}');
     }

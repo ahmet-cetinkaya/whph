@@ -55,8 +55,7 @@ mixin DesktopSyncModeMixin<T extends StatefulWidget> on State<T> {
     final adapter = desktopLanSyncAdapter;
     if (!PlatformUtils.isDesktop || adapter == null) return;
 
-    final targetMode =
-        _desktopSyncMode == DesktopSyncMode.client ? DesktopSyncMode.server : DesktopSyncMode.client;
+    final targetMode = _desktopSyncMode == DesktopSyncMode.client ? DesktopSyncMode.server : DesktopSyncMode.client;
     try {
       await adapter.applyMode(targetMode);
       await saveDesktopSyncModePreference(targetMode);

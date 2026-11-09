@@ -47,8 +47,7 @@ const double _noteShare = 0.6;
 const String _taskTable = 'task_table';
 const List<String> _comparedColumns = ['title', 'content'];
 const String _noteTable = 'note_table';
-int _envInt(String name, int fallback) =>
-    int.tryParse(Platform.environment[name] ?? '') ?? fallback;
+int _envInt(String name, int fallback) => int.tryParse(Platform.environment[name] ?? '') ?? fallback;
 
 class _Violation {
   final String kind;
@@ -75,16 +74,14 @@ class _Run {
   _Run(this.seed, this.ops, this.scratch) : random = Random(seed);
 
   /// The database handle of device [d] (SQL writes, raw reads).
-  List<SyncTestDevice> get devices =>
-      [for (final engine in engines) engine.security.database];
+  List<SyncTestDevice> get devices => [for (final engine in engines) engine.security.database];
 
   Future<void> open() async {
     for (var d = 0; d < _deviceCount; d++) {
       final security = await SecurityDevice.open('d$d', scratch);
       final offset = random.nextInt(2 * _maxClockOffsetMs) - _maxClockOffsetMs;
-      await security.database
-          .sql('UPDATE sync_state SET hlc = ((CAST((julianday(\'now\') '
-              '- 2440587.5) * 86400000 AS INTEGER) + $offset) << $hlcBits)');
+      await security.database.sql('UPDATE sync_state SET hlc = ((CAST((julianday(\'now\') '
+          '- 2440587.5) * 86400000 AS INTEGER) + $offset) << $hlcBits)');
       engines.add(DriftEngineDevice.over(security));
     }
     for (var d = 1; d < _deviceCount; d++) {
@@ -123,8 +120,7 @@ class _Run {
     final oldMember = old.memberId;
     await old.keyStore.keyFile.delete();
     await old.restart();
-    final action = await old.startup
-        .run(deviceName: old.name, databaseCreatedThisLaunch: false);
+    final action = await old.startup.run(deviceName: old.name, databaseCreatedThisLaunch: false);
     if (action != SyncStartupAction.keyLost) {
       structural.add(_Violation('key_lost', 'startup check said $action'));
     }
@@ -153,29 +149,21 @@ class _Run {
     final r = random.nextDouble();
     if (known.isEmpty || r < 0.3) {
       final pk = 't${d}_${created++}';
-      final alive = await device
-          .rows('SELECT id FROM task_table WHERE deleted_date IS NULL');
-      final parent = alive.isEmpty || random.nextBool()
-          ? 'NULL'
-          : "'${alive[random.nextInt(alive.length)]['id']}'";
+      final alive = await device.rows('SELECT id FROM task_table WHERE deleted_date IS NULL');
+      final parent = alive.isEmpty || random.nextBool() ? 'NULL' : "'${alive[random.nextInt(alive.length)]['id']}'";
       await device.sql(
           "INSERT INTO task_table (id, created_date, title, parent_task_id) VALUES ('$pk', 1, 'task $step', $parent)");
       known.add(pk);
       return;
     }
     final pk = known[random.nextInt(known.length)];
-    final isDeleted = (await device.rows(
-                'SELECT deleted_date FROM task_table WHERE id = ?',
-                [Variable(pk)]))
+    final isDeleted = (await device.rows('SELECT deleted_date FROM task_table WHERE id = ?', [Variable(pk)]))
             .single['deleted_date'] !=
         null;
     if (isDeleted) {
-      await device
-          .sql('UPDATE task_table SET deleted_date = NULL WHERE id = ?', [pk]);
+      await device.sql('UPDATE task_table SET deleted_date = NULL WHERE id = ?', [pk]);
     } else if (r < 0.65) {
-      await device.sql(
-          "UPDATE task_table SET title = 'task $step by d$d' WHERE id = ?",
-          [pk]);
+      await device.sql("UPDATE task_table SET title = 'task $step by d$d' WHERE id = ?", [pk]);
     } else {
       await _cascadeDelete(device, pk, 1000 + step);
     }
@@ -183,17 +171,12 @@ class _Run {
 
   /// Soft-deletes task [pk] and its alive subtasks with [pk] as the cause.
   Future<void> _cascadeDelete(SyncTestDevice device, String pk, int at) async {
-    final children = await device.rows(
-        'SELECT id FROM task_table WHERE parent_task_id = ? AND deleted_date IS NULL',
-        [Variable(pk)]);
-    await DriftSyncCascadeService(device.db).withCause(_taskTable, pk,
-        () async {
-      await device
-          .sql('UPDATE task_table SET deleted_date = $at WHERE id = ?', [pk]);
+    final children = await device
+        .rows('SELECT id FROM task_table WHERE parent_task_id = ? AND deleted_date IS NULL', [Variable(pk)]);
+    await DriftSyncCascadeService(device.db).withCause(_taskTable, pk, () async {
+      await device.sql('UPDATE task_table SET deleted_date = $at WHERE id = ?', [pk]);
       for (final child in children) {
-        await device.sql(
-            'UPDATE task_table SET deleted_date = $at WHERE id = ?',
-            [child['id']]);
+        await device.sql('UPDATE task_table SET deleted_date = $at WHERE id = ?', [child['id']]);
       }
     });
   }
@@ -212,17 +195,13 @@ class _Run {
     final isDeleted = (await device.note(pk))['deleted_date'] != null;
     // Users cannot edit a deleted item; they can restore it.
     if (isDeleted) {
-      await device
-          .sql('UPDATE note_table SET deleted_date = NULL WHERE id = ?', [pk]);
+      await device.sql('UPDATE note_table SET deleted_date = NULL WHERE id = ?', [pk]);
     } else if (r < 0.55) {
       await device.setTitle(pk, 'title $step by d$d');
     } else if (r < 0.85) {
-      await device.sql(
-          "UPDATE note_table SET content = 'content $step' WHERE id = ?", [pk]);
+      await device.sql("UPDATE note_table SET content = 'content $step' WHERE id = ?", [pk]);
     } else {
-      await device.sql(
-          'UPDATE note_table SET deleted_date = ${1000 + step} WHERE id = ?',
-          [pk]);
+      await device.sql('UPDATE note_table SET deleted_date = ${1000 + step} WHERE id = ?', [pk]);
     }
   }
 
@@ -231,9 +210,7 @@ class _Run {
     final store = engines[d].security.database.store;
     final origin = await store.localOrigin();
     final batch = await store.readChanges(origin,
-        afterSeq: lastLoggedSeq[d],
-        upToSeq: (await store.readVector())[origin] ?? 0,
-        limit: 1000);
+        afterSeq: lastLoggedSeq[d], upToSeq: (await store.readVector())[origin] ?? 0, limit: 1000);
     for (final cell in batch.cells) {
       writeLog.putIfAbsent(cell.key, () => []).add(cell);
     }
@@ -246,17 +223,14 @@ class _Run {
     final from = random.nextInt(_deviceCount);
     final into = (from + 1 + random.nextInt(_deviceCount - 1)) % _deviceCount;
     final cut = random.nextDouble() < _cutShare;
-    final faults = cut
-        ? TransportFaults(
-            cutAfter: _minCutFrames + random.nextInt(_cutFrameSpread))
-        : TransportFaults.none;
+    final faults =
+        cut ? TransportFaults(cutAfter: _minCutFrames + random.nextInt(_cutFrameSpread)) : TransportFaults.none;
     await _session(from, into, faults, mustComplete: false);
     await _recordKnownEntities(into);
   }
 
   /// Runs one session; an uncut one must complete.
-  Future<void> _session(int from, int into, TransportFaults faults,
-      {bool mustComplete = true}) async {
+  Future<void> _session(int from, int into, TransportFaults faults, {bool mustComplete = true}) async {
     final (initiatorEnd, responderEnd) = InMemoryTransport.pair(faults: faults);
     final results = await Future.wait([
       engines[from].initiate(initiatorEnd, engines[into].memberId),
@@ -265,8 +239,7 @@ class _Run {
     if (faults.cutAfter != null || !mustComplete) return;
     for (final result in results) {
       if (result is! SessionComplete) {
-        structural.add(_Violation(
-            'session', 'd$from -> d$into ended $result (seed $seed)'));
+        structural.add(_Violation('session', 'd$from -> d$into ended $result (seed $seed)'));
       }
     }
   }
@@ -278,8 +251,7 @@ class _Run {
     for (var from = 0; from < _deviceCount; from++) {
       for (var into = 0; into < _deviceCount; into++) {
         if (from == into) continue;
-        await _session(from, into, TransportFaults.none,
-            mustComplete: mustComplete);
+        await _session(from, into, TransportFaults.none, mustComplete: mustComplete);
       }
     }
   }
@@ -293,10 +265,8 @@ class _Run {
       ..addAll(await _ids(d, _taskTable));
   }
 
-  Future<List<String>> _ids(int d, String table) async => [
-        for (final row in await devices[d].rows('SELECT id FROM $table'))
-          row['id'] as String
-      ];
+  Future<List<String>> _ids(int d, String table) async =>
+      [for (final row in await devices[d].rows('SELECT id FROM $table')) row['id'] as String];
 
   // -- oracle ---------------------------------------------------------------
 
@@ -306,18 +276,15 @@ class _Run {
     }
     final violations = <_Violation>[...structural];
     for (var d = 0; d < _deviceCount; d++) {
-      final revoked = await devices[d]
-          .count('SELECT COUNT(DISTINCT revoked_pub) FROM sync_revocation');
+      final revoked = await devices[d].count('SELECT COUNT(DISTINCT revoked_pub) FROM sync_revocation');
       if (revoked != 1) {
-        violations.add(_Violation(
-            'revocation', 'd$d revokes $revoked members, expected 1'));
+        violations.add(_Violation('revocation', 'd$d revokes $revoked members, expected 1'));
       }
     }
     final contents = [for (final device in devices) await device.content()];
     for (var d = 1; d < _deviceCount; d++) {
       if (contents[d] != contents[0]) {
-        violations.add(_Violation('divergence',
-            'd$d differs from d0: ${_firstDifference(contents[0], contents[d])}'));
+        violations.add(_Violation('divergence', 'd$d differs from d0: ${_firstDifference(contents[0], contents[d])}'));
       }
     }
     final expected = _expectedRows();
@@ -331,8 +298,7 @@ class _Run {
     final leftLines = left.split('\n');
     final rightLines = right.split('\n');
     for (var i = 0; i < min(leftLines.length, rightLines.length); i++) {
-      if (leftLines[i] != rightLines[i])
-        return '${leftLines[i]} vs ${rightLines[i]}';
+      if (leftLines[i] != rightLines[i]) return '${leftLines[i]} vs ${rightLines[i]}';
     }
     return 'length ${leftLines.length} vs ${rightLines.length}';
   }
@@ -341,21 +307,17 @@ class _Run {
   /// causes resolved over the whole row set (D5b).
   Map<String, Map<String, Object?>> _expectedRows() {
     final winners = <CellKey, CellRecord>{
-      for (final entry in writeLog.entries)
-        entry.key: entry.value.reduce(mergeCell2),
+      for (final entry in writeLog.entries) entry.key: entry.value.reduce(mergeCell2),
     };
     final byRow = <RowRef, List<CellRecord>>{};
     for (final cell in winners.values) {
       byRow.putIfAbsent(cell.key.row, () => []).add(cell);
     }
-    final lookup = {
-      for (final entry in byRow.entries) entry.key: CellListRow(entry.value)
-    };
+    final lookup = {for (final entry in byRow.entries) entry.key: CellListRow(entry.value)};
     final expected = <String, Map<String, Object?>>{};
     for (final entry in lookup.entries) {
       final row = entry.value;
-      final deleted =
-          rowExistence(entry.key, (ref) => lookup[ref]) == RowExistence.deleted;
+      final deleted = rowExistence(entry.key, (ref) => lookup[ref]) == RowExistence.deleted;
       expected['${entry.key.table}/${entry.key.pk}'] = {
         'deleted_date': deleted ? row.existence!.value : null,
         for (final cell in row.dataCells) cell.key.col: cell.value,
@@ -366,14 +328,10 @@ class _Run {
 
   CellRecord mergeCell2(CellRecord a, CellRecord b) => mergeCell(a, b);
 
-  Future<List<_Violation>> _compareDevice(
-      int d, Map<String, Map<String, Object?>> expected) async {
+  Future<List<_Violation>> _compareDevice(int d, Map<String, Map<String, Object?>> expected) async {
     final violations = <_Violation>[];
     for (final table in [_noteTable, _taskTable]) {
-      final rows = {
-        for (final row in await devices[d].rows('SELECT * FROM $table'))
-          row['id'] as String: row
-      };
+      final rows = {for (final row in await devices[d].rows('SELECT * FROM $table')) row['id'] as String: row};
       for (final entry in expected.entries) {
         if (!entry.key.startsWith('$table/')) continue;
         final pk = entry.key.substring(table.length + 1);
@@ -383,15 +341,13 @@ class _Run {
     return violations;
   }
 
-  List<_Violation> _compareRow(int d, String pk, Map<String, Object?>? actual,
-      Map<String, Object?> want) {
+  List<_Violation> _compareRow(int d, String pk, Map<String, Object?>? actual, Map<String, Object?> want) {
     if (actual == null) return [_Violation('lost_edit', 'd$d lacks $pk')];
     final violations = <_Violation>[];
     for (final column in _comparedColumns) {
       if (!want.containsKey(column) && actual[column] == null) continue;
       if (actual[column] != want[column]) {
-        violations.add(_Violation('lost_edit',
-            'd$d $pk $column is ${actual[column]}, expected ${want[column]}'));
+        violations.add(_Violation('lost_edit', 'd$d $pk $column is ${actual[column]}, expected ${want[column]}'));
       }
     }
     if (actual['deleted_date'] != want['deleted_date']) {
@@ -407,9 +363,7 @@ void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
   final single = Platform.environment['SIM_SEED'];
-  final seeds = single != null
-      ? [int.parse(single)]
-      : [for (var i = 1; i <= _envInt('SIM_DRIFT_SEEDS', 3); i++) i];
+  final seeds = single != null ? [int.parse(single)] : [for (var i = 1; i <= _envInt('SIM_DRIFT_SEEDS', 3); i++) i];
   final ops = _envInt('SIM_DRIFT_OPS', 150);
 
   for (final seed in seeds) {
@@ -423,8 +377,7 @@ void main() {
       await run.run();
       final violations = await run.check();
 
-      expect(violations, isEmpty,
-          reason: 'seed=$seed ops=$ops: ${violations.take(8).join('\n')}');
+      expect(violations, isEmpty, reason: 'seed=$seed ops=$ops: ${violations.take(8).join('\n')}');
     });
   }
 }

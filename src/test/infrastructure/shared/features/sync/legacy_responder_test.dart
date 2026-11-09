@@ -23,11 +23,7 @@ const String _fixtureHostId = 'fixture-host-member';
 const String _fixtureAppVersion = '0.25.0';
 const int _pushCount = 10;
 const String _pushFixture = 'push_paginated_sync';
-const List<String> _fixtureFiles = [
-  'discovery_device_info',
-  'desktop_client_session',
-  'push_paginated_sync'
-];
+const List<String> _fixtureFiles = ['discovery_device_info', 'desktop_client_session', 'push_paginated_sync'];
 final DateTime _fixtureNow = DateTime.utc(2026);
 
 const SyncPresence _fixturePresence = SyncPresence(
@@ -51,19 +47,13 @@ void main() {
     final b = await newDevice('B', seed: 2);
     host = DeviceHost(b);
     registry = LegacyDeviceRegistry();
-    server = LanSyncServer(
-        host: host,
-        port: 0,
-        bindAddress: InternetAddress.loopbackIPv4,
-        legacyRegistry: registry);
+    server = LanSyncServer(host: host, port: 0, bindAddress: InternetAddress.loopbackIPv4, legacyRegistry: registry);
     expect(await server.start(), isTrue);
   });
   tearDown(() => server.stop());
 
   group('acceptance 4: legacy clients against the new server', () {
-    test(
-        'push path (Android and desktop initiators): refused with versionMismatchError, no silent success',
-        () async {
+    test('push path (Android and desktop initiators): refused with versionMismatchError, no silent success', () async {
       final b = host.device;
       final checksumBefore = contentChecksum(b);
 
@@ -78,17 +68,13 @@ void main() {
       expect(registry.needsUpdate.single.displayName, 'Device at 127.0.0.1');
     });
 
-    test(
-        'a new device reads a legacy responder as "needs update" and a new one as current',
-        () async {
+    test('a new device reads a legacy responder as "needs update" and a new one as current', () async {
       final stub = _LegacyDeviceInfoStub();
       await stub.start();
       addTearDown(stub.stop);
 
-      final legacy =
-          await DeviceHandshakeService().getDeviceInfo('127.0.0.1', stub.port);
-      final current = await DeviceHandshakeService()
-          .getDeviceInfo('127.0.0.1', server.port!);
+      final legacy = await DeviceHandshakeService().getDeviceInfo('127.0.0.1', stub.port);
+      final current = await DeviceHandshakeService().getDeviceInfo('127.0.0.1', server.port!);
 
       expect(legacy!.needsUpdate, isTrue);
       expect(current!.needsUpdate, isFalse);
@@ -102,8 +88,7 @@ void main() {
       final socket = await WebSocket.connect('ws://127.0.0.1:${server.port}');
       socket.add(jsonEncode({'type': 'device_info', 'data': {}}));
 
-      final reply =
-          jsonDecode(await socket.first as String) as Map<String, dynamic>;
+      final reply = jsonDecode(await socket.first as String) as Map<String, dynamic>;
       await socket.close();
 
       final data = reply['data'] as Map<String, dynamic>;
@@ -129,18 +114,15 @@ void main() {
         final responder = _fixtureResponder();
 
         for (final frame in frames) {
-          final reply = await responder.handle(jsonEncode(frame['request']),
-              source: '127.0.0.1');
+          final reply = await responder.handle(jsonEncode(frame['request']), source: '127.0.0.1');
 
-          expect(reply == null ? null : jsonDecode(reply),
-              frame['expectedResponse'],
+          expect(reply == null ? null : jsonDecode(reply), frame['expectedResponse'],
               reason: '${frame['request']['type']}');
         }
       });
     }
 
-    test('the fixtures replayed over the real server give the recorded replies',
-        () async {
+    test('the fixtures replayed over the real server give the recorded replies', () async {
       for (final name in _fixtureFiles) {
         final socket = await WebSocket.connect('ws://127.0.0.1:${server.port}');
         final replies = StreamIterator(socket);
@@ -148,10 +130,8 @@ void main() {
           socket.add(jsonEncode(frame['request']));
           if (frame['expectedResponse'] == null) continue;
           expect(await replies.moveNext(), isTrue);
-          final reply =
-              jsonDecode(replies.current as String) as Map<String, dynamic>;
-          expect(reply['type'], (frame['expectedResponse'] as Map)['type'],
-              reason: name);
+          final reply = jsonDecode(replies.current as String) as Map<String, dynamic>;
+          expect(reply['type'], (frame['expectedResponse'] as Map)['type'], reason: name);
         }
         await socket.close();
       }
@@ -159,8 +139,7 @@ void main() {
   });
 
   group('acceptance 6: payload-free logging', () {
-    test('$_pushCount legacy pushes with markers leave 0 markers in debug logs',
-        () async {
+    test('$_pushCount legacy pushes with markers leave 0 markers in debug logs', () async {
       final logs = <String>[];
       final originalDebugPrint = debugPrint;
       debugPrint = (message, {wrapWidth}) => logs.add(message ?? '');
@@ -177,15 +156,12 @@ void main() {
       }
 
       final joined = logs.join('\n');
-      expect(
-          logs.any((line) => line.contains('Legacy message "paginated_sync"')),
-          isTrue,
+      expect(logs.any((line) => line.contains('Legacy message "paginated_sync"')), isTrue,
           reason: 'debug logging is on and the responder logs the type only');
       for (final marker in markers) {
         expect(joined.contains(marker), isFalse, reason: marker);
       }
-      expect(joined.contains('Legacy Phone'), isFalse,
-          reason: 'device names stay out of the logs too');
+      expect(joined.contains('Legacy Phone'), isFalse, reason: 'device names stay out of the logs too');
     });
   });
 }
@@ -197,9 +173,7 @@ LegacySyncResponder _fixtureResponder() => LegacySyncResponder(
     );
 
 List<Map<String, dynamic>> _loadFrames(String name) {
-  final decoded =
-      jsonDecode(File('$_fixtureDirectory/$name.json').readAsStringSync())
-          as Map<String, dynamic>;
+  final decoded = jsonDecode(File('$_fixtureDirectory/$name.json').readAsStringSync()) as Map<String, dynamic>;
   return (decoded['frames'] as List).cast<Map<String, dynamic>>();
 }
 

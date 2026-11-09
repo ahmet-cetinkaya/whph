@@ -53,29 +53,19 @@ void main() {
         await deviceA.database.insertNote('marker-$i', '$_markerPrefix$i');
       }
       await syncDevices(deviceA, deviceB);
-    },
-        zoneSpecification:
-            ZoneSpecification(print: (_, __, ___, line) => logLines.add(line)));
+    }, zoneSpecification: ZoneSpecification(print: (_, __, ___, line) => logLines.add(line)));
 
     secrets = [
       ...await _keySecrets(deviceA),
       ...await _keySecrets(deviceB),
-      _Secret.bytes('pairing token',
-          PairingToken.generate(now: DateTime.now()).exportForQr()),
-      _Secret.text(
-          'SAS code', sasCode(_filled(32, 1), _filled(16, 2), _filled(16, 3))),
+      _Secret.bytes('pairing token', PairingToken.generate(now: DateTime.now()).exportForQr()),
+      _Secret.text('SAS code', sasCode(_filled(32, 1), _filled(16, 2), _filled(16, 3))),
     ];
 
     final exports = _SettingsHandlers.over(deviceA.database.db);
-    exportJson = _asBytes((await exports.export
-            .call(ExportDataCommand(ExportDataFileOptions.json)))
-        .fileContent);
-    exportBackup = _asBytes((await exports.export
-            .call(ExportDataCommand(ExportDataFileOptions.backup)))
-        .fileContent);
-    exportCsv = _asBytes((await exports.export
-            .call(ExportDataCommand(ExportDataFileOptions.csv)))
-        .fileContent);
+    exportJson = _asBytes((await exports.export.call(ExportDataCommand(ExportDataFileOptions.json))).fileContent);
+    exportBackup = _asBytes((await exports.export.call(ExportDataCommand(ExportDataFileOptions.backup))).fileContent);
+    exportCsv = _asBytes((await exports.export.call(ExportDataCommand(ExportDataFileOptions.csv))).fileContent);
   });
 
   tearDownAll(() async {
@@ -85,11 +75,8 @@ void main() {
     await root.delete(recursive: true);
   });
 
-  test(
-      'the session ran: all markers reached the second device and it is paired',
-      () async {
-    final received = await deviceB.database.count(
-        "SELECT COUNT(*) FROM note_table WHERE title LIKE '$_markerPrefix%'");
+  test('the session ran: all markers reached the second device and it is paired', () async {
+    final received = await deviceB.database.count("SELECT COUNT(*) FROM note_table WHERE title LIKE '$_markerPrefix%'");
     expect(received, _markerCount);
     expect((await deviceB.service.currentView()).isPaired, isTrue);
   });
@@ -98,13 +85,11 @@ void main() {
     final key = _filled(32, 9);
     final planted = _Secret.bytes('planted', key);
     for (final spelling in planted.needles) {
-      expect(_findLeaks(Uint8List.fromList([1, 2, ...spelling, 3]), [planted]),
-          ['planted']);
+      expect(_findLeaks(Uint8List.fromList([1, 2, ...spelling, 3]), [planted]), ['planted']);
     }
   });
 
-  test('acceptance 1: export has no key, token or SAS code and no sync rows',
-      () {
+  test('acceptance 1: export has no key, token or SAS code and no sync rows', () {
     for (final export in [exportJson, exportCsv]) {
       expect(_findLeaks(export, secrets), isEmpty);
       final text = utf8.decode(export).toLowerCase();
@@ -122,55 +107,41 @@ void main() {
     expect(utf8.decode(exportJson), contains('${_markerPrefix}0'));
   });
 
-  test(
-      'acceptance 1 (backup): the decompressed .whph backup has no key, token or SAS code and no sync rows',
-      () async {
+  test('acceptance 1 (backup): the decompressed .whph backup has no key, token or SAS code and no sync rows', () async {
     final json = await CompressionService().extractFromWhphFile(exportBackup);
     final decompressed = Uint8List.fromList(utf8.encode(json));
 
     expect(_findLeaks(decompressed, secrets), isEmpty);
     expect(json.toLowerCase(), isNot(contains('sync_origin')));
-    expect(json, contains('${_markerPrefix}0'),
-        reason: 'the scan ran over the real content, not an empty backup');
+    expect(json, contains('${_markerPrefix}0'), reason: 'the scan ran over the real content, not an empty backup');
   });
 
-  test('control (backup): a planted key in a backup is found after decompression',
-      () async {
+  test('control (backup): a planted key in a backup is found after decompression', () async {
     final planted = _Secret.bytes('planted', _filled(32, 9));
     final hexSpelling = utf8.decode(planted.needles[1]);
-    final backup = await CompressionService()
-        .createWhphFile(jsonEncode({'notes': [], 'leak': hexSpelling}));
+    final backup = await CompressionService().createWhphFile(jsonEncode({'notes': [], 'leak': hexSpelling}));
     final json = await CompressionService().extractFromWhphFile(backup);
 
-    expect(_findLeaks(Uint8List.fromList(utf8.encode(json)), [planted]),
-        ['planted']);
+    expect(_findLeaks(Uint8List.fromList(utf8.encode(json)), [planted]), ['planted']);
   });
 
-  test(
-      'acceptance 2: the database dump holds no private key or epoch key bytes',
-      () async {
+  test('acceptance 2: the database dump holds no private key or epoch key bytes', () async {
     final dump = await _databaseDump(deviceA.database.db);
     expect(dump.length, greaterThan(0));
     expect(_findLeaks(dump, secrets), isEmpty);
-    expect(
-        _findLeaks(await _databaseDump(deviceB.database.db), secrets), isEmpty);
+    expect(_findLeaks(await _databaseDump(deviceB.database.db), secrets), isEmpty);
   });
 
-  test(
-      'acceptance 2 and 4: the log capture holds no key bytes and no seeded marker',
-      () {
+  test('acceptance 2 and 4: the log capture holds no key bytes and no seeded marker', () {
     final log = Uint8List.fromList(utf8.encode(logLines.join('\n')));
     expect(_findLeaks(log, secrets), isEmpty);
     expect(logLines.join('\n'), isNot(contains(_markerPrefix)));
   });
 
-  test(
-      'acceptance 3: importing the backup export into a fresh device creates no members and sync is refused',
+  test('acceptance 3: importing the backup export into a fresh device creates no members and sync is refused',
       () async {
     final fresh = await SecurityDevice.open('Fresh', root);
-    await _SettingsHandlers.over(fresh.database.db)
-        .import
-        .call(ImportDataCommand(exportBackup, ImportStrategy.merge));
+    await _SettingsHandlers.over(fresh.database.db).import.call(ImportDataCommand(exportBackup, ImportStrategy.merge));
     final view = await fresh.service.currentView();
 
     expect(view.isPaired, isFalse);
@@ -180,9 +151,7 @@ void main() {
     await fresh.close();
   });
 
-  test(
-      'acceptance 5: a merge import on one device appears on the other after one session',
-      () async {
+  test('acceptance 5: a merge import on one device appears on the other after one session', () async {
     final backup = await CompressionService().createWhphFile(jsonEncode({
       'appInfo': {'version': AppInfo.version},
       'notes': [
@@ -197,20 +166,13 @@ void main() {
         },
       ],
     }));
-    final membersBefore =
-        (await deviceA.service.currentView()).activeMembers.length;
+    final membersBefore = (await deviceA.service.currentView()).activeMembers.length;
 
-    await _SettingsHandlers.over(deviceA.database.db)
-        .import
-        .call(ImportDataCommand(backup, ImportStrategy.merge));
+    await _SettingsHandlers.over(deviceA.database.db).import.call(ImportDataCommand(backup, ImportStrategy.merge));
     await syncDevices(deviceA, deviceB);
 
-    expect(
-        await deviceB.database.count(
-            "SELECT COUNT(*) FROM note_table WHERE title = '$_importedTitle'"),
-        1);
-    expect((await deviceA.service.currentView()).activeMembers.length,
-        membersBefore);
+    expect(await deviceB.database.count("SELECT COUNT(*) FROM note_table WHERE title = '$_importedTitle'"), 1);
+    expect((await deviceA.service.currentView()).activeMembers.length, membersBefore);
   });
 }
 
@@ -231,12 +193,10 @@ class _Secret {
       base64Url.encode(value),
       base64Url.encode(value).replaceAll('=', ''),
     };
-    return _Secret._(label,
-        [value, ...spellings.map((s) => Uint8List.fromList(utf8.encode(s)))]);
+    return _Secret._(label, [value, ...spellings.map((s) => Uint8List.fromList(utf8.encode(s)))]);
   }
 
-  factory _Secret.text(String label, String value) =>
-      _Secret._(label, [Uint8List.fromList(utf8.encode(value))]);
+  factory _Secret.text(String label, String value) => _Secret._(label, [Uint8List.fromList(utf8.encode(value))]);
 }
 
 Future<List<_Secret>> _keySecrets(SecurityDevice device) async {
@@ -244,35 +204,29 @@ Future<List<_Secret>> _keySecrets(SecurityDevice device) async {
   return [
     _Secret.bytes('${device.name} identity key', snapshot.x25519Private),
     _Secret.bytes('${device.name} signing seed', snapshot.ed25519Seed),
-    for (final entry in snapshot.epochKeys.entries)
-      _Secret.bytes('${device.name} epoch key ${entry.key}', entry.value),
+    for (final entry in snapshot.epochKeys.entries) _Secret.bytes('${device.name} epoch key ${entry.key}', entry.value),
   ];
 }
 
-Uint8List _filled(int length, int seed) => Uint8List.fromList(
-    List.generate(length, (i) => (seed * 37 + i * 11) % 256));
+Uint8List _filled(int length, int seed) => Uint8List.fromList(List.generate(length, (i) => (seed * 37 + i * 11) % 256));
 
-Uint8List _asBytes(Object content) => content is Uint8List
-    ? content
-    : Uint8List.fromList(utf8.encode(content as String));
+Uint8List _asBytes(Object content) =>
+    content is Uint8List ? content : Uint8List.fromList(utf8.encode(content as String));
 
 /// Labels of the secrets with a spelling found in [haystack].
 List<String> _findLeaks(Uint8List haystack, List<_Secret> secrets) {
   final text = latin1.decode(haystack);
   return [
     for (final secret in secrets)
-      if (secret.needles.any((needle) => text.contains(latin1.decode(needle))))
-        secret.label,
+      if (secret.needles.any((needle) => text.contains(latin1.decode(needle)))) secret.label,
   ];
 }
 
 /// Every cell of every table, text as UTF-8 and blobs as raw bytes.
 Future<Uint8List> _databaseDump(AppDatabase db) async {
   final out = BytesBuilder();
-  final tables = await db
-      .customSelect(
-          "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")
-      .get();
+  final tables =
+      await db.customSelect("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'").get();
   for (final table in tables) {
     final name = table.read<String>('name');
     out.add(utf8.encode(name));
@@ -317,9 +271,7 @@ class _SettingsHandlers {
       habitTag, tag, tagTag, task, taskTag, //
       taskTime, setting, syncDevice, ignoreRule,
     ]) {
-      when(repository.getAll(
-              customWhereFilter: anyNamed('customWhereFilter'),
-              customOrder: anyNamed('customOrder')))
+      when(repository.getAll(customWhereFilter: anyNamed('customWhereFilter'), customOrder: anyNamed('customOrder')))
           .thenAnswer((_) async => <Never>[]);
       when(repository.truncate()).thenAnswer((_) async {});
     }
@@ -328,16 +280,13 @@ class _SettingsHandlers {
     final migration = MockIImportDataMigrationService();
     when(migration.isMigrationNeeded(any)).thenReturn(false);
     final mediator = Mediator(Pipeline())
-      ..registerHandler<NormalizeHabitOrdersCommand,
-          NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
+      ..registerHandler<NormalizeHabitOrdersCommand, NormalizeHabitOrdersResponse, NormalizeHabitOrdersCommandHandler>(
         () => NormalizeHabitOrdersCommandHandler(habit),
       )
-      ..registerHandler<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse,
-          NormalizeTaskOrdersCommandHandler>(
+      ..registerHandler<NormalizeTaskOrdersCommand, NormalizeTaskOrdersResponse, NormalizeTaskOrdersCommandHandler>(
         () => NormalizeTaskOrdersCommandHandler(task),
       )
-      ..registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse,
-          NormalizeNoteOrdersCommandHandler>(
+      ..registerHandler<NormalizeNoteOrdersCommand, NormalizeNoteOrdersResponse, NormalizeNoteOrdersCommandHandler>(
         () => NormalizeNoteOrdersCommandHandler(noteRepository),
       );
     final compression = CompressionService();

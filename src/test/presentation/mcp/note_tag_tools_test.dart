@@ -54,8 +54,7 @@ void main() {
     AppDatabase.isTestMode = true;
     database = AppDatabase(NativeDatabase.memory());
     await database.customSelect('SELECT 1').getSingle();
-    for (final seed in syncInternSeedStatements(
-        nodeValue: 'mcp-test-node', originValue: 'mcp-test-origin')) {
+    for (final seed in syncInternSeedStatements(nodeValue: 'mcp-test-node', originValue: 'mcp-test-origin')) {
       await database.customStatement(seed);
     }
     final noteRepository = DriftNoteRepository.withDatabase(database);
@@ -127,7 +126,7 @@ void main() {
           noteTagRepository: noteTagRepository,
           noteEvents: noteEvents,
           transactions: transactions,
-        syncCascadeService: _NoopSyncCascadeService(),
+          syncCascadeService: _NoopSyncCascadeService(),
         ),
       )
       ..registerHandler<GetNoteQuery, GetNoteQueryResponse, GetNoteQueryHandler>(
@@ -482,11 +481,9 @@ final class _RequestContext implements IMcpRequestContext {
   Future<McpAuthenticatedGrant?> currentGrant({Set<String> requiredScopes = const {}}) async => null;
 }
 
-
 class _NoopSyncCascadeService implements ISyncCascadeService {
   @override
-  Future<T> withCause<T>(
-      String causeTable, String causePk, Future<T> Function() operation) {
+  Future<T> withCause<T>(String causeTable, String causePk, Future<T> Function() operation) {
     return operation();
   }
 }

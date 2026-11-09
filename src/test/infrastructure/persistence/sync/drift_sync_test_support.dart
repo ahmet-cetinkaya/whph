@@ -28,31 +28,24 @@ class SyncTestDevice {
     final db = AppDatabase.forTesting();
     await db.customSelect('SELECT 1').getSingle();
     final originValue = origin ?? 'origin-$name';
-    for (final statement in syncInternSeedStatements(
-        nodeValue: 'node-$name', originValue: originValue)) {
+    for (final statement in syncInternSeedStatements(nodeValue: 'node-$name', originValue: originValue)) {
       await db.customStatement(statement);
     }
     await installSyncTriggers(db);
     return SyncTestDevice(name, db, origin: originValue);
   }
 
-  Future<List<Map<String, Object?>>> rows(String sql,
-          [List<Variable> args = const []]) async =>
-      (await db.customSelect(sql, variables: args).get())
-          .map((r) => r.data)
-          .toList();
+  Future<List<Map<String, Object?>>> rows(String sql, [List<Variable> args = const []]) async =>
+      (await db.customSelect(sql, variables: args).get()).map((r) => r.data).toList();
 
-  Future<int> count(String sql) async =>
-      (await rows(sql)).single.values.first as int;
+  Future<int> count(String sql) async => (await rows(sql)).single.values.first as int;
 
-  Future<void> sql(String statement, [List<Object?> args = const []]) =>
-      db.customStatement(statement, args);
+  Future<void> sql(String statement, [List<Object?> args = const []]) => db.customStatement(statement, args);
 
-  Future<void> insertNote(String id, String title) => sql(
-      "INSERT INTO note_table (id, created_date, title, content) VALUES ('$id', 1, '$title', 'body')");
+  Future<void> insertNote(String id, String title) =>
+      sql("INSERT INTO note_table (id, created_date, title, content) VALUES ('$id', 1, '$title', 'body')");
 
-  Future<void> setTitle(String id, String title) =>
-      sql("UPDATE note_table SET title = '$title' WHERE id = '$id'");
+  Future<void> setTitle(String id, String title) => sql("UPDATE note_table SET title = '$title' WHERE id = '$id'");
 
   Future<Map<String, Object?>> note(String id) async =>
       (await rows("SELECT * FROM note_table WHERE id = '$id'")).single;
@@ -61,17 +54,11 @@ class SyncTestDevice {
   Future<String> content() async {
     final out = StringBuffer();
     for (final policy in syncTablePolicies) {
-      final columns = policy.rowLevel
-          ? ['*']
-          : policy.columns.keys.map((c) => '"$c"').toList();
-      final select =
-          policy.rowLevel ? '*' : 'id, deleted_date, ${columns.join(', ')}';
-      for (final row in await rows(
-          'SELECT $select FROM "${policy.tableName}" ORDER BY id')) {
-        final entries = row.entries
-            .where((e) => e.key != 'modified_date' && e.key != 'created_date');
-        out.writeln(
-            '${policy.tableName} ${entries.map((e) => '${e.key}=${e.value}').join('|')}');
+      final columns = policy.rowLevel ? ['*'] : policy.columns.keys.map((c) => '"$c"').toList();
+      final select = policy.rowLevel ? '*' : 'id, deleted_date, ${columns.join(', ')}';
+      for (final row in await rows('SELECT $select FROM "${policy.tableName}" ORDER BY id')) {
+        final entries = row.entries.where((e) => e.key != 'modified_date' && e.key != 'created_date');
+        out.writeln('${policy.tableName} ${entries.map((e) => '${e.key}=${e.value}').join('|')}');
       }
     }
     return out.toString();
@@ -84,17 +71,14 @@ class SyncTestDevice {
 }
 
 /// One directional sync: every origin `from` holds above `into`'s cursor.
-Future<void> pullChanges(SyncTestDevice from, SyncTestDevice into,
-    {Set<String>? onlyOrigins}) async {
+Future<void> pullChanges(SyncTestDevice from, SyncTestDevice into, {Set<String>? onlyOrigins}) async {
   final theirs = await from.store.readVector();
   final mine = await into.store.readVector();
   for (final entry in theirs.entries) {
-    if (entry.key == into.origin ||
-        (onlyOrigins != null && !onlyOrigins.contains(entry.key))) continue;
+    if (entry.key == into.origin || (onlyOrigins != null && !onlyOrigins.contains(entry.key))) continue;
     var after = mine[entry.key] ?? 0;
     while (after < entry.value) {
-      final batch = await from.store.readChanges(entry.key,
-          afterSeq: after, upToSeq: entry.value, limit: 7);
+      final batch = await from.store.readChanges(entry.key, afterSeq: after, upToSeq: entry.value, limit: 7);
       await into.store.applyBatch(batch);
       after = batch.toSeq;
     }
@@ -112,11 +96,7 @@ Future<void> syncAllDevices(List<SyncTestDevice> devices) async {
 }
 
 CellRecord testCell(String table, String pk, String col, Object? value,
-        {required int clock,
-        String node = 'node-x',
-        String origin = 'origin-x',
-        int seq = 1,
-        RowRef? cause}) =>
+        {required int clock, String node = 'node-x', String origin = 'origin-x', int seq = 1, RowRef? cause}) =>
     CellRecord(
         key: CellKey(table, pk, col),
         value: value,

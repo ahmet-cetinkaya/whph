@@ -698,7 +698,9 @@ final class SyncStore implements ReplicaStore {
   /// has no manifest, so no peer can ever receive it.
   List<String> _strandedMemberIds(List<StoredCell> neverSent) => [
         for (final cell in neverSent)
-          if (cell.manifest == null && cell.record.key.table == SecurityTables.member && cell.record.key.pk != _memberId)
+          if (cell.manifest == null &&
+              cell.record.key.table == SecurityTables.member &&
+              cell.record.key.pk != _memberId)
             cell.record.key.pk,
       ]..sort();
 

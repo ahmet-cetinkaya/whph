@@ -5,8 +5,7 @@ import 'package:whph/core/application/features/tasks/services/abstraction/i_task
 import 'package:whph/core/application/features/tasks/services/task_time_record_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 
-class SaveTaskTimeRecordCommand
-    implements IRequest<SaveTaskTimeRecordCommandResponse> {
+class SaveTaskTimeRecordCommand implements IRequest<SaveTaskTimeRecordCommandResponse> {
   final String taskId;
   final int duration;
   final DateTime? targetDate;
@@ -27,9 +26,7 @@ class SaveTaskTimeRecordCommandResponse {
 }
 
 class SaveTaskTimeRecordCommandHandler
-    implements
-        IRequestHandler<SaveTaskTimeRecordCommand,
-            SaveTaskTimeRecordCommandResponse> {
+    implements IRequestHandler<SaveTaskTimeRecordCommand, SaveTaskTimeRecordCommandResponse> {
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ITaskEvents? _taskEvents;
   final IDeviceIdService _deviceIds;
@@ -43,11 +40,9 @@ class SaveTaskTimeRecordCommandHandler
         _taskEvents = taskEvents;
 
   @override
-  Future<SaveTaskTimeRecordCommandResponse> call(
-      SaveTaskTimeRecordCommand request) async {
+  Future<SaveTaskTimeRecordCommandResponse> call(SaveTaskTimeRecordCommand request) async {
     final targetDate = request.targetDate ?? DateTime.now().toUtc();
-    final (startOfDay, _) =
-        TaskTimeRecordService.createDayBoundaries(targetDate);
+    final (startOfDay, _) = TaskTimeRecordService.createDayBoundaries(targetDate);
     final deviceId = await _deviceIds.getDeviceId();
 
     // D12 day-level set-total: no soft deletes; the own bucket absorbs the
@@ -63,7 +58,6 @@ class SaveTaskTimeRecordCommandHandler
     );
 
     _taskEvents?.notifyTaskTimeRecordUpdated(request.taskId);
-    return SaveTaskTimeRecordCommandResponse(
-        id: request.duration > 0 ? record.id : KeyHelper.generateStringId());
+    return SaveTaskTimeRecordCommandResponse(id: request.duration > 0 ? record.id : KeyHelper.generateStringId());
   }
 }

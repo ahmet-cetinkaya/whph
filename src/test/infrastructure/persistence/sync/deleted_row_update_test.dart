@@ -55,13 +55,11 @@ void main() {
   });
 
   Future<Object?> deletedDate(SyncTestDevice device, _Family family) async =>
-      (await device.rows("SELECT deleted_date FROM ${family.table} WHERE id = 'x'"))
-          .single['deleted_date'];
+      (await device.rows("SELECT deleted_date FROM ${family.table} WHERE id = 'x'")).single['deleted_date'];
 
   for (final family in _families) {
     group(family.name, () {
-      test('an edit of the deleted row on the deleting device stays deleted',
-          () async {
+      test('an edit of the deleted row on the deleting device stays deleted', () async {
         await a.sql(family.insert);
         await pullChanges(a, b);
         await a.sql("UPDATE ${family.table} SET deleted_date = 100 WHERE id = 'x'");
@@ -73,8 +71,7 @@ void main() {
         expect(await deletedDate(b, family), isNotNull);
       });
 
-      test('an edit of the deleted row on a peer that saw the delete stays deleted',
-          () async {
+      test('an edit of the deleted row on a peer that saw the delete stays deleted', () async {
         await a.sql(family.insert);
         await a.sql("UPDATE ${family.table} SET deleted_date = 100 WHERE id = 'x'");
         await pullChanges(a, b);

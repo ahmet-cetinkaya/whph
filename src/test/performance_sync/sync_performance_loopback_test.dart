@@ -65,8 +65,10 @@ class LanLink {
 Future<void> _makeChanges(LabDevice device) async {
   final db = device.appDatabase;
   await db.transaction(() async {
-    await db.customStatement('UPDATE task_table SET title = title || ? WHERE id IN '
-        '(SELECT id FROM task_table WHERE deleted_date IS NULL ORDER BY id LIMIT $taskEdits)', [' (edited)']);
+    await db.customStatement(
+        'UPDATE task_table SET title = title || ? WHERE id IN '
+        '(SELECT id FROM task_table WHERE deleted_date IS NULL ORDER BY id LIMIT $taskEdits)',
+        [' (edited)']);
     for (var index = 0; index < noteInserts; index++) {
       await db.customStatement(
           "INSERT INTO note_table (id, created_date, title, content) VALUES ('perf-note-$index', 1700000000, 'perf $index', 'body')");
@@ -111,7 +113,8 @@ void main() {
     report.add('first full sync (A full -> B empty): complete', '${first.complete}', met: first.complete);
     report.addTime('first full sync time', first.elapsed, limit: firstSyncLimit);
     report.add('first full sync bytes (both directions)', formatMegabytes(first.bytes));
-    report.add('first full sync throughput', '${(first.bytes / 1024 / 1024 / first.elapsed.inSeconds.clamp(1, 1 << 30)).toStringAsFixed(2)} MiB/s');
+    report.add('first full sync throughput',
+        '${(first.bytes / 1024 / 1024 / first.elapsed.inSeconds.clamp(1, 1 << 30)).toStringAsFixed(2)} MiB/s');
     tombstones.addTo(report, firstSyncTime: first.elapsed, firstSyncBytes: first.bytes);
     firstSyncLatency.addTo(report, 'during first sync');
 
@@ -130,9 +133,11 @@ void main() {
     await pairDevices(x.security, a.security, confirmGroupSwitch: true);
     final reauthorTime = await _runTimed(() => SyncUpgradeJob(a.appDatabase, onChunk: chunkTimes.add).runChunks());
     final reauthorChunks = chunkTimes.where((chunk) => chunk.phase == SyncUpgradePhase.reauthor).toList();
-    final slowestChunk = reauthorChunks.fold(Duration.zero, (worst, chunk) => chunk.elapsed > worst ? chunk.elapsed : worst);
+    final slowestChunk =
+        reauthorChunks.fold(Duration.zero, (worst, chunk) => chunk.elapsed > worst ? chunk.elapsed : worst);
     report.addTime('group-switch re-author job time (A, desktop)', reauthorTime, limit: reauthorTotalLimit);
-    report.add('group-switch re-author chunks', '${reauthorChunks.length}: ${reauthorChunks.map((chunk) => formatSeconds(chunk.elapsed)).join(', ')}');
+    report.add('group-switch re-author chunks',
+        '${reauthorChunks.length}: ${reauthorChunks.map((chunk) => formatSeconds(chunk.elapsed)).join(', ')}');
     report.addTime('group-switch slowest re-author chunk', slowestChunk, limit: sc012ReauthorChunkLimit);
 
     await lab.close();
@@ -145,7 +150,8 @@ void main() {
     await SyncUpgradeJob(d.appDatabase).runChunks();
     final linkToD = await LanLink.open(d);
     final twoWay = await linkToD.sync(c);
-    report.add('full-state two-way first sync (C <-> D, both large_usage): complete', '${twoWay.complete}', met: twoWay.complete);
+    report.add('full-state two-way first sync (C <-> D, both large_usage): complete', '${twoWay.complete}',
+        met: twoWay.complete);
     report.addTime('full-state two-way first sync time (U9/PA-2)', twoWay.elapsed, limit: twoWayFirstSyncLimit);
     report.add('full-state two-way first sync bytes', formatMegabytes(twoWay.bytes));
 

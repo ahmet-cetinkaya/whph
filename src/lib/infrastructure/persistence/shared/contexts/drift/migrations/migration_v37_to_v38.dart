@@ -5,8 +5,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_
 
 /// v37 -> v38: sync persistence DDL (D1, D13), legacy pairing marking and the
 /// five FK indexes; sets upgrade_phase = 'dedupe' for the T17 job.
-Future<void> migrateV37ToV38(
-    AppDatabase db, Migrator m, Schema38 schema) async {
+Future<void> migrateV37ToV38(AppDatabase db, Migrator m, Schema38 schema) async {
   await m.createTable(db.syncStateTable);
   await m.createTable(db.syncInternTable);
   await m.createTable(db.syncRowTable);
@@ -29,8 +28,7 @@ Future<void> migrateV37ToV38(
   await db.customStatement('UPDATE sync_device_table SET needs_repair = 1');
 
   // The upgrade job (T17) starts from 'dedupe'.
-  await db.customStatement(
-      "INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_phase) "
+  await db.customStatement("INSERT INTO sync_state (id, apply_mode, next_seq, hlc, upgrade_phase) "
       "VALUES ('singleton', 0, 1, 0, 'dedupe') "
       "ON CONFLICT(id) DO UPDATE SET upgrade_phase = 'dedupe'");
 

@@ -43,9 +43,11 @@ class MainActivity : FlutterActivity() {
     )
   }
 
-  // Installs from before the sync rewrite still have the 30-minute job enqueued; nothing handles it now.
+  // Installs from before the sync rewrite still have the 30-minute job enqueued; nothing handles it
+  // now.
   private fun cancelLegacySyncWork() {
-    androidx.work.WorkManager.getInstance(context).cancelUniqueWork(Constants.WorkManager.SYNC_WORK_NAME)
+    androidx.work.WorkManager.getInstance(context)
+      .cancelUniqueWork(Constants.WorkManager.SYNC_WORK_NAME)
   }
 
   override fun onCreate(savedInstanceState: android.os.Bundle?) {

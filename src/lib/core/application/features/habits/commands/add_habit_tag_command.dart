@@ -23,8 +23,7 @@ class AddHabitTagCommandResponse {
   });
 }
 
-class AddHabitTagCommandHandler
-    implements IRequestHandler<AddHabitTagCommand, AddHabitTagCommandResponse> {
+class AddHabitTagCommandHandler implements IRequestHandler<AddHabitTagCommand, AddHabitTagCommandResponse> {
   final IHabitTagsRepository _habitTagRepository;
 
   AddHabitTagCommandHandler({required IHabitTagsRepository habitTagRepository})
@@ -32,15 +31,12 @@ class AddHabitTagCommandHandler
 
   @override
   Future<AddHabitTagCommandResponse> call(AddHabitTagCommand request) async {
-    if (await _habitTagRepository.anyByHabitIdAndTagId(
-        request.habitId, request.tagId)) {
-      throw BusinessException('Habit tag already exists',
-          HabitTranslationKeys.habitTagAlreadyExistsError);
+    if (await _habitTagRepository.anyByHabitIdAndTagId(request.habitId, request.tagId)) {
+      throw BusinessException('Habit tag already exists', HabitTranslationKeys.habitTagAlreadyExistsError);
     }
 
     final habitTag = HabitTag(
-      id: syncIdentityId(
-          identityKindHabitTag, [request.habitId, request.tagId]),
+      id: syncIdentityId(identityKindHabitTag, [request.habitId, request.tagId]),
       createdDate: DateTime.now().toUtc(),
       habitId: request.habitId,
       tagId: request.tagId,

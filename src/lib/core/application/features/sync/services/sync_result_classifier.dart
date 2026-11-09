@@ -29,7 +29,10 @@ SyncResultCategory? _classifyFailure(SessionFailed result) => switch (result.cat
       SessionFailure.notReachable => SyncResultCategory.notReachable,
       SessionFailure.notAuthorized || SessionFailure.refusedByPeer => SyncResultCategory.needsRepairing,
       SessionFailure.needsUpdate => _classifyNeedsUpdate(result),
-      SessionFailure.peerPreparing || SessionFailure.preparing || SessionFailure.restoreDetected => SyncResultCategory.preparing,
+      SessionFailure.peerPreparing ||
+      SessionFailure.preparing ||
+      SessionFailure.restoreDetected =>
+        SyncResultCategory.preparing,
       SessionFailure.protocolError || SessionFailure.securityError => SyncResultCategory.rejectedItems,
       SessionFailure.peerError || SessionFailure.internal => SyncResultCategory.someItemsFailed,
       SessionFailure.busy || SessionFailure.notPaired || SessionFailure.removedFromGroup => null,

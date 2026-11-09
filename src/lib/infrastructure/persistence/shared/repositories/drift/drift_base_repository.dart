@@ -5,9 +5,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_
 import 'package:whph/core/application/shared/services/abstraction/i_repository.dart';
 import 'package:whph/core/domain/shared/utils/logger.dart';
 
-abstract class DriftBaseRepository<
-    TEntity extends acore.BaseEntity<TEntityId>,
-    TEntityId extends Object,
+abstract class DriftBaseRepository<TEntity extends acore.BaseEntity<TEntityId>, TEntityId extends Object,
     TTable extends Table> implements IRepository<TEntity, TEntityId> {
   @protected
   final AppDatabase database;
@@ -27,9 +25,7 @@ abstract class DriftBaseRepository<
       (now.millisecondsSinceEpoch ~/ 1000) * 1000,
       isUtc: true,
     );
-    return currentDatabaseSecond.isAfter(minimumNextRevision)
-        ? currentDatabaseSecond
-        : minimumNextRevision;
+    return currentDatabaseSecond.isAfter(minimumNextRevision) ? currentDatabaseSecond : minimumNextRevision;
   }
 
   Insertable<TEntity> toCompanion(TEntity entity);
@@ -44,9 +40,7 @@ abstract class DriftBaseRepository<
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty
-        ? " WHERE ${whereClauses.join(' AND ')} "
-        : null;
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
 
     String? orderByClause = customOrder?.isNotEmpty == true
         ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
@@ -55,8 +49,7 @@ abstract class DriftBaseRepository<
     final query = database.customSelect(
       "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''}LIMIT ? OFFSET ?",
       variables: [
-        if (customWhereFilter != null)
-          ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
         Variable.withInt(pageSize),
         Variable.withInt(pageIndex * pageSize)
       ],
@@ -67,15 +60,13 @@ abstract class DriftBaseRepository<
     final count = await ((database.customSelect(
       'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null)
-          ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       ],
     )).getSingleOrNull());
     final totalCount = count?.data['count'] as int? ?? 0;
 
     return acore.PaginatedList(
-      items: await Future.wait(result.map((entity) =>
-          entity is Future<TEntity> ? entity : Future.value(entity))),
+      items: await Future.wait(result.map((entity) => entity is Future<TEntity> ? entity : Future.value(entity))),
       pageIndex: pageIndex,
       pageSize: pageSize,
       totalItemCount: totalCount,
@@ -91,9 +82,7 @@ abstract class DriftBaseRepository<
       if (customWhereFilter != null) "(${customWhereFilter.query})",
       if (!includeDeleted) 'deleted_date IS NULL',
     ];
-    String? whereClause = whereClauses.isNotEmpty
-        ? " WHERE ${whereClauses.join(' AND ')} "
-        : null;
+    String? whereClause = whereClauses.isNotEmpty ? " WHERE ${whereClauses.join(' AND ')} " : null;
     String? orderByClause = customOrder?.isNotEmpty == true
         ? ' ORDER BY ${customOrder!.map((order) => '`${order.field}` IS NULL, `${order.field}` ${order.direction == acore.SortDirection.asc ? 'ASC' : 'DESC'}').join(', ')} '
         : null;
@@ -105,8 +94,7 @@ abstract class DriftBaseRepository<
     final countResult = await database.customSelect(
       'SELECT COUNT(*) AS count FROM ${table.actualTableName}${whereClause ?? ''}',
       variables: [
-        if (customWhereFilter != null)
-          ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
+        if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
       ],
     ).getSingleOrNull();
     final totalCount = countResult?.data['count'] as int? ?? 0;
@@ -117,9 +105,7 @@ abstract class DriftBaseRepository<
       final query = database.customSelect(
         "SELECT * FROM ${table.actualTableName}${whereClause ?? ''}${orderByClause ?? ''} LIMIT ? OFFSET ?",
         variables: [
-          if (customWhereFilter != null)
-            ...customWhereFilter.variables
-                .map((e) => convertToQueryVariable(e)),
+          if (customWhereFilter != null) ...customWhereFilter.variables.map((e) => convertToQueryVariable(e)),
           Variable.withInt(chunkSize),
           Variable.withInt(pageIndex * chunkSize),
         ],
@@ -127,8 +113,8 @@ abstract class DriftBaseRepository<
       ).map((row) => table.map(row.data));
       final result = await query.get();
 
-      allResults.addAll(await Future.wait(result.map((entity) =>
-          entity is Future<TEntity> ? entity : Future.value(entity))));
+      allResults
+          .addAll(await Future.wait(result.map((entity) => entity is Future<TEntity> ? entity : Future.value(entity))));
     }
 
     return allResults;
@@ -151,16 +137,14 @@ abstract class DriftBaseRepository<
     if (results.isEmpty) return null;
 
     if (results.length > 1) {
-      Logger.warning(
-          'Multiple records found for ID $id in ${table.actualTableName}, returning most recent result');
+      Logger.warning('Multiple records found for ID $id in ${table.actualTableName}, returning most recent result');
     }
 
     return table.map(results.first.data);
   }
 
   @override
-  Future<TEntity?> getFirst(acore.CustomWhereFilter customWhereFilter,
-      {bool includeDeleted = false}) async {
+  Future<TEntity?> getFirst(acore.CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
     List<String> whereClauses = [
       customWhereFilter.query,
       if (!includeDeleted) 'deleted_date IS NULL',
@@ -170,9 +154,7 @@ abstract class DriftBaseRepository<
     return database
         .customSelect(
           'SELECT * FROM ${table.actualTableName} WHERE $whereClause LIMIT 1',
-          variables: customWhereFilter.variables
-              .map((e) => convertToQueryVariable(e))
-              .toList(),
+          variables: customWhereFilter.variables.map((e) => convertToQueryVariable(e)).toList(),
           readsFrom: {table},
         )
         .getSingleOrNull()
@@ -183,14 +165,11 @@ abstract class DriftBaseRepository<
   Future<void> add(TEntity item) async {
     try {
       item.createdDate = DateTime.now().toUtc();
-      TEntity insertedItem =
-          await database.into(table).insertReturning(toCompanion(item));
+      TEntity insertedItem = await database.into(table).insertReturning(toCompanion(item));
       item.id = insertedItem.id;
-      Logger.debug(
-          'Successfully added ${table.actualTableName} with id ${item.id}');
+      Logger.debug('Successfully added ${table.actualTableName} with id ${item.id}');
     } catch (e, stackTrace) {
-      Logger.error(
-          'Database error adding to ${table.actualTableName}: $e\n$stackTrace');
+      Logger.error('Database error adding to ${table.actualTableName}: $e\n$stackTrace');
       rethrow;
     }
   }
@@ -200,14 +179,11 @@ abstract class DriftBaseRepository<
     try {
       item.modifiedDate = DateTime.now().toUtc();
       final companion = toCompanion(item);
-      final stmt = (database.update(table)
-        ..where((t) => getPrimaryKey(t).equals(item.id)));
+      final stmt = (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id)));
       final result = await stmt.write(companion);
-      Logger.debug(
-          'Updated ${table.actualTableName} id=${item.id}, rows affected: $result');
+      Logger.debug('Updated ${table.actualTableName} id=${item.id}, rows affected: $result');
     } catch (e, stackTrace) {
-      Logger.error(
-          'Database error updating ${table.actualTableName}: $e\n$stackTrace');
+      Logger.error('Database error updating ${table.actualTableName}: $e\n$stackTrace');
       rethrow;
     }
   }
@@ -227,16 +203,12 @@ abstract class DriftBaseRepository<
       await database.transaction(() async {
         for (final item in items) {
           final companion = toCompanion(item);
-          await (database.update(table)
-                ..where((t) => getPrimaryKey(t).equals(item.id)))
-              .write(companion);
+          await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
         }
       });
-      Logger.debug(
-          'Batch updated ${table.actualTableName}, count: ${items.length}');
+      Logger.debug('Batch updated ${table.actualTableName}, count: ${items.length}');
     } catch (e, stackTrace) {
-      Logger.error(
-          'Database error batch updating ${table.actualTableName}: $e\n$stackTrace');
+      Logger.error('Database error batch updating ${table.actualTableName}: $e\n$stackTrace');
       rethrow;
     }
   }
@@ -253,11 +225,9 @@ abstract class DriftBaseRepository<
       item.modifiedDate = null;
       item.deletedDate = null;
       await database.into(table).insertOnConflictUpdate(toCompanion(item));
-      Logger.debug(
-          'Upserted (reviving) ${table.actualTableName} id=${item.id}');
+      Logger.debug('Upserted (reviving) ${table.actualTableName} id=${item.id}');
     } catch (e, stackTrace) {
-      Logger.error(
-          'Database error upserting ${table.actualTableName} id=${item.id}: $e\n$stackTrace');
+      Logger.error('Database error upserting ${table.actualTableName} id=${item.id}: $e\n$stackTrace');
       rethrow;
     }
   }
@@ -267,12 +237,9 @@ abstract class DriftBaseRepository<
     try {
       item.deletedDate = DateTime.now().toUtc();
       final companion = toCompanion(item);
-      await (database.update(table)
-            ..where((t) => getPrimaryKey(t).equals(item.id)))
-          .write(companion);
+      await (database.update(table)..where((t) => getPrimaryKey(t).equals(item.id))).write(companion);
     } catch (e, stackTrace) {
-      Logger.error(
-          'Database error deleting from ${table.actualTableName}: $e\n$stackTrace');
+      Logger.error('Database error deleting from ${table.actualTableName}: $e\n$stackTrace');
       rethrow;
     }
   }

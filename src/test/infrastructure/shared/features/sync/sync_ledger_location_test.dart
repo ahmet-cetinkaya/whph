@@ -9,8 +9,7 @@ void main() {
   final posix = p.Context(style: p.Style.posix);
   final dataDirectory = Directory('/home/user/.local/share/whph');
 
-  SyncLedgerLocation resolve(
-          SyncPackagingTarget target, Map<String, String> environment,
+  SyncLedgerLocation resolve(SyncPackagingTarget target, Map<String, String> environment,
           {p.Context? pathContext, Directory? data}) =>
       resolveSyncLedgerLocation(
         target: target,
@@ -21,8 +20,8 @@ void main() {
 
   group('native Linux', () {
     test('uses XDG_STATE_HOME/whph', () {
-      final location = resolve(SyncPackagingTarget.linux,
-          {'XDG_STATE_HOME': '/home/user/.state', 'HOME': '/home/user'});
+      final location =
+          resolve(SyncPackagingTarget.linux, {'XDG_STATE_HOME': '/home/user/.state', 'HOME': '/home/user'});
 
       expect(location.directory.path, '/home/user/.state/whph');
       expect(location.placement, SyncLedgerPlacement.separateStateDirectory);
@@ -30,43 +29,34 @@ void main() {
     });
 
     test('falls back to ~/.local/state/whph, outside the data directory', () {
-      final location =
-          resolve(SyncPackagingTarget.linux, {'HOME': '/home/user'});
+      final location = resolve(SyncPackagingTarget.linux, {'HOME': '/home/user'});
 
       expect(location.directory.path, '/home/user/.local/state/whph');
-      expect(
-          posix.isWithin(dataDirectory.path, location.directory.path), isFalse);
+      expect(posix.isWithin(dataDirectory.path, location.directory.path), isFalse);
       expect(location.placement, SyncLedgerPlacement.separateStateDirectory);
     });
 
     test('a relative XDG_STATE_HOME is ignored', () {
-      final location = resolve(SyncPackagingTarget.linux,
-          {'XDG_STATE_HOME': 'relative', 'HOME': '/home/user'});
+      final location = resolve(SyncPackagingTarget.linux, {'XDG_STATE_HOME': 'relative', 'HOME': '/home/user'});
 
       expect(location.directory.path, '/home/user/.local/state/whph');
     });
   });
 
   group('Flatpak', () {
-    test(
-        'uses the sandbox XDG_STATE_HOME when it is separate from the data directory',
-        () {
+    test('uses the sandbox XDG_STATE_HOME when it is separate from the data directory', () {
       final location = resolve(
         SyncPackagingTarget.flatpak,
         {'XDG_STATE_HOME': '/home/user/.var/app/id/.local/state'},
         data: Directory('/home/user/.var/app/id/data'),
       );
 
-      expect(
-          location.directory.path, '/home/user/.var/app/id/.local/state/whph');
+      expect(location.directory.path, '/home/user/.var/app/id/.local/state/whph');
       expect(location.placement, SyncLedgerPlacement.separateStateDirectory);
     });
 
-    test(
-        'without a separate state directory the ledger stays in the data dir and is recorded as accepted risk',
-        () {
-      final location =
-          resolve(SyncPackagingTarget.flatpak, {'HOME': '/home/user'});
+    test('without a separate state directory the ledger stays in the data dir and is recorded as accepted risk', () {
+      final location = resolve(SyncPackagingTarget.flatpak, {'HOME': '/home/user'});
 
       expect(location.directory.path, dataDirectory.path);
       expect(location.placement, SyncLedgerPlacement.insideDataDirectory);
@@ -91,11 +81,8 @@ void main() {
   });
 
   group('Android', () {
-    test(
-        'uses app-private storage (the data directory) and is not accepted risk',
-        () {
-      final location =
-          resolve(SyncPackagingTarget.android, {'HOME': '/data/user/0/app'});
+    test('uses app-private storage (the data directory) and is not accepted risk', () {
+      final location = resolve(SyncPackagingTarget.android, {'HOME': '/data/user/0/app'});
 
       expect(location.directory.path, dataDirectory.path);
       expect(location.placement, SyncLedgerPlacement.appPrivate);
@@ -104,11 +91,8 @@ void main() {
   });
 
   test('the running process resolves to a known target', () {
-    expect(
-        detectSyncPackagingTarget({'FLATPAK_ID': 'io.example'}),
-        Platform.isLinux
-            ? SyncPackagingTarget.flatpak
-            : isA<SyncPackagingTarget>());
+    expect(detectSyncPackagingTarget({'FLATPAK_ID': 'io.example'}),
+        Platform.isLinux ? SyncPackagingTarget.flatpak : isA<SyncPackagingTarget>());
     expect(detectSyncPackagingTarget({}), isA<SyncPackagingTarget>());
   });
 }
