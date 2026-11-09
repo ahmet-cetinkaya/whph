@@ -18,11 +18,7 @@ import 'package:whph/infrastructure/persistence/shared/contexts/drift/drift_app_
 import 'package:whph/infrastructure/persistence/shared/contexts/drift/sync/sync_table_policy.dart';
 
 import '../../../fixtures/sync/fixture_builder.dart'
-    show
-        buildFixture,
-        defaultFixtureSeed,
-        duplicatesFixture,
-        fixtureDatabasePath;
+    show buildFixture, defaultFixtureSeed, duplicatesFixture, fixtureDatabasePath;
 
 /// Natural keys that must be unique after dedupe (soft-deleted rows included).
 const Map<String, String> _naturalKeys = {
@@ -37,8 +33,7 @@ const Map<String, String> _naturalKeys = {
 const Duration _chunkBudget = Duration(seconds: 2);
 
 class _TestAppDatabase extends AppDatabase {
-  _TestAppDatabase(QueryExecutor executor)
-      : super.withRestoreBarrier(executor, McpRestoreBarrier());
+  _TestAppDatabase(QueryExecutor executor) : super.withRestoreBarrier(executor, McpRestoreBarrier());
 
   @override
   int get schemaVersion => 38;
@@ -58,8 +53,7 @@ void main() {
     AppDatabase.testDirectory = root;
     AppDatabase.isTestMode = true;
     final fixtures = Directory(p.join(root.path, 'fixtures'));
-    await buildFixture(duplicatesFixture,
-        seed: defaultFixtureSeed, out: fixtures);
+    await buildFixture(duplicatesFixture, seed: defaultFixtureSeed, out: fixtures);
     pristine = File(fixtureDatabasePath(fixtures, duplicatesFixture));
   });
 
@@ -76,8 +70,7 @@ void main() {
 
   /// Opens a fresh copy of the v37 fixture; the v38 migration runs on open.
   Future<AppDatabase> openUpgraded() async {
-    final copy =
-        pristine.copySync(p.join(root.path, 'copy-${copyCounter++}.sqlite'));
+    final copy = pristine.copySync(p.join(root.path, 'copy-${copyCounter++}.sqlite'));
     final db = _TestAppDatabase(NativeDatabase(copy));
     opened.add(db);
     await db.customSelect('SELECT 1').get();
@@ -87,8 +80,7 @@ void main() {
   Future<List<Map<String, Object?>>> rows(AppDatabase db, String sql) async =>
       (await db.customSelect(sql).get()).map((row) => row.data).toList();
 
-  Future<int> count(AppDatabase db, String sql) async =>
-      (await rows(db, sql)).single.values.first as int;
+  Future<int> count(AppDatabase db, String sql) async => (await rows(db, sql)).single.values.first as int;
 
   /// Checksum of user data plus clock cells (recorded_at excluded: wall clock).
   Future<String> checksum(AppDatabase db) async {
@@ -112,9 +104,8 @@ void main() {
     return sha256.convert(buffer.toString().codeUnits).toString();
   }
 
-  Future<int> duplicateGroups(AppDatabase db, String table, String key) => count(
-      db,
-      'SELECT COUNT(*) FROM (SELECT 1 FROM $table GROUP BY $key HAVING COUNT(*) > 1)');
+  Future<int> duplicateGroups(AppDatabase db, String table, String key) =>
+      count(db, 'SELECT COUNT(*) FROM (SELECT 1 FROM $table GROUP BY $key HAVING COUNT(*) > 1)');
 
   Future<int> taskClockHlc(AppDatabase db, String taskId) => count(
       db,
@@ -128,59 +119,45 @@ void main() {
     expect(progress.cursor, isNull);
   });
 
-  test(
-      'acceptance 1+2: no natural-key duplicates, no new orphans, apply_mode restored',
-      () async {
+  test('acceptance 1+2: no natural-key duplicates, no new orphans, apply_mode restored', () async {
     final db = await openUpgraded();
     for (final entry in _naturalKeys.entries) {
       expect(await duplicateGroups(db, entry.key, entry.value), greaterThan(0),
           reason: '${entry.key} fixture must contain duplicates');
     }
-    final orphansBefore =
-        await count(db, 'SELECT COUNT(*) FROM pragma_foreign_key_check');
+    final orphansBefore = await count(db, 'SELECT COUNT(*) FROM pragma_foreign_key_check');
 
     expect(await SyncUpgradeJob(db).runChunks(), isTrue);
 
     for (final entry in _naturalKeys.entries) {
-      expect(await duplicateGroups(db, entry.key, entry.value), 0,
-          reason: entry.key);
+      expect(await duplicateGroups(db, entry.key, entry.value), 0, reason: entry.key);
     }
-    expect(await count(db, 'SELECT COUNT(*) FROM pragma_foreign_key_check'),
-        lessThanOrEqualTo(orphansBefore));
+    expect(await count(db, 'SELECT COUNT(*) FROM pragma_foreign_key_check'), lessThanOrEqualTo(orphansBefore));
     expect(await count(db, 'SELECT apply_mode FROM sync_state'), 0);
-    expect(
-        (await SyncUpgradeJob(db).getProgress()).phase, SyncUpgradePhase.done);
+    expect((await SyncUpgradeJob(db).getProgress()).phase, SyncUpgradePhase.done);
   });
 
-  test(
-      'acceptance 3: bootstrap gives every row its D6 cells with gapless ascending seqs',
-      () async {
+  test('acceptance 3: bootstrap gives every row its D6 cells with gapless ascending seqs', () async {
     final db = await openUpgraded();
     await SyncUpgradeJob(db).runChunks();
 
     for (final policy in syncTablePolicies) {
       final columnCount = 1 + (policy.rowLevel ? 1 : policy.columns.length);
-      final rowCount =
-          await count(db, 'SELECT COUNT(*) FROM "${policy.tableName}"');
+      final rowCount = await count(db, 'SELECT COUNT(*) FROM "${policy.tableName}"');
       final cells = await count(
           db,
           'SELECT COUNT(*) FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256 '
           'WHERE r.tbl_id = ${policy.tblId}');
       expect(cells, rowCount * columnCount, reason: policy.tableName);
     }
-    final seqs =
-        await rows(db, 'SELECT origin_seq FROM sync_clock ORDER BY origin_seq');
+    final seqs = await rows(db, 'SELECT origin_seq FROM sync_clock ORDER BY origin_seq');
     for (var index = 1; index < seqs.length; index++) {
-      expect(seqs[index]['origin_seq'],
-          (seqs[index - 1]['origin_seq'] as int) + 1);
+      expect(seqs[index]['origin_seq'], (seqs[index - 1]['origin_seq'] as int) + 1);
     }
-    expect(await count(db, 'SELECT next_seq FROM sync_state'),
-        seqs.isEmpty ? 1 : (seqs.last['origin_seq'] as int) + 1);
+    expect(await count(db, 'SELECT next_seq FROM sync_state'), seqs.isEmpty ? 1 : (seqs.last['origin_seq'] as int) + 1);
   });
 
-  test(
-      'acceptance 4+5: stopping after any chunk and resuming gives the uninterrupted result',
-      () async {
+  test('acceptance 4+5: stopping after any chunk and resuming gives the uninterrupted result', () async {
     final reference = await openUpgraded();
     final chunkTimings = <UpgradeChunkTiming>[];
     await SyncUpgradeJob(reference, onChunk: chunkTimings.add).runChunks();
@@ -190,8 +167,7 @@ void main() {
 
     for (final stopAfter in {1, totalChunks ~/ 2, totalChunks - 1}) {
       final db = await openUpgraded();
-      expect(await SyncUpgradeJob(db).runChunks(stopAfterChunks: stopAfter),
-          isFalse);
+      expect(await SyncUpgradeJob(db).runChunks(stopAfterChunks: stopAfter), isFalse);
       // A new job instance models a process restart: state lives in sync_state.
       expect(await SyncUpgradeJob(db).runChunks(), isTrue);
       expect(await checksum(db), expected, reason: 'stop after $stopAfter');
@@ -208,19 +184,15 @@ void main() {
     }
   });
 
-  test('acceptance 8: a user edit between chunks keeps its newer trigger clock',
-      () async {
+  test('acceptance 8: a user edit between chunks keeps its newer trigger clock', () async {
     final db = await openUpgraded();
     final job = SyncUpgradeJob(db);
     var stopAfter = 1;
     while ((await job.getProgress()).phase != SyncUpgradePhase.bootstrap) {
       await job.runChunks(stopAfterChunks: stopAfter++);
     }
-    final target =
-        (await rows(db, 'SELECT id FROM task_table ORDER BY id DESC LIMIT 1'))
-            .single['id'] as String;
-    await db.customStatement(
-        "UPDATE task_table SET title = 'edited between chunks' WHERE id = '$target'");
+    final target = (await rows(db, 'SELECT id FROM task_table ORDER BY id DESC LIMIT 1')).single['id'] as String;
+    await db.customStatement("UPDATE task_table SET title = 'edited between chunks' WHERE id = '$target'");
     final editedHlc = await taskClockHlc(db, target);
 
     expect(await SyncUpgradeJob(db).runChunks(), isTrue);
@@ -228,12 +200,10 @@ void main() {
     expect(await taskClockHlc(db, target), editedHlc);
   });
 
-  test('acceptance 9: a database with no scheduled upgrade is already done',
-      () async {
+  test('acceptance 9: a database with no scheduled upgrade is already done', () async {
     final db = await openUpgraded();
     await db.customStatement('UPDATE sync_state SET upgrade_phase = NULL');
-    expect(
-        (await SyncUpgradeJob(db).getProgress()).phase, SyncUpgradePhase.done);
+    expect((await SyncUpgradeJob(db).getProgress()).phase, SyncUpgradePhase.done);
     expect(await SyncUpgradeJob(db).runChunks(), isTrue);
   });
 
@@ -252,7 +222,4 @@ void main() {
   });
 }
 
-int _tblId(String tableName) => syncTablePolicies
-    .firstWhere((policy) => policy.tableName == tableName)
-    .tblId;
-
+int _tblId(String tableName) => syncTablePolicies.firstWhere((policy) => policy.tableName == tableName).tblId;

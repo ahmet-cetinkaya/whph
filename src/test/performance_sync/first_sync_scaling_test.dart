@@ -32,14 +32,9 @@ Future<({Duration elapsed, int bytes})> _firstSyncOf(int notes) async {
     final responder = await recorder.resultAfter(0);
     final elapsed = stopwatch.elapsed;
     expect(result.isComplete, isTrue);
-    final received = await b.appDatabase
-        .customSelect('SELECT COUNT(*) c FROM note_table')
-        .getSingle();
+    final received = await b.appDatabase.customSelect('SELECT COUNT(*) c FROM note_table').getSingle();
     expect(received.data['c'], notes);
-    return (
-      elapsed: elapsed,
-      bytes: result.stats.bytesSent + responder.stats.bytesSent
-    );
+    return (elapsed: elapsed, bytes: result.stats.bytesSent + responder.stats.bytesSent);
   } finally {
     await lab.close();
   }
@@ -54,13 +49,10 @@ void main() {
     final large = (await _firstSyncOf(_largeNotes)).elapsed;
     // ignore: avoid_print
     print('SCALING $_smallNotes notes: $small, $_largeNotes notes: $large');
-    expect(
-        large.inMicroseconds / small.inMicroseconds, lessThan(_maxGrowthFactor),
-        reason: '$small -> $large');
+    expect(large.inMicroseconds / small.inMicroseconds, lessThan(_maxGrowthFactor), reason: '$small -> $large');
   }, timeout: const Timeout(Duration(minutes: 10)));
 
-  test('a first sync ships each manifest once per batch, not once per cell',
-      () async {
+  test('a first sync ships each manifest once per batch, not once per cell', () async {
     final run = await _firstSyncOf(_bytesProbeNotes);
     // ignore: avoid_print
     print('BYTES $_bytesProbeNotes notes: ${run.bytes}');

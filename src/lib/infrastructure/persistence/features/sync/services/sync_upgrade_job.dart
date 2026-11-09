@@ -98,14 +98,11 @@ class SyncUpgradeJob implements ISyncUpgradeService {
   // -- shared helpers -------------------------------------------------------
 
   /// A null phase means no upgrade was ever scheduled (fresh database).
-  SyncUpgradePhase _phaseOf(String? name) => name == null
-      ? SyncUpgradePhase.done
-      : SyncUpgradePhase.values.byName(name);
+  SyncUpgradePhase _phaseOf(String? name) =>
+      name == null ? SyncUpgradePhase.done : SyncUpgradePhase.values.byName(name);
 
-  Future<List<Map<String, Object?>>> _select(String sql,
-          [List<Object?> args = const []]) async =>
-      (await _db.customSelect(sql,
-              variables: [for (final arg in args) _variable(arg)]).get())
+  Future<List<Map<String, Object?>>> _select(String sql, [List<Object?> args = const []]) async =>
+      (await _db.customSelect(sql, variables: [for (final arg in args) _variable(arg)]).get())
           .map((row) => row.data)
           .toList();
 
@@ -117,38 +114,27 @@ class SyncUpgradeJob implements ISyncUpgradeService {
   }
 
   Future<Map<String, Object?>> _state() async =>
-      (await _select('SELECT * FROM sync_state WHERE id = ?', [_stateId]))
-          .single;
+      (await _select('SELECT * FROM sync_state WHERE id = ?', [_stateId])).single;
 
   Future<List<String>> _columnsOf(String table) async =>
-      _columnCache[table] ??= [
-        for (final row in await _select('PRAGMA table_info("$table")'))
-          row['name'] as String
-      ];
+      _columnCache[table] ??= [for (final row in await _select('PRAGMA table_info("$table")')) row['name'] as String];
 
-  Future<void> _setPhase(SyncUpgradePhase phase, String? cursor) =>
-      _db.customStatement(
-          'UPDATE sync_state SET upgrade_phase = ?, upgrade_cursor = ? WHERE id = ?',
-          [phase.name, cursor, _stateId]);
+  Future<void> _setPhase(SyncUpgradePhase phase, String? cursor) => _db.customStatement(
+      'UPDATE sync_state SET upgrade_phase = ?, upgrade_cursor = ? WHERE id = ?', [phase.name, cursor, _stateId]);
 
-  Future<void> _setCursor(String cursor) => _db.customStatement(
-      'UPDATE sync_state SET upgrade_cursor = ? WHERE id = ?',
-      [cursor, _stateId]);
+  Future<void> _setCursor(String cursor) =>
+      _db.customStatement('UPDATE sync_state SET upgrade_cursor = ? WHERE id = ?', [cursor, _stateId]);
 
-  bool _hasChunkBudget(int? stopAfterChunks) =>
-      stopAfterChunks == null || _chunksThisRun < stopAfterChunks;
+  bool _hasChunkBudget(int? stopAfterChunks) => stopAfterChunks == null || _chunksThisRun < stopAfterChunks;
 
   (int, String) _splitCursor(String? cursor) {
     if (cursor == null) return (0, '');
     final separatorAt = cursor.indexOf(_cursorSeparator);
-    return (
-      int.parse(cursor.substring(0, separatorAt)),
-      cursor.substring(separatorAt + 1)
-    );
+    return (int.parse(cursor.substring(0, separatorAt)), cursor.substring(separatorAt + 1));
   }
 
-  Future<T> _inChunk<T>(SyncUpgradePhase phase, String label,
-      int Function(T) unitsOf, Future<T> Function() body) async {
+  Future<T> _inChunk<T>(
+      SyncUpgradePhase phase, String label, int Function(T) unitsOf, Future<T> Function() body) async {
     _chunksThisRun++;
     final stopwatch = Stopwatch()..start();
     final result = await _db.transaction(() async {
@@ -158,18 +144,16 @@ class SyncUpgradeJob implements ISyncUpgradeService {
       return value;
     });
     stopwatch.stop();
-    onChunk?.call(
-        UpgradeChunkTiming(phase, label, stopwatch.elapsed, unitsOf(result)));
+    onChunk?.call(UpgradeChunkTiming(phase, label, stopwatch.elapsed, unitsOf(result)));
     return result;
   }
 
-  Future<void> _setApplyMode(int mode) => _db.customStatement(
-      'UPDATE sync_state SET apply_mode = ? WHERE id = ?', [mode, _stateId]);
+  Future<void> _setApplyMode(int mode) =>
+      _db.customStatement('UPDATE sync_state SET apply_mode = ? WHERE id = ?', [mode, _stateId]);
 
   // -- dedupe ---------------------------------------------------------------
 
-  Future<List<_Group>> _pendingGroups(
-      DedupeFamily family, String afterKey) async {
+  Future<List<_Group>> _pendingGroups(DedupeFamily family, String afterKey) async {
     final groups = <String, _Group>{};
     final keyParts = <String, (String, String?)>{};
     for (final row in await _select(family.selectSql)) {
@@ -189,13 +173,11 @@ class SyncUpgradeJob implements ISyncUpgradeService {
     for (final group in groups.values) {
       if (group.key.compareTo(afterKey) <= 0) continue;
       final roots = group.members.where((member) => member.isRoot).toList();
-      if (roots.length > 1)
-        throw StateError('Two series roots in ${group.key}');
+      if (roots.length > 1) throw StateError('Two series roots in ${group.key}');
       group.rootId = roots.isEmpty ? null : roots.single.id;
       final (k1, k2) = keyParts[group.key]!;
       group.survivorId = group.rootId ?? family.survivorIdOf(k1, k2);
-      group.sourceId =
-          (List.of(group.members)..sort(_compareSurvivorCandidates)).first.id;
+      group.sourceId = (List.of(group.members)..sort(_compareSurvivorCandidates)).first.id;
       if (group.isPending) pending.add(group);
     }
     return pending..sort((a, b) => a.key.compareTo(b.key));
@@ -213,8 +195,7 @@ class SyncUpgradeJob implements ISyncUpgradeService {
     while (next < pending.length) {
       if (!_hasChunkBudget(stopAfterChunks)) return;
       final batch = _nextBatch(pending, next);
-      await _inChunk<int>(SyncUpgradePhase.dedupe,
-          '${family.name}:${batch.first.key}', (count) => count, () async {
+      await _inChunk<int>(SyncUpgradePhase.dedupe, '${family.name}:${batch.first.key}', (count) => count, () async {
         for (final group in batch) {
           await _mergeGroup(family, group);
         }
@@ -245,100 +226,73 @@ class SyncUpgradeJob implements ISyncUpgradeService {
     final memberIds = group.members.map((member) => member.id).toSet();
     final survivor = group.survivorId;
 
-    final existing =
-        await _select('SELECT id FROM "$table" WHERE id = ?', [survivor]);
+    final existing = await _select('SELECT id FROM "$table" WHERE id = ?', [survivor]);
     if (existing.isNotEmpty && !memberIds.contains(survivor)) {
-      throw StateError(
-          'Deterministic id $survivor of ${group.key} is taken by a non-member');
+      throw StateError('Deterministic id $survivor of ${group.key} is taken by a non-member');
     }
     if (group.sourceId != survivor) {
-      await _writeSurvivor(family, group, columns,
-          survivorExists: existing.isNotEmpty);
+      await _writeSurvivor(family, group, columns, survivorExists: existing.isNotEmpty);
     }
 
     final losers = memberIds.where((id) => id != survivor).toList()..sort();
     if (losers.isEmpty) return;
     await _moveLoserClocks(family, group, columns, losers);
     final marks = List.filled(losers.length, '?').join(', ');
-    for (final (childTable, column)
-        in fkRewriteList[table] ?? const <(String, String)>[]) {
-      await _db.customStatement(
-          'UPDATE "$childTable" SET "$column" = ? WHERE "$column" IN ($marks)',
-          [survivor, ...losers]);
+    for (final (childTable, column) in fkRewriteList[table] ?? const <(String, String)>[]) {
+      await _db
+          .customStatement('UPDATE "$childTable" SET "$column" = ? WHERE "$column" IN ($marks)', [survivor, ...losers]);
     }
-    await _db.customStatement(
-        'DELETE FROM "$table" WHERE id IN ($marks)', losers);
+    await _db.customStatement('DELETE FROM "$table" WHERE id IN ($marks)', losers);
   }
 
-  Future<void> _writeSurvivor(
-      DedupeFamily family, _Group group, List<String> columns,
+  Future<void> _writeSurvivor(DedupeFamily family, _Group group, List<String> columns,
       {required bool survivorExists}) async {
     final table = family.table;
     if (!survivorExists) {
       final list = columns.map((column) => '"$column"').join(', ');
-      final select = columns
-          .map((column) => column == 'id' ? '?' : '"$column"')
-          .join(', ');
+      final select = columns.map((column) => column == 'id' ? '?' : '"$column"').join(', ');
       await _db.customStatement(
-          'INSERT INTO "$table" ($list) SELECT $select FROM "$table" WHERE id = ?',
-          [group.survivorId, group.sourceId]);
+          'INSERT INTO "$table" ($list) SELECT $select FROM "$table" WHERE id = ?', [group.survivorId, group.sourceId]);
       return;
     }
-    final prefix =
-        group.rootId != null ? family.preserveRootColumnsPrefix : null;
-    final copied = columns.where((column) =>
-        column != 'id' && (prefix == null || !column.startsWith(prefix)));
-    await _copyColumns(table, copied.toList(),
-        from: group.sourceId, to: group.survivorId);
+    final prefix = group.rootId != null ? family.preserveRootColumnsPrefix : null;
+    final copied = columns.where((column) => column != 'id' && (prefix == null || !column.startsWith(prefix)));
+    await _copyColumns(table, copied.toList(), from: group.sourceId, to: group.survivorId);
   }
 
-  Future<void> _copyColumns(String table, List<String> columns,
-      {required String from, required String to}) {
+  Future<void> _copyColumns(String table, List<String> columns, {required String from, required String to}) {
     final targets = columns.map((column) => '"$column"').join(', ');
     final assignment = columns.length == 1
         ? '$targets = (SELECT $targets FROM "$table" WHERE id = ?)'
         : '($targets) = (SELECT $targets FROM "$table" WHERE id = ?)';
-    return _db.customStatement(
-        'UPDATE "$table" SET $assignment WHERE id = ?', [from, to]);
+    return _db.customStatement('UPDATE "$table" SET $assignment WHERE id = ?', [from, to]);
   }
 
   /// D17 "User edits to a dedupe loser": per cell, the survivor takes the
   /// value and clock of the highest `(hlc, node)` among itself and its losers.
-  Future<void> _moveLoserClocks(DedupeFamily family, _Group group,
-      List<String> columns, List<String> losers) async {
+  Future<void> _moveLoserClocks(DedupeFamily family, _Group group, List<String> columns, List<String> losers) async {
     final policy = _policyOf(family.table);
     if (policy == null) return;
-    final memberRows =
-        await _clockRowsOf(policy.tblId, {...losers, group.survivorId});
+    final memberRows = await _clockRowsOf(policy.tblId, {...losers, group.survivorId});
     if (memberRows.isEmpty) return;
 
     final survivorRowId = await _ensureSyncRow(policy.tblId, group.survivorId);
     final winners = await _winningCells(memberRows.keys);
-    final protectedPrefix =
-        group.rootId != null ? family.preserveRootColumnsPrefix : null;
+    final protectedPrefix = group.rootId != null ? family.preserveRootColumnsPrefix : null;
     for (final cell in winners.values) {
       final winnerPk = memberRows[cell.rowId]!;
       if (winnerPk != group.survivorId) {
-        final copied =
-            _cellColumns(policy, cell.colId, columns, protectedPrefix);
-        if (copied.isNotEmpty)
-          await _copyColumns(family.table, copied,
-              from: winnerPk, to: group.survivorId);
+        final copied = _cellColumns(policy, cell.colId, columns, protectedPrefix);
+        if (copied.isNotEmpty) await _copyColumns(family.table, copied, from: winnerPk, to: group.survivorId);
       }
-      if (cell.rowId != survivorRowId)
-        await _relocateClock(
-            cell.key, survivorRowId * packedKeyFactor + cell.colId);
+      if (cell.rowId != survivorRowId) await _relocateClock(cell.key, survivorRowId * packedKeyFactor + cell.colId);
     }
-    for (final loserRowId
-        in memberRows.keys.where((id) => id != survivorRowId)) {
+    for (final loserRowId in memberRows.keys.where((id) => id != survivorRowId)) {
       await _db.customStatement(
-          'UPDATE sync_clock SET cause_row_id = ? WHERE cause_row_id = ?',
-          [survivorRowId, loserRowId]);
-      await _db.customStatement(
-          'DELETE FROM sync_clock WHERE key >= ? AND key < ?',
+          'UPDATE sync_clock SET cause_row_id = ? WHERE cause_row_id = ?', [survivorRowId, loserRowId]);
+      await _db.customStatement('DELETE FROM sync_clock WHERE key >= ? AND key < ?',
           [loserRowId * packedKeyFactor, (loserRowId + 1) * packedKeyFactor]);
-      await _db
-          .customStatement('DELETE FROM sync_row WHERE id = ?', [loserRowId]);
+      await _db.customStatement('DELETE FROM sync_row WHERE id = ?', [loserRowId]);
     }
   }
 
@@ -352,30 +306,22 @@ class SyncUpgradeJob implements ISyncUpgradeService {
   /// Interned row id -> pk for those of [pks] that have a `sync_row`.
   Future<Map<int, String>> _clockRowsOf(int tblId, Set<String> pks) async {
     final marks = List.filled(pks.length, '?').join(', ');
-    final rows = await _select(
-        'SELECT id, pk FROM sync_row WHERE tbl_id = ? AND pk IN ($marks)',
-        [tblId, ...pks]);
+    final rows = await _select('SELECT id, pk FROM sync_row WHERE tbl_id = ? AND pk IN ($marks)', [tblId, ...pks]);
     return {for (final row in rows) row['id'] as int: row['pk'] as String};
   }
 
   Future<int> _ensureSyncRow(int tblId, String pk) async {
-    await _db.customStatement(
-        'INSERT OR IGNORE INTO sync_row (tbl_id, pk) VALUES (?, ?)',
-        [tblId, pk]);
-    return (await _select(
-            'SELECT id FROM sync_row WHERE tbl_id = ? AND pk = ?', [tblId, pk]))
-        .single['id'] as int;
+    await _db.customStatement('INSERT OR IGNORE INTO sync_row (tbl_id, pk) VALUES (?, ?)', [tblId, pk]);
+    return (await _select('SELECT id FROM sync_row WHERE tbl_id = ? AND pk = ?', [tblId, pk])).single['id'] as int;
   }
 
   Future<Map<int, _ClockCell>> _winningCells(Iterable<int> rowIds) async {
     final winners = <int, _ClockCell>{};
     for (final rowId in rowIds) {
-      final rows = await _select(
-          'SELECT key, hlc, node_id FROM sync_clock WHERE key >= ? AND key < ?',
+      final rows = await _select('SELECT key, hlc, node_id FROM sync_clock WHERE key >= ? AND key < ?',
           [rowId * packedKeyFactor, (rowId + 1) * packedKeyFactor]);
       for (final row in rows) {
-        final cell = _ClockCell(
-            row['key'] as int, row['hlc'] as int, row['node_id'] as int);
+        final cell = _ClockCell(row['key'] as int, row['hlc'] as int, row['node_id'] as int);
         final current = winners[cell.colId];
         if (current == null || cell.beats(current)) winners[cell.colId] = cell;
       }
@@ -384,8 +330,7 @@ class SyncUpgradeJob implements ISyncUpgradeService {
   }
 
   /// Columns of the survivor row that the winning cell [colId] governs.
-  List<String> _cellColumns(SyncTablePolicy policy, int colId,
-      List<String> columns, String? protectedPrefix) {
+  List<String> _cellColumns(SyncTablePolicy policy, int colId, List<String> columns, String? protectedPrefix) {
     if (colId == tombstoneColId) return ['deleted_date'];
     if (!policy.rowLevel) {
       return [
@@ -409,26 +354,21 @@ FROM sync_clock WHERE key = ?
 ON CONFLICT (key) DO UPDATE SET
   hlc = excluded.hlc, node_id = excluded.node_id, origin_id = excluded.origin_id,
   origin_seq = excluded.origin_seq, manifest_id = excluded.manifest_id, tomb_value = excluded.tomb_value,
-  cause_row_id = excluded.cause_row_id, recorded_at = excluded.recorded_at''',
-        [toKey, fromKey]);
+  cause_row_id = excluded.cause_row_id, recorded_at = excluded.recorded_at''', [toKey, fromKey]);
   }
 
   // -- bootstrap ------------------------------------------------------------
 
   Future<void> _bootstrapStep(String? cursor, int? stopAfterChunks) async {
-    final (tblId, afterPk) = cursor == null
-        ? (syncTablePolicies.first.tblId, '')
-        : _splitCursor(cursor);
-    final policyIndex =
-        syncTablePolicies.indexWhere((policy) => policy.tblId >= tblId);
+    final (tblId, afterPk) = cursor == null ? (syncTablePolicies.first.tblId, '') : _splitCursor(cursor);
+    final policyIndex = syncTablePolicies.indexWhere((policy) => policy.tblId >= tblId);
     if (policyIndex < 0) {
       await _setPhase(SyncUpgradePhase.reauthor, null);
       return;
     }
     final policy = syncTablePolicies[policyIndex];
     final colIds = _bootstrapColumnIds(policy);
-    final rowsPerChunk = (maxBootstrapCellsPerChunk ~/ colIds.length)
-        .clamp(1, maxBootstrapCellsPerChunk);
+    final rowsPerChunk = (maxBootstrapCellsPerChunk ~/ colIds.length).clamp(1, maxBootstrapCellsPerChunk);
 
     var lastPk = afterPk;
     while (_hasChunkBudget(stopAfterChunks)) {
@@ -442,19 +382,14 @@ ON CONFLICT (key) DO UPDATE SET
         return;
       }
       final windowEnd = window['last_id'] as String;
-      await _inChunk<int>(
-          SyncUpgradePhase.bootstrap,
-          '${policy.tableName}@$lastPk',
-          (cells) => cells,
+      await _inChunk<int>(SyncUpgradePhase.bootstrap, '${policy.tableName}@$lastPk', (cells) => cells,
           () => _bootstrapChunk(policy, colIds, from: lastPk, to: windowEnd));
       lastPk = windowEnd;
     }
   }
 
-  List<int> _bootstrapColumnIds(SyncTablePolicy policy) => [
-        tombstoneColId,
-        if (policy.rowLevel) rowLevelColId else ...policy.columns.values
-      ];
+  List<int> _bootstrapColumnIds(SyncTablePolicy policy) =>
+      [tombstoneColId, if (policy.rowLevel) rowLevelColId else ...policy.columns.values];
 
   /// Clock rows for rows of [policy] with `from < id <= to`; returns cells inserted.
   Future<int> _bootstrapChunk(SyncTablePolicy policy, List<int> colIds,
@@ -462,8 +397,7 @@ ON CONFLICT (key) DO UPDATE SET
     final table = policy.tableName;
     final liveState = await _state();
     final baseSeq = liveState['next_seq'] as int;
-    final lastTouchedSeconds =
-        'MAX(t.created_date, COALESCE(t.modified_date, 0), COALESCE(t.deleted_date, 0))';
+    final lastTouchedSeconds = 'MAX(t.created_date, COALESCE(t.modified_date, 0), COALESCE(t.deleted_date, 0))';
     final hlcOf = '($lastTouchedSeconds * $_secondsToMs) << $_hlcLogicalBits';
     final colValues = colIds.map((colId) => '($colId)').join(', ');
 
@@ -493,8 +427,7 @@ FROM cells ORDER BY key''', [
       baseSeq,
       _recordedAt,
     ]);
-    final inserted = (await _select('SELECT changes() AS inserted'))
-        .single['inserted'] as int;
+    final inserted = (await _select('SELECT changes() AS inserted')).single['inserted'] as int;
     final maxHlc = (await _select(
       'SELECT MAX($hlcOf) AS max_hlc FROM "$table" AS t WHERE t.id > ? AND t.id <= ?',
       [from, to],
@@ -512,16 +445,15 @@ FROM cells ORDER BY key''', [
   /// current origin, `maxReauthorRowsPerChunk` per transaction. Rows a user
   /// edit already moved no longer match the predicate. The cursor is the last
   /// processed clock key, so a killed job resumes where it stopped.
-  Future<void> _reauthorStep(
-      Map<String, Object?> state, int? stopAfterChunks) async {
+  Future<void> _reauthorStep(Map<String, Object?> state, int? stopAfterChunks) async {
     final specText = state['reauthor_spec'] as String?;
     if (specText == null) {
       await _setPhase(SyncUpgradePhase.done, null);
       return;
     }
     while (_hasChunkBudget(stopAfterChunks)) {
-      final moved = await _inChunk<List<int>>(SyncUpgradePhase.reauthor,
-          'reauthor', (keys) => keys.length, _reauthorChunk);
+      final moved =
+          await _inChunk<List<int>>(SyncUpgradePhase.reauthor, 'reauthor', (keys) => keys.length, _reauthorChunk);
       if (moved.isEmpty) return;
     }
   }
@@ -541,33 +473,26 @@ FROM cells ORDER BY key''', [
     final cursor = int.tryParse(state['upgrade_cursor'] as String? ?? '') ?? 0;
     final (predicate, predicateArgs) = spec.predicate;
     final keys = [
-      for (final row in await _select(
-          'SELECT key FROM sync_clock WHERE key > ? AND ($predicate) ORDER BY key LIMIT ?',
+      for (final row in await _select('SELECT key FROM sync_clock WHERE key > ? AND ($predicate) ORDER BY key LIMIT ?',
           [cursor, ...predicateArgs, maxReauthorRowsPerChunk]))
         row['key'] as int
     ];
     if (keys.isEmpty) {
-      await _db.customStatement(
-          'UPDATE sync_state SET reauthor_spec = NULL WHERE id = ?',
-          [_stateId]);
+      await _db.customStatement('UPDATE sync_state SET reauthor_spec = NULL WHERE id = ?', [_stateId]);
       await _setPhase(SyncUpgradePhase.done, null);
       return keys;
     }
     final firstSeq = state['next_seq'] as int;
-    for (var start = 0;
-        start < keys.length;
-        start += _reauthorRowsPerStatement) {
+    for (var start = 0; start < keys.length; start += _reauthorRowsPerStatement) {
       final end = (start + _reauthorRowsPerStatement).clamp(0, keys.length);
       await _moveToNewOrigin(spec, keys.sublist(start, end), firstSeq + start);
     }
-    await _db.customStatement(
-        'UPDATE sync_state SET next_seq = next_seq + ?, upgrade_cursor = ? WHERE id = ?',
+    await _db.customStatement('UPDATE sync_state SET next_seq = next_seq + ?, upgrade_cursor = ? WHERE id = ?',
         [keys.length, '${keys.last}', _stateId]);
     return keys;
   }
 
-  Future<void> _moveToNewOrigin(
-      ReauthorSpec spec, List<int> keys, int firstSeq) async {
+  Future<void> _moveToNewOrigin(ReauthorSpec spec, List<int> keys, int firstSeq) async {
     final values = List.filled(keys.length, '(?, ?)').join(', ');
     await _db.customStatement(
         'WITH moved(key, seq) AS (VALUES $values) '
@@ -633,8 +558,7 @@ class _ClockCell {
   int get rowId => key ~/ packedKeyFactor;
   int get colId => key % packedKeyFactor;
 
-  bool beats(_ClockCell other) =>
-      hlc != other.hlc ? hlc > other.hlc : nodeId > other.nodeId;
+  bool beats(_ClockCell other) => hlc != other.hlc ? hlc > other.hlc : nodeId > other.nodeId;
 }
 
 /// D5 survivor rule: live beats soft-deleted, then latest
@@ -667,16 +591,12 @@ class DedupeFamily {
   });
 }
 
-String _linkId(String kind, String k1, String? k2) =>
-    syncIdentityId(kind, [k1, k2!]);
+String _linkId(String kind, String k1, String? k2) => syncIdentityId(kind, [k1, k2!]);
 
-DedupeFamily _linkFamily(
-        String name, String kind, String firstKey, String secondKey) =>
-    DedupeFamily(
+DedupeFamily _linkFamily(String name, String kind, String firstKey, String secondKey) => DedupeFamily(
       name: name,
       table: '${name}_table',
-      selectSql:
-          'SELECT id, created_date, modified_date, deleted_date, $firstKey AS k1, $secondKey AS k2, '
+      selectSql: 'SELECT id, created_date, modified_date, deleted_date, $firstKey AS k1, $secondKey AS k2, '
           '0 AS is_root FROM ${name}_table',
       survivorIdOf: (k1, k2) => _linkId(kind, k1, k2),
     );
@@ -695,14 +615,12 @@ final List<DedupeFamily> dedupeFamilies = [
     selectSql: 'SELECT id, created_date, modified_date, deleted_date, '
         "CASE WHEN is_done_status = 1 THEN 'done' ELSE 'todo' END AS k1, NULL AS k2, 0 AS is_root "
         'FROM task_status_table WHERE is_built_in = 1',
-    survivorIdOf: (k1, _) =>
-        k1 == 'done' ? TaskStatusConstants.doneId : TaskStatusConstants.todoId,
+    survivorIdOf: (k1, _) => k1 == 'done' ? TaskStatusConstants.doneId : TaskStatusConstants.todoId,
   ),
   DedupeFamily(
     name: 'setting',
     table: 'setting_table',
-    selectSql:
-        'SELECT id, created_date, modified_date, deleted_date, key AS k1, NULL AS k2, 0 AS is_root '
+    selectSql: 'SELECT id, created_date, modified_date, deleted_date, key AS k1, NULL AS k2, 0 AS is_root '
         'FROM setting_table',
     survivorIdOf: (k1, _) => syncIdentityId(identityKindSetting, [k1]),
   ),
@@ -728,8 +646,7 @@ final List<DedupeFamily> dedupeFamilies = [
   DedupeFamily(
     name: 'habit_record_day',
     table: 'habit_record_table',
-    selectSql:
-        'SELECT r.id, r.created_date, r.modified_date, r.deleted_date, r.habit_id AS k1, '
+    selectSql: 'SELECT r.id, r.created_date, r.modified_date, r.deleted_date, r.habit_id AS k1, '
         "${_utcDayOf('r.occurred_at')} AS k2, 0 AS is_root "
         'FROM habit_record_table r JOIN habit_table h ON h.id = r.habit_id '
         'WHERE COALESCE(h.daily_target, 1) = 1',
@@ -738,10 +655,8 @@ final List<DedupeFamily> dedupeFamilies = [
   _linkFamily('task_tag', identityKindTaskTag, 'task_id', 'tag_id'),
   _linkFamily('habit_tag', identityKindHabitTag, 'habit_id', 'tag_id'),
   _linkFamily('note_tag', identityKindNoteTag, 'note_id', 'tag_id'),
-  _linkFamily(
-      'app_usage_tag', identityKindAppUsageTag, 'app_usage_id', 'tag_id'),
-  _linkFamily(
-      'tag_tag', identityKindTagTag, 'primary_tag_id', 'secondary_tag_id'),
+  _linkFamily('app_usage_tag', identityKindAppUsageTag, 'app_usage_id', 'tag_id'),
+  _linkFamily('tag_tag', identityKindTagTag, 'primary_tag_id', 'secondary_tag_id'),
 ];
 
 /// Columns rewritten when a row of the key table is re-keyed or merged. Only

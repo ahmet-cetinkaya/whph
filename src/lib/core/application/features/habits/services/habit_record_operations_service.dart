@@ -56,12 +56,9 @@ class HabitRecordOperationsService {
     DateTime occurredAt,
     Iterable<HabitRecord> dayRecords,
   ) async {
-    final notDoneRecords = dayRecords
-        .where((record) => record.status == HabitRecordStatus.notDone)
-        .toList();
+    final notDoneRecords = dayRecords.where((record) => record.status == HabitRecordStatus.notDone).toList();
     if (notDoneRecords.isEmpty) {
-      await addHabitRecord(habitId, occurredAt, HabitRecordStatus.notDone,
-          DateTime.now().toUtc());
+      await addHabitRecord(habitId, occurredAt, HabitRecordStatus.notDone, DateTime.now().toUtc());
       return;
     }
 
@@ -75,12 +72,9 @@ class HabitRecordOperationsService {
     DateTime occurredAt,
     Iterable<HabitRecord> dayRecords,
   ) async {
-    final notDoneRecords = dayRecords
-        .where((record) => record.status == HabitRecordStatus.notDone)
-        .toList();
+    final notDoneRecords = dayRecords.where((record) => record.status == HabitRecordStatus.notDone).toList();
     if (notDoneRecords.isEmpty) {
-      await addHabitRecord(habitId, occurredAt, HabitRecordStatus.notDone,
-          DateTime.now().toUtc());
+      await addHabitRecord(habitId, occurredAt, HabitRecordStatus.notDone, DateTime.now().toUtc());
       return;
     }
 
@@ -95,9 +89,7 @@ class HabitRecordOperationsService {
     DateTime occurredAt,
     HabitRecordStatus status,
   ) async {
-    if (status == HabitRecordStatus.complete &&
-        habit.estimatedTime != null &&
-        habit.estimatedTime! > 0) {
+    if (status == HabitRecordStatus.complete && habit.estimatedTime != null && habit.estimatedTime! > 0) {
       await HabitTimeRecordService.addEstimatedDurationToHabitTimeRecord(
         repository: _habitTimeRecordRepository,
         habitId: habitId,
@@ -118,14 +110,12 @@ class HabitRecordOperationsService {
       await _habitRecordRepository.delete(habitRecord);
     }
 
-    final timeRecords =
-        await _habitTimeRecordRepository.getByHabitIdAndDateRange(
+    final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
       habitId,
       startOfDay,
       endOfDay,
     );
-    for (final timeRecord
-        in timeRecords.where((record) => record.isEstimated)) {
+    for (final timeRecord in timeRecords.where((record) => record.isEstimated)) {
       await _habitTimeRecordRepository.delete(timeRecord);
     }
   }

@@ -30,8 +30,7 @@ class DriftSyncPeerStateStore implements ISyncPeerStateStore {
       );
 
   @override
-  Future<void> clearNeedsRepairing(String memberId) =>
-      _database.customStatement(
+  Future<void> clearNeedsRepairing(String memberId) => _database.customStatement(
         'UPDATE sync_peer_state_table SET last_result_category = NULL WHERE member_id = ? AND last_result_category = ?',
         [memberId, _needsRepairingCategory],
       );
@@ -47,23 +46,18 @@ class DriftSyncPeerStateStore implements ISyncPeerStateStore {
   }
 
   @override
-  Future<void> moveAddress(String address,
-      {required String fromMemberId, required String toMemberId}) async {
-    await saveAddresses(fromMemberId,
-        (await addressesOf(fromMemberId)).where((a) => a != address).toList());
+  Future<void> moveAddress(String address, {required String fromMemberId, required String toMemberId}) async {
+    await saveAddresses(fromMemberId, (await addressesOf(fromMemberId)).where((a) => a != address).toList());
     final target = await addressesOf(toMemberId);
-    if (!target.contains(address))
-      await saveAddresses(toMemberId, [...target, address]);
+    if (!target.contains(address)) await saveAddresses(toMemberId, [...target, address]);
   }
 
   /// Replaces the stored address list of [memberId].
-  Future<void> saveAddresses(String memberId, List<String> addresses) =>
-      _database.customStatement(
+  Future<void> saveAddresses(String memberId, List<String> addresses) => _database.customStatement(
         'INSERT INTO sync_peer_state_table (member_id, addresses) VALUES (?, ?) '
         'ON CONFLICT (member_id) DO UPDATE SET addresses = excluded.addresses',
         [memberId, addresses.join(_addressSeparator)],
       );
 
-  List<String> _split(String stored) =>
-      stored.isEmpty ? const [] : stored.split(_addressSeparator);
+  List<String> _split(String stored) => stored.isEmpty ? const [] : stored.split(_addressSeparator);
 }

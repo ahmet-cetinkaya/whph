@@ -16,8 +16,7 @@ class GetIsPairedQueryResponse {
   const GetIsPairedQueryResponse({required this.isPaired, this.groupState = SyncGroupState.ungrouped});
 }
 
-class GetIsPairedQueryHandler
-    implements IRequestHandler<GetIsPairedQuery, GetIsPairedQueryResponse> {
+class GetIsPairedQueryHandler implements IRequestHandler<GetIsPairedQuery, GetIsPairedQueryResponse> {
   final SyncMembershipService _membershipService;
 
   GetIsPairedQueryHandler(this._membershipService);

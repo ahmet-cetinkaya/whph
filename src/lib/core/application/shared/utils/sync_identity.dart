@@ -28,26 +28,20 @@ String syncDeterministicId(String name) {
   final h = hash.sublist(0, 16).toList();
   h[6] = (h[6] & 0x0f) | 0x50; // version 5
   h[8] = (h[8] & 0x3f) | 0x80; // RFC variant
-  String hex(int from, int to) => h
-      .sublist(from, to)
-      .map((b) => b.toRadixString(16).padLeft(2, '0'))
-      .join();
+  String hex(int from, int to) => h.sublist(from, to).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
   return '${hex(0, 4)}-${hex(4, 6)}-${hex(6, 8)}-${hex(8, 10)}-${hex(10, 16)}';
 }
 
 /// `kind|part|part` name for a multi-part identity key.
-String syncIdentityName(String kind, List<String> parts) =>
-    [kind, ...parts].join('|');
+String syncIdentityName(String kind, List<String> parts) => [kind, ...parts].join('|');
 
 /// Convenience: the full deterministic id for a `kind|parts` identity.
-String syncIdentityId(String kind, List<String> parts) =>
-    syncDeterministicId(syncIdentityName(kind, parts));
+String syncIdentityId(String kind, List<String> parts) => syncDeterministicId(syncIdentityName(kind, parts));
 
 List<int> _uuidBytes(String uuid) {
   final hex = uuid.replaceAll('-', '');
   return [
-    for (var i = 0; i < 16; i++)
-      int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16),
+    for (var i = 0; i < 16; i++) int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16),
   ];
 }
 
@@ -60,8 +54,7 @@ const String timeBucketKindAppUsage = 'app_usage_time';
 /// identity key (the stored `created_date`/`usage_date` is unaffected).
 int syncBucketHourStartMs(DateTime at) {
   final utc = at.toUtc();
-  return DateTime.utc(utc.year, utc.month, utc.day, utc.hour)
-      .millisecondsSinceEpoch;
+  return DateTime.utc(utc.year, utc.month, utc.day, utc.hour).millisecondsSinceEpoch;
 }
 
 /// D12: the deterministic id of this device's time-record bucket for

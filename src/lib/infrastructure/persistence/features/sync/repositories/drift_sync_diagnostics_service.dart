@@ -19,13 +19,10 @@ class DriftSyncDiagnosticsService implements ISyncDiagnosticsService {
   final void Function(String message) _log;
 
   DriftSyncDiagnosticsService(this._db, {void Function(String message)? log})
-      : _log = log ??
-            ((message) => Logger.info(message, component: _logComponent));
+      : _log = log ?? ((message) => Logger.info(message, component: _logComponent));
 
   @override
-  Future<SyncDiagnosticsReport> collect(
-          {bool includeContentHash = false}) async =>
-      SyncDiagnosticsReport(
+  Future<SyncDiagnosticsReport> collect({bool includeContentHash = false}) async => SyncDiagnosticsReport(
         stagedRowCount: await _stagedRowCount(),
         tableHashes: includeContentHash ? await _tableHashes() : null,
       );
@@ -64,9 +61,7 @@ class DriftSyncDiagnosticsService implements ISyncDiagnosticsService {
         )
         .get();
     for (final row in unreferenced) {
-      await _db.customStatement(
-          'DELETE FROM sync_origin_batch WHERE manifest_id = ?',
-          [row.data['manifest_id']]);
+      await _db.customStatement('DELETE FROM sync_origin_batch WHERE manifest_id = ?', [row.data['manifest_id']]);
     }
     return unreferenced.length;
   }
@@ -81,50 +76,33 @@ class DriftSyncDiagnosticsService implements ISyncDiagnosticsService {
   }
 
   Future<Map<String, String>> _tableHashes() async => {
-        for (final policy in syncTablePolicies)
-          policy.tableName: await _tableHash(policy),
+        for (final policy in syncTablePolicies) policy.tableName: await _tableHash(policy),
       };
 
   Future<String> _tableHash(SyncTablePolicy policy) async {
     final lines = StringBuffer();
-    final rows = await _db
-        .customSelect('SELECT * FROM "${policy.tableName}" ORDER BY id')
-        .get();
+    final rows = await _db.customSelect('SELECT * FROM "${policy.tableName}" ORDER BY id').get();
     for (final row in rows) {
-      final syncedEntries = row.data.entries
-          .where((entry) => _isSyncedColumn(policy, entry.key))
-          .toList()
+      final syncedEntries = row.data.entries.where((entry) => _isSyncedColumn(policy, entry.key)).toList()
         ..sort((a, b) => a.key.compareTo(b.key));
       lines.writeln(jsonEncode([
-        for (final entry in syncedEntries)
-          [entry.key, _encodeValue(entry.value)]
+        for (final entry in syncedEntries) [entry.key, _encodeValue(entry.value)]
       ]));
     }
     final staged = await _db.customSelect(
       'SELECT pk, col, value FROM sync_held_cell WHERE tbl = ? AND kind = ? ORDER BY pk, col',
-      variables: [
-        Variable<String>(policy.tableName),
-        const Variable<String>(_heldKindStaged)
-      ],
+      variables: [Variable<String>(policy.tableName), const Variable<String>(_heldKindStaged)],
     ).get();
     for (final row in staged) {
-      lines.writeln(jsonEncode([
-        'staged',
-        row.data['pk'],
-        row.data['col'],
-        _encodeValue(row.data['value'])
-      ]));
+      lines.writeln(jsonEncode(['staged', row.data['pk'], row.data['col'], _encodeValue(row.data['value'])]));
     }
     return sha256.convert(utf8.encode(lines.toString())).toString();
   }
 
   bool _isSyncedColumn(SyncTablePolicy policy, String column) {
     if (_unsyncedColumns.contains(column)) return false;
-    return policy.rowLevel ||
-        _identityColumns.contains(column) ||
-        policy.columns.containsKey(column);
+    return policy.rowLevel || _identityColumns.contains(column) || policy.columns.containsKey(column);
   }
 
-  Object? _encodeValue(Object? value) =>
-      value is Uint8List ? base64Encode(value) : value;
+  Object? _encodeValue(Object? value) => value is Uint8List ? base64Encode(value) : value;
 }

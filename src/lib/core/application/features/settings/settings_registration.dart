@@ -119,7 +119,8 @@ void registerSettingsFeature(
         migrationService: container.resolve<IImportDataMigrationService>(),
         compressionService: container.resolve<ICompressionService>(),
         mediator: mediator,
-        syncMembership: container.isRegistered<SyncMembershipService>() ? container.resolve<SyncMembershipService>() : null,
+        syncMembership:
+            container.isRegistered<SyncMembershipService>() ? container.resolve<SyncMembershipService>() : null,
       ),
     );
 }

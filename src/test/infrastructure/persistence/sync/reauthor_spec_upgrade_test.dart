@@ -29,107 +29,76 @@ void main() {
 
   tearDown(() => device.close());
 
-  Future<int> originId(String value) async => (await device.rows(
-          'SELECT id FROM sync_intern WHERE kind = $internKindOrigin AND value = ?',
-          [Variable(value)]))
-      .single['id'] as int;
+  Future<int> originId(String value) async =>
+      (await device.rows('SELECT id FROM sync_intern WHERE kind = $internKindOrigin AND value = ?', [Variable(value)]))
+          .single['id'] as int;
 
-  Future<int> clocksOn(String origin) => device.count(
-      "SELECT COUNT(*) FROM sync_clock c JOIN sync_intern o ON o.id = c.origin_id WHERE o.value = '$origin'");
+  Future<int> clocksOn(String origin) => device
+      .count("SELECT COUNT(*) FROM sync_clock c JOIN sync_intern o ON o.id = c.origin_id WHERE o.value = '$origin'");
 
-  test('an adopt spec moves the unsent clock rows in bounded, resumable chunks',
-      () async {
+  test('an adopt spec moves the unsent clock rows in bounded, resumable chunks', () async {
     await device.db.transaction(() async {
       for (var i = 0; i < _noteCount; i++) {
         await device.insertNote('n$i', 't$i');
       }
     });
-    await device.sql(
-        'UPDATE sync_clock SET manifest_id = $manifestedMarker WHERE origin_seq <= $_sentMark');
+    await device.sql('UPDATE sync_clock SET manifest_id = $manifestedMarker WHERE origin_seq <= $_sentMark');
     final total = await device.count('SELECT COUNT(*) FROM sync_clock');
-    final sent = await device
-        .count('SELECT COUNT(*) FROM sync_clock WHERE manifest_id IS NOT NULL');
+    final sent = await device.count('SELECT COUNT(*) FROM sync_clock WHERE manifest_id IS NOT NULL');
     expect(total - sent, greaterThan(SyncUpgradeJob.maxReauthorRowsPerChunk));
 
-    await device.sql(
-        'INSERT INTO sync_intern (kind, value) VALUES ($internKindOrigin, ?)',
-        [_newOrigin]);
+    await device.sql('INSERT INTO sync_intern (kind, value) VALUES ($internKindOrigin, ?)', [_newOrigin]);
     final spec = ReauthorSpec.adopt(
-        oldOriginId: await originId(device.origin),
-        newOriginId: await originId(_newOrigin),
-        sentMark: _sentMark);
+        oldOriginId: await originId(device.origin), newOriginId: await originId(_newOrigin), sentMark: _sentMark);
     await device.sql(
-        "UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL",
-        [spec.encode()]);
+        "UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL", [spec.encode()]);
 
     final chunkRows = <int>[];
     void record(UpgradeChunkTiming timing) => chunkRows.add(timing.units);
 
-    expect(
-        await SyncUpgradeJob(device.db, onChunk: record)
-            .runChunks(stopAfterChunks: 1),
-        isFalse);
+    expect(await SyncUpgradeJob(device.db, onChunk: record).runChunks(stopAfterChunks: 1), isFalse);
     final midway = await SyncUpgradeJob(device.db).getProgress();
     expect(midway.phase, SyncUpgradePhase.reauthor);
     expect(midway.cursor, isNotNull);
     expect(chunkRows, [SyncUpgradeJob.maxReauthorRowsPerChunk]);
 
-    expect(
-        await SyncUpgradeJob(device.db, onChunk: record).runChunks(), isTrue);
+    expect(await SyncUpgradeJob(device.db, onChunk: record).runChunks(), isTrue);
 
-    expect(
-        chunkRows
-            .where((rows) => rows > SyncUpgradeJob.maxReauthorRowsPerChunk),
-        isEmpty);
+    expect(chunkRows.where((rows) => rows > SyncUpgradeJob.maxReauthorRowsPerChunk), isEmpty);
     expect(chunkRows.fold<int>(0, (sum, rows) => sum + rows), total - sent);
     expect(await clocksOn(_newOrigin), total - sent);
     expect(await clocksOn(device.origin), sent);
     expect(
-        await device.count(
-            'SELECT COUNT(*) FROM sync_clock WHERE origin_id = ${spec.newOriginId} AND manifest_id IS NOT NULL'),
+        await device
+            .count('SELECT COUNT(*) FROM sync_clock WHERE origin_id = ${spec.newOriginId} AND manifest_id IS NOT NULL'),
         0);
-    expect(
-        (await device
-                .rows('SELECT reauthor_spec, upgrade_phase FROM sync_state'))
-            .single,
+    expect((await device.rows('SELECT reauthor_spec, upgrade_phase FROM sync_state')).single,
         {'reauthor_spec': null, 'upgrade_phase': 'done'});
   });
 
-  test(
-      'a spec rewritten between chunks by a second origin switch is processed, not overwritten',
-      () async {
+  test('a spec rewritten between chunks by a second origin switch is processed, not overwritten', () async {
     await device.db.transaction(() async {
       for (var i = 0; i < _noteCount; i++) {
         await device.insertNote('n$i', 't$i');
       }
     });
-    await device.sql(
-        'INSERT INTO sync_intern (kind, value) VALUES ($internKindOrigin, ?), ($internKindOrigin, ?)',
+    await device.sql('INSERT INTO sync_intern (kind, value) VALUES ($internKindOrigin, ?), ($internKindOrigin, ?)',
         [_newOrigin, _secondOrigin]);
     final first = ReauthorSpec.adopt(
-        oldOriginId: await originId(device.origin),
-        newOriginId: await originId(_newOrigin),
-        sentMark: 0);
+        oldOriginId: await originId(device.origin), newOriginId: await originId(_newOrigin), sentMark: 0);
     await device.sql(
-        "UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL",
-        [first.encode()]);
+        "UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL", [first.encode()]);
     await SyncUpgradeJob(device.db).runChunks(stopAfterChunks: 1);
 
     final second = ReauthorSpec.adopt(
-        oldOriginId: await originId(_newOrigin),
-        newOriginId: await originId(_secondOrigin),
-        sentMark: 0);
-    await device.sql(
-        "UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL",
+        oldOriginId: await originId(_newOrigin), newOriginId: await originId(_secondOrigin), sentMark: 0);
+    await device.sql("UPDATE sync_state SET reauthor_spec = ?, upgrade_phase = 'reauthor', upgrade_cursor = NULL",
         [second.encode()]);
     await SyncUpgradeJob(device.db).runChunks();
 
     expect(await clocksOn(_newOrigin), 0);
     expect(await clocksOn(_secondOrigin), greaterThan(0));
-    expect(
-        (await device
-                .rows('SELECT reauthor_spec, upgrade_phase FROM sync_state'))
-            .single,
+    expect((await device.rows('SELECT reauthor_spec, upgrade_phase FROM sync_state')).single,
         {'reauthor_spec': null, 'upgrade_phase': 'done'});
   });
 }

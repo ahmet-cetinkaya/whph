@@ -5,6 +5,5 @@ class DemoResetBlockedException implements Exception {
   const DemoResetBlockedException();
 
   @override
-  String toString() =>
-      'DemoResetBlockedException: demo data cannot be reset while the device is paired';
+  String toString() => 'DemoResetBlockedException: demo data cannot be reset while the device is paired';
 }

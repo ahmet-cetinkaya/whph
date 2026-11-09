@@ -231,12 +231,13 @@ McpToolDefinition _tool(
   Set<String> scopes,
   ToolAnnotations annotations,
   McpToolHandler handler,
-) => McpToolDefinition(
-  name: name,
-  description: description,
-  inputSchema: input,
-  outputSchema: output,
-  annotations: annotations,
-  requiredScopes: scopes,
-  handler: handler,
-);
+) =>
+    McpToolDefinition(
+      name: name,
+      description: description,
+      inputSchema: input,
+      outputSchema: output,
+      annotations: annotations,
+      requiredScopes: scopes,
+      handler: handler,
+    );

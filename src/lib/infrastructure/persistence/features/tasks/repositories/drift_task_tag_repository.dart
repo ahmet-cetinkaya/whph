@@ -21,15 +21,11 @@ class TaskTagTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftTaskTagRepository
-    extends DriftBaseRepository<TaskTag, String, TaskTagTable>
-    implements ITaskTagRepository {
-  DriftTaskTagRepository()
-      : super(AppDatabase.instance(), AppDatabase.instance().taskTagTable);
+class DriftTaskTagRepository extends DriftBaseRepository<TaskTag, String, TaskTagTable> implements ITaskTagRepository {
+  DriftTaskTagRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTagTable);
 
   // Constructor for testing with custom database
-  DriftTaskTagRepository.withDatabase(AppDatabase db)
-      : super(db, db.taskTagTable);
+  DriftTaskTagRepository.withDatabase(AppDatabase db) : super(db, db.taskTagTable);
 
   @override
   Expression<String> getPrimaryKey(TaskTagTable t) {
@@ -52,10 +48,7 @@ class DriftTaskTagRepository
   @override
   Future<bool> anyByTaskIdAndTagId(String taskId, String tagId) async {
     final query = database.select(table)
-      ..where((t) =>
-          t.taskId.equals(taskId) &
-          t.tagId.equals(tagId) &
-          t.deletedDate.isNull());
+      ..where((t) => t.taskId.equals(taskId) & t.tagId.equals(tagId) & t.deletedDate.isNull());
     final result = await query.get();
 
     return result.isNotEmpty;
@@ -71,9 +64,7 @@ class DriftTaskTagRepository
 
   @override
   Future<List<TaskTag>> getByTagId(String tagId) async {
-    return (database.select(table)
-          ..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull()))
-        .get();
+    return (database.select(table)..where((t) => t.tagId.equals(tagId) & t.deletedDate.isNull())).get();
   }
 
   @override
@@ -117,8 +108,7 @@ class DriftTaskTagRepository
       variables: [
         Variable<DateTime>(startDate),
         Variable<DateTime>(endDate),
-        if (filterByTags != null && filterByTags.isNotEmpty)
-          ...filterByTags.map((id) => Variable<String>(id)),
+        if (filterByTags != null && filterByTags.isNotEmpty) ...filterByTags.map((id) => Variable<String>(id)),
         if (limit != null) Variable<int>(limit),
       ],
       readsFrom: {
@@ -141,8 +131,7 @@ class DriftTaskTagRepository
   }
 
   @override
-  Future<void> updateTagOrders(
-      String taskId, Map<String, int> tagOrders) async {
+  Future<void> updateTagOrders(String taskId, Map<String, int> tagOrders) async {
     await database.batch((batch) {
       for (final entry in tagOrders.entries) {
         batch.customStatement(

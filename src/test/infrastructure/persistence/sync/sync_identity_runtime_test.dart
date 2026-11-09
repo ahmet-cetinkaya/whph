@@ -28,57 +28,39 @@ void main() {
 
   tearDown(() async => db.close());
 
-  test(
-      'uncheck -> recheck the same day on a target-1 habit keeps one live record',
-      () async {
+  test('uncheck -> recheck the same day on a target-1 habit keeps one live record', () async {
     await db.customStatement(
         "INSERT INTO habit_table (id, created_date, type, name, description, has_goal, target_frequency, daily_target) "
         "VALUES ('h1', 0, 0, 'H', 'D', 1, 0, 1)");
     final repo = DriftHabitRecordRepository.withDatabase(db);
     final ops = HabitRecordOperationsService(
         habitRecordRepository: repo,
-        habitTimeRecordRepository:
-            DriftHabitTimeRecordRepository.withDatabase(db),
+        habitTimeRecordRepository: DriftHabitTimeRecordRepository.withDatabase(db),
         deviceIds: TestDeviceIds());
     final day = DateTime.utc(2026, 3, 1, 12);
-    final id = syncIdentityId(identityKindHabitRecord,
-        ['h1', day.toLocal().toIso8601String().substring(0, 10)]);
+    final id = syncIdentityId(identityKindHabitRecord, ['h1', day.toLocal().toIso8601String().substring(0, 10)]);
 
-    await ops.addHabitRecord(
-        'h1', day, HabitRecordStatus.complete, DateTime.now().toUtc(),
-        deterministic: true);
-    await db.customStatement(
-        "UPDATE habit_record_table SET deleted_date = 700 WHERE id = '$id'");
-    await ops.addHabitRecord(
-        'h1', day, HabitRecordStatus.complete, DateTime.now().toUtc(),
-        deterministic: true);
+    await ops.addHabitRecord('h1', day, HabitRecordStatus.complete, DateTime.now().toUtc(), deterministic: true);
+    await db.customStatement("UPDATE habit_record_table SET deleted_date = 700 WHERE id = '$id'");
+    await ops.addHabitRecord('h1', day, HabitRecordStatus.complete, DateTime.now().toUtc(), deterministic: true);
 
     final rows = await db
-        .customSelect(
-            "SELECT id, deleted_date FROM habit_record_table WHERE habit_id = 'h1' AND deleted_date IS NULL")
+        .customSelect("SELECT id, deleted_date FROM habit_record_table WHERE habit_id = 'h1' AND deleted_date IS NULL")
         .get();
     expect(rows.length, 1);
     expect(rows.first.data['id'], id);
     expect(rows.first.data['deleted_date'], isNull);
   });
 
-  test(
-      'delete -> recreate a setting key revives one live row with the new value',
-      () async {
+  test('delete -> recreate a setting key revives one live row with the new value', () async {
     final repo = DriftSettingRepository.withDatabase(db);
     final save = SaveSettingCommandHandler(settingRepository: repo);
 
-    await save(SaveSettingCommand(
-        key: 'theme', value: 'dark', valueType: SettingValueType.string));
-    await db.customStatement(
-        "UPDATE setting_table SET deleted_date = 900 WHERE key = 'theme'");
-    final revived = await save(SaveSettingCommand(
-        key: 'theme', value: 'light', valueType: SettingValueType.string));
+    await save(SaveSettingCommand(key: 'theme', value: 'dark', valueType: SettingValueType.string));
+    await db.customStatement("UPDATE setting_table SET deleted_date = 900 WHERE key = 'theme'");
+    final revived = await save(SaveSettingCommand(key: 'theme', value: 'light', valueType: SettingValueType.string));
 
-    final rows = await db
-        .customSelect(
-            "SELECT id, value, deleted_date FROM setting_table WHERE key = 'theme'")
-        .get();
+    final rows = await db.customSelect("SELECT id, value, deleted_date FROM setting_table WHERE key = 'theme'").get();
     expect(rows.length, 1);
     expect(rows.first.data['value'], 'light');
     expect(rows.first.data['deleted_date'], isNull);
@@ -93,18 +75,13 @@ void main() {
     final repo = DriftHabitRecordRepository.withDatabase(db);
     final ops = HabitRecordOperationsService(
         habitRecordRepository: repo,
-        habitTimeRecordRepository:
-            DriftHabitTimeRecordRepository.withDatabase(db),
+        habitTimeRecordRepository: DriftHabitTimeRecordRepository.withDatabase(db),
         deviceIds: TestDeviceIds());
     final day = DateTime.utc(2026, 3, 2, 9);
     for (var i = 0; i < 3; i++) {
-      await ops.addHabitRecord(
-          'h3', day, HabitRecordStatus.complete, DateTime.now().toUtc(),
-          deterministic: false);
+      await ops.addHabitRecord('h3', day, HabitRecordStatus.complete, DateTime.now().toUtc(), deterministic: false);
     }
-    final rows = await db
-        .customSelect("SELECT id FROM habit_record_table WHERE habit_id = 'h3'")
-        .get();
+    final rows = await db.customSelect("SELECT id FROM habit_record_table WHERE habit_id = 'h3'").get();
     expect(rows.length, 3);
     expect(rows.map((r) => r.data['id']).toSet().length, 3);
   });

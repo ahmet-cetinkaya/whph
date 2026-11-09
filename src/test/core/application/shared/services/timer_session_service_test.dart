@@ -27,9 +27,7 @@ class _RecordingDurationWriter implements ITimerSessionDurationWriter {
   @override
   Future<void> write(TimerSessionDuration duration) async {
     attempts++;
-    if (shouldFail ||
-        attempts == failAtAttempt ||
-        duration.targetId == failTargetId) throw StateError('save failed');
+    if (shouldFail || attempts == failAtAttempt || duration.targetId == failTargetId) throw StateError('save failed');
     writes.add(duration);
   }
 }
@@ -53,8 +51,7 @@ class _TaskEvents extends Fake implements ITaskEvents {
   final List<String> updatedTimeRecords = [];
 
   @override
-  void notifyTaskTimeRecordUpdated(String taskId) =>
-      updatedTimeRecords.add(taskId);
+  void notifyTaskTimeRecordUpdated(String taskId) => updatedTimeRecords.add(taskId);
 }
 
 void main() {
@@ -135,8 +132,7 @@ void main() {
     });
   });
 
-  test('periodic save flushes exactly at ten seconds without stop duplicate',
-      () {
+  test('periodic save flushes exactly at ten seconds without stop duplicate', () {
     fakeAsync((async) {
       final writer = _RecordingDurationWriter();
       final service = TimerSessionService(
@@ -212,10 +208,7 @@ void main() {
       service.stop('marathon');
       async.flushMicrotasks();
 
-      expect(
-          writer.writes
-              .map((write) => '${write.targetId}:${write.duration.inSeconds}'),
-          ['task-1:2', 'task-2:1']);
+      expect(writer.writes.map((write) => '${write.targetId}:${write.duration.inSeconds}'), ['task-1:2', 'task-2:1']);
     });
   });
 
@@ -248,8 +241,7 @@ void main() {
       expect(writer.writes.single.duration, const Duration(seconds: 3));
       expect(service.state('task-1')!.isWorking, isFalse);
       expect(service.state('task-1')!.isRunning, isTrue);
-      expect(
-          service.state('task-1')!.remainingTime, const Duration(minutes: 5));
+      expect(service.state('task-1')!.remainingTime, const Duration(minutes: 5));
     });
   });
 
@@ -271,9 +263,7 @@ void main() {
       async.elapse(const Duration(seconds: 2));
 
       Object? saveError;
-      service
-          .stop('habit-1')
-          .then<void>((_) {}, onError: (Object error) => saveError = error);
+      service.stop('habit-1').then<void>((_) {}, onError: (Object error) => saveError = error);
       async.flushMicrotasks();
       expect(saveError, isA<StateError>());
       writer.shouldFail = false;
@@ -308,9 +298,7 @@ void main() {
     });
   });
 
-  test(
-      'retry after a partial day-boundary failure does not duplicate the saved day',
-      () {
+  test('retry after a partial day-boundary failure does not duplicate the saved day', () {
     fakeAsync((async) {
       final writer = _RecordingDurationWriter()..failAtAttempt = 2;
       final service = TimerSessionService(
@@ -328,9 +316,7 @@ void main() {
       async.elapse(const Duration(seconds: 4));
 
       Object? saveError;
-      service
-          .stop('task-1')
-          .then<void>((_) {}, onError: (Object error) => saveError = error);
+      service.stop('task-1').then<void>((_) {}, onError: (Object error) => saveError = error);
       async.flushMicrotasks();
       expect(saveError, isA<StateError>());
       service.stop('task-1');
@@ -395,9 +381,7 @@ void main() {
       async.elapse(const Duration(seconds: 2));
 
       Object? shutdownError;
-      service
-          .shutdown()
-          .then<void>((_) {}, onError: (Object error) => shutdownError = error);
+      service.shutdown().then<void>((_) {}, onError: (Object error) => shutdownError = error);
       async.flushMicrotasks();
 
       expect(shutdownError, isA<StateError>());
@@ -406,18 +390,15 @@ void main() {
     });
   });
 
-  test('mediator duration writer persists through a real SQLite repository',
-      () async {
+  test('mediator duration writer persists through a real SQLite repository', () async {
     AppDatabase.isTestMode = true;
-    final tempDirectory =
-        await Directory.systemTemp.createTemp('whph-timer-session-');
+    final tempDirectory = await Directory.systemTemp.createTemp('whph-timer-session-');
     final databaseFile = File('${tempDirectory.path}/timer.sqlite');
     final database = AppDatabase(NativeDatabase(databaseFile));
     final repository = DriftTaskTimeRecordRepository.withDatabase(database);
     final taskEvents = _TaskEvents();
     final mediator = Mediator(Pipeline())
-      ..registerHandler<AddTaskTimeRecordCommand,
-          AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
+      ..registerHandler<AddTaskTimeRecordCommand, AddTaskTimeRecordCommandResponse, AddTaskTimeRecordCommandHandler>(
         () => AddTaskTimeRecordCommandHandler(
           taskTimeRecordRepository: repository,
           deviceIds: TestDeviceIds(),

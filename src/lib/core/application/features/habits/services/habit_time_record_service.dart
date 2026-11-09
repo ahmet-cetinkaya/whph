@@ -12,10 +12,8 @@ import 'package:whph/core/application/shared/utils/sync_identity.dart';
 /// never written by set-total.
 class HabitTimeRecordService {
   /// Creates hour boundaries for the given date
-  static (DateTime startOfHour, DateTime endOfHour) createHourBoundaries(
-      DateTime targetDate) {
-    final startOfHour = DateTime.utc(
-        targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
+  static (DateTime startOfHour, DateTime endOfHour) createHourBoundaries(DateTime targetDate) {
+    final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
     final endOfHour = startOfHour.add(const Duration(hours: 1));
     return (startOfHour, endOfHour);
   }
@@ -45,11 +43,7 @@ class HabitTimeRecordService {
     required bool isEstimated,
     int initialDuration = 0,
   }) async {
-    final id = bucketId(
-        habitId: habitId,
-        targetDate: targetDate,
-        deviceId: deviceId,
-        isEstimated: isEstimated);
+    final id = bucketId(habitId: habitId, targetDate: targetDate, deviceId: deviceId, isEstimated: isEstimated);
     final existing = await repository.getById(id);
     if (existing != null && existing.deletedDate == null) {
       return existing;
@@ -128,19 +122,11 @@ class HabitTimeRecordService {
     required int totalDuration,
   }) async {
     final (startOfHour, endOfHour) = createHourBoundaries(targetDate);
-    final ownId = bucketId(
-        habitId: habitId,
-        targetDate: targetDate,
-        deviceId: deviceId,
-        isEstimated: false);
+    final ownId = bucketId(habitId: habitId, targetDate: targetDate, deviceId: deviceId, isEstimated: false);
 
-    final hourRecords = await repository.getByHabitIdAndDateRange(
-        habitId, startOfHour, endOfHour);
+    final hourRecords = await repository.getByHabitIdAndDateRange(habitId, startOfHour, endOfHour);
     final othersTotal = hourRecords
-        .where((record) =>
-            record.id != ownId &&
-            !record.isEstimated &&
-            record.deletedDate == null)
+        .where((record) => record.id != ownId && !record.isEstimated && record.deletedDate == null)
         .fold<int>(0, (sum, record) => sum + record.duration);
 
     final existing = await repository.getById(ownId);

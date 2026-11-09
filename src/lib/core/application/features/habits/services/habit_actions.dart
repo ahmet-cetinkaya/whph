@@ -44,8 +44,7 @@ final class HabitTagNotFoundException implements Exception {
 }
 
 typedef HabitBeforeCommit = Future<void> Function();
-typedef HabitRecordBeforeCommit = Future<void> Function(
-    bool requiresTimerWrite);
+typedef HabitRecordBeforeCommit = Future<void> Function(bool requiresTimerWrite);
 
 final class HabitValues {
   const HabitValues({
@@ -146,17 +145,14 @@ final class HabitActions {
   final IDeviceIdService _deviceIds;
   final HabitRecordOperationsService _recordOperations;
 
-  Future<HabitActionResult> create(HabitValues values, List<String> tagIds,
-      HabitBeforeCommit beforeCommit) async {
+  Future<HabitActionResult> create(HabitValues values, List<String> tagIds, HabitBeforeCommit beforeCommit) async {
     final result = await _transactions.run(() async {
       await _validateTags(tagIds);
       final last = await _habitRepository.getList(
         0,
         1,
         customWhereFilter: CustomWhereFilter('deleted_date IS NULL', const []),
-        customOrder: [
-          CustomOrder(field: 'order', direction: SortDirection.desc)
-        ],
+        customOrder: [CustomOrder(field: 'order', direction: SortDirection.desc)],
       );
       final order = OrderRank.neighborRank(
         beforeOrder: last.items.firstOrNull?.order,
@@ -185,25 +181,21 @@ final class HabitActions {
       final current = await _getHabit(id);
       _checkRevision(current, expectedRevision);
       final existingTags = await _habitTagsRepository.getByHabitId(id);
-      final replacementIds = tagIds ??
-          existingTags.map((tag) => tag.tagId).toList(growable: false);
+      final replacementIds = tagIds ?? existingTags.map((tag) => tag.tagId).toList(growable: false);
       await _validateTags(replacementIds);
-      final updated =
-          _copyHabit(current, updateValues(HabitValues.fromHabit(current)));
+      final updated = _copyHabit(current, updateValues(HabitValues.fromHabit(current)));
       await beforeCommit();
-      final revision =
-          await _habitRepository.updateIfRevision(updated, expectedRevision);
+      final revision = await _habitRepository.updateIfRevision(updated, expectedRevision);
       if (revision == null) throw HabitRevisionConflictException(id);
-      await _replaceTags(
-          id, existingTags, replacementIds, tagOrder ?? const {});
+      await _replaceTags(id, existingTags, replacementIds, tagOrder ?? const {});
       return HabitActionResult(id: id, revision: revision);
     });
     _habitEvents.notifyHabitUpdated(id);
     return result;
   }
 
-  Future<HabitActionResult> archive(String id, DateTime expectedRevision,
-          bool isArchived, HabitBeforeCommit beforeCommit) =>
+  Future<HabitActionResult> archive(
+          String id, DateTime expectedRevision, bool isArchived, HabitBeforeCommit beforeCommit) =>
       update(
         id: id,
         expectedRevision: expectedRevision,
@@ -225,8 +217,7 @@ final class HabitActions {
         beforeCommit: beforeCommit,
       );
 
-  Future<DateTime> delete(String id, DateTime expectedRevision,
-      HabitBeforeCommit beforeCommit) async {
+  Future<DateTime> delete(String id, DateTime expectedRevision, HabitBeforeCommit beforeCommit) async {
     final deletedAt = await _transactions.run(() async {
       final habit = await _getHabit(id);
       _checkRevision(habit, expectedRevision);
@@ -240,8 +231,7 @@ final class HabitActions {
       for (final record in await _habitTimeRecordRepository.getByHabitId(id)) {
         await _habitTimeRecordRepository.delete(record);
       }
-      final deletedAt =
-          await _habitRepository.deleteIfRevision(id, expectedRevision);
+      final deletedAt = await _habitRepository.deleteIfRevision(id, expectedRevision);
       if (deletedAt == null) throw HabitRevisionConflictException(id);
       return deletedAt;
     });
@@ -261,8 +251,7 @@ final class HabitActions {
       final habit = await _getHabit(id);
       _checkRevision(habit, expectedRevision);
       final siblings = await _habitRepository.getAll(
-        customWhereFilter:
-            CustomWhereFilter('id != ? AND deleted_date IS NULL', [id]),
+        customWhereFilter: CustomWhereFilter('id != ? AND deleted_date IS NULL', [id]),
         customOrder: [
           CustomOrder(field: 'order', direction: SortDirection.asc),
           CustomOrder(field: 'created_date', direction: SortDirection.asc),
@@ -282,17 +271,13 @@ final class HabitActions {
       if (placement.requiresRenormalization) {
         final replacements = placement.renumbered!
             .where((value) => value.id != id)
-            .map((value) => _copyHabit(
-                value,
-                _withOrder(HabitValues.fromHabit(value),
-                    placement.renumberedOrder![value.id]!)))
+            .map((value) =>
+                _copyHabit(value, _withOrder(HabitValues.fromHabit(value), placement.renumberedOrder![value.id]!)))
             .toList(growable: false);
         await _habitRepository.updateMultiple(replacements);
       }
-      final replacement = _copyHabit(
-          habit, _withOrder(HabitValues.fromHabit(habit), placement.order));
-      final revision = await _habitRepository.updateIfRevision(
-          replacement, expectedRevision);
+      final replacement = _copyHabit(habit, _withOrder(HabitValues.fromHabit(habit), placement.order));
+      final revision = await _habitRepository.updateIfRevision(replacement, expectedRevision);
       if (revision == null) throw HabitRevisionConflictException(id);
       return HabitActionResult(id: id, revision: revision);
     });
@@ -311,18 +296,12 @@ final class HabitActions {
       final habit = await _getHabit(habitId);
       final range = HabitDayStateResolver.utcRangeFor(date);
       final existing = (await _habitRecordRepository.getByHabitId(habitId))
-          .where((record) =>
-              !record.occurredAt.isBefore(range.start) &&
-              !record.occurredAt.isAfter(range.end))
+          .where((record) => !record.occurredAt.isBefore(range.start) && !record.occurredAt.isAfter(range.end))
           .toList(growable: false);
-      final timeRecords = await _habitTimeRecordRepository
-          .getByHabitIdAndDateRange(habitId, range.start, range.end);
+      final timeRecords = await _habitTimeRecordRepository.getByHabitIdAndDateRange(habitId, range.start, range.end);
       final effectiveCount = _effectiveRecordCount(habit, status, count);
-      final changesEstimatedTime =
-          timeRecords.any((record) => record.isEstimated) ||
-              (effectiveCount > 0 &&
-                  status == HabitRecordStatus.complete &&
-                  (habit.estimatedTime ?? 0) > 0);
+      final changesEstimatedTime = timeRecords.any((record) => record.isEstimated) ||
+          (effectiveCount > 0 && status == HabitRecordStatus.complete && (habit.estimatedTime ?? 0) > 0);
       await beforeCommit(changesEstimatedTime);
       await _recordOperations.clearAllRecordsForDay(
         habitId,
@@ -339,8 +318,7 @@ final class HabitActions {
           // D5c: deterministic only while a single record lands per day.
           deterministic: effectiveCount == 1,
         );
-        await _recordOperations.addTimeRecordIfComplete(
-            habit, habitId, date, status);
+        await _recordOperations.addTimeRecordIfComplete(habit, habitId, date, status);
       }
       return HabitRecordSetResult(status: status, count: effectiveCount);
     });
@@ -364,17 +342,14 @@ final class HabitActions {
         0,
         1000,
       );
-      final candidates = page.items
-          .where((record) => recordId == null || record.id == recordId)
-          .toList()
+      final candidates = page.items.where((record) => recordId == null || record.id == recordId).toList()
         ..sort((left, right) {
           final occurred = right.occurredAt.compareTo(left.occurredAt);
           if (occurred != 0) return occurred;
           final created = right.createdDate.compareTo(left.createdDate);
           return created != 0 ? created : right.id.compareTo(left.id);
         });
-      if (candidates.isEmpty)
-        throw HabitRecordNotFoundException(recordId ?? habitId);
+      if (candidates.isEmpty) throw HabitRecordNotFoundException(recordId ?? habitId);
       await beforeCommit();
       await _habitRecordRepository.delete(candidates.first);
       return HabitUndoResult(page.items.length - 1);
@@ -393,24 +368,20 @@ final class HabitActions {
     final result = await _transactions.run(() async {
       await _getHabit(habitId);
       final range = HabitDayStateResolver.utcRangeFor(date);
-      final records = await _habitTimeRecordRepository.getByHabitIdAndDateRange(
-          habitId, range.start, range.end);
+      final records = await _habitTimeRecordRepository.getByHabitIdAndDateRange(habitId, range.start, range.end);
       if (records.isEmpty) throw HabitTimeRecordNotFoundException(habitId);
       records.sort((left, right) {
         final occurred = _timeOf(left).compareTo(_timeOf(right));
         return occurred != 0 ? occurred : left.id.compareTo(right.id);
       });
-      final current = records
-          .where((record) => _sameRevision(_revision(record), expectedRevision))
-          .firstOrNull;
+      final current = records.where((record) => _sameRevision(_revision(record), expectedRevision)).firstOrNull;
       if (current == null) throw HabitRevisionConflictException(habitId);
       await beforeCommit();
       for (final record in records.where((record) => record.id != current.id)) {
         await _habitTimeRecordRepository.delete(record);
       }
       final replacement = _copyTimeRecord(current, totalDuration);
-      final revision = await _habitTimeRecordRepository.updateIfRevision(
-          replacement, expectedRevision);
+      final revision = await _habitTimeRecordRepository.updateIfRevision(replacement, expectedRevision);
       if (revision == null) throw HabitRevisionConflictException(current.id);
       return HabitActionResult(id: replacement.id, revision: revision);
     });
@@ -448,13 +419,11 @@ final class HabitActions {
   }
 
   void _checkRevision(Habit habit, DateTime expected) {
-    if (!_sameRevision(_revision(habit), expected))
-      throw HabitRevisionConflictException(habit.id);
+    if (!_sameRevision(_revision(habit), expected)) throw HabitRevisionConflictException(habit.id);
   }
 
   Future<void> _validateTags(List<String> tagIds) async {
-    if (tagIds.toSet().length != tagIds.length)
-      throw ArgumentError('Duplicate tag id');
+    if (tagIds.toSet().length != tagIds.length) throw ArgumentError('Duplicate tag id');
     final tags = await _tagRepository.getByIds(tagIds);
     final missing = tagIds.where((id) => !tags.containsKey(id)).firstOrNull;
     if (missing != null) throw HabitTagNotFoundException(missing);
@@ -467,8 +436,7 @@ final class HabitActions {
     Map<String, int> requestedOrder,
   ) async {
     final requested = requestedIds.toSet();
-    for (final relation
-        in existing.where((relation) => !requested.contains(relation.tagId))) {
+    for (final relation in existing.where((relation) => !requested.contains(relation.tagId))) {
       await _habitTagsRepository.delete(relation);
     }
     final existingIds = existing.map((relation) => relation.tagId).toSet();
@@ -547,8 +515,7 @@ final class HabitActions {
     return habit;
   }
 
-  HabitTimeRecord _copyTimeRecord(HabitTimeRecord source, int duration) =>
-      HabitTimeRecord(
+  HabitTimeRecord _copyTimeRecord(HabitTimeRecord source, int duration) => HabitTimeRecord(
         id: source.id,
         habitId: source.habitId,
         duration: duration,
@@ -560,24 +527,20 @@ final class HabitActions {
 
   int _effectiveRecordCount(Habit habit, HabitRecordStatus status, int count) {
     if (status == HabitRecordStatus.skipped) return 0;
-    if (habit.type == HabitType.bad)
-      return status == HabitRecordStatus.notDone ? 1 : 0;
+    if (habit.type == HabitType.bad) return status == HabitRecordStatus.notDone ? 1 : 0;
     return status == HabitRecordStatus.notDone ? 1 : count;
   }
 
-  DateTime _revision(dynamic entity) =>
-      _databaseDate(entity.modifiedDate ?? entity.createdDate);
+  DateTime _revision(dynamic entity) => _databaseDate(entity.modifiedDate ?? entity.createdDate);
 
-  bool _sameRevision(DateTime left, DateTime right) =>
-      _databaseDate(left).isAtSameMomentAs(_databaseDate(right));
+  bool _sameRevision(DateTime left, DateTime right) => _databaseDate(left).isAtSameMomentAs(_databaseDate(right));
 
   DateTime _databaseDate(DateTime value) => DateTime.fromMillisecondsSinceEpoch(
         value.toUtc().millisecondsSinceEpoch,
         isUtc: true,
       );
 
-  DateTime _timeOf(HabitTimeRecord record) =>
-      record.occurredAt ?? record.createdDate;
+  DateTime _timeOf(HabitTimeRecord record) => record.occurredAt ?? record.createdDate;
 }
 
 List<int> _storedReminderDays(Habit habit) {

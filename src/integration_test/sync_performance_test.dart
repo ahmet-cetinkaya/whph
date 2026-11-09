@@ -164,12 +164,17 @@ Future<({Duration elapsed, int bytes, bool complete})> _syncWithServer(_NetworkD
   final stopwatch = Stopwatch()..start();
   final report = await client.engine().syncPeer(peerId);
   final peer = report.peers.single;
-  return (elapsed: stopwatch.elapsed, bytes: peer.result?.stats.bytesSent ?? 0, complete: peer.result?.isComplete ?? false);
+  return (
+    elapsed: stopwatch.elapsed,
+    bytes: peer.result?.stats.bytesSent ?? 0,
+    complete: peer.result?.isComplete ?? false
+  );
 }
 
 Future<void> _runClient(Lab lab, Directory root) async {
   expect(_invitationText, isNotEmpty, reason: 'pass --dart-define=PERF_INVITATION=<text from the server>');
-  final report = PerfReport('T28 two-device sync performance ($_platformName ${Platform.operatingSystem}, mode $_mode)');
+  final report =
+      PerfReport('T28 two-device sync performance ($_platformName ${Platform.operatingSystem}, mode $_mode)');
   final device = await _openDevice(lab, 'client', withFixture: _isTwoWay, root: root);
   final network = _NetworkDevice.wire(device);
   await _pair(network);
@@ -183,7 +188,8 @@ Future<void> _runClient(Lab lab, Directory root) async {
   report.addTime(_isTwoWay ? 'full-state two-way first sync (U9/PA-2)' : 'first full sync', first.elapsed,
       limit: firstLimit);
   report.add('first sync bytes sent by this device', formatMegabytes(first.bytes));
-  (await TombstoneStats.read(device.appDatabase)).addTo(report, firstSyncTime: first.elapsed, firstSyncBytes: first.bytes);
+  (await TombstoneStats.read(device.appDatabase))
+      .addTo(report, firstSyncTime: first.elapsed, firstSyncBytes: first.bytes);
   firstLatency.addTo(report, 'during first sync');
 
   await _makeChanges(device);
@@ -203,8 +209,10 @@ Future<void> _runClient(Lab lab, Directory root) async {
 Future<void> _makeChanges(LabDevice device) async {
   final database = device.appDatabase;
   await database.transaction(() async {
-    await database.customStatement('UPDATE task_table SET title = title || ? WHERE id IN '
-        '(SELECT id FROM task_table WHERE deleted_date IS NULL ORDER BY id LIMIT $_taskEdits)', [' (edited)']);
+    await database.customStatement(
+        'UPDATE task_table SET title = title || ? WHERE id IN '
+        '(SELECT id FROM task_table WHERE deleted_date IS NULL ORDER BY id LIMIT $_taskEdits)',
+        [' (edited)']);
     for (var index = 0; index < _noteInserts; index++) {
       await database.customStatement(
           "INSERT INTO note_table (id, created_date, title, content) VALUES ('perf-note-$index', 1700000000, 'perf $index', 'body')");
@@ -223,7 +231,8 @@ Future<void> _measureReauthor(Lab lab, LabDevice device, PerfReport report) asyn
   final chunks = timings.where((chunk) => chunk.phase == SyncUpgradePhase.reauthor).toList();
   final slowest = chunks.fold(Duration.zero, (worst, chunk) => chunk.elapsed > worst ? chunk.elapsed : worst);
   report.addTime('group-switch re-author job', stopwatch.elapsed, limit: _reauthorTotalLimit);
-  report.add('group-switch re-author chunks', '${chunks.length}: ${chunks.map((chunk) => formatSeconds(chunk.elapsed)).join(', ')}');
+  report.add('group-switch re-author chunks',
+      '${chunks.length}: ${chunks.map((chunk) => formatSeconds(chunk.elapsed)).join(', ')}');
   report.addTime('slowest re-author chunk', slowest, limit: sc012ReauthorChunkLimit);
 }
 

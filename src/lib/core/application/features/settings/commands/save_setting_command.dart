@@ -31,12 +31,10 @@ class SaveSettingCommandResponse {
   });
 }
 
-class SaveSettingCommandHandler
-    implements IRequestHandler<SaveSettingCommand, SaveSettingCommandResponse> {
+class SaveSettingCommandHandler implements IRequestHandler<SaveSettingCommand, SaveSettingCommandResponse> {
   final ISettingRepository _settingRepository;
 
-  SaveSettingCommandHandler({required ISettingRepository settingRepository})
-      : _settingRepository = settingRepository;
+  SaveSettingCommandHandler({required ISettingRepository settingRepository}) : _settingRepository = settingRepository;
 
   @override
   Future<SaveSettingCommandResponse> call(SaveSettingCommand request) async {
@@ -45,8 +43,7 @@ class SaveSettingCommandHandler
     if (request.id != null) {
       setting = await _settingRepository.getById(request.id!);
       if (setting == null) {
-        throw BusinessException(
-            'Setting not found', SettingsTranslationKeys.settingNotFoundError);
+        throw BusinessException('Setting not found', SettingsTranslationKeys.settingNotFoundError);
       }
 
       await _update(setting, request);

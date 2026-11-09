@@ -22,8 +22,7 @@ class CountingUpgradeService implements ISyncUpgradeService {
   CountingUpgradeService({this.phase = SyncUpgradePhase.done});
 
   @override
-  Future<SyncUpgradeProgress> getProgress() async =>
-      SyncUpgradeProgress(phase: phase);
+  Future<SyncUpgradeProgress> getProgress() async => SyncUpgradeProgress(phase: phase);
 
   @override
   Future<void> run() async => runCount++;
@@ -38,31 +37,23 @@ class SecurityDevice {
   SyncMembershipService service;
   final Directory root;
 
-  SecurityDevice._(this.name, this.database, this.keyStore, this.peerStates,
-      this.service, this.root);
+  SecurityDevice._(this.name, this.database, this.keyStore, this.peerStates, this.service, this.root);
 
   static Future<SecurityDevice> open(String name, Directory parent,
       {bool createIdentity = true, ISyncUpgradeService? upgradeService}) async {
     final root = await parent.createTemp('$name-');
-    final originHex = name.codeUnits
-        .map((c) => c.toRadixString(16).padLeft(2, '0'))
-        .join()
-        .padRight(_originHexLength, '0');
-    final database = await SyncTestDevice.open(name,
-        origin: originHex.substring(0, _originHexLength));
+    final originHex =
+        name.codeUnits.map((c) => c.toRadixString(16).padLeft(2, '0')).join().padRight(_originHexLength, '0');
+    final database = await SyncTestDevice.open(name, origin: originHex.substring(0, _originHexLength));
     final keyStore = FileSyncKeyStore(
       keyDirectory: Directory('${root.path}/data'),
       ledgerDirectory: Directory('${root.path}/state'),
     );
     final peerStates = DriftSyncPeerStateStore(database.db);
     final service = SyncMembershipService(
-        keyStore: keyStore,
-        changeStore: database.store,
-        peerStateStore: peerStates,
-        upgradeService: upgradeService);
+        keyStore: keyStore, changeStore: database.store, peerStateStore: peerStates, upgradeService: upgradeService);
     if (createIdentity) await service.createFreshIdentity(name: name);
-    return SecurityDevice._(
-        name, database, keyStore, peerStates, service, root);
+    return SecurityDevice._(name, database, keyStore, peerStates, service, root);
   }
 
   Membership get membership => service.membership;
@@ -76,19 +67,13 @@ class SecurityDevice {
 }
 
 /// Pairs [joiner] into [inviter]'s group through the real handover.
-Future<void> pairDevices(SecurityDevice inviter, SecurityDevice joiner,
-    {bool confirmGroupSwitch = false}) async {
-  final joinerEntry =
-      joiner.membership.identity.entry(addedBy: inviter.memberId);
-  if (joiner.service
-          .requiresGroupSwitchConfirmation(inviter.membership.groupId) &&
-      !confirmGroupSwitch) {
-    throw const SyncMembershipException(
-        'joining leaves the current group; confirmation required');
+Future<void> pairDevices(SecurityDevice inviter, SecurityDevice joiner, {bool confirmGroupSwitch = false}) async {
+  final joinerEntry = joiner.membership.identity.entry(addedBy: inviter.memberId);
+  if (joiner.service.requiresGroupSwitchConfirmation(inviter.membership.groupId) && !confirmGroupSwitch) {
+    throw const SyncMembershipException('joining leaves the current group; confirmation required');
   }
   final handover = await inviter.service.prepareHandover(joinerEntry);
-  final registration = await joiner.service
-      .acceptHandover(handover, confirmGroupSwitch: confirmGroupSwitch);
+  final registration = await joiner.service.acceptHandover(handover, confirmGroupSwitch: confirmGroupSwitch);
   handover.destroy();
   await inviter.service.completePairing(registration);
 }
@@ -96,10 +81,8 @@ Future<void> pairDevices(SecurityDevice inviter, SecurityDevice joiner,
 /// One full exchange between two devices: registrations, every origin's
 /// changes, then the membership rebuild on both.
 Future<void> syncDevices(SecurityDevice a, SecurityDevice b) async {
-  await a.database.store
-      .mergeRegistrations(await b.database.store.readRegistrations());
-  await b.database.store
-      .mergeRegistrations(await a.database.store.readRegistrations());
+  await a.database.store.mergeRegistrations(await b.database.store.readRegistrations());
+  await b.database.store.mergeRegistrations(await a.database.store.readRegistrations());
   await pullChanges(a.database, b.database);
   await pullChanges(b.database, a.database);
   await a.service.refresh();
@@ -108,8 +91,7 @@ Future<void> syncDevices(SecurityDevice a, SecurityDevice b) async {
 
 /// Whether a Noise handshake from [initiator] to [responder] is refused by the
 /// responder's membership check.
-Future<bool> handshakeRefused(
-    SecurityDevice initiator, SecurityDevice responder) async {
+Future<bool> handshakeRefused(SecurityDevice initiator, SecurityDevice responder) async {
   final (initiatorEnd, responderEnd) = InMemoryTransport.pair();
   final responderRun = SecureChannel.handshake(
     transport: responderEnd,
@@ -125,8 +107,7 @@ Future<bool> handshakeRefused(
     hello: Uint8List(0),
   );
   var refused = false;
-  Future<void> observe(Future<Object?> run) =>
-      run.then<void>((_) {}, onError: (Object error) async {
+  Future<void> observe(Future<Object?> run) => run.then<void>((_) {}, onError: (Object error) async {
         refused = refused || error is SyncCryptoException;
         // The side that rejects stops talking; closing wakes the other side.
         await initiatorEnd.close();

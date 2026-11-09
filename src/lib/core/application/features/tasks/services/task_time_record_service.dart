@@ -10,27 +10,20 @@ import 'package:whph/core/application/shared/utils/sync_identity.dart';
 /// day-level delta into the own bucket and zeroes the own day's other hours.
 class TaskTimeRecordService {
   /// Creates hour boundaries for the given date
-  static (DateTime startOfHour, DateTime endOfHour) createHourBoundaries(
-      DateTime targetDate) {
-    final startOfHour = DateTime.utc(
-        targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
+  static (DateTime startOfHour, DateTime endOfHour) createHourBoundaries(DateTime targetDate) {
+    final startOfHour = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, targetDate.hour);
     final endOfHour = startOfHour.add(const Duration(hours: 1));
     return (startOfHour, endOfHour);
   }
 
   /// Creates the UTC day window `[start, start + 24 h)` of [targetDate].
-  static (DateTime startOfDay, DateTime endOfDay) createDayBoundaries(
-      DateTime targetDate) {
-    final startOfDay =
-        DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
+  static (DateTime startOfDay, DateTime endOfDay) createDayBoundaries(DateTime targetDate) {
+    final startOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
     return (startOfDay, startOfDay.add(const Duration(days: 1)));
   }
 
   /// The id of this device's bucket for [taskId] at [targetDate]'s hour.
-  static String bucketId(
-          {required String taskId,
-          required DateTime targetDate,
-          required String deviceId}) =>
+  static String bucketId({required String taskId, required DateTime targetDate, required String deviceId}) =>
       syncTimeBucketId(
         kind: timeBucketKindTask,
         ownerId: taskId,
@@ -48,8 +41,7 @@ class TaskTimeRecordService {
     required String deviceId,
     int initialDuration = 0,
   }) async {
-    final id =
-        bucketId(taskId: taskId, targetDate: targetDate, deviceId: deviceId);
+    final id = bucketId(taskId: taskId, targetDate: targetDate, deviceId: deviceId);
     final existing = await repository.getById(id);
     if (existing != null && existing.deletedDate == null) {
       return existing;
@@ -109,9 +101,7 @@ class TaskTimeRecordService {
     // Clamped target hour (D12): never outside the day window.
     final clampedHour = targetHour.isBefore(dayStart)
         ? dayStart
-        : (targetHour.isBefore(endOfDay)
-            ? targetHour
-            : endOfDay.subtract(const Duration(hours: 1)));
+        : (targetHour.isBefore(endOfDay) ? targetHour : endOfDay.subtract(const Duration(hours: 1)));
 
     final dayRecords = (await repository.getAll(
       includeDeleted: false,
@@ -122,19 +112,13 @@ class TaskTimeRecordService {
     ))
         .toList();
 
-    final ownTargetId =
-        bucketId(taskId: taskId, targetDate: clampedHour, deviceId: deviceId);
-    final othersTotal = dayRecords
-        .where((record) => record.id != ownTargetId)
-        .fold<int>(0, (sum, record) => sum + record.duration);
+    final ownTargetId = bucketId(taskId: taskId, targetDate: clampedHour, deviceId: deviceId);
+    final othersTotal =
+        dayRecords.where((record) => record.id != ownTargetId).fold<int>(0, (sum, record) => sum + record.duration);
 
     // Zero the own day buckets other than the target hour's (kept rows, not deletes).
     for (final record in dayRecords) {
-      final isOwnBucket = record.id ==
-          bucketId(
-              taskId: taskId,
-              targetDate: record.createdDate,
-              deviceId: deviceId);
+      final isOwnBucket = record.id == bucketId(taskId: taskId, targetDate: record.createdDate, deviceId: deviceId);
       if (isOwnBucket && record.id != ownTargetId && record.duration != 0) {
         await repository.update(TaskTimeRecord(
           id: record.id,

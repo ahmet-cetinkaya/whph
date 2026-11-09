@@ -19,28 +19,19 @@ class ReauthorSpec {
   final int? oldOriginId;
   final int? sentMark;
 
-  const ReauthorSpec._(
-      this.kind, this.newOriginId, this.oldOriginId, this.sentMark);
+  const ReauthorSpec._(this.kind, this.newOriginId, this.oldOriginId, this.sentMark);
 
-  const ReauthorSpec.adopt(
-      {required int oldOriginId, required int newOriginId, int? sentMark})
+  const ReauthorSpec.adopt({required int oldOriginId, required int newOriginId, int? sentMark})
       : this._(_kindAdopt, newOriginId, oldOriginId, sentMark);
 
-  const ReauthorSpec.all({required int newOriginId})
-      : this._(_kindAll, newOriginId, null, null);
+  const ReauthorSpec.all({required int newOriginId}) : this._(_kindAll, newOriginId, null, null);
 
   factory ReauthorSpec.decode(String text) {
     final json = jsonDecode(text) as Map<String, dynamic>;
-    return ReauthorSpec._(json['kind'] as String, json['new'] as int,
-        json['old'] as int?, json['sentMark'] as int?);
+    return ReauthorSpec._(json['kind'] as String, json['new'] as int, json['old'] as int?, json['sentMark'] as int?);
   }
 
-  String encode() => jsonEncode({
-        'kind': kind,
-        'new': newOriginId,
-        'old': oldOriginId,
-        'sentMark': sentMark
-      });
+  String encode() => jsonEncode({'kind': kind, 'new': newOriginId, 'old': oldOriginId, 'sentMark': sentMark});
 
   /// SQL over `sync_clock` and its bind arguments (columns `origin_id`,
   /// `manifest_id`, `origin_seq`).

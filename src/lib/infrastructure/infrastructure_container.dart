@@ -106,13 +106,10 @@ void registerInfrastructure(
   container.registerSingleton<ILogger>((_) => const ConsoleLogger());
 
   final settingRepository = container.resolve<ISettingRepository>();
-  final appUsageIgnoreRuleRepository =
-      container.resolve<IAppUsageIgnoreRuleRepository>();
+  final appUsageIgnoreRuleRepository = container.resolve<IAppUsageIgnoreRuleRepository>();
 
-  final appUsageFilterService =
-      AppUsageFilterService(appUsageIgnoreRuleRepository);
-  container
-      .registerSingleton<IAppUsageFilterService>((_) => appUsageFilterService);
+  final appUsageFilterService = AppUsageFilterService(appUsageIgnoreRuleRepository);
+  container.registerSingleton<IAppUsageFilterService>((_) => appUsageFilterService);
 
   container.registerSingleton<IApplicationDirectoryService>(
       (_) => applicationDirectoryService ?? createPlatformApplicationDirectoryService());
@@ -124,8 +121,7 @@ void registerInfrastructure(
 
   container.registerSingleton<McpAccessStore>(
     (_) => McpAccessStore(
-      applicationDirectoryService:
-          container.resolve<IApplicationDirectoryService>(),
+      applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
     ),
   );
   container.registerSingleton<IMcpAccessService>(
@@ -133,8 +129,7 @@ void registerInfrastructure(
   );
   container.registerSingleton<McpOperationStore>(
     (_) => McpOperationStore(
-      applicationDirectoryService:
-          container.resolve<IApplicationDirectoryService>(),
+      applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
     ),
   );
   container.registerSingleton<IMcpOperationService>(
@@ -145,15 +140,13 @@ void registerInfrastructure(
   );
   container.registerSingleton<McpTransferFileStore>(
     (_) => McpTransferFileStore(
-      applicationDirectoryService:
-          container.resolve<IApplicationDirectoryService>(),
+      applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
       accessService: container.resolve<IMcpAccessService>(),
     ),
   );
 
   container.registerSingleton<IDeviceIdService>((_) => DeviceIdService(
-        applicationDirectoryService:
-            container.resolve<IApplicationDirectoryService>(),
+        applicationDirectoryService: container.resolve<IApplicationDirectoryService>(),
       ));
 
   container.registerSingleton<DeviceInfoPlugin>((_) => DeviceInfoPlugin());
@@ -171,13 +164,11 @@ void registerInfrastructure(
       final windowManager = container.resolve<IWindowManager>();
 
       if (Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID')) {
-        return FlatpakNotificationService(
-            mediator, windowManager, payloadHandler);
+        return FlatpakNotificationService(mediator, windowManager, payloadHandler);
       }
 
       final taskHandler = container.resolve<ITaskNotificationHandler>();
-      return DesktopNotificationService(
-          mediator, windowManager, payloadHandler, taskHandler);
+      return DesktopNotificationService(mediator, windowManager, payloadHandler, taskHandler);
     }
     if (PlatformUtils.isMobile) {
       return MobileNotificationService(mediator);
@@ -199,64 +190,43 @@ void registerInfrastructure(
   container.registerSingleton<ISystemTrayService>((_) {
     if (PlatformUtils.isMobile) {
       // Reuse MobileNotificationService plugin to prevent second .initialize() call
-      final notificationService = container.resolve<INotificationService>()
-          as MobileNotificationService;
+      final notificationService = container.resolve<INotificationService>() as MobileNotificationService;
       return MobileSystemTrayService(notificationService.plugin);
     }
 
     if (Platform.isLinux && Platform.environment.containsKey('FLATPAK_ID')) {
       return FlatpakSystemTrayService(
-        shutdownApplication: () =>
-            container.resolve<IApplicationShutdownService>().shutdown(),
+        shutdownApplication: () => container.resolve<IApplicationShutdownService>().shutdown(),
       );
     }
 
     return DesktopSystemTrayService(
-      shutdownApplication: () =>
-          container.resolve<IApplicationShutdownService>().shutdown(),
+      shutdownApplication: () => container.resolve<IApplicationShutdownService>().shutdown(),
     );
   });
 
   if (PlatformUtils.isDesktop) {
-    container.registerSingleton<ISingleInstanceService>(
-        (_) => DesktopSingleInstanceService());
+    container.registerSingleton<ISingleInstanceService>((_) => DesktopSingleInstanceService());
   }
   container.registerSingleton<IAppUsageService>((_) {
     final appUsageRepository = container.resolve<IAppUsageRepository>();
-    final appUsageTimeRecordRepository =
-        container.resolve<IAppUsageTimeRecordRepository>();
-    final appUsageTagRuleRepository =
-        container.resolve<IAppUsageTagRuleRepository>();
+    final appUsageTimeRecordRepository = container.resolve<IAppUsageTimeRecordRepository>();
+    final appUsageTagRuleRepository = container.resolve<IAppUsageTagRuleRepository>();
     final appUsageTagRepository = container.resolve<IAppUsageTagRepository>();
     final deviceIds = container.resolve<IDeviceIdService>();
 
     if (Platform.isLinux) {
-      return LinuxAppUsageService(
-          appUsageRepository,
-          appUsageTimeRecordRepository,
-          appUsageTagRuleRepository,
-          appUsageTagRepository,
-          appUsageFilterService,
-          deviceIds);
+      return LinuxAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
+          appUsageTagRepository, appUsageFilterService, deviceIds);
     }
     if (Platform.isWindows) {
-      return WindowsAppUsageService(
-          appUsageRepository,
-          appUsageTimeRecordRepository,
-          appUsageTagRuleRepository,
-          appUsageTagRepository,
-          appUsageFilterService,
-          deviceIds);
+      return WindowsAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
+          appUsageTagRepository, appUsageFilterService, deviceIds);
     }
 
     if (Platform.isAndroid) {
-      return AndroidAppUsageService(
-          appUsageRepository,
-          appUsageTimeRecordRepository,
-          appUsageTagRuleRepository,
-          appUsageTagRepository,
-          appUsageFilterService,
-          deviceIds);
+      return AndroidAppUsageService(appUsageRepository, appUsageTimeRecordRepository, appUsageTagRuleRepository,
+          appUsageTagRepository, appUsageFilterService, deviceIds);
     }
 
     throw Exception('Unsupported platform for app usage service.');
@@ -275,22 +245,18 @@ void registerInfrastructure(
   });
 
   if (Platform.isWindows) {
-    container.registerSingleton<IWindowsElevationService>(
-        (_) => WindowsElevationService());
+    container.registerSingleton<IWindowsElevationService>((_) => WindowsElevationService());
     container.registerSingleton<IWindowsFirewallService>(
       (_) => WindowsFirewallService(
         elevationService: container.resolve<IWindowsElevationService>(),
       ),
     );
-    container.registerSingleton<IWindowsShortcutService>(
-        (_) => WindowsShortcutService());
-    container.registerSingleton<IWindowsUpdateService>(
-        (_) => WindowsUpdateService());
+    container.registerSingleton<IWindowsShortcutService>((_) => WindowsShortcutService());
+    container.registerSingleton<IWindowsUpdateService>((_) => WindowsUpdateService());
   }
 
   if (Platform.isLinux) {
-    container.registerSingleton<ILinuxFirewallService>(
-        (_) => LinuxFirewallService());
+    container.registerSingleton<ILinuxFirewallService>((_) => LinuxFirewallService());
 
     final linuxUpdateService = LinuxUpdateService();
     container.registerSingleton<ILinuxUpdateService>((_) => linuxUpdateService);
@@ -340,8 +306,7 @@ void registerInfrastructure(
     throw Exception('Unsupported platform for file service');
   });
 
-  container.registerSingleton<IWakelockService>(
-      (_) => WakelockService(container.resolve<ILogger>()));
+  container.registerSingleton<IWakelockService>((_) => WakelockService(container.resolve<ILogger>()));
 
   container.registerSingleton<IReminderService>((_) {
     final windowManager = container.resolve<IWindowManager>();
@@ -363,5 +328,4 @@ void registerInfrastructure(
 
     throw Exception('Unsupported platform for reminder service.');
   });
-
 }

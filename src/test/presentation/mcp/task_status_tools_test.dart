@@ -36,8 +36,7 @@ void main() {
       taskRepository: DriftTaskRepository.withDatabase(database),
       taskStatusRepository: statuses,
       taskTagRepository: DriftTaskTagRepository.withDatabase(database),
-      taskTimeRecordRepository:
-          DriftTaskTimeRecordRepository.withDatabase(database),
+      taskTimeRecordRepository: DriftTaskTimeRecordRepository.withDatabase(database),
       tagRepository: DriftTagRepository.withDatabase(database),
       taskEvents: _Events(),
       recurrenceService: _Recurrence(),
@@ -65,12 +64,8 @@ void main() {
       'whph_task_statuses_delete',
       'whph_task_statuses_reorder',
     ]);
-    expect(
-        tools.every((tool) => tool.inputSchema.additionalProperties == false),
-        isTrue);
-    expect(
-        tools.every((tool) => tool.outputSchema.additionalProperties == false),
-        isTrue);
+    expect(tools.every((tool) => tool.inputSchema.additionalProperties == false), isTrue);
+    expect(tools.every((tool) => tool.outputSchema.additionalProperties == false), isTrue);
   });
 
   test('status update is CAS and preserves omitted color', () async {
@@ -90,8 +85,7 @@ void main() {
       color: stored.color,
       order: stored.order,
     );
-    final committedRevision =
-        await statuses.updateIfRevision(repositoryInput, revision);
+    final committedRevision = await statuses.updateIfRevision(repositoryInput, revision);
     expect(committedRevision, isNotNull);
     expect(repositoryInput.modifiedDate, stored.modifiedDate);
 
@@ -114,9 +108,7 @@ void main() {
     );
   });
 
-  test(
-      'virtual built-in update uses stable revision and protected status cannot be deleted',
-      () async {
+  test('virtual built-in update uses stable revision and protected status cannot be deleted', () async {
     final updated = await actions.updateStatus(
       id: TaskStatusConstants.todoId,
       expectedRevision: McpTaskActions.virtualStatusRevision,
@@ -156,14 +148,11 @@ final class _Recurrence implements ITaskRecurrenceService {
   @override
   bool canCreateNextInstance(Task task) => false;
   @override
-  DateTime calculateNextRecurrenceDate(Task task, DateTime currentDate) =>
-      currentDate;
+  DateTime calculateNextRecurrenceDate(Task task, DateTime currentDate) => currentDate;
   @override
   List<WeekDays>? getRecurrenceDays(Task task) => null;
   @override
-  Future<String?> handleCompletedRecurringTask(
-          String taskId, Mediator mediator) async =>
-      null;
+  Future<String?> handleCompletedRecurringTask(String taskId, Mediator mediator) async => null;
   @override
   bool isRecurring(Task task) => false;
 }

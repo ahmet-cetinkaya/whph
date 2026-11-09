@@ -26,8 +26,7 @@ class AndroidAppUsageDebugPage extends StatefulWidget {
         );
 
   @override
-  State<AndroidAppUsageDebugPage> createState() =>
-      _AndroidAppUsageDebugPageState();
+  State<AndroidAppUsageDebugPage> createState() => _AndroidAppUsageDebugPageState();
 }
 
 class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
@@ -64,12 +63,10 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
       case 'last_24_hours':
         return now.subtract(const Duration(hours: 24));
       case 'today_from_midnight':
-        return DateTime(
-            now.year, now.month, now.day, 0, 0, 0); // Today from midnight
+        return DateTime(now.year, now.month, now.day, 0, 0, 0); // Today from midnight
       case 'yesterday':
         final yesterday = now.subtract(const Duration(days: 1));
-        return DateTime(
-            yesterday.year, yesterday.month, yesterday.day, 0, 0, 0);
+        return DateTime(yesterday.year, yesterday.month, yesterday.day, 0, 0, 0);
       case 'last_3_days':
         return now.subtract(const Duration(days: 3));
       case 'last_week':
@@ -83,8 +80,7 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
     switch (timeRange) {
       case 'yesterday':
         final yesterday = now.subtract(const Duration(days: 1));
-        return DateTime(
-            yesterday.year, yesterday.month, yesterday.day, 23, 59, 59);
+        return DateTime(yesterday.year, yesterday.month, yesterday.day, 23, 59, 59);
       default:
         return now;
     }
@@ -122,8 +118,7 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
                           _selectedTimeRange = newValue!;
                         });
                       },
-                      items: _timeRanges.keys
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items: _timeRanges.keys.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(_timeRanges[value]!),
@@ -141,9 +136,7 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _runTest,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Test Usage Accuracy'),
+                child: _isLoading ? const CircularProgressIndicator() : const Text('Test Usage Accuracy'),
               ),
             ),
             const SizedBox(height: 16),
@@ -205,10 +198,7 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
             children: [
               Text(
                 'Error',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(color: Colors.red),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.red),
               ),
               const SizedBox(height: 8),
               Text(_newMethodResults!['error'].toString()),
@@ -279,13 +269,10 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
                 ...newMethod.entries.take(5).map((entry) {
                   final appData = entry.value as Map<String, dynamic>;
                   final appName = appData['appName'] as String;
-                  final usageMinutes =
-                      (appData['usageTimeSeconds'] as int) / 60;
-                  return Text(
-                      '  - $appName: ${usageMinutes.toStringAsFixed(1)}m');
+                  final usageMinutes = (appData['usageTimeSeconds'] as int) / 60;
+                  return Text('  - $appName: ${usageMinutes.toStringAsFixed(1)}m');
                 }),
-                if (newMethod.length > 5)
-                  Text('  - ... and ${newMethod.length - 5} more'),
+                if (newMethod.length > 5) Text('  - ... and ${newMethod.length - 5} more'),
               ],
             ),
           ),
@@ -309,9 +296,8 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
     }
 
     // Handle both old and new key names for backward compatibility
-    final Map<String, dynamic> newMethod = (results['newMethod'] ??
-        results['eventBasedMethod'] ??
-        <String, dynamic>{}) as Map<String, dynamic>;
+    final Map<String, dynamic> newMethod =
+        (results['newMethod'] ?? results['eventBasedMethod'] ?? <String, dynamic>{}) as Map<String, dynamic>;
 
     Logger.info('');
     Logger.info('=== USAGE DEBUG RESULTS ===');
@@ -328,10 +314,8 @@ class _AndroidAppUsageDebugPageState extends State<AndroidAppUsageDebugPage> {
     Logger.info('--- EVENT-BASED METHOD (accurate foreground) ---');
     final newSorted = newMethod.entries.toList()
       ..sort((a, b) {
-        final aSeconds =
-            (a.value as Map<String, dynamic>)['usageTimeSeconds'] as int;
-        final bSeconds =
-            (b.value as Map<String, dynamic>)['usageTimeSeconds'] as int;
+        final aSeconds = (a.value as Map<String, dynamic>)['usageTimeSeconds'] as int;
+        final bSeconds = (b.value as Map<String, dynamic>)['usageTimeSeconds'] as int;
         return bSeconds.compareTo(aSeconds); // Descending order
       });
 

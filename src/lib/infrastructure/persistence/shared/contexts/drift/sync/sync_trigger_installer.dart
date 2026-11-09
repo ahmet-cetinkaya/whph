@@ -26,10 +26,8 @@ Future<void> installSyncTriggers(DatabaseConnectionUser db) async {
     }
     for (final policy in syncTablePolicies) {
       for (final op in const ['ai', 'au', 'ad']) {
-        await db.customStatement(
-            'DROP TRIGGER IF EXISTS ${triggerName(policy, op)}');
-        await db.customStatement(
-            'DROP TRIGGER IF EXISTS sync_d5b_task_parent_date');
+        await db.customStatement('DROP TRIGGER IF EXISTS ${triggerName(policy, op)}');
+        await db.customStatement('DROP TRIGGER IF EXISTS sync_d5b_task_parent_date');
       }
     }
   }
@@ -42,15 +40,11 @@ Future<void> installSyncTriggers(DatabaseConnectionUser db) async {
   for (final statement in syncCascadeStatements()) {
     await db.customStatement(statement);
   }
-  await db.customStatement(
-      "UPDATE sync_state SET capture_version = '$syncCaptureVersion' WHERE id = 'singleton'");
+  await db.customStatement("UPDATE sync_state SET capture_version = '$syncCaptureVersion' WHERE id = 'singleton'");
 }
 
 Future<String?> _storedVersion(DatabaseConnectionUser db) async {
-  final rows = await db
-      .customSelect(
-          "SELECT capture_version AS v FROM sync_state WHERE id = 'singleton'")
-      .get();
+  final rows = await db.customSelect("SELECT capture_version AS v FROM sync_state WHERE id = 'singleton'").get();
   if (rows.isEmpty) return null;
   return rows.first.data['v'] as String?;
 }
@@ -62,8 +56,7 @@ Future<bool> _syncSchemaExists(DatabaseConnectionUser db) async {
   // that happen to define `sync_state` (e.g. the S2 spike's own DDL) must keep
   // their own triggers.
   final rows = await db
-      .customSelect(
-          "SELECT 1 AS present FROM pragma_table_info('sync_state') WHERE name = 'capture_version'")
+      .customSelect("SELECT 1 AS present FROM pragma_table_info('sync_state') WHERE name = 'capture_version'")
       .get();
   return rows.isNotEmpty;
 }

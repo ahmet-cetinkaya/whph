@@ -32,20 +32,16 @@ void main() {
     await scratch.delete(recursive: true);
   });
 
-  Future<SecurityDevice> openDevice(String name,
-      {bool createIdentity = false}) async {
-    final device = await SecurityDevice.open(name, scratch,
-        createIdentity: createIdentity);
+  Future<SecurityDevice> openDevice(String name, {bool createIdentity = false}) async {
+    final device = await SecurityDevice.open(name, scratch, createIdentity: createIdentity);
     opened.add(device);
     return device;
   }
 
   /// The startup check, then the re-author job the app runs after it.
-  Future<SyncStartupAction> start(SecurityDevice device,
-      {bool databaseCreatedThisLaunch = false}) async {
-    final action = await device.startup.run(
-        deviceName: device.name,
-        databaseCreatedThisLaunch: databaseCreatedThisLaunch);
+  Future<SyncStartupAction> start(SecurityDevice device, {bool databaseCreatedThisLaunch = false}) async {
+    final action =
+        await device.startup.run(deviceName: device.name, databaseCreatedThisLaunch: databaseCreatedThisLaunch);
     await SyncUpgradeJob(device.database.db).runChunks();
     return action;
   }
@@ -53,16 +49,13 @@ void main() {
   Future<int> topSeq(SecurityDevice device) async =>
       (await device.database.store.readVector())[await device.currentOrigin()]!;
 
-  Future<void> author(SecurityDevice device, String id) =>
-      device.database.insertNote(id, 'title $id');
+  Future<void> author(SecurityDevice device, String id) => device.database.insertNote(id, 'title $id');
 
   Future<Map<String, Object?>> syncState(SecurityDevice device) async =>
       (await device.database.rows('SELECT * FROM sync_state')).single;
 
-  Future<List<Map<String, Object?>>> clockOf(
-          SecurityDevice device, String noteId) =>
-      device.database.rows(
-          'SELECT i.value AS origin, c.origin_seq AS seq, c.manifest_id AS manifest '
+  Future<List<Map<String, Object?>>> clockOf(SecurityDevice device, String noteId) =>
+      device.database.rows('SELECT i.value AS origin, c.origin_seq AS seq, c.manifest_id AS manifest '
           'FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256 '
           'JOIN sync_intern i ON i.id = c.origin_id '
           "WHERE r.pk = '$noteId' ORDER BY c.origin_seq");
@@ -85,14 +78,12 @@ void main() {
       expect(await start(device), SyncStartupAction.normal);
     });
 
-    test('rule 1: key file present but the DB is new deletes both files',
-        () async {
+    test('rule 1: key file present but the DB is new deletes both files', () async {
       final device = await openDevice('a', createIdentity: true);
       final staleMember = device.memberId;
       await device.restart();
 
-      expect(await start(device, databaseCreatedThisLaunch: true),
-          SyncStartupAction.freshIdentity);
+      expect(await start(device, databaseCreatedThisLaunch: true), SyncStartupAction.freshIdentity);
 
       expect(device.memberId, isNot(staleMember));
       expect((await syncState(device))['member_id'], device.memberId);
@@ -112,14 +103,12 @@ void main() {
 
       expect(device.memberId, isNot(oldMember));
       expect(await device.currentOrigin(), isNot(oldOrigin));
-      expect((await device.service.currentView()).state,
-          SyncGroupState.needsRepairing);
+      expect((await device.service.currentView()).state, SyncGroupState.needsRepairing);
       expect(await device.hasNote('n1'), isTrue);
       expect(await device.service.isPaired(), isFalse);
     });
 
-    test('rule 2: a DB member id that differs from the key file is key loss',
-        () async {
+    test('rule 2: a DB member id that differs from the key file is key loss', () async {
       final device = await openDevice('a', createIdentity: true);
       final beforeLoss = await device.snapshotDatabase('before_loss');
       await device.keyStore.keyFile.delete();
@@ -143,12 +132,10 @@ void main() {
 
       expect(await start(device), SyncStartupAction.normal);
 
-      expect(device.keyStore.entries.map((e) => e.origin.hex),
-          [await device.currentOrigin()]);
+      expect(device.keyStore.entries.map((e) => e.origin.hex), [await device.currentOrigin()]);
     });
 
-    test('rule 3: a pending entry the DB adopted is committed, no restore',
-        () async {
+    test('rule 3: a pending entry the DB adopted is committed, no restore', () async {
       final device = await openDevice('a', createIdentity: true);
       await author(device, 'n1');
       await markSent(device);
@@ -156,8 +143,8 @@ void main() {
           origin: OriginId.fromHex(_unrelatedOriginHex),
           state: OriginEntryState.pending,
           reason: OriginSwitchReason.restore));
-      await device.database.store.switchOrigin(OriginSwitchReason.restore,
-          newOrigin: _unrelatedOriginHex, sentMark: await topSeq(device));
+      await device.database.store
+          .switchOrigin(OriginSwitchReason.restore, newOrigin: _unrelatedOriginHex, sentMark: await topSeq(device));
       await SyncUpgradeJob(device.database.db).runChunks();
       await device.restart();
 
@@ -167,8 +154,7 @@ void main() {
       expect(device.keyStore.entries, hasLength(2));
     });
 
-    test('rule 4: a missing ledger is treated as a restore, identity kept',
-        () async {
+    test('rule 4: a missing ledger is treated as a restore, identity kept', () async {
       final device = await openDevice('a', createIdentity: true);
       final member = device.memberId;
       final origin = await device.currentOrigin();
@@ -179,12 +165,10 @@ void main() {
 
       expect(device.memberId, member);
       expect(await device.currentOrigin(), isNot(origin));
-      expect(device.keyStore.latestCommitted!.origin.hex,
-          await device.currentOrigin());
+      expect(device.keyStore.latestCommitted!.origin.hex, await device.currentOrigin());
     });
 
-    test('rule 4: a DB that is not the latest committed origin is restored',
-        () async {
+    test('rule 4: a DB that is not the latest committed origin is restored', () async {
       final device = await openDevice('a', createIdentity: true);
       final snapshot = await device.snapshotDatabase('older');
       await device.service.switchOrigin(OriginSwitchReason.restore);
@@ -212,12 +196,10 @@ void main() {
         expect(row['origin'], newOrigin);
       }
       final vector = await device.database.store.readVector();
-      expect(vector[oldOrigin] ?? 0, lessThanOrEqualTo(heldTop),
-          reason: 'the old origin gets no new seq');
+      expect(vector[oldOrigin] ?? 0, lessThanOrEqualTo(heldTop), reason: 'the old origin gets no new seq');
     });
 
-    test('rule 4: an older DB below the written watermark is restored',
-        () async {
+    test('rule 4: an older DB below the written watermark is restored', () async {
       final device = await openDevice('a', createIdentity: true);
       final snapshot = await device.snapshotDatabase('older');
       await author(device, 'unsent');
@@ -228,8 +210,7 @@ void main() {
       expect(await start(device), SyncStartupAction.restore);
     });
 
-    test('rule 5: after a normal session and restart nothing is detected',
-        () async {
+    test('rule 5: after a normal session and restart nothing is detected', () async {
       final device = await openDevice('a', createIdentity: true);
       await author(device, 'n1');
       await markSent(device);
@@ -242,8 +223,7 @@ void main() {
   });
 
   group('acceptance 2: Android backup/restore simulation', () {
-    test('rows keep origin, seq and manifest; only unsigned cells are adopted',
-        () async {
+    test('rows keep origin, seq and manifest; only unsigned cells are adopted', () async {
       final a = await openDevice('a', createIdentity: true);
       final b = await openDevice('b', createIdentity: true);
       await pairDevices(a, b);
@@ -279,8 +259,7 @@ void main() {
   });
 
   group('acceptance 3: backup before pairing, restored after pairing', () {
-    test('keeps its identity, trusts peers by anchors, merges all group data',
-        () async {
+    test('keeps its identity, trusts peers by anchors, merges all group data', () async {
       final a = await openDevice('a', createIdentity: true);
       final b = await openDevice('b', createIdentity: true);
       await author(a, 'old');
@@ -310,5 +289,4 @@ void main() {
       expect(await a.database.content(), await b.database.content());
     });
   });
-
 }

@@ -35,28 +35,25 @@ void main() {
     await scratch.delete(recursive: true);
   });
 
-  Future<String> titleOf(SecurityDevice device, String id) async =>
-      (await device.database.note(id))['title'] as String;
+  Future<String> titleOf(SecurityDevice device, String id) async => (await device.database.note(id))['title'] as String;
 
   /// Clock rows of user tables whose pk has no base row.
-  Future<int> orphanUserClockRows(SecurityDevice device) =>
-      device.database.count('''
+  Future<int> orphanUserClockRows(SecurityDevice device) => device.database.count('''
 SELECT COUNT(*) FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256
 WHERE r.tbl_id < $securityTblIdFloor AND NOT EXISTS (
   SELECT 1 FROM note_table n WHERE r.pk = n.id)
 ''');
 
-  test('6: re-importing an older export converges to it on both devices',
-      () async {
+  test('6: re-importing an older export converges to it on both devices', () async {
     await a.database.insertNote('k', 'v1');
     await exchange([a, b]);
     final exportOfV1 = exportOfNotes({'k': 'v1'});
     await b.database.setTitle('k', 'v2');
     await exchange([a, b]);
     expect(await titleOf(a, 'k'), 'v2');
-    final hlcBeforeImport = await a.database.count(
-        'SELECT MAX(hlc) FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256 '
-        'WHERE r.tbl_id < $securityTblIdFloor');
+    final hlcBeforeImport =
+        await a.database.count('SELECT MAX(hlc) FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256 '
+            'WHERE r.tbl_id < $securityTblIdFloor');
 
     await a.replaceImport(exportOfV1);
     expect(await titleOf(a, 'k'), 'v1');
@@ -66,18 +63,15 @@ WHERE r.tbl_id < $securityTblIdFloor AND NOT EXISTS (
     expect(await titleOf(b, 'k'), 'v1');
     expect(await a.database.content(), await b.database.content());
     expect(
-        await a.database.count(
-            'SELECT COUNT(*) FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256 '
+        await a.database.count('SELECT COUNT(*) FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256 '
             'WHERE r.tbl_id < $securityTblIdFloor AND c.hlc <= $hlcBeforeImport'),
         0,
-        reason:
-            'every user clock row carries an HLC above the pre-import ones');
+        reason: 'every user clock row carries an HLC above the pre-import ones');
     expect(await orphanUserClockRows(a), 0);
     expect(await orphanUserClockRows(b), 0);
   });
 
-  test('7: items absent from the import return from peers; nothing is deleted',
-      () async {
+  test('7: items absent from the import return from peers; nothing is deleted', () async {
     await a.database.insertNote('k', 'shared');
     await a.database.insertNote('l', 'authored on a, synced');
     await b.database.insertNote('m', 'only on b');
@@ -89,14 +83,8 @@ WHERE r.tbl_id < $securityTblIdFloor AND NOT EXISTS (
 
     expect(await a.currentOrigin(), isNot(oldOrigin));
     expect(await a.noteIds(), {'k', 'n'}, reason: 'truncated, then imported');
-    expect(
-        await a.database.count(
-            'SELECT COUNT(*) FROM note_table WHERE deleted_date IS NOT NULL'),
-        0);
-    expect(
-        await a.database.count(
-            'SELECT COUNT(*) FROM sync_clock WHERE tomb_value IS NOT NULL'),
-        0,
+    expect(await a.database.count('SELECT COUNT(*) FROM note_table WHERE deleted_date IS NOT NULL'), 0);
+    expect(await a.database.count('SELECT COUNT(*) FROM sync_clock WHERE tomb_value IS NOT NULL'), 0,
         reason: 'the import created 0 tombstones');
     expect(await a.database.count('SELECT COUNT(*) FROM sync_vector'), 0,
         reason: 'the vector is cleared so peers resend everything');
@@ -106,15 +94,11 @@ WHERE r.tbl_id < $securityTblIdFloor AND NOT EXISTS (
     for (final device in [a, b]) {
       expect(await device.noteIds(), {'k', 'l', 'm', 'n'}, reason: device.name);
     }
-    expect(
-        await b.database.count(
-            'SELECT COUNT(*) FROM note_table WHERE deleted_date IS NOT NULL'),
-        0);
+    expect(await b.database.count('SELECT COUNT(*) FROM note_table WHERE deleted_date IS NOT NULL'), 0);
     expect(await a.database.content(), await b.database.content());
   });
 
-  test('a ledger entry is committed for the new origin and is not left pending',
-      () async {
+  test('a ledger entry is committed for the new origin and is not left pending', () async {
     await a.database.insertNote('k', 'v1');
 
     await a.replaceImport(exportOfNotes({'k': 'v1'}));
@@ -125,14 +109,12 @@ WHERE r.tbl_id < $securityTblIdFloor AND NOT EXISTS (
     expect(latest.origin.hex, await a.currentOrigin());
   });
 
-  test('a failed import rolls back the DB and drops the pending ledger entry',
-      () async {
+  test('a failed import rolls back the DB and drops the pending ledger entry', () async {
     await a.database.insertNote('k', 'v1');
     final before = await a.database.content();
     final origin = await a.currentOrigin();
     final entries = a.keyStore.entries.length;
-    final broken =
-        exportOfNotes({'k': 'v1'}).replaceFirst('"notes":', '"notes":[1],"x":');
+    final broken = exportOfNotes({'k': 'v1'}).replaceFirst('"notes":', '"notes":[1],"x":');
 
     await expectLater(a.replaceImport(broken), throwsA(anything));
 

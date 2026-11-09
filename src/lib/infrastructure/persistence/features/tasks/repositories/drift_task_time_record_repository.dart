@@ -18,16 +18,12 @@ class TaskTimeRecordTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class DriftTaskTimeRecordRepository
-    extends DriftBaseRepository<TaskTimeRecord, String, TaskTimeRecordTable>
+class DriftTaskTimeRecordRepository extends DriftBaseRepository<TaskTimeRecord, String, TaskTimeRecordTable>
     implements ITaskTimeRecordRepository {
-  DriftTaskTimeRecordRepository()
-      : super(
-            AppDatabase.instance(), AppDatabase.instance().taskTimeRecordTable);
+  DriftTaskTimeRecordRepository() : super(AppDatabase.instance(), AppDatabase.instance().taskTimeRecordTable);
 
   // Constructor for testing with custom database
-  DriftTaskTimeRecordRepository.withDatabase(AppDatabase db)
-      : super(db, db.taskTimeRecordTable);
+  DriftTaskTimeRecordRepository.withDatabase(AppDatabase db) : super(db, db.taskTimeRecordTable);
 
   @override
   Future<void> add(TaskTimeRecord item) async {
@@ -116,8 +112,7 @@ class DriftTaskTimeRecordRepository
     final results = await query.get();
     final map = {
       for (final result in results)
-        result.read<String>('task_id'):
-            parseDurationAggregate(result.data['total_duration'])
+        result.read<String>('task_id'): parseDurationAggregate(result.data['total_duration'])
     };
 
     // Ensure all taskIds have an entry, even if they have no time records
@@ -130,8 +125,6 @@ class DriftTaskTimeRecordRepository
 
   @override
   Future<List<TaskTimeRecord>> getByTaskId(String taskId) async {
-    return (database.select(table)
-          ..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull()))
-        .get();
+    return (database.select(table)..where((t) => t.taskId.equals(taskId) & t.deletedDate.isNull())).get();
   }
 }

@@ -13,8 +13,7 @@ const int _noteCount = 12;
 const int _pageSize = 7;
 const int _farHlc = (1 << 46) << 16;
 
-Uint8List _bytes(int length, int fill) =>
-    Uint8List.fromList(List.filled(length, fill));
+Uint8List _bytes(int length, int fill) => Uint8List.fromList(List.filled(length, fill));
 
 MemberEntry _member(String id) => MemberEntry(
       memberId: id,
@@ -36,13 +35,8 @@ RevocationRecord _revocation() => RevocationRecord(
 
 EpochGrant _grant() => EpochGrant(EpochId(2, 'founder'), _bytes(32, 8));
 
-CellRecord _securityCell(CellKey key, Uint8List value, int clock) => CellRecord(
-    key: key,
-    value: value,
-    clock: clock,
-    node: 'node-x',
-    origin: 'origin-x',
-    originSeq: clock);
+CellRecord _securityCell(CellKey key, Uint8List value, int clock) =>
+    CellRecord(key: key, value: value, clock: clock, node: 'node-x', origin: 'origin-x', originSeq: clock);
 
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
@@ -83,20 +77,14 @@ void main() {
 
       final first = await a.store.signOwnManifests(signer);
       expect(first.map((m) => (m.fromSeq, m.toSeq)), [(0, top)]);
-      expect(
-          await a.count(
-              'SELECT COUNT(*) FROM sync_clock WHERE manifest_id IS NULL'),
-          0);
+      expect(await a.count('SELECT COUNT(*) FROM sync_clock WHERE manifest_id IS NULL'), 0);
       expect(await a.count('SELECT COUNT(*) FROM sync_origin_batch'), 1);
       expect(await a.store.signOwnManifests(signer), isEmpty);
 
       await a.setTitle('n0', 'edited');
       final second = await a.store.signOwnManifests(signer);
       expect(second.single.fromSeq, top);
-      expect(
-          await a.count(
-              'SELECT COUNT(*) FROM sync_clock WHERE manifest_id IS NULL'),
-          0);
+      expect(await a.count('SELECT COUNT(*) FROM sync_clock WHERE manifest_id IS NULL'), 0);
     });
 
     test('serves stored manifests and attaches them on the receiver', () async {
@@ -104,59 +92,47 @@ void main() {
       await a.store.signOwnManifests(signer);
       final top = (await a.store.readVector())[_originAHex]!;
 
-      final served =
-          await a.store.readManifests(_originAHex, afterSeq: 0, upToSeq: top);
+      final served = await a.store.readManifests(_originAHex, afterSeq: 0, upToSeq: top);
       final batch = await a.store.readChanges(_originAHex, afterSeq: 0);
       await b.store.applyBatch(batch, manifest: served.single);
 
-      expect(
-          await b.count(
-              'SELECT COUNT(*) FROM sync_clock WHERE manifest_id IS NULL'),
-          0);
-      final again =
-          await b.store.readManifests(_originAHex, afterSeq: 0, upToSeq: top);
+      expect(await b.count('SELECT COUNT(*) FROM sync_clock WHERE manifest_id IS NULL'), 0);
+      final again = await b.store.readManifests(_originAHex, afterSeq: 0, upToSeq: top);
       expect(again.single.hashes, served.single.hashes);
       expect(again.single.sig, served.single.sig);
     });
   });
 
   group('security rows (D7, D13)', () {
-    test('apply stores the row and serves the identical record bytes',
-        () async {
+    test('apply stores the row and serves the identical record bytes', () async {
       final member = _member('m1');
       final revocation = _revocation();
       final grant = _grant();
       final cells = [
         _securityCell(memberCellKey('m1'), member.encode(), 100),
-        _securityCell(revocationCellKey(revocation),
-            encodeRevocationRecord(revocation), 101),
+        _securityCell(revocationCellKey(revocation), encodeRevocationRecord(revocation), 101),
         _securityCell(epochGrantCellKey(grant), encodeEpochGrant(grant), 102),
       ];
 
-      final report = await b.store.applyBatch(ChangeBatch(
-          origin: 'origin-x', fromSeq: 0, toSeq: 102, cells: cells));
+      final report = await b.store.applyBatch(ChangeBatch(origin: 'origin-x', fromSeq: 0, toSeq: 102, cells: cells));
       expect(report.applied, 3);
       expect(await b.count('SELECT COUNT(*) FROM sync_member_table'), 1);
       expect(await b.count('SELECT COUNT(*) FROM sync_revocation'), 1);
       expect(await b.count('SELECT COUNT(*) FROM sync_epoch_grant'), 1);
 
-      final served =
-          await b.store.readChanges('origin-x', afterSeq: 0, upToSeq: 102);
+      final served = await b.store.readChanges('origin-x', afterSeq: 0, upToSeq: 102);
       expect(served.cells.map((c) => c.key), cells.map((c) => c.key));
       for (var i = 0; i < cells.length; i++) {
         expect(served.cells[i].value, cells[i].value);
       }
     });
 
-    test('a record under the wrong pk fails its savepoint and is held',
-        () async {
+    test('a record under the wrong pk fails its savepoint and is held', () async {
       final report = await b.store.applyBatch(ChangeBatch(
           origin: 'origin-x',
           fromSeq: 0,
           toSeq: 100,
-          cells: [
-            _securityCell(memberCellKey('other'), _member('m1').encode(), 100)
-          ]));
+          cells: [_securityCell(memberCellKey('other'), _member('m1').encode(), 100)]));
       expect(report.failed, 1);
       expect(await b.count('SELECT COUNT(*) FROM sync_member_table'), 0);
       expect(await b.store.refetchKeys(), [memberCellKey('other')]);
@@ -164,10 +140,7 @@ void main() {
 
     test('registrations are stored once and served back', () async {
       final registration = OriginRegistration(
-          origin: OriginId(_bytes(16, 9)),
-          memberPub: _bytes(32, 2),
-          createdHlc: 5 << 16,
-          sig: _bytes(64, 7));
+          origin: OriginId(_bytes(16, 9)), memberPub: _bytes(32, 2), createdHlc: 5 << 16, sig: _bytes(64, 7));
       expect(await b.store.mergeRegistrations([registration]), 1);
       expect(await b.store.mergeRegistrations([registration]), 0);
       final stored = (await b.store.readRegistrations()).single;
@@ -178,14 +151,11 @@ void main() {
     group('never-sent rule on origin switch', () {
       setUp(() async {
         await seedNotes(a, 3);
-        await a.store
-            .writeSecurityCell(memberCellKey('m1'), _member('m1').encode());
+        await a.store.writeSecurityCell(memberCellKey('m1'), _member('m1').encode());
       });
 
-      test('restore leaves the unsigned security cell and flags re-pairing',
-          () async {
-        final report = await a.store
-            .switchOrigin(OriginSwitchReason.restore, newOrigin: 'origin-a2');
+      test('restore leaves the unsigned security cell and flags re-pairing', () async {
+        final report = await a.store.switchOrigin(OriginSwitchReason.restore, newOrigin: 'origin-a2');
         expect(report.securityLeftBehind, 1);
         expect(report.needsRepairing, isTrue);
         expect(report.strandedMemberIds, ['m1']);
@@ -231,12 +201,11 @@ JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100''');
       });
 
       test('group_switch purges security rows and their clock rows', () async {
-        await a.store.switchOrigin(OriginSwitchReason.groupSwitch,
-            newOrigin: 'origin-a2');
+        await a.store.switchOrigin(OriginSwitchReason.groupSwitch, newOrigin: 'origin-a2');
         expect(await a.count('SELECT COUNT(*) FROM sync_member_table'), 0);
         expect(
-            await a.count(
-                'SELECT COUNT(*) FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100'),
+            await a
+                .count('SELECT COUNT(*) FROM sync_clock c JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100'),
             0);
       });
     });
@@ -251,34 +220,21 @@ JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100''');
         origin: 'origin-z',
         originSeq: seq);
 
-    test('a different change under a stored (origin, seq) flags the peer',
-        () async {
-      await b.store.applyBatch(ChangeBatch(
-          origin: 'origin-z',
-          fromSeq: 0,
-          toSeq: 5,
-          cells: [noteCell('n1', 1 << 20, 5)]));
+    test('a different change under a stored (origin, seq) flags the peer', () async {
+      await b.store
+          .applyBatch(ChangeBatch(origin: 'origin-z', fromSeq: 0, toSeq: 5, cells: [noteCell('n1', 1 << 20, 5)]));
 
       final same = await b.store.applyBatch(
-          ChangeBatch(
-              origin: 'origin-z',
-              fromSeq: 0,
-              toSeq: 5,
-              cells: [noteCell('n1', 1 << 20, 5)]),
+          ChangeBatch(origin: 'origin-z', fromSeq: 0, toSeq: 5, cells: [noteCell('n1', 1 << 20, 5)]),
           peerMemberId: 'peer');
       expect(same.duplicateIdentityOrigins, isEmpty);
 
       final clash = await b.store.applyBatch(
-          ChangeBatch(
-              origin: 'origin-z',
-              fromSeq: 0,
-              toSeq: 5,
-              cells: [noteCell('n2', 2 << 20, 5)]),
+          ChangeBatch(origin: 'origin-z', fromSeq: 0, toSeq: 5, cells: [noteCell('n2', 2 << 20, 5)]),
           peerMemberId: 'peer');
       expect(clash.duplicateIdentityOrigins, {'origin-z'});
       expect(
-          (await b.rows(
-                  "SELECT last_result_category AS c FROM sync_peer_state_table WHERE member_id = 'peer'"))
+          (await b.rows("SELECT last_result_category AS c FROM sync_peer_state_table WHERE member_id = 'peer'"))
               .single['c'],
           'duplicated_identity');
     });
@@ -293,31 +249,25 @@ JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100''');
         origin: 'origin-z',
         originSeq: 1);
 
-    test('a failed item is refetchable, counted, and cleared by a good copy',
-        () async {
-      final bad = ChangeBatch(
-          origin: 'origin-z', fromSeq: 0, toSeq: 1, cells: [title(_farHlc)]);
+    test('a failed item is refetchable, counted, and cleared by a good copy', () async {
+      final bad = ChangeBatch(origin: 'origin-z', fromSeq: 0, toSeq: 1, cells: [title(_farHlc)]);
       expect((await b.store.applyBatch(bad)).failed, 1);
       await b.store.applyBatch(bad);
-      expect(await b.store.refetchKeys(),
-          [const CellKey('note_table', 'n1', 'title')]);
+      expect(await b.store.refetchKeys(), [const CellKey('note_table', 'n1', 'title')]);
       expect(await b.count('SELECT fail_count FROM sync_held_envelope'), 2);
 
-      final good = ChangeBatch(
-          origin: 'origin-z', fromSeq: 0, toSeq: 1, cells: [title(1 << 20)]);
+      final good = ChangeBatch(origin: 'origin-z', fromSeq: 0, toSeq: 1, cells: [title(1 << 20)]);
       expect((await b.store.applyBatch(good)).failed, 0);
       expect(await b.store.refetchKeys(), isEmpty);
     });
   });
 
   group('pipelined session (T12)', () {
-    test('reading the next page while the previous one applies converges',
-        () async {
+    test('reading the next page while the previous one applies converges', () async {
       await seedNotes(a, 20);
       final top = (await a.store.readVector())[_originAHex]!;
       var after = 0;
-      var nextRead = a.store.readChanges(_originAHex,
-          afterSeq: after, upToSeq: top, limit: _pageSize);
+      var nextRead = a.store.readChanges(_originAHex, afterSeq: after, upToSeq: top, limit: _pageSize);
       while (after < top) {
         final batch = await nextRead;
         after = batch.toSeq;
@@ -325,16 +275,14 @@ JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100''');
           await b.store.applyBatch(batch);
           break;
         }
-        nextRead = a.store.readChanges(_originAHex,
-            afterSeq: after, upToSeq: top, limit: _pageSize);
+        nextRead = a.store.readChanges(_originAHex, afterSeq: after, upToSeq: top, limit: _pageSize);
         await b.store.applyBatch(batch);
       }
       expect(await b.content(), await a.content());
       expect((await b.store.readVector())[_originAHex], top);
     });
 
-    test('a read issued during an apply sees the whole batch or none of it',
-        () async {
+    test('a read issued during an apply sees the whole batch or none of it', () async {
       await seedNotes(a, 6);
       final batch = await a.store.readChanges(_originAHex, afterSeq: 0);
       final results = await Future.wait([
@@ -350,8 +298,7 @@ JOIN sync_row r ON r.id = c.key / 256 WHERE r.tbl_id >= 100''');
     test('changesSince and mergeBatch converge two devices', () async {
       await seedNotes(a, 10);
       expect(await a.store.nodeId(), 'node-a');
-      final missing = await a.store
-          .changesSince(await b.store.vector(), maxCellsPerBatch: 5);
+      final missing = await a.store.changesSince(await b.store.vector(), maxCellsPerBatch: 5);
       expect(missing.length, greaterThan(1));
       for (final batch in missing) {
         expect(await b.store.mergeBatch(batch), isTrue);

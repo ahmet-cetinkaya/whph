@@ -12,11 +12,9 @@ const int internKindOrigin = 2;
 
 /// D3 wall clock in ms, derived inside SQLite so triggers work on every
 /// connection and isolate.
-const String _wallMs =
-    "CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)";
+const String _wallMs = "CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)";
 
-const String _captureEnabled =
-    "(SELECT apply_mode FROM sync_state WHERE id = 'singleton') = 0";
+const String _captureEnabled = "(SELECT apply_mode FROM sync_state WHERE id = 'singleton') = 0";
 
 String _q(String column) => '"$column"';
 
@@ -29,8 +27,7 @@ const String _rowLevelContentWritten = 'NEW.deleted_date IS NULL';
 
 /// Same rule for the data cells of a field-level row: an edit that leaves the
 /// row deleted (deleted_date unchanged and set) must not out-rank its tombstone.
-const String _rowNotLeftDeletedByEdit =
-    'NEW.deleted_date IS NULL OR OLD.deleted_date IS NOT NEW.deleted_date';
+const String _rowNotLeftDeletedByEdit = 'NEW.deleted_date IS NULL OR OLD.deleted_date IS NOT NEW.deleted_date';
 
 class _CellSpec {
   final int colId;
@@ -47,16 +44,13 @@ String _cells(int tblId, String pkExpr, List<_CellSpec> cells) {
     final c = cells[i];
     final rn = unconditional ? '${i + 1}' : null;
     final where = c.condition == '1' ? '' : ' WHERE ${c.condition}';
-    arms.add(
-        'SELECT ${c.colId} AS col_id, ${c.isTomb ? c.tombExpr : 'NULL'} AS tomb'
+    arms.add('SELECT ${c.colId} AS col_id, ${c.isTomb ? c.tombExpr : 'NULL'} AS tomb'
         '${rn != null ? ', $rn AS rn' : ''}$where');
   }
   final source = unconditional
       ? '(${arms.join(' UNION ALL ')})'
       : '(SELECT col_id, tomb, row_number() OVER (ORDER BY col_id) AS rn FROM (${arms.join(' UNION ALL ')}))';
-  final n = unconditional
-      ? '${cells.length}'
-      : '(${cells.map((c) => '(${c.condition})').join(' + ')})';
+  final n = unconditional ? '${cells.length}' : '(${cells.map((c) => '(${c.condition})').join(' + ')})';
   final isTomb = 'c.col_id = $tombstoneColId';
   return '''
   INSERT INTO sync_row (tbl_id, pk) SELECT $tblId, $pkExpr WHERE $n > 0
@@ -82,9 +76,7 @@ String _cells(int tblId, String pkExpr, List<_CellSpec> cells) {
 /// installer when the sync_state singleton is created (T17/T18 own the real
 /// identity; until then a stable local placeholder keeps triggers functional
 /// for capture-coverage testing).
-List<String> syncInternSeedStatements(
-        {required String nodeValue, required String originValue}) =>
-    [
+List<String> syncInternSeedStatements({required String nodeValue, required String originValue}) => [
       "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($internKindNode, '$nodeValue')",
       "INSERT OR IGNORE INTO sync_intern (kind, value) VALUES ($internKindOrigin, '$originValue')",
       '''
@@ -106,8 +98,7 @@ List<String> syncPlaceholderIdentityStatements() {
   return syncInternSeedStatements(nodeValue: node, originValue: origin);
 }
 
-String triggerName(SyncTablePolicy policy, String op) =>
-    'sync_cap_${policy.tableName}_$op';
+String triggerName(SyncTablePolicy policy, String op) => 'sync_cap_${policy.tableName}_$op';
 
 /// The three D3 triggers (AFTER INSERT/UPDATE/DELETE) for one table.
 List<String> syncTriggerStatements(SyncTablePolicy policy) {
@@ -122,25 +113,19 @@ List<String> syncTriggerStatements(SyncTablePolicy policy) {
     const _CellSpec(tombstoneColId, '1', 'NEW.deleted_date'),
   ];
 
-  final changed = [
-    for (final c in policy.columns.keys) 'OLD.${_q(c)} IS NOT NEW.${_q(c)}'
-  ];
-  final rowChanged =
-      changed.isEmpty ? _rowLevelContentWritten : changed.join(' OR ');
+  final changed = [for (final c in policy.columns.keys) 'OLD.${_q(c)} IS NOT NEW.${_q(c)}'];
+  final rowChanged = changed.isEmpty ? _rowLevelContentWritten : changed.join(' OR ');
   final updateCells = [
     if (policy.rowLevel)
       _CellSpec(rowLevelColId, rowChanged)
     else
       for (final e in policy.columns.entries)
-        _CellSpec(e.value,
-            '(OLD.${_q(e.key)} IS NOT NEW.${_q(e.key)}) AND ($_rowNotLeftDeletedByEdit)'),
-    const _CellSpec(tombstoneColId, 'OLD.deleted_date IS NOT NEW.deleted_date',
-        'NEW.deleted_date'),
+        _CellSpec(e.value, '(OLD.${_q(e.key)} IS NOT NEW.${_q(e.key)}) AND ($_rowNotLeftDeletedByEdit)'),
+    const _CellSpec(tombstoneColId, 'OLD.deleted_date IS NOT NEW.deleted_date', 'NEW.deleted_date'),
   ];
 
   final deleteCells = [
-    _CellSpec(tombstoneColId, '1',
-        "(SELECT ($_wallMs / 1000) FROM sync_state WHERE id = 'singleton')"),
+    _CellSpec(tombstoneColId, '1', "(SELECT ($_wallMs / 1000) FROM sync_state WHERE id = 'singleton')"),
   ];
 
   return [

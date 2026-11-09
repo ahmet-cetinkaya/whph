@@ -4,8 +4,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_events.da
 import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 
-class AddHabitTimeRecordCommand
-    implements IRequest<AddHabitTimeRecordCommandResponse> {
+class AddHabitTimeRecordCommand implements IRequest<AddHabitTimeRecordCommandResponse> {
   final String habitId;
   final int duration;
   final DateTime? customDateTime;
@@ -26,9 +25,7 @@ class AddHabitTimeRecordCommandResponse {
 }
 
 class AddHabitTimeRecordCommandHandler
-    implements
-        IRequestHandler<AddHabitTimeRecordCommand,
-            AddHabitTimeRecordCommandResponse> {
+    implements IRequestHandler<AddHabitTimeRecordCommand, AddHabitTimeRecordCommandResponse> {
   final IHabitTimeRecordRepository _habitTimeRecordRepository;
   final IHabitEvents? _habitEvents;
   final IDeviceIdService _deviceIds;
@@ -42,8 +39,7 @@ class AddHabitTimeRecordCommandHandler
         _habitEvents = habitEvents;
 
   @override
-  Future<AddHabitTimeRecordCommandResponse> call(
-      AddHabitTimeRecordCommand request) async {
+  Future<AddHabitTimeRecordCommandResponse> call(AddHabitTimeRecordCommand request) async {
     final targetDate = request.customDateTime ?? DateTime.now().toUtc();
 
     final record = await HabitTimeRecordService.addDurationToHabitTimeRecord(

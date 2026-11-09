@@ -88,34 +88,28 @@ class FailingTaskTimeRecordRepository extends DriftTaskTimeRecordRepository {
   FailingTaskTimeRecordRepository(super.database) : super.withDatabase();
 
   @override
-  Future<void> add(TaskTimeRecord item) =>
-      Future.error(StateError('task time write failed'));
+  Future<void> add(TaskTimeRecord item) => Future.error(StateError('task time write failed'));
 
   @override
-  Future<void> upsertRevive(TaskTimeRecord item) =>
-      Future.error(StateError('task time write failed'));
+  Future<void> upsertRevive(TaskTimeRecord item) => Future.error(StateError('task time write failed'));
 }
 
 class FailingHabitTimeRecordRepository extends DriftHabitTimeRecordRepository {
   FailingHabitTimeRecordRepository(super.database) : super.withDatabase();
 
   @override
-  Future<void> add(HabitTimeRecord item) =>
-      Future.error(StateError('habit time write failed'));
+  Future<void> add(HabitTimeRecord item) => Future.error(StateError('habit time write failed'));
 
   @override
-  Future<void> upsertRevive(HabitTimeRecord item) =>
-      Future.error(StateError('habit time write failed'));
+  Future<void> upsertRevive(HabitTimeRecord item) => Future.error(StateError('habit time write failed'));
 }
 
 class FailingTaskTagRepository extends Fake implements ITaskTagRepository {
   @override
-  Future<void> add(TaskTag item) =>
-      Future.error(StateError('tag write failed'));
+  Future<void> add(TaskTag item) => Future.error(StateError('tag write failed'));
 
   @override
-  Future<void> upsertRevive(TaskTag item) =>
-      Future.error(StateError('tag write failed'));
+  Future<void> upsertRevive(TaskTag item) => Future.error(StateError('tag write failed'));
 }
 
 class EmptySettingRepository extends Fake implements ISettingRepository {
@@ -130,8 +124,7 @@ class AwaitingRecurrenceService extends Fake implements ITaskRecurrenceService {
   List<WeekDays>? getRecurrenceDays(Task task) => const [WeekDays.monday];
 
   @override
-  Future<String?> handleCompletedRecurringTask(
-      String taskId, Mediator mediator) async {
+  Future<String?> handleCompletedRecurringTask(String taskId, Mediator mediator) async {
     calls++;
     await Future<void>.delayed(const Duration(milliseconds: 10));
     return 'next-task';
@@ -152,8 +145,7 @@ void main() {
   setUp(() async {
     AppDatabase.isTestMode = true;
     tempDirectory = await Directory.systemTemp.createTemp('whph-mcp-mutation-');
-    database =
-        AppDatabase(NativeDatabase(File('${tempDirectory.path}/notes.sqlite')));
+    database = AppDatabase(NativeDatabase(File('${tempDirectory.path}/notes.sqlite')));
     repository = DriftNoteRepository.withDatabase(database);
     events = RecordingNoteEvents();
   });
@@ -163,18 +155,13 @@ void main() {
     await tempDirectory.delete(recursive: true);
   });
 
-  test(
-      'direct note commands preserve omitted fields and emit after committed writes',
-      () async {
-    final handler =
-        SaveNoteCommandHandler(noteRepository: repository, noteEvents: events);
-    final created =
-        await handler.call(SaveNoteCommand(title: 'Original', content: 'Body'));
+  test('direct note commands preserve omitted fields and emit after committed writes', () async {
+    final handler = SaveNoteCommandHandler(noteRepository: repository, noteEvents: events);
+    final created = await handler.call(SaveNoteCommand(title: 'Original', content: 'Body'));
 
     expect(events.created, [created.id]);
 
-    final updateHandler = UpdateNoteCommandHandler(
-        noteRepository: repository, noteEvents: events);
+    final updateHandler = UpdateNoteCommandHandler(noteRepository: repository, noteEvents: events);
     final updated = await updateHandler.call(UpdateNoteCommand(
       id: created.id,
       expectedRevision: created.revision,
@@ -189,12 +176,9 @@ void main() {
   });
 
   test('stale note revision changes no data and emits no event', () async {
-    final handler =
-        SaveNoteCommandHandler(noteRepository: repository, noteEvents: events);
-    final created =
-        await handler.call(SaveNoteCommand(title: 'Original', content: 'Body'));
-    final updateHandler = UpdateNoteCommandHandler(
-        noteRepository: repository, noteEvents: events);
+    final handler = SaveNoteCommandHandler(noteRepository: repository, noteEvents: events);
+    final created = await handler.call(SaveNoteCommand(title: 'Original', content: 'Body'));
+    final updateHandler = UpdateNoteCommandHandler(noteRepository: repository, noteEvents: events);
     final current = await updateHandler.call(UpdateNoteCommand(
       id: created.id,
       expectedRevision: created.revision,
@@ -202,8 +186,7 @@ void main() {
     ));
     final afterCurrentUpdate = await repository.getById(created.id);
     expect(current.revision, isNot(created.revision));
-    expect(afterCurrentUpdate?.modifiedDate?.isAtSameMomentAs(current.revision),
-        isTrue);
+    expect(afterCurrentUpdate?.modifiedDate?.isAtSameMomentAs(current.revision), isTrue);
 
     await expectLater(
       updateHandler.call(UpdateNoteCommand(
@@ -221,36 +204,29 @@ void main() {
     expect(events.updated, [created.id]);
   });
 
-  test(
-      'multi-write failure exposes persisted prefix but publishes no success event',
-      () async {
+  test('multi-write failure exposes persisted prefix but publishes no success event', () async {
     final taskRepository = DriftTaskRepository.withDatabase(database);
     final taskEvents = RecordingTaskEvents();
     final handler = SaveTaskCommandHandler(
       taskService: taskRepository,
       taskTagRepository: FailingTaskTagRepository(),
-      taskTimeRecordRepository:
-          DriftTaskTimeRecordRepository.withDatabase(database),
+      taskTimeRecordRepository: DriftTaskTimeRecordRepository.withDatabase(database),
       settingRepository: EmptySettingRepository(),
       deviceIds: TestDeviceIds(),
       taskEvents: taskEvents,
     );
 
     await expectLater(
-      handler.call(SaveTaskCommand(
-          title: 'Partially persisted', tagIdsToAdd: ['tag-id'])),
+      handler.call(SaveTaskCommand(title: 'Partially persisted', tagIdsToAdd: ['tag-id'])),
       throwsA(isA<StateError>()),
     );
 
     final persisted = await taskRepository.getList(0, 20);
-    expect(persisted.items.map((task) => task.title),
-        contains('Partially persisted'));
+    expect(persisted.items.map((task) => task.title), contains('Partially persisted'));
     expect(taskEvents.created, isEmpty);
   });
 
-  test(
-      'task completion awaits recurrence and repeated completion is idempotent',
-      () async {
+  test('task completion awaits recurrence and repeated completion is idempotent', () async {
     final taskRepository = DriftTaskRepository.withDatabase(database);
     final timeRepository = DriftTaskTimeRecordRepository.withDatabase(database);
     final taskEvents = RecordingTaskEvents();
@@ -271,8 +247,7 @@ void main() {
     );
 
     final first = await handler.call(CompleteTaskCommand(id: 'recurring-task'));
-    final second =
-        await handler.call(CompleteTaskCommand(id: 'recurring-task'));
+    final second = await handler.call(CompleteTaskCommand(id: 'recurring-task'));
     final persisted = await taskRepository.getById('recurring-task');
 
     expect(first.recurringTaskId, 'next-task');
@@ -282,9 +257,7 @@ void main() {
     expect(persisted?.isCompleted, isTrue);
   });
 
-  test(
-      'direct task time logging emits once after real persistence and never after a failed write',
-      () async {
+  test('direct task time logging emits once after real persistence and never after a failed write', () async {
     final taskEvents = RecordingTaskEvents();
     final repository = DriftTaskTimeRecordRepository.withDatabase(database);
     final handler = AddTaskTimeRecordCommandHandler(
@@ -321,16 +294,13 @@ void main() {
       taskEvents: failingEvents,
     );
     await expectLater(
-      failingHandler.call(
-          AddTaskTimeRecordCommand(taskId: 'failed-task-time', duration: 30)),
+      failingHandler.call(AddTaskTimeRecordCommand(taskId: 'failed-task-time', duration: 30)),
       throwsA(isA<StateError>()),
     );
     expect(failingEvents.timeUpdated, isEmpty);
   });
 
-  test(
-      'direct habit time logging emits once after real persistence and never after a failed write',
-      () async {
+  test('direct habit time logging emits once after real persistence and never after a failed write', () async {
     final habitRepository = DriftHabitRepository.withDatabase(database);
     await habitRepository.add(Habit(
       id: 'habit-time',
@@ -374,8 +344,7 @@ void main() {
       habitEvents: failingEvents,
     );
     await expectLater(
-      failingHandler
-          .call(AddHabitTimeRecordCommand(habitId: 'habit-time', duration: 30)),
+      failingHandler.call(AddHabitTimeRecordCommand(habitId: 'habit-time', duration: 30)),
       throwsA(isA<StateError>()),
     );
     expect(failingEvents.updated, isEmpty);

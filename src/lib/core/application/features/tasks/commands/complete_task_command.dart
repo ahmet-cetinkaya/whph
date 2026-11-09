@@ -27,9 +27,7 @@ class CompleteTaskCommandResponse {
   CompleteTaskCommandResponse({required this.taskId, this.recurringTaskId});
 }
 
-class CompleteTaskCommandHandler
-    implements
-        IRequestHandler<CompleteTaskCommand, CompleteTaskCommandResponse> {
+class CompleteTaskCommandHandler implements IRequestHandler<CompleteTaskCommand, CompleteTaskCommandResponse> {
   final ITaskRepository _taskRepository;
   final ITaskTimeRecordRepository _taskTimeRecordRepository;
   final ITaskRecurrenceService _recurrenceService;
@@ -65,21 +63,18 @@ class CompleteTaskCommandHandler
     );
 
     if (completedTask.recurrenceType != RecurrenceType.none) {
-      completedTask.setRecurrenceDays(
-          _recurrenceService.getRecurrenceDays(completedTask));
+      completedTask.setRecurrenceDays(_recurrenceService.getRecurrenceDays(completedTask));
     }
 
     await _taskRepository.update(completedTask);
 
     // Auto-add time record if task has estimated time but no existing time records
     // (matching SaveTaskCommand behavior for consistency)
-    if (completedTask.estimatedTime != null &&
-        completedTask.estimatedTime! > 0) {
+    if (completedTask.estimatedTime != null && completedTask.estimatedTime! > 0) {
       final existingTimeRecords = await _taskTimeRecordRepository.getList(
         0,
         1,
-        customWhereFilter: CustomWhereFilter(
-            'task_id = ? AND deleted_date IS NULL', [completedTask.id]),
+        customWhereFilter: CustomWhereFilter('task_id = ? AND deleted_date IS NULL', [completedTask.id]),
       );
 
       if (existingTimeRecords.items.isEmpty) {
@@ -95,11 +90,9 @@ class CompleteTaskCommandHandler
       }
     }
 
-    final recurringTaskId = await _recurrenceService
-        .handleCompletedRecurringTask(command.id, _mediator);
+    final recurringTaskId = await _recurrenceService.handleCompletedRecurringTask(command.id, _mediator);
     _taskEvents.notifyTaskCompleted(command.id);
 
-    return CompleteTaskCommandResponse(
-        taskId: command.id, recurringTaskId: recurringTaskId);
+    return CompleteTaskCommandResponse(taskId: command.id, recurringTaskId: recurringTaskId);
   }
 }

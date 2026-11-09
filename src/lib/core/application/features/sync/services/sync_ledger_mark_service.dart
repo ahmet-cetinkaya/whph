@@ -27,8 +27,7 @@ class SyncLedgerMarkService {
     if (!_keyStore.isReadable || entry == null) return false;
     if (state.nextSeq <= entry.nextSeqHigh) return false;
     try {
-      await _keyStore.persistWrittenWatermark(
-          origin, state.nextSeq, math.max(state.hlc, entry.hlcHighWritten));
+      await _keyStore.persistWrittenWatermark(origin, state.nextSeq, math.max(state.hlc, entry.hlcHighWritten));
       return true;
     } on SyncLedgerWriteException {
       return false;

@@ -4,8 +4,7 @@ import 'package:whph/core/application/features/habits/services/i_habit_events.da
 import 'package:whph/core/application/features/habits/services/habit_time_record_service.dart';
 import 'package:whph/core/application/features/sync/services/abstraction/i_device_id_service.dart';
 
-class SaveHabitTimeRecordCommand
-    implements IRequest<SaveHabitTimeRecordCommandResponse> {
+class SaveHabitTimeRecordCommand implements IRequest<SaveHabitTimeRecordCommandResponse> {
   final String habitId;
   final int totalDuration;
   final DateTime targetDate;
@@ -26,9 +25,7 @@ class SaveHabitTimeRecordCommandResponse {
 }
 
 class SaveHabitTimeRecordCommandHandler
-    implements
-        IRequestHandler<SaveHabitTimeRecordCommand,
-            SaveHabitTimeRecordCommandResponse> {
+    implements IRequestHandler<SaveHabitTimeRecordCommand, SaveHabitTimeRecordCommandResponse> {
   final IHabitTimeRecordRepository _habitTimeRecordRepository;
   final IHabitEvents? _habitEvents;
   final IDeviceIdService _deviceIds;
@@ -42,12 +39,10 @@ class SaveHabitTimeRecordCommandHandler
         _habitEvents = habitEvents;
 
   @override
-  Future<SaveHabitTimeRecordCommandResponse> call(
-      SaveHabitTimeRecordCommand request) async {
+  Future<SaveHabitTimeRecordCommandResponse> call(SaveHabitTimeRecordCommand request) async {
     final targetDate = request.targetDate.toUtc();
 
-    final record =
-        await HabitTimeRecordService.setTotalDurationForHabitTimeRecord(
+    final record = await HabitTimeRecordService.setTotalDurationForHabitTimeRecord(
       repository: _habitTimeRecordRepository,
       habitId: request.habitId,
       targetDate: targetDate,

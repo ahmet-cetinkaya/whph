@@ -192,9 +192,10 @@ class AddSyncDeviceController extends ChangeNotifier {
   Future<bool> _checkIfDeviceAlreadyAdded(String? memberId) async {
     if (memberId == null) return false;
     try {
-      final response = await container.resolve<Mediator>().send<GetListSyncMembersQuery, GetListSyncMembersQueryResponse>(
-            GetListSyncMembersQuery(),
-          );
+      final response =
+          await container.resolve<Mediator>().send<GetListSyncMembersQuery, GetListSyncMembersQueryResponse>(
+                GetListSyncMembersQuery(),
+              );
       return response.members.any((member) => !member.isLegacy && member.memberId == memberId);
     } catch (e) {
       return false; // If we can't check, assume it's not added

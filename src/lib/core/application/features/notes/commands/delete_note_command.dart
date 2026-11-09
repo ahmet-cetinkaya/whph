@@ -51,16 +51,16 @@ class DeleteNoteCommandHandler implements IRequestHandler<DeleteNoteCommand, Del
 
     await _syncCascadeService.withCause('note_table', note.id, () {
       return _transactions.run(() async {
-      final noteTags = await _noteTagRepository.getByNoteId(request.id);
-      for (final noteTag in noteTags) {
-        await _noteTagRepository.delete(noteTag);
-      }
-      if (request.expectedRevision == null) {
-        await _noteRepository.delete(note);
-      } else if (!await _noteRepository.deleteIfRevision(note.id, request.expectedRevision!)) {
-        throw NoteRevisionConflictException(note.id);
-      }
-      await ensureMutationAuthorized(request.authorizeCommit);
+        final noteTags = await _noteTagRepository.getByNoteId(request.id);
+        for (final noteTag in noteTags) {
+          await _noteTagRepository.delete(noteTag);
+        }
+        if (request.expectedRevision == null) {
+          await _noteRepository.delete(note);
+        } else if (!await _noteRepository.deleteIfRevision(note.id, request.expectedRevision!)) {
+          throw NoteRevisionConflictException(note.id);
+        }
+        await ensureMutationAuthorized(request.authorizeCommit);
       });
     });
     _noteEvents.notifyNoteDeleted(note.id);

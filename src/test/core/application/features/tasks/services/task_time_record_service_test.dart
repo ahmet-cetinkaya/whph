@@ -21,24 +21,19 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   final List<TaskTimeRecord> _records = [];
 
   @override
-  Future<TaskTimeRecord?> getFirst(CustomWhereFilter customWhereFilter,
-      {bool includeDeleted = false}) async {
-    if (customWhereFilter.query.startsWith('id = ?') &&
-        customWhereFilter.variables.isNotEmpty) {
+  Future<TaskTimeRecord?> getFirst(CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
+    if (customWhereFilter.query.startsWith('id = ?') && customWhereFilter.variables.isNotEmpty) {
       final id = customWhereFilter.variables[0] as String;
       final result = _records.where((record) => record.id == id).toList();
       return result.isEmpty ? null : result.first;
     }
-    if (customWhereFilter.query.contains('task_id = ?') &&
-        customWhereFilter.variables.length >= 3) {
+    if (customWhereFilter.query.contains('task_id = ?') && customWhereFilter.variables.length >= 3) {
       final taskId = customWhereFilter.variables[0] as String;
       final startOfHour = customWhereFilter.variables[1] as DateTime;
 
       final result = _records
           .where(
-            (record) =>
-                record.taskId == taskId &&
-                record.createdDate.isAtSameMomentAs(startOfHour),
+            (record) => record.taskId == taskId && record.createdDate.isAtSameMomentAs(startOfHour),
           )
           .toList();
       return result.isEmpty ? null : result.first;
@@ -62,38 +57,30 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   // Implementation of acore.IRepository methods
   @override
   Future<List<TaskTimeRecord>> getAll(
-      {bool includeDeleted = false,
-      CustomWhereFilter? customWhereFilter,
-      List<CustomOrder>? customOrder}) async {
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
     if (customWhereFilter != null &&
-        customWhereFilter.query.contains(
-            'task_id = ? AND created_date >= ? AND created_date < ?') &&
+        customWhereFilter.query.contains('task_id = ? AND created_date >= ? AND created_date < ?') &&
         customWhereFilter.variables.length >= 3) {
       final taskId = customWhereFilter.variables[0] as String;
       final start = customWhereFilter.variables[1] as DateTime;
       final end = customWhereFilter.variables[2] as DateTime;
       return _records
           .where((record) =>
-              record.taskId == taskId &&
-              !record.createdDate.isBefore(start) &&
-              record.createdDate.isBefore(end))
+              record.taskId == taskId && !record.createdDate.isBefore(start) && record.createdDate.isBefore(end))
           .toList();
     }
     return _records;
   }
 
   @override
-  Future<TaskTimeRecord?> getById(String id,
-      {bool includeDeleted = false}) async {
+  Future<TaskTimeRecord?> getById(String id, {bool includeDeleted = false}) async {
     final result = _records.where((record) => record.id == id).toList();
     return result.isEmpty ? null : result.first;
   }
 
   @override
   Future<PaginatedList<TaskTimeRecord>> getList(int pageIndex, int pageSize,
-      {bool includeDeleted = false,
-      CustomWhereFilter? customWhereFilter,
-      List<CustomOrder>? customOrder}) async {
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
     return PaginatedList<TaskTimeRecord>(
       items: _records,
       pageIndex: pageIndex,
@@ -123,8 +110,7 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   }
 
   @override
-  Future<int> getTotalDurationByTaskId(String taskId,
-      {DateTime? startDate, DateTime? endDate}) async {
+  Future<int> getTotalDurationByTaskId(String taskId, {DateTime? startDate, DateTime? endDate}) async {
     final records = await getByTaskId(taskId);
     var total = 0;
     for (final record in records) {
@@ -138,8 +124,7 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
       {DateTime? startDate, DateTime? endDate}) async {
     final result = <String, int>{};
     for (final taskId in taskIds) {
-      result[taskId] = await getTotalDurationByTaskId(taskId,
-          startDate: startDate, endDate: endDate);
+      result[taskId] = await getTotalDurationByTaskId(taskId, startDate: startDate, endDate: endDate);
     }
     return result;
   }
@@ -160,8 +145,7 @@ class MockTaskTimeRecordRepository implements ITaskTimeRecordRepository {
 }
 
 // Error throwing repository for testing specific error scenarios
-class _ErrorThrowingTaskTimeRecordRepository
-    implements ITaskTimeRecordRepository {
+class _ErrorThrowingTaskTimeRecordRepository implements ITaskTimeRecordRepository {
   @override
   Future<void> upsertRevive(TaskTimeRecord item) async {
     if (methodToThrow == 'add' || methodToThrow == 'update') {
@@ -178,8 +162,7 @@ class _ErrorThrowingTaskTimeRecordRepository
   });
 
   @override
-  Future<TaskTimeRecord?> getFirst(CustomWhereFilter customWhereFilter,
-      {bool includeDeleted = false}) async {
+  Future<TaskTimeRecord?> getFirst(CustomWhereFilter customWhereFilter, {bool includeDeleted = false}) async {
     if (methodToThrow == 'getFirst') {
       throw Exception(errorMessage);
     }
@@ -203,9 +186,7 @@ class _ErrorThrowingTaskTimeRecordRepository
   // Implementation of acore.IRepository methods
   @override
   Future<List<TaskTimeRecord>> getAll(
-      {bool includeDeleted = false,
-      CustomWhereFilter? customWhereFilter,
-      List<CustomOrder>? customOrder}) async {
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
     if (methodToThrow == 'getAll') {
       throw Exception(errorMessage);
     }
@@ -213,8 +194,7 @@ class _ErrorThrowingTaskTimeRecordRepository
   }
 
   @override
-  Future<TaskTimeRecord?> getById(String id,
-      {bool includeDeleted = false}) async {
+  Future<TaskTimeRecord?> getById(String id, {bool includeDeleted = false}) async {
     if (methodToThrow == 'getById' || methodToThrow == 'getFirst') {
       throw Exception(errorMessage);
     }
@@ -223,9 +203,7 @@ class _ErrorThrowingTaskTimeRecordRepository
 
   @override
   Future<PaginatedList<TaskTimeRecord>> getList(int pageIndex, int pageSize,
-      {bool includeDeleted = false,
-      CustomWhereFilter? customWhereFilter,
-      List<CustomOrder>? customOrder}) async {
+      {bool includeDeleted = false, CustomWhereFilter? customWhereFilter, List<CustomOrder>? customOrder}) async {
     if (methodToThrow == 'getList') {
       throw Exception(errorMessage);
     }
@@ -269,8 +247,7 @@ class _ErrorThrowingTaskTimeRecordRepository
   }
 
   @override
-  Future<int> getTotalDurationByTaskId(String taskId,
-      {DateTime? startDate, DateTime? endDate}) async {
+  Future<int> getTotalDurationByTaskId(String taskId, {DateTime? startDate, DateTime? endDate}) async {
     if (methodToThrow == 'getTotalDurationByTaskId') {
       throw Exception(errorMessage);
     }
@@ -305,12 +282,10 @@ void main() {
     group('createHourBoundaries', () {
       test('should create correct hour boundaries for a given date', () {
         // Arrange
-        final date =
-            DateTime.utc(2024, 1, 15, 14, 30, 45); // 2:30 PM with 45 seconds
+        final date = DateTime.utc(2024, 1, 15, 14, 30, 45); // 2:30 PM with 45 seconds
 
         // Act
-        final (startOfHour, endOfHour) =
-            TaskTimeRecordService.createHourBoundaries(date);
+        final (startOfHour, endOfHour) = TaskTimeRecordService.createHourBoundaries(date);
 
         // Assert
         expect(startOfHour.year, 2024);
@@ -337,8 +312,7 @@ void main() {
         final date = DateTime.utc(2024, 1, 15, 0, 15, 30); // 12:15 AM
 
         // Act
-        final (startOfHour, endOfHour) =
-            TaskTimeRecordService.createHourBoundaries(date);
+        final (startOfHour, endOfHour) = TaskTimeRecordService.createHourBoundaries(date);
 
         // Assert
         expect(startOfHour.year, 2024);
@@ -361,8 +335,7 @@ void main() {
         final date = DateTime.utc(2024, 1, 15, 23, 45, 30); // 11:45 PM
 
         // Act
-        final (startOfHour, endOfHour) =
-            TaskTimeRecordService.createHourBoundaries(date);
+        final (startOfHour, endOfHour) = TaskTimeRecordService.createHourBoundaries(date);
 
         // Assert
         expect(startOfHour.year, 2024);
@@ -382,16 +355,13 @@ void main() {
     });
 
     group('findOrCreateTaskTimeRecord', () {
-      test('should find existing task time record in same hour bucket',
-          () async {
+      test('should find existing task time record in same hour bucket', () async {
         // Arrange
         final taskId = 'task-1';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
-        final (startOfHour, _) =
-            TaskTimeRecordService.createHourBoundaries(targetDate);
+        final (startOfHour, _) = TaskTimeRecordService.createHourBoundaries(targetDate);
         final existingRecord = TaskTimeRecord(
-          id: TaskTimeRecordService.bucketId(
-              taskId: taskId, targetDate: targetDate, deviceId: testDeviceId),
+          id: TaskTimeRecordService.bucketId(taskId: taskId, targetDate: targetDate, deviceId: testDeviceId),
           createdDate: startOfHour, // 2 PM (same hour bucket)
           taskId: taskId,
           duration: 120,
@@ -412,8 +382,7 @@ void main() {
         expect(result.createdDate.hour, 14); // 2 PM
       });
 
-      test('should create new task time record when none exists in hour bucket',
-          () async {
+      test('should create new task time record when none exists in hour bucket', () async {
         // Arrange
         final taskId = 'task-2';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
@@ -437,8 +406,7 @@ void main() {
         expect(result.createdDate.minute, 0); // Start of hour
       });
 
-      test('should use provided initial duration when creating new record',
-          () async {
+      test('should use provided initial duration when creating new record', () async {
         // Arrange
         final taskId = 'task-3';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
@@ -457,15 +425,12 @@ void main() {
         expect(result.duration, initialDuration);
       });
 
-      test('should create record with correct hour bucket for different dates',
-          () async {
+      test('should create record with correct hour bucket for different dates', () async {
         // Arrange
         final taskId = 'task-4';
         final targetDate1 = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
-        final targetDate2 =
-            DateTime.utc(2024, 1, 15, 14, 45, 0); // 2:45 PM (same hour bucket)
-        final targetDate3 = DateTime.utc(
-            2024, 1, 15, 15, 10, 0); // 3:10 PM (different hour bucket)
+        final targetDate2 = DateTime.utc(2024, 1, 15, 14, 45, 0); // 2:45 PM (same hour bucket)
+        final targetDate3 = DateTime.utc(2024, 1, 15, 15, 10, 0); // 3:10 PM (different hour bucket)
 
         // Act - Create the first record
         final result1 = await TaskTimeRecordService.findOrCreateTaskTimeRecord(
@@ -493,8 +458,7 @@ void main() {
 
         // Assert
         expect(result1.id, result2.id); // Same record since same hour bucket
-        expect(result3.id,
-            isNot(result1.id)); // Different record since different hour bucket
+        expect(result3.id, isNot(result1.id)); // Different record since different hour bucket
         expect(result3.createdDate.hour, 15); // 3 PM
         expect(result1.createdDate.hour, 14); // 2 PM
       });
@@ -505,11 +469,9 @@ void main() {
         // Arrange
         final taskId = 'task-5';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
-        final (startOfHour, _) =
-            TaskTimeRecordService.createHourBoundaries(targetDate);
+        final (startOfHour, _) = TaskTimeRecordService.createHourBoundaries(targetDate);
         final existingRecord = TaskTimeRecord(
-          id: TaskTimeRecordService.bucketId(
-              taskId: taskId, targetDate: targetDate, deviceId: testDeviceId),
+          id: TaskTimeRecordService.bucketId(taskId: taskId, targetDate: targetDate, deviceId: testDeviceId),
           createdDate: startOfHour, // 2 PM bucket
           taskId: taskId,
           duration: 120,
@@ -529,17 +491,14 @@ void main() {
         // Assert
         expect(result.duration, 120 + 60); // Original 120 + added 60
         // Verify the record was updated in the repository
-        final (startOfHourCheck, endOfHourCheck) =
-            TaskTimeRecordService.createHourBoundaries(targetDate);
+        final (startOfHourCheck, endOfHourCheck) = TaskTimeRecordService.createHourBoundaries(targetDate);
         final filter = CustomWhereFilter(
-            'task_id = ? AND created_date >= ? AND created_date < ?',
-            [taskId, startOfHourCheck, endOfHourCheck]);
+            'task_id = ? AND created_date >= ? AND created_date < ?', [taskId, startOfHourCheck, endOfHourCheck]);
         final updatedRecord = await mockRepository.getFirst(filter);
         expect(updatedRecord!.duration, 180);
       });
 
-      test('should create new record with specified duration if none exists',
-          () async {
+      test('should create new record with specified duration if none exists', () async {
         // Arrange
         final taskId = 'task-6';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
@@ -555,8 +514,7 @@ void main() {
         );
 
         // Assert
-        expect(result.duration,
-            durationToAdd); // New record starts with the added duration
+        expect(result.duration, durationToAdd); // New record starts with the added duration
         expect(result.createdDate.hour, 14); // Same hour as target date
         expect(result.createdDate.minute, 0); // Start of hour
       });
@@ -599,8 +557,7 @@ void main() {
         // Assert
         expect(result1.duration, firstAddition);
         expect(result2.duration, firstAddition + secondAddition);
-        expect(
-            result3.duration, firstAddition + secondAddition + thirdAddition);
+        expect(result3.duration, firstAddition + secondAddition + thirdAddition);
       });
     });
 
@@ -609,11 +566,9 @@ void main() {
         // Arrange
         final taskId = 'task-8';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
-        final (startOfHour, _) =
-            TaskTimeRecordService.createHourBoundaries(targetDate);
+        final (startOfHour, _) = TaskTimeRecordService.createHourBoundaries(targetDate);
         final existingRecord = TaskTimeRecord(
-          id: TaskTimeRecordService.bucketId(
-              taskId: taskId, targetDate: targetDate, deviceId: testDeviceId),
+          id: TaskTimeRecordService.bucketId(taskId: taskId, targetDate: targetDate, deviceId: testDeviceId),
           createdDate: startOfHour, // 2 PM bucket
           taskId: taskId,
           duration: 120,
@@ -625,8 +580,7 @@ void main() {
         final result = await TaskTimeRecordService.setTotalDurationForDay(
           repository: mockRepository,
           taskId: taskId,
-          dayStart:
-              DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
+          dayStart: DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
           targetHour: targetDate,
           deviceId: testDeviceId,
           totalDuration: newTotalDuration,
@@ -635,18 +589,14 @@ void main() {
         // Assert
         expect(result.duration, newTotalDuration);
         // Verify the record was updated in the repository
-        final (startOfHourCheck, endOfHourCheck) =
-            TaskTimeRecordService.createHourBoundaries(targetDate);
+        final (startOfHourCheck, endOfHourCheck) = TaskTimeRecordService.createHourBoundaries(targetDate);
         final filter = CustomWhereFilter(
-            'task_id = ? AND created_date >= ? AND created_date < ?',
-            [taskId, startOfHourCheck, endOfHourCheck]);
+            'task_id = ? AND created_date >= ? AND created_date < ?', [taskId, startOfHourCheck, endOfHourCheck]);
         final updatedRecord = await mockRepository.getFirst(filter);
         expect(updatedRecord!.duration, newTotalDuration);
       });
 
-      test(
-          'should create new record with specified total duration if none exists',
-          () async {
+      test('should create new record with specified total duration if none exists', () async {
         // Arrange
         final taskId = 'task-9';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
@@ -656,8 +606,7 @@ void main() {
         final result = await TaskTimeRecordService.setTotalDurationForDay(
           repository: mockRepository,
           taskId: taskId,
-          dayStart:
-              DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
+          dayStart: DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
           targetHour: targetDate,
           deviceId: testDeviceId,
           totalDuration: newTotalDuration,
@@ -673,11 +622,9 @@ void main() {
         // Arrange
         final taskId = 'task-10';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
-        final (startOfHour, _) =
-            TaskTimeRecordService.createHourBoundaries(targetDate);
+        final (startOfHour, _) = TaskTimeRecordService.createHourBoundaries(targetDate);
         final existingRecord = TaskTimeRecord(
-          id: TaskTimeRecordService.bucketId(
-              taskId: taskId, targetDate: targetDate, deviceId: testDeviceId),
+          id: TaskTimeRecordService.bucketId(taskId: taskId, targetDate: targetDate, deviceId: testDeviceId),
           createdDate: startOfHour, // 2 PM bucket
           taskId: taskId,
           duration: 100,
@@ -689,27 +636,23 @@ void main() {
         final result = await TaskTimeRecordService.setTotalDurationForDay(
           repository: mockRepository,
           taskId: taskId,
-          dayStart:
-              DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
+          dayStart: DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
           targetHour: targetDate,
           deviceId: testDeviceId,
           totalDuration: newTotalDuration,
         );
 
         // Assert
-        expect(result.duration,
-            newTotalDuration); // Should be the new total, not original + new
+        expect(result.duration, newTotalDuration); // Should be the new total, not original + new
       });
     });
 
     group('Edge Cases', () {
-      test('should handle different minute values in same hour bucket',
-          () async {
+      test('should handle different minute values in same hour bucket', () async {
         // Arrange
         final taskId = 'task-edge-1';
         final date1 = DateTime.utc(2024, 1, 15, 14, 5, 0); // 2:05 PM
-        final date2 =
-            DateTime.utc(2024, 1, 15, 14, 55, 0); // 2:55 PM (same bucket)
+        final date2 = DateTime.utc(2024, 1, 15, 14, 55, 0); // 2:55 PM (same bucket)
 
         // Act
         final result1 = await TaskTimeRecordService.findOrCreateTaskTimeRecord(
@@ -727,17 +670,14 @@ void main() {
 
         // Assert - Should be the same record since in same hour bucket
         expect(result1.id, result2.id);
-        expect(result1.createdDate,
-            DateTime.utc(2024, 1, 15, 14, 0, 0)); // Start of the hour
+        expect(result1.createdDate, DateTime.utc(2024, 1, 15, 14, 0, 0)); // Start of the hour
       });
 
-      test('should handle different second values in same hour bucket',
-          () async {
+      test('should handle different second values in same hour bucket', () async {
         // Arrange
         final taskId = 'task-edge-2';
         final date1 = DateTime.utc(2024, 1, 15, 14, 30, 5); // 2:30:05 PM
-        final date2 =
-            DateTime.utc(2024, 1, 15, 14, 30, 55); // 2:30:55 PM (same bucket)
+        final date2 = DateTime.utc(2024, 1, 15, 14, 30, 55); // 2:30:55 PM (same bucket)
 
         // Act
         final result1 = await TaskTimeRecordService.findOrCreateTaskTimeRecord(
@@ -755,8 +695,7 @@ void main() {
 
         // Assert - Should be the same record since in same hour bucket
         expect(result1.id, result2.id);
-        expect(result1.createdDate,
-            DateTime.utc(2024, 1, 15, 14, 0, 0)); // Start of the hour
+        expect(result1.createdDate, DateTime.utc(2024, 1, 15, 14, 0, 0)); // Start of the hour
       });
 
       test('should handle different tasks in same hour', () async {
@@ -790,8 +729,7 @@ void main() {
       test('should handle boundary conditions for hour start/end', () async {
         // Arrange
         final taskId = 'task-edge-4';
-        final startOfHour =
-            DateTime.utc(2024, 1, 15, 14, 0, 0); // Exactly 2:00 PM
+        final startOfHour = DateTime.utc(2024, 1, 15, 14, 0, 0); // Exactly 2:00 PM
         final endOfHour = DateTime.utc(2024, 1, 15, 14, 59, 59); // 2:59:59 PM
 
         // Act
@@ -810,14 +748,12 @@ void main() {
 
         // Assert - Should be the same record since in same hour bucket
         expect(result1.id, result2.id);
-        expect(result1.createdDate,
-            DateTime.utc(2024, 1, 15, 14, 0, 0)); // Start of the hour
+        expect(result1.createdDate, DateTime.utc(2024, 1, 15, 14, 0, 0)); // Start of the hour
       });
     });
 
     group('Performance Scenarios', () {
-      test('should efficiently handle multiple operations in same hour bucket',
-          () async {
+      test('should efficiently handle multiple operations in same hour bucket', () async {
         // Arrange
         final taskId = 'perf-test-1';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 30, 0); // 2:30 PM
@@ -838,19 +774,14 @@ void main() {
 
         // Assert - Operations should complete quickly
         expect(duration.inMilliseconds, lessThan(2000)); // Less than 2 seconds
-        final (startOfHourCheck, endOfHourCheck) =
-            TaskTimeRecordService.createHourBoundaries(targetDate);
+        final (startOfHourCheck, endOfHourCheck) = TaskTimeRecordService.createHourBoundaries(targetDate);
         final filter = CustomWhereFilter(
-            'task_id = ? AND created_date >= ? AND created_date < ?',
-            [taskId, startOfHourCheck, endOfHourCheck]);
+            'task_id = ? AND created_date >= ? AND created_date < ?', [taskId, startOfHourCheck, endOfHourCheck]);
         final finalRecord = await mockRepository.getFirst(filter);
-        expect(
-            finalRecord!.duration, 1000); // 100 iterations * 10 duration each
+        expect(finalRecord!.duration, 1000); // 100 iterations * 10 duration each
       });
 
-      test(
-          'should not create multiple records for same task in same hour across operations',
-          () async {
+      test('should not create multiple records for same task in same hour across operations', () async {
         // Arrange
         final taskId = 'perf-test-2';
         final targetDate = DateTime.utc(2024, 1, 15, 14, 45, 30); // 2:45:30 PM
@@ -875,8 +806,7 @@ void main() {
         await TaskTimeRecordService.setTotalDurationForDay(
           repository: mockRepository,
           taskId: taskId,
-          dayStart:
-              DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
+          dayStart: DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
           targetHour: targetDate,
           deviceId: testDeviceId,
           totalDuration: 200,
@@ -884,18 +814,14 @@ void main() {
 
         // Assert - Should still have only one record for this task in this hour
         final allRecords = mockRepository.getAllRecords();
-        final taskRecords =
-            allRecords.where((record) => record.taskId == taskId);
+        final taskRecords = allRecords.where((record) => record.taskId == taskId);
         expect(taskRecords.length, 1);
-        expect(taskRecords.first.duration,
-            200); // Final duration after set operation
+        expect(taskRecords.first.duration, 200); // Final duration after set operation
       });
     });
 
     group('Error Handling', () {
-      test(
-          'should handle repository errors gracefully in findOrCreateTaskTimeRecord',
-          () async {
+      test('should handle repository errors gracefully in findOrCreateTaskTimeRecord', () async {
         // Create a repository that throws errors
         final errorRepository = _ErrorThrowingTaskTimeRecordRepository(
           methodToThrow: 'getById',
@@ -917,8 +843,7 @@ void main() {
         );
       });
 
-      test('should handle repository errors in addDurationToTaskTimeRecord',
-          () async {
+      test('should handle repository errors in addDurationToTaskTimeRecord', () async {
         // Create a repository that throws errors during update
         final errorRepository = _ErrorThrowingTaskTimeRecordRepository(
           methodToThrow: 'update',
@@ -950,9 +875,7 @@ void main() {
         );
       });
 
-      test(
-          'should handle repository errors in setTotalDurationForTaskTimeRecord',
-          () async {
+      test('should handle repository errors in setTotalDurationForTaskTimeRecord', () async {
         // Create a repository that throws errors during update
         final errorRepository = _ErrorThrowingTaskTimeRecordRepository(
           methodToThrow: 'update',
@@ -976,8 +899,7 @@ void main() {
           () => TaskTimeRecordService.setTotalDurationForDay(
             repository: errorRepository,
             taskId: taskId,
-            dayStart:
-                DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
+            dayStart: DateTime.utc(targetDate.year, targetDate.month, targetDate.day),
             targetHour: targetDate,
             deviceId: testDeviceId,
             totalDuration: 180,

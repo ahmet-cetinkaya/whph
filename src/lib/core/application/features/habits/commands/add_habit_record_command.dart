@@ -15,16 +15,12 @@ class AddHabitRecordCommand implements IRequest<AddHabitRecordCommandResponse> {
   AddHabitRecordCommand({
     required this.habitId,
     DateTime? occurredAt,
-  }) : occurredAt = occurredAt != null
-            ? DateTimeHelper.toUtcDateTime(occurredAt)
-            : DateTime.now().toUtc();
+  }) : occurredAt = occurredAt != null ? DateTimeHelper.toUtcDateTime(occurredAt) : DateTime.now().toUtc();
 }
 
 class AddHabitRecordCommandResponse {}
 
-class AddHabitRecordCommandHandler
-    implements
-        IRequestHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse> {
+class AddHabitRecordCommandHandler implements IRequestHandler<AddHabitRecordCommand, AddHabitRecordCommandResponse> {
   final IHabitRecordRepository _habitRecordRepository;
   final IHabitRepository _habitRepository;
   final HabitRecordOperationsService _operationsService;
@@ -41,8 +37,7 @@ class AddHabitRecordCommandHandler
         _habitEvents = habitEvents;
 
   @override
-  Future<AddHabitRecordCommandResponse> call(
-      AddHabitRecordCommand request) async {
+  Future<AddHabitRecordCommandResponse> call(AddHabitRecordCommand request) async {
     final habit = await _habitRepository.getById(request.habitId);
     if (habit?.type == HabitType.bad) {
       final dayRange = HabitDayStateResolver.utcRangeFor(request.occurredAt);
@@ -53,8 +48,7 @@ class AddHabitRecordCommandHandler
         0,
         1000,
       );
-      await _operationsService.ensureBadHabitMarker(
-          request.habitId, request.occurredAt, records.items);
+      await _operationsService.ensureBadHabitMarker(request.habitId, request.occurredAt, records.items);
       _habitEvents?.notifyHabitRecordAdded(request.habitId);
       return AddHabitRecordCommandResponse();
     }
@@ -64,8 +58,7 @@ class AddHabitRecordCommandHandler
       request.occurredAt,
       HabitRecordStatus.complete,
       DateTime.now().toUtc(),
-      deterministic:
-          habit == null || !habit.hasGoal || habit.getDailyTarget() == 1,
+      deterministic: habit == null || !habit.hasGoal || habit.getDailyTarget() == 1,
     );
     if (habit != null) {
       await _operationsService.addTimeRecordIfComplete(

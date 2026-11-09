@@ -39,23 +39,17 @@ void main() {
 
   /// Replaces [current] by the database file at [path], as a backup restore
   /// does, and switches to [newOrigin] (D14 `restore`).
-  Future<SyncTestDevice> restoreFrom(
-      SyncTestDevice current, String path, String newOrigin,
-      {int? sentMark}) async {
+  Future<SyncTestDevice> restoreFrom(SyncTestDevice current, String path, String newOrigin, {int? sentMark}) async {
     await current.close();
-    final restored = SyncTestDevice(
-        current.name, AppDatabase.withExecutor(NativeDatabase(File(path))),
-        origin: newOrigin);
-    await restored.store.switchOrigin(OriginSwitchReason.restore,
-        newOrigin: newOrigin, sentMark: sentMark);
+    final restored =
+        SyncTestDevice(current.name, AppDatabase.withExecutor(NativeDatabase(File(path))), origin: newOrigin);
+    await restored.store.switchOrigin(OriginSwitchReason.restore, newOrigin: newOrigin, sentMark: sentMark);
     expect(await SyncUpgradeJob(restored.db).runChunks(), isTrue);
     return restored;
   }
 
-  test('2a: a cell lost on P survives a restore of A and reaches P and Q',
-      () async {
-    await p.sql(
-        "CREATE TRIGGER $_faultTrigger BEFORE INSERT ON note_table WHEN NEW.title = '$_faultyTitle' "
+  test('2a: a cell lost on P survives a restore of A and reaches P and Q', () async {
+    await p.sql("CREATE TRIGGER $_faultTrigger BEFORE INSERT ON note_table WHEN NEW.title = '$_faultyTitle' "
         "BEGIN SELECT RAISE(ABORT, 'injected'); END");
     await a.insertNote('w', _faultyTitle);
     final snapshot = await takeSnapshot(a, 'holding_w');
@@ -72,30 +66,23 @@ void main() {
     await syncAllDevices([a, p, q]);
 
     for (final device in [a, p, q]) {
-      expect(
-          await device.count("SELECT COUNT(*) FROM note_table WHERE id = 'w'"),
-          1,
-          reason: device.name);
+      expect(await device.count("SELECT COUNT(*) FROM note_table WHERE id = 'w'"), 1, reason: device.name);
     }
     expect(await p.store.refetchKeys(), isEmpty);
     expect(await p.content(), await a.content());
     expect(await q.content(), await a.content());
   });
 
-  test('2b: a never-sent cell survives a replace-import and a backup restore',
-      () async {
+  test('2b: a never-sent cell survives a replace-import and a backup restore', () async {
     await a.insertNote('base', 'sent before');
     await syncAllDevices([a, p, q]);
     final sentMark = (await a.store.readVector())[a.origin]!;
-    await a.sql(
-        'UPDATE sync_clock SET manifest_id = $manifestedMarker WHERE origin_seq <= $sentMark');
+    await a.sql('UPDATE sync_clock SET manifest_id = $manifestedMarker WHERE origin_seq <= $sentMark');
 
     await a.insertNote('u', 'created above the sent mark');
     final backup = await takeSnapshot(a, 'pre_import');
 
-    await a.store.localReset(
-        newOrigin: 'origin-a2',
-        importRows: () => a.insertNote('imported', 'from the file'));
+    await a.store.localReset(newOrigin: 'origin-a2', importRows: () => a.insertNote('imported', 'from the file'));
     expect(await a.count("SELECT COUNT(*) FROM note_table WHERE id = 'u'"), 0);
     await syncAllDevices([a, p, q]);
     expect(await p.count("SELECT COUNT(*) FROM note_table WHERE id = 'u'"), 0);
@@ -104,10 +91,7 @@ void main() {
     await syncAllDevices([a, p, q]);
 
     for (final device in [a, p, q]) {
-      expect(
-          await device.count("SELECT COUNT(*) FROM note_table WHERE id = 'u'"),
-          1,
-          reason: device.name);
+      expect(await device.count("SELECT COUNT(*) FROM note_table WHERE id = 'u'"), 1, reason: device.name);
     }
     expect(await p.content(), await a.content());
     expect(await q.content(), await a.content());

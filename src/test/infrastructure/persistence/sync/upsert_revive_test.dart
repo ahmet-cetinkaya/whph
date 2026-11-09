@@ -20,35 +20,29 @@ void main() {
   Future<void> seedItem(String table, String cols, String values) =>
       db.customStatement('INSERT INTO $table ($cols) VALUES ($values)');
 
-  test('untag then retag a task tag revives one row with the deterministic id',
-      () async {
+  test('untag then retag a task tag revives one row with the deterministic id', () async {
     await seedItem('task_table', 'id, created_date, title', "'t1', 0, 'T'");
-    await seedItem('tag_table', 'id, created_date, name, is_archived, type',
-        "'g1', 0, 'N', 0, 0");
+    await seedItem('tag_table', 'id, created_date, name, is_archived, type', "'g1', 0, 'N', 0, 0");
     final repo = DriftTaskTagRepository.withDatabase(db);
     final add = AddTaskTagCommandHandler(taskTagRepository: repo);
     final id = syncIdentityId(identityKindTaskTag, ['t1', 'g1']);
 
     await add(AddTaskTagCommand(taskId: 't1', tagId: 'g1'));
-    await db.customStatement(
-        "UPDATE task_tag_table SET deleted_date = 500 WHERE id = '$id'");
+    await db.customStatement("UPDATE task_tag_table SET deleted_date = 500 WHERE id = '$id'");
     final tombHlc = await db
-        .customSelect(
-            'SELECT c.hlc AS hlc FROM sync_clock c JOIN sync_row r ON c.key / 256 = r.id '
+        .customSelect('SELECT c.hlc AS hlc FROM sync_clock c JOIN sync_row r ON c.key / 256 = r.id '
             "WHERE r.tbl_id = 2 AND r.pk = '$id' AND c.key % 256 = 0")
         .getSingle();
 
     await add(AddTaskTagCommand(taskId: 't1', tagId: 'g1'));
 
     final rows = await db
-        .customSelect(
-            "SELECT id, deleted_date FROM task_tag_table WHERE task_id = 't1' AND tag_id = 'g1'")
+        .customSelect("SELECT id, deleted_date FROM task_tag_table WHERE task_id = 't1' AND tag_id = 'g1'")
         .get();
     expect(rows.length, 1);
     expect(rows.first.data['deleted_date'], isNull);
     final revival = await db
-        .customSelect(
-            'SELECT c.hlc AS hlc FROM sync_clock c JOIN sync_row r ON c.key / 256 = r.id '
+        .customSelect('SELECT c.hlc AS hlc FROM sync_clock c JOIN sync_row r ON c.key / 256 = r.id '
             "WHERE r.tbl_id = 2 AND r.pk = '$id' AND c.key % 256 = 0")
         .getSingle();
     expect(revival.data['hlc'] as int, greaterThan(tombHlc.data['hlc'] as int));

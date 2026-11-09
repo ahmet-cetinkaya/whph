@@ -16,16 +16,13 @@ const _requiredIndexes = {
 };
 
 void main() {
-  test('a freshly created database has the v38 sync and foreign-key indexes',
-      () async {
+  test('a freshly created database has the v38 sync and foreign-key indexes', () async {
     final device = await SyncTestDevice.open('a');
     addTearDown(device.close);
 
-    final rows = await device
-        .rows("SELECT name FROM sqlite_master WHERE type = 'index'");
+    final rows = await device.rows("SELECT name FROM sqlite_master WHERE type = 'index'");
     final present = rows.map((row) => row['name']).toSet();
 
-    expect(present.containsAll(_requiredIndexes), isTrue,
-        reason: 'missing: ${_requiredIndexes.difference(present)}');
+    expect(present.containsAll(_requiredIndexes), isTrue, reason: 'missing: ${_requiredIndexes.difference(present)}');
   });
 }

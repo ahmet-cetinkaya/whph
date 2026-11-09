@@ -36,12 +36,7 @@ class SyncTablePolicy {
     this.columns = const {},
   });
 
-  static const Set<String> excludedColumns = {
-    'id',
-    'created_date',
-    'modified_date',
-    'deleted_date'
-  };
+  static const Set<String> excludedColumns = {'id', 'created_date', 'modified_date', 'deleted_date'};
 }
 
 // tblId space: user tables 1..99 in the order below; 100+ reserved.
@@ -74,42 +69,32 @@ const List<SyncTablePolicy> syncTablePolicies = [
     'recurrence_configuration': 23,
   }),
   SyncTablePolicy(tableName: 'task_tag_table', tblId: 2, rowLevel: true),
-  SyncTablePolicy(
-      tableName: 'task_time_record_table', tblId: 3, rowLevel: true),
-  SyncTablePolicy(
-      tableName: 'task_status_table',
-      tblId: 4,
-      rowLevel: false,
-      columns: {
-        'name': 2,
-        'color': 3,
-        'order': 4,
-        'is_built_in': 5,
-        'is_done_status': 6,
-      }),
-  SyncTablePolicy(
-      tableName: 'habit_table',
-      tblId: 5,
-      rowLevel: false,
-      columns: {
-        'type': 2,
-        'name': 3,
-        'description': 4,
-        'estimated_time': 5,
-        'archived_date': 6,
-        'has_reminder': 7,
-        'reminder_time': 8,
-        'reminder_days': 9,
-        'has_goal': 10,
-        'target_frequency': 11,
-        'period_days': 12,
-        'daily_target': 13,
-        'order': 14,
-      }),
+  SyncTablePolicy(tableName: 'task_time_record_table', tblId: 3, rowLevel: true),
+  SyncTablePolicy(tableName: 'task_status_table', tblId: 4, rowLevel: false, columns: {
+    'name': 2,
+    'color': 3,
+    'order': 4,
+    'is_built_in': 5,
+    'is_done_status': 6,
+  }),
+  SyncTablePolicy(tableName: 'habit_table', tblId: 5, rowLevel: false, columns: {
+    'type': 2,
+    'name': 3,
+    'description': 4,
+    'estimated_time': 5,
+    'archived_date': 6,
+    'has_reminder': 7,
+    'reminder_time': 8,
+    'reminder_days': 9,
+    'has_goal': 10,
+    'target_frequency': 11,
+    'period_days': 12,
+    'daily_target': 13,
+    'order': 14,
+  }),
   SyncTablePolicy(tableName: 'habit_record_table', tblId: 6, rowLevel: true),
   SyncTablePolicy(tableName: 'habit_tag_table', tblId: 7, rowLevel: true),
-  SyncTablePolicy(
-      tableName: 'habit_time_record_table', tblId: 8, rowLevel: true),
+  SyncTablePolicy(tableName: 'habit_time_record_table', tblId: 8, rowLevel: true),
   SyncTablePolicy(tableName: 'note_table', tblId: 9, rowLevel: false, columns: {
     'title': 2,
     'content': 3,
@@ -123,30 +108,19 @@ const List<SyncTablePolicy> syncTablePolicies = [
     'type': 5,
   }),
   SyncTablePolicy(tableName: 'tag_tag_table', tblId: 12, rowLevel: true),
-  SyncTablePolicy(
-      tableName: 'setting_table',
-      tblId: 13,
-      rowLevel: false,
-      columns: {
-        'key': 2,
-        'value': 3,
-        'value_type': 4,
-      }),
-  SyncTablePolicy(
-      tableName: 'app_usage_table',
-      tblId: 14,
-      rowLevel: false,
-      columns: {
-        'name': 2,
-        'display_name': 3,
-        'color': 4,
-        'device_name': 5,
-      }),
+  SyncTablePolicy(tableName: 'setting_table', tblId: 13, rowLevel: false, columns: {
+    'key': 2,
+    'value': 3,
+    'value_type': 4,
+  }),
+  SyncTablePolicy(tableName: 'app_usage_table', tblId: 14, rowLevel: false, columns: {
+    'name': 2,
+    'display_name': 3,
+    'color': 4,
+    'device_name': 5,
+  }),
   SyncTablePolicy(tableName: 'app_usage_tag_table', tblId: 15, rowLevel: true),
-  SyncTablePolicy(
-      tableName: 'app_usage_tag_rule_table', tblId: 16, rowLevel: true),
-  SyncTablePolicy(
-      tableName: 'app_usage_ignore_rule_table', tblId: 17, rowLevel: true),
-  SyncTablePolicy(
-      tableName: 'app_usage_time_record_table', tblId: 18, rowLevel: true),
+  SyncTablePolicy(tableName: 'app_usage_tag_rule_table', tblId: 16, rowLevel: true),
+  SyncTablePolicy(tableName: 'app_usage_ignore_rule_table', tblId: 17, rowLevel: true),
+  SyncTablePolicy(tableName: 'app_usage_time_record_table', tblId: 18, rowLevel: true),
 ];
