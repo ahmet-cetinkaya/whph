@@ -290,6 +290,19 @@ group-switch re-author ≤ 120 s with each chunk ≤ 2 s.
 
 Two runs exist. Do not mix their numbers.
 
+**Where the first-sync gate is judged.** The 10 minute gate for the first full
+sync of `large_usage` is judged on the two-device phone run, not on the
+headless loopback run. On desktop loopback the first sync is slower than 10
+minutes and stays a disclosed number: about 415 to 430 cells/s measured on a
+48,000-cell slice (12,000 notes), and about 23 minutes for the full fixture
+(about 657,000 cells, measured 2026-10-25). The loopback test does not gate CI:
+it carries the `perf-sync` tag and runs on demand. A profile of that run
+(2026-11-10) showed under 2 percent in crypto and wire work; the time is the
+receiver's per-cell apply (about 10 SQL statements per cell) and the sender's
+per-cell reads. Both devices share one isolate in that test, so it is not the
+product path. A bulk apply path that would bring desktop loopback under 10
+minutes is a separate project with its own spec (ACF-99).
+
 **Headless loopback run (this machine, desktop only).** Two `AppDatabase`
 devices with the real `LanSyncServer` and `LanSyncClient` on `127.0.0.1`.
 It checks the same gates as soft gates, and it writes
@@ -335,7 +348,7 @@ platform.
 
 | Item | Status |
 |---|---|
-| Loopback desktop run (SC-012 and SC-013 shapes) | See `t28-perf-loopback.md` for the numbers of the last run. |
+| Loopback desktop run (SC-012 and SC-013 shapes) | First sync over 10 minutes (about 23 minutes for the full fixture); disclosed, not the gate. See `t28-perf-loopback.md` for the last run. |
 | Linux and Android device run (SC-012, SC-013, PA-6) | **Not done.** Needs hardware; a human gap. |
 | Windows (SC-013) | **Not done.** Recorded as a gap. SC-013 is not passed for every supported platform. |
 
