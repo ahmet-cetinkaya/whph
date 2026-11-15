@@ -205,6 +205,9 @@ class WidgetDataAggregator {
             now: startOfDay,
           )
           .resolve(startOfDay);
+      // A bad habit marked X (failed) for today is already settled for the day, so the widget has nothing
+      // left to ask for. The query keeps it for the Today page, which shows the X and lets the user undo it.
+      if (habit.type == HabitType.bad && dailyState == HabitDayState.failed) continue;
       final currentCompletionCount = records.where((record) => record.status == HabitRecordStatus.complete).length;
       final hasGoal = habit.hasGoal;
       final dailyTarget = hasGoal ? (habit.dailyTarget ?? 1) : 1;
