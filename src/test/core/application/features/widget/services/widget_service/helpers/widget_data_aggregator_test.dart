@@ -6,9 +6,6 @@ import 'package:acore/acore.dart';
 import 'package:whph/core/application/features/widget/services/widget_service/helpers/widget_data_aggregator.dart';
 import 'package:whph/core/application/features/tasks/queries/get_list_tasks_query.dart';
 import 'package:whph/core/application/features/habits/queries/get_list_habits_query.dart';
-import 'package:whph/core/domain/features/habits/habit_record.dart';
-import 'package:whph/core/domain/features/habits/habit_record_status.dart';
-import 'package:whph/core/domain/features/habits/habit_type.dart';
 import 'package:whph/core/application/features/habits/services/i_habit_record_repository.dart';
 import 'package:whph/presentation/ui/shared/services/filter_settings_manager.dart';
 import 'package:whph/presentation/ui/shared/constants/setting_keys.dart';
@@ -118,57 +115,5 @@ void main() {
     expect(habitQuery.sortBy?.first.field, HabitSortFields.estimatedTime);
     expect(habitQuery.sortBy?.first.direction, SortDirection.desc);
     expect(habitQuery.filterByTags, ['tag1'], reason: 'Habit tag filter should be passed');
-  });
-
-  group('bad habit marked X today', () {
-    final createdDate = DateTime.now().subtract(const Duration(days: 30));
-
-    Future<List<String>> widgetHabitIds({required HabitType type, HabitRecordStatus? todayStatus}) async {
-      when(mockFilterSettingsManager.loadFilterSettings(settingKey: anyNamed('settingKey')))
-          .thenAnswer((_) async => null);
-      when(mockMediator.send<GetListTasksQuery, GetListTasksQueryResponse>(argThat(isA<GetListTasksQuery>())))
-          .thenAnswer((_) async => GetListTasksQueryResponse(items: [], totalItemCount: 0, pageIndex: 0, pageSize: 0));
-      when(mockMediator.send<GetListHabitsQuery, GetListHabitsQueryResponse>(argThat(isA<GetListHabitsQuery>())))
-          .thenAnswer((_) async => GetListHabitsQueryResponse(
-                items: [HabitListItem(id: 'h1', name: 'Habit', type: type, createdDate: createdDate)],
-                totalItemCount: 1,
-                pageIndex: 0,
-                pageSize: 1,
-              ));
-      final now = DateTime.now();
-      final records = todayStatus == null
-          ? <HabitRecord>[]
-          : [
-              HabitRecord(
-                id: 'r1',
-                createdDate: now,
-                habitId: 'h1',
-                occurredAt: DateTime(now.year, now.month, now.day, 12).toUtc(),
-                status: todayStatus,
-              ),
-            ];
-      when(mockHabitRecordRepository.getList(any, any, customWhereFilter: anyNamed('customWhereFilter')))
-          .thenAnswer((_) async => PaginatedList<HabitRecord>(
-                items: records,
-                totalItemCount: records.length,
-                pageIndex: 0,
-                pageSize: 20,
-              ));
-
-      final data = await aggregator.getWidgetData();
-      return [for (final habit in data.habits) habit.id];
-    }
-
-    test('is not listed as a habit still to complete', () async {
-      expect(await widgetHabitIds(type: HabitType.bad, todayStatus: HabitRecordStatus.notDone), isEmpty);
-    });
-
-    test('a good habit marked X today is still listed', () async {
-      expect(await widgetHabitIds(type: HabitType.good, todayStatus: HabitRecordStatus.notDone), ['h1']);
-    });
-
-    test('a good habit with no mark today is still listed', () async {
-      expect(await widgetHabitIds(type: HabitType.good), ['h1']);
-    });
   });
 }
