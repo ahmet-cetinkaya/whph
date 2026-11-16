@@ -305,7 +305,7 @@ void main() {
           ['habit-5', 'habit-4', 'habit-3', 'habit-2', 'habit-1']);
     });
 
-    test('keeps failed bad habits visible and hides flawless bad habits in mixed completion filters', () async {
+    test('hides failed and flawless bad habits alike in mixed completion filters', () async {
       // Given
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day, 12);
@@ -369,10 +369,10 @@ void main() {
       ));
 
       // Then
-      expect(todayResult.items.map((item) => item.id), ['good-incomplete', 'bad-failed']);
-      expect(todayResult.totalItemCount, 2);
-      expect(dateResult.items.map((item) => item.id), ['good-incomplete', 'bad-failed']);
-      expect(dateResult.totalItemCount, 2);
+      expect(todayResult.items.map((item) => item.id), ['good-incomplete']);
+      expect(todayResult.totalItemCount, 1);
+      expect(dateResult.items.map((item) => item.id), ['good-incomplete']);
+      expect(dateResult.totalItemCount, 1);
     });
 
     test('returns an incomplete good habit with a period goal', () async {

@@ -165,14 +165,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         (habit_table.type = ? AND (
           habit_table.created_date > ?
           OR habit_table.archived_date < ?
-          OR EXISTS (
-            SELECT 1 FROM habit_record_table
-            WHERE habit_record_table.habit_id = habit_table.id
-              AND habit_record_table.occurred_at >= ?
-              AND habit_record_table.occurred_at <= ?
-              AND habit_record_table.status = ?
-              AND habit_record_table.deleted_date IS NULL
-          )
         ))
       )''');
       variables.addAll([
@@ -182,9 +174,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         HabitType.bad.id,
         endDate,
         startDate,
-        startDate,
-        endDate,
-        HabitRecordStatus.notDone.index,
       ]);
     }
 
@@ -207,14 +196,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
           habit_table.created_date > ?
           OR habit_table.archived_date < ?
           OR ? > ?
-          OR EXISTS (
-            SELECT 1 FROM habit_record_table
-            WHERE habit_record_table.habit_id = habit_table.id
-              AND habit_record_table.occurred_at >= ?
-              AND habit_record_table.occurred_at <= ?
-              AND habit_record_table.status = ?
-              AND habit_record_table.deleted_date IS NULL
-          )
         ))
       )''');
       variables.addAll([
@@ -226,9 +207,6 @@ class GetListHabitsQueryHandler implements IRequestHandler<GetListHabitsQuery, G
         startDate,
         startDate,
         todayEnd,
-        startDate,
-        endDate,
-        HabitRecordStatus.notDone.index,
       ]);
     }
 

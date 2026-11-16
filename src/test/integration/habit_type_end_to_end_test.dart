@@ -119,7 +119,7 @@ void main() {
       pageSize: 20,
       excludeCompletedForDate: targetDate,
     ));
-    expect(failedFilter.items.map((habit) => habit.id), contains(created.id));
+    expect(failedFilter.items.map((habit) => habit.id), isNot(contains(created.id)));
 
     await toggleHandler().call(ToggleHabitCompletionCommand(habitId: created.id, date: targetDate));
     records = await recordRepository.getByHabitId(created.id);
